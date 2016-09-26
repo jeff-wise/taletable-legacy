@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+
+    <color name="theme_primary">#37474F</color>
+    <color name="theme_primary_dark">#263238</color>
+    <color name="theme_accent">#CCCCCC</color>
+
+    <!-- BOTTOM NAVIGATION -->
+    <!-- TABS -->
+    <color name="tab_accent">#ECEFF1</color>
+    <color name="tab_inactive">#78909C</color>
+    <!-- BG -->
+    <color name="bottom_nav_bg">#37474F</color>
+    #37474f
+</resources>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Tome</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TABS -->
+    <string name="profile_tab">Profile</string>
+    <string name="stats_tab">Stats</string>
+    <string name="abilities_tab">Abilities</string>
+    <string name="backpack_tab">Backpack</string>
+    <string name="spellbook_tab">Spellbook</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
