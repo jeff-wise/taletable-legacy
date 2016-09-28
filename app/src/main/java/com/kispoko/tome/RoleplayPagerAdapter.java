@@ -7,13 +7,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
+import com.kispoko.tome.sheet.Profile;
+import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.fragment.roleplay.AbilitiesFragment;
 import com.kispoko.tome.fragment.roleplay.BackpackFragment;
 import com.kispoko.tome.fragment.roleplay.ProfileFragment;
 import com.kispoko.tome.fragment.roleplay.SpellbookFragment;
 import com.kispoko.tome.fragment.roleplay.StatsFragment;
-
-import static android.R.attr.id;
 
 
 /**
@@ -23,14 +23,27 @@ import static android.R.attr.id;
 public class RoleplayPagerAdapter extends FragmentPagerAdapter
 {
 
+    // > PROPERTIES
+    // ------------------------------------------------------------------------------------------
+
     private static int ROLEPLAY_PAGES = 5;
 
+    private Sheet sheet;
 
-    public RoleplayPagerAdapter(FragmentManager fragmentManager)
+
+    // > CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
+
+    public RoleplayPagerAdapter(FragmentManager fragmentManager, Sheet sheet)
     {
         super(fragmentManager);
+
+        this.sheet = sheet;
     }
 
+
+    // > API
+    // ------------------------------------------------------------------------------------------
 
     // Returns total number of pages
     @Override
@@ -48,7 +61,8 @@ public class RoleplayPagerAdapter extends FragmentPagerAdapter
 
         switch (position) {
             case 0:
-                return ProfileFragment.newInstance();
+                Profile profile = sheet.getRoleplayFormat().getProfile();
+                return ProfileFragment.newInstance(profile);
             case 1:
                 return StatsFragment.newInstance();
             case 2:

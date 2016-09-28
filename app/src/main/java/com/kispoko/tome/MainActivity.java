@@ -2,7 +2,6 @@
 package com.kispoko.tome;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -14,15 +13,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.fragment.roleplay.AbilitiesFragment;
 import com.kispoko.tome.fragment.roleplay.BackpackFragment;
 import com.kispoko.tome.fragment.roleplay.ProfileFragment;
 import com.kispoko.tome.fragment.roleplay.SpellbookFragment;
 import com.kispoko.tome.fragment.roleplay.StatsFragment;
+
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 
 
 /**
@@ -39,8 +44,17 @@ public class MainActivity
                   SpellbookFragment.EventListener
 {
 
+
+    // > PROPERTIES
+    // -------------------------------------------------------------------------------------------
+
+    // UI
     private Toolbar toolbar;
     private AHBottomNavigation bottomNavigation;
+    private ViewPager rpPager;
+
+    // Data
+    private Sheet sheet;
 
 
     // > ACTIVITY EVENTS
@@ -53,6 +67,8 @@ public class MainActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        loadSheetFormat();
 
         initializeToolbar();
         initializeDrawer();
@@ -176,6 +192,10 @@ public class MainActivity
     // -------------------------------------------------------------------------------------------
 
 
+    // >> User Interface
+    // -------------------------------------------------------------------------------------------
+
+
     /**
      * Initialize the toolbar UI components.
      */
@@ -248,21 +268,33 @@ public class MainActivity
 
         // (3) Navigation bar configuration
         // --------------------------------------------------------------------------------------
-        this.bottomNavigation.setDefaultBackgroundColor(ContextCompat.getColor(this, R.color.bottom_nav_bg));
+        this.bottomNavigation.setDefaultBackgroundColor(
+                ContextCompat.getColor(this, R.color.theme_primary));
         this.bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.tab_accent));
         this.bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.tab_inactive));
         this.bottomNavigation.setForceTint(true);
         this.bottomNavigation.setCurrentItem(0);
+
+        // Set view pager page to match tab selection
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                rpPager.setCurrentItem(position);
+                return true;
+            }
+        });
     }
 
 
     private void initializePager()
     {
-        ViewPager rpPager = (ViewPager) findViewById(R.id.roleplay_pager);
-        RoleplayPagerAdapter rpPagerAdapter = new RoleplayPagerAdapter(getSupportFragmentManager());
-        rpPager.setAdapter(rpPagerAdapter);
+        this.rpPager = (ViewPager) findViewById(R.id.roleplay_pager);
+        RoleplayPagerAdapter rpPagerAdapter =
+                new RoleplayPagerAdapter(getSupportFragmentManager(), this.sheet);
+        this.rpPager.setAdapter(rpPagerAdapter);
+        this.rpPager.setOffscreenPageLimit(5);
         // Attach the page change listener inside the activity
-        rpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        this.rpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             // This method will be invoked when a new page becomes selected.
             @Override
@@ -283,6 +315,20 @@ public class MainActivity
                 // Code goes here
             }
         });
+    }
+
+    // >> Data
+    // -------------------------------------------------------------------------------------------
+
+    private void loadSheetFormat()
+    {
+        try {
+            InputStream yamlIS = this.getAssets().open("sheet/dnd_ed_5.yaml");
+            Yaml yaml = new Yaml();
+            Object yamlObject = yaml.load(yamlIS);
+            this.sheet = Sheet.fromYaml((Map<String,Object>) yamlObject);
+        } catch (IOException e) {
+        }
     }
 
 }

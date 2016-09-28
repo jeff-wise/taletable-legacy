@@ -5,14 +5,24 @@
     <!--<color name="colorPrimaryDark">#303F9F</color>-->
     <!--<color name="colorAccent">#FF4081</color>-->
 
-    <color name="theme_primary">#37474F</color>
     <color name="theme_primary_dark">#263238</color>
+    <color name="theme_primary">#37474F</color>
+    <color name="theme_primary_light">#455a64</color>
+    <color name="theme_light">#eceff1</color>
+    <color name="theme_medium">#90a4ae</color>
     <color name="theme_accent">#CCCCCC</color>
+
+    <color name="theme_blue_800">#0277bd</color>
+    <color name="theme_blue_900">#0d47a1</color>
+
+    <color name="theme_gray_500">#607d8b</color>
+
+
 
     <!-- BOTTOM NAVIGATION -->
     <!-- TABS -->
-    <color name="tab_accent">#ECEFF1</color>
-    <color name="tab_inactive">#78909C</color>
+    <color name="tab_accent">#cfd8dc</color>
+    <color name="tab_inactive">#607d8b</color>
     <!-- BG -->
     <color name="bottom_nav_bg">#37474F</color>
     #37474f

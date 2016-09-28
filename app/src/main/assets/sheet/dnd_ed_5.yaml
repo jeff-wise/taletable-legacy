@@ -1,0 +1,11 @@
+
+
+roleplay:
+  profile:
+    components:
+    - type: text
+      data:
+        label: "Name"
+    - type: image
+      data:
+        label: "Picture"

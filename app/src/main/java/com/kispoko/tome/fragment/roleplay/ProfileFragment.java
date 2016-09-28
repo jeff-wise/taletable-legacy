@@ -3,11 +3,16 @@ package com.kispoko.tome.fragment.roleplay;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.component.ComponentListAdapter;
+import com.kispoko.tome.sheet.Profile;
+import com.kispoko.tome.util.VerticalSpaceItemDecoration;
 
 /**
  * ProfileFragment Fragment.
@@ -16,14 +21,10 @@ import com.kispoko.tome.R;
  */
 public class ProfileFragment extends Fragment
 {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    //private static final String ARG_PARAM1 = "param1";
-    //private static final String ARG_PARAM2 = "param2";
+    // Saved property names
+    private static final String PROFILE_FORMAT = "profile";
 
-    // TODO: Rename and change types of parameters
-    //private String mParam1;
-    //private String mParam2;
+    private Profile profile;
 
     private EventListener mListener;
 
@@ -34,40 +35,50 @@ public class ProfileFragment extends Fragment
 
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
+     * Create a new instance of the fragment representing the character profile data.
+     * @param profile The format description of the profile.
+     * @return A new instance of ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance()
+    public static ProfileFragment newInstance(Profile profile)
     {
         ProfileFragment fragment = new ProfileFragment();
-        //Bundle args = new Bundle();
-        //args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
-        //fragment.setArguments(args);
+        Bundle args = new Bundle();
+        args.putSerializable(PROFILE_FORMAT, profile);
+        fragment.setArguments(args);
         return fragment;
     }
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+        if (getArguments() != null) {
+            profile = (Profile) getArguments().getSerializable(PROFILE_FORMAT);
+        }
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        View fView = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        RecyclerView recyclerView = (RecyclerView) fView.findViewById(R.id.profile_components);
+
+        ComponentListAdapter componentAdapter =
+               new ComponentListAdapter(getContext(), this.profile.getComponentList());
+
+        int verticalItemSpace = (int) getResources().getDimension(R.dimen.component_item_space);
+        recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(verticalItemSpace));
+
+        recyclerView.setAdapter(componentAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        return recyclerView;
     }
 
 

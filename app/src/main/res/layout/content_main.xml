@@ -11,7 +11,7 @@
     <android.support.v4.view.ViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/roleplay_pager"
-        android:background="@color/theme_primary_dark"
+        android:background="@color/theme_light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
