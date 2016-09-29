@@ -14,5 +14,7 @@ public interface ComponentI
     // View getView(Context context);
     //String getLabel();
 
-    void configureView(View view);
+    String getName();
+
+    View getView(Context context);
 }

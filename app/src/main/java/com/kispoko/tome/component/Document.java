@@ -15,9 +15,9 @@ import java.util.Map;
 
 
 /**
- * Text
+ * Document Component
  */
-public class Text implements Serializable, ComponentI
+public class Document implements Serializable, ComponentI
 {
 
     // > PROPERTIES
@@ -31,7 +31,7 @@ public class Text implements Serializable, ComponentI
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Text(String name)
+    public Document(String name)
     {
         this.name = name;
         this.value = "";
@@ -39,59 +39,44 @@ public class Text implements Serializable, ComponentI
     }
 
 
-    public Text(String name, String value)
+    public Document(String name, String label)
     {
         this.name = name;
-        this.value = value;
-        this.label = null;
-    }
-
-
-    public Text(String name, String value, String label)
-    {
-        this.name = name;
-        this.value = value;
         this.label = label;
+        this.value = "";
     }
 
 
-    // TODO allow integer values as strings here too
     @SuppressWarnings("unchecked")
-    public static Text fromYaml(Map<String, Object> textYaml)
+    public static Document fromYaml(Map<String, Object> documentYaml)
     {
-        String name = (String) textYaml.get("name");
+        // Map<String, Object> dataYaml = (Map<String, Object>) documentYaml.get("data");
+
+        String name = (String) documentYaml.get("name");
 
         String label = null;
-        if (textYaml.containsKey("label"))
-            label = (String) textYaml.get("label");
-
-        Map<String, Object> dataYaml = (Map<String, Object>) textYaml.get("data");
+        if (documentYaml.containsKey("label"))
+            label = (String) documentYaml.get("label");
 
         String value = null;
-        if (dataYaml != null && dataYaml.containsKey("value"))
-            value = (String) dataYaml.get("value");
+        if (documentYaml.containsKey("value"))
+            value = (String) documentYaml.get("value");
 
-        Text newText;
+        Document newDocument;
         if (label != null)
-            newText = new Text(name, label);
+            newDocument = new Document(name, label);
         else
-            newText = new Text(name);
+            newDocument =  new Document(name);
 
         if (value != null)
-            newText.setValue(value);
+            newDocument.setValue(value);
 
-        return newText;
+        return newDocument;
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
-
-
-    public String getName()
-    {
-        return this.name;
-    }
 
 
     public void setValue(String value)
@@ -100,14 +85,20 @@ public class Text implements Serializable, ComponentI
     }
 
 
+    public String getName()
+    {
+        return this.name;
+    }
+
+
     public View getView(Context context)
     {
         EditText editText = new EditText(context);
 
-        editText.setId(R.id.text_component_edit_text);
+        editText.setId(R.id.document_component_edit_text);
 
         float textSize = (int) context.getResources()
-                                      .getDimension(R.dimen.text_component_text_size);
+                                      .getDimension(R.dimen.document_component_text_size);
         editText.setTextSize(textSize);
 
         editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);

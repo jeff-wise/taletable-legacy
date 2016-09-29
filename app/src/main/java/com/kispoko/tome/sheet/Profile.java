@@ -1,21 +1,18 @@
+
 package com.kispoko.tome.sheet;
 
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import com.kispoko.tome.component.Component;
-import com.kispoko.tome.component.Image;
-import com.kispoko.tome.component.Text;
+import com.kispoko.tome.component.Group;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import static android.media.CamcorderProfile.get;
 
 
 /**
@@ -27,40 +24,60 @@ public class Profile implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ArrayList<Component> componentList;
+    private ArrayList<Group> groups;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Profile(Collection<Component> components)
+    public Profile(Collection<Group> groups)
     {
-        this.componentList = new ArrayList<>(components);
+        this.groups = new ArrayList<>(groups);
     }
 
 
     @SuppressWarnings("unchecked")
-    public static Profile fromYaml(Map<String, Object> profileFormatYaml)
+    public static Profile fromYaml(Map<String, Object> profileYaml)
     {
-        ArrayList<Component> componentList = new ArrayList<>();
-        ArrayList<Object> componentsYaml = (ArrayList<Object>) profileFormatYaml.get("components");
-        for (Object componentYaml : componentsYaml) {
-            Component component = Component.fromYaml((Map<String, Object>) componentYaml);
-            componentList.add(component);
+        ArrayList<Group> groups = new ArrayList<>();
+
+        ArrayList<Object> groupsYaml = (ArrayList<Object>) profileYaml.get("groups");
+        for (Object groupYaml : groupsYaml) {
+            Group group = Group.fromYaml((Map<String, Object>) groupYaml);
+            groups.add(group);
         }
 
-        return new Profile(componentList);
+        return new Profile(groups);
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
 
-    public ArrayList<Component> getComponentList()
+    public ArrayList<Group> getGroups()
     {
-        return this.componentList;
+        return this.groups;
     }
 
+
+    public View getView(Context context)
+    {
+        LinearLayout profileLayout = new LinearLayout(context);
+
+        LinearLayout.LayoutParams profileLayoutParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                              LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        profileLayout.setOrientation(LinearLayout.VERTICAL);
+        profileLayout.setLayoutParams(profileLayoutParams);
+
+        for (Group group : this.groups)
+        {
+            profileLayout.addView(group.getView(context));
+        }
+
+        return profileLayout;
+    }
 
 
 }

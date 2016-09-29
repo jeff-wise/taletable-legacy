@@ -1,11 +1,47 @@
 
-
-roleplay:
-  profile:
-    components:
-    - type: text
-      data:
-        label: "Name"
-    - type: image
-      data:
-        label: "Picture"
+name: dnd_ed_5
+sections:
+  roleplay:
+    profile:
+      groups:
+      - name: Name
+        components:
+        - type: text
+          name: Name
+          data:
+            value: Hildebrand
+      - name: Picture
+        components:
+        - type: image
+          name: Picture
+      - name: Class and Level
+        components:
+        - type: integer
+          name: Level
+          data:
+            value: 17
+        - type: text
+          name: Class
+          data:
+            value: Wizard
+        layout:
+          rows:
+          - frames:
+            - name: Level
+              width: 25
+            - name: Class
+              width: 75
+      - name: Characteristics
+        components:
+        - type: document
+          name: Personality Traits
+          label: Personality Traits
+        - type: document
+          name: Ideals
+          label: Ideals
+        - type: document
+          name: Bonds
+          label: Bonds
+        - type: document
+          name: Flaws
+          label: Flaws

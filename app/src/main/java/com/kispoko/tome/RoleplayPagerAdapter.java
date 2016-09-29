@@ -61,7 +61,7 @@ public class RoleplayPagerAdapter extends FragmentPagerAdapter
 
         switch (position) {
             case 0:
-                Profile profile = sheet.getRoleplayFormat().getProfile();
+                Profile profile = sheet.getRoleplay().getProfile();
                 return ProfileFragment.newInstance(profile);
             case 1:
                 return StatsFragment.newInstance();

@@ -18,27 +18,33 @@ public class Sheet
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Roleplay roleplayFormat;
+    private String name;
+
+    private Roleplay roleplay;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Sheet(Roleplay roleplayFormat)
+    public Sheet(String name, Roleplay roleplay)
     {
-        this.roleplayFormat = roleplayFormat;
+        this.name = name;
+        this.roleplay = roleplay;
     }
 
 
     @SuppressWarnings("unchecked")
-    public static Sheet fromYaml(Map<String, Object> sheetFormatYaml)
+    public static Sheet fromYaml(Map<String, Object> sheetYaml)
     {
-        // TODO how to do logging
-        Map<String,Object> roleplayFormatYaml =
-                (Map<String,Object>) sheetFormatYaml.get("roleplay");
-        Roleplay roleplayFormat = Roleplay.fromYaml(roleplayFormatYaml);
+        String name = (String) sheetYaml.get("name");
 
-        return new Sheet(roleplayFormat);
+        Map<String,Object> sections = (Map<String,Object>) sheetYaml.get("sections");
+
+        Map<String,Object> roleplayYaml = (Map<String,Object>) sections.get("roleplay");
+
+        Roleplay roleplay = Roleplay.fromYaml(roleplayYaml);
+
+        return new Sheet(name, roleplay);
     }
 
 
@@ -49,9 +55,9 @@ public class Sheet
      * Get the sheet's roleplay format.
      * @return The roleplay format.
      */
-    public Roleplay getRoleplayFormat()
+    public Roleplay getRoleplay()
     {
-        return this.roleplayFormat;
+        return this.roleplay;
     }
 
 }

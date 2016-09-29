@@ -275,6 +275,8 @@ public class MainActivity
         this.bottomNavigation.setForceTint(true);
         this.bottomNavigation.setCurrentItem(0);
 
+        //this.bottomNavigation.setBehaviorTranslationEnabled(false);
+
         // Set view pager page to match tab selection
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override

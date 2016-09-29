@@ -1,6 +1,4 @@
-
 package com.kispoko.tome.component;
-
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -15,78 +13,68 @@ import java.util.Map;
 
 
 /**
- * Text
+ * NumberInteger Component
  */
-public class Text implements Serializable, ComponentI
+public class NumberInteger implements Serializable, ComponentI
 {
 
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
     private String name;
-    private String value;
+    private Integer value;
     private String label;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Text(String name)
+    public NumberInteger(String name)
     {
         this.name = name;
-        this.value = "";
+        this.value = null;
         this.label = null;
     }
 
 
-    public Text(String name, String value)
+    public NumberInteger(String name, String label)
     {
         this.name = name;
-        this.value = value;
-        this.label = null;
-    }
-
-
-    public Text(String name, String value, String label)
-    {
-        this.name = name;
-        this.value = value;
         this.label = label;
+        this.value = null;
     }
 
 
-    // TODO allow integer values as strings here too
     @SuppressWarnings("unchecked")
-    public static Text fromYaml(Map<String, Object> textYaml)
+    public static NumberInteger fromYaml(Map<String, Object> integerYaml)
     {
-        String name = (String) textYaml.get("name");
+        String name = (String) integerYaml.get("name");
 
         String label = null;
-        if (textYaml.containsKey("label"))
-            label = (String) textYaml.get("label");
+        if (integerYaml.containsKey("label"))
+            label = (String) integerYaml.get("label");
 
-        Map<String, Object> dataYaml = (Map<String, Object>) textYaml.get("data");
+        Map<String, Object> dataYaml = (Map<String, Object>) integerYaml.get("data");
 
-        String value = null;
+        Integer value = null;
         if (dataYaml != null && dataYaml.containsKey("value"))
-            value = (String) dataYaml.get("value");
+            value = (Integer) dataYaml.get("value");
 
-        Text newText;
+        NumberInteger newInteger;
         if (label != null)
-            newText = new Text(name, label);
+            newInteger = new NumberInteger(name, label);
         else
-            newText = new Text(name);
+            newInteger = new NumberInteger(name);
 
         if (value != null)
-            newText.setValue(value);
+            newInteger.setValue(value);
 
-        return newText;
+        return newInteger;
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
-
 
     public String getName()
     {
@@ -94,7 +82,7 @@ public class Text implements Serializable, ComponentI
     }
 
 
-    public void setValue(String value)
+    public void setValue(Integer value)
     {
         this.value = value;
     }
@@ -116,7 +104,10 @@ public class Text implements Serializable, ComponentI
                                                  "fonts/DavidLibre-Regular.ttf");
         editText.setTypeface(font);
 
-        editText.setText(this.value);
+        if (this.value != null)
+            editText.setText(Integer.toString(this.value));
+        else
+            editText.setText("");
 
         return editText;
     }

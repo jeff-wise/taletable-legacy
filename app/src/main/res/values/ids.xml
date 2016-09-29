@@ -3,4 +3,9 @@
 
     <item name="component_label" type="id"/>
 
+    <!-- COMPONENTS -->
+    <item name="text_component_edit_text" type="id"/>
+    <item name="document_component_edit_text" type="id"/>
+
+
 </resources>
