@@ -5,8 +5,6 @@ package com.kispoko.tome.component;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.text.InputType;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TableLayout;
@@ -19,8 +17,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static android.R.attr.labelTextSize;
-import static com.kispoko.tome.R.id.textView;
 
 
 /**

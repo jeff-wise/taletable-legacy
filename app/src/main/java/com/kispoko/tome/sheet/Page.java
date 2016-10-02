@@ -8,56 +8,76 @@ import android.widget.LinearLayout;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 
 
 
 /**
- * Format of the profile section.
+ * Sheet Page
+ *
+ * A page corresponds to a real-life piece of paper, where each page has fields that are related
+ * to a specific theme. The fields are cotained in a list of groups, which group related
+ * character content.
  */
-public class Profile implements Serializable
+public class Page implements Serializable
 {
 
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    private String name;
     private ArrayList<Group> groups;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Profile(Collection<Group> groups)
+    public Page(String name, ArrayList<Group> groups)
     {
-        this.groups = new ArrayList<>(groups);
+        this.name = name;
+        this.groups = groups;
     }
 
 
     @SuppressWarnings("unchecked")
-    public static Profile fromYaml(Map<String, Object> profileYaml)
-    {
-        ArrayList<Group> groups = new ArrayList<>();
+    public static Page fromYaml(Map<String, Object> pageYaml) {
+        // Parse name
+        String name = (String) pageYaml.get("name");
 
-        ArrayList<Object> groupsYaml = (ArrayList<Object>) profileYaml.get("groups");
-        for (Object groupYaml : groupsYaml) {
-            Group group = Group.fromYaml((Map<String, Object>) groupYaml);
-            groups.add(group);
+        // Parse groups
+        ArrayList<Group> groups = new ArrayList<>();
+        ArrayList<Object> groupsYaml = (ArrayList<Object>) pageYaml.get("groups");
+
+        if (groupsYaml != null)
+        {
+            for (Object groupYaml : groupsYaml) {
+                Group group = Group.fromYaml((Map<String, Object>) groupYaml);
+                groups.add(group);
+            }
         }
 
-        return new Profile(groups);
+        return new Page(name, groups);
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
 
-    public ArrayList<Group> getGroups()
+    /**
+     * Returns the name of this page.
+     * @return The page name.
+     */
+    public String getName()
     {
-        return this.groups;
+        return this.name;
     }
 
 
+    /**
+     * Returns an android view that represents this page.
+     * @param context The parent activity context.
+     * @return A View of this page.
+     */
     public View getView(Context context)
     {
         LinearLayout profileLayout = new LinearLayout(context);
@@ -77,6 +97,4 @@ public class Profile implements Serializable
         return profileLayout;
     }
 
-
 }
-

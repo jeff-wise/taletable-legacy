@@ -2,6 +2,8 @@
 package com.kispoko.tome.sheet;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,38 +18,33 @@ public class Roleplay
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Profile profile;
-//    private Stats      statsFormat;
-//    private Abilities  abilitiesFormat;
-//    private Backpack   backpackFormat;
-//    private Spellbook  spellbookFormat;
+    private ArrayList<Page> pages;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Roleplay(Profile profile)
-//                          Stats     statsFormat,
-//                          Abilities abilitiesFormat,
-//                          Backpack  backpackFormat,
-//                          Spellbook spellbookFormat)
+    public Roleplay(ArrayList<Page> pages)
     {
-        this.profile = profile;
-//        this.statsFormat = statsFormat;
-//        this.abilitiesFormat = abilitiesFormat;
-//        this.backpackFormat = backpackFormat;
-//        this.spellbookFormat = spellbookFormat;
+        this.pages = pages;
     }
 
 
     @SuppressWarnings("unchecked")
-    public static Roleplay fromYaml(Map<String, Object> roleplayFormatYaml)
+    public static Roleplay fromYaml(Map<String, Object> roleplayYaml)
     {
-        Map<String,Object> profileFormatYaml =
-                (Map<String,Object>) roleplayFormatYaml.get("profile");
-        Profile profile = Profile.fromYaml(profileFormatYaml);
+        // Roleplay pages
+        ArrayList<Map<String,Object>> pagesYaml =
+                (ArrayList<Map<String,Object>>) roleplayYaml.get("pages");
+        ArrayList<Page> pages = new ArrayList<>();
 
-        return new Roleplay(profile);
+        for (Map<String,Object> pageYaml : pagesYaml)
+        {
+            Page page = Page.fromYaml(pageYaml);
+            pages.add(page);
+        }
+
+        return new Roleplay(pages);
     }
 
 
@@ -55,11 +52,11 @@ public class Roleplay
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Returns the profile format belonging to this roleplay format.
-     * @return The profile format.
+     * Returns the pages in the roleplay section.
+     * @return The roleplay pages.
      */
-    public Profile getProfile()
+    public List<Page> getPages()
     {
-        return this.profile;
+        return this.pages;
     }
 }

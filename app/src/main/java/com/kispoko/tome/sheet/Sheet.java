@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet;
 
 
+import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -36,12 +37,14 @@ public class Sheet
     @SuppressWarnings("unchecked")
     public static Sheet fromYaml(Map<String, Object> sheetYaml)
     {
+        // Sheet name
         String name = (String) sheetYaml.get("name");
 
+        // Sheet sections
         Map<String,Object> sections = (Map<String,Object>) sheetYaml.get("sections");
 
+        // Roleplay section
         Map<String,Object> roleplayYaml = (Map<String,Object>) sections.get("roleplay");
-
         Roleplay roleplay = Roleplay.fromYaml(roleplayYaml);
 
         return new Sheet(name, roleplay);

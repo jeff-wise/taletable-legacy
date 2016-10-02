@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
+import com.kispoko.tome.fragment.roleplay.PageFragment;
 import com.kispoko.tome.sheet.Profile;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.fragment.roleplay.AbilitiesFragment;
@@ -20,13 +21,11 @@ import com.kispoko.tome.fragment.roleplay.StatsFragment;
  * This class manages the roleplay pages by assigning a numeric index to each
  * roleplay page Fragment.
  */
-public class RoleplayPagerAdapter extends FragmentStatePagerAdapter
+public class PagePagerAdapter extends FragmentStatePagerAdapter
 {
 
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
-
-    private static int ROLEPLAY_PAGES = 4;
 
     private Sheet sheet;
 
@@ -34,7 +33,7 @@ public class RoleplayPagerAdapter extends FragmentStatePagerAdapter
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public RoleplayPagerAdapter(FragmentManager fragmentManager, Sheet sheet)
+    public PagePagerAdapter(FragmentManager fragmentManager, Sheet sheet)
     {
         super(fragmentManager);
 
@@ -49,7 +48,7 @@ public class RoleplayPagerAdapter extends FragmentStatePagerAdapter
     @Override
     public int getCount()
     {
-        return ROLEPLAY_PAGES;
+        return sheet.getRoleplay().getPages().size();
     }
 
 
@@ -57,38 +56,13 @@ public class RoleplayPagerAdapter extends FragmentStatePagerAdapter
     @Override
     public Fragment getItem(int position)
     {
-        switch (position)
-        {
-            case 0:
-                Profile profile = sheet.getRoleplay().getProfile();
-                return ProfileFragment.newInstance(profile);
-            case 1:
-                return StatsFragment.newInstance();
-            case 2:
-                return AbilitiesFragment.newInstance();
-            case 3:
-                return BackpackFragment.newInstance();
-            default:
-                return null;
-        }
+        return PageFragment.newInstance(this.sheet.getRoleplay().getPages().get(position));
     }
 
     @Override
     public CharSequence getPageTitle(int position)
     {
-        switch (position)
-        {
-            case 0:
-                return "Profile";
-            case 1:
-                return "Stats";
-            case 2:
-                return "Abilities";
-            case 3:
-                return "Pack";
-            default:
-                return "Error";
-        }
+        return this.sheet.getRoleplay().getPages().get(position).getName();
     }
 
 }

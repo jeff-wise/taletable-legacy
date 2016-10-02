@@ -1,16 +1,17 @@
 
-package com.kispoko.tome.component;
+package com.kispoko.tome.sheet;
 
 
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.component.Component;
+import com.kispoko.tome.component.Layout;
 import com.kispoko.tome.util.UI;
 
 import java.io.Serializable;

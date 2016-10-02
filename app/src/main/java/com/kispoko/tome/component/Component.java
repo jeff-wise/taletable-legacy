@@ -32,7 +32,7 @@ public abstract class Component
     // > INTERFACE
     // ------------------------------------------------------------------------------------------
 
-    abstract  View getView(Context context);
+    abstract public View getView(Context context);
 
 
     // > SHARED METHODS

@@ -2,6 +2,8 @@
 package com.kispoko.tome.component;
 
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;

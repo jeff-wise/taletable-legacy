@@ -2,7 +2,8 @@
 name: dnd_ed_5
 sections:
   roleplay:
-    profile:
+    pages:
+    - name: Profile
       groups:
       - name: Name
         components:
@@ -45,21 +46,68 @@ sections:
           rows:
           - frames:
             - name: Level
-              width: 0.3
+              width: 0.5
             - name: Class
-              width: 0.7
+              width: 0.5
           - frames:
             - name: Race
               width: 0.5
             - name: Alignment
               width: 0.5
+      - name: Appearance
+        components:
+        - type: integer
+          name: Age
+          size: medium
+          label: Age
+          data:
+            value: 41
+        - type: text
+          name: Height
+          size: medium
+          label: Height
+          data:
+            value: 5'11"
+        - type: integer
+          name: Weight
+          size: medium
+          label: Weight
+          data:
+            value: 167
+        - type: text
+          name: Eyes
+          size: medium
+          label: Eyes
+          data:
+            value: Blue
+        - type: text
+          name: Skin
+          size: medium
+          label: Skin
+          data:
+            value: Light
+        - type: text
+          name: Hair
+          size: medium
+          label: Hair
+          data:
+            value: Brown
         layout:
           rows:
           - frames:
-            - name: Level
-              width: 0.3
-            - name: Class
-              width: 0.7
+            - name: Age
+              width: 0.33
+            - name: Height
+              width: 0.33
+            - name: Weight
+              width: 0.34
+          - frames:
+            - name: Eyes
+              width: 0.33
+            - name: Skin
+              width: 0.33
+            - name: Hair
+              width: 0.34
       - name: Characteristics
         components:
         - type: table
@@ -126,5 +174,13 @@ sections:
                   value: >
                     Hildebrand is occasionally possessed by a familiar demon that causes him to
                     behave chaotically and maliciously
+    - name: Stats
+      groups:
+    - name: Abilities
+      groups:
+    - name: Backpack
+      groups:
+    - name: Spellbook
+      groups:
 
 

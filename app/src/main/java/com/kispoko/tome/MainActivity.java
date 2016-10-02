@@ -12,18 +12,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
 
-import com.kispoko.tome.component.Image;
+import com.kispoko.tome.fragment.roleplay.PageFragment;
 import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.fragment.roleplay.AbilitiesFragment;
-import com.kispoko.tome.fragment.roleplay.BackpackFragment;
-import com.kispoko.tome.fragment.roleplay.ProfileFragment;
-import com.kispoko.tome.fragment.roleplay.StatsFragment;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -32,16 +25,14 @@ import java.io.InputStream;
 import java.util.Map;
 
 
+
 /**
  * The main activity for the application.
  * All of the main UI components are constructed and maintained here.
  */
 public class MainActivity
        extends AppCompatActivity
-       implements ProfileFragment.EventListener,
-                  StatsFragment.EventListener,
-                  AbilitiesFragment.EventListener,
-                  BackpackFragment.EventListener
+       implements PageFragment.EventListener
 {
 
 
@@ -209,11 +200,11 @@ public class MainActivity
      */
     private void initializeTabs()
     {
-        RoleplayPagerAdapter roleplayPagerAdapter =
-                new RoleplayPagerAdapter(getSupportFragmentManager(), this.sheet);
+        PagePagerAdapter pagePagerAdapter =
+                new PagePagerAdapter(getSupportFragmentManager(), this.sheet);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.roleplay_pager);
-        viewPager.setAdapter(roleplayPagerAdapter);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
+        viewPager.setAdapter(pagePagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
