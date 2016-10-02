@@ -6,17 +6,41 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+
+    <!-- GROUPS -->
+    <dimen name="row_vert_padding">10dp</dimen>
+
+    <dimen name="group_horz_margins">5dp</dimen>
+    <dimen name="group_vert_margins">10dp</dimen>
 
     <dimen name="label_padding">4dp</dimen>
     <dimen name="label_text_size">2.8dp</dimen>
-    <dimen name="text_component_text_size">10.2dp</dimen>
-    <dimen name="component_card_padding">4dp</dimen>
 
+
+    <!-- COMPONENT: TEXT -->
+    <dimen name="comp_text_text_size_large">9dp</dimen>
+    <dimen name="comp_text_text_size_medium">7dp</dimen>
+    <dimen name="comp_text_text_size_small">4dp</dimen>
+
+
+    <!-- COMPONENT: DOCUMENT -->
     <dimen name="document_component_text_size">5dp</dimen>
 
-    <dimen name="component_item_space">15dp</dimen>
-    <dimen name="choose_image_button_margins">20dp</dimen>
 
-    <dimen name="group_horz_margins">5dp</dimen>
-    <dimen name="group_vert_margins">15dp</dimen>
+    <!-- COMPONENT: IMAGE -->
+    <dimen name="comp_image_button_vert_margins">30dp</dimen>
+    <dimen name="comp_image_button_icon_padding">10dp</dimen>
+    <dimen name="comp_image_button_padding">15dp</dimen>
+    <dimen name="comp_image_button_text_size">3dp</dimen>
+
+    <dimen name="comp_image_image_height">250dp</dimen>
+
+
+    <!-- COMPONENT: TABLE -->
+    <dimen name="comp_table_cell_padding">5dp</dimen>
+    <dimen name="comp_table_header_text_size">2.8dp</dimen>
+    <dimen name="comp_table_text_cell_text_size">4.6dp</dimen>
+
+
 </resources>

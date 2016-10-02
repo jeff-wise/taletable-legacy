@@ -3,102 +3,117 @@ package com.kispoko.tome.component;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import java.io.Serializable;
+import com.kispoko.tome.R;
+
 import java.util.Map;
 
-import static android.R.attr.type;
 
 
 /**
  * Component
+ *
  */
-public class Component implements Serializable
+public abstract class Component
 {
-
-    public static enum Type
-    {
-        TEXT,
-        DOCUMENT,
-        INTEGER,
-        IMAGE
-    }
 
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    ComponentI component;
-    Type _type;
+    private String name;
+    private String label;
 
 
-    // > CONSTRUCTORS
+    // > INTERFACE
     // ------------------------------------------------------------------------------------------
 
-    public Component(ComponentI component)
-    {
-        this.component = component;
+    abstract  View getView(Context context);
 
-        if (component instanceof Text) {
-           this._type = Type.TEXT;
-        } else if (component instanceof Image) {
-           this._type = Type.IMAGE;
-        } else if (component instanceof NumberInteger) {
-            this._type = Type.INTEGER;
-        } else if (component instanceof Document) {
-            this._type = Type.DOCUMENT;
-        }
+
+    // > SHARED METHODS
+    // ------------------------------------------------------------------------------------------
+
+    public Component(String name)
+    {
+        this.name = name;
+        this.label = null;
     }
 
 
-    public static Component fromYaml(Map<String, Object> componentYaml)
+    public Component(String name, String label)
     {
-        String componentType = (String) componentYaml.get("type");
-        ComponentI componentI = null;
-
-        switch (componentType)
-        {
-            case "text":
-               componentI = Text.fromYaml(componentYaml);
-               break;
-            case "image":
-                componentI = Image.fromYaml(componentYaml);
-                break;
-            case "integer":
-                componentI = NumberInteger.fromYaml(componentYaml);
-                break;
-            case "document":
-                componentI = Document.fromYaml(componentYaml);
-                break;
-        }
-
-        return new Component(componentI);
+        this.name = name;
+        this.label = label;
     }
 
-    // > API
-    // ------------------------------------------------------------------------------------------
 
-
-    public Type getType()
+    public boolean hasLabel()
     {
-        return this._type;
+        return this.label != null;
     }
 
 
     public String getName()
     {
-        return this.component.getName();
+        return this.name;
     }
 
 
-    public View getView(Context context)
+    /**
+     * Create the view for the component label.
+     * @param context The context.
+     * @return A TextView representing the component's label.
+     */
+    public TextView labelView(Context context)
     {
-        return this.component.getView(context);
+        TextView textView = new TextView(context);
+        textView.setId(R.id.component_label);
+
+        float labelTextSize = (int) context.getResources()
+                                         .getDimension(R.dimen.label_text_size);
+        textView.setTextSize(labelTextSize);
+
+        textView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
+
+        textView.setTypeface(null, Typeface.BOLD);
+
+        int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
+        textView.setPadding(padding, 0, 0, 0);
+
+        textView.setText(this.label.toUpperCase());
+
+        return textView;
     }
 
 
+    // > STATIC METHODS
+    // ------------------------------------------------------------------------------------------
 
+    public static Component fromYaml(Map<String, Object> componentYaml)
+    {
+        String componentType = (String) componentYaml.get("type");
+
+        switch (componentType)
+        {
+            case "text":
+                return Text.fromYaml(componentYaml);
+            case "image":
+                return Image.fromYaml(componentYaml);
+            case "integer":
+                return NumberInteger.fromYaml(componentYaml);
+            case "document":
+                return Document.fromYaml(componentYaml);
+            case "table":
+                return Table.fromYaml(componentYaml);
+        }
+
+        return null;
+    }
 
 
     public static LinearLayout linearLayout(Context context)
@@ -109,13 +124,23 @@ public class Component implements Serializable
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                               LinearLayout.LayoutParams.WRAP_CONTENT);
         layout.setLayoutParams(linearLayoutParams);
+
         return layout;
     }
 
 
-    // > INTERNAL
-    // ------------------------------------------------------------------------------------------
+    public enum TextSize
+    {
+        SMALL,
+        MEDIUM,
+        LARGE;
 
+
+        public static TextSize fromString(String textSize)
+        {
+            return TextSize.valueOf(textSize.toUpperCase());
+        }
+    }
 
 
 }

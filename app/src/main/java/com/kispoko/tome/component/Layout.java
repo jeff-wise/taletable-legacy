@@ -99,9 +99,9 @@ public class Layout implements Serializable
     public static class Frame implements Serializable
     {
         private String componentName;
-        private int width;
+        private double width;
 
-        public Frame(String componentName, int width)
+        public Frame(String componentName, double width)
         {
             this.componentName = componentName;
             this.width = width;
@@ -110,7 +110,7 @@ public class Layout implements Serializable
         public static Frame fromYaml(Map<String,Object> frameYaml)
         {
             String componentName = (String) frameYaml.get("name");
-            int width = (int) frameYaml.get("width");
+            double width = (double) frameYaml.get("width");
 
             return new Frame(componentName, width);
         }
@@ -120,7 +120,7 @@ public class Layout implements Serializable
             return this.componentName;
         }
 
-        public int getWidth()
+        public double getWidth()
         {
             return this.width;
         }

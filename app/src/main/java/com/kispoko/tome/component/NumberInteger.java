@@ -1,7 +1,10 @@
+
 package com.kispoko.tome.component;
+
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
@@ -12,10 +15,11 @@ import java.io.Serializable;
 import java.util.Map;
 
 
+
 /**
  * NumberInteger Component
  */
-public class NumberInteger implements Serializable, ComponentI
+public class NumberInteger extends Component implements Serializable
 {
 
     // > PROPERTIES
@@ -31,16 +35,14 @@ public class NumberInteger implements Serializable, ComponentI
 
     public NumberInteger(String name)
     {
-        this.name = name;
-        this.value = null;
+        super(name);
         this.label = null;
     }
 
 
     public NumberInteger(String name, String label)
     {
-        this.name = name;
-        this.label = label;
+        super(name, label);
         this.value = null;
     }
 
@@ -76,11 +78,6 @@ public class NumberInteger implements Serializable, ComponentI
     // > API
     // ------------------------------------------------------------------------------------------
 
-    public String getName()
-    {
-        return this.name;
-    }
-
 
     public void setValue(Integer value)
     {
@@ -92,10 +89,8 @@ public class NumberInteger implements Serializable, ComponentI
     {
         EditText editText = new EditText(context);
 
-        editText.setId(R.id.text_component_edit_text);
-
         float textSize = (int) context.getResources()
-                                      .getDimension(R.dimen.text_component_text_size);
+                                      .getDimension(R.dimen.comp_text_text_size_medium);
         editText.setTextSize(textSize);
 
         editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -103,6 +98,7 @@ public class NumberInteger implements Serializable, ComponentI
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
         editText.setTypeface(font);
+        editText.setTextColor(ContextCompat.getColor(context, R.color.text));
 
         if (this.value != null)
             editText.setText(Integer.toString(this.value));

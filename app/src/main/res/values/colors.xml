@@ -18,6 +18,31 @@
     <color name="theme_gray_500">#607d8b</color>
 
 
+    <!-- NEW -->
+    <!-- GENERAL -->
+    <color name="primary">#263238</color>
+    <color name="paper">#eceff1</color>
+    <color name="text">#494949</color>
+    <color name="paper_dark">#EAEAEA</color>
+
+    <!-- TEXT COLORS -->
+    <color name="text_medium">#555555</color>
+
+    <!-- MATERIAL DESIGN COLORS -->
+    <color name="bluegrey_50">#eceff1</color>
+    <color name="bluegrey_100">#cfd8dc</color>
+    <color name="bluegrey_200">#b0bec5</color>
+    <color name="bluegrey_300">#90a4ae</color>
+    <color name="bluegrey_400">#78909C</color>
+    <color name="bluegrey_600">#546e7a</color>
+    <color name="bluegrey_700">#455a64</color>
+
+    <color name="grey_100">#f5f5f5</color>
+    <color name="grey_800">#424242</color>
+
+    <!-- SPECIFIC -->
+
+
 
     <!-- BOTTOM NAVIGATION -->
     <!-- TABS -->

@@ -4,7 +4,9 @@ package com.kispoko.tome.component;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -17,7 +19,7 @@ import java.util.Map;
 /**
  * Text
  */
-public class Text implements Serializable, ComponentI
+public class Text extends Component implements Serializable
 {
 
     // > PROPERTIES
@@ -27,31 +29,25 @@ public class Text implements Serializable, ComponentI
     private String value;
     private String label;
 
+    private TextSize textSize;
+
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Text(String name)
+    public Text(String name, TextSize textSize)
     {
-        this.name = name;
+        super(name);
+        this.textSize = textSize;
         this.value = "";
-        this.label = null;
     }
 
 
-    public Text(String name, String value)
+    public Text(String name, TextSize textSize, String label)
     {
-        this.name = name;
-        this.value = value;
-        this.label = null;
-    }
-
-
-    public Text(String name, String value, String label)
-    {
-        this.name = name;
-        this.value = value;
-        this.label = label;
+        super(name, label);
+        this.textSize = textSize;
+        this.value = "";
     }
 
 
@@ -65,6 +61,8 @@ public class Text implements Serializable, ComponentI
         if (textYaml.containsKey("label"))
             label = (String) textYaml.get("label");
 
+        TextSize textSize = Component.TextSize.fromString((String) textYaml.get("size"));
+
         Map<String, Object> dataYaml = (Map<String, Object>) textYaml.get("data");
 
         String value = null;
@@ -72,10 +70,10 @@ public class Text implements Serializable, ComponentI
             value = (String) dataYaml.get("value");
 
         Text newText;
-        if (label != null)
-            newText = new Text(name, label);
+        if (label == null)
+            newText = new Text(name, textSize);
         else
-            newText = new Text(name);
+            newText = new Text(name, textSize, label);
 
         if (value != null)
             newText.setValue(value);
@@ -88,15 +86,15 @@ public class Text implements Serializable, ComponentI
     // ------------------------------------------------------------------------------------------
 
 
-    public String getName()
-    {
-        return this.name;
-    }
-
-
     public void setValue(String value)
     {
         this.value = value;
+    }
+
+
+    public void setTextSize(TextSize textSize)
+    {
+        this.textSize = textSize;
     }
 
 
@@ -104,10 +102,21 @@ public class Text implements Serializable, ComponentI
     {
         EditText editText = new EditText(context);
 
-        editText.setId(R.id.text_component_edit_text);
-
-        float textSize = (int) context.getResources()
-                                      .getDimension(R.dimen.text_component_text_size);
+        float textSize = 0;
+        switch (this.textSize) {
+            case SMALL:
+                textSize = context.getResources()
+                                  .getDimension(R.dimen.comp_text_text_size_small);
+                break;
+            case MEDIUM:
+                textSize = context.getResources()
+                                  .getDimension(R.dimen.comp_text_text_size_medium);
+                break;
+            case LARGE:
+                textSize = context.getResources()
+                                  .getDimension(R.dimen.comp_text_text_size_large);
+                break;
+        }
         editText.setTextSize(textSize);
 
         editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -115,6 +124,7 @@ public class Text implements Serializable, ComponentI
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
         editText.setTypeface(font);
+        editText.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
         editText.setText(this.value);
 

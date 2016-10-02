@@ -8,9 +8,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 
+import com.kispoko.tome.ChooseImageAction;
 import com.kispoko.tome.R;
+import com.kispoko.tome.component.Image;
 import com.kispoko.tome.sheet.Profile;
 
 
@@ -121,6 +124,6 @@ public class ProfileFragment extends Fragment
     public interface EventListener
     {
         // TODO: Update argument type and name
-        void onProfileSelected();
+        void setChooseImageAction(ChooseImageAction chooseImageAction);
     }
 }

@@ -4,7 +4,9 @@ package com.kispoko.tome.component;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -17,7 +19,7 @@ import java.util.Map;
 /**
  * Document Component
  */
-public class Document implements Serializable, ComponentI
+public class Document extends Component implements Serializable
 {
 
     // > PROPERTIES
@@ -33,16 +35,14 @@ public class Document implements Serializable, ComponentI
 
     public Document(String name)
     {
-        this.name = name;
+        super(name);
         this.value = "";
-        this.label = null;
     }
 
 
     public Document(String name, String label)
     {
-        this.name = name;
-        this.label = label;
+        super(name, label);
         this.value = "";
     }
 
@@ -85,17 +85,9 @@ public class Document implements Serializable, ComponentI
     }
 
 
-    public String getName()
-    {
-        return this.name;
-    }
-
-
     public View getView(Context context)
     {
         EditText editText = new EditText(context);
-
-        editText.setId(R.id.document_component_edit_text);
 
         float textSize = (int) context.getResources()
                                       .getDimension(R.dimen.document_component_text_size);
@@ -106,6 +98,7 @@ public class Document implements Serializable, ComponentI
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
         editText.setTypeface(font);
+        editText.setTextColor(ContextCompat.getColor(context, R.color.text));
 
         editText.setText(this.value);
 

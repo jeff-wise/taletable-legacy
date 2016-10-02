@@ -7,6 +7,7 @@ sections:
       - name: Name
         components:
         - type: text
+          size: large
           name: Name
           data:
             value: Hildebrand
@@ -14,34 +15,116 @@ sections:
         components:
         - type: image
           name: Picture
-      - name: Class and Level
+      - name: Features
         components:
         - type: integer
           name: Level
+          size: medium
+          label: Level
           data:
             value: 17
         - type: text
           name: Class
+          size: medium
+          label: Class
           data:
             value: Wizard
+        - type: text
+          name: Race
+          size: medium
+          label: Race
+          data:
+            value: Human
+        - type: text
+          name: Alignment
+          size: medium
+          label: Alignment
+          data:
+            value: Lawful Good
         layout:
           rows:
           - frames:
             - name: Level
-              width: 25
+              width: 0.3
             - name: Class
-              width: 75
+              width: 0.7
+          - frames:
+            - name: Race
+              width: 0.5
+            - name: Alignment
+              width: 0.5
+        layout:
+          rows:
+          - frames:
+            - name: Level
+              width: 0.3
+            - name: Class
+              width: 0.7
       - name: Characteristics
         components:
-        - type: document
+        - type: table
           name: Personality Traits
-          label: Personality Traits
-        - type: document
+          columns:
+          - Personality Traits
+          data:
+            rows:
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand is very confident.
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand is incredibly handsome.
+        - type: table
           name: Ideals
-          label: Ideals
-        - type: document
+          columns:
+          - Ideals
+          data:
+            rows:
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand believes that the greater good is an infinitely large
+                    composition of miniscule good actions that form a lattice of integrity
+                    that intertwines every creature of the land.
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand thinks that every person deserves a second chance.
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    He believes that the purpose of life is understanding the mysteries
+                    of the universe, and mastering of magic in order to further understanding.
+        - type: table
           name: Bonds
-          label: Bonds
-        - type: document
+          columns:
+          - Bonds
+          data:
+            rows:
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand has a special bond with Jade and often accompanies her on
+                    missions in order to pursue great research opportunities.
+        - type: table
           name: Flaws
-          label: Flaws
+          columns:
+          - Flaws
+          data:
+            rows:
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand is occasionally possessed by a familiar demon that causes him to
+                    behave chaotically and maliciously
+
+

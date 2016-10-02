@@ -5,11 +5,13 @@ package com.kispoko.tome.component;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.util.UI;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ public class Group implements Serializable
         componentByName = new HashMap<>();
         for (Component component : this.components)
         {
+            //Log.d("coffee", "indexed component " + component.getName());
             componentByName.put(component.getName(), component);
         }
     }
@@ -63,6 +66,9 @@ public class Group implements Serializable
         ArrayList<Object> componentsYaml = (ArrayList<Object>) groupYaml.get("components");
         for (Object componentYaml : componentsYaml) {
             Component component = Component.fromYaml((Map<String, Object>) componentYaml);
+
+            //Log.d("coffee", "component name " + component.getName());
+
             components.add(component);
         }
 
@@ -102,12 +108,32 @@ public class Group implements Serializable
         {
             LinearLayout rowLayout = new LinearLayout(context);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+            rowLayout.setLayoutParams(UI.linearLayoutParamsMatch());
+            int rowVertPadding = (int) context.getResources()
+                                              .getDimension(R.dimen.group_horz_margins);
+            rowLayout.setPadding(0, rowVertPadding, 0, 0);
 
             for (Layout.Frame frame : row.getFrames())
             {
+                LinearLayout frameLayout = new LinearLayout(context);
+                frameLayout.setOrientation(LinearLayout.VERTICAL);
+                LinearLayout.LayoutParams frameLayoutParams = UI.linearLayoutParamsWrap();
+                frameLayoutParams.width = 0;
+                frameLayoutParams.weight = (float) frame.getWidth();
+                frameLayout.setLayoutParams(frameLayoutParams);
+
                 Component component = this.componentByName.get(frame.getComponentName());
-                View frameView = component.getView(context);
-                rowLayout.addView(frameView);
+
+                // Add Component Label
+                if (component.hasLabel()) {
+                    frameLayout.addView(component.labelView(context));
+                }
+
+                // Add Component View
+                View componentView = component.getView(context);
+                frameLayout.addView(componentView);
+
+                rowLayout.addView(frameLayout);
             }
 
             groupLayout.addView(rowLayout);
@@ -129,12 +155,12 @@ public class Group implements Serializable
                                          .getDimension(R.dimen.label_text_size);
         textView.setTextSize(labelTextSize);
 
-        textView.setTextColor(ContextCompat.getColor(context, R.color.theme_gray_500));
+        textView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_600));
 
         textView.setTypeface(null, Typeface.BOLD);
 
         int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
-        textView.setPadding(padding, 0, padding, 0);
+        textView.setPadding(padding, 0, 0, 0);
 
         textView.setText(this.name.toUpperCase());
 

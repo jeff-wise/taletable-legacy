@@ -2,25 +2,27 @@
 package com.kispoko.tome;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.kispoko.tome.component.Image;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.fragment.roleplay.AbilitiesFragment;
 import com.kispoko.tome.fragment.roleplay.BackpackFragment;
 import com.kispoko.tome.fragment.roleplay.ProfileFragment;
-import com.kispoko.tome.fragment.roleplay.SpellbookFragment;
 import com.kispoko.tome.fragment.roleplay.StatsFragment;
 
 import org.yaml.snakeyaml.Yaml;
@@ -36,25 +38,27 @@ import java.util.Map;
  */
 public class MainActivity
        extends AppCompatActivity
-       implements NavigationView.OnNavigationItemSelectedListener,
-                  ProfileFragment.EventListener,
+       implements ProfileFragment.EventListener,
                   StatsFragment.EventListener,
                   AbilitiesFragment.EventListener,
-                  BackpackFragment.EventListener,
-                  SpellbookFragment.EventListener
+                  BackpackFragment.EventListener
 {
 
 
     // > PROPERTIES
     // -------------------------------------------------------------------------------------------
 
+    // >> Requests
+    public static final int CHOOSE_IMAGE_FROM_FILE = 0;
+
     // UI
     private Toolbar toolbar;
-    private AHBottomNavigation bottomNavigation;
-    private ViewPager rpPager;
+    private DrawerLayout drawerLayout;
 
     // Data
     private Sheet sheet;
+
+    private ChooseImageAction chooseImageAction;
 
 
     // > ACTIVITY EVENTS
@@ -68,12 +72,11 @@ public class MainActivity
 
         setContentView(R.layout.activity_main);
 
-        loadSheetFormat();
+        loadSheet();
 
         initializeToolbar();
         initializeDrawer();
-        initializeBottomNavigation();
-        initializePager();
+        initializeTabs();
     }
 
 
@@ -99,47 +102,37 @@ public class MainActivity
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case android.R.id.home:
+                this.drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_settings:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item)
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        if (resultCode != RESULT_OK) return;
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (requestCode == CHOOSE_IMAGE_FROM_FILE)
+        {
+            Uri uri = data.getData();
+            this.chooseImageAction.setImage(uri);
+            this.chooseImageAction = null;
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
+
 
 
     // > FRAGMENT EVENTS
@@ -149,10 +142,12 @@ public class MainActivity
     /**
      *
      */
-    public void onProfileSelected()
+    public void setChooseImageAction(ChooseImageAction chooseImageAction)
     {
-
+        this.chooseImageAction = chooseImageAction;
     }
+
+
 
     /**
      *
@@ -179,15 +174,6 @@ public class MainActivity
     }
 
 
-    /**
-     *
-     */
-    public void onSpellbookSelected()
-    {
-
-    }
-
-
     // > INTERNAL
     // -------------------------------------------------------------------------------------------
 
@@ -202,7 +188,10 @@ public class MainActivity
     private void initializeToolbar()
     {
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(this.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
 
@@ -211,118 +200,33 @@ public class MainActivity
      */
     private void initializeDrawer()
     {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, this.toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
 
     /**
-     * Initialize the bottom navigation UI components.
+     * Initialize the tabs
      */
-    private void initializeBottomNavigation()
+    private void initializeTabs()
     {
-        this.bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-
-        // (1) Create the tabs
-        // --------------------------------------------------------------------------------------
-        AHBottomNavigationItem profileTab   = new AHBottomNavigationItem(
-                                                    R.string.profile_tab,
-                                                    R.drawable.ic_profile_24dp,
-                                                    R.color.theme_primary );
-
-        AHBottomNavigationItem statsTab     = new AHBottomNavigationItem(
-                                                    R.string.stats_tab,
-                                                    R.drawable.ic_stats_24dp,
-                                                    R.color.theme_primary );
-
-        AHBottomNavigationItem abilitiesTab = new AHBottomNavigationItem(
-                                                    R.string.abilities_tab,
-                                                    R.drawable.ic_abilities_24dp,
-                                                    R.color.theme_primary );
-
-        AHBottomNavigationItem backpackTab = new AHBottomNavigationItem(
-                                                    R.string.backpack_tab,
-                                                    R.drawable.ic_backpack_24dp,
-                                                    R.color.theme_primary );
-
-        AHBottomNavigationItem spellbookTab = new AHBottomNavigationItem(
-                                                    R.string.spellbook_tab,
-                                                    R.drawable.ic_spellbook_24dp,
-                                                    R.color.theme_primary );
-
-        // (2) Add the tabs to bottom navigation bar
-        // --------------------------------------------------------------------------------------
-        this.bottomNavigation.addItem(profileTab);
-        this.bottomNavigation.addItem(statsTab);
-        this.bottomNavigation.addItem(abilitiesTab);
-        this.bottomNavigation.addItem(backpackTab);
-        this.bottomNavigation.addItem(spellbookTab);
-
-        // (3) Navigation bar configuration
-        // --------------------------------------------------------------------------------------
-        this.bottomNavigation.setDefaultBackgroundColor(
-                ContextCompat.getColor(this, R.color.theme_primary));
-        this.bottomNavigation.setAccentColor(ContextCompat.getColor(this, R.color.tab_accent));
-        this.bottomNavigation.setInactiveColor(ContextCompat.getColor(this, R.color.tab_inactive));
-        this.bottomNavigation.setForceTint(true);
-        this.bottomNavigation.setCurrentItem(0);
-
-        //this.bottomNavigation.setBehaviorTranslationEnabled(false);
-
-        // Set view pager page to match tab selection
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                rpPager.setCurrentItem(position);
-                return true;
-            }
-        });
-    }
-
-
-    private void initializePager()
-    {
-        this.rpPager = (ViewPager) findViewById(R.id.roleplay_pager);
-        RoleplayPagerAdapter rpPagerAdapter =
+        RoleplayPagerAdapter roleplayPagerAdapter =
                 new RoleplayPagerAdapter(getSupportFragmentManager(), this.sheet);
-        this.rpPager.setAdapter(rpPagerAdapter);
-        this.rpPager.setOffscreenPageLimit(5);
-        // Attach the page change listener inside the activity
-        this.rpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
-            // This method will be invoked when a new page becomes selected.
-            @Override
-            public void onPageSelected(int position) {
-                bottomNavigation.setCurrentItem(position);
-            }
+        ViewPager viewPager = (ViewPager) findViewById(R.id.roleplay_pager);
+        viewPager.setAdapter(roleplayPagerAdapter);
 
-            // Called when the scroll state changes:
-            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                // Code goes here
-            }
-
-            // This method will be invoked when the current page is scrolled
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // Code goes here
-            }
-        });
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
     }
+
 
     // >> Data
     // -------------------------------------------------------------------------------------------
 
-    private void loadSheetFormat()
+    /**
+     * Load a sheet from a yaml file.
+     */
+    private void loadSheet()
     {
         try {
             InputStream yamlIS = this.getAssets().open("sheet/dnd_ed_5.yaml");
