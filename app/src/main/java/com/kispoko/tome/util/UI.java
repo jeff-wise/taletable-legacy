@@ -2,7 +2,10 @@
 package com.kispoko.tome.util;
 
 
+import android.content.Context;
 import android.widget.LinearLayout;
+
+import com.kispoko.tome.R;
 
 /**
  * Helpers for verbose UI code.
@@ -22,4 +25,9 @@ public class UI
                                              LinearLayout.LayoutParams.MATCH_PARENT);
     }
 
+
+    public static float getDim(Context context, int id)
+    {
+        return context.getResources().getDimension(id);
+    }
 }

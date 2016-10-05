@@ -9,6 +9,8 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.kispoko.tome.R;
 
@@ -33,16 +35,16 @@ public class Document extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Document(String name)
+    public Document(String name, String typeName)
     {
-        super(name);
+        super(name, typeName);
         this.value = "";
     }
 
 
-    public Document(String name, String label)
+    public Document(String name, String typeName, String label)
     {
-        super(name, label);
+        super(name, typeName, label);
         this.value = "";
     }
 
@@ -64,9 +66,9 @@ public class Document extends Component implements Serializable
 
         Document newDocument;
         if (label != null)
-            newDocument = new Document(name, label);
+            newDocument = new Document(name, null, label);
         else
-            newDocument =  new Document(name);
+            newDocument =  new Document(name, null);
 
         if (value != null)
             newDocument.setValue(value);
@@ -85,24 +87,28 @@ public class Document extends Component implements Serializable
     }
 
 
-    public View getView(Context context)
+    public View getDisplayView(Context context)
     {
-        EditText editText = new EditText(context);
+        TextView textView = new TextView(context);
 
         float textSize = (int) context.getResources()
                                       .getDimension(R.dimen.document_component_text_size);
-        editText.setTextSize(textSize);
-
-        editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        textView.setTextSize(textSize);
 
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
-        editText.setTypeface(font);
-        editText.setTextColor(ContextCompat.getColor(context, R.color.text));
+        textView.setTypeface(font);
+        textView.setTextColor(ContextCompat.getColor(context, R.color.text));
 
-        editText.setText(this.value);
+        textView.setText(this.value);
 
-        return editText;
+        return textView;
+    }
+
+
+    public View getEditorView(Context context)
+    {
+        return new LinearLayout(context);
     }
 
 }

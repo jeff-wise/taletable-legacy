@@ -8,4 +8,7 @@
     <item name="document_component_edit_text" type="id"/>
 
 
+    <item name="type_list_item_name" type="id"/>
+
+
 </resources>

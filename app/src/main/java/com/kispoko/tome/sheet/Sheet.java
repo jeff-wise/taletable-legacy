@@ -2,9 +2,12 @@
 package com.kispoko.tome.sheet;
 
 
-import java.util.ArrayList;
-import java.util.Map;
+import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.type.Type;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -24,6 +27,8 @@ public class Sheet
     private Roleplay roleplay;
 
 
+
+
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
@@ -39,6 +44,17 @@ public class Sheet
     {
         // Sheet name
         String name = (String) sheetYaml.get("name");
+
+        // Types
+        ArrayList<Map<String,Object>> typesYaml =
+                (ArrayList<Map<String,Object>>) sheetYaml.get("types");
+        ArrayList<Type> types = new ArrayList<>();
+        for (Map<String,Object> typeYaml : typesYaml)
+        {
+            Type typ = Type.fromYaml(typeYaml);
+            types.add(typ);
+        }
+        RulesEngine.addTypes(types);
 
         // Sheet sections
         Map<String,Object> sections = (Map<String,Object>) sheetYaml.get("sections");
@@ -62,5 +78,6 @@ public class Sheet
     {
         return this.roleplay;
     }
+
 
 }

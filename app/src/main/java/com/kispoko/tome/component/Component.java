@@ -10,16 +10,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.type.Type;
 
+import java.io.Serializable;
 import java.util.Map;
-
 
 
 /**
  * Component
  *
  */
-public abstract class Component
+public abstract class Component implements Serializable
 {
 
     // > PROPERTIES
@@ -27,27 +29,31 @@ public abstract class Component
 
     private String name;
     private String label;
+    private String typeName;
 
 
     // > INTERFACE
     // ------------------------------------------------------------------------------------------
 
-    abstract public View getView(Context context);
+    abstract public View getDisplayView(Context context);
+    abstract public View getEditorView(Context context);
 
 
     // > SHARED METHODS
     // ------------------------------------------------------------------------------------------
 
-    public Component(String name)
+    public Component(String name, String typeName)
     {
         this.name = name;
+        this.typeName = typeName;
         this.label = null;
     }
 
 
-    public Component(String name, String label)
+    public Component(String name, String typeName, String label)
     {
         this.name = name;
+        this.typeName = typeName;
         this.label = label;
     }
 
@@ -61,6 +67,31 @@ public abstract class Component
     public String getName()
     {
         return this.name;
+    }
+
+
+    public String getLabel()
+    {
+        return this.label;
+    }
+
+    public String getTypeName()
+    {
+        return this.typeName;
+    }
+
+    public boolean hasType()
+    {
+        return this.typeName != null;
+    }
+
+    public Type getType()
+    {
+        // TODO verify
+        if (this.typeName != null)
+            return RulesEngine.getType(this.typeName);
+        else
+            return null;
     }
 
 
@@ -81,9 +112,6 @@ public abstract class Component
         textView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
 
         textView.setTypeface(null, Typeface.BOLD);
-
-        int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
-        textView.setPadding(padding, 0, 0, 0);
 
         textView.setText(this.label.toUpperCase());
 
@@ -127,6 +155,8 @@ public abstract class Component
 
         return layout;
     }
+
+
 
 
     public enum TextSize

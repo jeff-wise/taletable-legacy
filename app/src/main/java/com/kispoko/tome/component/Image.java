@@ -37,9 +37,9 @@ public class Image extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Image(String name)
+    public Image(String name, String typeName)
     {
-        super(name);
+        super(name, typeName);
     }
 
 
@@ -49,7 +49,7 @@ public class Image extends Component implements Serializable
 
         String name = (String) imageYaml.get("name");
 
-        return new Image(name);
+        return new Image(name, null);
     }
 
 
@@ -64,7 +64,7 @@ public class Image extends Component implements Serializable
      * @param context
      * @return
      */
-    public View getView(final Context context)
+    public View getDisplayView(final Context context)
     {
         // Layout
         LinearLayout imageLayout = Component.linearLayout(context);
@@ -115,6 +115,12 @@ public class Image extends Component implements Serializable
         imageLayout.addView(chooseImageButton);
 
         return imageLayout;
+    }
+
+
+    public View getEditorView(Context context)
+    {
+        return new LinearLayout(context);
     }
 
 

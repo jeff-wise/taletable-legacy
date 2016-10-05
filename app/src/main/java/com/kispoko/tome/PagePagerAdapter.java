@@ -4,17 +4,10 @@ package com.kispoko.tome;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
 import com.kispoko.tome.fragment.roleplay.PageFragment;
-import com.kispoko.tome.sheet.Profile;
 import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.fragment.roleplay.AbilitiesFragment;
-import com.kispoko.tome.fragment.roleplay.BackpackFragment;
-import com.kispoko.tome.fragment.roleplay.ProfileFragment;
-import com.kispoko.tome.fragment.roleplay.StatsFragment;
 
 
 /**

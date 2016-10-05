@@ -103,6 +103,7 @@ public class Group implements Serializable
         groupLayout.setOrientation(LinearLayout.VERTICAL);
         groupLayout.setLayoutParams(mainLayoutParams);
 
+
         groupLayout.addView(this.labelView(context));
 
         for (Layout.Row row : this.layout.getRows())
@@ -110,9 +111,9 @@ public class Group implements Serializable
             LinearLayout rowLayout = new LinearLayout(context);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
             rowLayout.setLayoutParams(UI.linearLayoutParamsMatch());
-            int rowVertPadding = (int) context.getResources()
-                                              .getDimension(R.dimen.group_horz_margins);
-            rowLayout.setPadding(0, rowVertPadding, 0, 0);
+            int rowTopPadding = (int) context.getResources()
+                                              .getDimension(R.dimen.row_padding_top);
+            rowLayout.setPadding(0, rowTopPadding, 0, 0);
 
             for (Layout.Frame frame : row.getFrames())
             {
@@ -131,7 +132,7 @@ public class Group implements Serializable
                 }
 
                 // Add Component View
-                View componentView = component.getView(context);
+                View componentView = component.getDisplayView(context);
                 frameLayout.addView(componentView);
 
                 rowLayout.addView(frameLayout);
@@ -160,8 +161,8 @@ public class Group implements Serializable
 
         textView.setTypeface(null, Typeface.BOLD);
 
-        int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
-        textView.setPadding(padding, 0, 0, 0);
+//        int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
+//        textView.setPadding(padding, 0, 0, 0);
 
         textView.setText(this.name.toUpperCase());
 

@@ -15,7 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.kispoko.tome.component.Component;
 import com.kispoko.tome.fragment.roleplay.PageFragment;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.Sheet;
 
 import org.yaml.snakeyaml.Yaml;
@@ -48,6 +50,7 @@ public class MainActivity
 
     // Data
     private Sheet sheet;
+    private RulesEngine rulesEngine;
 
     private ChooseImageAction chooseImageAction;
 
@@ -62,6 +65,8 @@ public class MainActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        this.rulesEngine = new RulesEngine();
 
         loadSheet();
 
@@ -139,39 +144,22 @@ public class MainActivity
     }
 
 
-
     /**
-     *
+     * Open the Edit activity.
      */
-    public void onStatsSelected()
+    public void openEditActivity(Component component)
     {
-
-    }
-
-    /**
-     *
-     */
-    public void onAbilitiesSelected()
-    {
-
-    }
-
-    /**
-     *
-     */
-    public void onBackpackSelected()
-    {
-
+        Intent intent = new Intent(this, EditActivity.class);
+        intent.putExtra("COMPONENT", component);
+        startActivity(intent);
     }
 
 
     // > INTERNAL
     // -------------------------------------------------------------------------------------------
 
-
     // >> User Interface
     // -------------------------------------------------------------------------------------------
-
 
     /**
      * Initialize the toolbar UI components.

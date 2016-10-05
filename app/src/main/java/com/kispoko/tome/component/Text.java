@@ -5,15 +5,22 @@ package com.kispoko.tome.component;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.text.InputType;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.kispoko.tome.MainActivity;
 import com.kispoko.tome.R;
+import com.kispoko.tome.component.text.TextEditRecyclerViewAdapter;
+import com.kispoko.tome.type.List;
+import com.kispoko.tome.util.UI;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -25,27 +32,24 @@ public class Text extends Component implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String name;
     private String value;
-    private String label;
-
     private TextSize textSize;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Text(String name, TextSize textSize)
+    public Text(String name, String typeName, TextSize textSize)
     {
-        super(name);
+        super(name, typeName);
         this.textSize = textSize;
         this.value = "";
     }
 
 
-    public Text(String name, TextSize textSize, String label)
+    public Text(String name, String typeName, TextSize textSize, String label)
     {
-        super(name, label);
+        super(name, typeName, label);
         this.textSize = textSize;
         this.value = "";
     }
@@ -55,25 +59,39 @@ public class Text extends Component implements Serializable
     @SuppressWarnings("unchecked")
     public static Text fromYaml(Map<String, Object> textYaml)
     {
+        // Parse Values
+        // >> Name
         String name = (String) textYaml.get("name");
 
+        // >> Label
         String label = null;
         if (textYaml.containsKey("label"))
             label = (String) textYaml.get("label");
 
+        // >> Text Size
         TextSize textSize = Component.TextSize.fromString((String) textYaml.get("size"));
 
+        String value = null;
+        String typeName = null;
         Map<String, Object> dataYaml = (Map<String, Object>) textYaml.get("data");
 
-        String value = null;
-        if (dataYaml != null && dataYaml.containsKey("value"))
-            value = (String) dataYaml.get("value");
+        if (dataYaml != null)
+        {
+            // >> Value
+            if (dataYaml.containsKey("value"))
+                value = (String) dataYaml.get("value");
 
+            // >> Type
+            if (dataYaml.containsKey("type"))
+                typeName = (String) dataYaml.get("type");
+        }
+
+        // Create New Text
         Text newText;
         if (label == null)
-            newText = new Text(name, textSize);
+            newText = new Text(name, typeName, textSize);
         else
-            newText = new Text(name, textSize, label);
+            newText = new Text(name, typeName, textSize, label);
 
         if (value != null)
             newText.setValue(value);
@@ -92,43 +110,130 @@ public class Text extends Component implements Serializable
     }
 
 
-    public void setTextSize(TextSize textSize)
+    public String getValue()
     {
-        this.textSize = textSize;
+        return this.value;
     }
 
 
-    public View getView(Context context)
+
+    // >> Views
+    // ------------------------------------------------------------------------------------------
+
+    public View getDisplayView(Context context)
     {
-        EditText editText = new EditText(context);
+        TextView textView = new TextView(context);
 
-        float textSize = 0;
-        switch (this.textSize) {
-            case SMALL:
-                textSize = context.getResources()
-                                  .getDimension(R.dimen.comp_text_text_size_small);
-                break;
-            case MEDIUM:
-                textSize = context.getResources()
-                                  .getDimension(R.dimen.comp_text_text_size_medium);
-                break;
-            case LARGE:
-                textSize = context.getResources()
-                                  .getDimension(R.dimen.comp_text_text_size_large);
-                break;
-        }
-        editText.setTextSize(textSize);
-
-        editText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        textView.setTextSize(Util.getTextSizeSP(context, this.textSize));
 
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
-        editText.setTypeface(font);
-        editText.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+        textView.setTypeface(font);
+        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-        editText.setText(this.value);
+        textView.setText(this.value);
 
-        return editText;
+        final Text thisText = this;
+
+        final MainActivity mainActivity = (MainActivity) context;
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainActivity.openEditActivity(thisText);
+            }
+        });
+
+        return textView;
+    }
+
+
+    public View getEditorView(Context context)
+    {
+        // Lookup the recyclerview in activity layout
+        RecyclerView textEditorView = new RecyclerView(context);
+        textEditorView.setLayoutParams(UI.linearLayoutParamsMatch());
+
+
+        // Create adapter passing in the sample user data
+        // TODO verify type
+        TextEditRecyclerViewAdapter adapter =
+                new TextEditRecyclerViewAdapter(this, (List) this.getType());
+        // Attach the adapter to the recyclerview to populate items
+        textEditorView.setAdapter(adapter);
+        // Set layout manager to position the items
+        textEditorView.setLayoutManager(new LinearLayoutManager(context));
+
+        return textEditorView;
+    }
+
+
+    /**
+     * Return a view of the header for the text editor view.
+     * @param context The parent context object.
+     * @return A View represent the text editing header.
+     */
+    public View getEditorHeaderView(Context context)
+    {
+        // Header Layout
+        LinearLayout headerLayout = new LinearLayout(context);
+        headerLayout.setOrientation(LinearLayout.VERTICAL);
+        int headerHorzPadding = (int) UI.getDim(context,
+                                                R.dimen.comp_text_editor_header_horz_padding);
+        int headerTopPadding = (int) UI.getDim(context,
+                                               R.dimen.comp_text_editor_header_top_padding);
+        LinearLayout.LayoutParams fieldLayoutParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                              LinearLayout.LayoutParams.WRAP_CONTENT);
+        headerLayout.setPadding(headerHorzPadding, headerTopPadding, headerHorzPadding, 0);
+        headerLayout.setLayoutParams(fieldLayoutParams);
+        headerLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.bluegrey_900));
+
+        Typeface font = Typeface.createFromAsset(context.getAssets(),
+                                                 "fonts/DavidLibre-Regular.ttf");
+
+        // >> Title
+        TextView titleView = new TextView(context);
+        titleView.setText("VALUE");
+        float titleTextSize = UI.getDim(context, R.dimen.comp_text_editor_title_text_size);
+        titleView.setTextSize(titleTextSize);
+        titleView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
+        //titleView.setTypeface(font);
+        titleView.setTypeface(null, Typeface.BOLD);
+
+        headerLayout.addView(titleView);
+
+        // >> Value
+        TextView valueView = new TextView(context);
+
+        float valueTextSize = UI.getDim(context, R.dimen.comp_text_editor_value_text_size);
+        valueView.setTextSize(valueTextSize);
+        valueView.setText(this.getValue());
+        valueView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_100));
+        valueView.setTypeface(font);
+
+        headerLayout.addView(valueView);
+
+        // >> Type Title
+        TextView typeTitleView = new TextView(context);
+        String typeTitle = "SELECT " + this.getLabel().toUpperCase();
+        typeTitleView.setText(typeTitle);
+        float typeTitleTextSize = UI.getDim(context, R.dimen.comp_text_editor_type_title_text_size);
+        typeTitleView.setTextSize(typeTitleTextSize);
+        typeTitleView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
+        typeTitleView.setTypeface(null, Typeface.BOLD);
+
+        int typeTitleLeftPadding = (int) UI.getDim(context,
+                R.                                 dimen.comp_text_editor_type_title_left_padding);
+        int typeTitleTopPadding = (int) UI.getDim(context,
+                                                  R.dimen.comp_text_editor_type_title_top_padding);
+        int typeTitleBottomPadding = (int) UI.getDim(context,
+                                               R.dimen.comp_text_editor_type_title_bottom_padding);
+        typeTitleView.setPadding(typeTitleLeftPadding, typeTitleTopPadding,
+                                 0, typeTitleBottomPadding);
+
+        headerLayout.addView(typeTitleView);
+
+        return headerLayout;
     }
 
 }

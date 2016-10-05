@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -36,9 +37,9 @@ public class Table extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Table(String name, ArrayList<String> columnNames, ArrayList<Row> rows)
+    public Table(String name, String typeName, ArrayList<String> columnNames, ArrayList<Row> rows)
     {
-        super(name);
+        super(name, typeName);
         this.columnNames = columnNames;
         this.rows = rows;
     }
@@ -73,7 +74,7 @@ public class Table extends Component implements Serializable
             rows.add(new Row(cells));
         }
 
-        return new Table(name, columnNames, rows);
+        return new Table(name, null, columnNames, rows);
     }
 
 
@@ -85,7 +86,7 @@ public class Table extends Component implements Serializable
      * @param context
      * @return
      */
-    public View getView(Context context)
+    public View getDisplayView(Context context)
     {
         TableLayout tableLayout = new TableLayout(context);
 
@@ -105,7 +106,7 @@ public class Table extends Component implements Serializable
 
             for (Cell cell : row.getCells())
             {
-                EditText cellView = this.textCell(context, cell.getValue());
+                TextView cellView = this.textCell(context, cell.getValue());
                 tableRow.addView(cellView);
             }
 
@@ -114,6 +115,13 @@ public class Table extends Component implements Serializable
 
         return tableLayout;
     }
+
+
+    public View getEditorView(Context context)
+    {
+        return new LinearLayout(context);
+    }
+
 
 
     // > INTERNAL
@@ -128,9 +136,9 @@ public class Table extends Component implements Serializable
     }
 
 
-    private EditText textCell(Context context, String value)
+    private TextView textCell(Context context, String value)
     {
-        EditText editText = new EditText(context);
+        TextView textView = new TextView(context);
 
         //editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
         //editText.setMaxWidth(300);
@@ -144,22 +152,22 @@ public class Table extends Component implements Serializable
 
         int cellPadding = (int) context.getResources()
                                        .getDimension(R.dimen.comp_table_cell_padding);
-        editText.setPadding(cellPadding, cellPadding, cellPadding, cellPadding);
+        textView.setPadding(0, cellPadding, 0, cellPadding);
 
-        editText.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
         float editTextSize = (int) context.getResources()
                                           .getDimension(R.dimen.comp_table_text_cell_text_size);
-        editText.setTextSize(editTextSize);
+        textView.setTextSize(editTextSize);
 
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
-        editText.setTypeface(font);
+        textView.setTypeface(font);
 
         if (value != null)
-            editText.setText(value);
+            textView.setText(value);
 
-        return editText;
+        return textView;
     }
 
 
@@ -180,8 +188,8 @@ public class Table extends Component implements Serializable
 
             headerText.setTypeface(null, Typeface.BOLD);
 
-            int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
-            headerText.setPadding(padding, 0, 0, 0);
+//            int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
+//            headerText.setPadding(padding, 0, 0, 0);
 
             headerText.setText(columnName.toUpperCase());
 

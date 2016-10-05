@@ -5,8 +5,10 @@
     <string name="load_sheet">Load Sheet</string>
 
 
-
     <string name="app_name">Tome</string>
+
+    <string name="action_done">Done</string>
+    <string name="action_cancel">Cancel</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

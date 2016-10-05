@@ -5,14 +5,13 @@ package com.kispoko.tome.fragment.roleplay;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 
 import com.kispoko.tome.ChooseImageAction;
-import com.kispoko.tome.R;
+import com.kispoko.tome.component.Component;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.util.UI;
 
@@ -110,6 +109,7 @@ public class PageFragment extends Fragment
     public interface EventListener
     {
         void setChooseImageAction(ChooseImageAction chooseImageAction);
+        void openEditActivity(Component component);
     }
 
 }
