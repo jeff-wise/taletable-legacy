@@ -9,6 +9,7 @@
 
 
     <item name="type_list_item_name" type="id"/>
+    <item name="type_list_item_icon" type="id"/>
 
 
 </resources>

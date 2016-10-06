@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,11 +27,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 
+import static com.kispoko.tome.EditResult.ResultType.TEXT_VALUE;
 
 
 /**
  * The main activity for the application.
- * All of the main UI components are constructed and maintained here.
+ * All of the main Util components are constructed and maintained here.
  */
 public class MainActivity
        extends AppCompatActivity
@@ -43,8 +45,9 @@ public class MainActivity
 
     // >> Requests
     public static final int CHOOSE_IMAGE_FROM_FILE = 0;
+    public static final int EDIT_COMPONENT = 1;
 
-    // UI
+    // Util
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
 
@@ -119,13 +122,22 @@ public class MainActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        // Skip Errors // TODO
         if (resultCode != RESULT_OK) return;
 
+        // Process Chosen Image
         if (requestCode == CHOOSE_IMAGE_FROM_FILE)
         {
             Uri uri = data.getData();
             this.chooseImageAction.setImage(uri);
             this.chooseImageAction = null;
+        }
+
+        // Update component with new values
+        else if (requestCode == EDIT_COMPONENT)
+        {
+            EditResult editResult = (EditResult) data.getExtras().getSerializable("RESULT");
+            editResult.applyResult(this, this.sheet);
         }
     }
 
@@ -151,7 +163,7 @@ public class MainActivity
     {
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("COMPONENT", component);
-        startActivity(intent);
+        startActivityForResult(intent, EDIT_COMPONENT);
     }
 
 
@@ -162,7 +174,7 @@ public class MainActivity
     // -------------------------------------------------------------------------------------------
 
     /**
-     * Initialize the toolbar UI components.
+     * Initialize the toolbar Util components.
      */
     private void initializeToolbar()
     {
@@ -175,7 +187,7 @@ public class MainActivity
 
 
     /**
-     * Initialize the drawer UI components.
+     * Initialize the drawer Util components.
      */
     private void initializeDrawer()
     {

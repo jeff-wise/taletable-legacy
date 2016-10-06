@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.ChooseImageAction;
 import com.kispoko.tome.MainActivity;
 import com.kispoko.tome.R;
-import com.kispoko.tome.util.UI;
+import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -69,7 +69,7 @@ public class Image extends Component implements Serializable
         // Layout
         LinearLayout imageLayout = Component.linearLayout(context);
         imageLayout.setGravity(Gravity.CENTER);
-        imageLayout.setLayoutParams(UI.linearLayoutParamsMatch());
+        imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
 
         // Views
         final ImageView imageView = this.imageView(context);
@@ -135,7 +135,7 @@ public class Image extends Component implements Serializable
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setAdjustViewBounds(true);
 
-        LinearLayout.LayoutParams imageViewLayoutParams = UI.linearLayoutParamsWrap();
+        LinearLayout.LayoutParams imageViewLayoutParams = Util.linearLayoutParamsWrap();
         int imageViewHeight = (int) context.getResources()
                 .getDimension(R.dimen.comp_image_image_height);
         imageViewLayoutParams.height = imageViewHeight;
@@ -170,7 +170,7 @@ public class Image extends Component implements Serializable
         button.setCompoundDrawablePadding(buttonIconPadding);
 
         // Configure button layout params
-        LinearLayout.LayoutParams buttonLayoutParams = UI.linearLayoutParamsWrap();
+        LinearLayout.LayoutParams buttonLayoutParams = Util.linearLayoutParamsWrap();
 
         // >> Button margins
         int buttonVertMargins = (int) context.getResources()

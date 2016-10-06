@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.component.Component;
 import com.kispoko.tome.component.Layout;
-import com.kispoko.tome.util.UI;
+import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -88,6 +88,19 @@ public class Group implements Serializable
     // > API
     // ------------------------------------------------------------------------------------------
 
+    public Component getComponent(String name)
+    {
+        return this.componentByName.get(name);
+    }
+
+
+    public ArrayList<Component> getComponents()
+    {
+        return this.components;
+    }
+
+
+
     public View getView(Context context)
     {
         LinearLayout groupLayout = new LinearLayout(context);
@@ -110,7 +123,7 @@ public class Group implements Serializable
         {
             LinearLayout rowLayout = new LinearLayout(context);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-            rowLayout.setLayoutParams(UI.linearLayoutParamsMatch());
+            rowLayout.setLayoutParams(Util.linearLayoutParamsMatch());
             int rowTopPadding = (int) context.getResources()
                                               .getDimension(R.dimen.row_padding_top);
             rowLayout.setPadding(0, rowTopPadding, 0, 0);
@@ -119,7 +132,7 @@ public class Group implements Serializable
             {
                 LinearLayout frameLayout = new LinearLayout(context);
                 frameLayout.setOrientation(LinearLayout.VERTICAL);
-                LinearLayout.LayoutParams frameLayoutParams = UI.linearLayoutParamsWrap();
+                LinearLayout.LayoutParams frameLayoutParams = Util.linearLayoutParamsWrap();
                 frameLayoutParams.width = 0;
                 frameLayoutParams.weight = (float) frame.getWidth();
                 frameLayout.setLayoutParams(frameLayoutParams);

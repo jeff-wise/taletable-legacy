@@ -97,7 +97,7 @@ public class EditActivity extends AppCompatActivity
     // -------------------------------------------------------------------------------------------
 
     /**
-     * Initialize the toolbar UI components.
+     * Initialize the toolbar Util components.
      */
     private void initializeToolbar()
     {

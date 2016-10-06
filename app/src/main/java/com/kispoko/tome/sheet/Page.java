@@ -73,6 +73,12 @@ public class Page implements Serializable
     }
 
 
+    public ArrayList<Group> getGroups()
+    {
+        return this.groups;
+    }
+
+
     /**
      * Returns an android view that represents this page.
      * @param context The parent activity context.

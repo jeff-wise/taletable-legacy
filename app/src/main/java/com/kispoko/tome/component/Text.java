@@ -2,6 +2,7 @@
 package com.kispoko.tome.component;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
@@ -15,7 +16,8 @@ import com.kispoko.tome.MainActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.component.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.type.List;
-import com.kispoko.tome.util.UI;
+import com.kispoko.tome.util.SimpleDividerItemDecoration;
+import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -34,6 +36,8 @@ public class Text extends Component implements Serializable
 
     private String value;
     private TextSize textSize;
+
+    private int displayTextViewId;
 
 
     // > CONSTRUCTORS
@@ -94,7 +98,7 @@ public class Text extends Component implements Serializable
             newText = new Text(name, typeName, textSize, label);
 
         if (value != null)
-            newText.setValue(value);
+            newText.setValue(value, null);
 
         return newText;
     }
@@ -104,9 +108,15 @@ public class Text extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public void setValue(String value)
+    public void setValue(String value, Context context)
     {
         this.value = value;
+
+        if (context != null) {
+            TextView textView = (TextView) ((Activity) context)
+                                    .findViewById(this.displayTextViewId);
+            textView.setText(this.value);
+        }
     }
 
 
@@ -124,7 +134,10 @@ public class Text extends Component implements Serializable
     {
         TextView textView = new TextView(context);
 
-        textView.setTextSize(Util.getTextSizeSP(context, this.textSize));
+        this.displayTextViewId = Util.generateViewId();
+        textView.setId(this.displayTextViewId);
+
+        textView.setTextSize(com.kispoko.tome.component.Util.getTextSizeSP(context, this.textSize));
 
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
@@ -151,13 +164,19 @@ public class Text extends Component implements Serializable
     {
         // Lookup the recyclerview in activity layout
         RecyclerView textEditorView = new RecyclerView(context);
-        textEditorView.setLayoutParams(UI.linearLayoutParamsMatch());
-
+        textEditorView.setLayoutParams(Util.linearLayoutParamsMatch());
+        textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
 
         // Create adapter passing in the sample user data
         // TODO verify type
+
+        // Create copy of type so we only display values that are not currently chosen
+        List list = (List) this.getType();
+        List listWithoutCurrentValue = list.asClone();
+        listWithoutCurrentValue.getValueList().remove(this.value);
+
         TextEditRecyclerViewAdapter adapter =
-                new TextEditRecyclerViewAdapter(this, (List) this.getType());
+                new TextEditRecyclerViewAdapter(this, listWithoutCurrentValue);
         // Attach the adapter to the recyclerview to populate items
         textEditorView.setAdapter(adapter);
         // Set layout manager to position the items
@@ -177,9 +196,9 @@ public class Text extends Component implements Serializable
         // Header Layout
         LinearLayout headerLayout = new LinearLayout(context);
         headerLayout.setOrientation(LinearLayout.VERTICAL);
-        int headerHorzPadding = (int) UI.getDim(context,
+        int headerHorzPadding = (int) Util.getDim(context,
                                                 R.dimen.comp_text_editor_header_horz_padding);
-        int headerTopPadding = (int) UI.getDim(context,
+        int headerTopPadding = (int) Util.getDim(context,
                                                R.dimen.comp_text_editor_header_top_padding);
         LinearLayout.LayoutParams fieldLayoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -193,11 +212,10 @@ public class Text extends Component implements Serializable
 
         // >> Title
         TextView titleView = new TextView(context);
-        titleView.setText("VALUE");
-        float titleTextSize = UI.getDim(context, R.dimen.comp_text_editor_title_text_size);
+        titleView.setText(this.getLabel().toUpperCase());
+        float titleTextSize = Util.getDim(context, R.dimen.comp_text_editor_title_text_size);
         titleView.setTextSize(titleTextSize);
         titleView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
-        //titleView.setTypeface(font);
         titleView.setTypeface(null, Typeface.BOLD);
 
         headerLayout.addView(titleView);
@@ -205,28 +223,28 @@ public class Text extends Component implements Serializable
         // >> Value
         TextView valueView = new TextView(context);
 
-        float valueTextSize = UI.getDim(context, R.dimen.comp_text_editor_value_text_size);
+        float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
         valueView.setTextSize(valueTextSize);
         valueView.setText(this.getValue());
-        valueView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_100));
+        valueView.setTextColor(ContextCompat.getColor(context, R.color.amber_500));
         valueView.setTypeface(font);
 
         headerLayout.addView(valueView);
 
         // >> Type Title
         TextView typeTitleView = new TextView(context);
-        String typeTitle = "SELECT " + this.getLabel().toUpperCase();
+        String typeTitle = "SELECT NEW " + this.getLabel().toUpperCase();
         typeTitleView.setText(typeTitle);
-        float typeTitleTextSize = UI.getDim(context, R.dimen.comp_text_editor_type_title_text_size);
+        float typeTitleTextSize = Util.getDim(context, R.dimen.comp_text_editor_type_title_text_size);
         typeTitleView.setTextSize(typeTitleTextSize);
         typeTitleView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
         typeTitleView.setTypeface(null, Typeface.BOLD);
 
-        int typeTitleLeftPadding = (int) UI.getDim(context,
-                R.                                 dimen.comp_text_editor_type_title_left_padding);
-        int typeTitleTopPadding = (int) UI.getDim(context,
+        int typeTitleLeftPadding = (int) Util.getDim(context,
+                                                R.dimen.comp_text_editor_type_title_left_padding);
+        int typeTitleTopPadding = (int) Util.getDim(context,
                                                   R.dimen.comp_text_editor_type_title_top_padding);
-        int typeTitleBottomPadding = (int) UI.getDim(context,
+        int typeTitleBottomPadding = (int) Util.getDim(context,
                                                R.dimen.comp_text_editor_type_title_bottom_padding);
         typeTitleView.setPadding(typeTitleLeftPadding, typeTitleTopPadding,
                                  0, typeTitleBottomPadding);

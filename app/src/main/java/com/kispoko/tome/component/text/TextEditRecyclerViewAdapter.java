@@ -2,17 +2,22 @@
 package com.kispoko.tome.component.text;
 
 
+import android.app.Activity;
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kispoko.tome.EditResult;
 import com.kispoko.tome.R;
 import com.kispoko.tome.component.Text;
 import com.kispoko.tome.type.List;
 
-import static android.R.id.list;
 
 
 /**
@@ -76,7 +81,8 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                                   this.text.getEditorHeaderView(viewGroup.getContext()));
                 break;
             case ITEM:
-                viewHolder = new ItemViewHolder(this.list.getItemView(viewGroup.getContext()));
+                viewHolder = new ItemViewHolder(this.list.getItemView(viewGroup.getContext()),
+                                                this.list, this.text);
                 break;
         }
         return viewHolder;
@@ -106,6 +112,18 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     {
         TextView textView = (TextView) itemView.findViewById(R.id.type_list_item_name);
         textView.setText(this.list.getValue(position));
+
+        if (this.list.getValue(position).equals(this.text.getValue())) {
+            ImageView iconView = (ImageView) itemView.findViewById(R.id.type_list_item_icon);
+            iconView.setImageDrawable(
+                ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_item_selected_24dp));
+
+
+            int selectedColor = ContextCompat.getColor(itemView.getContext(), R.color.bluegrey_800);
+            iconView.setColorFilter(selectedColor);
+            textView.setTextColor(selectedColor);
+
+        }
     }
 
 
@@ -124,11 +142,6 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             super(headerView);
             this.headerView = headerView;
         }
-
-        public View getHeaderView()
-        {
-            return this.headerView;
-        }
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder
@@ -136,10 +149,30 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         private View itemView;
 
-        public ItemViewHolder(View itemView)
+        public ItemViewHolder(final View itemView, final List list, final Text text)
         {
             super(itemView);
             this.itemView = itemView;
+
+
+            // On Click Listener
+            final Activity activity = (Activity) itemView.getContext();
+            final RecyclerView.ViewHolder thisViewHolder = this;
+            this.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String newValue = list.getValue(thisViewHolder.getAdapterPosition());
+
+                    // Set chosen value as result of activity and finish
+                    EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
+                                                           text.getName(), newValue);
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("RESULT", editResult);
+                    activity.setResult(Activity.RESULT_OK, resultIntent);
+                    activity.finish();
+                }
+            });
+
         }
 
         public View getItemView()
@@ -148,3 +181,4 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 }
+

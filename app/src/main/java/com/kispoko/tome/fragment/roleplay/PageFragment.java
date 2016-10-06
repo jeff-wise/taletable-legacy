@@ -13,7 +13,7 @@ import android.widget.ScrollView;
 import com.kispoko.tome.ChooseImageAction;
 import com.kispoko.tome.component.Component;
 import com.kispoko.tome.sheet.Page;
-import com.kispoko.tome.util.UI;
+import com.kispoko.tome.util.Util;
 
 
 /**
@@ -74,7 +74,7 @@ public class PageFragment extends Fragment
                              Bundle savedInstanceState)
     {
         ScrollView fragmentView = new ScrollView(getContext());
-        fragmentView.setLayoutParams(UI.linearLayoutParamsMatch());
+        fragmentView.setLayoutParams(Util.linearLayoutParamsMatch());
 
         View pageView = this.page.getView(getContext());
         fragmentView.addView(pageView);

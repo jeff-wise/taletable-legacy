@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet;
 
 
+import com.kispoko.tome.component.Component;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
 
@@ -10,8 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+
 /**
- * Character Sheet Format
+ * Character Sheet
  *
  * This class represents the structure and representation of character sheet. Character sheets
  * can therefore be customized for different roleplaying games or even different campaigns.
@@ -26,7 +28,7 @@ public class Sheet
 
     private Roleplay roleplay;
 
-
+    private Map<String,Component> componentByName;
 
 
     // > CONSTRUCTORS
@@ -36,6 +38,21 @@ public class Sheet
     {
         this.name = name;
         this.roleplay = roleplay;
+
+        // Index Components
+        componentByName = new HashMap<>();
+        for (Page page : this.roleplay.getPages())
+        {
+            ArrayList<Group> groups = page.getGroups();
+            for (Group group : groups)
+            {
+                ArrayList<Component> components = group.getComponents();
+                for (Component component : components)
+                {
+                    componentByName.put(component.getName(), component);
+                }
+            }
+        }
     }
 
 
@@ -77,6 +94,12 @@ public class Sheet
     public Roleplay getRoleplay()
     {
         return this.roleplay;
+    }
+
+
+    public Component getComponent(String name)
+    {
+        return this.componentByName.get(name);
     }
 
 
