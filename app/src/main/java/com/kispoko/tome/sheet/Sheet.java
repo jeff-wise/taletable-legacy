@@ -2,10 +2,17 @@
 package com.kispoko.tome.sheet;
 
 
+import android.content.Context;
+import android.content.res.AssetManager;
+
 import com.kispoko.tome.component.Component;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
 
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,5 +109,134 @@ public class Sheet
         return this.componentByName.get(name);
     }
 
+
+    @SuppressWarnings("unchecked")
+    public static ArrayList<Name> templateNames(Context context)
+    {
+        ArrayList<Name> names = new ArrayList<>();
+
+        try
+        {
+            String templatePath = "template";
+            AssetManager assetManager = context.getAssets();
+            String[] fileList = assetManager.list("template");
+
+            for (String fileName : fileList)
+            {
+                // Parse YAML
+                InputStream yamlIS = assetManager.open(templatePath + "/" + fileName);
+                Yaml yaml = new Yaml();
+                Map<String,Object> yamlObject = (Map<String,Object>) yaml.load(yamlIS);
+
+                // Get Name
+                Map<String,Object> nameObject = (Map<String,Object>) yamlObject.get("name");
+
+                String name  = (String) nameObject.get("id");
+                String label = (String) nameObject.get("label");
+
+                names.add(new Name(name, label));
+            }
+        }
+        catch (IOException e)
+        {
+            // TODO
+        }
+
+        return names;
+    }
+
+
+    /**
+     * Read the template manifest file and retrive the list of games available.
+     * @param context Context for accessing assets.
+     * @return List of template games.
+     */
+    @SuppressWarnings("unchecked")
+    public static ArrayList<Game> templateGames(Context context)
+    {
+        ArrayList<Game> games = new ArrayList<>();
+
+        try
+        {
+            InputStream yamlIS = context.getAssets().open("template/manifest.yaml");
+            Yaml yaml = new Yaml();
+            Map<String,Object> yamlObject = (Map<String,Object>) yaml.load(yamlIS);
+
+            ArrayList<Map<String,Object>> gamesYaml =
+                    (ArrayList<Map<String,Object>>) yamlObject.get("games");
+            for (Map<String,Object> gameYaml : gamesYaml)
+            {
+                String id  = (String) gameYaml.get("id");
+                String label = (String) gameYaml.get("label");
+                String description = (String) gameYaml.get("description");
+                games.add(new Game(id, label, description));
+            }
+        }
+        catch (IOException e)
+        {
+            // TODO
+        }
+
+        return games;
+    }
+
+
+
+
+    // > NESTED TYPES
+    // ------------------------------------------------------------------------------------------
+
+
+    public static class Name
+    {
+        private String name;
+        private String label;
+
+        public Name(String name, String label)
+        {
+            this.name = name;
+            this.label = label;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public String getLabel()
+        {
+            return this.label;
+        }
+    }
+
+
+    public static class Game
+    {
+        private String id;
+        private String label;
+        private String description;
+
+        public Game(String id, String label, String description)
+        {
+            this.id = id;
+            this.label = label;
+            this.description = description;
+        }
+
+        public String getId()
+        {
+            return this.id;
+        }
+
+        public String getLabel()
+        {
+            return this.label;
+        }
+
+        public String getDescription()
+        {
+            return this.description;
+        }
+    }
 
 }

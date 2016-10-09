@@ -1,8 +1,8 @@
 <resources>
     <string name="drawer_header_text">Drawer Header</string>
 
+    <string name="new_character">New Character</string>
     <string name="switch_character">Switch Character</string>
-    <string name="load_sheet">Load Sheet</string>
 
 
     <string name="app_name">Tome</string>
@@ -22,8 +22,22 @@
     <string name="backpack_tab">Backpack</string>
     <string name="spellbook_tab">Spellbook</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <!-- NEW CHARACTER ACTIVITY -->
+    <string name="from_official_template">OFFICIAL TEMPLATE</string>
+    <string name="from_official_template_description">
+        Create a character based from curated templates for multiple roleplaying games
+        and classes.
+    </string>
+
+    <string name="from_character_hub">CHARACTER HUB</string>
+    <string name="from_character_hub_description">
+        Browse through shared templates created by other users in the character hub.
+    </string>
+
+    <string name="from_file">FROM FILE</string>
+    <string name="from_file_description">
+        Upload a character or character template from a local file.
+    </string>
+
+
 </resources>

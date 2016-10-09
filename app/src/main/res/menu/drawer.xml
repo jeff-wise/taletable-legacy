@@ -4,26 +4,14 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_item_attachment"
+            android:id="@+id/navigation_item_new_character"
             android:checked="true"
-            android:icon="@drawable/ic_menu_send"
+            android:icon="@drawable/ic_new_character_24dp"
+            android:title="@string/new_character" />
+        <item
+            android:id="@+id/navigation_item_switch_character"
+            android:icon="@drawable/ic_switch_character_24dp"
             android:title="@string/switch_character" />
-        <item
-            android:id="@+id/navigation_item_location"
-            android:icon="@drawable/ic_menu_share"
-            android:title="@string/load_sheet" />
     </group>
-
-<!--
-<item android:title="@string/nav_sub_menu">
-    <menu>
-        <item
-            android:icon="@drawable/ic_emoticon"
-            android:title="@string/nav_sub_menu_item01" />
-        <item
-            android:icon="@drawable/ic_emoticon"
-            android:title="@string/nav_sub_menu_item02" />
-    </menu>
-</item>-->
 
 </menu>

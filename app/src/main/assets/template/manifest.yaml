@@ -1,0 +1,16 @@
+games:
+- id: dungeons_and_dragons_5
+  label: 'Dungeons & Dragons 5th Edition'
+  description: >
+    The fifth edition of the world's most famous roleplaying game, with simplified game
+    mechanics and more focus on roleplaying and storytelling.
+- id: dungeons_and_dragons_4
+  label: 'Dungeons & Dragons 4th Edition'
+  description: >
+    Dungeons and Dragons 4th Edition departed from the classic game mechanics of previous editions
+    and presented a more simplified and unique take on roleplaying adventure games.
+- id: pathfinder
+  label: 'Pathfinder'
+  description: >
+    Pathfinder takes the best rules from Dungeons and Dragons 3.5, fixing many defects while
+    providing a captivating setting boosted by well-designed game mechanics.

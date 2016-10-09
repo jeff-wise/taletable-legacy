@@ -9,10 +9,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kispoko.tome.MainActivity;
+import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.component.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.type.List;
@@ -22,7 +23,6 @@ import com.kispoko.tome.util.Util;
 import java.io.Serializable;
 import java.util.Map;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -137,7 +137,7 @@ public class Text extends Component implements Serializable
         this.displayTextViewId = Util.generateViewId();
         textView.setId(this.displayTextViewId);
 
-        textView.setTextSize(com.kispoko.tome.component.Util.getTextSizeSP(context, this.textSize));
+        textView.setTextSize(ComponentUtil.getTextSizeSP(context, this.textSize));
 
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
@@ -148,11 +148,11 @@ public class Text extends Component implements Serializable
 
         final Text thisText = this;
 
-        final MainActivity mainActivity = (MainActivity) context;
+        final SheetActivity sheetActivity = (SheetActivity) context;
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainActivity.openEditActivity(thisText);
+                sheetActivity.openEditActivity(thisText);
             }
         });
 
@@ -161,6 +161,16 @@ public class Text extends Component implements Serializable
 
 
     public View getEditorView(Context context)
+    {
+        if (this.hasType())
+            return this.getTypeEditorView(context);
+        // No type is set, so allow free form edit
+        else
+            return this.getFreeEditorView(context);
+    }
+
+
+    public View getTypeEditorView(Context context)
     {
         // Lookup the recyclerview in activity layout
         RecyclerView textEditorView = new RecyclerView(context);
@@ -186,29 +196,81 @@ public class Text extends Component implements Serializable
     }
 
 
+    public View getFreeEditorView(Context context)
+    {
+        // Header Layout
+        LinearLayout headerLayout = new LinearLayout(context);
+        headerLayout.setLayoutParams(Util.linearLayoutParamsMatch());
+        headerLayout.setOrientation(LinearLayout.VERTICAL);
+        int headerHorzPadding = (int) Util.getDim(context,
+                R.dimen.comp_text_editor_free_header_horz_padding);
+        int headerTopPadding = (int) Util.getDim(context,
+                R.dimen.comp_text_editor_header_top_padding);
+        headerLayout.setPadding(headerHorzPadding, headerTopPadding, headerHorzPadding, 0);
+        headerLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.bluegrey_900));
+
+        // >> Title
+        TextView titleView = new TextView(context);
+        int titleViewPaddingLeft = (int) Util.getDim(context,
+                                          R.dimen.comp_text_editor_free_header_name_left_padding);
+        titleView.setPadding(titleViewPaddingLeft, 0, 0, 0);
+        titleView.setText(this.getLabel().toUpperCase());
+        float titleTextSize = Util.getDim(context, R.dimen.comp_text_editor_title_text_size);
+        titleView.setTextSize(titleTextSize);
+        titleView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
+        titleView.setTypeface(null, Typeface.BOLD);
+
+        headerLayout.addView(titleView);
+
+        EditText editView = new EditText(context);
+
+        editView.setTextSize(ComponentUtil.getTextSizeSP(context, this.textSize));
+
+        Typeface font = Typeface.createFromAsset(context.getAssets(),
+                                                 "fonts/DavidLibre-Regular.ttf");
+        editView.setTypeface(font);
+        editView.setTextColor(ContextCompat.getColor(context, R.color.amber_500));
+        //editView.setPadding(0, 0, 0, 0);
+
+        LinearLayout.LayoutParams editViewLayoutParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                              LinearLayout.LayoutParams.WRAP_CONTENT);
+        //editViewLayoutParams.leftMargin = 0;
+        editView.setLayoutParams(editViewLayoutParams);
+
+        float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
+        editView.setTextSize(valueTextSize);
+
+        editView.setText(this.value);
+
+        headerLayout.addView(editView);
+
+
+        return headerLayout;
+    }
+
+
     /**
      * Return a view of the header for the text editor view.
      * @param context The parent context object.
      * @return A View represent the text editing header.
      */
-    public View getEditorHeaderView(Context context)
+    public View getTypeEditorHeaderView(Context context)
     {
         // Header Layout
         LinearLayout headerLayout = new LinearLayout(context);
         headerLayout.setOrientation(LinearLayout.VERTICAL);
         int headerHorzPadding = (int) Util.getDim(context,
-                                                R.dimen.comp_text_editor_header_horz_padding);
+                R.dimen.comp_text_editor_header_horz_padding);
         int headerTopPadding = (int) Util.getDim(context,
-                                               R.dimen.comp_text_editor_header_top_padding);
+                R.dimen.comp_text_editor_header_top_padding);
         LinearLayout.LayoutParams fieldLayoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                              LinearLayout.LayoutParams.WRAP_CONTENT);
+                        LinearLayout.LayoutParams.WRAP_CONTENT);
         headerLayout.setPadding(headerHorzPadding, headerTopPadding, headerHorzPadding, 0);
         headerLayout.setLayoutParams(fieldLayoutParams);
         headerLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.bluegrey_900));
 
-        Typeface font = Typeface.createFromAsset(context.getAssets(),
-                                                 "fonts/DavidLibre-Regular.ttf");
 
         // >> Title
         TextView titleView = new TextView(context);
@@ -219,6 +281,9 @@ public class Text extends Component implements Serializable
         titleView.setTypeface(null, Typeface.BOLD);
 
         headerLayout.addView(titleView);
+
+        Typeface font = Typeface.createFromAsset(context.getAssets(),
+                "fonts/DavidLibre-Regular.ttf");
 
         // >> Value
         TextView valueView = new TextView(context);

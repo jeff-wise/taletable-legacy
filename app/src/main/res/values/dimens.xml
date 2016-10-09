@@ -57,6 +57,10 @@
 
     <dimen name="list_label_text_size">10dp</dimen>
 
+    <!-- TEXT EDITOR (FREE) -->
+    <dimen name="comp_text_editor_free_header_horz_padding">11dp</dimen>
+    <dimen name="comp_text_editor_free_header_name_left_padding">4dp</dimen>
+
 
     <!-- LIST TYPE -->
     <dimen name="type_list_item_vert_padding">18dp</dimen>
@@ -64,5 +68,25 @@
     <dimen name="type_list_item_name_text_size">5.5dp</dimen>
     <dimen name="type_list_item_select_icon_padding_top">4dp</dimen>
 
+
+    <!-- CHOOSE TEMPLATE GAME -->
+    <dimen name="choose_template_game_name_text_size">6dp</dimen>
+    <dimen name="choose_template_game_game_layout_margin_top">1dp</dimen>
+    <dimen name="choose_template_game_game_layout_height">100dp</dimen>
+    <dimen name="choose_template_game_game_layout_padding_left">17dp</dimen>
+    <dimen name="choose_template_game_game_layout_padding_top">11dp</dimen>
+    <dimen name="choose_template_game_game_layout_padding_bottom">2dp</dimen>
+    <dimen name="choose_template_game_next_icon_padding">8dp</dimen>
+    <dimen name="choose_template_game_players_number_text_size">5.1dp</dimen>
+    <dimen name="choose_template_game_players_label_text_size">5.1dp</dimen>
+    <dimen name="choose_template_game_players_number_padding_right">7dp</dimen>
+    <dimen name="choose_template_game_players_icon_padding_right">10dp</dimen>
+    <dimen name="choose_template_game_players_padding_vert">6dp</dimen>
+    <dimen name="choose_template_game_desc_padding_vert">6dp</dimen>
+
+
+
+    <!-- GENERAL -->
+    <dimen name="one_dp">1dp</dimen>
 
 </resources>

@@ -3,6 +3,7 @@ package com.kispoko.tome.util;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
@@ -10,12 +11,15 @@ import com.kispoko.tome.R;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Helpers for verbose Util code.
+ * Helpers for verbose ComponentUtil code.
  */
 public class Util
 {
 
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
+
+    private static Typeface serifFontRegular;
+    private static Typeface serifFontBold;
 
 
     public static LinearLayout.LayoutParams linearLayoutParamsWrap()
@@ -54,6 +58,25 @@ public class Util
                 return result;
             }
         }
+    }
+
+
+
+    public static Typeface serifFontRegular(Context context)
+    {
+        if (serifFontRegular == null)
+            serifFontRegular = Typeface.createFromAsset(context.getAssets(),
+                                                 "fonts/DavidLibre-Regular.ttf");
+        return serifFontRegular;
+    }
+
+
+    public static Typeface serifFontBold(Context context)
+    {
+        if (serifFontBold == null)
+            serifFontBold = Typeface.createFromAsset(context.getAssets(),
+                    "fonts/DavidLibre-Bold.ttf");
+        return serifFontBold;
     }
 }
 

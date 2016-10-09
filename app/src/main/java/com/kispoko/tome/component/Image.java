@@ -12,8 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.ChooseImageAction;
-import com.kispoko.tome.MainActivity;
+import com.kispoko.tome.activity.ChooseImageAction;
+import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.util.Util;
 
@@ -81,7 +81,7 @@ public class Image extends Component implements Serializable
 
             @Override
             public void onClick(View v) {
-                MainActivity mainActivity = (MainActivity) context;
+                SheetActivity sheetActivity = (SheetActivity) context;
 
                 Intent intent;
                 if (Build.VERSION.SDK_INT < 19) {
@@ -97,14 +97,14 @@ public class Image extends Component implements Serializable
 //                intent.setType("image/*");
 //                intent.setAction(Intent.ACTION_GET_CONTENT);
 
-                mainActivity.setChooseImageAction(
+                sheetActivity.setChooseImageAction(
                         new ChooseImageAction(imageView, chooseImageButton));
 
-                mainActivity.startActivityForResult(intent, MainActivity.CHOOSE_IMAGE_FROM_FILE);
+                sheetActivity.startActivityForResult(intent, SheetActivity.CHOOSE_IMAGE_FROM_FILE);
 
-//                mainActivity.startActivityForResult(
+//                sheetActivity.startActivityForResult(
 //                        Intent.createChooser(intent, "Complete action using"),
-//                        MainActivity.CHOOSE_IMAGE_FROM_FILE);
+//                        SheetActivity.CHOOSE_IMAGE_FROM_FILE);
             }
         });
 

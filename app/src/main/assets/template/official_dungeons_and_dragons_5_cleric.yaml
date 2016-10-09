@@ -1,0 +1,372 @@
+
+name:
+  id: cleric
+  label: 'Cleric'
+game:
+  id: dungeons_and_dragons_5
+  label: 'Dungeons & Dragons 5th Edition'
+types:
+- name: class
+  type: list
+  label: Classes
+  values:
+  - Barbarian
+  - Bard
+  - Cleric
+  - Druid
+  - Fighter
+  - Monk
+  - Paladin
+  - Ranger
+  - Rogue
+  - Sorceror
+  - Warlock
+  - Wizard
+sections:
+  roleplay:
+    pages:
+    - name: Profile
+      groups:
+      - name: Name
+        components:
+        - type: text
+          size: large
+          name: Name
+          data:
+            value: Hildebrand
+      - name: Picture
+        components:
+        - type: image
+          name: Picture
+      - name: Features
+        components:
+        - type: integer
+          name: Level
+          size: medium
+          label: Level
+          data:
+            value: 17
+        - type: text
+          name: Class
+          size: medium
+          label: Class
+          data:
+            value: Wizard
+            type: class
+        - type: text
+          name: Race
+          size: medium
+          label: Race
+          data:
+            value: Human
+        - type: text
+          name: Alignment
+          size: medium
+          label: Alignment
+          data:
+            value: Lawful Good
+        layout:
+          rows:
+          - frames:
+            - name: Level
+              width: 0.5
+            - name: Class
+              width: 0.5
+          - frames:
+            - name: Race
+              width: 0.5
+            - name: Alignment
+              width: 0.5
+      - name: Appearance
+        components:
+        - type: integer
+          name: Age
+          size: medium
+          label: Age
+          data:
+            value: 41
+        - type: text
+          name: Height
+          size: medium
+          label: Height
+          data:
+            value: 5'11"
+        - type: integer
+          name: Weight
+          size: medium
+          label: Weight
+          data:
+            value: 167
+        - type: text
+          name: Eyes
+          size: medium
+          label: Eyes
+          data:
+            value: Blue
+        - type: text
+          name: Skin
+          size: medium
+          label: Skin
+          data:
+            value: Light
+        - type: text
+          name: Hair
+          size: medium
+          label: Hair
+          data:
+            value: Brown
+        layout:
+          rows:
+          - frames:
+            - name: Age
+              width: 0.33
+            - name: Height
+              width: 0.34
+            - name: Weight
+              width: 0.33
+          - frames:
+            - name: Eyes
+              width: 0.33
+            - name: Skin
+              width: 0.34
+            - name: Hair
+              width: 0.33
+      - name: Characteristics
+        components:
+        - type: table
+          name: Personality Traits
+          columns:
+          - Personality Traits
+          data:
+            rows:
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand is very confident.
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand is incredibly handsome.
+        - type: table
+          name: Ideals
+          columns:
+          - Ideals
+          data:
+            rows:
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand believes that the greater good is an infinitely large
+                    composition of miniscule good actions that form a lattice of integrity
+                    that intertwines every creature of the land.
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand thinks that every person deserves a second chance.
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    He believes that the purpose of life is understanding the mysteries
+                    of the universe, and mastering of magic in order to further understanding.
+        - type: table
+          name: Bonds
+          columns:
+          - Bonds
+          data:
+            rows:
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand has a special bond with Jade and often accompanies her on
+                    missions in order to pursue great research opportunities.
+        - type: table
+          name: Flaws
+          columns:
+          - Flaws
+          data:
+            rows:
+            - cells:
+              - type: text
+                data:
+                  value: >
+                    Hildebrand is occasionally possessed by a familiar demon that causes him to
+                    behave chaotically and maliciously
+    - name: Stats
+      groups:
+      - name: Ability Scores
+        components:
+        - type: integer
+          name: Strength
+          size: medium
+          label: Strength
+          data:
+            value: 11
+        - type: integer
+          name: Dexterity
+          size: medium
+          label: Dexterity
+          data:
+            value: 19
+        - type: integer
+          name: Constitution
+          size: medium
+          label: Constitution
+          data:
+            value: 15
+        - type: integer
+          name: Intelligence
+          size: medium
+          label: Intelligence
+          data:
+            value: 22
+        - type: integer
+          name: Wisdom
+          size: medium
+          label: Wisdom
+          data:
+            value: 14
+        - type: integer
+          name: Charisma
+          size: medium
+          label: Charisma
+          data:
+            value: 13
+        layout:
+          rows:
+          - frames:
+            - name: Strength
+              width: 0.33
+            - name: Dexterity
+              width: 0.34
+            - name: Constitution
+              width: 0.33
+          - frames:
+            - name: Intelligence
+              width: 0.33
+            - name: Wisdom
+              width: 0.34
+            - name: Charisma
+              width: 0.33
+      - name: General
+        components:
+        - type: integer
+          name: proficiency_bonus
+          size: medium
+          prefix: '+'
+          label: Proficiency Bonus
+          data:
+            value: 6
+        - type: integer
+          name: inspiration
+          size: medium
+          label: Inspiration
+          data:
+            value: 4
+        layout:
+          rows:
+          - frames:
+            - name: proficiency_bonus
+              width: 0.5
+            - name: inspiration
+              width: 0.5
+      - name: Combat
+        components:
+        - type: integer
+          name: armor_class
+          size: medium
+          label: Armor Class
+          data:
+            value: 24
+        - type: integer
+          name: initiative
+          size: medium
+          prefix: '+'
+          label: Initiative
+          data:
+            value: 7
+        - type: integer
+          name: speed
+          size: medium
+          label: Speed
+          data:
+            value: 30
+        layout:
+          rows:
+          - frames:
+            - name: armor_class
+              width: 0.33
+            - name: initiative
+              width: 0.34
+            - name: speed
+              width: 0.33
+      - name: Saving Throws
+        components:
+        - type: integer
+          name: strength
+          size: medium
+          label: Strength
+          data:
+            value: 0
+        - type: integer
+          name: dexterity
+          size: medium
+          prefix: '+'
+          label: Dexterity
+          data:
+            value: 4
+        - type: integer
+          name: constitution
+          size: medium
+          prefix: '+'
+          label: Constitution
+          data:
+            value: 2
+        - type: integer
+          name: intelligence
+          size: medium
+          prefix: '+'
+          label: Intelligence
+          data:
+            value: 12
+        - type: integer
+          name: wisdom
+          size: medium
+          prefix: '+'
+          label: Wisdom
+          data:
+            value: 8
+        - type: integer
+          name: charisma
+          size: medium
+          prefix: '+'
+          label: Charisma
+          data:
+            value: 1
+        layout:
+          rows:
+          - frames:
+            - name: strength
+              width: 0.33
+            - name: dexterity
+              width: 0.34
+            - name: constitution
+              width: 0.33
+          - frames:
+            - name: intelligence
+              width: 0.33
+            - name: wisdom
+              width: 0.34
+            - name: charisma
+              width: 0.33
+    - name: Abilities
+      groups:
+    - name: Backpack
+      groups:
+    - name: Spellbook
+      groups:

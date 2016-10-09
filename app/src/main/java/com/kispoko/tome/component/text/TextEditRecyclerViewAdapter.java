@@ -6,14 +6,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kispoko.tome.EditResult;
+import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.R;
 import com.kispoko.tome.component.Text;
 import com.kispoko.tome.type.List;
@@ -78,7 +77,7 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         {
             case HEADER:
                 viewHolder = new HeaderViewHolder(
-                                  this.text.getEditorHeaderView(viewGroup.getContext()));
+                                  this.text.getTypeEditorHeaderView(viewGroup.getContext()));
                 break;
             case ITEM:
                 viewHolder = new ItemViewHolder(this.list.getItemView(viewGroup.getContext()),

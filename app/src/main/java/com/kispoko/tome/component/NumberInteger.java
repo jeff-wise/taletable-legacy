@@ -5,9 +5,7 @@ package com.kispoko.tome.component;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.text.InputType;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -149,13 +147,13 @@ public class NumberInteger extends Component implements Serializable
 
         // Add prefix if exists
         if (this.prefix != null) {
-            layout.addView(Util.prefixView(context, this.prefix, this.textSize));
+            layout.addView(ComponentUtil.prefixView(context, this.prefix, this.textSize));
         }
 
         // Add text view
         TextView textView = new TextView(context);
 
-        textView.setTextSize(Util.getTextSizeSP(context, this.textSize));
+        textView.setTextSize(ComponentUtil.getTextSizeSP(context, this.textSize));
 
         Typeface font = Typeface.createFromAsset(context.getAssets(),
                                                  "fonts/DavidLibre-Regular.ttf");
