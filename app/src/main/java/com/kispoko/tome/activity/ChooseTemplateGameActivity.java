@@ -2,6 +2,8 @@
 package com.kispoko.tome.activity;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -142,6 +144,17 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
             gameLayout.setPadding(gameLayoutPaddingLeft, gameLayoutPaddingTop,
                                   0, gameLayoutPaddingBottom);
 
+            final Activity thisActivity = this;
+            final Sheet.Game thisGame = game;
+            gameLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(thisActivity, ChooseTemplateActivity.class);
+                    intent.putExtra("GAME_ID", thisGame.getId());
+                    startActivity(intent);
+                }
+            });
+
 
             // Info Layout
             LinearLayout infoLayout = new LinearLayout(this);
@@ -162,7 +175,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
             gameNameView.setLayoutParams(gameNameViewLayoutParams);
 
 
-            gameNameView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_50));
+            gameNameView.setTextColor(ContextCompat.getColor(this, R.color.amber_300));
 
             float nameTextSize = Util.getDim(this, R.dimen.choose_template_game_name_text_size);
             gameNameView.setTextSize(nameTextSize);
@@ -205,7 +218,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
 
             int numberOfPlayers = Statistics.gamePlayers(game.getId());
             gamePlayersNumberView.setText(Integer.toString(numberOfPlayers));
-            gamePlayersNumberView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_200));
+            gamePlayersNumberView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_100));
 
             int gamePlayersNumberPaddingRight =
                     (int) Util.getDim(this,
@@ -224,7 +237,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
             gamePlayersLabelView.setLayoutParams(Util.linearLayoutParamsWrap());
 
             gamePlayersLabelView.setText("Players");
-            gamePlayersLabelView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_200));
+            gamePlayersLabelView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_100));
             float gamePlayersLabelTextSize =
                     Util.getDim(this, R.dimen.choose_template_game_players_label_text_size);
             gamePlayersLabelView.setTextSize(gamePlayersLabelTextSize);

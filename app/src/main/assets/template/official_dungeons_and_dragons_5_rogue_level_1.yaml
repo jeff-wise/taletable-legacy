@@ -1,7 +1,7 @@
 
 name:
-  id: paladin
-  label: 'Paladin'
+  id: rogue_level_1
+  label: 'Rogue - Level 1'
 game:
   id: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'

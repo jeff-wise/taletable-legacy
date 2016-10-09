@@ -1,10 +1,10 @@
 
 name:
-  id: barbarian
-  label: 'Barbarian'
+  id: barbarian_level_1
+  label: 'Barbarian - Level 1'
 game:
-  id: dungeons_and_dragons_4
-  label: 'Dungeons & Dragons 4th Edition'
+  id: dungeons_and_dragons_5
+  label: 'Dungeons & Dragons 5th Edition'
 types:
 - name: class
   type: list

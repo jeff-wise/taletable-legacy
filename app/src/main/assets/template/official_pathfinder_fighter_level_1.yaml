@@ -1,10 +1,10 @@
 
 name:
-  id: warlock
-  label: 'Warlock'
+  id: fighter_level_1
+  label: 'Fighter - Level 1'
 game:
-  id: dungeons_and_dragons_5
-  label: 'Dungeons & Dragons 5th Edition'
+  id: pathfinder
+  label: 'Pathfinder'
 types:
 - name: class
   type: list

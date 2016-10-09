@@ -14,3 +14,89 @@ games:
   description: >
     Pathfinder takes the best rules from Dungeons and Dragons 3.5, fixing many defects while
     providing a captivating setting boosted by well-designed game mechanics.
+templates:
+- game: dungeons_and_dragons_4
+  template:
+    id: monk_level_1
+    label: 'Monk - Level 1'
+    description: >
+      Start your game with a Monk!
+- game: dungeons_and_dragons_5
+  template:
+    id: barbarian_level_1
+    label: 'Barbarian - Level 1'
+    description: >
+      Start your game with a Barbarian!
+- game: dungeons_and_dragons_5
+  template:
+    id: bard_level_1
+    label: 'Bard - Level 1'
+    description: >
+      Start your game with a Bard!
+- game: dungeons_and_dragons_5
+  template:
+    id: cleric_level_1
+    label: 'Cleric - Level 1'
+    description: >
+      Start your game with a Cleric!
+- game: dungeons_and_dragons_5
+  template:
+    id: druid_level_1
+    label: 'Druid - Level 1'
+    description: >
+      Start your game with a Druid!
+- game: dungeons_and_dragons_5
+  template:
+    id: fighter_level_1
+    label: 'Fighter - Level 1'
+    description: >
+      Start your game with a Fighter!
+- game: dungeons_and_dragons_5
+  template:
+    id: monk_level_1
+    label: 'Monk - Level 1'
+    description: >
+      Start your game with a Monk!
+- game: dungeons_and_dragons_5
+  template:
+    id: paladin_level_1
+    label: 'Paladin - Level 1'
+    description: >
+      Start your game with a Paladin!
+- game: dungeons_and_dragons_5
+  template:
+    id: ranger_level_1
+    label: 'Ranger - Level 1'
+    description: >
+      Start your game with a Ranger!
+- game: dungeons_and_dragons_5
+  template:
+    id: rogue_level_1
+    label: 'Rogue - Level 1'
+    description: >
+      Start your game with a Rogue!
+- game: dungeons_and_dragons_5
+  template:
+    id: sorceror_level_1
+    label: 'Sorceror - Level 1'
+    description: >
+      Start your game with a Sorceror!
+- game: dungeons_and_dragons_5
+  template:
+    id: warlock_level_1
+    label: 'Warlock - Level 1'
+    description: >
+      Start your game with a Warlock!
+- game: dungeons_and_dragons_5
+  template:
+    id: wizard_level_1
+    label: 'Wizard - Level 1'
+    description: >
+      Start your game with a Wizard!
+- game: pathfinder
+  template:
+    id: figther_level_1
+    label: 'Fighter - Level 1'
+    description: >
+      Start your game with a Fighter!
+

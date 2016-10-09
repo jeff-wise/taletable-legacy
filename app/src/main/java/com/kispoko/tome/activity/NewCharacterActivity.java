@@ -11,9 +11,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetDatabase;
+import com.kispoko.tome.util.Util;
 
 
 /**
@@ -110,6 +112,18 @@ public class NewCharacterActivity extends AppCompatActivity
      */
     private void initializeButtons()
     {
+
+        // Set fonts
+        TextView fromOfficialTemplateView = (TextView) findViewById(R.id.from_offical_template);
+        fromOfficialTemplateView.setTypeface(Util.serifFontBold(this));
+
+        TextView fromCharacterHubView = (TextView) findViewById(R.id.from_character_hub);
+        fromCharacterHubView.setTypeface(Util.serifFontBold(this));
+
+        TextView fromFileView = (TextView) findViewById(R.id.from_file);
+        fromFileView.setTypeface(Util.serifFontBold(this));
+
+
         // From Template
         LinearLayout fromTemplateButton = (LinearLayout) findViewById(R.id.from_template_button);
         final Activity thisActivity = this;

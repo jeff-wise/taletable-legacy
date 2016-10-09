@@ -1,7 +1,7 @@
 
 name:
-  id: sorceror
-  label: 'Sorceror'
+  id: bard_level_1
+  label: 'Bard - Level 1'
 game:
   id: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'

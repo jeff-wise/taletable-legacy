@@ -111,30 +111,35 @@ public class Sheet
 
 
     @SuppressWarnings("unchecked")
-    public static ArrayList<Name> templateNames(Context context)
+    public static Map<String, ArrayList<Name>> templateNamesByGame(Context context)
     {
-        ArrayList<Name> names = new ArrayList<>();
+        Map<String, ArrayList<Name>> namesByGame = new HashMap<>();
 
         try
         {
-            String templatePath = "template";
-            AssetManager assetManager = context.getAssets();
-            String[] fileList = assetManager.list("template");
+            InputStream yamlIS = context.getAssets().open("template/manifest.yaml");
+            Yaml yaml = new Yaml();
+            Map<String,Object> yamlObject = (Map<String,Object>) yaml.load(yamlIS);
 
-            for (String fileName : fileList)
+            ArrayList<Map<String,Object>> templatesYaml =
+                    (ArrayList<Map<String,Object>>) yamlObject.get("templates");
+
+            for (Map<String,Object> templateYaml : templatesYaml)
             {
-                // Parse YAML
-                InputStream yamlIS = assetManager.open(templatePath + "/" + fileName);
-                Yaml yaml = new Yaml();
-                Map<String,Object> yamlObject = (Map<String,Object>) yaml.load(yamlIS);
+                String gameId = (String) templateYaml.get("game");
 
-                // Get Name
-                Map<String,Object> nameObject = (Map<String,Object>) yamlObject.get("name");
+                Map<String,Object> templateDataYaml =
+                        (Map<String,Object>) templateYaml.get("template");
 
-                String name  = (String) nameObject.get("id");
-                String label = (String) nameObject.get("label");
+                String id = (String) templateDataYaml.get("id");
+                String label = (String) templateDataYaml.get("label");
+                String description = (String) templateDataYaml.get("description");
 
-                names.add(new Name(name, label));
+                if (!namesByGame.containsKey(gameId))
+                    namesByGame.put(gameId, new ArrayList<Name>());
+
+                ArrayList<Name> names = namesByGame.get(gameId);
+                names.add(new Name(id, label, description));
             }
         }
         catch (IOException e)
@@ -142,8 +147,9 @@ public class Sheet
             // TODO
         }
 
-        return names;
+        return namesByGame;
     }
+
 
 
     /**
@@ -181,6 +187,12 @@ public class Sheet
     }
 
 
+    public static String officialTemplateId(String gameId, String templateName)
+    {
+        return "official_" + gameId + "_" + templateName;
+    }
+
+
 
 
     // > NESTED TYPES
@@ -191,11 +203,13 @@ public class Sheet
     {
         private String name;
         private String label;
+        private String description;
 
-        public Name(String name, String label)
+        public Name(String name, String label, String description)
         {
             this.name = name;
             this.label = label;
+            this.description = description;
         }
 
         public String getName()
@@ -207,6 +221,12 @@ public class Sheet
         {
             return this.label;
         }
+
+        public String getDescription()
+        {
+            return this.description;
+        }
+
     }
 
 

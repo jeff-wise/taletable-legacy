@@ -84,7 +84,16 @@
     <dimen name="choose_template_game_players_padding_vert">6dp</dimen>
     <dimen name="choose_template_game_desc_padding_vert">6dp</dimen>
 
-
+    <!-- CHOOSE TEMPLATE -->
+    <dimen name="choose_template_name_text_size">6dp</dimen>
+    <dimen name="choose_template_layout_padding_vert">10dp</dimen>
+    <dimen name="choose_template_add_icon_padding_left">14dp</dimen>
+    <dimen name="choose_template_add_icon_padding_right">28dp</dimen>
+    <dimen name="choose_template_created_padding_vert">10dp</dimen>
+    <dimen name="choose_template_created_icon_padding_right">10dp</dimen>
+    <dimen name="choose_template_created_number_text_size">5.1dp</dimen>
+    <dimen name="choose_template_created_number_padding_right">7dp</dimen>
+    <dimen name="choose_template_desc_padding_vert">6dp</dimen>
 
     <!-- GENERAL -->
     <dimen name="one_dp">1dp</dimen>

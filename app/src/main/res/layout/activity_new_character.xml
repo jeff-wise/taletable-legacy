@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="1.2"
+            android:layout_weight="1.1"
             android:padding="18dp"
             android:src="@drawable/ic_from_template"/>
 
@@ -31,10 +31,11 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/from_offical_template"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/amber_300"
-                android:textSize="15dp"
+                android:textSize="19dp"
                 android:textStyle="bold"
                 android:text="@string/from_official_template"/>
 
@@ -68,7 +69,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="1.2"
+            android:layout_weight="1.1"
             android:padding="18dp"
             android:src="@drawable/ic_from_hub"/>
 
@@ -80,10 +81,11 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/from_character_hub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/amber_300"
-                android:textSize="15dp"
+                android:textSize="19dp"
                 android:textStyle="bold"
                 android:text="@string/from_character_hub"/>
 
@@ -118,7 +120,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="1.2"
+            android:layout_weight="1.1"
             android:padding="18dp"
             android:src="@drawable/ic_from_file"/>
 
@@ -130,10 +132,11 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/from_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/amber_300"
-                android:textSize="15dp"
+                android:textSize="19dp"
                 android:textStyle="bold"
                 android:text="@string/from_file"/>
 
