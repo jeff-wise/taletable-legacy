@@ -3,6 +3,7 @@ package com.kispoko.tome.activity;
 
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -17,16 +18,11 @@ import android.view.MenuItem;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
-import com.kispoko.tome.component.Component;
+import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.activity.sheet.PageFragment;
+import com.kispoko.tome.db.SheetDatabaseManager;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.Sheet;
-
-import org.yaml.snakeyaml.Yaml;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
 
 
 /**
@@ -55,6 +51,8 @@ public class SheetActivity
 
     private ChooseImageAction chooseImageAction;
 
+    private SQLiteDatabase database;
+
 
     // > ACTIVITY EVENTS
     // -------------------------------------------------------------------------------------------
@@ -73,7 +71,6 @@ public class SheetActivity
 
         initializeToolbar();
         initializeDrawer();
-        initializeTabs();
     }
 
 
@@ -165,6 +162,30 @@ public class SheetActivity
     }
 
 
+    // > API
+    // -------------------------------------------------------------------------------------------
+
+    /**
+     * Set the activity's sheet. This is used primarily as a callback for asynchronous tasks
+     * that fetch the sheet from database or network.
+     * @param sheet The sheet.
+     */
+    public void setSheet(Sheet sheet)
+    {
+        this.sheet = sheet;
+    }
+
+
+    /**
+     * Show Page View. Used as a callback so the pages can be rendered once they are actually
+     * loaded.
+     */
+    public void showPageView()
+    {
+
+    }
+
+
     // > INTERNAL
     // -------------------------------------------------------------------------------------------
 
@@ -217,13 +238,30 @@ public class SheetActivity
      */
     private void loadSheet()
     {
-        try {
-            InputStream yamlIS = this.getAssets().open("sheet/dnd_ed_5.yaml");
-            Yaml yaml = new Yaml();
-            Object yamlObject = yaml.load(yamlIS);
-            this.sheet = Sheet.fromYaml((Map<String,Object>) yamlObject);
-        } catch (IOException e) {
+
+        // Get game id passed from previous activity
+        Bundle extras = getIntent().getExtras();
+        String templateId = extras.getString("FROM_TEMPLATE_ID");
+
+        SheetDatabaseManager sheetDatabaseManager = new SheetDatabaseManager(this);
+        this.database = sheetDatabaseManager.getWritableDatabase();
+
+        // This will be a new character sheet
+        if (templateId == null) {
+
         }
+        // Load the most recently used character sheet
+        else {
+            Sheet.loadMostRecent(database, this);
+        }
+
+//        try {
+//            InputStream yamlIS = this.getAssets().open("sheet/dnd_ed_5.yaml");
+//            Yaml yaml = new Yaml();
+//            Object yamlObject = yaml.load(yamlIS);
+//            this.sheet = Sheet.fromYaml((Map<String,Object>) yamlObject);
+//        } catch (IOException e) {
+//        }
     }
 
 }

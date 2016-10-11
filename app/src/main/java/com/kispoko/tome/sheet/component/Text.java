@@ -1,10 +1,13 @@
 
-package com.kispoko.tome.component;
+package com.kispoko.tome.sheet.component;
 
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,14 +18,21 @@ import android.widget.TextView;
 
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
-import com.kispoko.tome.component.text.TextEditRecyclerViewAdapter;
+import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.Page;
+import com.kispoko.tome.sheet.component.text.TextEditRecyclerViewAdapter;
+import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.group.Layout;
 import com.kispoko.tome.type.List;
+import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
+import static android.R.attr.name;
 
 
 /**
@@ -43,19 +53,12 @@ public class Text extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Text(String name, String typeName, TextSize textSize)
-    {
-        super(name, typeName);
-        this.textSize = textSize;
-        this.value = "";
-    }
 
-
-    public Text(String name, String typeName, TextSize textSize, String label)
+    public Text(Integer id, Type.Id typeId, String value, TextSize textSize, String label)
     {
-        super(name, typeName, label);
+        super(id, typeId, label);
+        this.value = value;
         this.textSize = textSize;
-        this.value = "";
     }
 
 
@@ -65,7 +68,7 @@ public class Text extends Component implements Serializable
     {
         // Parse Values
         // >> Name
-        String name = (String) textYaml.get("name");
+        Integer id = (int) textYaml.get("id");
 
         // >> Label
         String label = null;
@@ -75,32 +78,27 @@ public class Text extends Component implements Serializable
         // >> Text Size
         TextSize textSize = Component.TextSize.fromString((String) textYaml.get("size"));
 
-        String value = null;
-        String typeName = null;
+        // >> Value
         Map<String, Object> dataYaml = (Map<String, Object>) textYaml.get("data");
+        String value = (String) dataYaml.get("value");
 
-        if (dataYaml != null)
-        {
-            // >> Value
-            if (dataYaml.containsKey("value"))
-                value = (String) dataYaml.get("value");
+        // >> Type
+        Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
 
-            // >> Type
-            if (dataYaml.containsKey("type"))
-                typeName = (String) dataYaml.get("type");
+        Type.Id typeId = null;
+        if (typeYaml != null) {
+            String typeKind = (String) dataYaml.get("kind");
+            String _typeId = (String) dataYaml.get("id");
+
+            if (typeKind != null && _typeId != null) {
+                typeId = new Type.Id(typeKind, _typeId);
+            }
         }
 
         // Create New Text
-        Text newText;
-        if (label == null)
-            newText = new Text(name, typeName, textSize);
-        else
-            newText = new Text(name, typeName, textSize, label);
+        Text text = new Text(name, typeId, value, textSize, label);
 
-        if (value != null)
-            newText.setValue(value, null);
-
-        return newText;
+        return text;
     }
 
 
@@ -318,5 +316,64 @@ public class Text extends Component implements Serializable
 
         return headerLayout;
     }
+
+
+    /**
+     * Load a Group from the database.
+     * @param database The sqlite database object.
+     * @param groupConstructorId The id of the async page constructor.
+     * @param componentId The database id of the group to load.
+     */
+    public static void load(final SQLiteDatabase database,
+                            final Integer groupConstructorId,
+                            final Integer componentId)
+    {
+        new AsyncTask<Void,Void,Void>()
+        {
+
+            protected Void doInBackground(Void... args)
+            {
+                // Query Component
+                String textQuery =
+                    "SELECT comp.component_id, comp.label, comp.type_kind, comp.type_id, text.size, text.value " +
+                    "FROM Component comp " +
+                    "INNER JOIN ComponentText text on ComponentText.component_id = Component.component_id " +
+                    "WHERE Component.component_id =  " + Integer.toString(componentId);
+
+                Cursor textCursor = database.rawQuery(textQuery, null);
+
+                Integer componentId;
+                String label;
+                String textSize;
+                String value;
+                String typeKind;
+                String typeId;
+                try {
+                    textCursor.moveToFirst();
+                    componentId = textCursor.getInt(0);
+                    label       = textCursor.getString(1);
+                    typeKind    = textCursor.getString(2);
+                    typeId      = textCursor.getString(3);
+                    textSize    = textCursor.getString(4);
+                    value       = textCursor.getString(5);
+                }
+                // TODO log
+                finally {
+                    textCursor.close();
+                }
+
+                Text text = new Text(componentId,
+                                     new Type.Id(typeKind, typeId),
+                                     value,
+                                     TextSize.fromString(textSize),
+                                     label);
+                Group.asyncConstructorMap.get(groupConstructorId).addComponent(text);
+
+                return null;
+            }
+
+        }.execute();
+    }
+
 
 }

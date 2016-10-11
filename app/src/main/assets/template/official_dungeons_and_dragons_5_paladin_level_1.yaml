@@ -1,12 +1,12 @@
 
-name:
+label:
   id: paladin_level_1
   label: 'Paladin - Level 1'
 game:
   id: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 types:
-- name: class
+- label: class
   type: list
   label: Classes
   values:
@@ -25,42 +25,42 @@ types:
 sections:
   roleplay:
     pages:
-    - name: Profile
+    - label: Profile
       groups:
-      - name: Name
+      - label: Name
         components:
         - type: text
           size: large
-          name: Name
+          label: Name
           data:
             value: Hildebrand
-      - name: Picture
+      - label: Picture
         components:
         - type: image
-          name: Picture
-      - name: Features
+          label: Picture
+      - label: Features
         components:
         - type: integer
-          name: Level
+          label: Level
           size: medium
           label: Level
           data:
             value: 17
         - type: text
-          name: Class
+          label: Class
           size: medium
           label: Class
           data:
             value: Wizard
             type: class
         - type: text
-          name: Race
+          label: Race
           size: medium
           label: Race
           data:
             value: Human
         - type: text
-          name: Alignment
+          label: Alignment
           size: medium
           label: Alignment
           data:
@@ -68,49 +68,49 @@ sections:
         layout:
           rows:
           - frames:
-            - name: Level
+            - label: Level
               width: 0.5
-            - name: Class
+            - label: Class
               width: 0.5
           - frames:
-            - name: Race
+            - label: Race
               width: 0.5
-            - name: Alignment
+            - label: Alignment
               width: 0.5
-      - name: Appearance
+      - label: Appearance
         components:
         - type: integer
-          name: Age
+          label: Age
           size: medium
           label: Age
           data:
             value: 41
         - type: text
-          name: Height
+          label: Height
           size: medium
           label: Height
           data:
             value: 5'11"
         - type: integer
-          name: Weight
+          label: Weight
           size: medium
           label: Weight
           data:
             value: 167
         - type: text
-          name: Eyes
+          label: Eyes
           size: medium
           label: Eyes
           data:
             value: Blue
         - type: text
-          name: Skin
+          label: Skin
           size: medium
           label: Skin
           data:
             value: Light
         - type: text
-          name: Hair
+          label: Hair
           size: medium
           label: Hair
           data:
@@ -118,23 +118,23 @@ sections:
         layout:
           rows:
           - frames:
-            - name: Age
+            - label: Age
               width: 0.33
-            - name: Height
+            - label: Height
               width: 0.34
-            - name: Weight
+            - label: Weight
               width: 0.33
           - frames:
-            - name: Eyes
+            - label: Eyes
               width: 0.33
-            - name: Skin
+            - label: Skin
               width: 0.34
-            - name: Hair
+            - label: Hair
               width: 0.33
-      - name: Characteristics
+      - label: Characteristics
         components:
         - type: table
-          name: Personality Traits
+          label: Personality Traits
           columns:
           - Personality Traits
           data:
@@ -150,7 +150,7 @@ sections:
                   value: >
                     Hildebrand is incredibly handsome.
         - type: table
-          name: Ideals
+          label: Ideals
           columns:
           - Ideals
           data:
@@ -174,7 +174,7 @@ sections:
                     He believes that the purpose of life is understanding the mysteries
                     of the universe, and mastering of magic in order to further understanding.
         - type: table
-          name: Bonds
+          label: Bonds
           columns:
           - Bonds
           data:
@@ -186,7 +186,7 @@ sections:
                     Hildebrand has a special bond with Jade and often accompanies her on
                     missions in order to pursue great research opportunities.
         - type: table
-          name: Flaws
+          label: Flaws
           columns:
           - Flaws
           data:
@@ -197,42 +197,42 @@ sections:
                   value: >
                     Hildebrand is occasionally possessed by a familiar demon that causes him to
                     behave chaotically and maliciously
-    - name: Stats
+    - label: Stats
       groups:
-      - name: Ability Scores
+      - label: Ability Scores
         components:
         - type: integer
-          name: Strength
+          label: Strength
           size: medium
           label: Strength
           data:
             value: 11
         - type: integer
-          name: Dexterity
+          label: Dexterity
           size: medium
           label: Dexterity
           data:
             value: 19
         - type: integer
-          name: Constitution
+          label: Constitution
           size: medium
           label: Constitution
           data:
             value: 15
         - type: integer
-          name: Intelligence
+          label: Intelligence
           size: medium
           label: Intelligence
           data:
             value: 22
         - type: integer
-          name: Wisdom
+          label: Wisdom
           size: medium
           label: Wisdom
           data:
             value: 14
         - type: integer
-          name: Charisma
+          label: Charisma
           size: medium
           label: Charisma
           data:
@@ -240,30 +240,30 @@ sections:
         layout:
           rows:
           - frames:
-            - name: Strength
+            - label: Strength
               width: 0.33
-            - name: Dexterity
+            - label: Dexterity
               width: 0.34
-            - name: Constitution
+            - label: Constitution
               width: 0.33
           - frames:
-            - name: Intelligence
+            - label: Intelligence
               width: 0.33
-            - name: Wisdom
+            - label: Wisdom
               width: 0.34
-            - name: Charisma
+            - label: Charisma
               width: 0.33
-      - name: General
+      - label: General
         components:
         - type: integer
-          name: proficiency_bonus
+          label: proficiency_bonus
           size: medium
           prefix: '+'
           label: Proficiency Bonus
           data:
             value: 6
         - type: integer
-          name: inspiration
+          label: inspiration
           size: medium
           label: Inspiration
           data:
@@ -271,27 +271,27 @@ sections:
         layout:
           rows:
           - frames:
-            - name: proficiency_bonus
+            - label: proficiency_bonus
               width: 0.5
-            - name: inspiration
+            - label: inspiration
               width: 0.5
-      - name: Combat
+      - label: Combat
         components:
         - type: integer
-          name: armor_class
+          label: armor_class
           size: medium
           label: Armor Class
           data:
             value: 24
         - type: integer
-          name: initiative
+          label: initiative
           size: medium
           prefix: '+'
           label: Initiative
           data:
             value: 7
         - type: integer
-          name: speed
+          label: speed
           size: medium
           label: Speed
           data:
@@ -299,50 +299,50 @@ sections:
         layout:
           rows:
           - frames:
-            - name: armor_class
+            - label: armor_class
               width: 0.33
-            - name: initiative
+            - label: initiative
               width: 0.34
-            - name: speed
+            - label: speed
               width: 0.33
-      - name: Saving Throws
+      - label: Saving Throws
         components:
         - type: integer
-          name: strength
+          label: strength
           size: medium
           label: Strength
           data:
             value: 0
         - type: integer
-          name: dexterity
+          label: dexterity
           size: medium
           prefix: '+'
           label: Dexterity
           data:
             value: 4
         - type: integer
-          name: constitution
+          label: constitution
           size: medium
           prefix: '+'
           label: Constitution
           data:
             value: 2
         - type: integer
-          name: intelligence
+          label: intelligence
           size: medium
           prefix: '+'
           label: Intelligence
           data:
             value: 12
         - type: integer
-          name: wisdom
+          label: wisdom
           size: medium
           prefix: '+'
           label: Wisdom
           data:
             value: 8
         - type: integer
-          name: charisma
+          label: charisma
           size: medium
           prefix: '+'
           label: Charisma
@@ -351,22 +351,22 @@ sections:
         layout:
           rows:
           - frames:
-            - name: strength
+            - label: strength
               width: 0.33
-            - name: dexterity
+            - label: dexterity
               width: 0.34
-            - name: constitution
+            - label: constitution
               width: 0.33
           - frames:
-            - name: intelligence
+            - label: intelligence
               width: 0.33
-            - name: wisdom
+            - label: wisdom
               width: 0.34
-            - name: charisma
+            - label: charisma
               width: 0.33
-    - name: Abilities
+    - label: Abilities
       groups:
-    - name: Backpack
+    - label: Backpack
       groups:
-    - name: Spellbook
+    - label: Spellbook
       groups:

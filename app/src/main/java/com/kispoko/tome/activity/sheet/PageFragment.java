@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 
 import com.kispoko.tome.activity.ChooseImageAction;
-import com.kispoko.tome.component.Component;
+import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.util.Util;
 

@@ -33,9 +33,9 @@ public class List extends Type
     // > CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public List(String name, ArrayList<String> values)
+    public List(String id, ArrayList<String> values)
     {
-        super(name);
+        super(id);
         this.values = values;
     }
 
@@ -43,11 +43,11 @@ public class List extends Type
     @SuppressWarnings("unchecked")
     public static List fromYaml(Map<String,Object> listYaml)
     {
-        String name = (String) listYaml.get("name");
+        String id = (String) listYaml.get("id");
 
         ArrayList<String> valueList = (ArrayList<String>) listYaml.get("values");
 
-        return new List(name, valueList);
+        return new List(id, valueList);
     }
 
 

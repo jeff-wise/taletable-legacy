@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.component.Component;
+import com.kispoko.tome.sheet.Component;
 
 
 
@@ -101,7 +101,7 @@ public class EditActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(0);
 
-        String title = "Edit " + this.component.getName();
+        String title = "Edit " + this.component.getId();
         actionBar.setTitle(title);
     }
 

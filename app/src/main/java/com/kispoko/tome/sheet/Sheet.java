@@ -3,9 +3,11 @@ package com.kispoko.tome.sheet;
 
 
 import android.content.Context;
-import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 
-import com.kispoko.tome.component.Component;
+import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
 
@@ -16,7 +18,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Random;
 
 
 /**
@@ -31,19 +33,18 @@ public class Sheet
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String name;
-
     private Roleplay roleplay;
 
     private Map<String,Component> componentByName;
+
+    public static Map<Integer,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Sheet(String name, Roleplay roleplay)
+    public Sheet(Roleplay roleplay)
     {
-        this.name = name;
         this.roleplay = roleplay;
 
         // Index Components
@@ -56,7 +57,7 @@ public class Sheet
                 ArrayList<Component> components = group.getComponents();
                 for (Component component : components)
                 {
-                    componentByName.put(component.getName(), component);
+                    componentByName.put(component.getId(), component);
                 }
             }
         }
@@ -87,21 +88,23 @@ public class Sheet
         Map<String,Object> roleplayYaml = (Map<String,Object>) sections.get("roleplay");
         Roleplay roleplay = Roleplay.fromYaml(roleplayYaml);
 
-        return new Sheet(name, roleplay);
+        return new Sheet(roleplay);
+    }
+
+
+    public static Integer fromAysnc(SheetActivity sheetActivity)
+    {
+        Random randGen = new Random();
+        Integer constructorId = randGen.nextInt();
+
+        Sheet.asyncConstructorMap.put(randGen.nextInt(), new AsyncConstructor(sheetActivity));
+
+        return constructorId;
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the sheet's roleplay format.
-     * @return The roleplay format.
-     */
-    public Roleplay getRoleplay()
-    {
-        return this.roleplay;
-    }
 
 
     public Component getComponent(String name)
@@ -148,6 +151,53 @@ public class Sheet
         }
 
         return namesByGame;
+    }
+
+
+
+    // > Database Methods
+    // ------------------------------------------------------------------------------------------
+
+
+    public static void loadMostRecent(final SQLiteDatabase database,
+                                      final SheetActivity sheetActivity)
+    {
+        new AsyncTask<Void,Void,Integer>()
+        {
+
+            protected Integer doInBackground(Void... args)
+            {
+                String mostRecentSheetIdQuery =
+                    "SELECT sheet_id " +
+                    "FROM Sheet " +
+                    "ORDER BY datetime(last_used) DESC " +
+                    "LIMIT 1";
+
+                Cursor cursor = database.rawQuery(mostRecentSheetIdQuery, null);
+
+                Integer sheetId;
+                try {
+                    cursor.moveToFirst();
+                    sheetId = cursor.getInt(0);
+                }
+                // TODO log
+                finally {
+                    cursor.close();
+                }
+
+                return sheetId;
+            }
+
+            protected void onPostExecute(Integer mostRecentSheetId)
+            {
+                // Create an asynchronous Sheet constructor
+                Integer sheetConstructorId = Sheet.fromAysnc(sheetActivity);
+
+                // Load the roleplay and have it delivered to the waiting async constructor
+                Roleplay.load(database, sheetConstructorId, mostRecentSheetId);
+            }
+
+        }.execute();
     }
 
 
@@ -257,6 +307,26 @@ public class Sheet
         {
             return this.description;
         }
+    }
+
+
+    public static class AsyncConstructor
+    {
+        private SheetActivity sheetActivity;
+
+        public AsyncConstructor(SheetActivity sheetActivity)
+        {
+            this.sheetActivity = sheetActivity;
+        }
+
+        synchronized public void addRoleplay(Roleplay roleplay)
+        {
+            Sheet sheet = new Sheet(roleplay);
+
+            sheetActivity.setSheet(sheet);
+            sheetActivity.showPageView();
+        }
+
     }
 
 }

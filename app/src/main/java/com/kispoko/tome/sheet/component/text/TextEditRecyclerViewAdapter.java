@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.component.text;
+package com.kispoko.tome.sheet.component.text;
 
 
 import android.app.Activity;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.R;
-import com.kispoko.tome.component.Text;
+import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.type.List;
 
 
@@ -164,7 +164,7 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
                     // Set chosen value as result of activity and finish
                     EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
-                                                           text.getName(), newValue);
+                                                           text.getId(), newValue);
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("RESULT", editResult);
                     activity.setResult(Activity.RESULT_OK, resultIntent);

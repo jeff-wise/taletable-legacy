@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--<color name="colorPrimary">#3F51B5</color>-->
-    <!--<color name="colorPrimaryDark">#303F9F</color>-->
-    <!--<color name="colorAccent">#FF4081</color>-->
+    <!--<color label="colorPrimary">#3F51B5</color>-->
+    <!--<color label="colorPrimaryDark">#303F9F</color>-->
+    <!--<color label="colorAccent">#FF4081</color>-->
 
-    <color name="theme_primary_dark">#263238</color>
-    <color name="theme_primary">#37474F</color>
-    <color name="theme_primary_light">#455a64</color>
-    <color name="theme_light">#eceff1</color>
-    <color name="theme_medium">#90a4ae</color>
-    <color name="theme_accent">#CCCCCC</color>
+    <color label="theme_primary_dark">#263238</color>
+    <color label="theme_primary">#37474F</color>
+    <color label="theme_primary_light">#455a64</color>
+    <color label="theme_light">#eceff1</color>
+    <color label="theme_medium">#90a4ae</color>
+    <color label="theme_accent">#CCCCCC</color>
 
-    <color name="theme_blue_800">#0277bd</color>
-    <color name="theme_blue_900">#0d47a1</color>
+    <color label="theme_blue_800">#0277bd</color>
+    <color label="theme_blue_900">#0d47a1</color>
 
-    <color name="theme_gray_500">#607d8b</color>
+    <color label="theme_gray_500">#607d8b</color>
 
 
     <!-- NEW -->
     <!-- GENERAL -->
-    <color name="primary">#263238</color>
-    <color name="paper">#eceff1</color>
-    <color name="text">#494949</color>
-    <color name="paper_dark">#EAEAEA</color>
+    <color label="primary">#263238</color>
+    <color label="paper">#eceff1</color>
+    <color label="text">#494949</color>
+    <color label="paper_dark">#EAEAEA</color>
 
     <!-- TEXT COLORS -->
-    <color name="text_dark">#333333</color>
-    <color name="text_medium">#595959</color>
+    <color label="text_dark">#333333</color>
+    <color label="text_medium">#595959</color>
 
     <!-- MATERIAL DESIGN COLORS -->
-    <color name="bluegrey_50">#eceff1</color>
-    <color name="bluegrey_100">#cfd8dc</color>
-    <color name="bluegrey_200">#b0bec5</color>
-    <color name="bluegrey_300">#90a4ae</color>
-    <color name="bluegrey_400">#78909C</color>
-    <color name="bluegrey_500">#607d8b</color>
-    <color name="bluegrey_600">#546e7a</color>
-    <color name="bluegrey_700">#455a64</color>
-    <color name="bluegrey_800">#37474f</color>
-    <color name="bluegrey_900">#263238</color>
+    <color label="bluegrey_50">#eceff1</color>
+    <color label="bluegrey_100">#cfd8dc</color>
+    <color label="bluegrey_200">#b0bec5</color>
+    <color label="bluegrey_300">#90a4ae</color>
+    <color label="bluegrey_400">#78909C</color>
+    <color label="bluegrey_500">#607d8b</color>
+    <color label="bluegrey_600">#546e7a</color>
+    <color label="bluegrey_700">#455a64</color>
+    <color label="bluegrey_800">#37474f</color>
+    <color label="bluegrey_900">#263238</color>
 
-    <color name="grey_100">#f5f5f5</color>
-    <color name="grey_200">#eeeeee</color>
-    <color name="grey_300">#e0e0e0</color>
-    <color name="grey_350">#CCCCCC</color>
-    <color name="grey_400">#bdbdbd</color>
-    <color name="grey_450">#aaaaaa</color>
-    <color name="grey_500">#9e9e9e</color>
-    <color name="grey_800">#424242</color>
+    <color label="grey_100">#f5f5f5</color>
+    <color label="grey_200">#eeeeee</color>
+    <color label="grey_300">#e0e0e0</color>
+    <color label="grey_350">#CCCCCC</color>
+    <color label="grey_400">#bdbdbd</color>
+    <color label="grey_450">#aaaaaa</color>
+    <color label="grey_500">#9e9e9e</color>
+    <color label="grey_800">#424242</color>
 
-    <color name="teal_800">#00695c</color>
+    <color label="teal_800">#00695c</color>
 
-    <color name="amber_200">#ffe082</color>
-    <color name="amber_300">#ffd54f</color>
-    <color name="amber_500">#ffc107</color>
-    <color name="amber_600">#ffb300</color>
-    <color name="amber_800">#ff8f00</color>
-    <color name="amber_900">#ff6f00</color>
-    <color name="amber_a700">#ffab00</color>
+    <color label="amber_200">#ffe082</color>
+    <color label="amber_300">#ffd54f</color>
+    <color label="amber_500">#ffc107</color>
+    <color label="amber_600">#ffb300</color>
+    <color label="amber_800">#ff8f00</color>
+    <color label="amber_900">#ff6f00</color>
+    <color label="amber_a700">#ffab00</color>
 
 
     <!-- SPECIFIC -->
@@ -67,9 +67,9 @@
 
     <!-- BOTTOM NAVIGATION -->
     <!-- TABS -->
-    <color name="tab_accent">#cfd8dc</color>
-    <color name="tab_inactive">#607d8b</color>
+    <color label="tab_accent">#cfd8dc</color>
+    <color label="tab_inactive">#607d8b</color>
     <!-- BG -->
-    <color name="bottom_nav_bg">#37474F</color>
+    <color label="bottom_nav_bg">#37474F</color>
     #37474f
 </resources>

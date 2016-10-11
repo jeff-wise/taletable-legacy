@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.component;
+package com.kispoko.tome.sheet.component;
 
 
 import android.content.Context;
@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.activity.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;

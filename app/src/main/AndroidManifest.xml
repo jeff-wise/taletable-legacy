@@ -10,35 +10,35 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activity.LaunchActivity"
+            android:label=".activity.LaunchActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:label="android.intent.action.MAIN" />
+                <category android:label="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".activity.SheetActivity"
+            android:label=".activity.SheetActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
         </activity>
 
         <activity
-            android:name=".activity.EditActivity"
+            android:label=".activity.EditActivity"
             android:label="Edit" />
 
         <activity
-            android:name=".activity.NewCharacterActivity"
+            android:label=".activity.NewCharacterActivity"
             android:label="Create New Character" />
 
         <activity
-            android:name=".activity.ChooseTemplateActivity"
+            android:label=".activity.ChooseTemplateActivity"
             android:label="Choose Template" />
 
         <activity
-            android:name=".activity.ChooseTemplateGameActivity"
+            android:label=".activity.ChooseTemplateGameActivity"
             android:label="Choose Template" />
 
 

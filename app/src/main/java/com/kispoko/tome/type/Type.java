@@ -1,32 +1,35 @@
+
 package com.kispoko.tome.type;
+
 
 import java.util.Map;
 
-/**
- * Created by jeff on 10/3/16.
- */
 
+
+/**
+ * Type
+ */
 public abstract class Type
 {
 
     // > PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private String name;
+    private String id;
 
 
     // > CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public Type(String name)
+    public Type(String id)
     {
-        this.name = name;
+        this.id = id;
     }
 
 
     public static Type fromYaml(Map<String,Object> typeYaml)
     {
-        String kind = (String) typeYaml.get("type");
+        String kind = (String) typeYaml.get("kind");
 
         switch (kind)
         {
@@ -41,9 +44,34 @@ public abstract class Type
     // > API
     // -------------------------------------------------------------------------------------------
 
-    public String getName()
+    public String getId()
     {
-        return this.name;
+        return this.id;
     }
 
+
+    // > TYPE ID
+    // -------------------------------------------------------------------------------------------
+
+    public static class Id
+    {
+        private String kind;
+        private String id;
+
+        public Id(String kind, String id)
+        {
+            this.kind = kind;
+            this.id = id;
+        }
+
+        public String getKind()
+        {
+            return this.kind;
+        }
+
+        public String geId()
+        {
+            return this.id;
+        }
+    }
 }

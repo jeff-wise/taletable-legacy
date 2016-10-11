@@ -140,9 +140,11 @@ public class ChooseTemplateActivity extends AppCompatActivity
             templateLayout.setLayoutParams(templateLayoutParams);
             templateLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-            int templateLayoutPaddingVert =
-                    (int) Util.getDim(this, R.dimen.choose_template_layout_padding_vert);
-            templateLayout.setPadding(0, templateLayoutPaddingVert, 0, templateLayoutPaddingVert);
+            int templateLayoutPaddingTop =
+                    (int) Util.getDim(this, R.dimen.choose_template_layout_padding_top);
+            int templateLayoutPaddingBottom =
+                    (int) Util.getDim(this, R.dimen.choose_template_layout_padding_bottom);
+            templateLayout.setPadding(0, templateLayoutPaddingTop, 0, templateLayoutPaddingBottom);
 
 
             // >> Add Icon

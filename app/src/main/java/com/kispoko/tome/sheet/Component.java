@@ -1,8 +1,9 @@
 
-package com.kispoko.tome.component;
+package com.kispoko.tome.sheet;
 
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -10,11 +11,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.component.Document;
+import com.kispoko.tome.sheet.component.Image;
+import com.kispoko.tome.sheet.component.NumberInteger;
+import com.kispoko.tome.sheet.component.Table;
+import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import static android.R.attr.id;
 
 
 /**
@@ -27,9 +35,9 @@ public abstract class Component implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String name;
+    private Integer id;
+    private Type.Id typeId;
     private String label;
-    private String typeName;
 
 
     // > INTERFACE
@@ -42,18 +50,10 @@ public abstract class Component implements Serializable
     // > SHARED METHODS
     // ------------------------------------------------------------------------------------------
 
-    public Component(String name, String typeName)
+    public Component(Integer id, Type.Id typeId, String label)
     {
-        this.name = name;
-        this.typeName = typeName;
-        this.label = null;
-    }
-
-
-    public Component(String name, String typeName, String label)
-    {
-        this.name = name;
-        this.typeName = typeName;
+        this.id = id;
+        this.typeId = typeId;
         this.label = label;
     }
 
@@ -64,9 +64,9 @@ public abstract class Component implements Serializable
     }
 
 
-    public String getName()
+    public Integer getId()
     {
-        return this.name;
+        return this.id;
     }
 
 
@@ -75,21 +75,18 @@ public abstract class Component implements Serializable
         return this.label;
     }
 
-    public String getTypeName()
-    {
-        return this.typeName;
-    }
 
     public boolean hasType()
     {
-        return this.typeName != null;
+        return this.typeId != null;
     }
+
 
     public Type getType()
     {
         // TODO verify
-        if (this.typeName != null)
-            return RulesEngine.getType(this.typeName);
+        if (this.typeId != null)
+            return RulesEngine.getType(this.typeId);
         else
             return null;
     }
@@ -117,6 +114,37 @@ public abstract class Component implements Serializable
 
         return textView;
     }
+
+
+
+    /**
+     * Load a Group from the database.
+     * @param database The sqlite database object.
+     * @param groupConstructorId The id of the async group constructor.
+     * @param componentId The database id of the component to load.
+     */
+    public static void load(final SQLiteDatabase database,
+                            final Integer groupConstructorId,
+                            final Integer componentId,
+                            final String componentType)
+    {
+        switch (componentType)
+        {
+            case "text":
+                Text.load(database, groupConstructorId, componentId);
+                break;
+            case "image":
+                Image.load(database, groupConstructorId, componentId);
+                break;
+            case "integer":
+                NumberInteger.load(database, groupConstructorId, componentId);
+                break;
+            case "table":
+                Table.load(database, groupConstructorId, componentId);
+                break;
+        }
+    }
+
 
 
     // > STATIC METHODS
@@ -157,14 +185,14 @@ public abstract class Component implements Serializable
     }
 
 
-
+    // > NESTED CLASSES
+    // ------------------------------------------------------------------------------------------
 
     public enum TextSize
     {
         SMALL,
         MEDIUM,
         LARGE;
-
 
         public static TextSize fromString(String textSize)
         {

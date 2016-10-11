@@ -4,8 +4,8 @@ package com.kispoko.tome.activity;
 
 import android.content.Context;
 
-import com.kispoko.tome.component.Component;
-import com.kispoko.tome.component.Text;
+import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.sheet.Sheet;
 
 import java.io.Serializable;

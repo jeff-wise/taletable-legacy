@@ -1,18 +1,13 @@
 
-package com.kispoko.tome.component;
+package com.kispoko.tome.sheet.component;
 
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-
-import static android.R.attr.labelTextSize;
-import static com.kispoko.tome.component.Component.TextSize.LARGE;
-import static com.kispoko.tome.component.Component.TextSize.MEDIUM;
-import static com.kispoko.tome.component.Component.TextSize.SMALL;
+import com.kispoko.tome.sheet.Component;
 
 /**
  * Component utility functions

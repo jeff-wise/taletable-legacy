@@ -3,21 +3,24 @@ package com.kispoko.tome.sheet;
 
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.component.Component;
-import com.kispoko.tome.component.Layout;
+import com.kispoko.tome.sheet.group.Layout;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 
 
@@ -30,28 +33,30 @@ public class Group implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String name;
+    private String label;
     private ArrayList<Component> components;
     private Layout layout;
 
-    private Map<String, Component> componentByName;
+    private Map<Integer, Component> componentById;
+
+    public static Map<Integer,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Group(String name, ArrayList<Component> components, Layout layout)
+    public Group(String label, ArrayList<Component> components, Layout layout)
     {
-        this.name = name;
+        this.label = label;
         this.components = components;
         this.layout = layout;
 
-        // Index components for name lookup
-        componentByName = new HashMap<>();
+        // Index components for label lookup
+        componentById = new HashMap<>();
         for (Component component : this.components)
         {
-            //Log.d("coffee", "indexed component " + component.getName());
-            componentByName.put(component.getName(), component);
+            //Log.d("coffee", "indexed component " + component.getLabel());
+            componentById.put(component.getId(), component);
         }
     }
 
@@ -62,13 +67,13 @@ public class Group implements Serializable
         ArrayList<Component> components = new ArrayList<>();
         Layout layout;
 
-        String name = (String) groupYaml.get("name");
+        String name = (String) groupYaml.get("label");
 
         ArrayList<Object> componentsYaml = (ArrayList<Object>) groupYaml.get("components");
         for (Object componentYaml : componentsYaml) {
             Component component = Component.fromYaml((Map<String, Object>) componentYaml);
 
-            //Log.d("coffee", "component name " + component.getName());
+            //Log.d("coffee", "component label " + component.getLabel());
 
             components.add(component);
         }
@@ -84,13 +89,24 @@ public class Group implements Serializable
     }
 
 
+    public static Integer fromAysnc(Integer numberOfComponents, Integer pageConstructorId)
+    {
+        Random randGen = new Random();
+        Integer constructorId = randGen.nextInt();
+
+        Group.asyncConstructorMap.put(constructorId,
+                                     new AsyncConstructor(numberOfComponents, pageConstructorId));
+
+        return constructorId;
+    }
+
 
     // > API
     // ------------------------------------------------------------------------------------------
 
     public Component getComponent(String name)
     {
-        return this.componentByName.get(name);
+        return this.componentById.get(name);
     }
 
 
@@ -137,7 +153,7 @@ public class Group implements Serializable
                 frameLayoutParams.weight = (float) frame.getWidth();
                 frameLayout.setLayoutParams(frameLayoutParams);
 
-                Component component = this.componentByName.get(frame.getComponentName());
+                Component component = this.componentById.get(frame.getComponentId());
 
                 // Add Component Label
                 if (component.hasLabel()) {
@@ -156,6 +172,84 @@ public class Group implements Serializable
 
         return groupLayout;
     }
+
+
+    /**
+     * Load a Group from the database.
+     * @param database The sqlite database object.
+     * @param pageConstructorId The id of the async page constructor.
+     * @param groupId The database id of the group to load.
+     */
+    public static void load(final SQLiteDatabase database,
+                            final Integer pageConstructorId,
+                            final Integer groupId)
+    {
+        new AsyncTask<Void,Void,Void>()
+        {
+
+            protected Void doInBackground(Void... args)
+            {
+                // Query Group Data
+                String groupQuery =
+                    "SELECT label " +
+                    "FROM Group " +
+                    "WHERE Group.group_id =  " + Integer.toString(groupId);
+
+                Cursor groupCursor = database.rawQuery(groupQuery, null);
+
+                String label;
+                try {
+                    groupCursor.moveToFirst();
+                    label = groupCursor.getString(0);
+                }
+                // TODO log
+                finally {
+                    groupCursor.close();
+                }
+
+                // Query Components
+                String componentsOfGroupQuery =
+                    "SELECT c.component_id, c.data_type " +
+                    "FROM Component c " +
+                    "WHERE Component.group_id = " + Integer.toString(groupId);
+
+                Cursor cursor = database.rawQuery(componentsOfGroupQuery, null);
+
+                ArrayList<Integer> componentIds  = new ArrayList<Integer>();
+                ArrayList<String> componentTypes = new ArrayList<String>();
+                try {
+                    while (cursor.moveToNext()) {
+                        componentIds.add(cursor.getInt(0));
+                        componentTypes.add(cursor.getString(1));
+                    }
+                }
+                // TODO log
+                finally {
+                    cursor.close();
+                }
+
+
+                // Create Asynchronous Constructor
+                Integer groupConstructorId = Group.fromAysnc(componentIds.size(), pageConstructorId);
+
+                // >> Set Label
+                Page.asyncConstructorMap.get(pageConstructorId).setLabel(label);
+
+                // >> Asynchronous load components
+                for (int i = 0; i < componentIds.size(); i++) {
+                    Component.load(database, groupConstructorId,
+                                   componentIds.get(i), componentTypes.get(i));
+                }
+
+                // >> Asynchronous load group layout
+                Layout.load(database, groupConstructorId, groupId);
+
+                return null;
+            }
+
+        }.execute();
+    }
+
 
 
     // > INTERNAL
@@ -177,9 +271,70 @@ public class Group implements Serializable
 //        int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
 //        textView.setPadding(padding, 0, 0, 0);
 
-        textView.setText(this.name.toUpperCase());
+        textView.setText(this.label.toUpperCase());
 
         return textView;
     }
+
+
+    // > NESTED CLASSES
+    // ------------------------------------------------------------------------------------------
+
+    public static class AsyncConstructor
+    {
+        private Integer pageConstructorId;
+
+        private Integer numberOfComponents;
+
+        private String label;
+        private ArrayList<Component> components;
+        private Layout layout;
+
+        public AsyncConstructor(Integer numberOfComponents, Integer pageConstructorId)
+        {
+            this.pageConstructorId = pageConstructorId;
+            this.numberOfComponents = numberOfComponents;
+
+            this.label = null;
+            this.components = new ArrayList<>();
+            this.layout = null;
+        }
+
+        synchronized public void setLabel(String label)
+        {
+            this.label = label;
+
+            if (this.isReady())  ready();
+        }
+
+        synchronized public void addComponent(Component component)
+        {
+            this.components.add(component);
+
+            if (this.isReady())  ready();
+        }
+
+        synchronized public void setLayout(Layout layout)
+        {
+            this.layout = layout;
+
+            if (this.isReady())  ready();
+        }
+
+        private boolean isReady()
+        {
+            return this.label != null &&
+                   this.components.size() == numberOfComponents &&
+                   this.layout != null;
+        }
+
+        private void ready()
+        {
+            Group group = new Group(this.label, this.components, this.layout);
+            Page.asyncConstructorMap.get(pageConstructorId).addGroup(group);
+        }
+
+    }
+
 
 }
