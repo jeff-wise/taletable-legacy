@@ -3,11 +3,14 @@ package com.kispoko.tome.util;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -77,6 +80,18 @@ public class Util
             serifFontBold = Typeface.createFromAsset(context.getAssets(),
                     "fonts/DavidLibre-Bold.ttf");
         return serifFontBold;
+    }
+
+    // convert from bitmap to byte array
+    public static byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    // convert from byte array to bitmap
+    public static Bitmap getImage(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 }
 

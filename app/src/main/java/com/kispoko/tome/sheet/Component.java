@@ -35,7 +35,7 @@ public abstract class Component implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Integer id;
+    private Id id;
     private Type.Id typeId;
     private String label;
 
@@ -46,11 +46,15 @@ public abstract class Component implements Serializable
     abstract public View getDisplayView(Context context);
     abstract public View getEditorView(Context context);
 
+    abstract public String componentName();
 
-    // > SHARED METHODS
+    abstract public void save(SQLiteDatabase database, Long groupId);
+
+
+    // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Component(Integer id, Type.Id typeId, String label)
+    public Component(Id id, Type.Id typeId, String label)
     {
         this.id = id;
         this.typeId = typeId;
@@ -58,15 +62,29 @@ public abstract class Component implements Serializable
     }
 
 
-    public boolean hasLabel()
+    // > API
+    // ------------------------------------------------------------------------------------------
+
+    // >> Id
+    // ------------------------------------------------------------------------------------------
+
+    public Id getId()
     {
-        return this.label != null;
+        return this.id;
+    }
+
+    public void setId(Id id)
+    {
+        this.id = id;
     }
 
 
-    public Integer getId()
+    // >> Label
+    // ------------------------------------------------------------------------------------------
+
+    public boolean hasLabel()
     {
-        return this.id;
+        return this.label != null;
     }
 
 
@@ -75,6 +93,9 @@ public abstract class Component implements Serializable
         return this.label;
     }
 
+
+    // >> Type
+    // ------------------------------------------------------------------------------------------
 
     public boolean hasType()
     {
@@ -92,6 +113,9 @@ public abstract class Component implements Serializable
     }
 
 
+    // >> Views
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Create the view for the component label.
      * @param context The context.
@@ -101,7 +125,6 @@ public abstract class Component implements Serializable
     {
         TextView textView = new TextView(context);
         textView.setId(R.id.component_label);
-
         float labelTextSize = (int) context.getResources()
                                          .getDimension(R.dimen.label_text_size);
         textView.setTextSize(labelTextSize);
@@ -116,40 +139,14 @@ public abstract class Component implements Serializable
     }
 
 
-
-    /**
-     * Load a Group from the database.
-     * @param database The sqlite database object.
-     * @param groupConstructorId The id of the async group constructor.
-     * @param componentId The database id of the component to load.
-     */
-    public static void load(final SQLiteDatabase database,
-                            final Integer groupConstructorId,
-                            final Integer componentId,
-                            final String componentType)
-    {
-        switch (componentType)
-        {
-            case "text":
-                Text.load(database, groupConstructorId, componentId);
-                break;
-            case "image":
-                Image.load(database, groupConstructorId, componentId);
-                break;
-            case "integer":
-                NumberInteger.load(database, groupConstructorId, componentId);
-                break;
-            case "table":
-                Table.load(database, groupConstructorId, componentId);
-                break;
-        }
-    }
-
-
-
     // > STATIC METHODS
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * Create a component from Yaml.
+     * @param componentYaml The yaml object.
+     * @return The parsed component.
+     */
     public static Component fromYaml(Map<String, Object> componentYaml)
     {
         String componentType = (String) componentYaml.get("type");
@@ -170,6 +167,34 @@ public abstract class Component implements Serializable
 
         return null;
     }
+
+
+    /**
+     * Load a Group from the database.
+     * @param database The sqlite database object.
+     * @param groupConstructorId The id of the async group constructor.
+     * @param componentId The database id of the component to load.
+     */
+    public static void load(SQLiteDatabase database, Integer groupConstructorId,
+                            Integer componentId, String componentType)
+    {
+        switch (componentType)
+        {
+            case "text":
+                Text.load(database, groupConstructorId, componentId);
+                break;
+            case "image":
+                Image.load(database, groupConstructorId, componentId);
+                break;
+            case "integer":
+                NumberInteger.load(database, groupConstructorId, componentId);
+                break;
+            case "table":
+                Table.load(database, groupConstructorId, componentId);
+                break;
+        }
+    }
+
 
 
     public static LinearLayout linearLayout(Context context)
@@ -198,6 +223,31 @@ public abstract class Component implements Serializable
         {
             return TextSize.valueOf(textSize.toUpperCase());
         }
+
+    }
+
+
+    public static class Id
+    {
+        private Long id;
+        private Long subId;
+
+        public Id(Long id, Long subId)
+        {
+            this.id = id;
+            this.subId = subId;
+        }
+
+        public Long getId()
+        {
+            return this.id;
+        }
+
+        public Long getSubId()
+        {
+            return this.subId;
+        }
+
     }
 
 

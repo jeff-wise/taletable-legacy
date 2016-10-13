@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,11 +10,18 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.kispoko.tome.db.SheetContract;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import static android.R.string.no;
+import static android.icu.text.MessagePattern.ArgType.SELECT;
+import static android.text.style.TtsSpan.TYPE_TEXT;
+import static org.yaml.snakeyaml.nodes.Tag.SET;
 
 
 /**
@@ -32,6 +40,8 @@ public class Page implements Serializable
     private String label;
     private ArrayList<Group> groups;
 
+    private Long id;
+
     public static Map<Integer,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
 
@@ -42,6 +52,8 @@ public class Page implements Serializable
     {
         this.label = label;
         this.groups = groups;
+
+        this.id = null;
     }
 
 
@@ -91,6 +103,12 @@ public class Page implements Serializable
     }
 
 
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+
     public ArrayList<Group> getGroups()
     {
         return this.groups;
@@ -121,6 +139,11 @@ public class Page implements Serializable
         return profileLayout;
     }
 
+    // >> I/O Methods
+    // ------------------------------------------------------------------------------------------
+
+    // >>> Database
+    // ------------------------------------------------------------------------------------------
 
     public static void load(final SQLiteDatabase database,
                             final Integer roleplayConstructorId,
@@ -184,6 +207,55 @@ public class Page implements Serializable
 
         }.execute();
     }
+
+
+    /**
+     * Save to the database.
+     * @param database The SQLite database object.
+     * @param recursive If true, save all child objects as well.
+     */
+    public void save(final SQLiteDatabase database, final Long sheetId,
+                     final String sectionId, final boolean recursive)
+    {
+        final Page thisPage = this;
+
+        new AsyncTask<Void,Void,Long>()
+        {
+            protected Long doInBackground(Void... args)
+            {
+                ContentValues row = new ContentValues();
+                row.put("page_id", thisPage.id);
+                row.put("sheet_id", sheetId);
+                row.put("section_id", sectionId);
+                row.put("label", thisPage.label);
+
+                Long pageId = database.insertWithOnConflict(SheetContract.Page.TABLE_NAME,
+                                                             null,
+                                                             row,
+                                                             SQLiteDatabase.CONFLICT_REPLACE);
+
+                // Set ID in case of first insert and ID was Null
+                thisPage.setId(pageId);
+
+                return pageId;
+            }
+
+            protected void onPostExecute(Long pageId)
+            {
+                if (!recursive) return;
+
+                // Save the child data to the database
+                for (Group group : groups)
+                {
+                    group.save(database, pageId, true);
+                }
+            }
+
+        }.execute();
+
+    }
+
+
 
 
     // > NESTED CLASSES

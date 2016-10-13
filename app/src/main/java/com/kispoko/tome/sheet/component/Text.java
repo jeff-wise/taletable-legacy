@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.component;
 
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
+import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.component.text.TextEditRecyclerViewAdapter;
@@ -54,7 +56,7 @@ public class Text extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public Text(Integer id, Type.Id typeId, String value, TextSize textSize, String label)
+    public Text(Id id, Type.Id typeId, String value, TextSize textSize, String label)
     {
         super(id, typeId, label);
         this.value = value;
@@ -67,9 +69,6 @@ public class Text extends Component implements Serializable
     public static Text fromYaml(Map<String, Object> textYaml)
     {
         // Parse Values
-        // >> Name
-        Integer id = (int) textYaml.get("id");
-
         // >> Label
         String label = null;
         if (textYaml.containsKey("label"))
@@ -96,7 +95,7 @@ public class Text extends Component implements Serializable
         }
 
         // Create New Text
-        Text text = new Text(name, typeId, value, textSize, label);
+        Text text = new Text(null, typeId, value, textSize, label);
 
         return text;
     }
@@ -123,6 +122,17 @@ public class Text extends Component implements Serializable
         return this.value;
     }
 
+
+    public String componentName()
+    {
+        return "text";
+    }
+
+
+    public TextSize getTextSize()
+    {
+        return this.textSize;
+    }
 
 
     // >> Views
@@ -318,6 +328,9 @@ public class Text extends Component implements Serializable
     }
 
 
+    // >> Database
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Load a Group from the database.
      * @param database The sqlite database object.
@@ -330,43 +343,47 @@ public class Text extends Component implements Serializable
     {
         new AsyncTask<Void,Void,Void>()
         {
-
             protected Void doInBackground(Void... args)
             {
                 // Query Component
                 String textQuery =
-                    "SELECT comp.component_id, comp.label, comp.type_kind, comp.type_id, text.size, text.value " +
+                    "SELECT comp.component_id, comp.label, comp.type_kind, comp.type_id, " +
+                           "text.text_id, text.size, text.value " +
                     "FROM Component comp " +
                     "INNER JOIN ComponentText text on ComponentText.component_id = Component.component_id " +
                     "WHERE Component.component_id =  " + Integer.toString(componentId);
 
                 Cursor textCursor = database.rawQuery(textQuery, null);
 
-                Integer componentId;
+                Long componentId;
                 String label;
-                String textSize;
-                String value;
                 String typeKind;
                 String typeId;
+                Long textComponentId;
+                String textSize;
+                String value;
                 try {
                     textCursor.moveToFirst();
-                    componentId = textCursor.getInt(0);
-                    label       = textCursor.getString(1);
-                    typeKind    = textCursor.getString(2);
-                    typeId      = textCursor.getString(3);
-                    textSize    = textCursor.getString(4);
-                    value       = textCursor.getString(5);
+                    componentId     = textCursor.getLong(0);
+                    label           = textCursor.getString(1);
+                    typeKind        = textCursor.getString(2);
+                    typeId          = textCursor.getString(3);
+                    textComponentId = textCursor.getLong(4);
+                    textSize        = textCursor.getString(5);
+                    value           = textCursor.getString(6);
                 }
                 // TODO log
                 finally {
                     textCursor.close();
                 }
 
-                Text text = new Text(componentId,
+
+                Text text = new Text(new Id(componentId, textComponentId),
                                      new Type.Id(typeKind, typeId),
                                      value,
                                      TextSize.fromString(textSize),
                                      label);
+
                 Group.asyncConstructorMap.get(groupConstructorId).addComponent(text);
 
                 return null;
@@ -375,5 +392,61 @@ public class Text extends Component implements Serializable
         }.execute();
     }
 
+
+    /**
+     * Save to the database.
+     * @param database The SQLite database object.
+     * @param groupId The ID of the parent group object.
+     */
+    public void save(final SQLiteDatabase database, final Long groupId)
+    {
+        final Text thisText = this;
+
+        new AsyncTask<Void,Void,Void>()
+        {
+            protected Void doInBackground(Void... args)
+            {
+                ContentValues componentRow = new ContentValues();
+
+                if (thisText.getId() != null)
+                    componentRow.put("component_id", thisText.getId().getId());
+                else
+                    componentRow.putNull("component_id");
+                componentRow.put("group_id", groupId);
+                componentRow.put("data_type", thisText.componentName());
+                componentRow.put("label", thisText.getLabel());
+                componentRow.put("type_kind", thisText.getType().getId().getKind());
+                componentRow.put("type_id", thisText.getType().getId().getId());
+
+                Long componentId = database.insertWithOnConflict(
+                                                SheetContract.Component.TABLE_NAME,
+                                                null,
+                                                componentRow,
+                                                SQLiteDatabase.CONFLICT_REPLACE);
+
+
+                ContentValues textComponentRow = new ContentValues();
+                if (thisText.getId() != null)
+                    textComponentRow.put("text_id", thisText.getId().getSubId());
+                else
+                    textComponentRow.putNull("text_id");
+                textComponentRow.put("component_id", componentId);
+                textComponentRow.put("value", thisText.getValue());
+                textComponentRow.put("size", thisText.getTextSize().toString().toLowerCase());
+
+                Long textComponentId = database.insertWithOnConflict(
+                                                    SheetContract.ComponentText.TABLE_NAME,
+                                                    null,
+                                                    textComponentRow,
+                                                    SQLiteDatabase.CONFLICT_REPLACE);
+
+                // Set ID in case of first insert and ID was Null
+                thisText.setId(new Id(componentId, textComponentId));
+
+                return null;
+            }
+
+        }.execute();
+    }
 
 }

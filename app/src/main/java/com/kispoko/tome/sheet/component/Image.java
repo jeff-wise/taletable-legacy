@@ -2,8 +2,13 @@
 package com.kispoko.tome.sheet.component;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
@@ -15,7 +20,10 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.activity.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
+import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
@@ -32,31 +40,150 @@ public class Image extends Component implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String name;
+    private Bitmap bitmap;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Image(String name, String typeName)
+    public Image(Id id, Type.Id typeId, String label, Bitmap bitmap)
     {
-        super(name, typeName);
+        super(id, typeId, label);
+        this.bitmap = bitmap;
     }
 
 
     public static Image fromYaml(Map<String, Object> imageYaml)
     {
-        //Map<String, Object> dataYaml = (Map<String, Object>) imageYaml.get("data");
+        String label  = (String) imageYaml.get("label");
 
-        String name = (String) imageYaml.get("name");
-
-        return new Image(name, null);
+        return new Image(null, null, label, null);
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
 
+    // >> Getters/Setters
+    // ------------------------------------------------------------------------------------------
+
+    public String componentName()
+    {
+        return "image";
+    }
+
+    // >> Database
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Load a Group from the database.
+     * @param database The sqlite database object.
+     * @param groupConstructorId The id of the async page constructor.
+     * @param componentId The database id of the group to load.
+     */
+    public static void load(final SQLiteDatabase database,
+                            final Integer groupConstructorId,
+                            final Integer componentId)
+    {
+        new AsyncTask<Void,Void,Void>()
+        {
+
+            protected Void doInBackground(Void... args)
+            {
+                // Query Component
+                String imageQuery =
+                    "SELECT comp.component_id, comp.label, im.image_id, im.image " +
+                    "FROM Component comp " +
+                    "INNER JOIN ComponentImage im on ComponentImage.component_id = Component.component_id " +
+                    "WHERE Component.component_id =  " + Integer.toString(componentId);
+
+                Cursor imageCursor = database.rawQuery(imageQuery, null);
+
+                Long componentId;
+                String label;
+                Long imageId;
+                byte[] imageBlob;
+                try {
+                    imageCursor.moveToFirst();
+                    componentId = imageCursor.getLong(0);
+                    label       = imageCursor.getString(1);
+                    imageId     = imageCursor.getLong(2);
+                    imageBlob   = imageCursor.getBlob(3);
+                }
+                // TODO log
+                finally {
+                    imageCursor.close();
+                }
+
+                Image image = new Image(new Id(componentId, imageId),
+                                        null, label, Util.getImage(imageBlob));
+
+                Group.asyncConstructorMap.get(groupConstructorId).addComponent(image);
+
+                return null;
+            }
+
+        }.execute();
+    }
+
+
+    /**
+     * Save to the database.
+     * @param database The SQLite database object.
+     * @param groupId The ID of the parent group object.
+     */
+    public void save(final SQLiteDatabase database, final Long groupId)
+    {
+        final Image thisImage = this;
+
+        new AsyncTask<Void,Void,Void>()
+        {
+            protected Void doInBackground(Void... args)
+            {
+                ContentValues componentRow = new ContentValues();
+
+                if (thisImage.getId() != null)
+                    componentRow.put("component_id", thisImage.getId().getId());
+                else
+                    componentRow.putNull("component_id");
+                componentRow.put("group_id", groupId);
+                componentRow.put("data_type", thisImage.componentName());
+                componentRow.put("label", thisImage.getLabel());
+                componentRow.putNull("type_kind");
+                componentRow.putNull("type_id");
+
+                Long componentId = database.insertWithOnConflict(
+                                                SheetContract.Component.TABLE_NAME,
+                                                null,
+                                                componentRow,
+                                                SQLiteDatabase.CONFLICT_REPLACE);
+
+                ContentValues imageComponentRow = new ContentValues();
+                if (thisImage.getId() != null)
+                    imageComponentRow.put("image_id", thisImage.getId().getSubId());
+                else
+                    imageComponentRow.putNull("image_id");
+                imageComponentRow.put("component_id", componentId);
+                imageComponentRow.put("image", Util.getBytes(thisImage.bitmap));
+
+                Long imageId = database.insertWithOnConflict(
+                                                SheetContract.ComponentImage.TABLE_NAME,
+                                                null,
+                                                imageComponentRow,
+                                                SQLiteDatabase.CONFLICT_REPLACE);
+
+                // Set ID in case of first insert and ID was Null
+                thisImage.setId(new Id(componentId, imageId));
+
+                return null;
+            }
+
+        }.execute();
+    }
+
+
+    // >> Views
+    // ------------------------------------------------------------------------------------------
 
     /**
      * Get the view for the image component. Depending on the mode, it will either display an
@@ -76,8 +203,6 @@ public class Image extends Component implements Serializable
         final ImageView imageView = this.imageView(context);
         final Button chooseImageButton = this.chooseImageButton(context);
 
-        final Image thisImage = this;
-
         chooseImageButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -95,17 +220,11 @@ public class Image extends Component implements Serializable
                     intent.setType("image/*");
                 }
 
-//                intent.setType("image/*");
-//                intent.setAction(Intent.ACTION_GET_CONTENT);
-
                 sheetActivity.setChooseImageAction(
                         new ChooseImageAction(imageView, chooseImageButton));
 
                 sheetActivity.startActivityForResult(intent, SheetActivity.CHOOSE_IMAGE_FROM_FILE);
 
-//                sheetActivity.startActivityForResult(
-//                        Intent.createChooser(intent, "Complete action using"),
-//                        SheetActivity.CHOOSE_IMAGE_FROM_FILE);
             }
         });
 

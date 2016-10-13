@@ -40,7 +40,7 @@ public class SheetContract
 
         // Column: Last Used
         public static final String COLUMN_LAST_USED_NAME = "last_used";
-        public static final String COLUMN_LAST_USED_TYPE = TYPE_TEXT;
+        public static final String COLUMN_LAST_USED_TYPE = TYPE_INTEGER;
     }
 
 
@@ -56,10 +56,6 @@ public class SheetContract
         public static final String COLUMN_PAGE_ID_NAME = "page_id";
         public static final String COLUMN_PAGE_ID_TYPE = TYPE_INTEGER;
 
-        // Column: Label
-        public static final String COLUMN_LABEL_NAME = "label";
-        public static final String COLUMN_LABEL_TYPE = TYPE_TEXT;
-
         // Column: Sheet Id
         public static final String COLUMN_SHEET_ID_NAME = "sheet_id";
         public static final String COLUMN_SHEET_ID_TYPE = TYPE_TEXT;
@@ -67,6 +63,10 @@ public class SheetContract
         // Column: Section Id
         public static final String COLUMN_SECTION_ID_NAME = "section_id";
         public static final String COLUMN_SECTION_ID_TYPE = TYPE_TEXT;
+
+        // Column: Label
+        public static final String COLUMN_LABEL_NAME = "label";
+        public static final String COLUMN_LABEL_TYPE = TYPE_TEXT;
     }
 
 
@@ -131,15 +131,15 @@ public class SheetContract
         public static final String COLUMN_INDEX_TYPE = TYPE_INTEGER;
 
         // Column: Frame 1
-        public static final String COLUMN_FRAME_1_NAME = "frame_1";
+        public static final String COLUMN_FRAME_1_NAME = "frame1";
         public static final String COLUMN_FRAME_1_TYPE = TYPE_INTEGER;
 
         // Column: Frame 2
-        public static final String COLUMN_FRAME_2_NAME = "frame_2";
+        public static final String COLUMN_FRAME_2_NAME = "frame2";
         public static final String COLUMN_FRAME_2_TYPE = TYPE_INTEGER;
 
         // Column: Frame 3
-        public static final String COLUMN_FRAME_3_NAME = "frame_3";
+        public static final String COLUMN_FRAME_3_NAME = "frame3";
         public static final String COLUMN_FRAME_3_TYPE = TYPE_INTEGER;
     }
 
@@ -268,33 +268,75 @@ public class SheetContract
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_INTEGER;
 
-        // Column: Row
-        public static final String COLUMN_ROW_NAME = "row";
-        public static final String COLUMN_ROW_TYPE = TYPE_INTEGER;
-
         // Column: Column 1
-        public static final String COLUMN_COLUMN_1_NAME = "column_1";
-        public static final String COLUMN_COLUMN_1_TYPE = TYPE_INTEGER;
+        public static final String COLUMN_COLUMN_1_NAME_NAME = "column1_name";
+        public static final String COLUMN_COLUMN_1_NAME_TYPE = TYPE_TEXT;
 
         // Column: Column 2
-        public static final String COLUMN_COLUMN_2_NAME = "column_2";
-        public static final String COLUMN_COLUMN_2_TYPE = TYPE_INTEGER;
+        public static final String COLUMN_COLUMN_2_NAME_NAME = "column2_name";
+        public static final String COLUMN_COLUMN_2_NAME_TYPE = TYPE_TEXT;
 
         // Column: Column 3
-        public static final String COLUMN_COLUMN_3_NAME = "column_3";
-        public static final String COLUMN_COLUMN_3_TYPE = TYPE_INTEGER;
+        public static final String COLUMN_COLUMN_3_NAME_NAME = "column3_name";
+        public static final String COLUMN_COLUMN_3_NAME_TYPE = TYPE_TEXT;
 
         // Column: Column 4
-        public static final String COLUMN_COLUMN_4_NAME = "column_4";
-        public static final String COLUMN_COLUMN_4_TYPE = TYPE_INTEGER;
+        public static final String COLUMN_COLUMN_4_NAME_NAME = "column4_name";
+        public static final String COLUMN_COLUMN_4_NAME_TYPE = TYPE_TEXT;
 
         // Column: Column 5
-        public static final String COLUMN_COLUMN_5_NAME = "column_5";
-        public static final String COLUMN_COLUMN_5_TYPE = TYPE_INTEGER;
+        public static final String COLUMN_COLUMN_5_NAME_NAME = "column5_name";
+        public static final String COLUMN_COLUMN_5_NAME_TYPE = TYPE_TEXT;
 
         // Column: Column 6
-        public static final String COLUMN_COLUMN_6_NAME = "column_6";
-        public static final String COLUMN_COLUMN_6_TYPE = TYPE_INTEGER;
+        public static final String COLUMN_COLUMN_6_NAME_NAME = "column6_name";
+        public static final String COLUMN_COLUMN_6_NAME_TYPE = TYPE_TEXT;
+    }
+
+
+    /**
+     * Table Component
+     */
+    public static class ComponentTableRow implements BaseColumns
+    {
+        // Table: Data Table Row
+        public static final String TABLE_NAME = "component_table_row";
+
+        // Column: Table Row Id
+        public static final String COLUMN_TABLE_ROW_ID_NAME = "table_row_id";
+        public static final String COLUMN_TABLE_ROW_ID_TYPE = TYPE_INTEGER;
+
+        // Column: Table Id
+        public static final String COLUMN_TABLE_ID_NAME = "table_id";
+        public static final String COLUMN_TABLE_ID_TYPE = TYPE_INTEGER;
+
+        // Column: Index
+        public static final String COLUMN_INDEX_NAME = "index";
+        public static final String COLUMN_INDEX_TYPE = TYPE_INTEGER;
+
+        // Column: Column 1
+        public static final String COLUMN_COLUMN_1_NAME = "column1";
+        public static final String COLUMN_COLUMN_1_TYPE = TYPE_TEXT;
+
+        // Column: Column 2
+        public static final String COLUMN_COLUMN_2_NAME = "column2";
+        public static final String COLUMN_COLUMN_2_TYPE = TYPE_TEXT;
+
+        // Column: Column 3
+        public static final String COLUMN_COLUMN_3_NAME = "column3";
+        public static final String COLUMN_COLUMN_3_TYPE = TYPE_TEXT;
+
+        // Column: Column 4
+        public static final String COLUMN_COLUMN_4_NAME = "column4";
+        public static final String COLUMN_COLUMN_4_TYPE = TYPE_TEXT;
+
+        // Column: Column 5
+        public static final String COLUMN_COLUMN_5_NAME = "column5";
+        public static final String COLUMN_COLUMN_5_TYPE = TYPE_TEXT;
+
+        // Column: Column 6
+        public static final String COLUMN_COLUMN_6_NAME = "column6";
+        public static final String COLUMN_COLUMN_6_TYPE = TYPE_TEXT;
     }
 
 

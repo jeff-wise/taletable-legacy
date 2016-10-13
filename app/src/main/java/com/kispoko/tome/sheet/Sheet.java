@@ -2,12 +2,14 @@
 package com.kispoko.tome.sheet;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
 
@@ -33,9 +35,12 @@ public class Sheet
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    private Long sheetId;
+    private Long lastUsed;
+
     private Roleplay roleplay;
 
-    private Map<String,Component> componentByName;
+    private Map<Integer,Component> componentById;
 
     public static Map<Integer,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
@@ -46,9 +51,10 @@ public class Sheet
     public Sheet(Roleplay roleplay)
     {
         this.roleplay = roleplay;
+        this.sheetId = null;
 
         // Index Components
-        componentByName = new HashMap<>();
+        componentById = new HashMap<>();
         for (Page page : this.roleplay.getPages())
         {
             ArrayList<Group> groups = page.getGroups();
@@ -57,7 +63,7 @@ public class Sheet
                 ArrayList<Component> components = group.getComponents();
                 for (Component component : components)
                 {
-                    componentByName.put(component.getId(), component);
+                    componentById.put(component.getId(), component);
                 }
             }
         }
@@ -73,13 +79,12 @@ public class Sheet
         // Types
         ArrayList<Map<String,Object>> typesYaml =
                 (ArrayList<Map<String,Object>>) sheetYaml.get("types");
-        ArrayList<Type> types = new ArrayList<>();
+
         for (Map<String,Object> typeYaml : typesYaml)
         {
             Type typ = Type.fromYaml(typeYaml);
-            types.add(typ);
+            RulesEngine.addType(typ);
         }
-        RulesEngine.addTypes(types);
 
         // Sheet sections
         Map<String,Object> sections = (Map<String,Object>) sheetYaml.get("sections");
@@ -90,6 +95,8 @@ public class Sheet
 
         return new Sheet(roleplay);
     }
+
+
 
 
     public static Integer fromAysnc(SheetActivity sheetActivity)
@@ -103,13 +110,142 @@ public class Sheet
     }
 
 
+
     // > API
     // ------------------------------------------------------------------------------------------
 
+    // >> Getters / Setters
+    // ------------------------------------------------------------------------------------------
 
-    public Component getComponent(String name)
+    public void setId(Long sheetId)
     {
-        return this.componentByName.get(name);
+        this.sheetId = sheetId;
+    }
+
+
+    // >> I/O Methods
+    // ------------------------------------------------------------------------------------------
+
+    // >>> Database
+    // ------------------------------------------------------------------------------------------
+
+    public static void loadMostRecent(final SQLiteDatabase database,
+                                      final SheetActivity sheetActivity)
+    {
+        new AsyncTask<Void,Void,Long>()
+        {
+
+            protected Long doInBackground(Void... args)
+            {
+                String mostRecentSheetIdQuery =
+                    "SELECT sheet_id " +
+                    "FROM Sheet " +
+                    "ORDER BY datetime(last_used) DESC " +
+                    "LIMIT 1";
+
+                Cursor cursor = database.rawQuery(mostRecentSheetIdQuery, null);
+
+                Long sheetId;
+                try {
+                    cursor.moveToFirst();
+                    sheetId = cursor.getLong(0);
+                }
+                // TODO log
+                finally {
+                    cursor.close();
+                }
+
+                return sheetId;
+            }
+
+            protected void onPostExecute(Long mostRecentSheetId)
+            {
+                // Create an asynchronous Sheet constructor
+                Integer sheetConstructorId = Sheet.fromAysnc(sheetActivity);
+
+                // Load the roleplay and have it delivered to the waiting async constructor
+                Roleplay.load(database, sheetConstructorId, mostRecentSheetId);
+            }
+
+        }.execute();
+    }
+
+    /**
+     * Save this sheet to the database.
+     * @param recursive If true, saves all child objects as well.
+     */
+    public void save(final SQLiteDatabase database, final boolean recursive)
+    {
+        // Update last used
+        this.lastUsed = System.currentTimeMillis();
+
+        final Sheet thisSheet = this;
+
+        new AsyncTask<Void,Void,Long>()
+        {
+            protected Long doInBackground(Void... args)
+            {
+                ContentValues row = new ContentValues();
+                row.put("sheet_id", thisSheet.sheetId);
+                row.put("last_used", thisSheet.lastUsed);
+
+                Long sheetId = database.insertWithOnConflict(SheetContract.Sheet.TABLE_NAME,
+                                                             null,
+                                                             row,
+                                                             SQLiteDatabase.CONFLICT_REPLACE);
+
+                // Set ID in case of first insert and ID was Null
+                thisSheet.setId(sheetId);
+
+                return sheetId;
+            }
+
+            protected void onPostExecute(Long sheetId)
+            {
+                if (!recursive) return;
+
+                // Save the child data to the database as well
+                thisSheet.roleplay.save(database, sheetId, true);
+            }
+
+        }.execute();
+
+    }
+
+
+    // >>> Files
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     *
+     * @param sheetActivity
+     * @param fileName
+     */
+    public static void loadFromFile(final SheetActivity sheetActivity, String fileName)
+    {
+        new AsyncTask<Void,Void,Sheet>()
+        {
+
+            protected Sheet doInBackground(Void... args)
+            {
+                Sheet sheet = null;
+                try {
+                    InputStream yamlIS = sheetActivity.getAssets().open("sheet/dnd_ed_5.yaml");
+                    Yaml yaml = new Yaml();
+                    Object yamlObject = yaml.load(yamlIS);
+                    sheet = Sheet.fromYaml((Map<String,Object>) yamlObject);
+                } catch (IOException e) {
+                }
+
+                return sheet;
+            }
+
+            protected void onPostExecute(Sheet sheet)
+            {
+                sheetActivity.setSheet(sheet);
+            }
+
+        }.execute();
     }
 
 
@@ -154,54 +290,6 @@ public class Sheet
     }
 
 
-
-    // > Database Methods
-    // ------------------------------------------------------------------------------------------
-
-
-    public static void loadMostRecent(final SQLiteDatabase database,
-                                      final SheetActivity sheetActivity)
-    {
-        new AsyncTask<Void,Void,Integer>()
-        {
-
-            protected Integer doInBackground(Void... args)
-            {
-                String mostRecentSheetIdQuery =
-                    "SELECT sheet_id " +
-                    "FROM Sheet " +
-                    "ORDER BY datetime(last_used) DESC " +
-                    "LIMIT 1";
-
-                Cursor cursor = database.rawQuery(mostRecentSheetIdQuery, null);
-
-                Integer sheetId;
-                try {
-                    cursor.moveToFirst();
-                    sheetId = cursor.getInt(0);
-                }
-                // TODO log
-                finally {
-                    cursor.close();
-                }
-
-                return sheetId;
-            }
-
-            protected void onPostExecute(Integer mostRecentSheetId)
-            {
-                // Create an asynchronous Sheet constructor
-                Integer sheetConstructorId = Sheet.fromAysnc(sheetActivity);
-
-                // Load the roleplay and have it delivered to the waiting async constructor
-                Roleplay.load(database, sheetConstructorId, mostRecentSheetId);
-            }
-
-        }.execute();
-    }
-
-
-
     /**
      * Read the template manifest file and retrive the list of games available.
      * @param context Context for accessing assets.
@@ -241,6 +329,17 @@ public class Sheet
     {
         return "official_" + gameId + "_" + templateName;
     }
+
+
+
+    // >> View Methods
+    // ------------------------------------------------------------------------------------------
+
+    public Component getComponent(String name)
+    {
+        return this.componentById.get(name);
+    }
+
 
 
 
@@ -324,7 +423,6 @@ public class Sheet
             Sheet sheet = new Sheet(roleplay);
 
             sheetActivity.setSheet(sheet);
-            sheetActivity.showPageView();
         }
 
     }

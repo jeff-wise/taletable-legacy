@@ -24,6 +24,12 @@ import com.kispoko.tome.db.SheetDatabaseManager;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.Sheet;
 
+import org.yaml.snakeyaml.Yaml;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+
 
 /**
  * The main activity for the application.
@@ -176,16 +182,6 @@ public class SheetActivity
     }
 
 
-    /**
-     * Show Page View. Used as a callback so the pages can be rendered once they are actually
-     * loaded.
-     */
-    public void showPageView()
-    {
-
-    }
-
-
     // > INTERNAL
     // -------------------------------------------------------------------------------------------
 
@@ -238,7 +234,6 @@ public class SheetActivity
      */
     private void loadSheet()
     {
-
         // Get game id passed from previous activity
         Bundle extras = getIntent().getExtras();
         String templateId = extras.getString("FROM_TEMPLATE_ID");
@@ -247,7 +242,9 @@ public class SheetActivity
         this.database = sheetDatabaseManager.getWritableDatabase();
 
         // This will be a new character sheet
-        if (templateId == null) {
+        if (templateId != null) {
+            Sheet.loadFromFile(templateId);
+
 
         }
         // Load the most recently used character sheet
@@ -255,13 +252,6 @@ public class SheetActivity
             Sheet.loadMostRecent(database, this);
         }
 
-//        try {
-//            InputStream yamlIS = this.getAssets().open("sheet/dnd_ed_5.yaml");
-//            Yaml yaml = new Yaml();
-//            Object yamlObject = yaml.load(yamlIS);
-//            this.sheet = Sheet.fromYaml((Map<String,Object>) yamlObject);
-//        } catch (IOException e) {
-//        }
     }
 
 }

@@ -2,10 +2,10 @@
 package com.kispoko.tome.rules;
 
 
+import com.kispoko.tome.type.List;
 import com.kispoko.tome.type.Type;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -19,16 +19,12 @@ public class RulesEngine
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private static Map<String, Type> typeByName;
+    private static Map<String, Type> listTypeIndex = new HashMap<>();
+
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
-
-    public RulesEngine()
-    {
-        typeByName = new HashMap<>();
-    }
 
 
 
@@ -38,19 +34,28 @@ public class RulesEngine
     /**
      * Add new types to the engine.
      */
-    public static void addTypes(List<Type> types)
+    public static void addType(Type _type)
     {
-        for (Type _type : types)
+        Type.Id typeId = _type.getId();
+        String kind = typeId.getKind();
+        switch (kind)
         {
-            typeByName.put(_type.getName(), _type);
+            case "list":
+                listTypeIndex.put(typeId.getId(), _type);
+                break;
         }
     }
 
 
-    public static Type getType(String name)
+    public static Type getType(Type.Id typeId)
     {
-        // TODO log exception
-        return typeByName.get(name);
+        String kind = typeId.getKind();
+        switch (kind) {
+            case "list":
+                return listTypeIndex.get(typeId.getId());
+            default:
+                return null;
+        }
     }
 
 }

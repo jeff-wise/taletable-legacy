@@ -15,13 +15,13 @@ public abstract class Type
     // > PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private String id;
+    private Type.Id id;
 
 
     // > CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public Type(String id)
+    public Type(Type.Id id)
     {
         this.id = id;
     }
@@ -44,7 +44,7 @@ public abstract class Type
     // > API
     // -------------------------------------------------------------------------------------------
 
-    public String getId()
+    public Type.Id getId()
     {
         return this.id;
     }
@@ -69,7 +69,7 @@ public abstract class Type
             return this.kind;
         }
 
-        public String geId()
+        public String getId()
         {
             return this.id;
         }

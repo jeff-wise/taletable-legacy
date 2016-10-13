@@ -84,10 +84,12 @@ public class Roleplay
     }
 
 
+    // >> I/O Methods
+    // ------------------------------------------------------------------------------------------
 
     public static void load(final SQLiteDatabase database,
                             final int sheetConstructorId,
-                            final int sheetId)
+                            final Long sheetId)
     {
         new AsyncTask<Void,Void,ArrayList<Integer>>()
         {
@@ -97,7 +99,7 @@ public class Roleplay
                 String pagesOfSheetQuery =
                     "SELECT page_id " +
                     "FROM Page " +
-                    "WHERE Page.sheet_id = " + Integer.toString(sheetId);
+                    "WHERE Page.sheet_id = " + Long.toString(sheetId);
 
                 Cursor cursor = database.rawQuery(pagesOfSheetQuery, null);
 
@@ -127,6 +129,23 @@ public class Roleplay
             }
 
         }.execute();
+    }
+
+
+    /**
+     * Save to the database.
+     * @param database The SQLite database object.
+     * @param recursive If true, save all child objects as well.
+     */
+    public void save(SQLiteDatabase database, Long sheetId, boolean recursive)
+    {
+        if (!recursive) return;
+
+        // Save all the roleplay data
+        for (Page page :pages)
+        {
+            page.save(database, sheetId, "roleplay", true);
+        }
     }
 
 

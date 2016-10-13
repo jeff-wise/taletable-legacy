@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.component;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.type.Type;
@@ -20,7 +22,6 @@ import com.kispoko.tome.type.Type;
 import java.io.Serializable;
 import java.util.Map;
 
-import static android.R.attr.name;
 
 
 /**
@@ -41,7 +42,7 @@ public class NumberInteger extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public NumberInteger(Integer id, Type.Id typeId, String label, Integer value)
+    public NumberInteger(Id id, Type.Id typeId, String label, Integer value)
     {
         super(id, typeId, label);
         this.value = value;
@@ -53,9 +54,6 @@ public class NumberInteger extends Component implements Serializable
     public static NumberInteger fromYaml(Map<String, Object> integerYaml)
     {
         // Parse all integer fields
-        // >> Id
-        Integer id = (int) integerYaml.get("id");
-
         // >> Label
         String label = null;
         if (integerYaml.containsKey("label"))
@@ -89,7 +87,7 @@ public class NumberInteger extends Component implements Serializable
         }
 
         // Construct new integer
-        NumberInteger integer = new NumberInteger(id, typeId, label, value);
+        NumberInteger integer = new NumberInteger(null, typeId, label, value);
 
         integer.setTextSize(textSize);
         integer.setPrefix(prefix);
@@ -101,10 +99,30 @@ public class NumberInteger extends Component implements Serializable
     // > API
     // ------------------------------------------------------------------------------------------
 
+    // >> Getters/Setters
+    // ------------------------------------------------------------------------------------------
+
+    public String componentName()
+    {
+        return "integer";
+    }
+
+
+    public Integer getValue()
+    {
+        return this.value;
+    }
+
 
     public void setValue(Integer value)
     {
         this.value = value;
+    }
+
+
+    public String getPrefix()
+    {
+        return this.prefix;
     }
 
 
@@ -119,6 +137,9 @@ public class NumberInteger extends Component implements Serializable
         this.textSize = textSize;
     }
 
+
+    // >> Views
+    // ------------------------------------------------------------------------------------------
 
     public View getDisplayView(Context context)
     {
@@ -163,6 +184,9 @@ public class NumberInteger extends Component implements Serializable
     }
 
 
+    // >> Views
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Load a Group from the database.
      * @param database The sqlite database object.
@@ -180,7 +204,8 @@ public class NumberInteger extends Component implements Serializable
             {
                 // Query Component
                 String integerQuery =
-                    "SELECT comp.component_id, comp.label, comp.type_kind, comp.type_id, int.value, int.prefix " +
+                    "SELECT comp.component_id, comp.label, comp.type_kind, comp.type_id, " +
+                           "int.integer_id, int.value, int.prefix " +
                     "FROM Component comp " +
                     "INNER JOIN ComponentInteger int on ComponentInteger.component_id = Component.component_id " +
                     "WHERE Component.component_id =  " + Integer.toString(componentId);
@@ -188,27 +213,29 @@ public class NumberInteger extends Component implements Serializable
 
                 Cursor textCursor = database.rawQuery(integerQuery, null);
 
-                Integer componentId;
+                Long componentId;
                 String label;
                 String typeKind;
                 String typeId;
+                Long integerId;
                 Integer value;
                 String prefix;
                 try {
                     textCursor.moveToFirst();
-                    componentId = textCursor.getInt(0);
+                    componentId = textCursor.getLong(0);
                     label       = textCursor.getString(1);
                     typeKind    = textCursor.getString(2);
                     typeId      = textCursor.getString(3);
-                    value       = textCursor.getInt(4);
-                    prefix      = textCursor.getString(5);
+                    integerId   = textCursor.getLong(4);
+                    value       = textCursor.getInt(5);
+                    prefix      = textCursor.getString(6);
                 }
                 // TODO log
                 finally {
                     textCursor.close();
                 }
 
-                NumberInteger integer = new NumberInteger(componentId,
+                NumberInteger integer = new NumberInteger(new Id(componentId, integerId),
                                                           new Type.Id(typeKind, typeId),
                                                           label,
                                                           value);
@@ -221,5 +248,64 @@ public class NumberInteger extends Component implements Serializable
 
         }.execute();
     }
+
+
+    /**
+     * Save to the database.
+     * @param database The SQLite database object.
+     * @param groupId The ID of the parent group object.
+     */
+    public void save(final SQLiteDatabase database, final Long groupId)
+    {
+        final NumberInteger thisInteger = this;
+
+        new AsyncTask<Void,Void,Void>()
+        {
+            protected Void doInBackground(Void... args)
+            {
+                ContentValues componentRow = new ContentValues();
+
+                if (thisInteger.getId() != null)
+                    componentRow.put("component_id", thisInteger.getId().getId());
+                else
+                    componentRow.putNull("component_id");
+                componentRow.put("group_id", groupId);
+                componentRow.put("data_type", thisInteger.componentName());
+                componentRow.put("label", thisInteger.getLabel());
+                componentRow.putNull("type_kind");
+                componentRow.putNull("type_id");
+
+                Long componentId = database.insertWithOnConflict(
+                                                SheetContract.Component.TABLE_NAME,
+                                                null,
+                                                componentRow,
+                                                SQLiteDatabase.CONFLICT_REPLACE);
+
+                ContentValues integerComponentRow = new ContentValues();
+
+                if (thisInteger.getId() != null)
+                    integerComponentRow.put("integer_id", thisInteger.getId().getSubId());
+                else
+                    integerComponentRow.putNull("integer_id");
+                integerComponentRow.put("integer_id", thisInteger.getId().getSubId());
+                integerComponentRow.put("component_id", componentId);
+                integerComponentRow.put("value", thisInteger.getValue());
+                integerComponentRow.put("prefix", thisInteger.getPrefix());
+
+                Long textComponentId = database.insertWithOnConflict(
+                                                    SheetContract.ComponentInteger.TABLE_NAME,
+                                                    null,
+                                                    integerComponentRow,
+                                                    SQLiteDatabase.CONFLICT_REPLACE);
+
+                // Set ID in case of first insert and ID was Null
+                thisInteger.setId(new Id(componentId, textComponentId));
+
+                return null;
+            }
+
+        }.execute();
+    }
+
 
 }

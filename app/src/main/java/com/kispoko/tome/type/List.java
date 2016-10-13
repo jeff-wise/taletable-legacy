@@ -35,7 +35,7 @@ public class List extends Type
 
     public List(String id, ArrayList<String> values)
     {
-        super(id);
+        super(new Type.Id("list", id));
         this.values = values;
     }
 
@@ -58,7 +58,7 @@ public class List extends Type
 
     public List asClone()
     {
-        return new List(this.getName(), new ArrayList<>(this.values));
+        return new List(this.getId().getId(), new ArrayList<>(this.values));
     }
 
 

@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.group.Layout;
 import com.kispoko.tome.util.Util;
 
@@ -33,6 +35,8 @@ public class Group implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    private Long id;
+
     private String label;
     private ArrayList<Component> components;
     private Layout layout;
@@ -50,6 +54,8 @@ public class Group implements Serializable
         this.label = label;
         this.components = components;
         this.layout = layout;
+
+        this.id = null;
 
         // Index components for label lookup
         componentById = new HashMap<>();
@@ -104,6 +110,9 @@ public class Group implements Serializable
     // > API
     // ------------------------------------------------------------------------------------------
 
+    // >> Getters / Setters
+    // ------------------------------------------------------------------------------------------
+
     public Component getComponent(String name)
     {
         return this.componentById.get(name);
@@ -116,63 +125,14 @@ public class Group implements Serializable
     }
 
 
-
-    public View getView(Context context)
+    public void setId(Long id)
     {
-        LinearLayout groupLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams mainLayoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                              LinearLayout.LayoutParams.MATCH_PARENT);
-        int groupHorzMargins = (int) context.getResources()
-                                            .getDimension(R.dimen.group_horz_margins);
-        int groupVertMargins = (int) context.getResources()
-                                            .getDimension(R.dimen.group_vert_margins);
-        mainLayoutParams.setMargins(groupHorzMargins, groupVertMargins,
-                                    groupHorzMargins, groupVertMargins);
-        groupLayout.setOrientation(LinearLayout.VERTICAL);
-        groupLayout.setLayoutParams(mainLayoutParams);
-
-
-        groupLayout.addView(this.labelView(context));
-
-        for (Layout.Row row : this.layout.getRows())
-        {
-            LinearLayout rowLayout = new LinearLayout(context);
-            rowLayout.setOrientation(LinearLayout.HORIZONTAL);
-            rowLayout.setLayoutParams(Util.linearLayoutParamsMatch());
-            int rowTopPadding = (int) context.getResources()
-                                              .getDimension(R.dimen.row_padding_top);
-            rowLayout.setPadding(0, rowTopPadding, 0, 0);
-
-            for (Layout.Frame frame : row.getFrames())
-            {
-                LinearLayout frameLayout = new LinearLayout(context);
-                frameLayout.setOrientation(LinearLayout.VERTICAL);
-                LinearLayout.LayoutParams frameLayoutParams = Util.linearLayoutParamsWrap();
-                frameLayoutParams.width = 0;
-                frameLayoutParams.weight = (float) frame.getWidth();
-                frameLayout.setLayoutParams(frameLayoutParams);
-
-                Component component = this.componentById.get(frame.getComponentId());
-
-                // Add Component Label
-                if (component.hasLabel()) {
-                    frameLayout.addView(component.labelView(context));
-                }
-
-                // Add Component View
-                View componentView = component.getDisplayView(context);
-                frameLayout.addView(componentView);
-
-                rowLayout.addView(frameLayout);
-            }
-
-            groupLayout.addView(rowLayout);
-        }
-
-        return groupLayout;
+        this.id = id;
     }
 
+
+    // >> Database Methods
+    // ------------------------------------------------------------------------------------------
 
     /**
      * Load a Group from the database.
@@ -248,6 +208,113 @@ public class Group implements Serializable
             }
 
         }.execute();
+    }
+
+
+    /**
+     * Save to the database.
+     * @param database The SQLite database object.
+     * @param pageId The id of the group's parent page.
+     * @param recursive If true, save all child objects as well.
+     */
+    public void save(final SQLiteDatabase database, final Long pageId, final boolean recursive)
+    {
+        final Group thisGroup = this;
+
+        new AsyncTask<Void,Void,Long>()
+        {
+            protected Long doInBackground(Void... args)
+            {
+                ContentValues row = new ContentValues();
+                row.put("group_id", thisGroup.id);
+                row.put("page_id", pageId);
+                row.put("label", thisGroup.label);
+
+                Long groupId = database.insertWithOnConflict(SheetContract.Group.TABLE_NAME,
+                                                             null,
+                                                             row,
+                                                             SQLiteDatabase.CONFLICT_REPLACE);
+
+                // Set ID in case of first insert and ID was Null
+                thisGroup.setId(groupId);
+
+                return groupId;
+            }
+
+            protected void onPostExecute(Long groupId)
+            {
+                if (!recursive) return;
+
+                // Save the entire sheet to the database
+                thisGroup.layout.save(database, groupId, true);
+
+                for (Component component : thisGroup.components)
+                {
+                    component.save(database, groupId);
+                }
+            }
+
+        }.execute();
+    }
+
+
+    // >> View Methods
+    // ------------------------------------------------------------------------------------------
+
+    public View getView(Context context)
+    {
+        LinearLayout groupLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams mainLayoutParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                              LinearLayout.LayoutParams.MATCH_PARENT);
+        int groupHorzMargins = (int) context.getResources()
+                                            .getDimension(R.dimen.group_horz_margins);
+        int groupVertMargins = (int) context.getResources()
+                                            .getDimension(R.dimen.group_vert_margins);
+        mainLayoutParams.setMargins(groupHorzMargins, groupVertMargins,
+                                    groupHorzMargins, groupVertMargins);
+        groupLayout.setOrientation(LinearLayout.VERTICAL);
+        groupLayout.setLayoutParams(mainLayoutParams);
+
+
+        groupLayout.addView(this.labelView(context));
+
+        for (Layout.Row row : this.layout.getRows())
+        {
+            LinearLayout rowLayout = new LinearLayout(context);
+            rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+            rowLayout.setLayoutParams(Util.linearLayoutParamsMatch());
+            int rowTopPadding = (int) context.getResources()
+                                              .getDimension(R.dimen.row_padding_top);
+            rowLayout.setPadding(0, rowTopPadding, 0, 0);
+
+            for (Layout.Frame frame : row.getFrames())
+            {
+                LinearLayout frameLayout = new LinearLayout(context);
+                frameLayout.setOrientation(LinearLayout.VERTICAL);
+                LinearLayout.LayoutParams frameLayoutParams = Util.linearLayoutParamsWrap();
+                frameLayoutParams.width = 0;
+                frameLayoutParams.weight = (float) frame.getWidth();
+                frameLayout.setLayoutParams(frameLayoutParams);
+
+                Component component = this.componentById.get(frame.getComponentId());
+
+                // Add Component Label
+                if (component.hasLabel()) {
+                    frameLayout.addView(component.labelView(context));
+                }
+
+                // Add Component View
+                View componentView = component.getDisplayView(context);
+                frameLayout.addView(componentView);
+
+                rowLayout.addView(frameLayout);
+            }
+
+            groupLayout.addView(rowLayout);
+        }
+
+        return groupLayout;
     }
 
 
