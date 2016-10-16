@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.Unique;
+import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -94,19 +96,9 @@ public abstract class Component implements Unique, Serializable
     // >> Type
     // ------------------------------------------------------------------------------------------
 
-    public boolean hasType()
+    public Type.Id getTypeId()
     {
-        return this.typeId != null;
-    }
-
-
-    public Type getType()
-    {
-        // TODO verify
-        if (this.typeId != null)
-            return RulesEngine.getType(this.typeId);
-        else
-            return null;
+        return this.typeId;
     }
 
 
@@ -183,6 +175,11 @@ public abstract class Component implements Unique, Serializable
     public TextView labelView(Context context)
     {
         TextView textView = new TextView(context);
+
+        int paddingLeft = (int) Util.getDim(context, R.dimen.comp_label_padding_left);
+        int paddingBottom = (int) Util.getDim(context, R.dimen.comp_label_padding_bottom);
+        textView.setPadding(paddingLeft, 0, 0, paddingBottom);
+
         textView.setId(R.id.component_label);
         float labelTextSize = (int) context.getResources()
                                          .getDimension(R.dimen.label_text_size);
@@ -190,7 +187,7 @@ public abstract class Component implements Unique, Serializable
 
         textView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
 
-        textView.setTypeface(null, Typeface.BOLD);
+        textView.setTypeface(Util.sansSerifFontBold(context));
 
         textView.setText(this.label.toUpperCase());
 
@@ -260,8 +257,15 @@ public abstract class Component implements Unique, Serializable
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams linearLayoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                              LinearLayout.LayoutParams.WRAP_CONTENT);
+                                              LinearLayout.LayoutParams.MATCH_PARENT);
+
+        int layoutMarginsHorz = (int) Util.getDim(context, R.dimen.comp_layout_margins_horz);
+
+        linearLayoutParams.setMargins(layoutMarginsHorz, 0, layoutMarginsHorz, 0);
         layout.setLayoutParams(linearLayoutParams);
+        //layout.setBackgroundColor(ContextCompat.getColor(context, R.color.sheet_medium));
+
+        layout.setBackgroundResource(R.drawable.bg_component);
 
         return layout;
     }

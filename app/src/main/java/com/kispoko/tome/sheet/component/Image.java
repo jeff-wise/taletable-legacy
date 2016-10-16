@@ -17,13 +17,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.activity.ChooseImageAction;
+import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
-import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Util;
@@ -238,9 +237,9 @@ public class Image extends Component implements Serializable
     public View getDisplayView(final Context context)
     {
         // Layout
-        LinearLayout imageLayout = Component.linearLayout(context);
+        final LinearLayout imageLayout = Component.linearLayout(context);
         imageLayout.setGravity(Gravity.CENTER);
-        imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
+        //imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
 
         // Views
         final ImageView imageView = this.imageView(context);
@@ -264,7 +263,7 @@ public class Image extends Component implements Serializable
                 }
 
                 sheetActivity.setChooseImageAction(
-                        new ChooseImageAction(imageView, chooseImageButton));
+                        new ChooseImageAction(imageLayout, imageView, chooseImageButton));
 
                 sheetActivity.startActivityForResult(intent, SheetActivity.CHOOSE_IMAGE_FROM_FILE);
 

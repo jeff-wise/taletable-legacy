@@ -65,6 +65,11 @@ public abstract class Type
             this.id = id;
         }
 
+        public boolean isNull()
+        {
+            return this.kind == null && this.id == null;
+        }
+
         public String getKind()
         {
             return this.kind;

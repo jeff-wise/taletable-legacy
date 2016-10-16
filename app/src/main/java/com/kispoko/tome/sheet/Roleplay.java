@@ -10,6 +10,8 @@ import android.util.Log;
 import com.kispoko.tome.util.SQL;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +45,18 @@ public class Roleplay
     public Roleplay(ArrayList<Page> pages)
     {
         this.pages = pages;
+
+        // Make sure pages are sorted
+        Collections.sort(this.pages, new Comparator<Page>() {
+            @Override
+            public int compare(Page page1, Page page2) {
+                if (page1.getIndex() > page2.getIndex())
+                    return 1;
+                if (page1.getIndex() < page2.getIndex())
+                    return -1;
+                return 0;
+            }
+        });
     }
 
 

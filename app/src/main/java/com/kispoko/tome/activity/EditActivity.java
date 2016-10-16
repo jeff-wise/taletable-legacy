@@ -25,8 +25,6 @@ public class EditActivity extends AppCompatActivity
 
     private Component component;
 
-    private String componentName;
-
 
     // > ACTIVITY EVENTS
     // -------------------------------------------------------------------------------------------
@@ -101,7 +99,7 @@ public class EditActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setElevation(0);
 
-        String title = "Edit " + this.component.getId();
+        String title = "Edit " + this.component.getLabel();
         actionBar.setTitle(title);
     }
 

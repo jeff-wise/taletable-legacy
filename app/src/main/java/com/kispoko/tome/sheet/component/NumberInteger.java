@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,10 +21,13 @@ import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -166,38 +170,37 @@ public class NumberInteger extends Component implements Serializable
 
     public View getDisplayView(Context context)
     {
-        // Create layout
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout integerLayout = Component.linearLayout(context);
 
-        LinearLayout.LayoutParams layoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                              LinearLayout.LayoutParams.MATCH_PARENT);
-        layout.setLayoutParams(layoutParams);
+        LinearLayout contentLayout = new LinearLayout(context);
+        contentLayout.setLayoutParams(Util.linearLayoutParamsMatch());
+        contentLayout.setOrientation(LinearLayout.HORIZONTAL);
+        contentLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
         // Add prefix if exists
         if (this.prefix != null) {
-            layout.addView(ComponentUtil.prefixView(context, this.prefix, this.textSize));
+            contentLayout.addView(ComponentUtil.prefixView(context, this.prefix, this.textSize));
         }
+
 
         // Add text view
         TextView textView = new TextView(context);
 
         textView.setTextSize(ComponentUtil.getTextSizeSP(context, this.textSize));
 
-        Typeface font = Typeface.createFromAsset(context.getAssets(),
-                                                 "fonts/DavidLibre-Regular.ttf");
-        textView.setTypeface(font);
-        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+        textView.setTypeface(Util.serifFontBold(context));
+        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium_dark));
 
         if (this.value != null)
             textView.setText(Integer.toString(this.value));
         else
             textView.setText("");
 
-        layout.addView(textView);
+        contentLayout.addView(textView);
 
-        return layout;
+        integerLayout.addView(contentLayout);
+
+        return integerLayout;
     }
 
 

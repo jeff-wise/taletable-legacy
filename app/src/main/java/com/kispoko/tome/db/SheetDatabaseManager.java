@@ -37,7 +37,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             SheetContract.Page.COLUMN_PAGE_ID_NAME + " " + SheetContract.Page.COLUMN_PAGE_ID_TYPE + " PRIMARY KEY, " +
             SheetContract.Page.COLUMN_SHEET_ID_NAME + " " + SheetContract.Page.COLUMN_SHEET_ID_TYPE + ", " +
             SheetContract.Page.COLUMN_SECTION_ID_NAME + " " + SheetContract.Page.COLUMN_SECTION_ID_TYPE + ", " +
-            SheetContract.Page.COLUMN_PAGE_INDEX_NAME + " " + SheetContract.Page.COLUMN_PAGE_ID_TYPE + ", " +
+            SheetContract.Page.COLUMN_PAGE_INDEX_NAME + " " + SheetContract.Page.COLUMN_PAGE_INDEX_TYPE + ", " +
             SheetContract.Page.COLUMN_LABEL_NAME + " " + SheetContract.Page.COLUMN_LABEL_TYPE + ", " +
             "FOREIGN KEY (" + SheetContract.Page.COLUMN_SHEET_ID_NAME + ") REFERENCES " +
                     SheetContract.Sheet.TABLE_NAME + "(" + SheetContract.Sheet.COLUMN_SHEET_ID_NAME + ") )";
@@ -46,7 +46,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "CREATE TABLE IF NOT EXISTS " + SheetContract.Group.TABLE_NAME + " (" +
             SheetContract.Group.COLUMN_GROUP_ID_NAME + " " + SheetContract.Group.COLUMN_GROUP_ID_TYPE + " PRIMARY KEY, " +
             SheetContract.Group.COLUMN_PAGE_ID_NAME + " " + SheetContract.Group.COLUMN_PAGE_ID_TYPE + ", " +
-            SheetContract.Group.COLUMN_GROUP_INDEX_NAME + " " + SheetContract.Group.COLUMN_GROUP_ID_TYPE + ", " +
+            SheetContract.Group.COLUMN_GROUP_INDEX_NAME + " " + SheetContract.Group.COLUMN_GROUP_INDEX_TYPE + ", " +
             SheetContract.Group.COLUMN_LABEL_NAME + " " + SheetContract.Group.COLUMN_LABEL_TYPE + ", " +
             SheetContract.Group.COLUMN_NUMBER_OF_ROWS_NAME + " " + SheetContract.Group.COLUMN_NUMBER_OF_ROWS_TYPE + ", " +
             "FOREIGN KEY (" + SheetContract.Group.COLUMN_PAGE_ID_NAME + ") REFERENCES " +

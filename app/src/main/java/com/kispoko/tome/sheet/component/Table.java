@@ -300,9 +300,9 @@ public class Table extends Component implements Serializable
                 componentRow.put("column", thisTable.getColumn());
                 componentRow.put("width", thisTable.getWidth());
 
-                if (thisTable.getType() != null) {
-                    componentRow.put("type_kind", thisTable.getType().getId().getKind());
-                    componentRow.put("type_id", thisTable.getType().getId().getId());
+                if (thisTable.getTypeId() != null) {
+                    componentRow.put("type_kind", thisTable.getTypeId().getKind());
+                    componentRow.put("type_id", thisTable.getTypeId().getId());
                 } else {
                     componentRow.putNull("type_kind");
                     componentRow.putNull("type_id");

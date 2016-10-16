@@ -18,7 +18,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.tuple.Tuple4;
+import com.kispoko.tome.util.tuple.Tuple5;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.kispoko.tome.R.id.textView;
+import static com.kispoko.tome.util.Util.linearLayoutParamsMatchWrap;
 
 
 /**
@@ -55,7 +57,8 @@ public class Group implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Group(UUID id, String label, Integer numberOfRows, ArrayList<Component> components)
+    public Group(UUID id, String label, Integer index, Integer numberOfRows,
+                 ArrayList<Component> components)
     {
         if (id != null)
             this.id = id;
@@ -63,6 +66,7 @@ public class Group implements Serializable
             this.id = UUID.randomUUID();
 
         this.label = label;
+        this.index = index;
         this.numberOfRows = numberOfRows;
         this.components = components;
     }
@@ -92,7 +96,7 @@ public class Group implements Serializable
             components.add(component);
         }
 
-        return new Group(null, label, numberOfRows, components);
+        return new Group(null, label, null, numberOfRows, components);
     }
 
 
@@ -164,6 +168,20 @@ public class Group implements Serializable
     }
 
 
+    public String getLabel()
+    {
+        return this.label;
+    }
+
+
+    // >> Index
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getIndex()
+    {
+        return this.index;
+    }
+
     public void setIndex(Integer index)
     {
         this.index = index;
@@ -183,28 +201,29 @@ public class Group implements Serializable
                             final UUID pageConstructorId,
                             final UUID groupId)
     {
-        new AsyncTask<Void,Void,Tuple4<ArrayList<UUID>,ArrayList<String>,String,Integer>>()
+        new AsyncTask<Void,Void,Tuple5<ArrayList<UUID>,ArrayList<String>,String,Integer,Integer>>()
         {
 
             @Override
-            protected Tuple4<ArrayList<UUID>,ArrayList<String>,String,Integer>
+            protected Tuple5<ArrayList<UUID>,ArrayList<String>,String,Integer,Integer>
                       doInBackground(Void... args)
             {
                 // Query Group Data
                 String groupQuery =
-                    "SELECT grp.label, grp.number_of_rows " +
+                    "SELECT grp.label, grp.group_index, grp.number_of_rows " +
                     "FROM _group grp " +
                     "WHERE grp.group_id =  " + SQL.quoted(groupId.toString());
 
                 Cursor groupCursor = database.rawQuery(groupQuery, null);
 
                 String label;
+                Integer index;
                 Integer numberOfRows;
                 try {
                     groupCursor.moveToFirst();
                     label = groupCursor.getString(0);
-                    numberOfRows = groupCursor.getInt(1);
-                    numberOfRows = groupCursor.getInt(1);
+                    index = groupCursor.getInt(1);
+                    numberOfRows = groupCursor.getInt(2);
                 }
                 // TODO log
                 finally {
@@ -232,22 +251,24 @@ public class Group implements Serializable
                     cursor.close();
                 }
 
-                return new Tuple4<>(componentIds, componentTypes, label, numberOfRows);
+                return new Tuple5<>(componentIds, componentTypes, label, index, numberOfRows);
             }
 
             @Override
-            protected void onPostExecute(Tuple4<ArrayList<UUID>,ArrayList<String>,String,Integer> data)
+            protected void onPostExecute(Tuple5<ArrayList<UUID>,ArrayList<String>,String,Integer,Integer> data)
             {
                 ArrayList<UUID> componentIds   = data.getItem1();
                 ArrayList<String>  componentTypes = data.getItem2();
                 String             label          = data.getItem3();
-                Integer            numberOfRows   = data.getItem4();
+                Integer            index          = data.getItem4();
+                Integer            numberOfRows   = data.getItem5();
 
                 // Create Asynchronous Constructor
                 UUID groupConstructorId = Group.addAsyncConstructor(groupId,
                                                                     componentIds.size(),
                                                                     pageConstructorId);
                 Group.getAsyncConstructor(groupConstructorId).setLabel(label);
+                Group.getAsyncConstructor(groupConstructorId).setIndex(index);
 
                 // >> Set Label
                 Group.asyncConstructorMap.get(groupConstructorId).setNumberOfRows(numberOfRows);
@@ -285,6 +306,7 @@ public class Group implements Serializable
                 row.put("group_id", thisGroup.getId().toString());
                 row.put("page_id", pageId.toString());
                 row.put("label", thisGroup.label);
+                row.put("group_index", thisGroup.getIndex());
                 row.put("number_of_rows", thisGroup.getNumberOfRows());
 
                 database.insertWithOnConflict(SheetContract.Group.TABLE_NAME,
@@ -386,7 +408,7 @@ public class Group implements Serializable
                 frameLayout.setLayoutParams(frameLayoutParams);
 
                 // Add Component Label
-                if (component.hasLabel()) {
+                if (component.hasLabel() && !component.getLabel().equals(this.getLabel())) {
                     frameLayout.addView(component.labelView(context));
                 }
 
@@ -408,8 +430,19 @@ public class Group implements Serializable
     // > INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    public TextView labelView(Context context)
+    // >> Views
+    // ------------------------------------------------------------------------------------------
+
+    private LinearLayout labelView(Context context)
     {
+        LinearLayout layout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = Util.linearLayoutParamsMatchWrap();
+        layout.setLayoutParams(layoutParams);
+
+        int paddingLeft = (int) Util.getDim(context, R.dimen.group_label_padding_left);
+        layout.setPadding(paddingLeft, 0, 0, 0);
+
+
         TextView textView = new TextView(context);
         textView.setId(R.id.component_label);
 
@@ -417,13 +450,16 @@ public class Group implements Serializable
                                          .getDimension(R.dimen.label_text_size);
         textView.setTextSize(labelTextSize);
 
-        textView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_600));
+        textView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_700));
 
-        textView.setTypeface(null, Typeface.BOLD);
+        //textView.setTypeface(null, Typeface.BOLD);
+        textView.setTypeface(Util.sansSerifFontBold(context));
 
         textView.setText(this.label.toUpperCase());
 
-        return textView;
+        layout.addView(textView);
+
+        return layout;
     }
 
 
@@ -438,6 +474,7 @@ public class Group implements Serializable
 
         private UUID id;
         private String label;
+        private Integer index;
         private Integer numberOfRows;
         private ArrayList<Component> components;
 
@@ -446,6 +483,7 @@ public class Group implements Serializable
             this.id = id;
 
             this.label = null;
+            this.index = null;
             this.numberOfComponents = null;
 
             this.pageConstructorId = pageConstructorId;
@@ -457,6 +495,11 @@ public class Group implements Serializable
         synchronized public void setLabel(String label)
         {
             this.label = label;
+        }
+
+        synchronized public void setIndex(Integer index)
+        {
+            this.index = index;
         }
 
         synchronized public void addComponent(Component component)
@@ -476,13 +519,14 @@ public class Group implements Serializable
         private boolean isReady()
         {
             return this.label != null &&
+                   this.index != null &&
                    this.numberOfRows != null &&
                    this.components.size() == numberOfComponents;
         }
 
         private void ready()
         {
-            Group group = new Group(this.id, this.label, this.numberOfRows, this.components);
+            Group group = new Group(this.id, this.label, this.index, this.numberOfRows, this.components);
             Page.getAsyncConstructor(pageConstructorId).addGroup(group);
         }
 

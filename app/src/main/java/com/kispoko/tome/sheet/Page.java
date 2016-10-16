@@ -14,13 +14,17 @@ import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Unique;
 import com.kispoko.tome.util.tuple.Tuple2;
+import com.kispoko.tome.util.tuple.Tuple3;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.R.attr.name;
 
 
 /**
@@ -52,7 +56,7 @@ public class Page implements Unique, Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Page(UUID id, String label, ArrayList<Group> groups)
+    public Page(UUID id, String label, Integer index, ArrayList<Group> groups)
     {
         // Set or create UUID
         if (id != null)
@@ -61,16 +65,35 @@ public class Page implements Unique, Serializable
             this.id = UUID.randomUUID();
 
         this.label = label;
+        this.index = index;
         this.groups = groups;
+
+        // Make sure groups are sorted
+        Collections.sort(this.groups, new Comparator<Group>() {
+            @Override
+            public int compare(Group group1, Group group2) {
+                if (group1.getIndex() > group2.getIndex())
+                    return 1;
+                if (group1.getIndex() < group2.getIndex())
+                    return -1;
+                return 0;
+            }
+        });
     }
 
 
     @SuppressWarnings("unchecked")
-    public static Page fromYaml(Map<String, Object> pageYaml) {
-        // Parse label
-        String name = (String) pageYaml.get("label");
+    public static Page fromYaml(Map<String, Object> pageYaml)
+    {
+        // Values to parse
+        String label = null;
+        Integer index = null;
 
-        // Parse groups
+        // Parse Values
+        // >> Label
+        label = (String) pageYaml.get("label");
+
+        // >> Groups
         ArrayList<Group> groups = new ArrayList<>();
         ArrayList<Object> groupsYaml = (ArrayList<Object>) pageYaml.get("groups");
 
@@ -80,16 +103,13 @@ public class Page implements Unique, Serializable
             for (Object groupYaml : groupsYaml)
             {
                 Group group = Group.fromYaml((Map<String, Object>) groupYaml);
-
                 group.setIndex(groupIndex);
-
                 groups.add(group);
-
                 groupIndex += 1;
             }
         }
 
-        return new Page(null, name, groups);
+        return new Page(null, label, index, groups);
     }
 
 
@@ -162,6 +182,15 @@ public class Page implements Unique, Serializable
     }
 
 
+    // >> Index
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getIndex()
+    {
+        return this.index;
+    }
+
+
     public void setIndex(Integer index)
     {
         this.index = index;
@@ -205,24 +234,26 @@ public class Page implements Unique, Serializable
                             final UUID roleplayConstructorId,
                             final UUID pageId)
     {
-        new AsyncTask<Void,Void,Tuple2<ArrayList<UUID>,String>>()
+        new AsyncTask<Void,Void,Tuple3<ArrayList<UUID>,String,Integer>>()
         {
 
             @Override
-            protected Tuple2<ArrayList<UUID>,String> doInBackground(Void... args)
+            protected Tuple3<ArrayList<UUID>,String,Integer> doInBackground(Void... args)
             {
                 // Query Page Data
                 String pageQuery =
-                    "SELECT label " +
-                    "FROM Page " +
-                    "WHERE Page.page_id =  " + SQL.quoted(pageId.toString());
+                    "SELECT page.label, page.page_index " +
+                    "FROM Page page " +
+                    "WHERE page.page_id =  " + SQL.quoted(pageId.toString());
 
                 Cursor pageCursor = database.rawQuery(pageQuery, null);
 
                 String label;
+                Integer index;
                 try {
                     pageCursor.moveToFirst();
                     label = pageCursor.getString(0);
+                    index = pageCursor.getInt(1);
                 }
                 // TODO log
                 finally {
@@ -248,22 +279,24 @@ public class Page implements Unique, Serializable
                     groupsCursor.close();
                 }
 
-                return new Tuple2<>(groupIds, label);
+                return new Tuple3<>(groupIds, label, index);
             }
 
             @Override
-            protected void onPostExecute(Tuple2<ArrayList<UUID>,String> data)
+            protected void onPostExecute(Tuple3<ArrayList<UUID>,String,Integer> data)
             {
                 ArrayList<UUID> groupIds = data.getItem1();
                 String          label    = data.getItem2();
+                Integer         index    = data.getItem3();
 
                 // Create Asynchronous Constructor
                 UUID pageConstructorId = Page.addAsyncConstructor(pageId,
                                                                   groupIds.size(),
                                                                   roleplayConstructorId);
 
-                // >> Add Label
+                // >> Already have label and index
                 Page.asyncConstructorMap.get(pageConstructorId).setLabel(label);
+                Page.asyncConstructorMap.get(pageConstructorId).setIndex(index);
 
                 // >> Asynchronously add groups
                 for (UUID groupId : groupIds) {
@@ -296,6 +329,7 @@ public class Page implements Unique, Serializable
                 row.put("page_id", thisPage.getId().toString());
                 row.put("sheet_id", sheetId.toString());
                 row.put("section_id", sectionId);
+                row.put("page_index", thisPage.getIndex());
                 row.put("label", thisPage.label);
 
                 database.insertWithOnConflict(SheetContract.Page.TABLE_NAME,
@@ -352,6 +386,7 @@ public class Page implements Unique, Serializable
 
         private UUID id;
         private String label;
+        private Integer index;
         private ArrayList<Group> groups;
 
 
@@ -365,6 +400,7 @@ public class Page implements Unique, Serializable
             this.numberOfGroups = numberOfGroups;
 
             label = null;
+            index = null;
             groups = new ArrayList<>();
         }
 
@@ -375,14 +411,18 @@ public class Page implements Unique, Serializable
         synchronized public void setLabel(String label)
         {
             this.label = label;
+            if (this.isReady())  ready();
+        }
 
+        synchronized public void setIndex(Integer index)
+        {
+            this.index = index;
             if (this.isReady())  ready();
         }
 
         synchronized public void addGroup(Group group)
         {
             this.groups.add(group);
-
             if (this.isReady())  ready();
         }
 
@@ -394,12 +434,13 @@ public class Page implements Unique, Serializable
         {
             return this.id != null &&
                    this.label != null &&
+                   this.index != null &&
                    this.groups.size() == numberOfGroups;
         }
 
         private void ready()
         {
-            Page page = new Page(this.id, this.label, this.groups);
+            Page page = new Page(this.id, this.label, this.index, this.groups);
             Roleplay.getAsyncConstructor(this.roleplayConstructorId).addPage(page);
         }
 

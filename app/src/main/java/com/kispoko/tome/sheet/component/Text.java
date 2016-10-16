@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.sheet.component.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.Component;
@@ -30,8 +32,12 @@ import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
+import java.security.cert.CertificateNotYetValidException;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.kispoko.tome.R.id.text;
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -163,17 +169,19 @@ public class Text extends Component implements Serializable
 
     public View getDisplayView(Context context)
     {
+        LinearLayout textLayout = Component.linearLayout(context);
+
+
         TextView textView = new TextView(context);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
 
         this.displayTextViewId = Util.generateViewId();
         textView.setId(this.displayTextViewId);
 
         textView.setTextSize(ComponentUtil.getTextSizeSP(context, this.textSize));
 
-        Typeface font = Typeface.createFromAsset(context.getAssets(),
-                                                 "fonts/DavidLibre-Regular.ttf");
-        textView.setTypeface(font);
-        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+        textView.setTypeface(Util.serifFontBold(context));
+        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium_dark));
 
         textView.setText(this.value);
 
@@ -187,13 +195,15 @@ public class Text extends Component implements Serializable
             }
         });
 
-        return textView;
+        textLayout.addView(textView);
+
+        return textLayout;
     }
 
 
     public View getEditorView(Context context)
     {
-        if (this.hasType())
+        if (!this.getTypeId().isNull())
             return this.getTypeEditorView(context);
         // No type is set, so allow free form edit
         else
@@ -212,7 +222,7 @@ public class Text extends Component implements Serializable
         // TODO verify type
 
         // Create copy of type so we only display values that are not currently chosen
-        List list = (List) this.getType();
+        List list = (List) RulesEngine.getType(this.getTypeId());
         List listWithoutCurrentValue = list.asClone();
         listWithoutCurrentValue.getValueList().remove(this.value);
 
@@ -452,9 +462,9 @@ public class Text extends Component implements Serializable
                 componentRow.put("column", thisText.getColumn());
                 componentRow.put("width", thisText.getWidth());
 
-                if (thisText.getType() != null) {
-                    componentRow.put("type_kind", thisText.getType().getId().getKind());
-                    componentRow.put("type_id", thisText.getType().getId().getId());
+                if (thisText.getTypeId() != null) {
+                    componentRow.put("type_kind", thisText.getTypeId().getKind());
+                    componentRow.put("type_id", thisText.getTypeId().getId());
                 } else {
                     componentRow.putNull("type_kind");
                     componentRow.putNull("type_id");

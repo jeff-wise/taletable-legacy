@@ -13,11 +13,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.activity.sheet.PageFragment;
@@ -126,7 +126,7 @@ public class SheetActivity
         if (requestCode == CHOOSE_IMAGE_FROM_FILE)
         {
             Uri uri = data.getData();
-            this.chooseImageAction.setImage(uri);
+            this.chooseImageAction.setImage(this, uri);
             this.chooseImageAction = null;
         }
 

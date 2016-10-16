@@ -8,19 +8,26 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
-    <!-- GROUPS -->
-    <dimen name="row_padding_top">10dp</dimen>
 
-    <dimen name="group_horz_margins">7dp</dimen>
-    <dimen name="group_vert_margins">10dp</dimen>
+    <!-- GROUP -->
+    <dimen name="row_padding_top">12dp</dimen>
 
-    <dimen name="label_padding">4dp</dimen>
+    <dimen name="group_horz_margins">4dp</dimen>
+    <dimen name="group_vert_margins">15dp</dimen>
+
+    <dimen name="group_label_padding_left">4dp</dimen>
     <dimen name="label_text_size">2.8dp</dimen>
 
 
+    <!-- COMPONENT LAYOUT -->
+    <dimen name="comp_layout_margins_horz">4dp</dimen>
+    <dimen name="comp_label_padding_left">4dp</dimen>
+    <dimen name="comp_label_padding_bottom">5dp</dimen>
+
+
     <!-- COMPONENT: TEXT -->
-    <dimen name="text_size_large">9dp</dimen>
-    <dimen name="text_size_medium">7dp</dimen>
+    <dimen name="text_size_large">7.5dp</dimen>
+    <dimen name="text_size_medium">4.7dp</dimen>
     <dimen name="text_size_small">4dp</dimen>
 
 
