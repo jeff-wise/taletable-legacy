@@ -23,12 +23,14 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.type.Type;
+import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.Map;
-
+import java.util.UUID;
 
 
 /**
@@ -46,18 +48,40 @@ public class Image extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Image(Id id, Type.Id typeId, String label, Bitmap bitmap)
+    public Image(UUID id, Type.Id typeId, String label, Integer row, Integer column,
+                 Integer width, Bitmap bitmap)
     {
-        super(id, typeId, label);
+        super(id, typeId, label, row, column, width);
         this.bitmap = bitmap;
     }
 
 
     public static Image fromYaml(Map<String, Object> imageYaml)
     {
-        String label  = (String) imageYaml.get("label");
+        // Values to parse
+        UUID id = null;            // Isn't actually parsed, is only stored in DB
+        Type.Id typeId = null;
+        String label = null;
+        Integer row = null;
+        Integer column = null;
+        Integer width = null;
 
-        return new Image(null, null, label, null);
+        // Parse Values
+        Map<String, Object> formatYaml = (Map<String, Object>) imageYaml.get("format");
+
+        if (formatYaml.containsKey("label"))
+            label = (String) formatYaml.get("label");
+
+        if (formatYaml.containsKey("row"))
+            row = (Integer) formatYaml.get("row");
+
+        if (formatYaml.containsKey("column"))
+            column = (Integer) formatYaml.get("column");
+
+        if (formatYaml.containsKey("width"))
+            width = (Integer) formatYaml.get("width");
+
+        return new Image(id, typeId, label, row, column, width, null);
     }
 
 
@@ -82,45 +106,61 @@ public class Image extends Component implements Serializable
      * @param componentId The database id of the group to load.
      */
     public static void load(final SQLiteDatabase database,
-                            final Integer groupConstructorId,
-                            final Integer componentId)
+                            final UUID groupConstructorId,
+                            final UUID componentId)
     {
-        new AsyncTask<Void,Void,Void>()
+        new AsyncTask<Void,Void,Image>()
         {
 
-            protected Void doInBackground(Void... args)
+            @Override
+            protected Image doInBackground(Void... args)
             {
                 // Query Component
                 String imageQuery =
-                    "SELECT comp.component_id, comp.label, im.image_id, im.image " +
+                    "SELECT comp.label, comp.row, comp.column, comp.width, im.image " +
                     "FROM Component comp " +
-                    "INNER JOIN ComponentImage im on ComponentImage.component_id = Component.component_id " +
-                    "WHERE Component.component_id =  " + Integer.toString(componentId);
+                    "INNER JOIN component_image im on im.component_id = comp.component_id " +
+                    "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
 
                 Cursor imageCursor = database.rawQuery(imageQuery, null);
 
-                Long componentId;
                 String label;
-                Long imageId;
+                Integer row;
+                Integer column;
+                Integer width;
                 byte[] imageBlob;
                 try {
                     imageCursor.moveToFirst();
-                    componentId = imageCursor.getLong(0);
-                    label       = imageCursor.getString(1);
-                    imageId     = imageCursor.getLong(2);
-                    imageBlob   = imageCursor.getBlob(3);
+                    label       = imageCursor.getString(0);
+                    row         = imageCursor.getInt(1);
+                    column      = imageCursor.getInt(2);
+                    width       = imageCursor.getInt(3);
+                    imageBlob   = imageCursor.getBlob(4);
                 }
                 // TODO log
                 finally {
                     imageCursor.close();
                 }
 
-                Image image = new Image(new Id(componentId, imageId),
-                                        null, label, Util.getImage(imageBlob));
+                Bitmap bitmap = null;
+                if (imageBlob != null)
+                    bitmap = Util.getImage(imageBlob);
 
-                Group.asyncConstructorMap.get(groupConstructorId).addComponent(image);
+                Image image = new Image(componentId,
+                                        null,
+                                        label,
+                                        row,
+                                        column,
+                                        width,
+                                        bitmap);
 
-                return null;
+                return image;
+            }
+
+            @Override
+            protected void onPostExecute(Image image)
+            {
+                Group.getAsyncConstructor(groupConstructorId).addComponent(image);
             }
 
         }.execute();
@@ -132,50 +172,53 @@ public class Image extends Component implements Serializable
      * @param database The SQLite database object.
      * @param groupId The ID of the parent group object.
      */
-    public void save(final SQLiteDatabase database, final Long groupId)
+    public void save(final SQLiteDatabase database, final UUID groupTrackerId, final UUID groupId)
     {
         final Image thisImage = this;
 
-        new AsyncTask<Void,Void,Void>()
+        new AsyncTask<Void,Void,Boolean>()
         {
-            protected Void doInBackground(Void... args)
+
+            @Override
+            protected Boolean doInBackground(Void... args)
             {
                 ContentValues componentRow = new ContentValues();
 
-                if (thisImage.getId() != null)
-                    componentRow.put("component_id", thisImage.getId().getId());
-                else
-                    componentRow.putNull("component_id");
-                componentRow.put("group_id", groupId);
+                componentRow.put("component_id", thisImage.getId().toString());
+                componentRow.put("group_id", groupId.toString());
                 componentRow.put("data_type", thisImage.componentName());
                 componentRow.put("label", thisImage.getLabel());
+                componentRow.put("row", thisImage.getRow());
+                componentRow.put("column", thisImage.getColumn());
+                componentRow.put("width", thisImage.getWidth());
                 componentRow.putNull("type_kind");
                 componentRow.putNull("type_id");
 
-                Long componentId = database.insertWithOnConflict(
-                                                SheetContract.Component.TABLE_NAME,
-                                                null,
-                                                componentRow,
-                                                SQLiteDatabase.CONFLICT_REPLACE);
+                database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
+                                              null,
+                                              componentRow,
+                                              SQLiteDatabase.CONFLICT_REPLACE);
 
                 ContentValues imageComponentRow = new ContentValues();
-                if (thisImage.getId() != null)
-                    imageComponentRow.put("image_id", thisImage.getId().getSubId());
+                imageComponentRow.put("component_id", thisImage.getId().toString());
+
+                if (thisImage.bitmap != null)
+                    imageComponentRow.put("image", Util.getBytes(thisImage.bitmap));
                 else
-                    imageComponentRow.putNull("image_id");
-                imageComponentRow.put("component_id", componentId);
-                imageComponentRow.put("image", Util.getBytes(thisImage.bitmap));
+                    imageComponentRow.putNull("image");
 
-                Long imageId = database.insertWithOnConflict(
-                                                SheetContract.ComponentImage.TABLE_NAME,
-                                                null,
-                                                imageComponentRow,
-                                                SQLiteDatabase.CONFLICT_REPLACE);
+                database.insertWithOnConflict(SheetContract.ComponentImage.TABLE_NAME,
+                                              null,
+                                              imageComponentRow,
+                                              SQLiteDatabase.CONFLICT_REPLACE);
 
-                // Set ID in case of first insert and ID was Null
-                thisImage.setId(new Id(componentId, imageId));
+                return true;
+            }
 
-                return null;
+            @Override
+            protected void onPostExecute(Boolean result)
+            {
+                Group.getTracker(groupTrackerId).setComponentId(thisImage.getId());
             }
 
         }.execute();

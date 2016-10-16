@@ -2,6 +2,7 @@
 package com.kispoko.tome.type;
 
 
+import java.io.Serializable;
 import java.util.Map;
 
 
@@ -53,7 +54,7 @@ public abstract class Type
     // > TYPE ID
     // -------------------------------------------------------------------------------------------
 
-    public static class Id
+    public static class Id implements Serializable
     {
         private String kind;
         private String id;

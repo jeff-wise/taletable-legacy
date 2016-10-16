@@ -17,11 +17,13 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.type.Type;
+import com.kispoko.tome.util.SQL;
 
 import java.io.Serializable;
 import java.util.Map;
-
+import java.util.UUID;
 
 
 /**
@@ -42,9 +44,10 @@ public class NumberInteger extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public NumberInteger(Id id, Type.Id typeId, String label, Integer value)
+    public NumberInteger(UUID id, Type.Id typeId, String label, Integer row, Integer column,
+                         Integer width, Integer value)
     {
-        super(id, typeId, label);
+    super(id, typeId, label, row, column, width);
         this.value = value;
         this.textSize = TextSize.MEDIUM;
     }
@@ -53,44 +56,64 @@ public class NumberInteger extends Component implements Serializable
     @SuppressWarnings("unchecked")
     public static NumberInteger fromYaml(Map<String, Object> integerYaml)
     {
-        // Parse all integer fields
-        // >> Label
-        String label = null;
-        if (integerYaml.containsKey("label"))
-            label = (String) integerYaml.get("label");
-
-        // >> Prefix
-        String prefix = null;
-        if (integerYaml.containsKey("prefix"))
-            prefix = (String) integerYaml.get("prefix");
-
-        // >> Text Size
-        TextSize textSize = null;
-        if (integerYaml.containsKey("size"))
-            textSize = Component.TextSize.fromString((String) integerYaml.get("size"));
-
-        // >> Value
-        Map<String, Object> dataYaml = (Map<String, Object>) integerYaml.get("data");
-        Integer value = (Integer) dataYaml.get("value");
-
-        // >> Type
-        Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
-
+        // Values to parse
+        UUID id = null;            // Isn't actually parsed, is only stored in DB
         Type.Id typeId = null;
-        if (typeYaml != null) {
-            String typeKind = (String) dataYaml.get("kind");
-            String _typeId = (String) dataYaml.get("id");
+        String label = null;
+        Integer row = null;
+        Integer column = null;
+        Integer width = null;
+        String prefix = null;
+        Integer value = null;
 
-            if (typeKind != null && _typeId != null) {
-                typeId = new Type.Id(typeKind, _typeId);
-            }
+        // Parse Values
+        Map<String, Object> formatYaml = (Map<String, Object>) integerYaml.get("format");
+        Map<String, Object> dataYaml   = (Map<String, Object>) integerYaml.get("data");
+
+        // >> Type Id
+        if (dataYaml.containsKey("type"))
+        {
+            Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
+            String _typeId = null;
+            String typeKind = null;
+
+            if (typeYaml.containsKey("id"))
+                _typeId = (String) typeYaml.get("id");
+
+            if (typeYaml.containsKey("kind"))
+                typeKind = (String) typeYaml.get("kind");
+
+            typeId = new Type.Id(typeKind, _typeId);
         }
 
-        // Construct new integer
-        NumberInteger integer = new NumberInteger(null, typeId, label, value);
+        // >> Label
+        if (formatYaml.containsKey("label"))
+            label = (String) formatYaml.get("label");
 
-        integer.setTextSize(textSize);
-        integer.setPrefix(prefix);
+        // >> Row
+        if (formatYaml.containsKey("row"))
+            row = (Integer) formatYaml.get("row");
+
+        // >> Column
+        if (formatYaml.containsKey("column"))
+            column = (Integer) formatYaml.get("column");
+
+        // >> Width
+        if (formatYaml.containsKey("width"))
+            width = (Integer) formatYaml.get("width");
+
+        // >> Prefix
+        if (formatYaml.containsKey("prefix"))
+            prefix = (String) formatYaml.get("prefix");
+
+        // >> Value
+        if (dataYaml.containsKey("value"))
+            value = (Integer) dataYaml.get("value");
+
+        // Create Integer
+        NumberInteger integer = new NumberInteger(id, typeId, label, row, column, width, value);
+
+        if (prefix != null) integer.setPrefix(prefix);
 
         return integer;
     }
@@ -108,6 +131,9 @@ public class NumberInteger extends Component implements Serializable
     }
 
 
+    // >>> Value
+    // ------------------------------------------------------------------------------------------
+
     public Integer getValue()
     {
         return this.value;
@@ -120,6 +146,9 @@ public class NumberInteger extends Component implements Serializable
     }
 
 
+    // >>> Prefix
+    // ------------------------------------------------------------------------------------------
+
     public String getPrefix()
     {
         return this.prefix;
@@ -129,12 +158,6 @@ public class NumberInteger extends Component implements Serializable
     public void setPrefix(String prefix)
     {
         this.prefix = prefix;
-    }
-
-
-    public void setTextSize(TextSize textSize)
-    {
-        this.textSize = textSize;
     }
 
 
@@ -194,56 +217,66 @@ public class NumberInteger extends Component implements Serializable
      * @param componentId The database id of the group to load.
      */
     public static void load(final SQLiteDatabase database,
-                            final Integer groupConstructorId,
-                            final Integer componentId)
+                            final UUID groupConstructorId,
+                            final UUID componentId)
     {
-        new AsyncTask<Void,Void,Void>()
+        new AsyncTask<Void,Void,NumberInteger>()
         {
 
-            protected Void doInBackground(Void... args)
+            @Override
+            protected NumberInteger doInBackground(Void... args)
             {
                 // Query Component
                 String integerQuery =
-                    "SELECT comp.component_id, comp.label, comp.type_kind, comp.type_id, " +
-                           "int.integer_id, int.value, int.prefix " +
-                    "FROM Component comp " +
-                    "INNER JOIN ComponentInteger int on ComponentInteger.component_id = Component.component_id " +
-                    "WHERE Component.component_id =  " + Integer.toString(componentId);
+                    "SELECT comp.label, comp.row, comp.column, comp.width, comp.type_kind, " +
+                           "comp.type_id, int.value, int.prefix " +
+                    "FROM component comp " +
+                    "INNER JOIN component_integer int on int.component_id = comp.component_id " +
+                    "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
 
 
                 Cursor textCursor = database.rawQuery(integerQuery, null);
 
-                Long componentId;
                 String label;
+                Integer row;
+                Integer column;
+                Integer width;
                 String typeKind;
                 String typeId;
-                Long integerId;
                 Integer value;
                 String prefix;
                 try {
                     textCursor.moveToFirst();
-                    componentId = textCursor.getLong(0);
-                    label       = textCursor.getString(1);
-                    typeKind    = textCursor.getString(2);
-                    typeId      = textCursor.getString(3);
-                    integerId   = textCursor.getLong(4);
-                    value       = textCursor.getInt(5);
-                    prefix      = textCursor.getString(6);
+                    label       = textCursor.getString(0);
+                    row         = textCursor.getInt(1);
+                    column      = textCursor.getInt(2);
+                    width       = textCursor.getInt(3);
+                    typeKind    = textCursor.getString(4);
+                    typeId      = textCursor.getString(5);
+                    value       = textCursor.getInt(6);
+                    prefix      = textCursor.getString(7);
                 }
                 // TODO log
                 finally {
                     textCursor.close();
                 }
 
-                NumberInteger integer = new NumberInteger(new Id(componentId, integerId),
+                NumberInteger integer = new NumberInteger(componentId,
                                                           new Type.Id(typeKind, typeId),
                                                           label,
+                                                          row,
+                                                          column,
+                                                          width,
                                                           value);
                 integer.setPrefix(prefix);
 
-                Group.asyncConstructorMap.get(groupConstructorId).addComponent(integer);
+                return integer;
+            }
 
-                return null;
+            @Override
+            protected void onPostExecute(NumberInteger integer)
+            {
+                Group.getAsyncConstructor(groupConstructorId).addComponent(integer);
             }
 
         }.execute();
@@ -255,53 +288,52 @@ public class NumberInteger extends Component implements Serializable
      * @param database The SQLite database object.
      * @param groupId The ID of the parent group object.
      */
-    public void save(final SQLiteDatabase database, final Long groupId)
+    public void save(final SQLiteDatabase database, final UUID groupTrackerId, final UUID groupId)
     {
         final NumberInteger thisInteger = this;
 
-        new AsyncTask<Void,Void,Void>()
+        new AsyncTask<Void,Void,Boolean>()
         {
-            protected Void doInBackground(Void... args)
+
+            @Override
+            protected Boolean doInBackground(Void... args)
             {
                 ContentValues componentRow = new ContentValues();
 
-                if (thisInteger.getId() != null)
-                    componentRow.put("component_id", thisInteger.getId().getId());
-                else
-                    componentRow.putNull("component_id");
-                componentRow.put("group_id", groupId);
+                componentRow.put("component_id", thisInteger.getId().toString());
+                componentRow.put("group_id", groupId.toString());
                 componentRow.put("data_type", thisInteger.componentName());
                 componentRow.put("label", thisInteger.getLabel());
+                componentRow.put("row", thisInteger.getRow());
+                componentRow.put("column", thisInteger.getColumn());
+                componentRow.put("width", thisInteger.getWidth());
                 componentRow.putNull("type_kind");
                 componentRow.putNull("type_id");
 
-                Long componentId = database.insertWithOnConflict(
-                                                SheetContract.Component.TABLE_NAME,
-                                                null,
-                                                componentRow,
-                                                SQLiteDatabase.CONFLICT_REPLACE);
+                database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
+                                              null,
+                                              componentRow,
+                                              SQLiteDatabase.CONFLICT_REPLACE);
+
 
                 ContentValues integerComponentRow = new ContentValues();
 
-                if (thisInteger.getId() != null)
-                    integerComponentRow.put("integer_id", thisInteger.getId().getSubId());
-                else
-                    integerComponentRow.putNull("integer_id");
-                integerComponentRow.put("integer_id", thisInteger.getId().getSubId());
-                integerComponentRow.put("component_id", componentId);
+                integerComponentRow.put("component_id", thisInteger.getId().toString());
                 integerComponentRow.put("value", thisInteger.getValue());
                 integerComponentRow.put("prefix", thisInteger.getPrefix());
 
-                Long textComponentId = database.insertWithOnConflict(
-                                                    SheetContract.ComponentInteger.TABLE_NAME,
-                                                    null,
-                                                    integerComponentRow,
-                                                    SQLiteDatabase.CONFLICT_REPLACE);
+                database.insertWithOnConflict(SheetContract.ComponentInteger.TABLE_NAME,
+                                              null,
+                                              integerComponentRow,
+                                              SQLiteDatabase.CONFLICT_REPLACE);
 
-                // Set ID in case of first insert and ID was Null
-                thisInteger.setId(new Id(componentId, textComponentId));
+                return true;
+            }
 
-                return null;
+            @Override
+            protected void onPostExecute(Boolean result)
+            {
+                Group.getTracker(groupTrackerId).setComponentId(thisInteger.getId());
             }
 
         }.execute();

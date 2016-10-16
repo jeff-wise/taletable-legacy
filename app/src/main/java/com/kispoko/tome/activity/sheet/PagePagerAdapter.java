@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.kispoko.tome.sheet.Sheet;
 
 
+
 /**
  * This class manages the roleplay pages by assigning a numeric index to each
  * roleplay page Fragment.
@@ -54,7 +55,7 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
     @Override
     public CharSequence getPageTitle(int position)
     {
-        return this.sheet.getRoleplay().getPages().get(position).getName();
+        return this.sheet.getRoleplay().getPages().get(position).getLabel();
     }
 
 }

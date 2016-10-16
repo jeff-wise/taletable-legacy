@@ -11,33 +11,37 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.component.Document;
 import com.kispoko.tome.sheet.component.Image;
 import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
 import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
+import com.kispoko.tome.util.Unique;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.UUID;
 
-import static android.R.attr.id;
 
 
 /**
  * Component
  *
  */
-public abstract class Component implements Serializable
+public abstract class Component implements Unique, Serializable
 {
 
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Id id;
+    private UUID id;
     private Type.Id typeId;
     private String label;
+
+    private Integer row;
+    private Integer column;
+    private Integer width;
 
 
     // > INTERFACE
@@ -48,17 +52,25 @@ public abstract class Component implements Serializable
 
     abstract public String componentName();
 
-    abstract public void save(SQLiteDatabase database, Long groupId);
+    abstract public void save(SQLiteDatabase database, UUID trackerId, UUID groupId);
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Component(Id id, Type.Id typeId, String label)
+    public Component(UUID id, Type.Id typeId, String label, Integer row,
+                     Integer column, Integer width)
     {
-        this.id = id;
+        if (id != null)
+            this.id = id;
+        else
+            this.id = UUID.randomUUID();
+
         this.typeId = typeId;
         this.label = label;
+        this.row = row;
+        this.column = column;
+        this.width = width;
     }
 
 
@@ -68,29 +80,14 @@ public abstract class Component implements Serializable
     // >> Id
     // ------------------------------------------------------------------------------------------
 
-    public Id getId()
+    public UUID getId()
     {
         return this.id;
     }
 
-    public void setId(Id id)
+    public void setId(UUID id)
     {
         this.id = id;
-    }
-
-
-    // >> Label
-    // ------------------------------------------------------------------------------------------
-
-    public boolean hasLabel()
-    {
-        return this.label != null;
-    }
-
-
-    public String getLabel()
-    {
-        return this.label;
     }
 
 
@@ -111,6 +108,68 @@ public abstract class Component implements Serializable
         else
             return null;
     }
+
+
+    // >> Label
+    // ------------------------------------------------------------------------------------------
+
+    public boolean hasLabel()
+    {
+        return this.label != null;
+    }
+
+
+    public String getLabel()
+    {
+        return this.label;
+    }
+
+
+    // >> Row
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getRow()
+    {
+        return this.row;
+    }
+
+
+    public void setRow(Integer row)
+    {
+        this.row = row;
+    }
+
+
+    // >> Row
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getColumn()
+    {
+        return this.column;
+    }
+
+
+    public void setColumn(Integer column)
+    {
+        this.column = column;
+    }
+
+
+    // >> Row
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getWidth()
+    {
+        return this.width;
+    }
+
+
+    public void setWidth(Integer width)
+    {
+        this.width = width;
+    }
+
+
 
 
     // >> Views
@@ -159,8 +218,6 @@ public abstract class Component implements Serializable
                 return Image.fromYaml(componentYaml);
             case "integer":
                 return NumberInteger.fromYaml(componentYaml);
-            case "document":
-                return Document.fromYaml(componentYaml);
             case "table":
                 return Table.fromYaml(componentYaml);
         }
@@ -175,8 +232,8 @@ public abstract class Component implements Serializable
      * @param groupConstructorId The id of the async group constructor.
      * @param componentId The database id of the component to load.
      */
-    public static void load(SQLiteDatabase database, Integer groupConstructorId,
-                            Integer componentId, String componentType)
+    public static void load(SQLiteDatabase database, UUID groupConstructorId,
+                            UUID componentId, String componentType)
     {
         switch (componentType)
         {
@@ -222,30 +279,6 @@ public abstract class Component implements Serializable
         public static TextSize fromString(String textSize)
         {
             return TextSize.valueOf(textSize.toUpperCase());
-        }
-
-    }
-
-
-    public static class Id
-    {
-        private Long id;
-        private Long subId;
-
-        public Id(Long id, Long subId)
-        {
-            this.id = id;
-            this.subId = subId;
-        }
-
-        public Long getId()
-        {
-            return this.id;
-        }
-
-        public Long getSubId()
-        {
-            return this.subId;
         }
 
     }

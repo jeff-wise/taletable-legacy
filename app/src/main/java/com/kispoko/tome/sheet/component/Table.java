@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -19,18 +20,14 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.type.Type;
-import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.SQL;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
-
-import static android.R.attr.name;
-import static android.R.attr.textSize;
-import static android.R.attr.value;
+import java.util.UUID;
 
 
 /**
@@ -48,9 +45,10 @@ public class Table extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Table(Id id, Type.Id typeId, ArrayList<String> columnNames, ArrayList<Row> rows)
+    public Table(UUID id, Type.Id typeId, Integer row, Integer column, Integer width,
+                 ArrayList<String> columnNames, ArrayList<Row> rows)
     {
-        super(id, typeId, null);
+        super(id, typeId, null, row, column, width);
 
         this.columnNames = columnNames;
         this.rows = rows;
@@ -60,27 +58,55 @@ public class Table extends Component implements Serializable
     @SuppressWarnings("unchecked")
     public static Table fromYaml(Map<String, Object> tableYaml)
     {
-        ArrayList<String> columnNames = (ArrayList<String>) tableYaml.get("columns");
-
-        Map<String,Object> dataYaml = (Map<String,Object>) tableYaml.get("data");
-
-        // >> Type
-        Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
-
+        // Values to parse
+        UUID id = null;            // Isn't actually parsed, is only stored in DB
         Type.Id typeId = null;
-        if (typeYaml != null) {
-            String typeKind = (String) dataYaml.get("kind");
-            String _typeId = (String) dataYaml.get("id");
+        Integer row = null;
+        Integer column = null;
+        Integer width = null;
+        ArrayList<String> columnNames = null;
+        ArrayList<Row> rows = new ArrayList<>();
 
-            if (typeKind != null && _typeId != null) {
-                typeId = new Type.Id(typeKind, _typeId);
-            }
+        // Parse Values
+        Map<String, Object> formatYaml = (Map<String, Object>) tableYaml.get("format");
+        Map<String, Object> dataYaml   = (Map<String, Object>) tableYaml.get("data");
+
+        // >> Type Id
+        if (dataYaml.containsKey("type"))
+        {
+            Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
+            String _typeId = null;
+            String typeKind = null;
+
+            if (typeYaml.containsKey("id"))
+                _typeId = (String) typeYaml.get("id");
+
+            if (typeYaml.containsKey("kind"))
+                typeKind = (String) typeYaml.get("kind");
+
+            typeId = new Type.Id(typeKind, _typeId);
         }
 
+        // >> Row
+        if (formatYaml.containsKey("row"))
+            row = (Integer) formatYaml.get("row");
+
+        // >> Column
+        if (formatYaml.containsKey("column"))
+            column = (Integer) formatYaml.get("column");
+
+        // >> Width
+        if (formatYaml.containsKey("width"))
+            width = (Integer) formatYaml.get("width");
+
+        // >> Column Names
+        if (tableYaml.containsKey("columns"))
+            columnNames = (ArrayList<String>) tableYaml.get("columns");
+
+        // >> Rows
         ArrayList<Map<String,Object>> rowsYaml =
                 (ArrayList<Map<String,Object>>) dataYaml.get("rows");
 
-        ArrayList<Row> rows = new ArrayList<>();
         for (Map<String,Object> rowYaml : rowsYaml)
         {
             ArrayList<Map<String,Object>> cellsYaml =
@@ -97,7 +123,7 @@ public class Table extends Component implements Serializable
             rows.add(new Row(null, cells));
         }
 
-        return new Table(null, typeId, columnNames, rows);
+        return new Table(id, typeId, row, column, width, columnNames, rows);
     }
 
 
@@ -124,45 +150,48 @@ public class Table extends Component implements Serializable
      * @param componentId The database id of the group to load.
      */
     public static void load(final SQLiteDatabase database,
-                            final Integer groupConstructorId,
-                            final Integer componentId)
+                            final UUID groupConstructorId,
+                            final UUID componentId)
     {
-        new AsyncTask<Void,Void,Void>()
+        new AsyncTask<Void,Void,Table>()
         {
 
-            protected Void doInBackground(Void... args)
+            @Override
+            protected Table doInBackground(Void... args)
             {
                 // Query Table
                 String tableQuery =
-                    "SELECT comp.component_id, comp.type_kind, comp.type_id, table.table_id, " +
-                           "table.column1_name, table.column2_name, table.column3_name " +
-                          " table.column4_name, table.column5_name, table.column6_name " +
+                    "SELECT comp.row, comp.column, comp.width, comp.type_kind, comp.type_id, " +
+                           "tbl.column1_name, tbl.column2_name, tbl.column3_name, " +
+                           "tbl.column4_name, tbl.column5_name, tbl.column6_name " +
                     "FROM Component comp " +
-                    "INNER JOIN ComponentTable table on ComponentTable.component_id = Component.component_id " +
-                    "WHERE Component.component_id =  " + Integer.toString(componentId);
+                    "INNER JOIN component_table tbl on tbl.component_id = comp.component_id " +
+                    "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
 
                 Cursor tableCursor = database.rawQuery(tableQuery, null);
 
-                Long componentId;
-                String typeKind;
-                String typeId;
-                Long tableId;
-                ArrayList<String> columnNames = new ArrayList<String>();
+                Integer rowIndex = null;
+                Integer columnIndex = null;
+                Integer width = null;
+                String typeKind = null;
+                String typeId = null;
+                ArrayList<String> columnNames = new ArrayList<>();
 
                 try {
                     tableCursor.moveToFirst();
 
-                    componentId = tableCursor.getLong(0);
-                    typeKind    = tableCursor.getString(1);
-                    typeId      = tableCursor.getString(2);
-                    tableId     = tableCursor.getLong(3);
+                    rowIndex    = tableCursor.getInt(0);
+                    columnIndex = tableCursor.getInt(1);
+                    width       = tableCursor.getInt(2);
+                    typeKind    = tableCursor.getString(3);
+                    typeId      = tableCursor.getString(4);
 
-                    String column1Name = tableCursor.getString(4);
-                    String column2Name = tableCursor.getString(5);
-                    String column3Name = tableCursor.getString(6);
-                    String column4Name = tableCursor.getString(7);
-                    String column5Name = tableCursor.getString(8);
-                    String column6Name = tableCursor.getString(9);
+                    String column1Name = tableCursor.getString(5);
+                    String column2Name = tableCursor.getString(6);
+                    String column3Name = tableCursor.getString(7);
+                    String column4Name = tableCursor.getString(8);
+                    String column5Name = tableCursor.getString(9);
+                    String column6Name = tableCursor.getString(10);
 
                     if (column1Name != null)  columnNames.add(column1Name);
                     if (column2Name != null)  columnNames.add(column2Name);
@@ -170,6 +199,8 @@ public class Table extends Component implements Serializable
                     if (column4Name != null)  columnNames.add(column4Name);
                     if (column5Name != null)  columnNames.add(column5Name);
                     if (column6Name != null)  columnNames.add(column6Name);
+                } catch (Exception e) {
+                    Log.d("***table", Log.getStackTraceString(e));
                 }
                 finally {
                     tableCursor.close();
@@ -178,10 +209,10 @@ public class Table extends Component implements Serializable
                 // Query Table Rows
                 String tableRowQuery =
                     "SELECT row.table_row_id, row.column1, row.column2, row.column3, " +
-                           "table.column4, table.column5, table.column6 " +
-                    "FROM ComponentTableRow row " +
-                    "WHERE ComponentTableRow.table_id =  " + Long.toString(componentId) + " " +
-                    "ORDER BY row.index ASC ";
+                           "row.column4, row.column5, row.column6 " +
+                    "FROM component_table_row row " +
+                    "WHERE row.table_id =  " + SQL.quoted(componentId.toString()) + " " +
+                    "ORDER BY row.row_index ASC ";
 
                 Cursor tableRowCursor = database.rawQuery(tableRowQuery, null);
 
@@ -215,20 +246,29 @@ public class Table extends Component implements Serializable
 
                         rows.add(row);
                     }
+                } catch (Exception e) {
+                    Log.d("tomedebug", Log.getStackTraceString(e));
                 }
                 // TODO log
                 finally {
                     tableCursor.close();
                 }
 
-                Table table = new Table(new Id(componentId, tableId),
+                Table table = new Table(componentId,
                                         new Type.Id(typeKind, typeId),
+                                        rowIndex,
+                                        columnIndex,
+                                        width,
                                         columnNames,
                                         rows);
 
-                Group.asyncConstructorMap.get(groupConstructorId).addComponent(table);
+                return table;
+            }
 
-                return null;
+            @Override
+            protected void onPostExecute(Table table)
+            {
+                Group.getAsyncConstructor(groupConstructorId).addComponent(table);
             }
 
         }.execute();
@@ -240,38 +280,41 @@ public class Table extends Component implements Serializable
      * @param database The SQLite database object.
      * @param groupId The ID of the parent group object.
      */
-    public void save(final SQLiteDatabase database, final Long groupId)
+    public void save(final SQLiteDatabase database, final UUID groupTrackerId, final UUID groupId)
     {
         final Table thisTable = this;
 
-        new AsyncTask<Void,Void,Void>()
+        new AsyncTask<Void,Void,Boolean>()
         {
-            protected Void doInBackground(Void... args)
+
+            @Override
+            protected Boolean doInBackground(Void... args)
             {
                 ContentValues componentRow = new ContentValues();
 
-                if (thisTable.getId() != null)
-                    componentRow.put("component_id", thisTable.getId().getId());
-                else
-                    componentRow.putNull("component_id");
-                componentRow.put("group_id", groupId);
+                componentRow.put("component_id", thisTable.getId().toString());
+                componentRow.put("group_id", groupId.toString());
                 componentRow.put("data_type", thisTable.componentName());
                 componentRow.put("label", thisTable.getLabel());
-                componentRow.put("type_kind", thisTable.getType().getId().getKind());
-                componentRow.put("type_id", thisTable.getType().getId().getId());
+                componentRow.put("row", thisTable.getRow());
+                componentRow.put("column", thisTable.getColumn());
+                componentRow.put("width", thisTable.getWidth());
 
-                Long componentId = database.insertWithOnConflict(
-                                                SheetContract.Component.TABLE_NAME,
-                                                null,
-                                                componentRow,
-                                                SQLiteDatabase.CONFLICT_REPLACE);
+                if (thisTable.getType() != null) {
+                    componentRow.put("type_kind", thisTable.getType().getId().getKind());
+                    componentRow.put("type_id", thisTable.getType().getId().getId());
+                } else {
+                    componentRow.putNull("type_kind");
+                    componentRow.putNull("type_id");
+                }
+
+                database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
+                                              null,
+                                              componentRow,
+                                              SQLiteDatabase.CONFLICT_REPLACE);
 
                 ContentValues tableComponentRow = new ContentValues();
-                if (thisTable.getId() != null)
-                    tableComponentRow.put("table_id", thisTable.getId().getSubId());
-                else
-                    tableComponentRow.putNull("table_id");
-                tableComponentRow.put("component_id", componentId);
+                tableComponentRow.put("component_id", thisTable.getId().toString());
 
                 ArrayList<String> columnNames = thisTable.columnNames;
 
@@ -310,10 +353,6 @@ public class Table extends Component implements Serializable
                                                 null,
                                                 tableComponentRow,
                                                 SQLiteDatabase.CONFLICT_REPLACE);
-
-                // Set ID in case of first insert and ID was Null
-                thisTable.setId(new Id(componentId, tableId));
-
 
                 int index = 0;
                 for (Row row : thisTable.rows)
@@ -369,7 +408,13 @@ public class Table extends Component implements Serializable
                     index += 1;
                 }
 
-                return null;
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result)
+            {
+                Group.getTracker(groupTrackerId).setComponentId(thisTable.getId());
             }
 
         }.execute();

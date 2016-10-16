@@ -9,20 +9,24 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
-import com.kispoko.tome.sheet.group.Layout;
+import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.tuple.Tuple4;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.UUID;
 
 
 
@@ -35,89 +39,112 @@ public class Group implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Long id;
+    private UUID id;
 
     private String label;
     private ArrayList<Component> components;
-    private Layout layout;
+    private Integer numberOfRows;
+    private Integer index;
 
-    private Map<Integer, Component> componentById;
+    // >> STATIC
+    private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
-    public static Map<Integer,AsyncConstructor> asyncConstructorMap = new HashMap<>();
+    private static Map<UUID,SaveTracker> trackerMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Group(String label, ArrayList<Component> components, Layout layout)
+    public Group(UUID id, String label, Integer numberOfRows, ArrayList<Component> components)
     {
+        if (id != null)
+            this.id = id;
+        else
+            this.id = UUID.randomUUID();
+
         this.label = label;
+        this.numberOfRows = numberOfRows;
         this.components = components;
-        this.layout = layout;
-
-        this.id = null;
-
-        // Index components for label lookup
-        componentById = new HashMap<>();
-        for (Component component : this.components)
-        {
-            //Log.d("coffee", "indexed component " + component.getLabel());
-            componentById.put(component.getId(), component);
-        }
     }
 
 
     @SuppressWarnings("unchecked")
     public static Group fromYaml(Map<String,Object> groupYaml)
     {
+        // Values to parse
+        String label = null;
+        Integer numberOfRows = null;
         ArrayList<Component> components = new ArrayList<>();
-        Layout layout;
 
-        String name = (String) groupYaml.get("label");
+        // Parse values
+        // >> Label
+        if (groupYaml.containsKey("label"))
+            label = (String) groupYaml.get("label");
 
+        // >> Number of Rows
+        if (groupYaml.containsKey("number_of_rows"))
+            numberOfRows = (Integer) groupYaml.get("number_of_rows");
+
+        // >> Components
         ArrayList<Object> componentsYaml = (ArrayList<Object>) groupYaml.get("components");
         for (Object componentYaml : componentsYaml) {
             Component component = Component.fromYaml((Map<String, Object>) componentYaml);
-
-            //Log.d("coffee", "component label " + component.getLabel());
-
             components.add(component);
         }
 
-        if (groupYaml.containsKey("layout")) {
-            Map<String,Object> layoutYaml = (Map<String,Object>) groupYaml.get("layout");
-            layout = Layout.fromYaml(layoutYaml);
-        } else {
-            layout = Layout.asDefault(components);
-        }
-
-        return new Group(name, components, layout);
+        return new Group(null, label, numberOfRows, components);
     }
 
-
-    public static Integer fromAysnc(Integer numberOfComponents, Integer pageConstructorId)
-    {
-        Random randGen = new Random();
-        Integer constructorId = randGen.nextInt();
-
-        Group.asyncConstructorMap.put(constructorId,
-                                     new AsyncConstructor(numberOfComponents, pageConstructorId));
-
-        return constructorId;
-    }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
 
-    // >> Getters / Setters
+    // >> Async Constructor
     // ------------------------------------------------------------------------------------------
 
-    public Component getComponent(String name)
+    private static UUID addAsyncConstructor(UUID id, Integer numberOfComponents,
+                                           UUID pageConstructorId)
     {
-        return this.componentById.get(name);
+        UUID constructorId = UUID.randomUUID();
+
+        Group.asyncConstructorMap.put(constructorId, new AsyncConstructor(id,
+                                                                 numberOfComponents,
+                                                                 pageConstructorId));
+
+        return constructorId;
     }
 
+
+    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
+    {
+        return Group.asyncConstructorMap.get(constructorId);
+    }
+
+
+    // >> Tracking
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Create a tracker for asynchronously tracking the state of a sheet.
+     * @return The new tracker's ID.
+     */
+    private static UUID addTracker(UUID groupId, UUID pageTrackerId, ArrayList<UUID> componentIds)
+    {
+        UUID trackerId = UUID.randomUUID();
+        Group.trackerMap.put(trackerId, new SaveTracker(groupId, pageTrackerId, componentIds));
+        return trackerId;
+    }
+
+
+    public static SaveTracker getTracker(UUID trackerId)
+    {
+        return Group.trackerMap.get(trackerId);
+    }
+
+
+    // >> Getters / Setters
+    // ------------------------------------------------------------------------------------------
 
     public ArrayList<Component> getComponents()
     {
@@ -125,9 +152,21 @@ public class Group implements Serializable
     }
 
 
-    public void setId(Long id)
+    public UUID getId()
     {
-        this.id = id;
+        return this.id;
+    }
+
+
+    public Integer getNumberOfRows()
+    {
+        return this.numberOfRows;
+    }
+
+
+    public void setIndex(Integer index)
+    {
+        this.index = index;
     }
 
 
@@ -141,26 +180,31 @@ public class Group implements Serializable
      * @param groupId The database id of the group to load.
      */
     public static void load(final SQLiteDatabase database,
-                            final Integer pageConstructorId,
-                            final Integer groupId)
+                            final UUID pageConstructorId,
+                            final UUID groupId)
     {
-        new AsyncTask<Void,Void,Void>()
+        new AsyncTask<Void,Void,Tuple4<ArrayList<UUID>,ArrayList<String>,String,Integer>>()
         {
 
-            protected Void doInBackground(Void... args)
+            @Override
+            protected Tuple4<ArrayList<UUID>,ArrayList<String>,String,Integer>
+                      doInBackground(Void... args)
             {
                 // Query Group Data
                 String groupQuery =
-                    "SELECT label " +
-                    "FROM Group " +
-                    "WHERE Group.group_id =  " + Integer.toString(groupId);
+                    "SELECT grp.label, grp.number_of_rows " +
+                    "FROM _group grp " +
+                    "WHERE grp.group_id =  " + SQL.quoted(groupId.toString());
 
                 Cursor groupCursor = database.rawQuery(groupQuery, null);
 
                 String label;
+                Integer numberOfRows;
                 try {
                     groupCursor.moveToFirst();
                     label = groupCursor.getString(0);
+                    numberOfRows = groupCursor.getInt(1);
+                    numberOfRows = groupCursor.getInt(1);
                 }
                 // TODO log
                 finally {
@@ -170,16 +214,16 @@ public class Group implements Serializable
                 // Query Components
                 String componentsOfGroupQuery =
                     "SELECT c.component_id, c.data_type " +
-                    "FROM Component c " +
-                    "WHERE Component.group_id = " + Integer.toString(groupId);
+                    "FROM component c " +
+                    "WHERE c.group_id = " + SQL.quoted(groupId.toString());
 
                 Cursor cursor = database.rawQuery(componentsOfGroupQuery, null);
 
-                ArrayList<Integer> componentIds  = new ArrayList<Integer>();
-                ArrayList<String> componentTypes = new ArrayList<String>();
+                ArrayList<UUID> componentIds  = new ArrayList<>();
+                ArrayList<String> componentTypes = new ArrayList<>();
                 try {
                     while (cursor.moveToNext()) {
-                        componentIds.add(cursor.getInt(0));
+                        componentIds.add(UUID.fromString(cursor.getString(0)));
                         componentTypes.add(cursor.getString(1));
                     }
                 }
@@ -188,12 +232,25 @@ public class Group implements Serializable
                     cursor.close();
                 }
 
+                return new Tuple4<>(componentIds, componentTypes, label, numberOfRows);
+            }
+
+            @Override
+            protected void onPostExecute(Tuple4<ArrayList<UUID>,ArrayList<String>,String,Integer> data)
+            {
+                ArrayList<UUID> componentIds   = data.getItem1();
+                ArrayList<String>  componentTypes = data.getItem2();
+                String             label          = data.getItem3();
+                Integer            numberOfRows   = data.getItem4();
 
                 // Create Asynchronous Constructor
-                Integer groupConstructorId = Group.fromAysnc(componentIds.size(), pageConstructorId);
+                UUID groupConstructorId = Group.addAsyncConstructor(groupId,
+                                                                    componentIds.size(),
+                                                                    pageConstructorId);
+                Group.getAsyncConstructor(groupConstructorId).setLabel(label);
 
                 // >> Set Label
-                Page.asyncConstructorMap.get(pageConstructorId).setLabel(label);
+                Group.asyncConstructorMap.get(groupConstructorId).setNumberOfRows(numberOfRows);
 
                 // >> Asynchronous load components
                 for (int i = 0; i < componentIds.size(); i++) {
@@ -201,10 +258,6 @@ public class Group implements Serializable
                                    componentIds.get(i), componentTypes.get(i));
                 }
 
-                // >> Asynchronous load group layout
-                Layout.load(database, groupConstructorId, groupId);
-
-                return null;
             }
 
         }.execute();
@@ -217,40 +270,46 @@ public class Group implements Serializable
      * @param pageId The id of the group's parent page.
      * @param recursive If true, save all child objects as well.
      */
-    public void save(final SQLiteDatabase database, final Long pageId, final boolean recursive)
+    public void save(final SQLiteDatabase database, final UUID pageTrackerId,
+                     final UUID pageId, final boolean recursive)
     {
         final Group thisGroup = this;
 
-        new AsyncTask<Void,Void,Long>()
+        new AsyncTask<Void,Void,Boolean>()
         {
-            protected Long doInBackground(Void... args)
+
+            @Override
+            protected Boolean doInBackground(Void... args)
             {
                 ContentValues row = new ContentValues();
-                row.put("group_id", thisGroup.id);
-                row.put("page_id", pageId);
+                row.put("group_id", thisGroup.getId().toString());
+                row.put("page_id", pageId.toString());
                 row.put("label", thisGroup.label);
+                row.put("number_of_rows", thisGroup.getNumberOfRows());
 
-                Long groupId = database.insertWithOnConflict(SheetContract.Group.TABLE_NAME,
-                                                             null,
-                                                             row,
-                                                             SQLiteDatabase.CONFLICT_REPLACE);
-
-                // Set ID in case of first insert and ID was Null
-                thisGroup.setId(groupId);
-
-                return groupId;
+                database.insertWithOnConflict(SheetContract.Group.TABLE_NAME,
+                                              null,
+                                              row,
+                                              SQLiteDatabase.CONFLICT_REPLACE);
+                return null;
             }
 
-            protected void onPostExecute(Long groupId)
+            protected void onPostExecute(Boolean result)
             {
                 if (!recursive) return;
 
-                // Save the entire sheet to the database
-                thisGroup.layout.save(database, groupId, true);
+                ArrayList<UUID> componentIds = new ArrayList<UUID>();
+                for (Component component : thisGroup.getComponents()) {
+                    componentIds.add(component.getId());
+                }
+                UUID groupTrackerId = Group.addTracker(thisGroup.getId(),
+                                                       pageTrackerId,
+                                                       componentIds);
 
+                // Save the entire sheet to the database
                 for (Component component : thisGroup.components)
                 {
-                    component.save(database, groupId);
+                    component.save(database, groupTrackerId, thisGroup.getId());
                 }
             }
 
@@ -258,11 +317,12 @@ public class Group implements Serializable
     }
 
 
-    // >> View Methods
+    // >> Views
     // ------------------------------------------------------------------------------------------
 
     public View getView(Context context)
     {
+        Log.d("***GROUP", "get view called");
         LinearLayout groupLayout = new LinearLayout(context);
         LinearLayout.LayoutParams mainLayoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -276,11 +336,39 @@ public class Group implements Serializable
         groupLayout.setOrientation(LinearLayout.VERTICAL);
         groupLayout.setLayoutParams(mainLayoutParams);
 
-
         groupLayout.addView(this.labelView(context));
 
-        for (Layout.Row row : this.layout.getRows())
+        ArrayList<ArrayList<Component>> rows = new ArrayList<>();
+        for (int i = 0; i  < this.numberOfRows; i++) {
+            rows.add(new ArrayList<Component>());
+        }
+
+        // Sort by row
+        for (Component component : this.components)
         {
+            int rowIndex = component.getRow() - 1;
+            rows.get(rowIndex).add(component);
+        }
+
+        // Sort by column
+        for (int j = 0; j < this.numberOfRows; j++) {
+            ArrayList<Component> row = rows.get(j);
+            Collections.sort(row, new Comparator<Component>() {
+                @Override
+                public int compare(Component c1,Component c2) {
+                    if (c1.getColumn() > c2.getColumn())
+                        return 1;
+                    if (c1.getColumn() < c2.getColumn())
+                        return -1;
+                    return 0;
+                }
+            });
+        }
+
+
+        for (ArrayList<Component> row : rows)
+        {
+            Log.d("***GROUP", "render row ");
             LinearLayout rowLayout = new LinearLayout(context);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
             rowLayout.setLayoutParams(Util.linearLayoutParamsMatch());
@@ -288,16 +376,14 @@ public class Group implements Serializable
                                               .getDimension(R.dimen.row_padding_top);
             rowLayout.setPadding(0, rowTopPadding, 0, 0);
 
-            for (Layout.Frame frame : row.getFrames())
+            for (Component component : row)
             {
                 LinearLayout frameLayout = new LinearLayout(context);
                 frameLayout.setOrientation(LinearLayout.VERTICAL);
                 LinearLayout.LayoutParams frameLayoutParams = Util.linearLayoutParamsWrap();
                 frameLayoutParams.width = 0;
-                frameLayoutParams.weight = (float) frame.getWidth();
+                frameLayoutParams.weight = component.getWidth();
                 frameLayout.setLayoutParams(frameLayoutParams);
-
-                Component component = this.componentById.get(frame.getComponentId());
 
                 // Add Component Label
                 if (component.hasLabel()) {
@@ -335,9 +421,6 @@ public class Group implements Serializable
 
         textView.setTypeface(null, Typeface.BOLD);
 
-//        int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
-//        textView.setPadding(padding, 0, 0, 0);
-
         textView.setText(this.label.toUpperCase());
 
         return textView;
@@ -349,29 +432,31 @@ public class Group implements Serializable
 
     public static class AsyncConstructor
     {
-        private Integer pageConstructorId;
+        private UUID pageConstructorId;
 
         private Integer numberOfComponents;
 
+        private UUID id;
         private String label;
+        private Integer numberOfRows;
         private ArrayList<Component> components;
-        private Layout layout;
 
-        public AsyncConstructor(Integer numberOfComponents, Integer pageConstructorId)
+        public AsyncConstructor(UUID id, Integer numberOfComponents, UUID pageConstructorId)
         {
+            this.id = id;
+
+            this.label = null;
+            this.numberOfComponents = null;
+
             this.pageConstructorId = pageConstructorId;
             this.numberOfComponents = numberOfComponents;
 
-            this.label = null;
             this.components = new ArrayList<>();
-            this.layout = null;
         }
 
         synchronized public void setLabel(String label)
         {
             this.label = label;
-
-            if (this.isReady())  ready();
         }
 
         synchronized public void addComponent(Component component)
@@ -381,9 +466,9 @@ public class Group implements Serializable
             if (this.isReady())  ready();
         }
 
-        synchronized public void setLayout(Layout layout)
+        synchronized public void setNumberOfRows(Integer numberOfRows)
         {
-            this.layout = layout;
+            this.numberOfRows = numberOfRows;
 
             if (this.isReady())  ready();
         }
@@ -391,17 +476,86 @@ public class Group implements Serializable
         private boolean isReady()
         {
             return this.label != null &&
-                   this.components.size() == numberOfComponents &&
-                   this.layout != null;
+                   this.numberOfRows != null &&
+                   this.components.size() == numberOfComponents;
         }
 
         private void ready()
         {
-            Group group = new Group(this.label, this.components, this.layout);
-            Page.asyncConstructorMap.get(pageConstructorId).addGroup(group);
+            Group group = new Group(this.id, this.label, this.numberOfRows, this.components);
+            Page.getAsyncConstructor(pageConstructorId).addGroup(group);
         }
 
     }
+
+
+    /**
+     * Track the state of a Group object. When the state reaches a desired configuration,
+     * execute a callback.
+     */
+    public static class SaveTracker
+    {
+
+        // > PROPERTIES
+        // --------------------------------------------------------------------------------------
+
+        private Map<UUID,Boolean> componentIdTrackerMap;
+        private Integer componentIdsRemaining;
+
+        private UUID groupId;
+        private UUID pageTrackerId;
+
+
+        // > CONSTRUCTORS
+        // --------------------------------------------------------------------------------------
+
+        public SaveTracker(UUID groupId, UUID pageTrackerId, ArrayList<UUID> componentIds)
+        {
+            this.groupId = groupId;
+            this.pageTrackerId = pageTrackerId;
+
+            componentIdTrackerMap = new HashMap<>();
+            for (UUID componentId : componentIds)
+            {
+                componentIdTrackerMap.put(componentId, false);
+            }
+            this.componentIdsRemaining = componentIds.size();
+
+            if (componentIds.size() == 0)
+                ready();
+        }
+
+
+        // > API
+        // --------------------------------------------------------------------------------------
+
+        synchronized public void setComponentId(UUID componentId)
+        {
+            if (componentIdTrackerMap.containsKey(componentId)) {
+                boolean currentStatus = componentIdTrackerMap.get(componentId);
+                if (!currentStatus) {
+                    componentIdTrackerMap.put(componentId, true);
+                    componentIdsRemaining -= 1;
+                    if (isReady()) ready();
+                }
+            }
+        }
+
+
+        // > INTERNAL
+        // --------------------------------------------------------------------------------------
+
+        private boolean isReady()
+        {
+            return componentIdsRemaining == 0;
+        }
+
+        private void ready()
+        {
+            Page.getTracker(this.pageTrackerId).setGroupId(this.groupId);
+        }
+    }
+
 
 
 }

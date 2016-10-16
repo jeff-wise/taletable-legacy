@@ -9,6 +9,7 @@ import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.sheet.Sheet;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Edit Result
@@ -32,17 +33,17 @@ public class EditResult implements Serializable
     // ------------------------------------------------------------------------------------------
 
     private ResultType resultType;
-    private String componentName;
+    private UUID componentId;
     private Object result;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public EditResult(ResultType resultType, String componentName, Object result)
+    public EditResult(ResultType resultType, UUID componentId, Object result)
     {
         this.resultType    = resultType;
-        this.componentName = componentName;
+        this.componentId   = componentId;
         this.result        = result;
     }
 
@@ -52,7 +53,7 @@ public class EditResult implements Serializable
 
     public void applyResult(Context context, Sheet sheet)
     {
-        Component component = sheet.getComponent(this.componentName);
+        Component component = sheet.componentWithId(this.componentId);
 
         switch (this.resultType)
         {

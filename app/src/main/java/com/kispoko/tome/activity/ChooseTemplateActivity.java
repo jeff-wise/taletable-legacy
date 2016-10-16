@@ -2,10 +2,12 @@
 package com.kispoko.tome.activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +23,7 @@ import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
-import java.util.Map;
+
 
 
 /**
@@ -32,9 +34,6 @@ public class ChooseTemplateActivity extends AppCompatActivity
 
     // > PROPERTIES
     // -------------------------------------------------------------------------------------------
-
-    private String gameId;
-    private Map<String, ArrayList<Sheet.Name>> namesByGame;
 
 
 
@@ -50,13 +49,12 @@ public class ChooseTemplateActivity extends AppCompatActivity
 
         initializeToolbar();
 
-        // Get game id passed from previous activity
-        Bundle extras = getIntent().getExtras();
-        this.gameId = extras.getString("GAME_ID");
+        String gameId = null;
+        if (getIntent().hasExtra("game_id")) {
+            gameId = getIntent().getStringExtra("game_id");
+        }
 
-        this.namesByGame = Sheet.templateNamesByGame(this);
-
-        renderTemplates();
+        renderTemplates(gameId);
 
     }
 
@@ -118,17 +116,18 @@ public class ChooseTemplateActivity extends AppCompatActivity
     /**
      * Render the list of templates.
      */
-    private void renderTemplates()
+    private void renderTemplates(final String gameId)
     {
         ScrollView scrollView = (ScrollView) findViewById(R.id.template_list);
 
         LinearLayout templateListLayout = new LinearLayout(this);
         templateListLayout.setOrientation(LinearLayout.VERTICAL);
 
+        ArrayList<Sheet.Name> templateNames = Sheet.templateNamesByGame(this).get(gameId);
 
-        ArrayList<Sheet.Name> templateNames = this.namesByGame.get(this.gameId);
-        for (Sheet.Name name : templateNames)
+        for (final Sheet.Name name : templateNames)
         {
+
             // Template Layout
             LinearLayout templateLayout = new LinearLayout(this);
 
@@ -145,6 +144,18 @@ public class ChooseTemplateActivity extends AppCompatActivity
             int templateLayoutPaddingBottom =
                     (int) Util.getDim(this, R.dimen.choose_template_layout_padding_bottom);
             templateLayout.setPadding(0, templateLayoutPaddingTop, 0, templateLayoutPaddingBottom);
+
+            final ChooseTemplateActivity thisActivity = this;
+            templateLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ChooseTemplateActivity.this, SheetActivity.class);
+                    intent.putExtra("TEMPLATE_ID",
+                                    Sheet.officialTemplateId(gameId, name.getName()));
+                    startActivity(intent);
+                }
+            });
+
 
 
             // >> Add Icon
@@ -221,7 +232,7 @@ public class ChooseTemplateActivity extends AppCompatActivity
             templatesCreatedNumberView.setLayoutParams(Util.linearLayoutParamsWrap());
 
             int numberOfPlayers = Statistics.templatesCreated(
-                    Sheet.officialTemplateId(this.gameId, name.getName()));
+                    Sheet.officialTemplateId(gameId, name.getName()));
             templatesCreatedNumberView.setText(Integer.toString(numberOfPlayers));
             templatesCreatedNumberView.setTextColor(
                     ContextCompat.getColor(this, R.color.bluegrey_100));

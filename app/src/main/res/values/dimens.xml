@@ -1,102 +1,102 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen label="nav_header_vertical_spacing">16dp</dimen>
-    <dimen label="nav_header_height">160dp</dimen>
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen label="activity_horizontal_margin">16dp</dimen>
-    <dimen label="activity_vertical_margin">16dp</dimen>
-    <dimen label="fab_margin">16dp</dimen>
-    <dimen label="appbar_padding_top">8dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
 
     <!-- GROUPS -->
-    <dimen label="row_padding_top">10dp</dimen>
+    <dimen name="row_padding_top">10dp</dimen>
 
-    <dimen label="group_horz_margins">7dp</dimen>
-    <dimen label="group_vert_margins">10dp</dimen>
+    <dimen name="group_horz_margins">7dp</dimen>
+    <dimen name="group_vert_margins">10dp</dimen>
 
-    <dimen label="label_padding">4dp</dimen>
-    <dimen label="label_text_size">2.8dp</dimen>
+    <dimen name="label_padding">4dp</dimen>
+    <dimen name="label_text_size">2.8dp</dimen>
 
 
     <!-- COMPONENT: TEXT -->
-    <dimen label="text_size_large">9dp</dimen>
-    <dimen label="text_size_medium">7dp</dimen>
-    <dimen label="text_size_small">4dp</dimen>
+    <dimen name="text_size_large">9dp</dimen>
+    <dimen name="text_size_medium">7dp</dimen>
+    <dimen name="text_size_small">4dp</dimen>
 
 
     <!-- COMPONENT: DOCUMENT -->
-    <dimen label="document_component_text_size">5dp</dimen>
+    <dimen name="document_component_text_size">5dp</dimen>
 
 
     <!-- COMPONENT: IMAGE -->
-    <dimen label="comp_image_button_vert_margins">30dp</dimen>
-    <dimen label="comp_image_button_icon_padding">10dp</dimen>
-    <dimen label="comp_image_button_padding">15dp</dimen>
-    <dimen label="comp_image_button_text_size">3dp</dimen>
+    <dimen name="comp_image_button_vert_margins">30dp</dimen>
+    <dimen name="comp_image_button_icon_padding">10dp</dimen>
+    <dimen name="comp_image_button_padding">15dp</dimen>
+    <dimen name="comp_image_button_text_size">3dp</dimen>
 
-    <dimen label="comp_image_image_height">250dp</dimen>
+    <dimen name="comp_image_image_height">250dp</dimen>
 
 
     <!-- COMPONENT: TABLE -->
-    <dimen label="comp_table_cell_padding">5dp</dimen>
-    <dimen label="comp_table_header_text_size">2.8dp</dimen>
-    <dimen label="comp_table_text_cell_text_size">4.6dp</dimen>
+    <dimen name="comp_table_cell_padding">5dp</dimen>
+    <dimen name="comp_table_header_text_size">2.8dp</dimen>
+    <dimen name="comp_table_text_cell_text_size">4.6dp</dimen>
 
-    <dimen label="prefix_padding_left">4.2dp</dimen>
+    <dimen name="prefix_padding_left">4.2dp</dimen>
 
 
     <!-- TEXT EDITOR -->
-    <dimen label="comp_text_editor_header_top_padding">14dp</dimen>
-    <dimen label="comp_text_editor_header_horz_padding">16dp</dimen>
-    <dimen label="comp_text_editor_title_text_size">3.1dp</dimen>
-    <dimen label="comp_text_editor_value_text_size">10.5dp</dimen>
-    <dimen label="comp_text_editor_type_title_text_size">3.1dp</dimen>
-    <dimen label="comp_text_editor_type_title_top_padding">32dp</dimen>
-    <dimen label="comp_text_editor_type_title_left_padding">1.5dp</dimen>
-    <dimen label="comp_text_editor_type_title_bottom_padding">7dp</dimen>
+    <dimen name="comp_text_editor_header_top_padding">14dp</dimen>
+    <dimen name="comp_text_editor_header_horz_padding">16dp</dimen>
+    <dimen name="comp_text_editor_title_text_size">3.1dp</dimen>
+    <dimen name="comp_text_editor_value_text_size">10.5dp</dimen>
+    <dimen name="comp_text_editor_type_title_text_size">3.1dp</dimen>
+    <dimen name="comp_text_editor_type_title_top_padding">32dp</dimen>
+    <dimen name="comp_text_editor_type_title_left_padding">1.5dp</dimen>
+    <dimen name="comp_text_editor_type_title_bottom_padding">7dp</dimen>
 
-    <dimen label="list_label_text_size">10dp</dimen>
+    <dimen name="list_label_text_size">10dp</dimen>
 
     <!-- TEXT EDITOR (FREE) -->
-    <dimen label="comp_text_editor_free_header_horz_padding">11dp</dimen>
-    <dimen label="comp_text_editor_free_header_name_left_padding">4dp</dimen>
+    <dimen name="comp_text_editor_free_header_horz_padding">11dp</dimen>
+    <dimen name="comp_text_editor_free_header_name_left_padding">4dp</dimen>
 
 
     <!-- LIST TYPE -->
-    <dimen label="type_list_item_vert_padding">18dp</dimen>
-    <dimen label="type_list_item_left_padding">20.5dp</dimen>
-    <dimen label="type_list_item_name_text_size">5.5dp</dimen>
-    <dimen label="type_list_item_select_icon_padding_top">4dp</dimen>
+    <dimen name="type_list_item_vert_padding">18dp</dimen>
+    <dimen name="type_list_item_left_padding">20.5dp</dimen>
+    <dimen name="type_list_item_name_text_size">5.5dp</dimen>
+    <dimen name="type_list_item_select_icon_padding_top">4dp</dimen>
 
 
     <!-- CHOOSE TEMPLATE GAME -->
-    <dimen label="choose_template_game_name_text_size">6dp</dimen>
-    <dimen label="choose_template_game_game_layout_margin_top">1dp</dimen>
-    <dimen label="choose_template_game_game_layout_height">100dp</dimen>
-    <dimen label="choose_template_game_game_layout_padding_left">17dp</dimen>
-    <dimen label="choose_template_game_game_layout_padding_top">11dp</dimen>
-    <dimen label="choose_template_game_game_layout_padding_bottom">2dp</dimen>
-    <dimen label="choose_template_game_next_icon_padding">8dp</dimen>
-    <dimen label="choose_template_game_players_number_text_size">5.1dp</dimen>
-    <dimen label="choose_template_game_players_label_text_size">5.1dp</dimen>
-    <dimen label="choose_template_game_players_number_padding_right">7dp</dimen>
-    <dimen label="choose_template_game_players_icon_padding_right">10dp</dimen>
-    <dimen label="choose_template_game_players_padding_vert">6dp</dimen>
-    <dimen label="choose_template_game_desc_padding_vert">6dp</dimen>
+    <dimen name="choose_template_game_name_text_size">6dp</dimen>
+    <dimen name="choose_template_game_game_layout_margin_top">1dp</dimen>
+    <dimen name="choose_template_game_game_layout_height">100dp</dimen>
+    <dimen name="choose_template_game_game_layout_padding_left">17dp</dimen>
+    <dimen name="choose_template_game_game_layout_padding_top">11dp</dimen>
+    <dimen name="choose_template_game_game_layout_padding_bottom">2dp</dimen>
+    <dimen name="choose_template_game_next_icon_padding">8dp</dimen>
+    <dimen name="choose_template_game_players_number_text_size">5.1dp</dimen>
+    <dimen name="choose_template_game_players_label_text_size">5.1dp</dimen>
+    <dimen name="choose_template_game_players_number_padding_right">7dp</dimen>
+    <dimen name="choose_template_game_players_icon_padding_right">10dp</dimen>
+    <dimen name="choose_template_game_players_padding_vert">6dp</dimen>
+    <dimen name="choose_template_game_desc_padding_vert">6dp</dimen>
 
     <!-- CHOOSE TEMPLATE -->
-    <dimen label="choose_template_name_text_size">6dp</dimen>
-    <dimen label="choose_template_layout_padding_top">10dp</dimen>
-    <dimen label="choose_template_layout_padding_bottom">5dp</dimen>
-    <dimen label="choose_template_add_icon_padding_left">14dp</dimen>
-    <dimen label="choose_template_add_icon_padding_right">28dp</dimen>
-    <dimen label="choose_template_created_padding_vert">10dp</dimen>
-    <dimen label="choose_template_created_icon_padding_right">10dp</dimen>
-    <dimen label="choose_template_created_number_text_size">5.1dp</dimen>
-    <dimen label="choose_template_created_number_padding_right">7dp</dimen>
-    <dimen label="choose_template_desc_padding_vert">6dp</dimen>
+    <dimen name="choose_template_name_text_size">6dp</dimen>
+    <dimen name="choose_template_layout_padding_top">10dp</dimen>
+    <dimen name="choose_template_layout_padding_bottom">5dp</dimen>
+    <dimen name="choose_template_add_icon_padding_left">14dp</dimen>
+    <dimen name="choose_template_add_icon_padding_right">28dp</dimen>
+    <dimen name="choose_template_created_padding_vert">10dp</dimen>
+    <dimen name="choose_template_created_icon_padding_right">10dp</dimen>
+    <dimen name="choose_template_created_number_text_size">5.1dp</dimen>
+    <dimen name="choose_template_created_number_padding_right">7dp</dimen>
+    <dimen name="choose_template_desc_padding_vert">6dp</dimen>
 
     <!-- GENERAL -->
-    <dimen label="one_dp">1dp</dimen>
+    <dimen name="one_dp">1dp</dimen>
 
 </resources>

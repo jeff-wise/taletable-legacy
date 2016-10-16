@@ -4,6 +4,7 @@ package com.kispoko.tome.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.db.SheetDatabaseManager;
+import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.Util;
+
 
 
 /**
@@ -36,9 +40,10 @@ public class NewCharacterActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        //this.sheetDatabase = new SheetDatabase();
+        SheetDatabaseManager sheetDatabaseManager = new SheetDatabaseManager(this);
+        SQLiteDatabase database = sheetDatabaseManager.getWritableDatabase();
 
-        if (SheetDatabase.size() == 0)
+        if (Sheet.count(database) == 0)
             this.firstCharacter = true;
         else
             this.firstCharacter = false;

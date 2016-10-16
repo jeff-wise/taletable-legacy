@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,11 +25,6 @@ import com.kispoko.tome.db.SheetDatabaseManager;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.Sheet;
 
-import org.yaml.snakeyaml.Yaml;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
 
 
 /**
@@ -182,6 +178,18 @@ public class SheetActivity
     }
 
 
+    public void renderSheet()
+    {
+        initializeTabs();
+    }
+
+
+    public void saveSheet(boolean recursive)
+    {
+        this.sheet.save(this.database, this, recursive);
+    }
+
+
     // > INTERNAL
     // -------------------------------------------------------------------------------------------
 
@@ -234,18 +242,17 @@ public class SheetActivity
      */
     private void loadSheet()
     {
-        // Get game id passed from previous activity
-        Bundle extras = getIntent().getExtras();
-        String templateId = extras.getString("FROM_TEMPLATE_ID");
+        // If previous activity was template chooser, get id of chosen template
+        String templateId = null;
+        if (getIntent().hasExtra("TEMPLATE_ID"))
+            templateId = getIntent().getStringExtra("TEMPLATE_ID");
 
         SheetDatabaseManager sheetDatabaseManager = new SheetDatabaseManager(this);
         this.database = sheetDatabaseManager.getWritableDatabase();
 
         // This will be a new character sheet
         if (templateId != null) {
-            Sheet.loadFromFile(templateId);
-
-
+            Sheet.loadFromFile(this, templateId);
         }
         // Load the most recently used character sheet
         else {
