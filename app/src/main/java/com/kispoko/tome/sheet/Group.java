@@ -344,7 +344,6 @@ public class Group implements Serializable
 
     public View getView(Context context)
     {
-        Log.d("***GROUP", "get view called");
         LinearLayout groupLayout = new LinearLayout(context);
         LinearLayout.LayoutParams mainLayoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -390,7 +389,6 @@ public class Group implements Serializable
 
         for (ArrayList<Component> row : rows)
         {
-            Log.d("***GROUP", "render row ");
             LinearLayout rowLayout = new LinearLayout(context);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
             rowLayout.setLayoutParams(Util.linearLayoutParamsMatch());

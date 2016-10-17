@@ -52,6 +52,7 @@ sections:
         number_of_rows: 2
         components:
         - type: integer
+          key_stat: 1
           format:
             label: Level
             row: 1
@@ -61,6 +62,7 @@ sections:
           data:
             value: 17
         - type: text
+          key_stat: 2
           format:
             label: Class
             row: 1
@@ -73,6 +75,7 @@ sections:
               kind: list
               id: class
         - type: text
+          key_stat: 3
           format:
             label: Race
             row: 2

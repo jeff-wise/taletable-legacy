@@ -28,6 +28,10 @@
     </activity>
 
     <activity
+        android:name=".activity.ManageSheetsActivity"
+        android:label="Sheets" />
+
+    <activity
         android:name=".activity.EditActivity"
         android:label="Edit" />
 

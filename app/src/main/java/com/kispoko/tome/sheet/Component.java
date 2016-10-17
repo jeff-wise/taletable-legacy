@@ -4,9 +4,7 @@ package com.kispoko.tome.sheet;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,7 +14,6 @@ import com.kispoko.tome.sheet.component.Image;
 import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
 import com.kispoko.tome.sheet.component.Text;
-import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.Unique;
 import com.kispoko.tome.util.Util;

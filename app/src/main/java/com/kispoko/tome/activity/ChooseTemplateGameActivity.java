@@ -20,7 +20,9 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.Statistics;
+import com.kispoko.tome.sheet.Game;
 import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
     // > PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private ArrayList<Sheet.Game> templateGames;
+    private ArrayList<Game> templateGames;
 
 
     // > ACTIVITY EVENTS
@@ -126,7 +128,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
 
         scrollView.addView(layout);
 
-        for (Sheet.Game game : this.templateGames)
+        for (Game game : this.templateGames)
         {
             // Game Layout
             LinearLayout gameLayout = new LinearLayout(this);
@@ -146,7 +148,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
                                   0, gameLayoutPaddingBottom);
 
             final ChooseTemplateGameActivity thisActivity = this;
-            final Sheet.Game thisGame = game;
+            final Game thisGame = game;
             gameLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -294,24 +296,10 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
             gameLayout.addView(infoLayout);
             gameLayout.addView(nextIcon);
 
-            layout.addView(divider());
+            layout.addView(UI.divider(this));
             layout.addView(gameLayout);
         }
     }
 
-
-    private View divider()
-    {
-        View dividerView = new View(this);
-
-        int one_dp = (int) Util.getDim(this, R.dimen.one_dp);
-        LinearLayout.LayoutParams layoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, one_dp);
-        dividerView.setLayoutParams(layoutParams);
-
-        dividerView.setBackgroundColor(ContextCompat.getColor(this, R.color.bluegrey_800));
-
-        return dividerView;
-    }
 
 }

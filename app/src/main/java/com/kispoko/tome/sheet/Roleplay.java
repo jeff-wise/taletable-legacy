@@ -247,7 +247,7 @@ public class Roleplay
         private void ready()
         {
             Roleplay roleplay = new Roleplay(this.pages);
-            Sheet.getAsyncConstructor(sheetConstructorId).addRoleplay(roleplay);
+            Sheet.getAsyncConstructor(sheetConstructorId).setRoleplay(roleplay);
         }
 
     }

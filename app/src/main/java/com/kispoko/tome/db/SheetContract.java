@@ -16,7 +16,6 @@ public class SheetContract
 
     private static final String TYPE_TEXT = "TEXT";
     private static final String TYPE_INTEGER = "INTEGER";
-    private static final String TYPE_REAL = "REAL";
     private static final String TYPE_BLOB = "BLOB";
 
 
@@ -41,6 +40,32 @@ public class SheetContract
         // Column: Last Used
         public static final String COLUMN_LAST_USED_NAME = "last_used";
         public static final String COLUMN_LAST_USED_TYPE = TYPE_INTEGER;
+
+        // Column: Game Id
+        public static final String COLUMN_GAME_ID_NAME = "game_id";
+        public static final String COLUMN_GAME_ID_TYPE = TYPE_TEXT;
+    }
+
+
+    /**
+     * Game
+     */
+    public static class Game implements BaseColumns
+    {
+        // Table: Sheet
+        public static final String TABLE_NAME = "game";
+
+        // Column: Game Id
+        public static final String COLUMN_GAME_ID_NAME = "game_id";
+        public static final String COLUMN_GAME_ID_TYPE = TYPE_TEXT;
+
+        // Column: Label
+        public static final String COLUMN_LABEL_NAME = "label";
+        public static final String COLUMN_LABEL_TYPE = TYPE_TEXT;
+
+        // Column: Description
+        public static final String COLUMN_DESCRIPTION_NAME = "description";
+        public static final String COLUMN_DESCRIPTION_TYPE = TYPE_TEXT;
     }
 
 
@@ -140,6 +165,10 @@ public class SheetContract
         public static final String COLUMN_WIDTH_NAME = "width";
         public static final String COLUMN_WIDTH_TYPE = TYPE_INTEGER;
 
+        // Column: Key Stat
+        public static final String COLUMN_KEY_STAT_NAME = "key_stat";
+        public static final String COLUMN_KEY_STAT_TYPE = TYPE_INTEGER;
+
         // Column: Type Kind
         public static final String COLUMN_TYPE_KIND_NAME = "type_kind";
         public static final String COLUMN_TYPE_KIND_TYPE = TYPE_TEXT;
@@ -147,6 +176,10 @@ public class SheetContract
         // Column: Type Id
         public static final String COLUMN_TYPE_ID_NAME = "type_id";
         public static final String COLUMN_TYPE_ID_TYPE = TYPE_TEXT;
+
+        // Column: Text Value (for easier querying in some cases)
+        public static final String COLUMN_TEXT_VALUE_NAME = "text_value";
+        public static final String COLUMN_TEXT_VALUE_TYPE = TYPE_TEXT;
     }
 
 

@@ -192,6 +192,7 @@ public class Image extends Component implements Serializable
                 componentRow.put("width", thisImage.getWidth());
                 componentRow.putNull("type_kind");
                 componentRow.putNull("type_id");
+                componentRow.putNull("text_value");
 
                 database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
                                               null,

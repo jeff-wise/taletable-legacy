@@ -32,12 +32,9 @@ import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
-import java.security.cert.CertificateNotYetValidException;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.kispoko.tome.R.id.text;
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -51,6 +48,7 @@ public class Text extends Component implements Serializable
 
     private String value;
     private TextSize textSize;
+    private Integer keyStat;
 
     private int displayTextViewId;
 
@@ -60,9 +58,10 @@ public class Text extends Component implements Serializable
 
 
     public Text(UUID id, Type.Id typeId, String label, Integer row, Integer column,
-                Integer width, TextSize textSize, String value)
+                Integer width, TextSize textSize, Integer keyStat, String value)
     {
         super(id, typeId, label, row, column, width);
+        this.keyStat = keyStat;
         this.value = value;
         this.textSize = textSize;
     }
@@ -80,6 +79,7 @@ public class Text extends Component implements Serializable
         Integer column = null;
         Integer width = null;
         TextSize textSize = null;
+        Integer keyStat = null;
         String value = null;
 
         // Parse Values
@@ -122,12 +122,16 @@ public class Text extends Component implements Serializable
         if (formatYaml.containsKey("text_size"))
             textSize = Component.TextSize.fromString((String) formatYaml.get("text_size"));
 
+        // >> Key Stat
+        if (textYaml.containsKey("key_stat"))
+            keyStat = (Integer) textYaml.get("key_stat");
+
         // >> Value
         if (dataYaml.containsKey("value"))
             value = (String) dataYaml.get("value");
 
         // Create Text
-        return new Text(id, typeId, label, row, column, width, textSize, value);
+        return new Text(id, typeId, label, row, column, width, textSize, keyStat, value);
     }
 
 
@@ -161,6 +165,12 @@ public class Text extends Component implements Serializable
     public TextSize getTextSize()
     {
         return this.textSize;
+    }
+
+
+    public Integer getKeyStat()
+    {
+        return this.keyStat;
     }
 
 
@@ -383,7 +393,7 @@ public class Text extends Component implements Serializable
                 // Query Component
                 String textQuery =
                     "SELECT comp.label, comp.row, comp.column, comp.width, comp.type_kind, " +
-                           "comp.type_id, text.size, text.value " +
+                           "comp.type_id, comp.key_stat, text.size, text.value " +
                     "FROM Component comp " +
                     "INNER JOIN component_text text on text.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
@@ -397,6 +407,7 @@ public class Text extends Component implements Serializable
                 String typeKind;
                 String typeId;
                 String textSize;
+                Integer keyStat;
                 String value;
                 try {
                     textCursor.moveToFirst();
@@ -406,8 +417,9 @@ public class Text extends Component implements Serializable
                     width           = textCursor.getInt(3);
                     typeKind        = textCursor.getString(4);
                     typeId          = textCursor.getString(5);
-                    textSize        = textCursor.getString(6);
-                    value           = textCursor.getString(7);
+                    keyStat         = textCursor.getInt(6);
+                    textSize        = textCursor.getString(7);
+                    value           = textCursor.getString(8);
                 }
                 // TODO log
                 finally {
@@ -421,6 +433,7 @@ public class Text extends Component implements Serializable
                                      column,
                                      width,
                                      TextSize.fromString(textSize),
+                                     keyStat,
                                      value);
 
                 return text;
@@ -461,6 +474,7 @@ public class Text extends Component implements Serializable
                 componentRow.put("row", thisText.getRow());
                 componentRow.put("column", thisText.getColumn());
                 componentRow.put("width", thisText.getWidth());
+                componentRow.put("text_value", thisText.getValue());
 
                 if (thisText.getTypeId() != null) {
                     componentRow.put("type_kind", thisText.getTypeId().getKind());
@@ -469,6 +483,12 @@ public class Text extends Component implements Serializable
                     componentRow.putNull("type_kind");
                     componentRow.putNull("type_id");
                 }
+
+                if (thisText.getKeyStat() != null)
+                    componentRow.put("key_stat", thisText.getKeyStat());
+                else
+                    componentRow.putNull("key_stat");
+
 
                 database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
                                               null,

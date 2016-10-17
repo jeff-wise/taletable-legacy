@@ -103,7 +103,18 @@
     <dimen name="choose_template_created_number_padding_right">7dp</dimen>
     <dimen name="choose_template_desc_padding_vert">6dp</dimen>
 
+    <!-- MANAGE SHEETS -->
+    <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>
+    <dimen name="manage_sheets_summary_layout_padding_horz">15dp</dimen>
+    <dimen name="manage_sheets_char_name_text_size">6.5dp</dimen>
+    <dimen name="manage_sheets_char_name_padding_bottom">4dp</dimen>
+
+    <dimen name="manage_sheets_info_item_icon_padding_right">8dp</dimen>
+    <dimen name="manage_sheets_info_item_layout_padding_vert">5.5dp</dimen>
+    <dimen name="manage_sheets_info_item_text_size">4.4dp</dimen>
+
     <!-- GENERAL -->
     <dimen name="one_dp">1dp</dimen>
+    <dimen name="two_dp">2dp</dimen>
 
 </resources>

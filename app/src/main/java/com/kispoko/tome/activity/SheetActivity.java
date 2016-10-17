@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -71,8 +72,9 @@ public class SheetActivity
 
         loadSheet();
 
-        initializeToolbar();
         initializeDrawer();
+        initializeToolbar();
+        initializeNavigation();
     }
 
 
@@ -215,6 +217,47 @@ public class SheetActivity
     private void initializeDrawer()
     {
         this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    }
+
+
+    /**
+     * Initialize the navigation menu.
+     */
+    private void initializeNavigation()
+    {
+        //Initializing NavigationView
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
+        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener()
+        {
+
+            // This method will trigger on item Click of navigation menu
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem)
+            {
+                //Checking if the item is in checked state or not, if not make it in checked state
+//                if(menuItem.isChecked()) menuItem.setChecked(false);
+//                else menuItem.setChecked(true);
+
+                //Closing drawer on item click
+                drawerLayout.closeDrawers();
+
+                //Check to see which item was being clicked and perform appropriate action
+                switch (menuItem.getItemId())
+                {
+                    //Replacing the main content with ContentFragment Which is our Inbox View;
+                    case R.id.navigation_item_manage_sheets:
+                        Intent intent = new Intent(SheetActivity.this, ManageSheetsActivity.class);
+                        startActivity(intent);
+                        return true;
+                }
+
+                return true;
+            }
+        });
+
     }
 
 

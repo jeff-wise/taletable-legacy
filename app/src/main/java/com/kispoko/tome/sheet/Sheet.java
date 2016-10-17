@@ -9,17 +9,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.kispoko.tome.activity.ManageSheetsActivity;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.type.Type;
+import com.kispoko.tome.util.tuple.Tuple2;
 
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,6 +46,7 @@ public class Sheet
     private UUID id;
     private Long lastUsed;
 
+    private Game game;
     private Roleplay roleplay;
 
     private Map<UUID,Component> componentById;
@@ -53,13 +60,14 @@ public class Sheet
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Sheet(UUID id, Roleplay roleplay)
+    public Sheet(UUID id, Game game, Roleplay roleplay)
     {
         if (id != null)
             this.id = id;
         else
             this.id = UUID.randomUUID();
 
+        this.game = game;
         this.roleplay = roleplay;
 
         // Index components
@@ -81,7 +89,16 @@ public class Sheet
     @SuppressWarnings("unchecked")
     public static Sheet fromYaml(Map<String, Object> sheetYaml)
     {
-        // Types
+        // Values to parse
+        UUID sheetId = null;
+        Game game = null;
+        Roleplay roleplay = null;
+
+        // Parse Values
+        Map<String,Object> sections = (Map<String,Object>) sheetYaml.get("sections");
+        Map<String,Object> roleplayYaml = (Map<String,Object>) sections.get("roleplay");
+
+        // >> Types
         ArrayList<Map<String,Object>> typesYaml =
                 (ArrayList<Map<String,Object>>) sheetYaml.get("types");
 
@@ -91,14 +108,14 @@ public class Sheet
             RulesEngine.addType(typ);
         }
 
-        // Sheet sections
-        Map<String,Object> sections = (Map<String,Object>) sheetYaml.get("sections");
+        // >> Game
+        if (sheetYaml.containsKey("game"))
+            game = Game.fromYaml((Map<String,Object>) sheetYaml.get("game"));
 
-        // Roleplay section
-        Map<String,Object> roleplayYaml = (Map<String,Object>) sections.get("roleplay");
-        Roleplay roleplay = Roleplay.fromYaml(roleplayYaml);
+        // >> Roleplay
+        roleplay = Roleplay.fromYaml(roleplayYaml);
 
-        return new Sheet(null, roleplay);
+        return new Sheet(sheetId, game, roleplay);
     }
 
 
@@ -167,7 +184,10 @@ public class Sheet
     }
 
 
-
+    public Game getGame()
+    {
+        return this.game;
+    }
 
 
     // >> I/O Methods
@@ -176,39 +196,50 @@ public class Sheet
     // >>> Database
     // ------------------------------------------------------------------------------------------
 
+    // >>>> Save/Load
+    // ------------------------------------------------------------------------------------------
+
     public static void loadMostRecent(final SQLiteDatabase database,
                                       final SheetActivity sheetActivity)
     {
-        new AsyncTask<Void,Void,UUID>()
+        new AsyncTask<Void,Void,Tuple2<UUID,String>>()
         {
 
-            protected UUID doInBackground(Void... args)
+            protected Tuple2<UUID,String> doInBackground(Void... args)
             {
                 String mostRecentSheetIdQuery =
-                    "SELECT sheet_id " +
-                    "FROM Sheet " +
-                    "ORDER BY datetime(last_used) DESC " +
+                    "SELECT sheet.sheet_id, sheet.game_id " +
+                    "FROM sheet " +
+                    "ORDER BY datetime(sheet.last_used) DESC " +
                     "LIMIT 1";
 
                 Cursor cursor = database.rawQuery(mostRecentSheetIdQuery, null);
 
                 UUID sheetId;
+                String gameId;
                 try {
                     cursor.moveToFirst();
                     sheetId = UUID.fromString(cursor.getString(0));
+                    gameId  = cursor.getString(1);
                 }
                 // TODO log
                 finally {
                     cursor.close();
                 }
 
-                return sheetId;
+                return new Tuple2(sheetId, gameId);
             }
 
-            protected void onPostExecute(UUID sheetId)
+            protected void onPostExecute(Tuple2<UUID,String> data)
             {
+                UUID sheetId = data.getItem1();
+                String gameId = data.getItem2();
+
                 // Create an asynchronous Sheet constructor
                 UUID sheetConstructorId = Sheet.addAsyncConstructor(sheetId, sheetActivity);
+
+                // Load the game
+                Game.load(database, sheetConstructorId, gameId);
 
                 // Load the roleplay and have it delivered to the waiting async constructor
                 Roleplay.load(database, sheetConstructorId, sheetId);
@@ -235,13 +266,30 @@ public class Sheet
             @Override
             protected Boolean doInBackground(Void... args)
             {
+                // Insert sheet data
                 ContentValues row = new ContentValues();
                 row.put("sheet_id", thisSheet.getId().toString());
                 row.put("last_used", thisSheet.lastUsed);
+                row.put("game_id", thisSheet.getGame().getId());
 
                 database.insertWithOnConflict(SheetContract.Sheet.TABLE_NAME,
                                               null,
                                               row,
+                                              SQLiteDatabase.CONFLICT_REPLACE);
+
+                // Insert game if doesn't exist
+                ContentValues gameRow = new ContentValues();
+                gameRow.put("game_id", thisSheet.getGame().getId());
+                gameRow.put("label", thisSheet.getGame().getLabel());
+
+                if (thisSheet.getGame().getDescription() != null)
+                    gameRow.put("description", thisSheet.getGame().getId());
+                else
+                    gameRow.putNull("description");
+
+                database.insertWithOnConflict(SheetContract.Game.TABLE_NAME,
+                                              null,
+                                              gameRow,
                                               SQLiteDatabase.CONFLICT_REPLACE);
 
                 return true;
@@ -263,6 +311,9 @@ public class Sheet
     }
 
 
+    // >>>> Queries
+    // ------------------------------------------------------------------------------------------
+
     public static Integer count(SQLiteDatabase database)
     {
         String sheetCountQuery = "SELECT count(*) FROM Sheet";
@@ -280,6 +331,73 @@ public class Sheet
 
         return count;
     }
+
+
+    /**
+     * Query basic information about the stored sheets.
+     * @param database The SQLite database object.
+     * @return Array of sheet summary info objects.
+     */
+    public static void summaryInfo(final SQLiteDatabase database,
+                                   final ManageSheetsActivity manageSheetsActivity)
+    {
+
+        final String summaryInfoQuery =
+            "SELECT sh.last_used, cname.text_value, cstat1.label, cstat1.text_value, cstat2.label, " +
+                   "cstat2.text_value, cstat3.label, cstat3.text_value " +
+            "FROM sheet sh " +
+            "INNER JOIN page p ON p.sheet_id = sh.sheet_id " +
+            "INNER JOIN _group g ON g.page_id = p.page_id " +
+            "INNER JOIN component cname ON (cname.group_id = g.group_id and cname.label = 'Name') " +
+            "LEFT JOIN component cstat1 ON (cstat1.group_id = g.group_id and cstat1.key_stat = 1) " +
+            "LEFT JOIN component cstat2 ON (cstat2.group_id = g.group_id and cstat2.key_stat = 2) " +
+            "LEFT JOIN component cstat3 ON (cstat3.group_id = g.group_id and cstat3.key_stat = 3) " +
+            "ORDER BY sh.last_used DESC ";
+
+
+        new AsyncTask<Void,Void,List<SummaryInfo>>()
+        {
+
+            @Override
+            protected List<SummaryInfo> doInBackground(Void... args)
+            {
+                Cursor summaryInfoCursor = database.rawQuery(summaryInfoQuery, null);
+
+                ArrayList<SummaryInfo> summaryInfos = new ArrayList<>();
+                try {
+                    while (summaryInfoCursor.moveToNext())
+                    {
+                        Calendar lastUsed = Calendar.getInstance();
+                        lastUsed.setTimeInMillis(summaryInfoCursor.getLong(0));
+                        String name       = summaryInfoCursor.getString(1);
+                        String stat1Name  = summaryInfoCursor.getString(2);
+                        String stat1Value = summaryInfoCursor.getString(3);
+                        String stat2Name  = summaryInfoCursor.getString(4);
+                        String stat2Value = summaryInfoCursor.getString(5);
+                        String stat3Name  = summaryInfoCursor.getString(6);
+                        String stat3Value = summaryInfoCursor.getString(7);
+
+                        summaryInfos.add(new SummaryInfo(name, lastUsed, stat1Name, stat1Value, stat2Name,
+                                                         stat2Value, stat3Name, stat3Value));
+                    }
+                }
+                finally {
+                    summaryInfoCursor.close();
+                }
+
+                return summaryInfos;
+            }
+
+            @Override
+            protected void onPostExecute(List<SummaryInfo> summaryInfos)
+            {
+                manageSheetsActivity.renderSheetSummaries(summaryInfos);
+            }
+
+        }.execute();
+
+    }
+
 
 
     // >>> Files
@@ -446,32 +564,54 @@ public class Sheet
     }
 
 
-    public static class Game
+    /**
+     * Stores summary information about a sheet for the user to browse.
+     */
+    public static class SummaryInfo implements Serializable
     {
-        private String id;
-        private String label;
-        private String description;
+        private String name;
+        private Calendar lastUsed;
 
-        public Game(String id, String label, String description)
+        private String stat1Name;
+        private String stat1Value;
+        private String stat2Name;
+        private String stat2Value;
+        private String stat3Name;
+        private String stat3Value;
+
+        public SummaryInfo(String name, Calendar lastUsed, String stat1Name, String stat1Value,
+                           String stat2Name, String stat2Value, String stat3Name, String stat3Value)
         {
-            this.id = id;
-            this.label = label;
-            this.description = description;
+            this.name = name;
+            this.lastUsed = lastUsed;
         }
 
-        public String getId()
-        {
-            return this.id;
+        public String getName() {
+            return this.name;
         }
 
-        public String getLabel()
-        {
-            return this.label;
+        public Calendar getLastUsed() {
+            return this.lastUsed;
         }
 
-        public String getDescription()
-        {
-            return this.description;
+        public String getStat1Name() {
+            return this.stat1Name;
+        }
+
+        public String getStat2Name() {
+            return this.stat2Name;
+        }
+
+        public String getStat2Value() {
+            return this.stat2Value;
+        }
+
+        public String getStat3Name() {
+            return this.stat3Name;
+        }
+
+        public String getStat3Value() {
+            return this.stat3Value;
         }
     }
 
@@ -479,18 +619,40 @@ public class Sheet
     public static class AsyncConstructor
     {
         private UUID id;
+        private Roleplay roleplay;
+        private Game game;
+
         private SheetActivity sheetActivity;
 
         public AsyncConstructor(UUID id, SheetActivity sheetActivity)
         {
             this.id = id;
             this.sheetActivity = sheetActivity;
+
+            this.roleplay = null;
+            this.game = null;
         }
 
-        synchronized public void addRoleplay(Roleplay roleplay)
+        synchronized public void setGame(Game game)
         {
-            Sheet sheet = new Sheet(this.id, roleplay);
+            this.game = game;
+            if (isReady()) ready();
+        }
 
+        synchronized public void setRoleplay(Roleplay roleplay)
+        {
+            this.roleplay = roleplay;
+            if (isReady()) ready();
+        }
+
+        private boolean isReady()
+        {
+            return this.game != null && this.roleplay != null;
+        }
+
+        private void ready()
+        {
+            Sheet sheet = new Sheet(this.id, this.game, this.roleplay);
             sheetActivity.setSheet(sheet);
             sheetActivity.renderSheet();
         }

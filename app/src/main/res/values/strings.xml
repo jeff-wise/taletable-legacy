@@ -1,8 +1,7 @@
 <resources>
     <string name="drawer_header_text">Drawer Header</string>
 
-    <string name="new_character">New Character</string>
-    <string name="switch_character">Switch Character</string>
+    <string name="manage_sheets">Sheets</string>
 
 
     <string name="app_name">Tome</string>

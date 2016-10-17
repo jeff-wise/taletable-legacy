@@ -4,14 +4,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/navigation_item_new_character"
-            android:checked="true"
-            android:icon="@drawable/ic_new_character_24dp"
-            android:title="@string/new_character" />
-        <item
-            android:id="@+id/navigation_item_switch_character"
+            android:id="@+id/navigation_item_manage_sheets"
             android:icon="@drawable/ic_switch_character_24dp"
-            android:title="@string/switch_character" />
+            android:title="@string/manage_sheets" />
     </group>
 
 </menu>

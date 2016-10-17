@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
@@ -18,7 +17,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
-import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Util;
@@ -27,7 +25,6 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -41,6 +38,7 @@ public class NumberInteger extends Component implements Serializable
 
     private TextSize textSize;
     private String prefix;
+    private Integer keyStat;
     private Integer value;
 
 
@@ -49,9 +47,10 @@ public class NumberInteger extends Component implements Serializable
 
 
     public NumberInteger(UUID id, Type.Id typeId, String label, Integer row, Integer column,
-                         Integer width, Integer value)
+                         Integer width, Integer keyStat, Integer value)
     {
-    super(id, typeId, label, row, column, width);
+        super(id, typeId, label, row, column, width);
+        this.keyStat = keyStat;
         this.value = value;
         this.textSize = TextSize.MEDIUM;
     }
@@ -68,6 +67,7 @@ public class NumberInteger extends Component implements Serializable
         Integer column = null;
         Integer width = null;
         String prefix = null;
+        Integer keyStat = null;
         Integer value = null;
 
         // Parse Values
@@ -110,12 +110,17 @@ public class NumberInteger extends Component implements Serializable
         if (formatYaml.containsKey("prefix"))
             prefix = (String) formatYaml.get("prefix");
 
+        // >> Key Stat
+        if (integerYaml.containsKey("key_stat"))
+            keyStat = (Integer) integerYaml.get("key_stat");
+
         // >> Value
         if (dataYaml.containsKey("value"))
             value = (Integer) dataYaml.get("value");
 
         // Create Integer
-        NumberInteger integer = new NumberInteger(id, typeId, label, row, column, width, value);
+        NumberInteger integer = new NumberInteger(id, typeId, label, row,
+                                                  column, width, keyStat, value);
 
         if (prefix != null) integer.setPrefix(prefix);
 
@@ -132,6 +137,12 @@ public class NumberInteger extends Component implements Serializable
     public String componentName()
     {
         return "integer";
+    }
+
+
+    public Integer getKeyStat()
+    {
+        return this.keyStat;
     }
 
 
@@ -232,7 +243,7 @@ public class NumberInteger extends Component implements Serializable
                 // Query Component
                 String integerQuery =
                     "SELECT comp.label, comp.row, comp.column, comp.width, comp.type_kind, " +
-                           "comp.type_id, int.value, int.prefix " +
+                           "comp.type_id, comp.key_stat, int.value, int.prefix " +
                     "FROM component comp " +
                     "INNER JOIN component_integer int on int.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
@@ -246,6 +257,7 @@ public class NumberInteger extends Component implements Serializable
                 Integer width;
                 String typeKind;
                 String typeId;
+                Integer keyStat;
                 Integer value;
                 String prefix;
                 try {
@@ -256,8 +268,9 @@ public class NumberInteger extends Component implements Serializable
                     width       = textCursor.getInt(3);
                     typeKind    = textCursor.getString(4);
                     typeId      = textCursor.getString(5);
-                    value       = textCursor.getInt(6);
-                    prefix      = textCursor.getString(7);
+                    keyStat     = textCursor.getInt(6);
+                    value       = textCursor.getInt(7);
+                    prefix      = textCursor.getString(8);
                 }
                 // TODO log
                 finally {
@@ -270,6 +283,7 @@ public class NumberInteger extends Component implements Serializable
                                                           row,
                                                           column,
                                                           width,
+                                                          keyStat,
                                                           value);
                 integer.setPrefix(prefix);
 
@@ -310,8 +324,14 @@ public class NumberInteger extends Component implements Serializable
                 componentRow.put("row", thisInteger.getRow());
                 componentRow.put("column", thisInteger.getColumn());
                 componentRow.put("width", thisInteger.getWidth());
+                componentRow.put("text_value", thisInteger.getValue().toString());
                 componentRow.putNull("type_kind");
                 componentRow.putNull("type_id");
+
+                if (thisInteger.getKeyStat() != null)
+                    componentRow.put("key_stat", thisInteger.getKeyStat());
+                else
+                    componentRow.putNull("key_stat");
 
                 database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
                                               null,
