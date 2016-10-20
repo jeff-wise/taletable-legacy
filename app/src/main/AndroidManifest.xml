@@ -13,7 +13,7 @@
 
     <activity
         android:name=".activity.LaunchActivity"
-        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" >
+        android:theme="@style/AppTheme.NoActionBar" >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
@@ -29,7 +29,9 @@
 
     <activity
         android:name=".activity.ManageSheetsActivity"
-        android:label="Sheets" />
+        android:label="Characters"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="adjustPan" />
 
     <activity
         android:name=".activity.EditActivity"
@@ -37,7 +39,7 @@
 
     <activity
         android:name=".activity.NewCharacterActivity"
-        android:label="Create New Character" />
+        android:label="New Character" />
 
     <activity
         android:name=".activity.ChooseTemplateActivity"

@@ -27,8 +27,8 @@ sections:
     pages:
     - label: Profile
       groups:
-      - label: Name
-        number_of_rows: 1
+      - label: General
+        number_of_rows: 2
         components:
         - type: text
           format:
@@ -38,13 +38,10 @@ sections:
             width: 1
             text_size: large
           data:
-            value: Hildebrand
-      - label: Picture
-        number_of_rows: 1
-        components:
+            value: Aladaisian Wineheart
         - type: image
           format:
-            row: 1
+            row: 2
             column: 1
             width: 1
             label: Picture

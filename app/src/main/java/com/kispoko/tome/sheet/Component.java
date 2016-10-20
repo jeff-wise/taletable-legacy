@@ -5,6 +5,7 @@ package com.kispoko.tome.sheet;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,12 +36,10 @@ public abstract class Component implements Unique, Serializable
     // ------------------------------------------------------------------------------------------
 
     private UUID id;
+    private UUID groupId;
     private Type.Id typeId;
-    private String label;
 
-    private Integer row;
-    private Integer column;
-    private Integer width;
+    private Format format;
 
 
     // > INTERFACE
@@ -51,25 +50,22 @@ public abstract class Component implements Unique, Serializable
 
     abstract public String componentName();
 
-    abstract public void save(SQLiteDatabase database, UUID trackerId, UUID groupId);
+    abstract public void save(SQLiteDatabase database, UUID trackerId);
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Component(UUID id, Type.Id typeId, String label, Integer row,
-                     Integer column, Integer width)
+    public Component(UUID id, UUID groupId, Type.Id typeId, Format format)
     {
         if (id != null)
             this.id = id;
         else
             this.id = UUID.randomUUID();
 
+        this.groupId = groupId;
         this.typeId = typeId;
-        this.label = label;
-        this.row = row;
-        this.column = column;
-        this.width = width;
+        this.format = format;
     }
 
 
@@ -79,22 +75,31 @@ public abstract class Component implements Unique, Serializable
     // >> Id
     // ------------------------------------------------------------------------------------------
 
-    public UUID getId()
-    {
+    public UUID getId() {
         return this.id;
     }
 
-    public void setId(UUID id)
-    {
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+
+    // >> Group Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getGroupId() {
+        return this.groupId;
+    }
+
+    public void setGroupId(UUID groupId) {
+        this.groupId = groupId;
     }
 
 
     // >> Type
     // ------------------------------------------------------------------------------------------
 
-    public Type.Id getTypeId()
-    {
+    public Type.Id getTypeId() {
         return this.typeId;
     }
 
@@ -102,63 +107,53 @@ public abstract class Component implements Unique, Serializable
     // >> Label
     // ------------------------------------------------------------------------------------------
 
-    public boolean hasLabel()
-    {
-        return this.label != null;
+    public boolean hasLabel() {
+        return this.format.getLabel() != null;
     }
 
 
-    public String getLabel()
-    {
-        return this.label;
-    }
-
-
-    // >> Row
-    // ------------------------------------------------------------------------------------------
-
-    public Integer getRow()
-    {
-        return this.row;
-    }
-
-
-    public void setRow(Integer row)
-    {
-        this.row = row;
+    public String getLabel() {
+        return this.format.getLabel();
     }
 
 
     // >> Row
     // ------------------------------------------------------------------------------------------
 
-    public Integer getColumn()
-    {
-        return this.column;
+    public Integer getRow() {
+        return this.format.getRow();
     }
 
 
-    public void setColumn(Integer column)
-    {
-        this.column = column;
+    public void setRow(Integer row) {
+        this.format.setRow(row);
     }
 
 
     // >> Row
     // ------------------------------------------------------------------------------------------
 
-    public Integer getWidth()
-    {
-        return this.width;
+    public Integer getColumn() {
+        return this.format.getColumn();
     }
 
 
-    public void setWidth(Integer width)
-    {
-        this.width = width;
+    public void setColumn(Integer column) {
+        this.format.setColumn(column);
     }
 
 
+    // >> Row
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getWidth() {
+        return this.format.getWidth();
+    }
+
+
+    public void setWidth(Integer width) {
+        this.format.setWidth(width);
+    }
 
 
     // >> Views
@@ -169,13 +164,14 @@ public abstract class Component implements Unique, Serializable
      * @param context The context.
      * @return A TextView representing the component's label.
      */
+    /*
     public TextView labelView(Context context)
     {
         TextView textView = new TextView(context);
 
-        int paddingLeft = (int) Util.getDim(context, R.dimen.comp_label_padding_left);
-        int paddingBottom = (int) Util.getDim(context, R.dimen.comp_label_padding_bottom);
-        textView.setPadding(paddingLeft, 0, 0, paddingBottom);
+        //int paddingLeft = (int) Util.getDim(context, R.dimen.comp_label_padding_left);
+        //int paddingBottom = (int) Util.getDim(context, R.dimen.comp_label_padding_bottom);
+        //textView.setPadding(paddingLeft, 0, 0, paddingBottom);
 
         textView.setId(R.id.component_label);
         float labelTextSize = (int) context.getResources()
@@ -190,6 +186,8 @@ public abstract class Component implements Unique, Serializable
 
         return textView;
     }
+
+    */
 
 
     // > STATIC METHODS
@@ -248,7 +246,7 @@ public abstract class Component implements Unique, Serializable
 
 
 
-    public static LinearLayout linearLayout(Context context)
+    public LinearLayout linearLayout(Context context)
     {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -260,9 +258,25 @@ public abstract class Component implements Unique, Serializable
 
         linearLayoutParams.setMargins(layoutMarginsHorz, 0, layoutMarginsHorz, 0);
         layout.setLayoutParams(linearLayoutParams);
-        //layout.setBackgroundColor(ContextCompat.getColor(context, R.color.sheet_medium));
 
         layout.setBackgroundResource(R.drawable.bg_component);
+
+        // Add label
+        TextView labelView = new TextView(context);
+        labelView.setGravity(Gravity.CENTER_HORIZONTAL);
+        labelView.setText(this.getLabel().toUpperCase());
+        float labelTextSize = (int) Util.getDim(context, R.dimen.comp_label_text_size);
+        labelView.setTextSize(labelTextSize);
+
+        int labelPaddingBottom = (int) Util.getDim(context, R.dimen.comp_label_padding_bottom);
+        labelView.setPadding(0, 0, 0, labelPaddingBottom);
+
+        labelView.setTextColor(ContextCompat.getColor(context, R.color.text_light));
+
+        //textView.setTypeface(null, Typeface.BOLD);
+        labelView.setTypeface(Util.sansSerifFontRegular(context));
+
+        layout.addView(labelView);
 
         return layout;
     }
@@ -280,6 +294,68 @@ public abstract class Component implements Unique, Serializable
         public static TextSize fromString(String textSize)
         {
             return TextSize.valueOf(textSize.toUpperCase());
+        }
+
+    }
+
+
+    public static class Format implements Serializable
+    {
+
+        // > PROPERTIES
+        // --------------------------------------------------------------------------------------
+
+        private String label;
+        private Integer row;
+        private Integer column;
+        private Integer width;
+
+
+        // > CONSTRUCTORS
+        // --------------------------------------------------------------------------------------
+
+        public Format(String label, Integer row, Integer column, Integer width)
+        {
+            this.label = label;
+            this.row = row;
+            this.column = column;
+            this.width = width;
+        }
+
+
+        // > API
+        // --------------------------------------------------------------------------------------
+
+        public String getLabel() {
+            return this.label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public Integer getRow() {
+            return this.row;
+        }
+
+        public void setRow(Integer row) {
+            this.row = row;
+        }
+
+        public Integer getColumn() {
+            return this.column;
+        }
+
+        public void setColumn(Integer column) {
+            this.column = column;
+        }
+
+        public Integer getWidth() {
+            return this.width;
+        }
+
+        public void setWidth(Integer width) {
+            this.width = width;
         }
 
     }

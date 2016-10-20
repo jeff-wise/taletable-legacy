@@ -7,13 +7,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,10 +61,10 @@ public class Text extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public Text(UUID id, Type.Id typeId, String label, Integer row, Integer column,
-                Integer width, TextSize textSize, Integer keyStat, String value)
+    public Text(UUID id, UUID groupId, Type.Id typeId, Format format, TextSize textSize,
+                Integer keyStat, String value)
     {
-        super(id, typeId, label, row, column, width);
+        super(id, groupId, typeId, format);
         this.keyStat = keyStat;
         this.value = value;
         this.textSize = textSize;
@@ -131,7 +135,8 @@ public class Text extends Component implements Serializable
             value = (String) dataYaml.get("value");
 
         // Create Text
-        return new Text(id, typeId, label, row, column, width, textSize, keyStat, value);
+        return new Text(id, null, typeId, new Format(label, row, column, width),
+                        textSize, keyStat, value);
     }
 
 
@@ -177,9 +182,9 @@ public class Text extends Component implements Serializable
     // >> Views
     // ------------------------------------------------------------------------------------------
 
-    public View getDisplayView(Context context)
+    public View getDisplayView(final Context context)
     {
-        LinearLayout textLayout = Component.linearLayout(context);
+        LinearLayout textLayout = this.linearLayout(context);
 
 
         TextView textView = new TextView(context);
@@ -197,11 +202,15 @@ public class Text extends Component implements Serializable
 
         final Text thisText = this;
 
-        final SheetActivity sheetActivity = (SheetActivity) context;
+        final Activity activity = (Activity) context;
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sheetActivity.openEditActivity(thisText);
+                final View editSheet = activity.findViewById(R.id.edit_sheet);
+                editSheet.setVisibility(View.VISIBLE);
+
+                final BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(editSheet);
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
 
@@ -249,55 +258,37 @@ public class Text extends Component implements Serializable
 
     public View getFreeEditorView(Context context)
     {
-        // Header Layout
-        LinearLayout headerLayout = new LinearLayout(context);
-        headerLayout.setLayoutParams(Util.linearLayoutParamsMatch());
-        headerLayout.setOrientation(LinearLayout.VERTICAL);
-        int headerHorzPadding = (int) Util.getDim(context,
-                R.dimen.comp_text_editor_free_header_horz_padding);
-        int headerTopPadding = (int) Util.getDim(context,
-                R.dimen.comp_text_editor_header_top_padding);
-        headerLayout.setPadding(headerHorzPadding, headerTopPadding, headerHorzPadding, 0);
-        headerLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.bluegrey_900));
-
-        // >> Title
-        TextView titleView = new TextView(context);
-        int titleViewPaddingLeft = (int) Util.getDim(context,
-                                          R.dimen.comp_text_editor_free_header_name_left_padding);
-        titleView.setPadding(titleViewPaddingLeft, 0, 0, 0);
-        titleView.setText(this.getLabel().toUpperCase());
-        float titleTextSize = Util.getDim(context, R.dimen.comp_text_editor_title_text_size);
-        titleView.setTextSize(titleTextSize);
-        titleView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
-        titleView.setTypeface(null, Typeface.BOLD);
-
-        headerLayout.addView(titleView);
-
         EditText editView = new EditText(context);
+        editView.setId(R.id.comp_text_editor_value);
 
         editView.setTextSize(ComponentUtil.getTextSizeSP(context, this.textSize));
 
-        Typeface font = Typeface.createFromAsset(context.getAssets(),
-                                                 "fonts/DavidLibre-Regular.ttf");
-        editView.setTypeface(font);
-        editView.setTextColor(ContextCompat.getColor(context, R.color.amber_500));
-        //editView.setPadding(0, 0, 0, 0);
+        editView.setTypeface(Util.serifFontBold(context));
+        editView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
         LinearLayout.LayoutParams editViewLayoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                                               LinearLayout.LayoutParams.WRAP_CONTENT);
-        //editViewLayoutParams.leftMargin = 0;
+        int editViewMarginsVert = (int) Util.getDim(context, R.dimen.comp_text_editor_margins_vert);
+        editViewLayoutParams.setMargins(0, editViewMarginsVert, 0, editViewMarginsVert);
+        editViewLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
         editView.setLayoutParams(editViewLayoutParams);
+
+        int editViewPaddingHorz = (int) Util.getDim(context, R.dimen.comp_text_editor_padding_horz);
+        int editViewPaddingVert = (int) Util.getDim(context, R.dimen.comp_text_editor_padding_vert);
+        editView.setPadding(editViewPaddingHorz, editViewPaddingVert,
+                            editViewPaddingHorz, editViewPaddingVert);
+        editView.getBackground().setColorFilter(ContextCompat.getColor(context, R.color.text_medium),
+                                                PorterDuff.Mode.SRC_IN);
+
+        editView.requestFocus();
 
         float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
         editView.setTextSize(valueTextSize);
 
         editView.setText(this.value);
 
-        headerLayout.addView(editView);
-
-
-        return headerLayout;
+        return editView;
     }
 
 
@@ -392,14 +383,15 @@ public class Text extends Component implements Serializable
             {
                 // Query Component
                 String textQuery =
-                    "SELECT comp.label, comp.row, comp.column, comp.width, comp.type_kind, " +
-                           "comp.type_id, comp.key_stat, text.size, text.value " +
+                    "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
+                           "comp.type_kind, comp.type_id, comp.key_stat, text.size, text.value " +
                     "FROM Component comp " +
                     "INNER JOIN component_text text on text.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
 
                 Cursor textCursor = database.rawQuery(textQuery, null);
 
+                UUID groupId;
                 String label;
                 Integer row;
                 Integer column;
@@ -411,32 +403,29 @@ public class Text extends Component implements Serializable
                 String value;
                 try {
                     textCursor.moveToFirst();
-                    label           = textCursor.getString(0);
-                    row             = textCursor.getInt(1);
-                    column          = textCursor.getInt(2);
-                    width           = textCursor.getInt(3);
-                    typeKind        = textCursor.getString(4);
-                    typeId          = textCursor.getString(5);
-                    keyStat         = textCursor.getInt(6);
-                    textSize        = textCursor.getString(7);
-                    value           = textCursor.getString(8);
+                    groupId         = UUID.fromString(textCursor.getString(0));
+                    label           = textCursor.getString(1);
+                    row             = textCursor.getInt(2);
+                    column          = textCursor.getInt(3);
+                    width           = textCursor.getInt(4);
+                    typeKind        = textCursor.getString(5);
+                    typeId          = textCursor.getString(6);
+                    keyStat         = textCursor.getInt(7);
+                    textSize        = textCursor.getString(8);
+                    value           = textCursor.getString(9);
                 }
                 // TODO log
                 finally {
                     textCursor.close();
                 }
 
-                Text text = new Text(componentId,
-                                     new Type.Id(typeKind, typeId),
-                                     label,
-                                     row,
-                                     column,
-                                     width,
-                                     TextSize.fromString(textSize),
-                                     keyStat,
-                                     value);
-
-                return text;
+                return new Text(componentId,
+                                groupId,
+                                new Type.Id(typeKind, typeId),
+                                new Format(label, row, column, width),
+                                TextSize.fromString(textSize),
+                                keyStat,
+                                value);
             }
 
             @Override
@@ -453,9 +442,8 @@ public class Text extends Component implements Serializable
     /**
      * Save to the database.
      * @param database The SQLite database object.
-     * @param groupId The ID of the parent group object.
      */
-    public void save(final SQLiteDatabase database, final UUID groupTrackerId, final UUID groupId)
+    public void save(final SQLiteDatabase database, final UUID groupTrackerId)
     {
         final Text thisText = this;
 
@@ -468,7 +456,7 @@ public class Text extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisText.getId().toString());
-                componentRow.put("group_id", groupId.toString());
+                componentRow.put("group_id", thisText.getGroupId().toString());
                 componentRow.put("data_type", thisText.componentName());
                 componentRow.put("label", thisText.getLabel());
                 componentRow.put("row", thisText.getRow());
@@ -513,7 +501,8 @@ public class Text extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                Group.getTracker(groupTrackerId).setComponentId(thisText.getId());
+                if (groupTrackerId != null)
+                    Group.getTracker(groupTrackerId).setComponentId(thisText.getId());
             }
 
 

@@ -6,10 +6,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,8 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.kispoko.tome.R.id.textView;
-import static com.kispoko.tome.util.Util.linearLayoutParamsMatchWrap;
+import static android.R.attr.paddingBottom;
 
 
 /**
@@ -69,6 +66,11 @@ public class Group implements Serializable
         this.index = index;
         this.numberOfRows = numberOfRows;
         this.components = components;
+
+        // Set component group ids
+        for (Component component : this.components) {
+            component.setGroupId(this.id);
+        }
     }
 
 
@@ -331,7 +333,7 @@ public class Group implements Serializable
                 // Save the entire sheet to the database
                 for (Component component : thisGroup.components)
                 {
-                    component.save(database, groupTrackerId, thisGroup.getId());
+                    component.save(database, groupTrackerId);
                 }
             }
 
@@ -348,16 +350,18 @@ public class Group implements Serializable
         LinearLayout.LayoutParams mainLayoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                               LinearLayout.LayoutParams.MATCH_PARENT);
-        int groupHorzMargins = (int) context.getResources()
-                                            .getDimension(R.dimen.group_horz_margins);
-        int groupVertMargins = (int) context.getResources()
-                                            .getDimension(R.dimen.group_vert_margins);
+        int groupHorzMargins = (int) Util.getDim(context, R.dimen.group_horz_margins);
+        int groupVertMargins = (int) Util.getDim(context, R.dimen.group_vert_margins);
+        groupLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.sheet_medium));
         mainLayoutParams.setMargins(groupHorzMargins, groupVertMargins,
                                     groupHorzMargins, groupVertMargins);
         groupLayout.setOrientation(LinearLayout.VERTICAL);
         groupLayout.setLayoutParams(mainLayoutParams);
 
-        groupLayout.addView(this.labelView(context));
+        int groupPaddingVert = (int) Util.getDim(context, R.dimen.group_padding_vert);
+        int groupPaddingHorz = (int) Util.getDim(context, R.dimen.group_padding_horz);
+        groupLayout.setPadding(groupPaddingHorz, groupPaddingVert, groupPaddingHorz, groupPaddingVert);
+
 
         ArrayList<ArrayList<Component>> rows = new ArrayList<>();
         for (int i = 0; i  < this.numberOfRows; i++) {
@@ -386,6 +390,8 @@ public class Group implements Serializable
             });
         }
 
+        if (this.components.size() > 1)
+            groupLayout.addView(this.labelView(context));
 
         for (ArrayList<Component> row : rows)
         {
@@ -405,10 +411,11 @@ public class Group implements Serializable
                 frameLayoutParams.weight = component.getWidth();
                 frameLayout.setLayoutParams(frameLayoutParams);
 
+//                if (component.hasLabel())
+//                    frameLayout.addView(component.labelView(context));
                 // Add Component Label
-                if (component.hasLabel() && !component.getLabel().equals(this.getLabel())) {
-                    frameLayout.addView(component.labelView(context));
-                }
+//                if (component.hasLabel() && !component.getLabel().equals(this.getLabel())) {
+//                }
 
                 // Add Component View
                 View componentView = component.getDisplayView(context);
@@ -419,6 +426,8 @@ public class Group implements Serializable
 
             groupLayout.addView(rowLayout);
         }
+
+        //groupLayout.addView(UI.divider(context));
 
         return groupLayout;
     }
@@ -444,14 +453,12 @@ public class Group implements Serializable
         TextView textView = new TextView(context);
         textView.setId(R.id.component_label);
 
-        float labelTextSize = (int) context.getResources()
-                                         .getDimension(R.dimen.label_text_size);
+        float labelTextSize = (int) Util.getDim(context, R.dimen.group_label_text_size);
         textView.setTextSize(labelTextSize);
 
-        textView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_700));
+        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium_light));
 
-        //textView.setTypeface(null, Typeface.BOLD);
-        textView.setTypeface(Util.sansSerifFontBold(context));
+        textView.setTypeface(Util.sansSerifFontRegular(context));
 
         textView.setText(this.label.toUpperCase());
 

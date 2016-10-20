@@ -1,7 +1,7 @@
 <resources>
     <string name="drawer_header_text">Drawer Header</string>
 
-    <string name="manage_sheets">Sheets</string>
+    <string name="characters">Manage Characters</string>
 
 
     <string name="app_name">Tome</string>
@@ -38,5 +38,7 @@
         Upload a character or character template from a local file.
     </string>
 
+    <!-- MANAGE SHEETS ACTIVITY -->
+    <string name="activity_characters_title">Characters</string>
 
 </resources>

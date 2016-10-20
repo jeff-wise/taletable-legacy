@@ -4,8 +4,12 @@ package com.kispoko.tome.util;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.kispoko.tome.R;
 
@@ -26,9 +30,23 @@ public class UI
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, one_dp);
         dividerView.setLayoutParams(layoutParams);
 
-        dividerView.setBackgroundColor(ContextCompat.getColor(context, R.color.bluegrey_800));
+        dividerView.setBackgroundColor(ContextCompat.getColor(context, R.color.bluegrey_850));
 
         return dividerView;
+    }
+
+
+    public static void initializeToolbar(AppCompatActivity activity)
+    {
+        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.manage_sheets_toolbar);
+        activity.setSupportActionBar(toolbar);
+        ActionBar actionBar = activity.getSupportActionBar();
+
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        TextView titleView = (TextView) activity.findViewById(R.id.page_title);
+        titleView.setTypeface(Util.serifFontBold(activity));
     }
 
 }

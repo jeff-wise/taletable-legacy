@@ -1,39 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.ManageSheetsActivity">
+    android:fitsSystemWindows="true">
 
-    <android.support.design.widget.CoordinatorLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/sheet_list"
+        <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/bluegrey_900">
+            android:layout_height="match_parent">
 
-        </ScrollView>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/manage_sheets_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/bluegrey_900"
+                android:theme="@style/AppTheme.NoActionBar" >
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:src="@drawable/ic_new_sheet_plus"
-            app:layout_anchor="@id/sheet_list"
-            app:layout_anchorGravity="bottom|right"
-            app:backgroundTint="@color/grey_300"
-            app:rippleColor="#FFF" />
+                <TextView
+                    android:id="@+id/page_title"
+                    android:layout_gravity="center"
+                    android:textSize="21sp"
+                    android:text="@string/activity_characters_title"
+                    android:textColor="@color/bluegrey_100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-    </android.support.design.widget.CoordinatorLayout>
 
-</RelativeLayout>
+            </android.support.v7.widget.Toolbar>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/bluegrey_850" />
+
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ScrollView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/sheet_list"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/bluegrey_900">
+
+                </ScrollView>
+
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/button_new_sheet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:src="@drawable/ic_new_sheet_plus"
+                    app:layout_anchor="@id/sheet_list"
+                    app:layout_anchorGravity="bottom|right"
+                    app:backgroundTint="@color/bluegrey_200"
+                    app:rippleColor="#FFF" />
+
+            </android.support.design.widget.CoordinatorLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</android.support.v4.widget.DrawerLayout>
+

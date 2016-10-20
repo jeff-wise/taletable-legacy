@@ -5,8 +5,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_manage_sheets"
-            android:icon="@drawable/ic_switch_character_24dp"
-            android:title="@string/manage_sheets" />
+            android:icon="@drawable/ic_manage_characters"
+            android:title="@string/characters" />
     </group>
 
 </menu>

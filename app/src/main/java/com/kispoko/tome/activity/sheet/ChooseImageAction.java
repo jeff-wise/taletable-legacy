@@ -2,38 +2,29 @@
 package com.kispoko.tome.activity.sheet;
 
 
-import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.v4.content.ContextCompat;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.sheet.component.Image;
+
+
 
 /**
  */
 public class ChooseImageAction
 {
 
-    private LinearLayout imageLayout;
-    private ImageView imageView;
-    private Button chooseImageButton;
+    private Image image;
 
-    public ChooseImageAction(LinearLayout imageLayout, ImageView imageView, Button chooseImageButton)
+    public ChooseImageAction(Image image)
     {
-        this.imageLayout = imageLayout;
-        this.imageView = imageView;
-        this.chooseImageButton = chooseImageButton;
+        this.image = image;
     }
 
-    public void setImage(Context context, Uri uri)
+    public void setImage(SheetActivity sheetActivity, Uri uri, SQLiteDatabase database)
     {
-        this.imageLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.sheet_dark));
-        this.imageView.setVisibility(View.VISIBLE);
-        this.chooseImageButton.setVisibility(View.GONE);
-        this.imageView.setImageURI(uri);
+        this.image.setImageFromURI(sheetActivity, uri, database);
     }
 
 }

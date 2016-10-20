@@ -20,7 +20,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
-import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 
@@ -28,6 +27,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
+
 
 
 /**
@@ -45,10 +45,10 @@ public class Table extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Table(UUID id, Type.Id typeId, Integer row, Integer column, Integer width,
+    public Table(UUID id, UUID groupId, Type.Id typeId, Format format,
                  ArrayList<String> columnNames, ArrayList<Row> rows)
     {
-        super(id, typeId, null, row, column, width);
+        super(id, groupId, typeId, format);
 
         this.columnNames = columnNames;
         this.rows = rows;
@@ -59,7 +59,8 @@ public class Table extends Component implements Serializable
     public static Table fromYaml(Map<String, Object> tableYaml)
     {
         // Values to parse
-        UUID id = null;            // Isn't actually parsed, is only stored in DB
+        UUID id = null;
+        UUID groupId = null;
         Type.Id typeId = null;
         Integer row = null;
         Integer column = null;
@@ -123,7 +124,8 @@ public class Table extends Component implements Serializable
             rows.add(new Row(null, cells));
         }
 
-        return new Table(id, typeId, row, column, width, columnNames, rows);
+        return new Table(id, groupId, typeId, new Format(null, row, column, width),
+                         columnNames, rows);
     }
 
 
@@ -161,7 +163,7 @@ public class Table extends Component implements Serializable
             {
                 // Query Table
                 String tableQuery =
-                    "SELECT comp.row, comp.column, comp.width, comp.type_kind, comp.type_id, " +
+                    "SELECT comp.group_id, comp.row, comp.column, comp.width, comp.type_kind, comp.type_id, " +
                            "tbl.column1_name, tbl.column2_name, tbl.column3_name, " +
                            "tbl.column4_name, tbl.column5_name, tbl.column6_name " +
                     "FROM Component comp " +
@@ -170,6 +172,7 @@ public class Table extends Component implements Serializable
 
                 Cursor tableCursor = database.rawQuery(tableQuery, null);
 
+                UUID groupId = null;
                 Integer rowIndex = null;
                 Integer columnIndex = null;
                 Integer width = null;
@@ -180,18 +183,19 @@ public class Table extends Component implements Serializable
                 try {
                     tableCursor.moveToFirst();
 
-                    rowIndex    = tableCursor.getInt(0);
-                    columnIndex = tableCursor.getInt(1);
-                    width       = tableCursor.getInt(2);
-                    typeKind    = tableCursor.getString(3);
-                    typeId      = tableCursor.getString(4);
+                    groupId     = UUID.fromString(tableCursor.getString(0));
+                    rowIndex    = tableCursor.getInt(1);
+                    columnIndex = tableCursor.getInt(2);
+                    width       = tableCursor.getInt(3);
+                    typeKind    = tableCursor.getString(4);
+                    typeId      = tableCursor.getString(5);
 
-                    String column1Name = tableCursor.getString(5);
-                    String column2Name = tableCursor.getString(6);
-                    String column3Name = tableCursor.getString(7);
-                    String column4Name = tableCursor.getString(8);
-                    String column5Name = tableCursor.getString(9);
-                    String column6Name = tableCursor.getString(10);
+                    String column1Name = tableCursor.getString(6);
+                    String column2Name = tableCursor.getString(7);
+                    String column3Name = tableCursor.getString(8);
+                    String column4Name = tableCursor.getString(9);
+                    String column5Name = tableCursor.getString(10);
+                    String column6Name = tableCursor.getString(11);
 
                     if (column1Name != null)  columnNames.add(column1Name);
                     if (column2Name != null)  columnNames.add(column2Name);
@@ -255,10 +259,9 @@ public class Table extends Component implements Serializable
                 }
 
                 Table table = new Table(componentId,
+                                        groupId,
                                         new Type.Id(typeKind, typeId),
-                                        rowIndex,
-                                        columnIndex,
-                                        width,
+                                        new Format(null, rowIndex, columnIndex, width),
                                         columnNames,
                                         rows);
 
@@ -280,7 +283,7 @@ public class Table extends Component implements Serializable
      * @param database The SQLite database object.
      * @param groupId The ID of the parent group object.
      */
-    public void save(final SQLiteDatabase database, final UUID groupTrackerId, final UUID groupId)
+    public void save(final SQLiteDatabase database, final UUID groupTrackerId)
     {
         final Table thisTable = this;
 
@@ -293,7 +296,7 @@ public class Table extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisTable.getId().toString());
-                componentRow.put("group_id", groupId.toString());
+                componentRow.put("group_id", thisTable.getGroupId().toString());
                 componentRow.put("data_type", thisTable.componentName());
                 componentRow.put("label", thisTable.getLabel());
                 componentRow.put("row", thisTable.getRow());
@@ -415,7 +418,8 @@ public class Table extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                Group.getTracker(groupTrackerId).setComponentId(thisTable.getId());
+                if (groupTrackerId != null)
+                    Group.getTracker(groupTrackerId).setComponentId(thisTable.getId());
             }
 
         }.execute();
@@ -483,16 +487,6 @@ public class Table extends Component implements Serializable
     private TextView textCell(Context context, String value)
     {
         TextView textView = new TextView(context);
-
-        //editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        //editText.setMaxWidth(300);
-
-//        TableLayout.LayoutParams cellLayoutParams =
-//                new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
-        //cellLayoutParams.weight = 1;
-        //cellLayoutParams.gravity = Gravity.CENTER;
-        //editText.setLayoutParams(cellLayoutParams);
-
 
         int cellPadding = (int) context.getResources()
                                        .getDimension(R.dimen.comp_table_cell_padding);

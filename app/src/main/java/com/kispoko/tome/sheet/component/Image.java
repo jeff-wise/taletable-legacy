@@ -2,15 +2,19 @@
 package com.kispoko.tome.sheet.component;
 
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -25,11 +29,13 @@ import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
+
 
 
 /**
@@ -41,24 +47,32 @@ public class Image extends Component implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Bitmap bitmap;
+    private int imageViewId;
+    private int chooseImageButtonId;
+    private SerialBitmap serialBitmap;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Image(UUID id, Type.Id typeId, String label, Integer row, Integer column,
-                 Integer width, Bitmap bitmap)
+    public Image(UUID id, UUID groupId, Type.Id typeId, Format format, Bitmap bitmap)
     {
-        super(id, typeId, label, row, column, width);
-        this.bitmap = bitmap;
+        super(id, groupId, typeId, format);
+
+        if (bitmap != null) {
+            this.serialBitmap = new SerialBitmap(bitmap);
+            Log.d("***IMAGE", "set serial bitmap in cons");
+        }
+        else
+            this.serialBitmap = null;
     }
 
 
     public static Image fromYaml(Map<String, Object> imageYaml)
     {
         // Values to parse
-        UUID id = null;            // Isn't actually parsed, is only stored in DB
+        UUID id = null;
+        UUID groupId = null;
         Type.Id typeId = null;
         String label = null;
         Integer row = null;
@@ -80,12 +94,26 @@ public class Image extends Component implements Serializable
         if (formatYaml.containsKey("width"))
             width = (Integer) formatYaml.get("width");
 
-        return new Image(id, typeId, label, row, column, width, null);
+        return new Image(id, groupId, typeId, new Format(label, row, column, width), null);
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
+
+    public void setImageFromURI(Activity activity, Uri uri, SQLiteDatabase database)
+    {
+        ImageView imageView = (ImageView) activity.findViewById(this.imageViewId);
+        Button chooseImageButton = (Button) activity.findViewById(this.chooseImageButtonId);
+
+        imageView.setVisibility(View.VISIBLE);
+        chooseImageButton.setVisibility(View.GONE);
+        imageView.setImageURI(uri);
+
+        this.serialBitmap = new SerialBitmap(((BitmapDrawable)imageView.getDrawable()).getBitmap());
+
+        this.save(database, null);
+    }
 
     // >> Getters/Setters
     // ------------------------------------------------------------------------------------------
@@ -116,44 +144,46 @@ public class Image extends Component implements Serializable
             {
                 // Query Component
                 String imageQuery =
-                    "SELECT comp.label, comp.row, comp.column, comp.width, im.image " +
+                    "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, im.image " +
                     "FROM Component comp " +
                     "INNER JOIN component_image im on im.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
 
                 Cursor imageCursor = database.rawQuery(imageQuery, null);
 
-                String label;
-                Integer row;
-                Integer column;
-                Integer width;
-                byte[] imageBlob;
+                UUID groupId = null;
+                String label = null;
+                Integer row = null;
+                Integer column = null;
+                Integer width = null;
+                byte[] imageBlob = null;
                 try {
                     imageCursor.moveToFirst();
-                    label       = imageCursor.getString(0);
-                    row         = imageCursor.getInt(1);
-                    column      = imageCursor.getInt(2);
-                    width       = imageCursor.getInt(3);
-                    imageBlob   = imageCursor.getBlob(4);
-                }
-                // TODO log
-                finally {
+                    groupId     = UUID.fromString(imageCursor.getString(0));
+                    label       = imageCursor.getString(1);
+                    row         = imageCursor.getInt(2);
+                    column      = imageCursor.getInt(3);
+                    width       = imageCursor.getInt(4);
+                    imageBlob   = imageCursor.getBlob(5);
+                } catch (Exception e ) {
+                    Log.d("***IMAGE", Log.getStackTraceString(e));
+                } finally {
                     imageCursor.close();
                 }
 
                 Bitmap bitmap = null;
-                if (imageBlob != null)
+                if (imageBlob != null) {
                     bitmap = Util.getImage(imageBlob);
+                    Log.d("***IMAGE", "loaded bitmap");
+                } else {
+                    Log.d("***IMAGE", "image blob is null");
+                }
 
-                Image image = new Image(componentId,
-                                        null,
-                                        label,
-                                        row,
-                                        column,
-                                        width,
-                                        bitmap);
-
-                return image;
+                return new Image(componentId,
+                                 groupId,
+                                 null,
+                                 new Format(label, row, column, width),
+                                 bitmap);
             }
 
             @Override
@@ -169,9 +199,8 @@ public class Image extends Component implements Serializable
     /**
      * Save to the database.
      * @param database The SQLite database object.
-     * @param groupId The ID of the parent group object.
      */
-    public void save(final SQLiteDatabase database, final UUID groupTrackerId, final UUID groupId)
+    public void save(final SQLiteDatabase database, final UUID groupTrackerId)
     {
         final Image thisImage = this;
 
@@ -184,7 +213,7 @@ public class Image extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisImage.getId().toString());
-                componentRow.put("group_id", groupId.toString());
+                componentRow.put("group_id", thisImage.getGroupId().toString());
                 componentRow.put("data_type", thisImage.componentName());
                 componentRow.put("label", thisImage.getLabel());
                 componentRow.put("row", thisImage.getRow());
@@ -202,10 +231,15 @@ public class Image extends Component implements Serializable
                 ContentValues imageComponentRow = new ContentValues();
                 imageComponentRow.put("component_id", thisImage.getId().toString());
 
-                if (thisImage.bitmap != null)
-                    imageComponentRow.put("image", Util.getBytes(thisImage.bitmap));
-                else
+                if (thisImage.serialBitmap != null) {
+                    if (thisImage.serialBitmap.getBitmap() != null) {
+                        byte[] bytes = Util.getBytes(thisImage.serialBitmap.getBitmap());
+                        imageComponentRow.put("image", bytes);
+                        Log.d("***IMAGE", "image saved " + Integer.toString(bytes.length));
+                    }
+                } else {
                     imageComponentRow.putNull("image");
+                }
 
                 database.insertWithOnConflict(SheetContract.ComponentImage.TABLE_NAME,
                                               null,
@@ -218,7 +252,8 @@ public class Image extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                Group.getTracker(groupTrackerId).setComponentId(thisImage.getId());
+                if (groupTrackerId != null)
+                    Group.getTracker(groupTrackerId).setComponentId(thisImage.getId());
             }
 
         }.execute();
@@ -238,13 +273,20 @@ public class Image extends Component implements Serializable
     public View getDisplayView(final Context context)
     {
         // Layout
-        final LinearLayout imageLayout = Component.linearLayout(context);
+        final LinearLayout imageLayout = this.linearLayout(context);
         imageLayout.setGravity(Gravity.CENTER);
         //imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
 
         // Views
         final ImageView imageView = this.imageView(context);
+        this.imageViewId = Util.generateViewId();
+        imageView.setId(this.imageViewId);
+
         final Button chooseImageButton = this.chooseImageButton(context);
+        this.chooseImageButtonId = Util.generateViewId();
+        chooseImageButton.setId(this.chooseImageButtonId);
+
+        final Image thisImage = this;
 
         chooseImageButton.setOnClickListener(new View.OnClickListener() {
 
@@ -263,19 +305,32 @@ public class Image extends Component implements Serializable
                     intent.setType("image/*");
                 }
 
-                sheetActivity.setChooseImageAction(
-                        new ChooseImageAction(imageLayout, imageView, chooseImageButton));
+                sheetActivity.setChooseImageAction(new ChooseImageAction(thisImage));
 
                 sheetActivity.startActivityForResult(intent, SheetActivity.CHOOSE_IMAGE_FROM_FILE);
 
             }
         });
 
-        chooseImageButton.setVisibility(View.VISIBLE);
 
         // Add views to layout
         imageLayout.addView(imageView);
         imageLayout.addView(chooseImageButton);
+
+        // Have a picture, show it
+        if (this.serialBitmap != null)
+        {
+            chooseImageButton.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageBitmap(this.serialBitmap.getBitmap());
+            Log.d("***IMAGE", "set image bitmap");
+        }
+        // No stored picture, give user upload button
+        else {
+            chooseImageButton.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+        }
+
 
         return imageLayout;
     }
@@ -294,7 +349,6 @@ public class Image extends Component implements Serializable
     private ImageView imageView(Context context)
     {
         ImageView imageView = new ImageView(context);
-        imageView.setVisibility(View.GONE);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setAdjustViewBounds(true);
 
@@ -312,7 +366,6 @@ public class Image extends Component implements Serializable
     {
         final Button button = new Button(context);
 
-        button.setVisibility(View.GONE);
 
         // Button text appearance
         button.setText("Choose a Picture");

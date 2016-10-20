@@ -27,7 +27,7 @@ sections:
     pages:
     - label: Profile
       groups:
-      - label: Name
+      - label: General
         number_of_rows: 1
         components:
         - type: text
@@ -39,12 +39,9 @@ sections:
             text_size: large
           data:
             value: Danolin the Promised
-      - label: Picture
-        number_of_rows: 1
-        components:
         - type: image
           format:
-            row: 1
+            row: 2
             column: 1
             width: 1
             label: Picture

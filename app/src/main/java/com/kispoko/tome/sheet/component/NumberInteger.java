@@ -46,10 +46,10 @@ public class NumberInteger extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public NumberInteger(UUID id, Type.Id typeId, String label, Integer row, Integer column,
-                         Integer width, Integer keyStat, Integer value)
+    public NumberInteger(UUID id, UUID groupId, Type.Id typeId, Format format,
+                         Integer keyStat, Integer value)
     {
-        super(id, typeId, label, row, column, width);
+        super(id, groupId, typeId, format);
         this.keyStat = keyStat;
         this.value = value;
         this.textSize = TextSize.MEDIUM;
@@ -60,7 +60,8 @@ public class NumberInteger extends Component implements Serializable
     public static NumberInteger fromYaml(Map<String, Object> integerYaml)
     {
         // Values to parse
-        UUID id = null;            // Isn't actually parsed, is only stored in DB
+        UUID id = null;
+        UUID groupId = null;
         Type.Id typeId = null;
         String label = null;
         Integer row = null;
@@ -119,8 +120,9 @@ public class NumberInteger extends Component implements Serializable
             value = (Integer) dataYaml.get("value");
 
         // Create Integer
-        NumberInteger integer = new NumberInteger(id, typeId, label, row,
-                                                  column, width, keyStat, value);
+        NumberInteger integer = new NumberInteger(id, groupId, typeId,
+                                                  new Format(label, row, column, width),
+                                                  keyStat, value);
 
         if (prefix != null) integer.setPrefix(prefix);
 
@@ -181,7 +183,7 @@ public class NumberInteger extends Component implements Serializable
 
     public View getDisplayView(Context context)
     {
-        LinearLayout integerLayout = Component.linearLayout(context);
+        LinearLayout integerLayout = this.linearLayout(context);
 
         LinearLayout contentLayout = new LinearLayout(context);
         contentLayout.setLayoutParams(Util.linearLayoutParamsMatch());
@@ -242,8 +244,8 @@ public class NumberInteger extends Component implements Serializable
             {
                 // Query Component
                 String integerQuery =
-                    "SELECT comp.label, comp.row, comp.column, comp.width, comp.type_kind, " +
-                           "comp.type_id, comp.key_stat, int.value, int.prefix " +
+                    "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
+                           "comp.type_kind, comp.type_id, comp.key_stat, int.value, int.prefix " +
                     "FROM component comp " +
                     "INNER JOIN component_integer int on int.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
@@ -251,6 +253,7 @@ public class NumberInteger extends Component implements Serializable
 
                 Cursor textCursor = database.rawQuery(integerQuery, null);
 
+                UUID groupId;
                 String label;
                 Integer row;
                 Integer column;
@@ -262,15 +265,16 @@ public class NumberInteger extends Component implements Serializable
                 String prefix;
                 try {
                     textCursor.moveToFirst();
-                    label       = textCursor.getString(0);
-                    row         = textCursor.getInt(1);
-                    column      = textCursor.getInt(2);
-                    width       = textCursor.getInt(3);
-                    typeKind    = textCursor.getString(4);
-                    typeId      = textCursor.getString(5);
-                    keyStat     = textCursor.getInt(6);
-                    value       = textCursor.getInt(7);
-                    prefix      = textCursor.getString(8);
+                    groupId     = UUID.fromString(textCursor.getString(0));
+                    label       = textCursor.getString(1);
+                    row         = textCursor.getInt(2);
+                    column      = textCursor.getInt(3);
+                    width       = textCursor.getInt(4);
+                    typeKind    = textCursor.getString(5);
+                    typeId      = textCursor.getString(6);
+                    keyStat     = textCursor.getInt(7);
+                    value       = textCursor.getInt(8);
+                    prefix      = textCursor.getString(9);
                 }
                 // TODO log
                 finally {
@@ -278,11 +282,9 @@ public class NumberInteger extends Component implements Serializable
                 }
 
                 NumberInteger integer = new NumberInteger(componentId,
+                                                          groupId,
                                                           new Type.Id(typeKind, typeId),
-                                                          label,
-                                                          row,
-                                                          column,
-                                                          width,
+                                                          new Format(label, row, column, width),
                                                           keyStat,
                                                           value);
                 integer.setPrefix(prefix);
@@ -303,9 +305,8 @@ public class NumberInteger extends Component implements Serializable
     /**
      * Save to the database.
      * @param database The SQLite database object.
-     * @param groupId The ID of the parent group object.
      */
-    public void save(final SQLiteDatabase database, final UUID groupTrackerId, final UUID groupId)
+    public void save(final SQLiteDatabase database, final UUID groupTrackerId)
     {
         final NumberInteger thisInteger = this;
 
@@ -318,7 +319,7 @@ public class NumberInteger extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisInteger.getId().toString());
-                componentRow.put("group_id", groupId.toString());
+                componentRow.put("group_id", thisInteger.getGroupId().toString());
                 componentRow.put("data_type", thisInteger.componentName());
                 componentRow.put("label", thisInteger.getLabel());
                 componentRow.put("row", thisInteger.getRow());
@@ -356,7 +357,8 @@ public class NumberInteger extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                Group.getTracker(groupTrackerId).setComponentId(thisInteger.getId());
+                if (groupTrackerId != null)
+                    Group.getTracker(groupTrackerId).setComponentId(thisInteger.getId());
             }
 
         }.execute();

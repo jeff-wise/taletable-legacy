@@ -21,20 +21,29 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/primary"
-                app:titleTextColor="@color/bluegrey_100"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                android:background="@color/grey_900"
+                android:theme="@style/AppTheme.NoActionBar" >
+
+                <TextView
+                    android:id="@+id/page_title"
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:textColor="@color/grey_300"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </android.support.v7.widget.Toolbar>
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/primary"
+                android:background="@color/grey_900"
                 app:tabGravity="fill"
                 app:tabMode="scrollable"
-                app:tabTextColor="@color/bluegrey_600"
-                app:tabSelectedTextColor="@color/bluegrey_100"
-                app:tabIndicatorColor="@color/bluegrey_100"
+                app:tabTextColor="@color/grey_700"
+                app:tabSelectedTextColor="@color/grey_300"
+                app:tabIndicatorColor="@color/grey_300"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
             <android.support.v4.view.ViewPager
@@ -49,11 +58,84 @@
 
     </RelativeLayout>
 
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/edit_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="true"
+            android:background="@color/sheet_medium"
+            app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/edit_sheet_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
+                    android:background="@color/grey_900"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/edit_sheet_action_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="6dp"
+                        android:text="EDIT"
+                        android:textColor="@color/yellow_soft"
+                        android:textSize="14sp"/>
+
+                    <TextView
+                        android:id="@+id/edit_sheet_target_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:paddingBottom="1dp"
+                        android:textColor="@color/grey_300"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:id="@+id/edit_sheet_action_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:paddingTop="2dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/ic_edit_sheet_open" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/edit_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/bluegrey_900"
+        app:itemTextColor="@color/bluegrey_200"
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/drawer"/>
 

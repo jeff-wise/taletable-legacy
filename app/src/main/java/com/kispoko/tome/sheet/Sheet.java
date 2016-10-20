@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +49,7 @@ public class Sheet
     private Roleplay roleplay;
 
     private Map<UUID,Component> componentById;
+    private Map<String,Component> componentByLabel;
 
     // >> STATIC
     private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
@@ -70,19 +70,7 @@ public class Sheet
         this.game = game;
         this.roleplay = roleplay;
 
-        // Index components
-        componentById = new HashMap<>();
-
-        for (Page page : this.roleplay.getPages())
-        {
-            for (Group group : page.getGroups())
-            {
-                for (Component component : group.getComponents())
-                {
-                    componentById.put(component.getId(), component);
-                }
-            }
-        }
+        indexComponents();
     }
 
 
@@ -166,26 +154,27 @@ public class Sheet
     // >> State
     // ------------------------------------------------------------------------------------------
 
-    public UUID getId()
-    {
+    public UUID getId() {
         return this.id;
     }
 
 
-    public Component componentWithId(UUID componentId)
-    {
+    public Component componentWithId(UUID componentId) {
         return this.componentById.get(componentId);
     }
 
 
-    public Roleplay getRoleplay()
-    {
+    public Component componentWithLabel(String componentLabel) {
+        return this.componentByLabel.get(componentLabel.toLowerCase());
+    }
+
+
+    public Roleplay getRoleplay() {
         return this.roleplay;
     }
 
 
-    public Game getGame()
-    {
+    public Game getGame() {
         return this.game;
     }
 
@@ -526,6 +515,30 @@ public class Sheet
     // ------------------------------------------------------------------------------------------
 
 
+    // > INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void indexComponents()
+    {
+        // Index components
+        componentById = new HashMap<>();
+        componentByLabel = new HashMap<>();
+
+        for (Page page : this.roleplay.getPages())
+        {
+            for (Group group : page.getGroups())
+            {
+                for (Component component : group.getComponents())
+                {
+                    componentById.put(component.getId(), component);
+
+                    if (component.hasLabel())
+                        componentByLabel.put(component.getLabel().toLowerCase(), component);
+                }
+            }
+        }
+
+    }
 
 
 

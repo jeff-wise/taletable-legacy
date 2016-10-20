@@ -2,14 +2,18 @@
 package com.kispoko.tome.activity;
 
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -100,6 +104,16 @@ public class ManageSheetsActivity extends AppCompatActivity
     {
         ScrollView sheetsMainView = (ScrollView) findViewById(R.id.sheet_list);
 
+        // Configure Floating Action Button
+        FloatingActionButton FAB = (FloatingActionButton) findViewById(R.id.button_new_sheet);
+        FAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ManageSheetsActivity.this, NewCharacterActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // Summaries Layout
         LinearLayout summariesLayout = new LinearLayout(this);
         summariesLayout.setOrientation(LinearLayout.VERTICAL);
@@ -119,8 +133,8 @@ public class ManageSheetsActivity extends AppCompatActivity
             summaryLayout.addView(sheetInformationLayout);
             summaryLayout.addView(nextIcon());
 
-            summariesLayout.addView(UI.divider(this));
             summariesLayout.addView(summaryLayout);
+            summariesLayout.addView(UI.divider(this));
 
             index += 1;
         }
@@ -138,12 +152,9 @@ public class ManageSheetsActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
+        UI.initializeToolbar(this);
         ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setElevation(0);
-
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back_arrow_24dp);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_toolbar_back_arrow_24dp);
     }
 
 
@@ -174,7 +185,7 @@ public class ManageSheetsActivity extends AppCompatActivity
 
         LinearLayout.LayoutParams layoutParams =
                 new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.weight = 7;
+        layoutParams.weight = 8;
         layout.setLayoutParams(layoutParams);
 
         return layout;
@@ -188,11 +199,12 @@ public class ManageSheetsActivity extends AppCompatActivity
         float textSize = Util.getDim(this, R.dimen.manage_sheets_char_name_text_size);
         view.setTextSize(textSize);
 
-        view.setTextColor(ContextCompat.getColor(this, R.color.amber_300));
+        view.setTextColor(ContextCompat.getColor(this, R.color.amber_200));
         view.setTypeface(Util.serifFontBold(this));
 
         int paddingBottom = (int) Util.getDim(this, R.dimen.manage_sheets_char_name_padding_bottom);
-        view.setPadding(0, 0, 0, paddingBottom);
+        int paddingLeft = (int) Util.getDim(this, R.dimen.manage_sheets_char_name_padding_left);
+        view.setPadding(paddingLeft, 0, 0, paddingBottom);
 
         return view;
     }
@@ -244,7 +256,7 @@ public class ManageSheetsActivity extends AppCompatActivity
         float lastUsedTextSize = Util.getDim(this, R.dimen.manage_sheets_info_item_text_size);
         lastUsedView.setTextSize(lastUsedTextSize);
 
-        lastUsedView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_300));
+        lastUsedView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_200));
         lastUsedView.setTypeface(Util.sansSerifFontRegular(this));
 
         // Create layout structure
@@ -259,14 +271,14 @@ public class ManageSheetsActivity extends AppCompatActivity
     {
         String[] mockCampaignNames = {
                 "Restless",
-                "Forgotton Star",
-                "The Endless War",
-                "The Keep on the Borderland",
-                "Orc King",
-                "Trouble in the City of Towers",
+                "Keep on the Borderlands",
                 "Subterranean Myth",
-                "Darkness Alight",
+                "Trouble in the City of Towers",
+                "The Endless War",
                 "Waves of Eden",
+                "Forgotten Star",
+                "Orc King",
+                "Darkness Alight",
                 "Distant Shores",
         };
 
@@ -301,7 +313,7 @@ public class ManageSheetsActivity extends AppCompatActivity
         float textSize = Util.getDim(this, R.dimen.manage_sheets_info_item_text_size);
         campaignNameView.setTextSize(textSize);
 
-        campaignNameView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_300));
+        campaignNameView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_200));
 
         // Create layout structure
         layout.addView(campaignIcon);
