@@ -24,7 +24,7 @@ public class EditResult implements Serializable
     // > RESULT TYPE
     // ------------------------------------------------------------------------------------------
 
-    public static enum ResultType {
+    public enum ResultType {
         TEXT_VALUE
     }
 
@@ -51,14 +51,14 @@ public class EditResult implements Serializable
     // > API
     // ------------------------------------------------------------------------------------------
 
-    public void applyResult(Context context, Sheet sheet)
+    public void applyResult(SheetActivity sheetActivity, Sheet sheet)
     {
         Component component = sheet.componentWithId(this.componentId);
 
         switch (this.resultType)
         {
             case TEXT_VALUE:
-                ((Text) component).setValue((String) this.result, context);
+                ((Text) component).setValue((String) this.result, sheetActivity);
                 break;
         }
     }

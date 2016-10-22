@@ -15,12 +15,11 @@ import android.widget.TextView;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.component.Text;
-import com.kispoko.tome.type.List;
-
+import com.kispoko.tome.type.ListType;
 
 
 /**
- * Recycler View Adapter for List Types
+ * Recycler View Adapter for ListType Types
  */
 public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
@@ -30,7 +29,7 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     // The items to display in your RecyclerView
     private Text text;
-    private List list;
+    private ListType listType;
 
     private final int HEADER = 0, ITEM = 1;
 
@@ -39,10 +38,10 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     // -------------------------------------------------------------------------------------------
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public TextEditRecyclerViewAdapter(Text text, List list)
+    public TextEditRecyclerViewAdapter(Text text, ListType listType)
     {
         this.text = text;
-        this.list = list;
+        this.listType = listType;
     }
 
 
@@ -53,7 +52,7 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public int getItemCount()
     {
-        return this.list.size();
+        return this.listType.size();
     }
 
 
@@ -80,8 +79,8 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                                   this.text.getTypeEditorHeaderView(viewGroup.getContext()));
                 break;
             case ITEM:
-                viewHolder = new ItemViewHolder(this.list.getItemView(viewGroup.getContext()),
-                                                this.list, this.text);
+                viewHolder = new ItemViewHolder(this.listType.getItemView(viewGroup.getContext()),
+                                                this.listType, this.text);
                 break;
         }
         return viewHolder;
@@ -110,9 +109,9 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private void configureItemView(View itemView, int position)
     {
         TextView textView = (TextView) itemView.findViewById(R.id.type_list_item_name);
-        textView.setText(this.list.getValue(position));
+        textView.setText(this.listType.getValue(position));
 
-        if (this.list.getValue(position).equals(this.text.getValue())) {
+        if (this.listType.getValue(position).equals(this.text.getValue())) {
             ImageView iconView = (ImageView) itemView.findViewById(R.id.type_list_item_icon);
             iconView.setImageDrawable(
                 ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_item_selected_24dp));
@@ -148,7 +147,7 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
         private View itemView;
 
-        public ItemViewHolder(final View itemView, final List list, final Text text)
+        public ItemViewHolder(final View itemView, final ListType listType, final Text text)
         {
             super(itemView);
             this.itemView = itemView;
@@ -160,7 +159,7 @@ public class TextEditRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             this.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String newValue = list.getValue(thisViewHolder.getAdapterPosition());
+                    String newValue = listType.getValue(thisViewHolder.getAdapterPosition());
 
                     // Set chosen value as result of activity and finish
                     EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,

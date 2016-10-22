@@ -105,7 +105,7 @@ public class NewCharacterActivity extends AppCompatActivity
         actionBar.setElevation(0);
 
         if (!this.firstCharacter) {
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back_arrow_24dp);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }

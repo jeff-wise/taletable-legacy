@@ -35,6 +35,7 @@
 
     <activity
         android:name=".activity.EditActivity"
+        android:theme="@style/AppTheme.NoActionBar"
         android:label="Edit" />
 
     <activity

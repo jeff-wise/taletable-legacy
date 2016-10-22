@@ -2,7 +2,7 @@
 label: dnd_ed_5
 types:
 - label: class
-  type: list
+  type: listType
   label: Classes
   values:
   - Barbarian

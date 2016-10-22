@@ -7,7 +7,7 @@ game:
   label: 'Dungeons & Dragons 4th Edition'
 types:
 - label: class
-  type: list
+  type: listType
   label: Classes
   values:
   - Barbarian

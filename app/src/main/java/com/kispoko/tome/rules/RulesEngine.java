@@ -2,7 +2,7 @@
 package com.kispoko.tome.rules;
 
 
-import com.kispoko.tome.type.List;
+import com.kispoko.tome.type.ListType;
 import com.kispoko.tome.type.Type;
 
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class RulesEngine
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private static Map<String, Type> listTypeIndex = new HashMap<>();
+    private static Map<String, ListType> listTypeIndex = new HashMap<>();
 
 
 
@@ -41,7 +41,7 @@ public class RulesEngine
         switch (kind)
         {
             case "list":
-                listTypeIndex.put(typeId.getId(), _type);
+                listTypeIndex.put(typeId.getId(), (ListType) _type);
                 break;
         }
     }

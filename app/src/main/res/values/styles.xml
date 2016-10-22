@@ -7,7 +7,7 @@
         <item name="colorPrimaryDark">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
         <item name="colorControlNormal">#00FFFFFF</item>
-        <item name="colorControlActivated">@color/bluegrey_700</item>
+        <item name="colorControlActivated">@color/blue_hard</item>
         <item name="colorControlHighlight">#876333</item>
     </style>
 

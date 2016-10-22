@@ -3,13 +3,10 @@ package com.kispoko.tome.activity;
 
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -18,11 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
@@ -37,8 +32,8 @@ import com.kispoko.tome.util.Util;
 
 
 /**
- * The main activity for the application.
- * All of the main ComponentUtil components are constructed and maintained here.
+ * The sheet activity for the application.
+ * All of the sheet ComponentUtil components are constructed and maintained here.
  */
 public class SheetActivity
        extends AppCompatActivity
@@ -50,7 +45,7 @@ public class SheetActivity
 
     // >> Requests
     public static final int CHOOSE_IMAGE_FROM_FILE = 0;
-    public static final int EDIT_COMPONENT = 1;
+    public static final int COMPONENT_EDIT = 1;
 
     // ComponentUtil
     private Toolbar toolbar;
@@ -62,12 +57,9 @@ public class SheetActivity
 
     private ChooseImageAction chooseImageAction;
 
-    private SQLiteDatabase database;
-
 
     // > ACTIVITY EVENTS
     // -------------------------------------------------------------------------------------------
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -83,7 +75,6 @@ public class SheetActivity
         initializeDrawer();
         initializeToolbar();
         initializeNavigation();
-        initializeEditSheet();
     }
 
 
@@ -103,7 +94,7 @@ public class SheetActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.sheet, menu);
         return true;
     }
 
@@ -137,12 +128,12 @@ public class SheetActivity
         if (requestCode == CHOOSE_IMAGE_FROM_FILE)
         {
             Uri uri = data.getData();
-            this.chooseImageAction.setImage(this, uri, this.database);
+            this.chooseImageAction.setImage(this, uri);
             this.chooseImageAction = null;
         }
 
         // Update component with new values
-        else if (requestCode == EDIT_COMPONENT)
+        else if (requestCode == COMPONENT_EDIT)
         {
             EditResult editResult = (EditResult) data.getExtras().getSerializable("RESULT");
             editResult.applyResult(this, this.sheet);
@@ -171,7 +162,7 @@ public class SheetActivity
     {
         Intent intent = new Intent(this, EditActivity.class);
         intent.putExtra("COMPONENT", component);
-        startActivityForResult(intent, EDIT_COMPONENT);
+        startActivityForResult(intent, COMPONENT_EDIT);
     }
 
 
@@ -207,7 +198,7 @@ public class SheetActivity
 
     public void saveSheet(boolean recursive)
     {
-        this.sheet.save(this.database, this, recursive);
+        this.sheet.save(Global.getDatabase(), this, recursive);
     }
 
 
@@ -231,6 +222,8 @@ public class SheetActivity
 
         TextView titleView = (TextView) this.toolbar.findViewById(R.id.page_title);
         titleView.setTypeface(Util.sansSerifFontBold(this));
+
+        //setSupportActionBar(this.toolbar);
     }
 
 
@@ -270,7 +263,7 @@ public class SheetActivity
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId())
                 {
-                    //Replacing the main content with ContentFragment Which is our Inbox View;
+                    //Replacing the sheet content with ContentFragment Which is our Inbox View;
                     case R.id.navigation_item_manage_sheets:
                         Intent intent = new Intent(SheetActivity.this, ManageSheetsActivity.class);
                         startActivity(intent);
@@ -278,67 +271,6 @@ public class SheetActivity
                 }
 
                 return true;
-            }
-        });
-    }
-
-
-    private void initializeEditSheet()
-    {
-        View editSheet = findViewById(R.id.edit_sheet);
-        final BottomSheetBehavior editSheetBehavior = BottomSheetBehavior.from(editSheet);
-
-        // Set default collapse height of bottom sheet
-        int peekHeight = (int) Util.getDim(this, R.dimen.edit_sheet_peek_height);
-        editSheetBehavior.setPeekHeight(peekHeight);
-
-        // Allow bottom sheet to be hidden and hide it initially
-        editSheetBehavior.setHideable(true);
-        editSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-        final TextView editSheetTitleView =
-                (TextView) editSheet.findViewById(R.id.edit_sheet_action_label);
-        editSheetTitleView.setTypeface(Util.sansSerifFontBold(this));
-
-        final TextView editSheetTargetTitleView =
-                (TextView) editSheet.findViewById(R.id.edit_sheet_target_label);
-        editSheetTargetTitleView.setTypeface(Util.sansSerifFontRegular(this));
-
-        final ImageView editSheetActionIcon =
-                (ImageView) editSheet.findViewById(R.id.edit_sheet_action_icon);
-
-        final SheetActivity thisSheetActivity = this;
-
-        editSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(final View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    editSheetTitleView.setText("SAVE");
-                    editSheetTitleView.setTextColor(
-                            ContextCompat.getColor(thisSheetActivity, R.color.green_soft));
-                    editSheetActionIcon.setImageDrawable(
-                            ContextCompat.getDrawable(thisSheetActivity,
-                                                      R.drawable.ic_edit_sheet_cancel));
-                    editSheetActionIcon.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            editSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                        }
-                    });
-                }
-                else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    editSheetTitleView.setText("EDIT");
-                    editSheetTitleView.setTextColor(
-                            ContextCompat.getColor(thisSheetActivity, R.color.yellow_soft));
-                    editSheetActionIcon.setImageDrawable(
-                            ContextCompat.getDrawable(thisSheetActivity,
-                                    R.drawable.ic_edit_sheet_open));
-                    editSheetActionIcon.setOnClickListener(null);
-                }
-            }
-
-            @Override
-            public void onSlide(View bottomSheet, float slideOffset) {
             }
         });
     }
@@ -359,7 +291,7 @@ public class SheetActivity
             templateId = getIntent().getStringExtra("TEMPLATE_ID");
 
         SheetDatabaseManager sheetDatabaseManager = new SheetDatabaseManager(this);
-        this.database = sheetDatabaseManager.getWritableDatabase();
+        Global.setDatabase(sheetDatabaseManager.getWritableDatabase());
 
         // This will be a new character sheet
         if (templateId != null) {
@@ -367,7 +299,7 @@ public class SheetActivity
         }
         // Load the most recently used character sheet
         else {
-            Sheet.loadMostRecent(database, this);
+            Sheet.loadMostRecent(Global.getDatabase(), this);
         }
 
     }

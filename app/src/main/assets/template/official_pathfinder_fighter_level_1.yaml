@@ -7,7 +7,7 @@ game:
   label: 'Pathfinder'
 types:
 - label: class
-  type: list
+  type: listType
   label: Classes
   values:
   - Barbarian

@@ -19,9 +19,9 @@ import java.util.Map;
 
 
 /**
- * List Type
+ * ListType Type
  */
-public class List extends Type
+public class ListType extends Type
 {
 
     // > PROPERTIES
@@ -33,7 +33,7 @@ public class List extends Type
     // > CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public List(String id, ArrayList<String> values)
+    public ListType(String id, ArrayList<String> values)
     {
         super(new Type.Id("list", id));
         this.values = values;
@@ -41,13 +41,13 @@ public class List extends Type
 
 
     @SuppressWarnings("unchecked")
-    public static List fromYaml(Map<String,Object> listYaml)
+    public static ListType fromYaml(Map<String,Object> listYaml)
     {
         String id = (String) listYaml.get("id");
 
         ArrayList<String> valueList = (ArrayList<String>) listYaml.get("values");
 
-        return new List(id, valueList);
+        return new ListType(id, valueList);
     }
 
 
@@ -56,9 +56,9 @@ public class List extends Type
     // > API
     // -------------------------------------------------------------------------------------------
 
-    public List asClone()
+    public ListType asClone()
     {
-        return new List(this.getId().getId(), new ArrayList<>(this.values));
+        return new ListType(this.getId().getId(), new ArrayList<>(this.values));
     }
 
 

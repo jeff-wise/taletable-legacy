@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.kispoko.tome.Global;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
@@ -33,6 +35,9 @@ import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -55,9 +60,10 @@ public class Image extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Image(UUID id, UUID groupId, Type.Id typeId, Format format, Bitmap bitmap)
+    public Image(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
+                 Bitmap bitmap)
     {
-        super(id, groupId, typeId, format);
+        super(id, groupId, typeId, format, actions);
 
         if (bitmap != null) {
             this.serialBitmap = new SerialBitmap(bitmap);
@@ -74,34 +80,27 @@ public class Image extends Component implements Serializable
         UUID id = null;
         UUID groupId = null;
         Type.Id typeId = null;
-        String label = null;
-        Integer row = null;
-        Integer column = null;
-        Integer width = null;
+        Format format = null;
+        List<String> actions = null;
 
         // Parse Values
         Map<String, Object> formatYaml = (Map<String, Object>) imageYaml.get("format");
 
-        if (formatYaml.containsKey("label"))
-            label = (String) formatYaml.get("label");
+        // >> Format
+        format = Component.parseFormatYaml(imageYaml);
 
-        if (formatYaml.containsKey("row"))
-            row = (Integer) formatYaml.get("row");
+        // >> Actions
+        if (imageYaml.containsKey("actions"))
+            actions = (List<String>) imageYaml.get("actions");
 
-        if (formatYaml.containsKey("column"))
-            column = (Integer) formatYaml.get("column");
-
-        if (formatYaml.containsKey("width"))
-            width = (Integer) formatYaml.get("width");
-
-        return new Image(id, groupId, typeId, new Format(label, row, column, width), null);
+        return new Image(id, groupId, typeId, format, actions, null);
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
 
-    public void setImageFromURI(Activity activity, Uri uri, SQLiteDatabase database)
+    public void setImageFromURI(Activity activity, Uri uri)
     {
         ImageView imageView = (ImageView) activity.findViewById(this.imageViewId);
         Button chooseImageButton = (Button) activity.findViewById(this.chooseImageButtonId);
@@ -112,7 +111,7 @@ public class Image extends Component implements Serializable
 
         this.serialBitmap = new SerialBitmap(((BitmapDrawable)imageView.getDrawable()).getBitmap());
 
-        this.save(database, null);
+        this.save(Global.getDatabase(), null);
     }
 
     // >> Getters/Setters
@@ -121,6 +120,11 @@ public class Image extends Component implements Serializable
     public String componentName()
     {
         return "image";
+    }
+
+
+    public void runAction(Context context, String actionName)
+    {
     }
 
     // >> Database
@@ -144,7 +148,8 @@ public class Image extends Component implements Serializable
             {
                 // Query Component
                 String imageQuery =
-                    "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, im.image " +
+                    "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
+                           "comp.actions, im.image " +
                     "FROM Component comp " +
                     "INNER JOIN component_image im on im.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
@@ -156,6 +161,7 @@ public class Image extends Component implements Serializable
                 Integer row = null;
                 Integer column = null;
                 Integer width = null;
+                List<String> actions = null;
                 byte[] imageBlob = null;
                 try {
                     imageCursor.moveToFirst();
@@ -164,7 +170,9 @@ public class Image extends Component implements Serializable
                     row         = imageCursor.getInt(2);
                     column      = imageCursor.getInt(3);
                     width       = imageCursor.getInt(4);
-                    imageBlob   = imageCursor.getBlob(5);
+                    actions     = new ArrayList<>(Arrays.asList(
+                                        TextUtils.split(imageCursor.getString(5), ",")));
+                    imageBlob   = imageCursor.getBlob(6);
                 } catch (Exception e ) {
                     Log.d("***IMAGE", Log.getStackTraceString(e));
                 } finally {
@@ -183,6 +191,7 @@ public class Image extends Component implements Serializable
                                  groupId,
                                  null,
                                  new Format(label, row, column, width),
+                                 actions,
                                  bitmap);
             }
 
@@ -219,6 +228,7 @@ public class Image extends Component implements Serializable
                 componentRow.put("row", thisImage.getRow());
                 componentRow.put("column", thisImage.getColumn());
                 componentRow.put("width", thisImage.getWidth());
+                componentRow.put("actions", TextUtils.join(",", thisImage.getActions()));
                 componentRow.putNull("type_kind");
                 componentRow.putNull("type_id");
                 componentRow.putNull("text_value");

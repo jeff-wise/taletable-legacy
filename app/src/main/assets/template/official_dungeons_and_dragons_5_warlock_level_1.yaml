@@ -7,7 +7,7 @@ game:
   label: 'Dungeons & Dragons 5th Edition'
 types:
 - label: class
-  type: list
+  type: listType
   label: Classes
   values:
   - Barbarian

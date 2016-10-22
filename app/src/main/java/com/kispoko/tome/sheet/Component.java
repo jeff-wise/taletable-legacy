@@ -2,8 +2,11 @@
 package com.kispoko.tome.sheet;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -11,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.activity.sheet.ActionDialogFragment;
+import com.kispoko.tome.sheet.component.Action;
 import com.kispoko.tome.sheet.component.Image;
 import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
@@ -20,9 +26,9 @@ import com.kispoko.tome.util.Unique;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 
 
 /**
@@ -38,8 +44,8 @@ public abstract class Component implements Unique, Serializable
     private UUID id;
     private UUID groupId;
     private Type.Id typeId;
-
     private Format format;
+    private List<String> actions;
 
 
     // > INTERFACE
@@ -47,6 +53,8 @@ public abstract class Component implements Unique, Serializable
 
     abstract public View getDisplayView(Context context);
     abstract public View getEditorView(Context context);
+
+    abstract public void runAction(Context context, String actionName);
 
     abstract public String componentName();
 
@@ -56,7 +64,7 @@ public abstract class Component implements Unique, Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Component(UUID id, UUID groupId, Type.Id typeId, Format format)
+    public Component(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions)
     {
         if (id != null)
             this.id = id;
@@ -66,6 +74,7 @@ public abstract class Component implements Unique, Serializable
         this.groupId = groupId;
         this.typeId = typeId;
         this.format = format;
+        this.actions = actions;
     }
 
 
@@ -130,7 +139,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Row
+    // >> Column
     // ------------------------------------------------------------------------------------------
 
     public Integer getColumn() {
@@ -143,7 +152,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Row
+    // >> Width
     // ------------------------------------------------------------------------------------------
 
     public Integer getWidth() {
@@ -156,41 +165,20 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Views
+    // >> Actions
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * Create the view for the component label.
-     * @param context The context.
-     * @return A TextView representing the component's label.
-     */
-    /*
-    public TextView labelView(Context context)
-    {
-        TextView textView = new TextView(context);
-
-        //int paddingLeft = (int) Util.getDim(context, R.dimen.comp_label_padding_left);
-        //int paddingBottom = (int) Util.getDim(context, R.dimen.comp_label_padding_bottom);
-        //textView.setPadding(paddingLeft, 0, 0, paddingBottom);
-
-        textView.setId(R.id.component_label);
-        float labelTextSize = (int) context.getResources()
-                                         .getDimension(R.dimen.label_text_size);
-        textView.setTextSize(labelTextSize);
-
-        textView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
-
-        textView.setTypeface(Util.sansSerifFontBold(context));
-
-        textView.setText(this.label.toUpperCase());
-
-        return textView;
+    public List<String> getActions() {
+        return this.actions;
     }
 
-    */
+
+    public void setActions(List actions) {
+        this.actions = actions;
+    }
 
 
-    // > STATIC METHODS
+    // >> STATIC METHODS
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -245,8 +233,16 @@ public abstract class Component implements Unique, Serializable
     }
 
 
+    // > INTERNAL API
+    // ------------------------------------------------------------------------------------------
 
-    public LinearLayout linearLayout(Context context)
+
+    /**
+     * The layout for a component.
+     * @param context Context object.
+     * @return A LinearLayout that represents the outer-most container of a component view.
+     */
+    protected LinearLayout linearLayout(Context context)
     {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -261,6 +257,20 @@ public abstract class Component implements Unique, Serializable
 
         layout.setBackgroundResource(R.drawable.bg_component);
 
+        final Component thisComponent = this;
+
+        final SheetActivity thisActivity = (SheetActivity) context;
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActionDialogFragment actionDialogFragment =
+                        ActionDialogFragment.newInstance(thisComponent);
+                actionDialogFragment.show(thisActivity.getSupportFragmentManager(),
+                                          actionDialogFragment.getTag());
+            }
+        });
+
+
         // Add label
         TextView labelView = new TextView(context);
         labelView.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -273,12 +283,50 @@ public abstract class Component implements Unique, Serializable
 
         labelView.setTextColor(ContextCompat.getColor(context, R.color.text_light));
 
-        //textView.setTypeface(null, Typeface.BOLD);
         labelView.setTypeface(Util.sansSerifFontRegular(context));
 
         layout.addView(labelView);
 
         return layout;
+    }
+
+
+    /**
+     * Common method for parsing format section of component yaml.
+     * @param componentYaml Component top-level parsed yaml object.
+     * @return The component's parsed Format object.
+     */
+    @SuppressWarnings("unchecked")
+    protected static Format parseFormatYaml(Map<String,Object> componentYaml)
+    {
+        if (!componentYaml.containsKey("format")) return null;
+
+        // Format values
+        String label = null;
+        Integer row = null;
+        Integer column = null;
+        Integer width = null;
+
+        // Parse Format
+        Map<String,Object> formatYaml = (Map<String,Object>) componentYaml.get("format");
+
+        // >> Label
+        if (formatYaml.containsKey("label"))
+            label = (String) formatYaml.get("label");
+
+        // >> Row
+        if (formatYaml.containsKey("row"))
+            row = (Integer) formatYaml.get("row");
+
+        // >> Column
+        if (formatYaml.containsKey("column"))
+            column = (Integer) formatYaml.get("column");
+
+        // >> Width
+        if (formatYaml.containsKey("width"))
+            width = (Integer) formatYaml.get("width");
+
+        return new Format(label, row, column, width);
     }
 
 
@@ -359,6 +407,5 @@ public abstract class Component implements Unique, Serializable
         }
 
     }
-
 
 }

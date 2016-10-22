@@ -35,7 +35,7 @@ public abstract class Type
         switch (kind)
         {
             case "list":
-                return List.fromYaml(typeYaml);
+                return ListType.fromYaml(typeYaml);
         }
 
         return null;

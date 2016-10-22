@@ -87,14 +87,14 @@ public class Sheet
         Map<String,Object> roleplayYaml = (Map<String,Object>) sections.get("roleplay");
 
         // >> Types
-        ArrayList<Map<String,Object>> typesYaml =
-                (ArrayList<Map<String,Object>>) sheetYaml.get("types");
-
-        for (Map<String,Object> typeYaml : typesYaml)
-        {
-            Type typ = Type.fromYaml(typeYaml);
-            RulesEngine.addType(typ);
-        }
+//        ArrayList<Map<String,Object>> typesYaml =
+//                (ArrayList<Map<String,Object>>) sheetYaml.get("types");
+//
+//        for (Map<String,Object> typeYaml : typesYaml)
+//        {
+//            Type typ = Type.fromYaml(typeYaml);
+//            RulesEngine.addType(typ);
+//        }
 
         // >> Game
         if (sheetYaml.containsKey("game"))
@@ -472,7 +472,7 @@ public class Sheet
     /**
      * Read the template manifest file and retrive the list of games available.
      * @param context Context for accessing assets.
-     * @return List of template games.
+     * @return ListType of template games.
      */
     @SuppressWarnings("unchecked")
     public static ArrayList<Game> templateGames(Context context)

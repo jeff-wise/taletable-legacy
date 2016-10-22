@@ -8,8 +8,20 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
-    <!-- EDIT SHEET -->
-    <dimen name="edit_sheet_peek_height">70dp</dimen>
+    <!-- ACTION SHEET -->
+    <dimen name="action_sheet_label_text_size">4dp</dimen>
+    <dimen name="action_sheet_label_padding_bottom">10dp</dimen>
+    <dimen name="action_sheet_label_padding_top">6dp</dimen>
+    <dimen name="action_sheet_padding_vert">18dp</dimen>
+    <dimen name="action_sheet_action_text_size">3.2dp</dimen>
+    <dimen name="action_sheet_row_margins_vert">6dp</dimen>
+    <dimen name="action_sheet_row_padding_vert">15dp</dimen>
+    <dimen name="action_sheet_row_height">52dp</dimen>
+    <dimen name="action_sheet_action_text_width">220dp</dimen>
+    <dimen name="action_sheet_action_text_padding_left">20dp</dimen>
+    <dimen name="action_sheet_row_padding_horz">20dp</dimen>
+    <dimen name="action_sheet_action_icon_padding_horz">17dp</dimen>
+    <dimen name="action_sheet_action_icon_margin_right">1.5dp</dimen>
 
 
     <!-- GROUP -->
@@ -73,8 +85,10 @@
     <dimen name="list_label_text_size">10dp</dimen>
 
     <!-- TEXT EDITOR (FREE) -->
-    <dimen name="comp_text_editor_free_header_horz_padding">11dp</dimen>
-    <dimen name="comp_text_editor_free_header_name_left_padding">4dp</dimen>
+    <dimen name="comp_text_editor_free_layout_margins">6dp</dimen>
+    <dimen name="comp_text_editor_free_layout_padding_vert">20dp</dimen>
+    <dimen name="comp_text_editor_free_layout_padding_horz">10dp</dimen>
+    <dimen name="comp_text_editor_free_save_button_text_size">4.2dp</dimen>
 
 
     <!-- LIST TYPE -->

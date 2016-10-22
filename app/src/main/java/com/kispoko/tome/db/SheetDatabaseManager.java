@@ -69,6 +69,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             SheetContract.Component.COLUMN_COLUMN_NAME + " " + SheetContract.Component.COLUMN_COLUMN_TYPE + "," +
             SheetContract.Component.COLUMN_WIDTH_NAME + " " + SheetContract.Component.COLUMN_WIDTH_TYPE + "," +
             SheetContract.Component.COLUMN_KEY_STAT_NAME + " " + SheetContract.Component.COLUMN_KEY_STAT_TYPE + "," +
+            SheetContract.Component.COLUMN_ACTIONS_NAME + " " + SheetContract.Component.COLUMN_ACTIONs_TYPE + "," +
             SheetContract.Component.COLUMN_TYPE_KIND_NAME + " " + SheetContract.Component.COLUMN_TYPE_KIND_TYPE + "," +
             SheetContract.Component.COLUMN_TYPE_ID_NAME + " " + SheetContract.Component.COLUMN_TYPE_ID_TYPE + "," +
             SheetContract.Component.COLUMN_TEXT_VALUE_NAME + " " + SheetContract.Component.COLUMN_TEXT_VALUE_TYPE + "," +

@@ -20,7 +20,7 @@ android {
 
     sourceSets {
         main {
-            assets.srcDirs = ['src/main/assets']
+            assets.srcDirs = ['src/sheet/assets', 'src/main/assets', 'src/main/assets/']
         }
     }
 

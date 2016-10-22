@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -25,6 +26,8 @@ import com.kispoko.tome.util.SQL;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,10 +48,10 @@ public class Table extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Table(UUID id, UUID groupId, Type.Id typeId, Format format,
+    public Table(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
                  ArrayList<String> columnNames, ArrayList<Row> rows)
     {
-        super(id, groupId, typeId, format);
+        super(id, groupId, typeId, format, actions);
 
         this.columnNames = columnNames;
         this.rows = rows;
@@ -62,9 +65,8 @@ public class Table extends Component implements Serializable
         UUID id = null;
         UUID groupId = null;
         Type.Id typeId = null;
-        Integer row = null;
-        Integer column = null;
-        Integer width = null;
+        Format format = null;
+        List<String> actions = null;
         ArrayList<String> columnNames = null;
         ArrayList<Row> rows = new ArrayList<>();
 
@@ -88,17 +90,12 @@ public class Table extends Component implements Serializable
             typeId = new Type.Id(typeKind, _typeId);
         }
 
-        // >> Row
-        if (formatYaml.containsKey("row"))
-            row = (Integer) formatYaml.get("row");
+        // >> Format
+        format = Component.parseFormatYaml(tableYaml);
 
-        // >> Column
-        if (formatYaml.containsKey("column"))
-            column = (Integer) formatYaml.get("column");
-
-        // >> Width
-        if (formatYaml.containsKey("width"))
-            width = (Integer) formatYaml.get("width");
+        // >> Actions
+        if (tableYaml.containsKey("actions"))
+            actions = (List<String>) tableYaml.get("actions");
 
         // >> Column Names
         if (tableYaml.containsKey("columns"))
@@ -124,8 +121,7 @@ public class Table extends Component implements Serializable
             rows.add(new Row(null, cells));
         }
 
-        return new Table(id, groupId, typeId, new Format(null, row, column, width),
-                         columnNames, rows);
+        return new Table(id, groupId, typeId, format, actions, columnNames, rows);
     }
 
 
@@ -139,6 +135,12 @@ public class Table extends Component implements Serializable
     public String componentName()
     {
         return "table";
+    }
+
+
+    public void runAction(Context context, String actionName)
+    {
+
     }
 
 
@@ -163,7 +165,8 @@ public class Table extends Component implements Serializable
             {
                 // Query Table
                 String tableQuery =
-                    "SELECT comp.group_id, comp.row, comp.column, comp.width, comp.type_kind, comp.type_id, " +
+                    "SELECT comp.group_id, comp.row, comp.column, comp.width, comp.type_kind, " +
+                           "comp.type_id, comp.actions, " +
                            "tbl.column1_name, tbl.column2_name, tbl.column3_name, " +
                            "tbl.column4_name, tbl.column5_name, tbl.column6_name " +
                     "FROM Component comp " +
@@ -178,6 +181,7 @@ public class Table extends Component implements Serializable
                 Integer width = null;
                 String typeKind = null;
                 String typeId = null;
+                List<String> actions = null;
                 ArrayList<String> columnNames = new ArrayList<>();
 
                 try {
@@ -189,13 +193,15 @@ public class Table extends Component implements Serializable
                     width       = tableCursor.getInt(3);
                     typeKind    = tableCursor.getString(4);
                     typeId      = tableCursor.getString(5);
+                    actions     = new ArrayList<>(Arrays.asList(
+                                        TextUtils.split(tableCursor.getString(6), ",")));
 
-                    String column1Name = tableCursor.getString(6);
-                    String column2Name = tableCursor.getString(7);
-                    String column3Name = tableCursor.getString(8);
-                    String column4Name = tableCursor.getString(9);
-                    String column5Name = tableCursor.getString(10);
-                    String column6Name = tableCursor.getString(11);
+                    String column1Name = tableCursor.getString(7);
+                    String column2Name = tableCursor.getString(8);
+                    String column3Name = tableCursor.getString(9);
+                    String column4Name = tableCursor.getString(10);
+                    String column5Name = tableCursor.getString(11);
+                    String column6Name = tableCursor.getString(12);
 
                     if (column1Name != null)  columnNames.add(column1Name);
                     if (column2Name != null)  columnNames.add(column2Name);
@@ -262,6 +268,7 @@ public class Table extends Component implements Serializable
                                         groupId,
                                         new Type.Id(typeKind, typeId),
                                         new Format(null, rowIndex, columnIndex, width),
+                                        actions,
                                         columnNames,
                                         rows);
 
@@ -281,7 +288,7 @@ public class Table extends Component implements Serializable
     /**
      * Save to the database.
      * @param database The SQLite database object.
-     * @param groupId The ID of the parent group object.
+     * @param groupTrackerId The ID of the parent group object.
      */
     public void save(final SQLiteDatabase database, final UUID groupTrackerId)
     {
@@ -302,6 +309,7 @@ public class Table extends Component implements Serializable
                 componentRow.put("row", thisTable.getRow());
                 componentRow.put("column", thisTable.getColumn());
                 componentRow.put("width", thisTable.getWidth());
+                componentRow.put("actions", TextUtils.join(",", thisTable.getActions()));
                 componentRow.putNull("text_value");
 
                 if (thisTable.getTypeId() != null) {

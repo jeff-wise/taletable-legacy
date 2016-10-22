@@ -22,9 +22,9 @@ public class ChooseImageAction
         this.image = image;
     }
 
-    public void setImage(SheetActivity sheetActivity, Uri uri, SQLiteDatabase database)
+    public void setImage(SheetActivity sheetActivity, Uri uri)
     {
-        this.image.setImageFromURI(sheetActivity, uri, database);
+        this.image.setImageFromURI(sheetActivity, uri);
     }
 
 }

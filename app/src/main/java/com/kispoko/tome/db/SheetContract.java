@@ -169,6 +169,10 @@ public class SheetContract
         public static final String COLUMN_KEY_STAT_NAME = "key_stat";
         public static final String COLUMN_KEY_STAT_TYPE = TYPE_INTEGER;
 
+        // Column: Actions
+        public static final String COLUMN_ACTIONS_NAME = "actions";
+        public static final String COLUMN_ACTIONs_TYPE = TYPE_TEXT;
+
         // Column: Type Kind
         public static final String COLUMN_TYPE_KIND_NAME = "type_kind";
         public static final String COLUMN_TYPE_KIND_TYPE = TYPE_TEXT;
@@ -330,7 +334,7 @@ public class SheetContract
 
 
     /**
-     * List Type
+     * ListType Type
      */
     public static class TypeList implements BaseColumns
     {

@@ -8,10 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.Component;
-
+import com.kispoko.tome.util.UI;
 
 
 /**
@@ -59,7 +60,7 @@ public class EditActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.actions_edit, menu);
+        getMenuInflater().inflate(R.menu.toolbar_edit, menu);
         return true;
     }
 
@@ -94,13 +95,16 @@ public class EditActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
+        UI.initializeToolbar(this);
         ActionBar actionBar = getSupportActionBar();
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back_arrow_24dp);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setElevation(0);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
 
-        String title = "Edit " + this.component.getLabel();
-        actionBar.setTitle(title);
+        String title = "Edit "; // + this.component.getLabel();
+        TextView titleView = (TextView) findViewById(R.id.page_title);
+        titleView.setText(title);
+
+        TextView editActionView = (TextView) findViewById(R.id.edit_action_label);
+        editActionView.setText(this.component.getLabel());
     }
 
 
@@ -109,7 +113,7 @@ public class EditActivity extends AppCompatActivity
      */
     private void initializeEditorView()
     {
-        LinearLayout layout = (LinearLayout) findViewById(R.id.editor);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.edit_content);
 
         layout.addView(this.component.getEditorView(this));
 

@@ -38,7 +38,7 @@ public class UI
 
     public static void initializeToolbar(AppCompatActivity activity)
     {
-        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.manage_sheets_toolbar);
+        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);
         ActionBar actionBar = activity.getSupportActionBar();
 
@@ -46,7 +46,7 @@ public class UI
         actionBar.setDisplayShowTitleEnabled(false);
 
         TextView titleView = (TextView) activity.findViewById(R.id.page_title);
-        titleView.setTypeface(Util.serifFontBold(activity));
+        titleView.setTypeface(Util.sansSerifFontBold(activity));
     }
 
 }
