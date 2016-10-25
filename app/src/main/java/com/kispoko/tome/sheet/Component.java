@@ -2,11 +2,8 @@
 package com.kispoko.tome.sheet;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -16,7 +13,7 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.ActionDialogFragment;
-import com.kispoko.tome.sheet.component.Action;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.component.Image;
 import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
@@ -29,6 +26,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 
 
 /**
@@ -51,10 +49,10 @@ public abstract class Component implements Unique, Serializable
     // > INTERFACE
     // ------------------------------------------------------------------------------------------
 
-    abstract public View getDisplayView(Context context);
-    abstract public View getEditorView(Context context);
+    abstract public View getDisplayView(Context context, Rules rules);
+    abstract public View getEditorView(Context context, Rules rules);
 
-    abstract public void runAction(Context context, String actionName);
+    abstract public void runAction(String actionName, Context context, Rules rules);
 
     abstract public String componentName();
 
@@ -242,7 +240,7 @@ public abstract class Component implements Unique, Serializable
      * @param context Context object.
      * @return A LinearLayout that represents the outer-most container of a component view.
      */
-    protected LinearLayout linearLayout(Context context)
+    protected LinearLayout linearLayout(Context context, final Rules rules)
     {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -264,7 +262,7 @@ public abstract class Component implements Unique, Serializable
             @Override
             public void onClick(View v) {
                 ActionDialogFragment actionDialogFragment =
-                        ActionDialogFragment.newInstance(thisComponent);
+                        ActionDialogFragment.newInstance(thisComponent, rules);
                 actionDialogFragment.show(thisActivity.getSupportFragmentManager(),
                                           actionDialogFragment.getTag());
             }

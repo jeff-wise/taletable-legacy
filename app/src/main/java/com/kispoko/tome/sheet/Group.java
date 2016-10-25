@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.tuple.Tuple5;
@@ -26,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static android.R.attr.paddingBottom;
 
 
 /**
@@ -344,7 +344,7 @@ public class Group implements Serializable
     // >> Views
     // ------------------------------------------------------------------------------------------
 
-    public View getView(Context context)
+    public View getView(Context context, Rules rules)
     {
         LinearLayout groupLayout = new LinearLayout(context);
         LinearLayout.LayoutParams mainLayoutParams =
@@ -418,7 +418,7 @@ public class Group implements Serializable
 //                }
 
                 // Add Component View
-                View componentView = component.getDisplayView(context);
+                View componentView = component.getDisplayView(context, rules);
                 frameLayout.addView(componentView);
 
                 rowLayout.addView(frameLayout);

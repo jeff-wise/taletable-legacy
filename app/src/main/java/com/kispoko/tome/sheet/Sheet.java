@@ -12,7 +12,7 @@ import android.util.Log;
 import com.kispoko.tome.activity.ManageSheetsActivity;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
-import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.tuple.Tuple2;
 
@@ -56,11 +56,13 @@ public class Sheet
 
     private static Map<UUID,SaveTracker> trackerMap = new HashMap<>();
 
+    private Rules rules;
+
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Sheet(UUID id, Game game, Roleplay roleplay)
+    public Sheet(UUID id, Game game, Roleplay roleplay, Rules rules)
     {
         if (id != null)
             this.id = id;
@@ -69,6 +71,7 @@ public class Sheet
 
         this.game = game;
         this.roleplay = roleplay;
+        this.rules = rules;
 
         indexComponents();
     }
@@ -80,21 +83,24 @@ public class Sheet
         // Values to parse
         UUID sheetId = null;
         Game game = null;
-        Roleplay roleplay = null;
+        Roleplay roleplay;
+        Rules rules = new Rules();
 
         // Parse Values
-        Map<String,Object> sections = (Map<String,Object>) sheetYaml.get("sections");
-        Map<String,Object> roleplayYaml = (Map<String,Object>) sections.get("roleplay");
+        Map<String,Object> rulesYaml = (Map<String,Object>) sheetYaml.get("rules");
+        Map<String,Object> sectionsYaml = (Map<String,Object>) sheetYaml.get("sections");
+        Map<String,Object> roleplayYaml = (Map<String,Object>) sectionsYaml.get("roleplay");
 
-        // >> Types
-//        ArrayList<Map<String,Object>> typesYaml =
-//                (ArrayList<Map<String,Object>>) sheetYaml.get("types");
-//
-//        for (Map<String,Object> typeYaml : typesYaml)
-//        {
-//            Type typ = Type.fromYaml(typeYaml);
-//            RulesEngine.addType(typ);
-//        }
+        // >> Rules
+
+        // >>> Types
+        ArrayList<Map<String,Object>> typesYaml =
+                            (ArrayList<Map<String,Object>>) rulesYaml.get("types");
+
+        for (Map<String,Object> typeYaml : typesYaml) {
+            Type typ = Type.fromYaml(typeYaml);
+            rules.getTypes().addType(typ);
+        }
 
         // >> Game
         if (sheetYaml.containsKey("game"))
@@ -103,7 +109,7 @@ public class Sheet
         // >> Roleplay
         roleplay = Roleplay.fromYaml(roleplayYaml);
 
-        return new Sheet(sheetId, game, roleplay);
+        return new Sheet(sheetId, game, roleplay, rules);
     }
 
 
@@ -149,8 +155,6 @@ public class Sheet
     }
 
 
-
-
     // >> State
     // ------------------------------------------------------------------------------------------
 
@@ -176,6 +180,11 @@ public class Sheet
 
     public Game getGame() {
         return this.game;
+    }
+
+
+    public Rules getRules() {
+        return this.rules;
     }
 
 
@@ -230,8 +239,9 @@ public class Sheet
                 // Load the game
                 Game.load(database, sheetConstructorId, gameId);
 
-                // Load the roleplay and have it delivered to the waiting async constructor
+                // Asynchronously load the roleplay section and rules
                 Roleplay.load(database, sheetConstructorId, sheetId);
+                Rules.load(sheetConstructorId, sheetId);
             }
 
         }.execute();
@@ -293,6 +303,7 @@ public class Sheet
 
                 // Save the child data to the database as well
                 thisSheet.roleplay.save(database, thisSheet.getId(), sheetTrackerId, true);
+                thisSheet.rules.save(sheetTrackerId, thisSheet.getId(), true);
             }
 
         }.execute();
@@ -634,6 +645,7 @@ public class Sheet
         private UUID id;
         private Roleplay roleplay;
         private Game game;
+        private Rules rules;
 
         private SheetActivity sheetActivity;
 
@@ -646,26 +658,30 @@ public class Sheet
             this.game = null;
         }
 
-        synchronized public void setGame(Game game)
-        {
+        synchronized public void setGame(Game game) {
             this.game = game;
             if (isReady()) ready();
         }
 
-        synchronized public void setRoleplay(Roleplay roleplay)
-        {
+        synchronized public void setRoleplay(Roleplay roleplay) {
             this.roleplay = roleplay;
             if (isReady()) ready();
         }
 
-        private boolean isReady()
-        {
-            return this.game != null && this.roleplay != null;
+        synchronized public void setRules(Rules rules) {
+            this.rules = rules;
+            if (isReady()) ready();
+        }
+
+        private boolean isReady() {
+            return this.game != null &&
+                   this.roleplay != null &&
+                   this.rules != null;
         }
 
         private void ready()
         {
-            Sheet sheet = new Sheet(this.id, this.game, this.roleplay);
+            Sheet sheet = new Sheet(this.id, this.game, this.roleplay, this.rules);
             sheetActivity.setSheet(sheet);
             sheetActivity.renderSheet();
         }
@@ -681,17 +697,30 @@ public class Sheet
         private SheetActivity sheetActivity;
 
         private boolean roleplay;
+        private boolean rules;
 
         public SaveTracker(SheetActivity sheetActivity)
         {
             this.sheetActivity = sheetActivity;
             this.roleplay = false;
+            this.rules = false;
         }
 
-        synchronized public void setRoleplay()
-        {
+        synchronized public void setRoleplay() {
             this.roleplay = true;
-            Log.d("***sheet", "set roleplay");
+            if (isReady()) ready();
+        }
+
+        synchronized public void setRules() {
+            this.rules = true;
+            if (isReady()) ready();
+        }
+
+        private boolean isReady() {
+            return this.roleplay && this.rules;
+        }
+
+        private void ready() {
             this.sheetActivity.renderSheet();
         }
 

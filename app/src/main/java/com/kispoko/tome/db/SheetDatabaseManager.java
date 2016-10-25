@@ -127,8 +127,8 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
 
         final String CREATE_TYPE_LIST_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.TypeList.TABLE_NAME + " (" +
-            SheetContract.TypeList.COLUMN_LIST_ID_NAME + " " + SheetContract.TypeList.COLUMN_LIST_ID_TYPE + " PRIMARY KEY," +
-            SheetContract.TypeList.COLUMN_ITEM_NAME + " " + SheetContract.TypeList.COLUMN_ITEM_TYPE + "," +
+            SheetContract.TypeList.COLUMN_LIST_ID_NAME + " " + SheetContract.TypeList.COLUMN_LIST_ID_TYPE + ", " +
+            SheetContract.TypeList.COLUMN_SHEET_ID_NAME + " " + SheetContract.TypeList.COLUMN_SHEET_ID_TYPE + "," +
             SheetContract.TypeList.COLUMN_VALUE_NAME + " " + SheetContract.TypeList.COLUMN_VALUE_TYPE + ")";
 
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.db.SheetContract;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Unique;
 import com.kispoko.tome.util.tuple.Tuple2;
@@ -205,7 +206,7 @@ public class Page implements Unique, Serializable
      * @param context The parent activity context.
      * @return A View of this page.
      */
-    public View getView(Context context)
+    public View getView(Context context, Rules rules)
     {
         LinearLayout profileLayout = new LinearLayout(context);
 
@@ -218,7 +219,7 @@ public class Page implements Unique, Serializable
 
         for (Group group : this.groups)
         {
-            profileLayout.addView(group.getView(context));
+            profileLayout.addView(group.getView(context, rules));
         }
 
         return profileLayout;

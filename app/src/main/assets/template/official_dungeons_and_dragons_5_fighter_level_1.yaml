@@ -5,23 +5,24 @@ label:
 game:
   id: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
-types:
-- id: class
-  kind: listType
-  label: Classes
-  values:
-  - Barbarian
-  - Bard
-  - Cleric
-  - Druid
-  - Fighter
-  - Monk
-  - Paladin
-  - Ranger
-  - Rogue
-  - Sorceror
-  - Warlock
-  - Wizard
+rules:
+  types:
+  - id: class
+    kind: list
+    label: Classes
+    values:
+    - Barbarian
+    - Bard
+    - Cleric
+    - Druid
+    - Fighter
+    - Monk
+    - Paladin
+    - Ranger
+    - Rogue
+    - Sorceror
+    - Warlock
+    - Wizard
 sections:
   roleplay:
     pages:
@@ -79,7 +80,7 @@ sections:
           data:
             value: Wizard
             type:
-              kind: listType
+              kind: list
               id: class
         - type: text
           actions:

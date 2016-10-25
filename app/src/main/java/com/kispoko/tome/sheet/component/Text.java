@@ -8,14 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -28,7 +27,7 @@ import com.kispoko.tome.activity.EditActivity;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
-import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.sheet.component.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.Component;
@@ -45,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.R.id.list;
 
 
 /**
@@ -175,13 +175,14 @@ public class Text extends Component implements Serializable
     }
 
 
-    public void runAction(Context context, String actionName)
+    public void runAction(String actionName, Context context, Rules rules)
     {
         switch (actionName)
         {
             case "edit":
                 Intent intent = new Intent(context, EditActivity.class);
                 intent.putExtra("COMPONENT", this);
+                intent.putExtra("RULES", rules);
                 ((Activity) context).startActivityForResult(intent, SheetActivity.COMPONENT_EDIT);
                 break;
         }
@@ -191,9 +192,9 @@ public class Text extends Component implements Serializable
     // >> Views
     // ------------------------------------------------------------------------------------------
 
-    public View getDisplayView(final Context context)
+    public View getDisplayView(final Context context, Rules rules)
     {
-        LinearLayout textLayout = this.linearLayout(context);
+        LinearLayout textLayout = this.linearLayout(context, rules);
 
 
         TextView textView = new TextView(context);
@@ -209,24 +210,23 @@ public class Text extends Component implements Serializable
 
         textView.setText(this.value);
 
-
         textLayout.addView(textView);
 
         return textLayout;
     }
 
 
-    public View getEditorView(Context context)
+    public View getEditorView(Context context, Rules rules)
     {
         if (!this.getTypeId().isNull())
-            return this.getTypeEditorView(context);
+            return this.getTypeEditorView(context, rules);
         // No type is set, so allow free form edit
         else
             return this.getFreeEditorView(context);
     }
 
 
-    public View getTypeEditorView(Context context)
+    public View getTypeEditorView(Context context, Rules rules)
     {
         // Lookup the recyclerview in activity layout
         RecyclerView textEditorView = new RecyclerView(context);
@@ -234,16 +234,9 @@ public class Text extends Component implements Serializable
         textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
 
         // Create adapter passing in the sample user data
-        // TODO verify type
-
-        // Create copy of type so we only display values that are not currently chosen
-        ListType list = (ListType) RulesEngine.getType(this.getTypeId());
-        ListType listWithoutCurrentValue = list.asClone();
-        listWithoutCurrentValue.getValueList().remove(this.value);
-
-        TextEditRecyclerViewAdapter adapter =
-                new TextEditRecyclerViewAdapter(this, listWithoutCurrentValue);
-        // Attach the adapter to the recyclerview to populate items
+        ListType listType = (ListType) rules.getTypes().getType(this.getTypeId());
+        TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, listType);
+        Log.d("***TEXT", "list type size " + Integer.toString(listType.size()));
         textEditorView.setAdapter(adapter);
         // Set layout manager to position the items
         textEditorView.setLayoutManager(new LinearLayoutManager(context));
@@ -336,75 +329,6 @@ public class Text extends Component implements Serializable
         return layout;
     }
 
-
-    /**
-     * Return a view of the header for the text editor view.
-     * @param context The parent context object.
-     * @return A View represent the text editing header.
-     */
-    public View getTypeEditorHeaderView(Context context)
-    {
-        // Header Layout
-        LinearLayout headerLayout = new LinearLayout(context);
-        headerLayout.setOrientation(LinearLayout.VERTICAL);
-        int headerHorzPadding = (int) Util.getDim(context,
-                R.dimen.comp_text_editor_header_horz_padding);
-        int headerTopPadding = (int) Util.getDim(context,
-                R.dimen.comp_text_editor_header_top_padding);
-        LinearLayout.LayoutParams fieldLayoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
-        headerLayout.setPadding(headerHorzPadding, headerTopPadding, headerHorzPadding, 0);
-        headerLayout.setLayoutParams(fieldLayoutParams);
-        headerLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.bluegrey_900));
-
-
-        // >> Title
-        TextView titleView = new TextView(context);
-        titleView.setText(this.getLabel().toUpperCase());
-        float titleTextSize = Util.getDim(context, R.dimen.comp_text_editor_title_text_size);
-        titleView.setTextSize(titleTextSize);
-        titleView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
-        titleView.setTypeface(null, Typeface.BOLD);
-
-        headerLayout.addView(titleView);
-
-        Typeface font = Typeface.createFromAsset(context.getAssets(),
-                "fonts/DavidLibre-Regular.ttf");
-
-        // >> Value
-        TextView valueView = new TextView(context);
-
-        float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
-        valueView.setTextSize(valueTextSize);
-        valueView.setText(this.getValue());
-        valueView.setTextColor(ContextCompat.getColor(context, R.color.amber_500));
-        valueView.setTypeface(font);
-
-        headerLayout.addView(valueView);
-
-        // >> Type Title
-        TextView typeTitleView = new TextView(context);
-        String typeTitle = "SELECT NEW " + this.getLabel().toUpperCase();
-        typeTitleView.setText(typeTitle);
-        float typeTitleTextSize = Util.getDim(context, R.dimen.comp_text_editor_type_title_text_size);
-        typeTitleView.setTextSize(typeTitleTextSize);
-        typeTitleView.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
-        typeTitleView.setTypeface(null, Typeface.BOLD);
-
-        int typeTitleLeftPadding = (int) Util.getDim(context,
-                                                R.dimen.comp_text_editor_type_title_left_padding);
-        int typeTitleTopPadding = (int) Util.getDim(context,
-                                                  R.dimen.comp_text_editor_type_title_top_padding);
-        int typeTitleBottomPadding = (int) Util.getDim(context,
-                                               R.dimen.comp_text_editor_type_title_bottom_padding);
-        typeTitleView.setPadding(typeTitleLeftPadding, typeTitleTopPadding,
-                                 0, typeTitleBottomPadding);
-
-        headerLayout.addView(typeTitleView);
-
-        return headerLayout;
-    }
 
 
     // >> Database

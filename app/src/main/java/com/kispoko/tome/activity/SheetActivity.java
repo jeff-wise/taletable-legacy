@@ -24,7 +24,7 @@ import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.activity.sheet.PageFragment;
 import com.kispoko.tome.db.SheetDatabaseManager;
-import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.util.Util;
@@ -53,7 +53,6 @@ public class SheetActivity
 
     // Data
     private Sheet sheet;
-    private RulesEngine rulesEngine;
 
     private ChooseImageAction chooseImageAction;
 
@@ -67,8 +66,6 @@ public class SheetActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        this.rulesEngine = new RulesEngine();
 
         loadSheet();
 

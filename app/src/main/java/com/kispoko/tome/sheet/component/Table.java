@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.type.Type;
@@ -138,7 +139,7 @@ public class Table extends Component implements Serializable
     }
 
 
-    public void runAction(Context context, String actionName)
+    public void runAction(String actionName, Context context, Rules rules)
     {
 
     }
@@ -442,7 +443,7 @@ public class Table extends Component implements Serializable
      * @param context
      * @return
      */
-    public View getDisplayView(Context context)
+    public View getDisplayView(Context context, Rules rules)
     {
         TableLayout tableLayout = new TableLayout(context);
 
@@ -473,7 +474,7 @@ public class Table extends Component implements Serializable
     }
 
 
-    public View getEditorView(Context context)
+    public View getEditorView(Context context, Rules rules)
     {
         return new LinearLayout(context);
     }

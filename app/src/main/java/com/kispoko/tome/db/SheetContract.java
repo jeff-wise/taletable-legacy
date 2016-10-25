@@ -345,9 +345,9 @@ public class SheetContract
         public static final String COLUMN_LIST_ID_NAME = "list_id";
         public static final String COLUMN_LIST_ID_TYPE = TYPE_TEXT;
 
-        // Column: Item
-        public static final String COLUMN_ITEM_NAME = "item";
-        public static final String COLUMN_ITEM_TYPE = TYPE_INTEGER;
+        // Column: Sheet Id
+        public static final String COLUMN_SHEET_ID_NAME = "sheet_id";
+        public static final String COLUMN_SHEET_ID_TYPE = TYPE_TEXT;
 
         // Column: Value
         public static final String COLUMN_VALUE_NAME = "value";

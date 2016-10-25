@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Type
  */
-public abstract class Type
+public abstract class Type implements Serializable
 {
 
     // > PROPERTIES

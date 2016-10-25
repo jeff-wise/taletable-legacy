@@ -12,13 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.component.Action;
-import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.Util;
 
-import static android.R.attr.action;
-import static android.R.attr.label;
 
 
 /**
@@ -28,13 +26,15 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
 {
 
     private Component component;
+    private Rules rules;
 
 
-    public static final ActionDialogFragment newInstance(Component component)
+    public static final ActionDialogFragment newInstance(Component component, Rules rules)
     {
         ActionDialogFragment actionDialogFragment = new ActionDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("COMPONENT", component);
+        bundle.putSerializable("RULES", rules);
         actionDialogFragment.setArguments(bundle);
         return actionDialogFragment;
     }
@@ -45,6 +45,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
     {
         super.onCreate(savedInstanceState);
         this.component = (Component) getArguments().getSerializable("COMPONENT");
+        this.rules = (Rules) getArguments().getSerializable("RULES");
     }
 
 
@@ -81,7 +82,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
             actionRowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    thisComponent.runAction(getContext(), actionName);
+                    thisComponent.runAction(actionName, getContext(), rules);
                     dialog.dismiss();
                 }
             });

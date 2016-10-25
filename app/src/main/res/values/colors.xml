@@ -67,6 +67,7 @@
     <color name="grey_900">#333333</color>
 
     <color name="red_soft">#D29494</color>
+    <color name="red_medium">#8A6161</color>
     <color name="green_soft">#8FB07D</color>
     <color name="green_medium">#85B08A</color>
     <color name="green_dark">#5B7050</color>

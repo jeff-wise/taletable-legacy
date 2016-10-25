@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.util.UI;
 
@@ -25,6 +26,7 @@ public class EditActivity extends AppCompatActivity
     // -------------------------------------------------------------------------------------------
 
     private Component component;
+    private Rules rules;
 
 
     // > ACTIVITY EVENTS
@@ -39,6 +41,7 @@ public class EditActivity extends AppCompatActivity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             this.component = (Component) extras.getSerializable("COMPONENT");
+            this.rules = (Rules) extras.getSerializable("RULES");
         }
 
         setContentView(R.layout.activity_edit);
@@ -104,7 +107,11 @@ public class EditActivity extends AppCompatActivity
         titleView.setText(title);
 
         TextView editActionView = (TextView) findViewById(R.id.edit_action_label);
-        editActionView.setText(this.component.getLabel());
+
+        if (this.component.getTypeId() != null)
+            editActionView.setText("Select a " + this.component.getLabel());
+        else
+            editActionView.setText(this.component.getLabel());
     }
 
 
@@ -115,7 +122,7 @@ public class EditActivity extends AppCompatActivity
     {
         LinearLayout layout = (LinearLayout) findViewById(R.id.edit_content);
 
-        layout.addView(this.component.getEditorView(this));
+        layout.addView(this.component.getEditorView(this, this.rules));
 
     }
 

@@ -27,6 +27,7 @@ import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.type.Type;
@@ -123,7 +124,7 @@ public class Image extends Component implements Serializable
     }
 
 
-    public void runAction(Context context, String actionName)
+    public void runAction(String actionName, Context context, Rules rules)
     {
     }
 
@@ -180,12 +181,8 @@ public class Image extends Component implements Serializable
                 }
 
                 Bitmap bitmap = null;
-                if (imageBlob != null) {
+                if (imageBlob != null)
                     bitmap = Util.getImage(imageBlob);
-                    Log.d("***IMAGE", "loaded bitmap");
-                } else {
-                    Log.d("***IMAGE", "image blob is null");
-                }
 
                 return new Image(componentId,
                                  groupId,
@@ -280,10 +277,10 @@ public class Image extends Component implements Serializable
      * @param context
      * @return
      */
-    public View getDisplayView(final Context context)
+    public View getDisplayView(final Context context, Rules rules)
     {
         // Layout
-        final LinearLayout imageLayout = this.linearLayout(context);
+        final LinearLayout imageLayout = this.linearLayout(context, rules);
         imageLayout.setGravity(Gravity.CENTER);
         //imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
 
@@ -346,7 +343,7 @@ public class Image extends Component implements Serializable
     }
 
 
-    public View getEditorView(Context context)
+    public View getEditorView(Context context, Rules rules)
     {
         return new LinearLayout(context);
     }

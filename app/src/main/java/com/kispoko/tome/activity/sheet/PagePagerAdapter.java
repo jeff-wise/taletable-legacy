@@ -49,7 +49,8 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
     @Override
     public Fragment getItem(int position)
     {
-        return PageFragment.newInstance(this.sheet.getRoleplay().getPages().get(position));
+        return PageFragment.newInstance(this.sheet.getRoleplay().getPages().get(position),
+                                        this.sheet.getRules());
     }
 
     @Override
