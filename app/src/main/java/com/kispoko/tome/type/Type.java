@@ -65,6 +65,31 @@ public abstract class Type implements Serializable
             this.id = id;
         }
 
+
+        @SuppressWarnings("unchecked")
+        public static Type.Id fromYaml(Map<String,Object> dataYaml)
+        {
+            if (dataYaml.containsKey("type"))
+            {
+                Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
+
+                String _typeId = null;
+                String typeKind = null;
+
+                if (typeYaml.containsKey("id"))
+                    _typeId = (String) typeYaml.get("id");
+
+                if (typeYaml.containsKey("kind"))
+                    typeKind = (String) typeYaml.get("kind");
+
+                return new Type.Id(typeKind, _typeId);
+            }
+
+            return null;
+        }
+
+
+
         public boolean isNull()
         {
             return this.kind == null && this.id == null;

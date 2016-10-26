@@ -14,13 +14,16 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.component.table.Cell;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
@@ -30,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static android.R.attr.label;
-import static android.R.attr.width;
 
 
 /**
@@ -52,6 +53,12 @@ public class NumberInteger extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public NumberInteger(UUID id, UUID groupId) {
+        super(id, groupId, null, null, null);
+        this.keyStat = null;
+        this.value = null;
+        this.textSize = null;
+    }
 
     public NumberInteger(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
                          Integer keyStat, Integer value)
@@ -129,7 +136,7 @@ public class NumberInteger extends Component implements Serializable
     // > API
     // ------------------------------------------------------------------------------------------
 
-    // >> Getters/Setters
+    // >> State
     // ------------------------------------------------------------------------------------------
 
     public String componentName()
@@ -138,23 +145,28 @@ public class NumberInteger extends Component implements Serializable
     }
 
 
-    public Integer getKeyStat()
-    {
+    // >>> Key Stat
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getKeyStat() {
         return this.keyStat;
+    }
+
+
+    public void setKeyStat(Integer keyStat) {
+        this.keyStat = keyStat;
     }
 
 
     // >>> Value
     // ------------------------------------------------------------------------------------------
 
-    public Integer getValue()
-    {
+    public Integer getValue() {
         return this.value;
     }
 
 
-    public void setValue(Integer value)
-    {
+    public void setValue(Integer value) {
         this.value = value;
     }
 
@@ -162,14 +174,12 @@ public class NumberInteger extends Component implements Serializable
     // >>> Prefix
     // ------------------------------------------------------------------------------------------
 
-    public String getPrefix()
-    {
+    public String getPrefix() {
         return this.prefix;
     }
 
 
-    public void setPrefix(String prefix)
-    {
+    public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
@@ -225,32 +235,32 @@ public class NumberInteger extends Component implements Serializable
     }
 
 
-    // >> Views
+    // >> Database
     // ------------------------------------------------------------------------------------------
 
     /**
      * Load a Group from the database.
-     * @param database The sqlite database object.
-     * @param groupConstructorId The id of the async page constructor.
-     * @param componentId The database id of the group to load.
+     * @param trackerId The async tracker ID of the caller.
      */
-    public static void load(final SQLiteDatabase database,
-                            final UUID groupConstructorId,
-                            final UUID componentId)
+    public void load(final TrackerId trackerId)
     {
-        new AsyncTask<Void,Void,NumberInteger>()
+        final NumberInteger thisInteger = this;
+
+        new AsyncTask<Void,Void,Boolean>()
         {
 
             @Override
-            protected NumberInteger doInBackground(Void... args)
+            protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
                 // Query Component
                 String integerQuery =
                     "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
                            "comp.type_kind, comp.type_id, comp.key_stat, comp.actions, int.value, int.prefix " +
                     "FROM component comp " +
                     "INNER JOIN component_integer int on int.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
+                    "WHERE comp.component_id =  " + SQL.quoted(thisInteger.getId().toString());
 
 
                 Cursor integerCursor = database.rawQuery(integerQuery, null);
@@ -286,22 +296,28 @@ public class NumberInteger extends Component implements Serializable
                     integerCursor.close();
                 }
 
-                NumberInteger integer = new NumberInteger(componentId,
-                                                          groupId,
-                                                          new Type.Id(typeKind, typeId),
-                                                          new Format(label, row, column, width),
-                                                          actions,
-                                                          keyStat,
-                                                          value);
-                integer.setPrefix(prefix);
+                thisInteger.setTypeId(new Type.Id(typeKind, typeId));
+                thisInteger.setFormat(new Format(label, row, column, width));
+                thisInteger.setActions(actions);
+                thisInteger.setKeyStat(keyStat);
+                thisInteger.setValue(value);
+                thisInteger.setPrefix(prefix);
 
-                return integer;
+                return true;
             }
 
             @Override
-            protected void onPostExecute(NumberInteger integer)
+            protected void onPostExecute(Boolean result)
             {
-                Group.getAsyncConstructor(groupConstructorId).addComponent(integer);
+                UUID trackerCode = trackerId.getCode();
+                switch (trackerId.getTarget()) {
+                    case GROUP:
+                        Group.getAsyncTracker(trackerCode).markComponentId(thisInteger.getId());
+                        break;
+                    case CELL:
+                        Cell.getAsyncTracker(trackerCode).markComponent();
+                        break;
+                }
             }
 
         }.execute();
@@ -310,9 +326,9 @@ public class NumberInteger extends Component implements Serializable
 
     /**
      * Save to the database.
-     * @param database The SQLite database object.
+     * @param trackerId The async tracker ID for the caller.
      */
-    public void save(final SQLiteDatabase database, final UUID groupTrackerId)
+    public void save(final TrackerId trackerId)
     {
         final NumberInteger thisInteger = this;
 
@@ -322,6 +338,10 @@ public class NumberInteger extends Component implements Serializable
             @Override
             protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
+                // > Query Component Table
+                // ------------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisInteger.getId().toString());
@@ -346,7 +366,8 @@ public class NumberInteger extends Component implements Serializable
                                               componentRow,
                                               SQLiteDatabase.CONFLICT_REPLACE);
 
-
+                // > Query IntegerComponent Table
+                // ------------------------------------------------------------------------------
                 ContentValues integerComponentRow = new ContentValues();
 
                 integerComponentRow.put("component_id", thisInteger.getId().toString());
@@ -364,8 +385,17 @@ public class NumberInteger extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                if (groupTrackerId != null)
-                    Group.getTracker(groupTrackerId).setComponentId(thisInteger.getId());
+                if (trackerId == null) return;
+
+                UUID trackerCode = trackerId.getCode();
+                switch (trackerId.getTarget()) {
+                    case GROUP:
+                        Group.getAsyncTracker(trackerCode).markComponentId(thisInteger.getId());
+                        break;
+                    case CELL:
+                        Cell.getAsyncTracker(trackerCode).markComponent();
+                        break;
+                }
             }
 
         }.execute();

@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet;
 
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
 import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.type.Type;
+import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Unique;
 import com.kispoko.tome.util.Util;
 
@@ -56,7 +56,8 @@ public abstract class Component implements Unique, Serializable
 
     abstract public String componentName();
 
-    abstract public void save(SQLiteDatabase database, UUID trackerId);
+    abstract public void save(TrackerId trackerId);
+    abstract public void load(TrackerId trackerId);
 
 
     // > CONSTRUCTORS
@@ -74,6 +75,25 @@ public abstract class Component implements Unique, Serializable
         this.format = format;
         this.actions = actions;
     }
+
+
+    public static Component empty(UUID id, UUID groupId, String kind)
+    {
+        switch (kind)
+        {
+            case "text":
+                return new Text(id, groupId);
+            case "integer":
+                return new NumberInteger(id, groupId);
+            case "image":
+                return new Image(id, groupId);
+            case "table":
+                return new Table(id, groupId);
+            default:
+                return null;
+        }
+    }
+
 
 
     // > API
@@ -103,11 +123,29 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Type
+    // >> Type Id
     // ------------------------------------------------------------------------------------------
 
     public Type.Id getTypeId() {
         return this.typeId;
+    }
+
+
+    public void setTypeId(Type.Id typeId) {
+        this.typeId = typeId;
+    }
+
+
+    // >> Format
+    // ------------------------------------------------------------------------------------------
+
+    public Format getFormat() {
+        return this.format;
+    }
+
+
+    public void setFormat(Format format) {
+        this.format = format;
     }
 
 
@@ -176,6 +214,18 @@ public abstract class Component implements Unique, Serializable
     }
 
 
+    public String getTextValue()
+    {
+        if (this instanceof Text) {
+            return ((Text) this).getValue();
+        } else if (this instanceof NumberInteger) {
+            return ((NumberInteger) this).getValue().toString();
+        } else {
+            return "";
+        }
+    }
+
+
     // >> STATIC METHODS
     // ------------------------------------------------------------------------------------------
 
@@ -207,28 +257,29 @@ public abstract class Component implements Unique, Serializable
     /**
      * Load a Group from the database.
      * @param database The sqlite database object.
-     * @param groupConstructorId The id of the async group constructor.
+     * @param trackerId The ID of the async tracker for the caller.
      * @param componentId The database id of the component to load.
      */
-    public static void load(SQLiteDatabase database, UUID groupConstructorId,
-                            UUID componentId, String componentType)
+    /*
+    public static void load(TrackerId trackerId, UUID componentId, String componentType)
     {
         switch (componentType)
         {
             case "text":
-                Text.load(database, groupConstructorId, componentId);
+                Text.load(trackerId, componentId);
                 break;
             case "image":
-                Image.load(database, groupConstructorId, componentId);
+                Image.load(trackerId, componentId);
                 break;
             case "integer":
-                NumberInteger.load(database, groupConstructorId, componentId);
+                NumberInteger.load(trackerId, componentId);
                 break;
             case "table":
-                Table.load(database, groupConstructorId, componentId);
+                Table.load(trackerId, componentId);
                 break;
         }
     }
+    */
 
 
     // > INTERNAL API

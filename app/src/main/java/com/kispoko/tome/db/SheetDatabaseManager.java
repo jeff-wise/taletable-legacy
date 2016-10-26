@@ -92,9 +92,18 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "FOREIGN KEY (" + SheetContract.ComponentInteger.COLUMN_COMPONENT_ID_NAME + ") REFERENCES " +
                 SheetContract.Component.TABLE_NAME + "(" + SheetContract.Component.COLUMN_COMPONENT_ID_NAME + ") )";
 
+        final String CREATE_COMPONENT_BOOLEAN_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentBoolean.TABLE_NAME + " (" +
+            SheetContract.ComponentBoolean.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentBoolean.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY, " +
+            SheetContract.ComponentBoolean.COLUMN_VALUE_NAME + " " + SheetContract.ComponentBoolean.COLUMN_VALUE_TYPE + ", " +
+            "FOREIGN KEY (" + SheetContract.ComponentBoolean.COLUMN_COMPONENT_ID_NAME + ") REFERENCES " +
+                SheetContract.Component.TABLE_NAME + "(" + SheetContract.Component.COLUMN_COMPONENT_ID_NAME + ") )";
+
         final String CREATE_COMPONENT_TABLE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentTable.TABLE_NAME + " (" +
             SheetContract.ComponentTable.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentTable.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY, " +
+            SheetContract.ComponentTable.COLUMN_WIDTH_NAME + " " + SheetContract.ComponentTable.COLUMN_WIDTH_TYPE + ", " +
+            SheetContract.ComponentTable.COLUMN_HEIGHT_NAME + " " + SheetContract.ComponentTable.COLUMN_HEIGHT_TYPE + ", " +
             SheetContract.ComponentTable.COLUMN_COLUMN_1_NAME_NAME + " " + SheetContract.ComponentTable.COLUMN_COLUMN_1_NAME_TYPE + ", " +
             SheetContract.ComponentTable.COLUMN_COLUMN_2_NAME_NAME + " " + SheetContract.ComponentTable.COLUMN_COLUMN_2_NAME_TYPE + ", " +
             SheetContract.ComponentTable.COLUMN_COLUMN_3_NAME_NAME + " " + SheetContract.ComponentTable.COLUMN_COLUMN_3_NAME_TYPE + ", " +
@@ -104,19 +113,16 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "FOREIGN KEY (" + SheetContract.ComponentTable.COLUMN_COMPONENT_ID_NAME + ") REFERENCES " +
                 SheetContract.Component.TABLE_NAME + "(" + SheetContract.Component.COLUMN_COMPONENT_ID_NAME + ") )";
 
-        final String CREATE_COMPONENT_TABLE_ROW_TABLE =
-            "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentTableRow.TABLE_NAME + " (" +
-            SheetContract.ComponentTableRow.COLUMN_TABLE_ROW_ID_NAME + " " + SheetContract.ComponentTableRow.COLUMN_TABLE_ROW_ID_TYPE + " PRIMARY KEY, " +
-            SheetContract.ComponentTableRow.COLUMN_TABLE_ID_NAME + " " + SheetContract.ComponentTableRow.COLUMN_TABLE_ID_TYPE + ", " +
-            SheetContract.ComponentTableRow.COLUMN_ROW_INDEX_NAME + " " + SheetContract.ComponentTableRow.COLUMN_ROW_INDEX_TYPE + ", " +
-            SheetContract.ComponentTableRow.COLUMN_COLUMN_1_NAME + " " + SheetContract.ComponentTableRow.COLUMN_COLUMN_1_TYPE + ", " +
-            SheetContract.ComponentTableRow.COLUMN_COLUMN_2_NAME + " " + SheetContract.ComponentTableRow.COLUMN_COLUMN_2_TYPE + ", " +
-            SheetContract.ComponentTableRow.COLUMN_COLUMN_3_NAME + " " + SheetContract.ComponentTableRow.COLUMN_COLUMN_3_TYPE + ", " +
-            SheetContract.ComponentTableRow.COLUMN_COLUMN_4_NAME + " " + SheetContract.ComponentTableRow.COLUMN_COLUMN_4_TYPE + ", " +
-            SheetContract.ComponentTableRow.COLUMN_COLUMN_5_NAME + " " + SheetContract.ComponentTableRow.COLUMN_COLUMN_5_TYPE + ", " +
-            SheetContract.ComponentTableRow.COLUMN_COLUMN_6_NAME + " " + SheetContract.ComponentTableRow.COLUMN_COLUMN_6_TYPE + ", " +
-            "FOREIGN KEY (" + SheetContract.ComponentTableRow.COLUMN_TABLE_ID_NAME + ") REFERENCES " +
-                SheetContract.ComponentTable.TABLE_NAME + "(" + SheetContract.ComponentTable.COLUMN_COMPONENT_ID_NAME + ") )";
+        final String CREATE_COMPONENT_TABLE_CELL_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentTableCell.TABLE_NAME + " (" +
+            SheetContract.ComponentTableCell.COLUMN_TABLE_ID_NAME + " " + SheetContract.ComponentTableCell.COLUMN_TABLE_ID_TYPE + ", " +
+            SheetContract.ComponentTableCell.COLUMN_ROW_INDEX_NAME + " " + SheetContract.ComponentTableCell.COLUMN_ROW_INDEX_TYPE + ", " +
+            SheetContract.ComponentTableCell.COLUMN_COLUMN_INDEX_NAME + " " + SheetContract.ComponentTableCell.COLUMN_COLUMN_INDEX_TYPE + ", " +
+            SheetContract.ComponentTableCell.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentTableCell.COLUMN_COMPONENT_ID_TYPE + ", " +
+            "CONSTRAINT table_cell_constraint_unique UNIQUE (" +
+                    SheetContract.ComponentTableCell.COLUMN_TABLE_ID_NAME + ", " +
+                    SheetContract.ComponentTableCell.COLUMN_ROW_INDEX_NAME + ", " +
+                    SheetContract.ComponentTableCell.COLUMN_COLUMN_INDEX_NAME + ") )";
 
         final String CREATE_COMPONENT_IMAGE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentImage.TABLE_NAME + " (" +
@@ -142,7 +148,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
         db.execSQL(CREATE_COMPONENT_TEXT_TABLE);
         db.execSQL(CREATE_COMPONENT_INTEGER_TABLE);
         db.execSQL(CREATE_COMPONENT_TABLE_TABLE);
-        db.execSQL(CREATE_COMPONENT_TABLE_ROW_TABLE);
+        db.execSQL(CREATE_COMPONENT_TABLE_CELL_TABLE);
         db.execSQL(CREATE_COMPONENT_IMAGE_TABLE);
         db.execSQL(CREATE_TYPE_LIST_TABLE);
     }

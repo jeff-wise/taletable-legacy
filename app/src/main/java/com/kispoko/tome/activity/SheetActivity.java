@@ -240,6 +240,7 @@ public class SheetActivity
     {
         //Initializing NavigationView
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setItemIconTintList(null);
 
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         navigationView.setNavigationItemSelectedListener(
@@ -261,7 +262,7 @@ public class SheetActivity
                 switch (menuItem.getItemId())
                 {
                     //Replacing the sheet content with ContentFragment Which is our Inbox View;
-                    case R.id.navigation_item_manage_sheets:
+                    case R.id.nav_characters:
                         Intent intent = new Intent(SheetActivity.this, ManageSheetsActivity.class);
                         startActivity(intent);
                         return true;

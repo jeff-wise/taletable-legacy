@@ -17,17 +17,21 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.component.table.Cell;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.TrackerId;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -42,19 +46,40 @@ public class Table extends Component implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ArrayList<String> columnNames;
-    private ArrayList<Row> rows;
+    private Integer width;
+    private Integer height;
+    private String[] columnNames;
+    private Row rowTemplate;
+    private Row[] rows;
+
+    // STATIC
+    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public Table(UUID id, UUID groupId)
+    {
+        super(id, groupId, null, null, null);
+
+        this.width = null;
+        this.height = null;
+        this.columnNames = null;
+        this.rowTemplate = null;
+        this.rows = null;
+    }
+
     public Table(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
-                 ArrayList<String> columnNames, ArrayList<Row> rows)
+                 Integer width, Integer height, String[] columnNames,
+                 Row rowTemplate, Row[] rows)
     {
         super(id, groupId, typeId, format, actions);
 
+        this.width = width;
+        this.height = height;
         this.columnNames = columnNames;
+        this.rowTemplate = rowTemplate;
         this.rows = rows;
     }
 
@@ -68,17 +93,20 @@ public class Table extends Component implements Serializable
         Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
-        ArrayList<String> columnNames = null;
-        ArrayList<Row> rows = new ArrayList<>();
+        Integer width = null;
+        Integer height = null;
+        Row rowTemplate = null;
+        String[] columnNames = null;
+        Row[] rows = null;
 
         // Parse Values
-        Map<String, Object> formatYaml = (Map<String, Object>) tableYaml.get("format");
-        Map<String, Object> dataYaml   = (Map<String, Object>) tableYaml.get("data");
+        Map<String,Object> formatYaml = (Map<String,Object>) tableYaml.get("format");
+        Map<String,Object> dataYaml   = (Map<String,Object>) tableYaml.get("data");
 
         // >> Type Id
         if (dataYaml.containsKey("type"))
         {
-            Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
+            Map<String, Object> typeYaml = (Map<String,Object>) dataYaml.get("type");
             String _typeId = null;
             String typeKind = null;
 
@@ -98,31 +126,57 @@ public class Table extends Component implements Serializable
         if (tableYaml.containsKey("actions"))
             actions = (List<String>) tableYaml.get("actions");
 
+        // >> Width
+        if (tableYaml.containsKey("width"))
+            width = (Integer) tableYaml.get("width");
+
+        // >> Height
+        if (tableYaml.containsKey("height"))
+            height = (Integer) tableYaml.get("height");
+
+        // >> Row Template
+        Map<String,Object> rowTemplateYaml = (Map<String,Object>) tableYaml.get("row_template");
+        List<Map<String,Object>> rowTemplateCellsYaml =
+                                (List<Map<String,Object>>) rowTemplateYaml.get("cells");
+        rowTemplate = new Row(width);
+        int templateColumnIndex = 0;
+        for (Map<String,Object> cellYaml : rowTemplateCellsYaml)
+        {
+            rowTemplate.insertCell(templateColumnIndex,
+                                   Cell.fromYaml(cellYaml, true, null, templateColumnIndex));
+            templateColumnIndex += 1;
+        }
+
         // >> Column Names
         if (tableYaml.containsKey("columns"))
-            columnNames = (ArrayList<String>) tableYaml.get("columns");
+            columnNames = (String[]) tableYaml.get("columns");
 
         // >> Rows
         ArrayList<Map<String,Object>> rowsYaml =
                 (ArrayList<Map<String,Object>>) dataYaml.get("rows");
 
+        rows = new Row[height];
+        int rowIndex = 0;
         for (Map<String,Object> rowYaml : rowsYaml)
         {
             ArrayList<Map<String,Object>> cellsYaml =
                     (ArrayList<Map<String,Object>>) rowYaml.get("cells");
 
-            ArrayList<Cell> cells = new ArrayList<>();
+            Row row = new Row(width);
+            int columnIndex = 0;
             for (Map<String,Object> cellYaml : cellsYaml)
             {
-                Map<String,Object> cellDataYaml = (Map<String,Object>) cellYaml.get("data");
-                String value = (String) cellDataYaml.get("value");
-                cells.add(new Cell(value));
+                row.insertCell(columnIndex, Cell.fromYaml(cellYaml, false, rowIndex, columnIndex));
+                columnIndex += 1;
             }
 
-            rows.add(new Row(null, cells));
+            rows[rowIndex] = row;
+
+            rowIndex += 1;
         }
 
-        return new Table(id, groupId, typeId, format, actions, columnNames, rows);
+        return new Table(id, groupId, typeId, format, actions, width, height,
+                         columnNames, rowTemplate, rows);
     }
 
 
@@ -130,7 +184,7 @@ public class Table extends Component implements Serializable
     // > API
     // ------------------------------------------------------------------------------------------
 
-    // >> Getters/Setters
+    // >> State
     // ------------------------------------------------------------------------------------------
 
     public String componentName()
@@ -145,34 +199,126 @@ public class Table extends Component implements Serializable
     }
 
 
+    // >>> Table Width
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getTableWidth() {
+        return this.width;
+    }
+
+
+    public void setTableWidth(Integer width) {
+        this.width = width;
+    }
+
+
+    // >>> Table Height
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getTableHeight() {
+        return this.height;
+    }
+
+
+    public void setTableHeight(Integer height) {
+        this.height = height;
+    }
+
+
+    // >>> Column Names
+    // ------------------------------------------------------------------------------------------
+
+    public String[] getColumnNames() {
+        return this.columnNames;
+    }
+
+
+    public void setColumnNames(String[] columnNames) {
+        this.columnNames = columnNames;
+    }
+
+
+    // >>> Row Template
+    // ------------------------------------------------------------------------------------------
+
+    public Row getRowTemplate() {
+        return this.rowTemplate;
+    }
+
+
+    public void setRowTemplate(Row rowTemplate) {
+        this.rowTemplate = rowTemplate;
+    }
+
+
+    // >>> Rows
+    // ------------------------------------------------------------------------------------------
+
+    public Row getRow(Integer index) {
+        if (index < this.rows.length)
+            return this.rows[index];
+        return null;
+    }
+
+
+    public Row[] getRows() {
+        return this.rows;
+    }
+
+
+    public void setRows(Row[] rows) {
+        this.rows = rows;
+    }
+
+
+    // >> Async Tracker
+    // ------------------------------------------------------------------------------------------
+
+    private TrackerId addAsyncTracker(Table table, TrackerId groupTrackerId)
+    {
+        UUID trackerCode = UUID.randomUUID();
+        Table.asyncTrackerMap.put(trackerCode, new AsyncTracker(table, groupTrackerId));
+        return new TrackerId(trackerCode, TrackerId.Target.TABLE);
+    }
+
+
+    public static AsyncTracker getAsyncTracker(UUID trackerId)
+    {
+        return Table.asyncTrackerMap.get(trackerId);
+    }
+
+
     // >> Database
     // ------------------------------------------------------------------------------------------
 
     /**
      * Load a Group from the database.
-     * @param database The sqlite database object.
-     * @param groupConstructorId The id of the async page constructor.
-     * @param componentId The database id of the group to load.
+     * @param groupTrackerId The tracker ID to locate the caller and deliver information asynchronously.
      */
-    public static void load(final SQLiteDatabase database,
-                            final UUID groupConstructorId,
-                            final UUID componentId)
+    public void load(final TrackerId groupTrackerId)
     {
-        new AsyncTask<Void,Void,Table>()
+        final Table thisTable = this;
+
+        new AsyncTask<Void,Void,Boolean>()
         {
 
             @Override
-            protected Table doInBackground(Void... args)
+            protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
                 // Query Table
+                // -----------------------------------------------------------------------------
+
                 String tableQuery =
                     "SELECT comp.group_id, comp.row, comp.column, comp.width, comp.type_kind, " +
                            "comp.type_id, comp.actions, " +
+                           "tbl.width, tbl.height, " +
                            "tbl.column1_name, tbl.column2_name, tbl.column3_name, " +
                            "tbl.column4_name, tbl.column5_name, tbl.column6_name " +
                     "FROM Component comp " +
                     "INNER JOIN component_table tbl on tbl.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
+                    "WHERE comp.component_id =  " + SQL.quoted(thisTable.getId().toString());
 
                 Cursor tableCursor = database.rawQuery(tableQuery, null);
 
@@ -183,7 +329,9 @@ public class Table extends Component implements Serializable
                 String typeKind = null;
                 String typeId = null;
                 List<String> actions = null;
-                ArrayList<String> columnNames = new ArrayList<>();
+                Integer tableWidth = null;
+                Integer tableHeight = null;
+                String[] columnNames = null;
 
                 try {
                     tableCursor.moveToFirst();
@@ -196,20 +344,15 @@ public class Table extends Component implements Serializable
                     typeId      = tableCursor.getString(5);
                     actions     = new ArrayList<>(Arrays.asList(
                                         TextUtils.split(tableCursor.getString(6), ",")));
+                    tableWidth  = tableCursor.getInt(7);
+                    tableHeight = tableCursor.getInt(8);
 
-                    String column1Name = tableCursor.getString(7);
-                    String column2Name = tableCursor.getString(8);
-                    String column3Name = tableCursor.getString(9);
-                    String column4Name = tableCursor.getString(10);
-                    String column5Name = tableCursor.getString(11);
-                    String column6Name = tableCursor.getString(12);
+                    columnNames = new String[width];
+                    for (int i = 9; i < 9 + width; i++) {
+                        String columnName = tableCursor.getString(i);
+                        columnNames[i - 9] = columnName;
 
-                    if (column1Name != null)  columnNames.add(column1Name);
-                    if (column2Name != null)  columnNames.add(column2Name);
-                    if (column3Name != null)  columnNames.add(column3Name);
-                    if (column4Name != null)  columnNames.add(column4Name);
-                    if (column5Name != null)  columnNames.add(column5Name);
-                    if (column6Name != null)  columnNames.add(column6Name);
+                    }
                 } catch (Exception e) {
                     Log.d("***table", Log.getStackTraceString(e));
                 }
@@ -217,69 +360,100 @@ public class Table extends Component implements Serializable
                     tableCursor.close();
                 }
 
-                // Query Table Rows
-                String tableRowQuery =
-                    "SELECT row.table_row_id, row.column1, row.column2, row.column3, " +
-                           "row.column4, row.column5, row.column6 " +
-                    "FROM component_table_row row " +
-                    "WHERE row.table_id =  " + SQL.quoted(componentId.toString()) + " " +
-                    "ORDER BY row.row_index ASC ";
+                // Query Row Template
+                // -----------------------------------------------------------------------------
 
-                Cursor tableRowCursor = database.rawQuery(tableRowQuery, null);
+                String rowTemplateQuery =
+                    "SELECT cell.column_index, cell.component_id, comp.type_kind " +
+                    "FROM component_table_cell cell " +
+                    "INNER JOIN component comp on comp.component_id = cell.component_id " +
+                    "WHERE cell.table_id = " + SQL.quoted(thisTable.getId().toString()) + " and " +
+                          "cell.is_template = 1 " +
+                    "ORDER BY cell.column_index";
 
-                ArrayList<Row> rows = new ArrayList<>();
+                Cursor rowTemplateCursor = database.rawQuery(rowTemplateQuery, null);
+
+                Row rowTemplate = new Row(width);
                 try
                 {
-                    while (tableRowCursor.moveToNext())
+                    while (rowTemplateCursor.moveToNext())
                     {
+                        int templateColumnIndex = rowTemplateCursor.getInt(0);
+                        UUID templateComponentId = UUID.fromString(rowTemplateCursor.getString(1));
+                        String templateComponentKind = rowTemplateCursor.getString(2);
 
-                        Long rowId     = tableCursor.getLong(0);
-                        String column1 = tableCursor.getString(1);
-                        String column2 = tableCursor.getString(2);
-                        String column3 = tableCursor.getString(3);
-                        String column4 = tableCursor.getString(4);
-                        String column5 = tableCursor.getString(5);
-                        String column6 = tableCursor.getString(6);
-
-                        Row row = new Row(rowId, new ArrayList<Cell>());
-
-                        if (column1 != null) row.addCell(new Cell(column1));
-
-                        if (column2 != null) row.addCell(new Cell(column2));
-
-                        if (column3 != null) row.addCell(new Cell(column3));
-
-                        if (column4 != null) row.addCell(new Cell(column4));
-
-                        if (column5 != null) row.addCell(new Cell(column5));
-
-                        if (column6 != null) row.addCell(new Cell(column6));
-
-                        rows.add(row);
+                        Cell cell = new Cell(Component.empty(templateComponentId,
+                                                             null, templateComponentKind),
+                                             thisTable.getId(),
+                                             true,
+                                             null, templateColumnIndex);
+                        rowTemplate.insertCell(templateColumnIndex, cell);
                     }
-                } catch (Exception e) {
-                    Log.d("tomedebug", Log.getStackTraceString(e));
                 }
-                // TODO log
                 finally {
                     tableCursor.close();
                 }
 
-                Table table = new Table(componentId,
-                                        groupId,
-                                        new Type.Id(typeKind, typeId),
-                                        new Format(null, rowIndex, columnIndex, width),
-                                        actions,
-                                        columnNames,
-                                        rows);
 
-                return table;
+                // Query Table Cells
+                // -----------------------------------------------------------------------------
+
+                String tableCellsQuery =
+                    "SELECT cell.row_index, cell.column_index, cell.component_id, comp.type_kind " +
+                    "FROM component_table_cell cell " +
+                    "INNER JOIN component comp on comp.component_id = cell.component_id " +
+                    "WHERE cell.table_id =  " + SQL.quoted(thisTable.getId().toString()) + " and " +
+                          "cell.is_template = 0 " +
+                    "ORDER BY cell.row_index, cell.column_index";
+
+                Cursor tableCellsCursor = database.rawQuery(tableCellsQuery, null);
+
+                Row[] rows = new Row[tableHeight];
+                try
+                {
+                    while (tableCellsCursor.moveToNext())
+                    {
+                        int tableRowIndex = tableCellsCursor.getInt(0);
+                        int tableColIndex = tableCellsCursor.getInt(1);
+                        UUID cellComponentId = UUID.fromString(tableCellsCursor.getString(2));
+                        String componentKind = tableCellsCursor.getString(3);
+
+                        Cell cell = new Cell(Component.empty(cellComponentId, null, componentKind),
+                                             thisTable.getId(),
+                                             false,
+                                             tableRowIndex, tableColIndex);
+                        rows[tableRowIndex].insertCell(tableColIndex, cell);
+                    }
+                }
+                finally {
+                    tableCursor.close();
+                }
+
+
+                // Set loaded values
+                thisTable.setTypeId(new Type.Id(typeKind, typeId));
+                thisTable.setFormat(new Format(null, rowIndex, columnIndex, width));
+                thisTable.setActions(actions);
+                thisTable.setTableWidth(tableWidth);
+                thisTable.setTableHeight(tableHeight);
+                thisTable.setColumnNames(columnNames);
+                thisTable.setRowTemplate(rowTemplate);
+                thisTable.setRows(rows);
+
+                return true;
             }
 
             @Override
-            protected void onPostExecute(Table table)
+            protected void onPostExecute(Boolean result)
             {
-                Group.getAsyncConstructor(groupConstructorId).addComponent(table);
+                TrackerId tableTrackerId = thisTable.addAsyncTracker(thisTable, groupTrackerId);
+
+                // Load components in cells
+                for (int rowIndex = 0; rowIndex < thisTable.height; rowIndex++) {
+                    for (int colIndex = 0; colIndex < thisTable.width; colIndex++) {
+                        thisTable.getRow(rowIndex).getCell(colIndex).load(tableTrackerId);
+                    }
+                }
             }
 
         }.execute();
@@ -288,10 +462,9 @@ public class Table extends Component implements Serializable
 
     /**
      * Save to the database.
-     * @param database The SQLite database object.
-     * @param groupTrackerId The ID of the parent group object.
+     * @param groupTrackerId The async tracker ID of the caller.
      */
-    public void save(final SQLiteDatabase database, final UUID groupTrackerId)
+    public void save(final TrackerId groupTrackerId)
     {
         final Table thisTable = this;
 
@@ -301,6 +474,10 @@ public class Table extends Component implements Serializable
             @Override
             protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
+                // Update Component Table
+                // -----------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisTable.getId().toString());
@@ -326,100 +503,23 @@ public class Table extends Component implements Serializable
                                               componentRow,
                                               SQLiteDatabase.CONFLICT_REPLACE);
 
+                // Update Table Component Table
+                // -----------------------------------------------------------------------------
+
                 ContentValues tableComponentRow = new ContentValues();
                 tableComponentRow.put("component_id", thisTable.getId().toString());
 
-                ArrayList<String> columnNames = thisTable.columnNames;
-
-                if (columnNames.size() > 0)
-                    tableComponentRow.put("column1_name", columnNames.get(0));
-                else
-                    tableComponentRow.putNull("column1_name");
-
-                if (columnNames.size() > 1)
-                    tableComponentRow.put("column2_name", columnNames.get(1));
-                else
-                    tableComponentRow.putNull("column2_name");
-
-                if (columnNames.size() > 2)
-                    tableComponentRow.put("column3_name", columnNames.get(2));
-                else
-                    tableComponentRow.putNull("column3_name");
-
-                if (columnNames.size() > 3)
-                    tableComponentRow.put("column4_name", columnNames.get(3));
-                else
-                    tableComponentRow.putNull("column4_name");
-
-                if (columnNames.size() > 4)
-                    tableComponentRow.put("column5_name", columnNames.get(4));
-                else
-                    tableComponentRow.putNull("column5_name");
-
-                if (columnNames.size() > 5)
-                    tableComponentRow.put("column6_name", columnNames.get(5));
-                else
-                    tableComponentRow.putNull("column6_name");
-
-                Long tableId = database.insertWithOnConflict(
-                                                SheetContract.ComponentTable.TABLE_NAME,
-                                                null,
-                                                tableComponentRow,
-                                                SQLiteDatabase.CONFLICT_REPLACE);
-
-                int index = 0;
-                for (Row row : thisTable.rows)
+                String[] columnNames = thisTable.columnNames;
+                for (int col = 0; col < thisTable.columnNames.length; col++)
                 {
-                    ContentValues tableRowRow = new ContentValues();
-
-                    if (row.getId() != null)
-                        tableRowRow.put("table_row_id", row.getId());
-                    else
-                        tableRowRow.putNull("table_row_id");
-                    componentRow.put("table_id", tableId);
-                    componentRow.put("index", index);
-
-                    ArrayList<Cell> cells = row.getCells();
-
-                    if (cells.size() > 0)
-                        tableRowRow.put("column1", cells.get(0).getValue());
-                    else
-                        tableRowRow.putNull("column1");
-
-                    if (cells.size() > 1)
-                        tableRowRow.put("column2", cells.get(1).getValue());
-                    else
-                        tableRowRow.putNull("column2");
-
-                    if (cells.size() > 2)
-                        tableRowRow.put("column3", cells.get(2).getValue());
-                    else
-                        tableRowRow.putNull("column3");
-
-                    if (cells.size() > 3)
-                        tableRowRow.put("column4", cells.get(3).getValue());
-                    else
-                        tableRowRow.putNull("column4");
-
-                    if (cells.size() > 4)
-                        tableRowRow.put("column5", cells.get(4).getValue());
-                    else
-                        tableRowRow.putNull("column5");
-
-                    if (cells.size() > 5)
-                        tableRowRow.put("column6", cells.get(5).getValue());
-                    else
-                        tableRowRow.putNull("column6");
-
-                    Long tableRowId = database.insertWithOnConflict(
-                                                    SheetContract.ComponentTableRow.TABLE_NAME,
-                                                    null,
-                                                    tableRowRow,
-                                                    SQLiteDatabase.CONFLICT_REPLACE);
-                    row.setId(tableRowId);
-
-                    index += 1;
+                    String dbColName = "column" + Integer.toString(col) + "_name";
+                    tableComponentRow.put(dbColName, columnNames[col]);
                 }
+
+                database.insertWithOnConflict(SheetContract.ComponentTable.TABLE_NAME,
+                                              null,
+                                              tableComponentRow,
+                                              SQLiteDatabase.CONFLICT_REPLACE);
 
                 return true;
             }
@@ -427,8 +527,17 @@ public class Table extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                if (groupTrackerId != null)
-                    Group.getTracker(groupTrackerId).setComponentId(thisTable.getId());
+                TrackerId tableTrackerId = thisTable.addAsyncTracker(thisTable, groupTrackerId);
+
+                // Save row template cells asynchronously
+                thisTable.rowTemplate.save(tableTrackerId);
+
+                // Save each cell asynchronously
+                for (int rowIndex = 0; rowIndex < thisTable.height; rowIndex++) {
+                    for (int colIndex = 0; colIndex < thisTable.width; colIndex++) {
+                        thisTable.getRow(rowIndex).getCell(colIndex).save(tableTrackerId);
+                    }
+                }
             }
 
         }.execute();
@@ -463,7 +572,7 @@ public class Table extends Component implements Serializable
 
             for (Cell cell : row.getCells())
             {
-                TextView cellView = this.textCell(context, cell.getValue());
+                TextView cellView = cell.getView(context);
                 tableRow.addView(cellView);
             }
 
@@ -535,9 +644,6 @@ public class Table extends Component implements Serializable
 
             headerText.setTypeface(null, Typeface.BOLD);
 
-//            int padding = (int) context.getResources().getDimension(R.dimen.label_padding);
-//            headerText.setPadding(padding, 0, 0, 0);
-
             headerText.setText(columnName.toUpperCase());
 
             headerRow.addView(headerText);
@@ -553,51 +659,136 @@ public class Table extends Component implements Serializable
 
     public static class Row implements Serializable
     {
-        private Long id;
-        private ArrayList<Cell> cells;
+        private Cell[] cells;
 
-        public Row(Long id, ArrayList<Cell> cells)
+        public Row(Integer width)
         {
-            this.id = id;
-            this.cells = cells;
+            this.cells = new Cell[width];
         }
 
-        public ArrayList<Cell> getCells()
+
+        public void save(TrackerId tableTrackerId)
         {
+            for (int i = 0; i < cells.length; i++) {
+                cells[i].save(tableTrackerId);
+            }
+        }
+
+
+        public Cell[] getCells() {
             return this.cells;
         }
 
-        public void addCell(Cell cell)
-        {
-            this.cells.add(cell);
+
+        public Cell getCell(Integer index) {
+            if (index < cells.length)
+                return this.cells[index];
+            return null;
         }
 
-        public Long getId()
-        {
-            return this.id;
-        }
 
-        public void setId(Long id)
-        {
-            this.id = id;
+        public void insertCell(Integer columnIndex, Cell cell) {
+            if (columnIndex < cells.length)
+                this.cells[columnIndex] = cell;
         }
-
     }
 
 
-
-    public static class Cell implements Serializable
+    /**
+     * Track the state of a Group object. When the state reaches a desired configuration,
+     * execute a callback.
+     */
+    public static class AsyncTracker
     {
-        private String value;
 
-        public Cell(String value)
+        // > PROPERTIES
+        // --------------------------------------------------------------------------------------
+
+        private Table table;
+        private TrackerId groupTrackerId;
+
+        private boolean[][] cellTracker;
+        private boolean[] templateCellTracker;
+
+        private Integer tableHeight;
+        private Integer tableWidth;
+
+
+        // > CONSTRUCTORS
+        // --------------------------------------------------------------------------------------
+
+        public AsyncTracker(Table table, TrackerId groupTrackerId)
         {
-            this.value = value;
+            this.table = table;
+            this.groupTrackerId = groupTrackerId;
+
+            // Save, for frequent access
+            tableHeight = this.table.getTableHeight();
+            tableWidth  = this.table.getTableWidth();
+
+            cellTracker = new boolean[tableHeight][tableWidth];
+            for (int i = 0; i < tableHeight; i++) {
+                for (int j = 0; j < tableWidth; j++) {
+                    cellTracker[i][j] = false;
+                }
+            }
+
+            templateCellTracker = new boolean[tableWidth];
+            for (int i = 0; i < tableWidth; i++) {
+                this.templateCellTracker[i] = false;
+            }
         }
 
-        public String getValue()
+
+        // > API
+        // --------------------------------------------------------------------------------------
+
+        synchronized public void markCell(int rowIndex, int columnIndex)
         {
-            return this.value;
+            if (rowIndex >= tableHeight || columnIndex >= tableWidth)
+                return;
+
+            cellTracker[rowIndex][columnIndex] = true;
+
+            if (isReady()) ready();
+        }
+
+
+        synchronized public void markTemplateCell(int columnIndex)
+        {
+            if (columnIndex >= tableWidth)  return;
+
+            this.templateCellTracker[columnIndex] = true;
+
+            if (isReady()) ready();
+        }
+
+
+
+        // > INTERNAL
+        // --------------------------------------------------------------------------------------
+
+        private boolean isReady()
+        {
+            for (int i = 0; i < tableHeight; i++) {
+                for (int j = 0; j < tableWidth; j++) {
+                    if (!this.cellTracker[i][j]) return false;
+                }
+            }
+
+            for (int i = 0; i < tableWidth; i++) {
+                if (!this.templateCellTracker[i]) return false;
+            }
+
+            return true;
+        }
+
+        private void ready()
+        {
+            if (groupTrackerId == null) return;
+
+            UUID trackerCode = groupTrackerId.getCode();
+            Group.getAsyncTracker(trackerCode).markComponentId(this.table.getId());
         }
     }
 

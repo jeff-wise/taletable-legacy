@@ -475,6 +475,201 @@ sections:
             value: 1
     - label: Abilities
       groups:
+      - label: Skills
+        number_of_rows: 1
+        components:
+        - type: table
+          actions:
+          - edit
+          format:
+            label: Skills
+            row: 1
+            column: 1
+            width: 1
+          columns:
+          - Skill
+          - Modifier
+          - Proficient?
+          row_template:
+          - cells:
+            - component:
+                type: text
+                data:
+                  value: Skill Name
+            - component:
+                type: integer
+                format:
+                  prefix: '+'
+                data:
+                  value: 1
+            - component:
+                type: boolean
+                data:
+                  value: false
+          data:
+            rows:
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Acrobatics
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Animal Handling
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Arcana
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Athletics
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Deception
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: History
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Insight
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Intimidation
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Investigation
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Medicine
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Nature
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Perception
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Performance
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Persuasion
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Religion
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Sleight of Hand
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Stealth
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
+            - cells:
+              - component:
+                  type: text
+                  data:
+                    value: Survival
+              - component:
+                  type: integer
+              - component:
+                  type: boolean
     - label: Backpack
       groups:
     - label: Spellbook

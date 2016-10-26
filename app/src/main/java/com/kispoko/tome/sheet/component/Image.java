@@ -30,9 +30,11 @@ import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.component.table.Cell;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.SerialBitmap;
+import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
@@ -61,26 +63,27 @@ public class Image extends Component implements Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public Image(UUID id, UUID groupId)
+    {
+        super(id, groupId, null, null, null);
+        this.serialBitmap = null;
+    }
+
+
     public Image(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
                  Bitmap bitmap)
     {
         super(id, groupId, typeId, format, actions);
 
-        if (bitmap != null) {
-            this.serialBitmap = new SerialBitmap(bitmap);
-            Log.d("***IMAGE", "set serial bitmap in cons");
-        }
-        else
-            this.serialBitmap = null;
+        this.serialBitmap = null;
+        this.setBitmap(bitmap);
     }
 
 
+    @SuppressWarnings("unchecked")
     public static Image fromYaml(Map<String, Object> imageYaml)
     {
         // Values to parse
-        UUID id = null;
-        UUID groupId = null;
-        Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
 
@@ -94,7 +97,7 @@ public class Image extends Component implements Serializable
         if (imageYaml.containsKey("actions"))
             actions = (List<String>) imageYaml.get("actions");
 
-        return new Image(id, groupId, typeId, format, actions, null);
+        return new Image(null, null, null, format, actions, null);
     }
 
 
@@ -112,8 +115,9 @@ public class Image extends Component implements Serializable
 
         this.serialBitmap = new SerialBitmap(((BitmapDrawable)imageView.getDrawable()).getBitmap());
 
-        this.save(Global.getDatabase(), null);
+        this.save(null);
     }
+
 
     // >> Getters/Setters
     // ------------------------------------------------------------------------------------------
@@ -121,6 +125,12 @@ public class Image extends Component implements Serializable
     public String componentName()
     {
         return "image";
+    }
+
+
+    public void setBitmap(Bitmap bitmap) {
+        if (bitmap != null)
+            this.serialBitmap = new SerialBitmap(bitmap);
     }
 
 
@@ -133,27 +143,28 @@ public class Image extends Component implements Serializable
 
     /**
      * Load a Group from the database.
-     * @param database The sqlite database object.
-     * @param groupConstructorId The id of the async page constructor.
-     * @param componentId The database id of the group to load.
+     * @param trackerId The async tracker ID of the caller.
      */
-    public static void load(final SQLiteDatabase database,
-                            final UUID groupConstructorId,
-                            final UUID componentId)
+    public void load(final TrackerId trackerId)
     {
-        new AsyncTask<Void,Void,Image>()
+
+        final Image thisImage = this;
+
+        new AsyncTask<Void,Void,Boolean>()
         {
 
             @Override
-            protected Image doInBackground(Void... args)
+            protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
                 // Query Component
                 String imageQuery =
                     "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
                            "comp.actions, im.image " +
                     "FROM Component comp " +
                     "INNER JOIN component_image im on im.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
+                    "WHERE comp.component_id =  " + SQL.quoted(thisImage.getId().toString());
 
                 Cursor imageCursor = database.rawQuery(imageQuery, null);
 
@@ -184,18 +195,26 @@ public class Image extends Component implements Serializable
                 if (imageBlob != null)
                     bitmap = Util.getImage(imageBlob);
 
-                return new Image(componentId,
-                                 groupId,
-                                 null,
-                                 new Format(label, row, column, width),
-                                 actions,
-                                 bitmap);
+
+                thisImage.setFormat(new Format(label, row, column, width));
+                thisImage.setActions(actions);
+                thisImage.setBitmap(bitmap);
+
+                return true;
             }
 
             @Override
-            protected void onPostExecute(Image image)
+            protected void onPostExecute(Boolean result)
             {
-                Group.getAsyncConstructor(groupConstructorId).addComponent(image);
+                UUID trackerCode = trackerId.getCode();
+                switch (trackerId.getTarget()) {
+                    case GROUP:
+                        Group.getAsyncTracker(trackerCode).markComponentId(thisImage.getId());
+                        break;
+                    case CELL:
+                        Cell.getAsyncTracker(trackerCode).markComponent();
+                        break;
+                }
             }
 
         }.execute();
@@ -204,9 +223,9 @@ public class Image extends Component implements Serializable
 
     /**
      * Save to the database.
-     * @param database The SQLite database object.
+     * @param trackerId The async tracker ID of the caller.
      */
-    public void save(final SQLiteDatabase database, final UUID groupTrackerId)
+    public void save(final TrackerId trackerId)
     {
         final Image thisImage = this;
 
@@ -216,6 +235,10 @@ public class Image extends Component implements Serializable
             @Override
             protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
+                // > Save Component Row
+                // ------------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisImage.getId().toString());
@@ -235,7 +258,10 @@ public class Image extends Component implements Serializable
                                               componentRow,
                                               SQLiteDatabase.CONFLICT_REPLACE);
 
+                // > Save ImageComponent Row
+                // ------------------------------------------------------------------------------
                 ContentValues imageComponentRow = new ContentValues();
+
                 imageComponentRow.put("component_id", thisImage.getId().toString());
 
                 if (thisImage.serialBitmap != null) {
@@ -259,8 +285,17 @@ public class Image extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                if (groupTrackerId != null)
-                    Group.getTracker(groupTrackerId).setComponentId(thisImage.getId());
+                if (trackerId == null) return;
+
+                UUID trackerCode = trackerId.getCode();
+                switch (trackerId.getTarget()) {
+                    case GROUP:
+                        Group.getAsyncTracker(trackerCode).markComponentId(thisImage.getId());
+                        break;
+                    case CELL:
+                        Cell.getAsyncTracker(trackerCode).markComponent();
+                        break;
+                }
             }
 
         }.execute();

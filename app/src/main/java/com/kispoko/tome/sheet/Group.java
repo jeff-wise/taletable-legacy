@@ -46,9 +46,9 @@ public class Group implements Serializable
     private Integer index;
 
     // >> STATIC
-    private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
+    //private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
-    private static Map<UUID,SaveTracker> trackerMap = new HashMap<>();
+    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
@@ -109,6 +109,7 @@ public class Group implements Serializable
     // >> Async Constructor
     // ------------------------------------------------------------------------------------------
 
+    /*
     private static UUID addAsyncConstructor(UUID id, Integer numberOfComponents,
                                            UUID pageConstructorId)
     {
@@ -127,6 +128,8 @@ public class Group implements Serializable
         return Group.asyncConstructorMap.get(constructorId);
     }
 
+    */
+
 
     // >> Tracking
     // ------------------------------------------------------------------------------------------
@@ -135,17 +138,17 @@ public class Group implements Serializable
      * Create a tracker for asynchronously tracking the state of a sheet.
      * @return The new tracker's ID.
      */
-    private static UUID addTracker(UUID groupId, UUID pageTrackerId, ArrayList<UUID> componentIds)
+    private static UUID addAsyncTracker(UUID groupId, UUID pageTrackerId, ArrayList<UUID> componentIds)
     {
         UUID trackerId = UUID.randomUUID();
-        Group.trackerMap.put(trackerId, new SaveTracker(groupId, pageTrackerId, componentIds));
+        Group.asyncTrackerMap.put(trackerId, new AsyncTracker(groupId, pageTrackerId, componentIds));
         return trackerId;
     }
 
 
-    public static SaveTracker getTracker(UUID trackerId)
+    public static AsyncTracker getAsyncTracker(UUID trackerId)
     {
-        return Group.trackerMap.get(trackerId);
+        return Group.asyncTrackerMap.get(trackerId);
     }
 
 
@@ -471,6 +474,7 @@ public class Group implements Serializable
     // > NESTED CLASSES
     // ------------------------------------------------------------------------------------------
 
+    /*
     public static class AsyncConstructor
     {
         private UUID pageConstructorId;
@@ -535,14 +539,14 @@ public class Group implements Serializable
             Page.getAsyncConstructor(pageConstructorId).addGroup(group);
         }
 
-    }
+    } */
 
 
     /**
      * Track the state of a Group object. When the state reaches a desired configuration,
      * execute a callback.
      */
-    public static class SaveTracker
+    public static class AsyncTracker
     {
 
         // > PROPERTIES
@@ -558,7 +562,7 @@ public class Group implements Serializable
         // > CONSTRUCTORS
         // --------------------------------------------------------------------------------------
 
-        public SaveTracker(UUID groupId, UUID pageTrackerId, ArrayList<UUID> componentIds)
+        public AsyncTracker(UUID groupId, UUID pageTrackerId, ArrayList<UUID> componentIds)
         {
             this.groupId = groupId;
             this.pageTrackerId = pageTrackerId;
@@ -578,7 +582,7 @@ public class Group implements Serializable
         // > API
         // --------------------------------------------------------------------------------------
 
-        synchronized public void setComponentId(UUID componentId)
+        synchronized public void markComponentId(UUID componentId)
         {
             if (componentIdTrackerMap.containsKey(componentId)) {
                 boolean currentStatus = componentIdTrackerMap.get(componentId);

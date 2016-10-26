@@ -1,5 +1,5 @@
 <resources>
-    <string name="drawer_header_text">Drawer Header</string>
+    <string name="drawer_header_text">TOME</string>
 
     <string name="characters">Manage Characters</string>
 
@@ -13,6 +13,15 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+
+    <!-- NEW CHARACTER ACTIVITY -->
+    <string name="nav_profile">Profile</string>
+    <string name="nav_combat">Combat</string>
+    <string name="nav_campaign">Campaign</string>
+    <string name="nav_rules">Rules</string>
+    <string name="nav_characters">Characters</string>
+
 
     <!-- TABS -->
     <string name="profile_tab">Profile</string>

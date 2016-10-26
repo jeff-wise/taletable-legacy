@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,12 +28,14 @@ import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.component.table.Cell;
 import com.kispoko.tome.sheet.component.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.type.ListType;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
+import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
@@ -44,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static android.R.id.list;
 
 
 /**
@@ -65,6 +65,14 @@ public class Text extends Component implements Serializable
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+
+    public Text(UUID id, UUID groupId) {
+        super(id, groupId, null, null, null);
+        this.keyStat = null;
+        this.value = null;
+        this.textSize = null;
+    }
 
 
     public Text(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
@@ -137,6 +145,16 @@ public class Text extends Component implements Serializable
     // > API
     // ------------------------------------------------------------------------------------------
 
+    // >> State
+    // ------------------------------------------------------------------------------------------
+
+    // >>> Value
+    // ------------------------------------------------------------------------------------------
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public void setValue(String value, Context context)
     {
         this.value = value;
@@ -147,7 +165,7 @@ public class Text extends Component implements Serializable
             textView.setText(this.value);
         }
 
-        this.save(Global.getDatabase(), null);
+        this.save(null);
     }
 
 
@@ -163,15 +181,29 @@ public class Text extends Component implements Serializable
     }
 
 
-    public TextSize getTextSize()
-    {
+    // >>> Text Size
+    // ------------------------------------------------------------------------------------------
+
+    public TextSize getTextSize() {
         return this.textSize;
     }
 
 
-    public Integer getKeyStat()
-    {
+    public void setTextSize(TextSize textSize) {
+        this.textSize = textSize;
+    }
+
+
+    // >>> Key Stat
+    // ------------------------------------------------------------------------------------------
+
+    public Integer getKeyStat() {
         return this.keyStat;
+    }
+
+
+    public void setKeyStat(Integer keyStat) {
+        this.keyStat = keyStat;
     }
 
 
@@ -336,27 +368,27 @@ public class Text extends Component implements Serializable
 
     /**
      * Load a Group from the database.
-     * @param database The sqlite database object.
-     * @param groupConstructorId The id of the async page constructor.
-     * @param componentId The database id of the group to load.
+     * @param trackerId The ID of the async tracker for the caller.
      */
-    public static void load(final SQLiteDatabase database,
-                            final UUID groupConstructorId,
-                            final UUID componentId)
+    public void load(final TrackerId trackerId)
     {
-        new AsyncTask<Void,Void,Text>()
+        final Text thisText = this;
+
+        new AsyncTask<Void,Void,Boolean>()
         {
 
             @Override
-            protected Text doInBackground(Void... args)
+            protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
                 // Query Component
                 String textQuery =
                     "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
                            "comp.type_kind, comp.type_id, comp.key_stat, comp.actions, text.size, text.value " +
                     "FROM Component comp " +
                     "INNER JOIN component_text text on text.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(componentId.toString());
+                    "WHERE comp.component_id =  " + SQL.quoted(thisText.getId().toString());
 
                 Cursor textCursor = database.rawQuery(textQuery, null);
 
@@ -386,27 +418,33 @@ public class Text extends Component implements Serializable
                     textSize        = textCursor.getString(9);
                     value           = textCursor.getString(10);
                 }
-                // TODO log
                 finally {
                     textCursor.close();
                 }
 
-                return new Text(componentId,
-                                groupId,
-                                new Type.Id(typeKind, typeId),
-                                new Format(label, row, column, width),
-                                actions,
-                                TextSize.fromString(textSize),
-                                keyStat,
-                                value);
+                thisText.setTypeId(new Type.Id(typeKind, typeId));
+                thisText.setFormat(new Format(label, row, column, width));
+                thisText.setActions(actions);
+                thisText.setTextSize(TextSize.fromString(textSize));
+                thisText.setKeyStat(keyStat);
+                thisText.setValue(value);
+
+                return null;
             }
 
             @Override
-            protected void onPostExecute(Text text)
+            protected void onPostExecute(Boolean result)
             {
-                Group.getAsyncConstructor(groupConstructorId).addComponent(text);
+                UUID trackerCode = trackerId.getCode();
+                switch (trackerId.getTarget()) {
+                    case GROUP:
+                        Group.getAsyncTracker(trackerCode).markComponentId(thisText.getId());
+                        break;
+                    case CELL:
+                        Cell.getAsyncTracker(trackerCode).markComponent();
+                        break;
+                }
             }
-
 
         }.execute();
     }
@@ -414,9 +452,9 @@ public class Text extends Component implements Serializable
 
     /**
      * Save to the database.
-     * @param database The SQLite database object.
+     * @param trackerId The async tracker ID of the caller.
      */
-    public void save(final SQLiteDatabase database, final UUID groupTrackerId)
+    public void save(final TrackerId trackerId)
     {
         final Text thisText = this;
 
@@ -426,6 +464,10 @@ public class Text extends Component implements Serializable
             @Override
             protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
+                // > Save Component Row
+                // ------------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisText.getId().toString());
@@ -457,8 +499,10 @@ public class Text extends Component implements Serializable
                                               componentRow,
                                               SQLiteDatabase.CONFLICT_REPLACE);
 
-
+                // > Save TextComponent Row
+                // ------------------------------------------------------------------------------
                 ContentValues textComponentRow = new ContentValues();
+
                 textComponentRow.put("component_id", thisText.getId().toString());
                 textComponentRow.put("value", thisText.getValue());
                 textComponentRow.put("size", thisText.getTextSize().toString().toLowerCase());
@@ -475,8 +519,17 @@ public class Text extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                if (groupTrackerId != null)
-                    Group.getTracker(groupTrackerId).setComponentId(thisText.getId());
+                if (trackerId == null) return;
+
+                UUID trackerCode = trackerId.getCode();
+                switch (trackerId.getTarget()) {
+                    case GROUP:
+                        Group.getAsyncTracker(trackerCode).markComponentId(thisText.getId());
+                        break;
+                    case CELL:
+                        Cell.getAsyncTracker(trackerCode).markComponent();
+                        break;
+                }
             }
 
 
