@@ -17,4 +17,13 @@ public class SQL
         return "'" + innerString + "'";
     }
 
+
+    public static void putOptString(ContentValues row, String columnName, Object object)
+    {
+        if (object != null)
+            row.put(columnName, object.toString());
+        else
+            row.putNull(columnName);
+    }
+
 }

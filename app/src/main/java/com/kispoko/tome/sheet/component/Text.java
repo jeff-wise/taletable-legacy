@@ -87,10 +87,11 @@ public class Text extends Component implements Serializable
 
     // TODO allow integer values as strings here too
     @SuppressWarnings("unchecked")
-    public static Text fromYaml(Map<String, Object> textYaml)
+    public static Text fromYaml(UUID groupId, Map<String, Object> textYaml)
     {
-        // Values to parse
-        UUID id = null;            // Isn't actually parsed, is only stored in DB
+        // VALUES TO PARSE
+        // --------------------------------------------------------------------------------------
+        UUID id = UUID.randomUUID();
         Type.Id typeId = null;
         Format format = null;
         ArrayList<String> actions = null;
@@ -98,47 +99,49 @@ public class Text extends Component implements Serializable
         Integer keyStat = null;
         String value = null;
 
-        // Parse Values
-        Map<String, Object> formatYaml = (Map<String, Object>) textYaml.get("format");
-        Map<String, Object> dataYaml   = (Map<String, Object>) textYaml.get("data");
+        // PARSE VALUES
+        // --------------------------------------------------------------------------------------
 
-        // >> Type Id
-        if (dataYaml.containsKey("type"))
-        {
-            Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
-            String _typeId = null;
-            String typeKind = null;
+        // > Top Level
+        // --------------------------------------------------------------------------------------
 
-            if (typeYaml.containsKey("id"))
-                _typeId = (String) typeYaml.get("id");
-
-            if (typeYaml.containsKey("kind"))
-                typeKind = (String) typeYaml.get("kind");
-
-            typeId = new Type.Id(typeKind, _typeId);
-        }
-
-        // >> Format
-        format = Component.parseFormatYaml(textYaml);
-
-        // >> Actions
+        // ** Actions
         if (textYaml.containsKey("actions"))
             actions = (ArrayList<String>) textYaml.get("actions");
 
-        // >> Text Size
-        if (formatYaml.containsKey("text_size"))
-            textSize = Component.TextSize.fromString((String) formatYaml.get("text_size"));
-
-        // >> Key Stat
+        // ** Key Stat
         if (textYaml.containsKey("key_stat"))
             keyStat = (Integer) textYaml.get("key_stat");
 
-        // >> Value
-        if (dataYaml.containsKey("value"))
-            value = (String) dataYaml.get("value");
+        // >> Data
+        // --------------------------------------------------------------------------------------
+        Map<String,Object> dataYaml   = (Map<String,Object>) textYaml.get("data");
 
-        // Create Text
-        return new Text(id, null, typeId, format, actions, textSize, keyStat, value);
+        if (dataYaml != null)
+        {
+            // ** Type Id
+            typeId = Type.Id.fromYaml(dataYaml);
+
+            // ** Value
+            if (dataYaml.containsKey("value"))
+                value = (String) dataYaml.get("value");
+        }
+
+        // >> Format
+        // --------------------------------------------------------------------------------------
+        Map<String,Object> formatYaml = (Map<String,Object>) textYaml.get("format");
+
+        if (formatYaml != null)
+        {
+            // ** Format
+            format = Component.parseFormatYaml(textYaml);
+
+            // ** Text Size
+            if (formatYaml.containsKey("text_size"))
+                textSize = Component.TextSize.fromString((String) formatYaml.get("text_size"));
+        }
+
+        return new Text(id, groupId, typeId, format, actions, textSize, keyStat, value);
     }
 
 
@@ -186,6 +189,13 @@ public class Text extends Component implements Serializable
 
     public TextSize getTextSize() {
         return this.textSize;
+    }
+
+
+    public String getTextSizeStored() {
+        if (this.textSize != null)
+            return this.textSize.toString().toLowerCase();
+        return null;
     }
 
 
@@ -423,7 +433,10 @@ public class Text extends Component implements Serializable
                 }
 
                 thisText.setTypeId(new Type.Id(typeKind, typeId));
-                thisText.setFormat(new Format(label, row, column, width));
+                thisText.setLabel(label);
+                thisText.setRow(row);
+                thisText.setColumn(column);
+                thisText.setWidth(width);
                 thisText.setActions(actions);
                 thisText.setTextSize(TextSize.fromString(textSize));
                 thisText.setKeyStat(keyStat);
@@ -471,7 +484,7 @@ public class Text extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisText.getId().toString());
-                componentRow.put("group_id", thisText.getGroupId().toString());
+                SQL.putOptString(componentRow, "group_id", thisText.getGroupId());
                 componentRow.put("data_type", thisText.componentName());
                 componentRow.put("label", thisText.getLabel());
                 componentRow.put("row", thisText.getRow());
@@ -495,9 +508,9 @@ public class Text extends Component implements Serializable
 
 
                 database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
-                                              null,
-                                              componentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
+                        null,
+                        componentRow,
+                        SQLiteDatabase.CONFLICT_REPLACE);
 
                 // > Save TextComponent Row
                 // ------------------------------------------------------------------------------
@@ -505,12 +518,12 @@ public class Text extends Component implements Serializable
 
                 textComponentRow.put("component_id", thisText.getId().toString());
                 textComponentRow.put("value", thisText.getValue());
-                textComponentRow.put("size", thisText.getTextSize().toString().toLowerCase());
+                textComponentRow.put("size", thisText.getTextSizeStored());
 
                 database.insertWithOnConflict(SheetContract.ComponentText.TABLE_NAME,
-                                              null,
-                                              textComponentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
+                        null,
+                        textComponentRow,
+                        SQLiteDatabase.CONFLICT_REPLACE);
 
 
                 return true;

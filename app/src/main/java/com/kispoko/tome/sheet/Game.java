@@ -2,23 +2,26 @@
 package com.kispoko.tome.sheet;
 
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.kispoko.tome.Global;
+import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.util.SQL;
-import com.kispoko.tome.util.tuple.Tuple3;
+import com.kispoko.tome.util.TrackerId;
 
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.UUID;
 
-import static android.R.attr.data;
+
 
 /**
  * Game
  */
-public class Game {
+public class Game
+{
 
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
@@ -31,7 +34,16 @@ public class Game {
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Game(String id, String label, String description) {
+    public Game(String id)
+    {
+        this.id = id;
+        this.label = null;
+        this.description = null;
+    }
+
+
+    public Game(String id, String label, String description)
+    {
         this.id = id;
         this.label = label;
         this.description = description;
@@ -66,7 +78,7 @@ public class Game {
     // > API
     // ------------------------------------------------------------------------------------------
 
-    // >> Getters/Setters
+    // >> State
     // ------------------------------------------------------------------------------------------
 
     public String getId()
@@ -74,31 +86,52 @@ public class Game {
         return this.id;
     }
 
-    public String getLabel()
-    {
+
+    // >>> Label
+    // ------------------------------------------------------------------------------------------
+
+    public String getLabel() {
         return this.label;
     }
 
-    public String getDescription()
-    {
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+
+    // >>> Description
+    // ------------------------------------------------------------------------------------------
+
+    public String getDescription() {
         return this.description;
+    }
+
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 
     // >> Database
     // ------------------------------------------------------------------------------------------
 
-    public static void load(final SQLiteDatabase database, final UUID sheetConstructorId,
-                            final String gameId) {
-        new AsyncTask<Void, Void, Game>() {
+    public void load(final TrackerId sheetTrackerId)
+    {
+        final Game thisGame = this;
+
+        new AsyncTask<Void, Void, Boolean>() {
 
             @Override
-            protected Game doInBackground(Void... args) {
+            protected Boolean doInBackground(Void... args)
+            {
+                SQLiteDatabase database = Global.getDatabase();
+
                 // Query for the game
                 String gameQuery =
-                        "SELECT game.label, game.description " +
-                                "FROM game " +
-                                "WHERE game.game_id =  " + SQL.quoted(gameId);
+                    "SELECT game.label, game.description " +
+                    "FROM game " +
+                    "WHERE game.game_id =  " + SQL.quoted(thisGame.getId());
 
                 Cursor gameCursor = database.rawQuery(gameQuery, null);
 
@@ -112,14 +145,59 @@ public class Game {
                     gameCursor.close();
                 }
 
-                return new Game(gameId, label, description);
+                thisGame.setLabel(label);
+                thisGame.setDescription(description);
+
+                return true;
             }
 
             @Override
-            protected void onPostExecute(Game game) {
-                Sheet.getAsyncConstructor(sheetConstructorId).setGame(game);
+            protected void onPostExecute(Boolean result)
+            {
+                Sheet.getAsyncTracker(sheetTrackerId.getCode()).markGame();
             }
 
+        }.execute();
+    }
+
+
+    public void save(final TrackerId sheetTrackerId)
+    {
+
+        final Game thisGame = this;
+
+        new AsyncTask<Void,Void,Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... args)
+            {
+                SQLiteDatabase database = Global.getDatabase();
+
+                // Insert Game Row (if doesn't exist)
+                // -----------------------------------------------------------------------------
+                ContentValues gameRow = new ContentValues();
+                gameRow.put("game_id", thisGame.getId());
+                gameRow.put("label", thisGame.getLabel());
+
+                if (thisGame.getDescription() != null)
+                    gameRow.put("description", thisGame.getId());
+                else
+                    gameRow.putNull("description");
+
+                database.insertWithOnConflict(SheetContract.Game.TABLE_NAME,
+                        null,
+                        gameRow,
+                        SQLiteDatabase.CONFLICT_REPLACE);
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result)
+            {
+                Log.d("***GAME", "saved game");
+                Sheet.getAsyncTracker(sheetTrackerId.getCode()).markGame();
+            }
         }.execute();
     }
 }

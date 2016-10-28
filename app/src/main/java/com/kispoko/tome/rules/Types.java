@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.kispoko.tome.type.ListType;
 import com.kispoko.tome.type.Type;
+import com.kispoko.tome.util.TrackerId;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.R.attr.type;
 
 
 /**
@@ -24,18 +26,20 @@ public class Types implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    private UUID sheetId;
+
     private Map<String, ListType> listTypeIndex;
 
     // >> STATIC
-    private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
+//    private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
-    private static Map<UUID,SaveTracker> trackerMap = new HashMap<>();
+    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Types()
+    public Types(UUID sheetId)
     {
         this.listTypeIndex = new HashMap<>();
     }
@@ -103,17 +107,17 @@ public class Types implements Serializable
     // >> Async Constructor
     // ------------------------------------------------------------------------------------------
 
-    private static UUID addAsyncConstructor(UUID rulesConstructorId) {
-        UUID constructorId = UUID.randomUUID();
-        Types.asyncConstructorMap.put(constructorId, new AsyncConstructor(rulesConstructorId));
-        return constructorId;
-    }
-
-
-    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
-    {
-        return Types.asyncConstructorMap.get(constructorId);
-    }
+//    private static UUID addAsyncConstructor(UUID rulesConstructorId) {
+//        UUID constructorId = UUID.randomUUID();
+//        Types.asyncConstructorMap.put(constructorId, new AsyncConstructor(rulesConstructorId));
+//        return constructorId;
+//    }
+//
+//
+//    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
+//    {
+//        return Types.asyncConstructorMap.get(constructorId);
+//    }
 
 
     // >> Tracking
@@ -123,39 +127,41 @@ public class Types implements Serializable
      * Create a tracker for asynchronously tracking the state of a sheet.
      * @return The new tracker's ID.
      */
-    private static UUID addTracker(UUID rulesTrackerId, int listTypesCount) {
-        UUID trackerId = UUID.randomUUID();
-        Types.trackerMap.put(trackerId, new SaveTracker(rulesTrackerId, listTypesCount));
-        return trackerId;
+    private TrackerId addAsyncTracker(TrackerId rulesTrackerId)
+    {
+        UUID trackerCode = UUID.randomUUID();
+        Types.asyncTrackerMap.put(trackerCode, new AsyncTracker(rulesTrackerId));
+        return new TrackerId(trackerCode, TrackerId.Target.TYPES);
     }
 
 
-    public static SaveTracker getTracker(UUID trackerId) {
-        return Types.trackerMap.get(trackerId);
+    public static AsyncTracker getAsyncTracker(UUID trackerCode)
+    {
+        return Types.asyncTrackerMap.get(trackerCode);
     }
 
 
     // >> Database
     // ------------------------------------------------------------------------------------------
 
-    public static void loadAll(UUID rulesConstructorId, UUID sheetId)
+    public void load(TrackerId rulesTrackerId, UUID sheetId)
     {
-        UUID typesConstructorId = Types.addAsyncConstructor(rulesConstructorId);
+        TrackerId typesTrackerId = this.addAsyncTracker(rulesTrackerId);
 
         // Load Types asynchronously
-        ListType.loadAll(typesConstructorId, sheetId);
+        ListType.loadAll(typesTrackerId, this, sheetId);
     }
 
 
-    public void save(UUID rulesTrackerId, UUID sheetId, boolean recusrive)
+    public void save(TrackerId rulesTrackerId, UUID sheetId, boolean recusrive)
     {
         if (!recusrive) return;
 
-        UUID typesTrackerId = Types.addTracker(rulesTrackerId,
-                                               this.listTypeIndex.values().size());
+        Log.d("***TYPES", "save types");
 
-        for (ListType listType : this.listTypeIndex.values())
-        {
+        TrackerId typesTrackerId = this.addAsyncTracker(rulesTrackerId);
+
+        for (ListType listType : this.listTypeIndex.values()) {
             listType.save(typesTrackerId, sheetId);
         }
     }
@@ -165,6 +171,7 @@ public class Types implements Serializable
     // > NESTED CLASSES
     // ------------------------------------------------------------------------------------------
 
+    /*
     public static class AsyncConstructor
     {
         private UUID rulesConstructorId;
@@ -194,35 +201,33 @@ public class Types implements Serializable
             Rules.getAsyncConstructor(rulesConstructorId).setTypes(types);
         }
 
-    }
+    }*/
 
 
     /**
      * Track state of Sheet.
      */
-    public static class SaveTracker
+    public static class AsyncTracker
     {
-        private UUID rulesTrackerId;
+        private TrackerId rulesTrackerId;
 
-        private int listTypesTracker;
+        private boolean listTypes;
 
-        public SaveTracker(UUID rulesTrackerId, int listTypesCount) {
+        public AsyncTracker(TrackerId rulesTrackerId) {
             this.rulesTrackerId = rulesTrackerId;
-            this.listTypesTracker = listTypesCount;
         }
 
-        synchronized public void trackListType() {
-            this.listTypesTracker -= 1;
+        synchronized public void markListTypes() {
+            this.listTypes = true;
             if (isReady()) ready();
         }
 
         private boolean isReady() {
-            return this.listTypesTracker == 0;
+            return this.listTypes;
         }
 
         private void ready() {
-            Log.d("**TYPES", "ready");
-            Rules.getTracker(this.rulesTrackerId).setTypes();
+            Rules.getAsyncTracker(this.rulesTrackerId.getCode()).markTypes();
         }
 
     }

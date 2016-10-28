@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -64,35 +65,51 @@ public class Bool extends Component implements Serializable
      * @return The parsed Bool.
      */
     @SuppressWarnings("unchecked")
-    public static Bool fromYaml(Map<String, Object> boolYaml)
+    public static Bool fromYaml(UUID groupId, Map<String, Object> boolYaml)
     {
-        // Values to parse
-        UUID id = null;
-        UUID groupId = null;
+        // VALUES TO PARSE
+        // --------------------------------------------------------------------------------------
+        UUID id = UUID.randomUUID();
         Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
         Boolean value = null;
 
-        // Parse Values
-        Map<String, Object> formatYaml = (Map<String, Object>) boolYaml.get("format");
-        Map<String, Object> dataYaml   = (Map<String, Object>) boolYaml.get("data");
+        // PARSE VALUES
+        // --------------------------------------------------------------------------------------
 
-        // >> Type Id
-        typeId = Type.Id.fromYaml(dataYaml);
+        // > Top Level
+        // --------------------------------------------------------------------------------------
 
-        // >> Format
-        format = Component.parseFormatYaml(boolYaml);
-
-        // >> Actions
+        // ** Actions
         if (boolYaml.containsKey("actions"))
             actions = (List<String>) boolYaml.get("actions");
 
-        // >> Value
-        if (dataYaml.containsKey("value"))
-            value = (Boolean) dataYaml.get("value");
 
-        // Create Integer
+        // >> Data
+        // --------------------------------------------------------------------------------------
+        Map<String, Object> dataYaml   = (Map<String, Object>) boolYaml.get("data");
+
+        if (dataYaml != null)
+        {
+            // ** Value
+            if (dataYaml.containsKey("value"))
+                value = (Boolean) dataYaml.get("value");
+
+            // ** Type Id
+            typeId = Type.Id.fromYaml(dataYaml);
+        }
+
+        // >> Format
+        // --------------------------------------------------------------------------------------
+        Map<String, Object> formatYaml = (Map<String, Object>) boolYaml.get("format");
+
+        if (formatYaml != null)
+        {
+            // ** Format
+            format = Component.parseFormatYaml(boolYaml);
+        }
+
         return new Bool(id, groupId, typeId, format, actions, value);
     }
 
@@ -112,7 +129,7 @@ public class Bool extends Component implements Serializable
 
     public String componentName()
     {
-        return "integer";
+        return "boolean";
     }
 
 
@@ -210,7 +227,10 @@ public class Bool extends Component implements Serializable
                 }
 
                 thisBool.setTypeId(new Type.Id(typeKind, typeId));
-                thisBool.setFormat(new Format(label, row, column, width));
+                thisBool.setLabel(label);
+                thisBool.setRow(row);
+                thisBool.setColumn(column);
+                thisBool.setWidth(width);
                 thisBool.setActions(actions);
                 thisBool.setValue(value);
 
@@ -256,33 +276,38 @@ public class Bool extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisBool.getId().toString());
-                componentRow.put("group_id", thisBool.getGroupId().toString());
+
+                SQL.putOptString(componentRow, "group_id", thisBool.getGroupId());
                 componentRow.put("data_type", thisBool.componentName());
                 componentRow.put("label", thisBool.getLabel());
                 componentRow.put("row", thisBool.getRow());
                 componentRow.put("column", thisBool.getColumn());
                 componentRow.put("width", thisBool.getWidth());
                 componentRow.put("actions", TextUtils.join(",", thisBool.getActions()));
-                componentRow.put("text_value", thisBool.getValue().toString());
+                SQL.putOptString(componentRow, "text_value", thisBool.getValue());
                 componentRow.putNull("type_kind");
                 componentRow.putNull("type_id");
 
                 database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
-                                              null,
-                                              componentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
+                        null,
+                        componentRow,
+                        SQLiteDatabase.CONFLICT_REPLACE);
 
                 // > Update ComponentBoolean Row
                 // ------------------------------------------------------------------------------
                 ContentValues boolComponentRow = new ContentValues();
 
                 boolComponentRow.put("component_id", thisBool.getId().toString());
-                boolComponentRow.put("value", thisBool.getValueAsInt());
+
+                if (thisBool.getValue() != null)
+                    boolComponentRow.put("value", thisBool.getValueAsInt());
+                else
+                    boolComponentRow.putNull("value");
 
                 database.insertWithOnConflict(SheetContract.ComponentBoolean.TABLE_NAME,
-                                              null,
-                                              boolComponentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
+                        null,
+                        boolComponentRow,
+                        SQLiteDatabase.CONFLICT_REPLACE);
 
                 return true;
             }

@@ -81,23 +81,35 @@ public class Image extends Component implements Serializable
 
 
     @SuppressWarnings("unchecked")
-    public static Image fromYaml(Map<String, Object> imageYaml)
+    public static Image fromYaml(UUID groupId, Map<String, Object> imageYaml)
     {
-        // Values to parse
+        // VALUES TO PARSE
+        // --------------------------------------------------------------------------------------
+        UUID id = UUID.randomUUID();
         Format format = null;
         List<String> actions = null;
 
-        // Parse Values
-        Map<String, Object> formatYaml = (Map<String, Object>) imageYaml.get("format");
+        // PARSE VALUES
+        // --------------------------------------------------------------------------------------
 
-        // >> Format
-        format = Component.parseFormatYaml(imageYaml);
+        // > Top Level
+        // --------------------------------------------------------------------------------------
 
-        // >> Actions
+        // ** Actions
         if (imageYaml.containsKey("actions"))
             actions = (List<String>) imageYaml.get("actions");
 
-        return new Image(null, null, null, format, actions, null);
+        // >> Format
+        // --------------------------------------------------------------------------------------
+        Map<String, Object> formatYaml = (Map<String, Object>) imageYaml.get("format");
+
+        if (formatYaml != null)
+        {
+            // ** Format
+            format = Component.parseFormatYaml(imageYaml);
+        }
+
+        return new Image(id, groupId, null, format, actions, null);
     }
 
 
@@ -195,8 +207,10 @@ public class Image extends Component implements Serializable
                 if (imageBlob != null)
                     bitmap = Util.getImage(imageBlob);
 
-
-                thisImage.setFormat(new Format(label, row, column, width));
+                thisImage.setLabel(label);
+                thisImage.setRow(row);
+                thisImage.setColumn(column);
+                thisImage.setWidth(width);
                 thisImage.setActions(actions);
                 thisImage.setBitmap(bitmap);
 
@@ -242,7 +256,7 @@ public class Image extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisImage.getId().toString());
-                componentRow.put("group_id", thisImage.getGroupId().toString());
+                SQL.putOptString(componentRow, "group_id", thisImage.getGroupId());
                 componentRow.put("data_type", thisImage.componentName());
                 componentRow.put("label", thisImage.getLabel());
                 componentRow.put("row", thisImage.getRow());

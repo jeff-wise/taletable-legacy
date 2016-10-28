@@ -118,11 +118,13 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             SheetContract.ComponentTableCell.COLUMN_TABLE_ID_NAME + " " + SheetContract.ComponentTableCell.COLUMN_TABLE_ID_TYPE + ", " +
             SheetContract.ComponentTableCell.COLUMN_ROW_INDEX_NAME + " " + SheetContract.ComponentTableCell.COLUMN_ROW_INDEX_TYPE + ", " +
             SheetContract.ComponentTableCell.COLUMN_COLUMN_INDEX_NAME + " " + SheetContract.ComponentTableCell.COLUMN_COLUMN_INDEX_TYPE + ", " +
+            SheetContract.ComponentTableCell.COLUMN_IS_TEMPLATE_NAME + " " + SheetContract.ComponentTableCell.COLUMN_IS_TEMPLATE_TYPE + ", " +
             SheetContract.ComponentTableCell.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentTableCell.COLUMN_COMPONENT_ID_TYPE + ", " +
-            "CONSTRAINT table_cell_constraint_unique UNIQUE (" +
+            "UNIQUE (" +
                     SheetContract.ComponentTableCell.COLUMN_TABLE_ID_NAME + ", " +
                     SheetContract.ComponentTableCell.COLUMN_ROW_INDEX_NAME + ", " +
-                    SheetContract.ComponentTableCell.COLUMN_COLUMN_INDEX_NAME + ") )";
+                    SheetContract.ComponentTableCell.COLUMN_COLUMN_INDEX_NAME + ", " +
+                    SheetContract.ComponentTableCell.COLUMN_IS_TEMPLATE_NAME + ") )";
 
         final String CREATE_COMPONENT_IMAGE_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentImage.TABLE_NAME + " (" +
@@ -147,6 +149,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
         db.execSQL(CREATE_COMPONENT_TABLE);
         db.execSQL(CREATE_COMPONENT_TEXT_TABLE);
         db.execSQL(CREATE_COMPONENT_INTEGER_TABLE);
+        db.execSQL(CREATE_COMPONENT_BOOLEAN_TABLE);
         db.execSQL(CREATE_COMPONENT_TABLE_TABLE);
         db.execSQL(CREATE_COMPONENT_TABLE_CELL_TABLE);
         db.execSQL(CREATE_COMPONENT_IMAGE_TABLE);

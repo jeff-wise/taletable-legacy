@@ -195,7 +195,7 @@ public class SheetActivity
 
     public void saveSheet(boolean recursive)
     {
-        this.sheet.save(Global.getDatabase(), this, recursive);
+        this.sheet.save(this, recursive);
     }
 
 
@@ -297,7 +297,7 @@ public class SheetActivity
         }
         // Load the most recently used character sheet
         else {
-            Sheet.loadMostRecent(Global.getDatabase(), this);
+            Sheet.loadMostRecent(this);
         }
 
     }

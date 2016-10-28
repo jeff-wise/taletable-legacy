@@ -7,15 +7,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.kispoko.tome.Global;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Unique;
-import com.kispoko.tome.util.tuple.Tuple2;
-import com.kispoko.tome.util.tuple.Tuple3;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static android.R.attr.name;
 
 
 /**
@@ -49,13 +49,18 @@ public class Page implements Unique, Serializable
     private Integer index;
 
     // > STATIC
-    private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
+    //private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
-    private static Map<UUID,SaveTracker> trackerMap = new HashMap<>();
+    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public Page(UUID id)
+    {
+        this.id = id;
+    }
 
     public Page(UUID id, String label, Integer index, ArrayList<Group> groups)
     {
@@ -87,6 +92,7 @@ public class Page implements Unique, Serializable
     public static Page fromYaml(Map<String, Object> pageYaml)
     {
         // Values to parse
+        UUID id = UUID.randomUUID();
         String label = null;
         Integer index = null;
 
@@ -103,14 +109,14 @@ public class Page implements Unique, Serializable
             int groupIndex = 0;
             for (Object groupYaml : groupsYaml)
             {
-                Group group = Group.fromYaml((Map<String, Object>) groupYaml);
+                Group group = Group.fromYaml(id, (Map<String, Object>) groupYaml);
                 group.setIndex(groupIndex);
                 groups.add(group);
                 groupIndex += 1;
             }
         }
 
-        return new Page(null, label, index, groups);
+        return new Page(id, label, index, groups);
     }
 
 
@@ -124,50 +130,54 @@ public class Page implements Unique, Serializable
      * Create a tracker for asynchronously tracking the state of a sheet.
      * @return The new tracker's ID.
      */
-    private static UUID addTracker(UUID pageId, UUID roleplayTrackerId, ArrayList<UUID> groupIds)
-    {
-        UUID trackerId = UUID.randomUUID();
-        Page.trackerMap.put(trackerId, new SaveTracker(pageId, roleplayTrackerId, groupIds));
-        return trackerId;
-    }
-
-
-    public static SaveTracker getTracker(UUID trackerId)
-    {
-        return Page.trackerMap.get(trackerId);
-    }
+//    private static UUID addTracker(UUID pageId, UUID roleplayTrackerId, ArrayList<UUID> groupIds)
+//    {
+//        UUID trackerId = UUID.randomUUID();
+//        Page.trackerMap.put(trackerId, new AsyncTracker(pageId, roleplayTrackerId, groupIds));
+//        return trackerId;
+//    }
+//
+//
+//    public static AsyncTracker getTracker(UUID trackerId)
+//    {
+//        return Page.trackerMap.get(trackerId);
+//    }
 
 
     // >> Async Constructor
     // ------------------------------------------------------------------------------------------
 
-    private static UUID addAsyncConstructor(UUID id, Integer numberOfGroups,
-                                           UUID roleplayConstructorId)
+    private TrackerId addAsyncTracker(TrackerId roleplayTrackerId)
     {
-        UUID constructorId = UUID.randomUUID();
-        Page.asyncConstructorMap.put(constructorId, new AsyncConstructor(id,
-                                                                 numberOfGroups,
-                                                                 roleplayConstructorId));
-        return constructorId;
+        UUID trackerCode = UUID.randomUUID();
+        Page.asyncTrackerMap.put(trackerCode, new AsyncTracker(this, roleplayTrackerId));
+        return new TrackerId(trackerCode, TrackerId.Target.PAGE);
     }
 
 
-    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
+    public static AsyncTracker getAsyncTracker(UUID trackerCode)
     {
-        return Page.asyncConstructorMap.get(constructorId);
+        return Page.asyncTrackerMap.get(trackerCode);
     }
 
 
-    // >> Getters/Setters
+    // >> State
+    // ------------------------------------------------------------------------------------------
+
+    // >>> Label
     // ------------------------------------------------------------------------------------------
 
     /**
      * Returns the label of this page.
      * @return The page label.
      */
-    public String getLabel()
-    {
+    public String getLabel() {
         return this.label;
+    }
+
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 
@@ -177,13 +187,20 @@ public class Page implements Unique, Serializable
     }
 
 
-    public ArrayList<Group> getGroups()
-    {
+    // >>> Groups
+    // ------------------------------------------------------------------------------------------
+
+    public ArrayList<Group> getGroups() {
         return this.groups;
     }
 
 
-    // >> Index
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
+    }
+
+
+    // >>> Index
     // ------------------------------------------------------------------------------------------
 
     public Integer getIndex()
@@ -231,21 +248,23 @@ public class Page implements Unique, Serializable
     // >>> Database
     // ------------------------------------------------------------------------------------------
 
-    public static void load(final SQLiteDatabase database,
-                            final UUID roleplayConstructorId,
-                            final UUID pageId)
+    public void load(final TrackerId roleplayTrackerId)
     {
-        new AsyncTask<Void,Void,Tuple3<ArrayList<UUID>,String,Integer>>()
+        final Page thisPage = this;
+
+        new AsyncTask<Void,Void,Boolean>()
         {
 
             @Override
-            protected Tuple3<ArrayList<UUID>,String,Integer> doInBackground(Void... args)
+            protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
                 // Query Page Data
                 String pageQuery =
                     "SELECT page.label, page.page_index " +
                     "FROM Page page " +
-                    "WHERE page.page_id =  " + SQL.quoted(pageId.toString());
+                    "WHERE page.page_id =  " + SQL.quoted(thisPage.getId().toString());
 
                 Cursor pageCursor = database.rawQuery(pageQuery, null);
 
@@ -256,7 +275,6 @@ public class Page implements Unique, Serializable
                     label = pageCursor.getString(0);
                     index = pageCursor.getInt(1);
                 }
-                // TODO log
                 finally {
                     pageCursor.close();
                 }
@@ -265,43 +283,37 @@ public class Page implements Unique, Serializable
                 String groupsOfPageQuery =
                     "SELECT grp.group_id " +
                     "FROM _group grp " +
-                    "WHERE grp.page_id = " + SQL.quoted(pageId.toString());
+                    "WHERE grp.page_id = " + SQL.quoted(thisPage.getId().toString());
 
                 Cursor groupsCursor = database.rawQuery(groupsOfPageQuery, null);
 
-                ArrayList<UUID> groupIds = new ArrayList<>();
+                ArrayList<Group> groups = new ArrayList<>();
                 try {
                     while (groupsCursor.moveToNext()) {
-                        groupIds.add(UUID.fromString(groupsCursor.getString(0)));
+                        UUID groupId = UUID.fromString(groupsCursor.getString(0));
+                        groups.add(new Group(groupId, thisPage.getId()));
                     }
                 }
-                // TODO log
                 finally {
                     groupsCursor.close();
                 }
 
-                return new Tuple3<>(groupIds, label, index);
+                thisPage.setLabel(label);
+                thisPage.setIndex(index);
+                thisPage.setGroups(groups);
+
+                return true;
             }
 
             @Override
-            protected void onPostExecute(Tuple3<ArrayList<UUID>,String,Integer> data)
+            protected void onPostExecute(Boolean result)
             {
-                ArrayList<UUID> groupIds = data.getItem1();
-                String          label    = data.getItem2();
-                Integer         index    = data.getItem3();
-
                 // Create Asynchronous Constructor
-                UUID pageConstructorId = Page.addAsyncConstructor(pageId,
-                                                                  groupIds.size(),
-                                                                  roleplayConstructorId);
+                TrackerId pageTrackerId = thisPage.addAsyncTracker(roleplayTrackerId);
 
-                // >> Already have label and index
-                Page.asyncConstructorMap.get(pageConstructorId).setLabel(label);
-                Page.asyncConstructorMap.get(pageConstructorId).setIndex(index);
-
-                // >> Asynchronously add groups
-                for (UUID groupId : groupIds) {
-                    Group.load(database, pageConstructorId, groupId);
+                // >> Asynchronously load group data
+                for (Group group : thisPage.getGroups()) {
+                    group.load(pageTrackerId);
                 }
 
             }
@@ -312,11 +324,9 @@ public class Page implements Unique, Serializable
 
     /**
      * Save to the database.
-     * @param database The SQLite database object.
-     * @param recursive If true, save all child objects as well.
      */
-    public void save(final SQLiteDatabase database, final UUID roleplayTrackerId,
-                     final UUID sheetId, final String sectionId, final boolean recursive)
+    public void save(final TrackerId roleplayTrackerId, final UUID sheetId, final String sectionId,
+                     final boolean recursive)
     {
         final Page thisPage = this;
 
@@ -326,6 +336,8 @@ public class Page implements Unique, Serializable
             @Override
             protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
                 ContentValues row = new ContentValues();
                 row.put("page_id", thisPage.getId().toString());
                 row.put("sheet_id", sheetId.toString());
@@ -346,18 +358,12 @@ public class Page implements Unique, Serializable
             {
                 if (!recursive) return;
 
-                ArrayList<UUID> groupIds = new ArrayList<>();
-                for (Group group : thisPage.getGroups()) {
-                    groupIds.add(group.getId());
-                }
-
                 // Track which parts of the page were saved.
-                UUID pageTrackerId = Page.addTracker(thisPage.getId(), roleplayTrackerId, groupIds);
+                TrackerId pageTrackerId = thisPage.addAsyncTracker(roleplayTrackerId);
 
                 // Save the child data to the database
-                for (Group group : groups)
-                {
-                    group.save(database, pageTrackerId, thisPage.getId(), true);
+                for (Group group : groups) {
+                    group.save(pageTrackerId, true);
                 }
             }
 
@@ -375,6 +381,7 @@ public class Page implements Unique, Serializable
      * application components at any time. When the constructor reaches the desired state, then
      * it executes a callback.
      */
+    /*
     public static class AsyncConstructor
     {
 
@@ -446,59 +453,50 @@ public class Page implements Unique, Serializable
         }
 
     }
-
+    */
 
 
     /**
      * Track the state of a Page object. When the state reaches a desired configuration,
      * execute a callback.
      */
-    public static class SaveTracker
+    public static class AsyncTracker
     {
 
         // > PROPERTIES
         // --------------------------------------------------------------------------------------
 
         private Map<UUID,Boolean> groupIdTrackerMap;
-        private Integer groupIdsRemaining;
 
-        private UUID pageId;
-        private UUID roleplayTrackerId;
+        private Page page;
+        private TrackerId roleplayTrackerId;
 
 
         // > CONSTRUCTORS
         // --------------------------------------------------------------------------------------
 
-        public SaveTracker(UUID pageId, UUID roleplayTrackerId, ArrayList<UUID> groupIds)
+        public AsyncTracker(Page page, TrackerId roleplayTrackerId)
         {
-            this.pageId = pageId;
+            this.page = page;
             this.roleplayTrackerId = roleplayTrackerId;
 
             groupIdTrackerMap = new HashMap<>();
-            for (UUID groupId : groupIds)
-            {
-                groupIdTrackerMap.put(groupId, false);
+            for (Group group : page.getGroups()) {
+                groupIdTrackerMap.put(group.getId(), false);
             }
-            this.groupIdsRemaining = groupIds.size();
 
-            if (groupIds.size() == 0)
-                ready();
+            if (page.getGroups().size() == 0) ready();
         }
 
 
         // > API
         // --------------------------------------------------------------------------------------
 
-        synchronized public void setGroupId(UUID groupId)
+        synchronized public void markGroupId(UUID groupId)
         {
-            if (groupIdTrackerMap.containsKey(groupId)) {
-                boolean currentStatus = groupIdTrackerMap.get(groupId);
-                if (!currentStatus) {
-                    groupIdTrackerMap.put(groupId, true);
-                    groupIdsRemaining -= 1;
-                    if (isReady()) ready();
-                }
-            }
+            if (groupIdTrackerMap.containsKey(groupId))
+                groupIdTrackerMap.put(groupId, true);
+            if (isReady()) ready();
         }
 
 
@@ -507,12 +505,17 @@ public class Page implements Unique, Serializable
 
         private boolean isReady()
         {
-            return groupIdsRemaining == 0;
+            for (boolean status : this.groupIdTrackerMap.values()) {
+                if (!status) return false;
+            }
+            return true;
         }
 
         private void ready()
         {
-            Roleplay.getTracker(this.roleplayTrackerId).setPageId(this.pageId);
+            Log.d("***PAGE", "page is ready " + this.page.getLabel());
+            Roleplay.getAsyncTracker(this.roleplayTrackerId.getCode())
+                    .markPageId(this.page.getId());
         }
     }
 

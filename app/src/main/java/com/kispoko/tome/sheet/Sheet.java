@@ -9,12 +9,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.kispoko.tome.Global;
 import com.kispoko.tome.activity.ManageSheetsActivity;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.type.Type;
-import com.kispoko.tome.util.tuple.Tuple2;
+import com.kispoko.tome.util.TrackerId;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -47,20 +48,29 @@ public class Sheet
 
     private Game game;
     private Roleplay roleplay;
+    private Rules rules;
 
     private Map<UUID,Component> componentById;
     private Map<String,Component> componentByLabel;
 
     // >> STATIC
-    private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
+    //private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
-    private static Map<UUID,SaveTracker> trackerMap = new HashMap<>();
+    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
-    private Rules rules;
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public Sheet(UUID id, String gameId)
+    {
+        this.id = id;
+
+        this.game = new Game(gameId);
+        this.roleplay = new Roleplay(id);
+        this.rules = new Rules(id);
+    }
 
     public Sheet(UUID id, Game game, Roleplay roleplay, Rules rules)
     {
@@ -81,10 +91,10 @@ public class Sheet
     public static Sheet fromYaml(Map<String, Object> sheetYaml)
     {
         // Values to parse
-        UUID sheetId = null;
+        UUID sheetId = UUID.randomUUID();
         Game game = null;
         Roleplay roleplay;
-        Rules rules = new Rules();
+        Rules rules = new Rules(sheetId);
 
         // Parse Values
         Map<String,Object> rulesYaml = (Map<String,Object>) sheetYaml.get("rules");
@@ -107,7 +117,7 @@ public class Sheet
             game = Game.fromYaml((Map<String,Object>) sheetYaml.get("game"));
 
         // >> Roleplay
-        roleplay = Roleplay.fromYaml(roleplayYaml);
+        roleplay = Roleplay.fromYaml(sheetId, roleplayYaml);
 
         return new Sheet(sheetId, game, roleplay, rules);
     }
@@ -124,35 +134,35 @@ public class Sheet
      * @param sheetActivity SheetActivity object.
      * @return The new tracker's ID.
      */
-    private static UUID addTracker(SheetActivity sheetActivity)
+    private TrackerId addAsyncTracker(SheetActivity sheetActivity)
     {
-        UUID trackerId = UUID.randomUUID();
-        Sheet.trackerMap.put(trackerId, new SaveTracker(sheetActivity));
-        return trackerId;
+        UUID trackerCode = UUID.randomUUID();
+        Sheet.asyncTrackerMap.put(trackerCode, new AsyncTracker(sheetActivity));
+        return new TrackerId(trackerCode, TrackerId.Target.SHEET);
     }
 
 
-    public static SaveTracker getTracker(UUID trackerId)
+    public static AsyncTracker getAsyncTracker(UUID trackerCode)
     {
-        return Sheet.trackerMap.get(trackerId);
+        return Sheet.asyncTrackerMap.get(trackerCode);
     }
 
 
     // >> Asynchronous Constructor
     // ------------------------------------------------------------------------------------------
 
-    private static UUID addAsyncConstructor(UUID id, SheetActivity sheetActivity)
-    {
-        UUID constructorId = UUID.randomUUID();
-        Sheet.asyncConstructorMap.put(constructorId, new AsyncConstructor(id, sheetActivity));
-        return constructorId;
-    }
-
-
-    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
-    {
-        return Sheet.asyncConstructorMap.get(constructorId);
-    }
+//    private static UUID addAsyncConstructor(UUID id, SheetActivity sheetActivity)
+//    {
+//        UUID constructorId = UUID.randomUUID();
+//        Sheet.asyncConstructorMap.put(constructorId, new AsyncConstructor(id, sheetActivity));
+//        return constructorId;
+//    }
+//
+//
+//    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
+//    {
+//        return Sheet.asyncConstructorMap.get(constructorId);
+//    }
 
 
     // >> State
@@ -197,14 +207,15 @@ public class Sheet
     // >>>> Save/Load
     // ------------------------------------------------------------------------------------------
 
-    public static void loadMostRecent(final SQLiteDatabase database,
-                                      final SheetActivity sheetActivity)
+    public static void loadMostRecent(final SheetActivity sheetActivity)
     {
-        new AsyncTask<Void,Void,Tuple2<UUID,String>>()
+        new AsyncTask<Void,Void,Sheet>()
         {
 
-            protected Tuple2<UUID,String> doInBackground(Void... args)
+            protected Sheet doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
                 String mostRecentSheetIdQuery =
                     "SELECT sheet.sheet_id, sheet.game_id " +
                     "FROM sheet " +
@@ -220,28 +231,22 @@ public class Sheet
                     sheetId = UUID.fromString(cursor.getString(0));
                     gameId  = cursor.getString(1);
                 }
-                // TODO log
                 finally {
                     cursor.close();
                 }
 
-                return new Tuple2(sheetId, gameId);
+                return new Sheet(sheetId, gameId);
             }
 
-            protected void onPostExecute(Tuple2<UUID,String> data)
+            protected void onPostExecute(Sheet sheet)
             {
-                UUID sheetId = data.getItem1();
-                String gameId = data.getItem2();
-
                 // Create an asynchronous Sheet constructor
-                UUID sheetConstructorId = Sheet.addAsyncConstructor(sheetId, sheetActivity);
+                TrackerId sheetTrackerId = sheet.addAsyncTracker(sheetActivity);
 
-                // Load the game
-                Game.load(database, sheetConstructorId, gameId);
-
-                // Asynchronously load the roleplay section and rules
-                Roleplay.load(database, sheetConstructorId, sheetId);
-                Rules.load(sheetConstructorId, sheetId);
+                // Load the sheet components
+                sheet.getGame().load(sheetTrackerId);
+                sheet.getRoleplay().load(sheetTrackerId);
+                sheet.getRules().load(sheetTrackerId);
             }
 
         }.execute();
@@ -251,11 +256,12 @@ public class Sheet
      * Save this sheet to the database.
      * @param recursive If true, saves all child objects as well.
      */
-    public void save(final SQLiteDatabase database, final SheetActivity sheetActivity,
-                     final boolean recursive)
+    public void save(final SheetActivity sheetActivity, final boolean recursive)
     {
         // Update last used
         this.lastUsed = System.currentTimeMillis();
+
+        Log.d("***SHEET", "sheet save called");
 
         final Sheet thisSheet = this;
 
@@ -265,7 +271,10 @@ public class Sheet
             @Override
             protected Boolean doInBackground(Void... args)
             {
-                // Insert sheet data
+                SQLiteDatabase database = Global.getDatabase();
+
+                // Insert Sheet Row
+                // -----------------------------------------------------------------------------
                 ContentValues row = new ContentValues();
                 row.put("sheet_id", thisSheet.getId().toString());
                 row.put("last_used", thisSheet.lastUsed);
@@ -276,20 +285,6 @@ public class Sheet
                                               row,
                                               SQLiteDatabase.CONFLICT_REPLACE);
 
-                // Insert game if doesn't exist
-                ContentValues gameRow = new ContentValues();
-                gameRow.put("game_id", thisSheet.getGame().getId());
-                gameRow.put("label", thisSheet.getGame().getLabel());
-
-                if (thisSheet.getGame().getDescription() != null)
-                    gameRow.put("description", thisSheet.getGame().getId());
-                else
-                    gameRow.putNull("description");
-
-                database.insertWithOnConflict(SheetContract.Game.TABLE_NAME,
-                                              null,
-                                              gameRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
 
                 return true;
             }
@@ -299,11 +294,12 @@ public class Sheet
             {
                 if (!recursive) return;
 
-                UUID sheetTrackerId = Sheet.addTracker(sheetActivity);
+                TrackerId sheetTrackerId = thisSheet.addAsyncTracker(sheetActivity);
 
                 // Save the child data to the database as well
-                thisSheet.roleplay.save(database, thisSheet.getId(), sheetTrackerId, true);
-                thisSheet.rules.save(sheetTrackerId, thisSheet.getId(), true);
+                thisSheet.roleplay.save(sheetTrackerId, true);
+                thisSheet.rules.save(sheetTrackerId, true);
+                thisSheet.game.save(sheetTrackerId);
             }
 
         }.execute();
@@ -640,6 +636,7 @@ public class Sheet
     }
 
 
+    /*
     public static class AsyncConstructor
     {
         private UUID id;
@@ -687,40 +684,54 @@ public class Sheet
         }
 
     }
+    */
 
 
     /**
      * Track state of Sheet.
      */
-    public static class SaveTracker
+    public static class AsyncTracker
     {
         private SheetActivity sheetActivity;
 
+        private boolean game;
         private boolean roleplay;
         private boolean rules;
 
-        public SaveTracker(SheetActivity sheetActivity)
+        public AsyncTracker(SheetActivity sheetActivity)
         {
             this.sheetActivity = sheetActivity;
+            this.roleplay = game;
             this.roleplay = false;
             this.rules = false;
         }
 
-        synchronized public void setRoleplay() {
+        synchronized public void markGame() {
+            Log.d("***SHEET", "mark game");
+            this.game = true;
+            if (isReady()) ready();
+        }
+
+        synchronized public void markRoleplay() {
+            Log.d("***SHEET", "mark roleplay");
             this.roleplay = true;
             if (isReady()) ready();
         }
 
-        synchronized public void setRules() {
+        synchronized public void markRules() {
+            Log.d("***SHEET", "mark rules");
             this.rules = true;
             if (isReady()) ready();
         }
 
         private boolean isReady() {
-            return this.roleplay && this.rules;
+            return this.roleplay &&
+                   this.rules &&
+                   this.game;
         }
 
         private void ready() {
+            Log.d("***SHEET", "sheet is ready to render");
             this.sheetActivity.renderSheet();
         }
 

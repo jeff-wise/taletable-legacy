@@ -13,6 +13,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.ActionDialogFragment;
 import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.sheet.component.Bool;
 import com.kispoko.tome.sheet.component.Image;
 import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
@@ -23,6 +24,7 @@ import com.kispoko.tome.util.Unique;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -42,7 +44,10 @@ public abstract class Component implements Unique, Serializable
     private UUID id;
     private UUID groupId;
     private Type.Id typeId;
-    private Format format;
+    private String label;
+    private Integer row;
+    private Integer column;
+    private Integer width;
     private List<String> actions;
 
 
@@ -72,8 +77,24 @@ public abstract class Component implements Unique, Serializable
 
         this.groupId = groupId;
         this.typeId = typeId;
-        this.format = format;
-        this.actions = actions;
+
+        if (actions != null)
+            this.actions = actions;
+        else
+            this.actions = new ArrayList<>();
+
+        // Copy format values
+        if (format == null) {
+            this.label = "";
+            this.row = 1;
+            this.column = 1;
+            this.width = 1;
+        } else {
+            this.label  = format.getLabel();
+            this.row    = format.getRow();
+            this.column = format.getColumn();
+            this.width = format.getWidth();
+        }
     }
 
 
@@ -89,6 +110,8 @@ public abstract class Component implements Unique, Serializable
                 return new Image(id, groupId);
             case "table":
                 return new Table(id, groupId);
+            case "boolean":
+                return new Bool(id, groupId);
             default:
                 return null;
         }
@@ -136,29 +159,21 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Format
-    // ------------------------------------------------------------------------------------------
-
-    public Format getFormat() {
-        return this.format;
-    }
-
-
-    public void setFormat(Format format) {
-        this.format = format;
-    }
-
-
     // >> Label
     // ------------------------------------------------------------------------------------------
 
     public boolean hasLabel() {
-        return this.format.getLabel() != null;
+        return this.label != null;
     }
 
 
     public String getLabel() {
-        return this.format.getLabel();
+        return this.label;
+    }
+
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 
@@ -166,12 +181,12 @@ public abstract class Component implements Unique, Serializable
     // ------------------------------------------------------------------------------------------
 
     public Integer getRow() {
-        return this.format.getRow();
+        return this.row;
     }
 
 
     public void setRow(Integer row) {
-        this.format.setRow(row);
+        this.row = row;
     }
 
 
@@ -179,12 +194,12 @@ public abstract class Component implements Unique, Serializable
     // ------------------------------------------------------------------------------------------
 
     public Integer getColumn() {
-        return this.format.getColumn();
+        return this.column;
     }
 
 
     public void setColumn(Integer column) {
-        this.format.setColumn(column);
+        this.column = column;
     }
 
 
@@ -192,12 +207,12 @@ public abstract class Component implements Unique, Serializable
     // ------------------------------------------------------------------------------------------
 
     public Integer getWidth() {
-        return this.format.getWidth();
+        return this.width;
     }
 
 
     public void setWidth(Integer width) {
-        this.format.setWidth(width);
+        this.width = width;
     }
 
 
@@ -216,10 +231,13 @@ public abstract class Component implements Unique, Serializable
 
     public String getTextValue()
     {
+
         if (this instanceof Text) {
-            return ((Text) this).getValue();
+            String value = ((Text) this).getValue();
+            return value != null ? value : "";
         } else if (this instanceof NumberInteger) {
-            return ((NumberInteger) this).getValue().toString();
+            Integer value = ((NumberInteger) this).getValue();
+            return value != null ? value.toString() : "";
         } else {
             return "";
         }
@@ -234,20 +252,22 @@ public abstract class Component implements Unique, Serializable
      * @param componentYaml The yaml object.
      * @return The parsed component.
      */
-    public static Component fromYaml(Map<String, Object> componentYaml)
+    public static Component fromYaml(UUID groupId, Map<String, Object> componentYaml)
     {
         String componentType = (String) componentYaml.get("type");
 
         switch (componentType)
         {
             case "text":
-                return Text.fromYaml(componentYaml);
+                return Text.fromYaml(groupId, componentYaml);
             case "image":
-                return Image.fromYaml(componentYaml);
+                return Image.fromYaml(groupId, componentYaml);
             case "integer":
-                return NumberInteger.fromYaml(componentYaml);
+                return NumberInteger.fromYaml(groupId, componentYaml);
             case "table":
-                return Table.fromYaml(componentYaml);
+                return Table.fromYaml(groupId, componentYaml);
+            case "boolean":
+                return Bool.fromYaml(groupId, componentYaml);
         }
 
         return null;

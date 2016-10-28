@@ -174,97 +174,6 @@ sections:
             text_size: medium
           data:
             value: Brown
-      - label: Characteristics
-        number_of_rows: 1
-        components:
-        - type: table
-          actions:
-          - edit
-          format:
-            label: Personality Traits
-            row: 1
-            column: 1
-            width: 1
-          columns:
-          - Personality Traits
-          data:
-            rows:
-            - cells:
-              - type: text
-                data:
-                  value: >
-                    Hildebrand is very confident.
-            - cells:
-              - type: text
-                data:
-                  value: >
-                    Hildebrand is incredibly handsome.
-        - type: table
-          actions:
-          - edit
-          format:
-            label: Ideals
-            row: 1
-            column: 1
-            width: 1
-          columns:
-          - Ideals
-          data:
-            rows:
-            - cells:
-              - type: text
-                data:
-                  value: >
-                    Hildebrand believes that the greater good is an infinitely large
-                    composition of miniscule good actions that form a lattice of integrity
-                    that intertwines every creature of the land.
-            - cells:
-              - type: text
-                data:
-                  value: >
-                    Hildebrand thinks that every person deserves a second chance.
-            - cells:
-              - type: text
-                data:
-                  value: >
-                    He believes that the purpose of life is understanding the mysteries
-                    of the universe, and mastering of magic in order to further understanding.
-        - type: table
-          actions:
-          - edit
-          format:
-            label: Bonds
-            row: 1
-            column: 1
-            width: 1
-          columns:
-          - Bonds
-          data:
-            rows:
-            - cells:
-              - type: text
-                data:
-                  value: >
-                    Hildebrand has a special bond with Jade and often accompanies her on
-                    missions in order to pursue great research opportunities.
-        - type: table
-          actions:
-          - edit
-          format:
-            label: Flaws
-            row: 1
-            column: 1
-            width: 1
-          columns:
-          - Flaws
-          data:
-            rows:
-            - cells:
-              - type: text
-                data:
-                  value: >
-                    Hildebrand is occasionally possessed by a familiar demon that causes him to
-                    behave chaotically and maliciously
     - label: Stats
       groups:
       - label: Ability Scores
@@ -490,8 +399,10 @@ sections:
           - Skill
           - Modifier
           - Proficient?
+          width: 3
+          height: 18
           row_template:
-          - cells:
+            cells:
             - component:
                 type: text
                 data:

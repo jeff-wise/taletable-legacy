@@ -85,19 +85,18 @@ public class Table extends Component implements Serializable
 
 
     @SuppressWarnings("unchecked")
-    public static Table fromYaml(Map<String, Object> tableYaml)
+    public static Table fromYaml(UUID groupId, Map<String, Object> tableYaml)
     {
         // Values to parse
-        UUID id = null;
-        UUID groupId = null;
+        UUID id = UUID.randomUUID();
         Type.Id typeId = null;
-        Format format = null;
+        Format format;
         List<String> actions = null;
         Integer width = null;
         Integer height = null;
-        Row rowTemplate = null;
+        Row rowTemplate;
         String[] columnNames = null;
-        Row[] rows = null;
+        Row[] rows;
 
         // Parse Values
         Map<String,Object> formatYaml = (Map<String,Object>) tableYaml.get("format");
@@ -143,13 +142,13 @@ public class Table extends Component implements Serializable
         for (Map<String,Object> cellYaml : rowTemplateCellsYaml)
         {
             rowTemplate.insertCell(templateColumnIndex,
-                                   Cell.fromYaml(cellYaml, true, null, templateColumnIndex));
+                                   Cell.fromYaml(cellYaml, id, true, null, templateColumnIndex));
             templateColumnIndex += 1;
         }
 
         // >> Column Names
         if (tableYaml.containsKey("columns"))
-            columnNames = (String[]) tableYaml.get("columns");
+            columnNames = ((ArrayList<String>) tableYaml.get("columns")).toArray(new String[width]);
 
         // >> Rows
         ArrayList<Map<String,Object>> rowsYaml =
@@ -166,7 +165,7 @@ public class Table extends Component implements Serializable
             int columnIndex = 0;
             for (Map<String,Object> cellYaml : cellsYaml)
             {
-                row.insertCell(columnIndex, Cell.fromYaml(cellYaml, false, rowIndex, columnIndex));
+                row.insertCell(columnIndex, Cell.fromYaml(cellYaml, id, false, rowIndex, columnIndex));
                 columnIndex += 1;
             }
 
@@ -364,7 +363,7 @@ public class Table extends Component implements Serializable
                 // -----------------------------------------------------------------------------
 
                 String rowTemplateQuery =
-                    "SELECT cell.column_index, cell.component_id, comp.type_kind " +
+                    "SELECT cell.column_index, cell.component_id, comp.data_type " +
                     "FROM component_table_cell cell " +
                     "INNER JOIN component comp on comp.component_id = cell.component_id " +
                     "WHERE cell.table_id = " + SQL.quoted(thisTable.getId().toString()) + " and " +
@@ -432,7 +431,10 @@ public class Table extends Component implements Serializable
 
                 // Set loaded values
                 thisTable.setTypeId(new Type.Id(typeKind, typeId));
-                thisTable.setFormat(new Format(null, rowIndex, columnIndex, width));
+                thisTable.setLabel(null);
+                thisTable.setRow(null);
+                thisTable.setColumn(null);
+                thisTable.setWidth(null);
                 thisTable.setActions(actions);
                 thisTable.setTableWidth(tableWidth);
                 thisTable.setTableHeight(tableHeight);
@@ -481,7 +483,7 @@ public class Table extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisTable.getId().toString());
-                componentRow.put("group_id", thisTable.getGroupId().toString());
+                SQL.putOptString(componentRow, "group_id", thisTable.getGroupId());
                 componentRow.put("data_type", thisTable.componentName());
                 componentRow.put("label", thisTable.getLabel());
                 componentRow.put("row", thisTable.getRow());
@@ -512,7 +514,7 @@ public class Table extends Component implements Serializable
                 String[] columnNames = thisTable.columnNames;
                 for (int col = 0; col < thisTable.columnNames.length; col++)
                 {
-                    String dbColName = "column" + Integer.toString(col) + "_name";
+                    String dbColName = "column" + Integer.toString(col + 1) + "_name";
                     tableComponentRow.put(dbColName, columnNames[col]);
                 }
 
@@ -530,7 +532,11 @@ public class Table extends Component implements Serializable
                 TrackerId tableTrackerId = thisTable.addAsyncTracker(thisTable, groupTrackerId);
 
                 // Save row template cells asynchronously
+                //Log.d("***TABLE", "saving row template");
                 thisTable.rowTemplate.save(tableTrackerId);
+
+                Log.d("***TABLE", "table saved, saving cells");
+                //thisTable.getRow(0).getCell(0).save(tableTrackerId);
 
                 // Save each cell asynchronously
                 for (int rowIndex = 0; rowIndex < thisTable.height; rowIndex++) {

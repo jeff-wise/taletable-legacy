@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.kispoko.tome.Global;
 import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.TrackerId;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,19 +33,27 @@ public class Roleplay
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    private UUID sheetId;
     private ArrayList<Page> pages;
 
     // >> STATIC
-    private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
+    //private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
-    private static Map<UUID,SaveTracker> trackerMap = new HashMap<>();
+    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Roleplay(ArrayList<Page> pages)
+    public Roleplay(UUID sheetId)
     {
+        this.sheetId = sheetId;
+    }
+
+
+    public Roleplay(UUID sheetId, ArrayList<Page> pages)
+    {
+        this.sheetId = sheetId;
         this.pages = pages;
 
         // Make sure pages are sorted
@@ -61,7 +71,7 @@ public class Roleplay
 
 
     @SuppressWarnings("unchecked")
-    public static Roleplay fromYaml(Map<String, Object> roleplayYaml)
+    public static Roleplay fromYaml(UUID sheetId, Map<String, Object> roleplayYaml)
     {
         // Roleplay pages
         ArrayList<Map<String,Object>> pagesYaml =
@@ -80,11 +90,25 @@ public class Roleplay
             pageIndex += 1;
         }
 
-        return new Roleplay(pages);
+        return new Roleplay(sheetId, pages);
     }
 
 
     // > API
+    // ------------------------------------------------------------------------------------------
+
+    // >> State
+    // ------------------------------------------------------------------------------------------
+
+    // >>> Sheet Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getSheetId() {
+        return this.sheetId;
+    }
+
+
+    // >>> Pages
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -97,6 +121,11 @@ public class Roleplay
     }
 
 
+    public void setPages(ArrayList<Page> pages) {
+        this.pages = pages;
+    }
+
+
     // >> Tracking
     // ------------------------------------------------------------------------------------------
 
@@ -105,83 +134,84 @@ public class Roleplay
      * @param sheetTrackerId ID of the sheet tracker.
      * @return The new tracker's ID.
      */
-    private static UUID addTracker(UUID sheetTrackerId, ArrayList<UUID> pageIds)
+    private TrackerId addAsyncTracker(TrackerId sheetTrackerId)
     {
-        UUID trackerId = UUID.randomUUID();
-        Roleplay.trackerMap.put(trackerId, new SaveTracker(sheetTrackerId, pageIds));
-        return trackerId;
+        UUID trackerCode = UUID.randomUUID();
+        Roleplay.asyncTrackerMap.put(trackerCode, new AsyncTracker(this, sheetTrackerId));
+        return new TrackerId(trackerCode, TrackerId.Target.ROLEPLAY);
     }
 
 
-    public static SaveTracker getTracker(UUID trackerId)
+    public static AsyncTracker getAsyncTracker(UUID trackerCode)
     {
-        return Roleplay.trackerMap.get(trackerId);
+        return Roleplay.asyncTrackerMap.get(trackerCode);
     }
 
 
     // >> Async Constructor
     // ------------------------------------------------------------------------------------------
 
-    private static UUID addAsyncConstructor(Integer numberOfPages, UUID sheetConstructorId)
-    {
-        UUID constructorId = UUID.randomUUID();
-        Roleplay.asyncConstructorMap.put(constructorId, new AsyncConstructor(numberOfPages,
-                                                                         sheetConstructorId));
-        return constructorId;
-    }
-
-
-    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
-    {
-        return Roleplay.asyncConstructorMap.get(constructorId);
-    }
-
+//    private static UUID addAsyncConstructor(Integer numberOfPages, UUID sheetConstructorId)
+//    {
+//        UUID constructorId = UUID.randomUUID();
+//        Roleplay.asyncConstructorMap.put(constructorId, new AsyncConstructor(numberOfPages,
+//                                                                         sheetConstructorId));
+//        return constructorId;
+//    }
+//
+//
+//    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
+//    {
+//        return Roleplay.asyncConstructorMap.get(constructorId);
+//    }
 
 
     // >> I/O Methods
     // ------------------------------------------------------------------------------------------
 
-    public static void load(final SQLiteDatabase database,
-                            final UUID sheetConstructorId,
-                            final UUID sheetId)
+    public void load(final TrackerId sheetTrackerId)
     {
-        new AsyncTask<Void,Void,ArrayList<UUID>>()
+        final Roleplay thisRoleplay = this;
+
+        new AsyncTask<Void,Void,Boolean>()
         {
 
             @Override
-            protected ArrayList<UUID> doInBackground(Void... args)
+            protected Boolean doInBackground(Void... args)
             {
+                SQLiteDatabase database = Global.getDatabase();
+
                 String pagesOfSheetQuery =
                     "SELECT page_id " +
                     "FROM Page " +
-                    "WHERE Page.sheet_id = " + SQL.quoted(sheetId.toString());
+                    "WHERE Page.sheet_id = " + SQL.quoted(thisRoleplay.getSheetId().toString());
 
                 Cursor cursor = database.rawQuery(pagesOfSheetQuery, null);
 
-                ArrayList<UUID> pageIds = new ArrayList<>();
+                ArrayList<Page> pages = new ArrayList<>();
                 try {
                     while (cursor.moveToNext()) {
-                        pageIds.add(UUID.fromString(cursor.getString(0)));
+                        UUID pageId = UUID.fromString(cursor.getString(0));
+                        pages.add(new Page(pageId));
                     }
                 }
-                // TODO log
                 finally {
                     cursor.close();
                 }
 
-                return pageIds;
+                thisRoleplay.setPages(pages);
+
+                return true;
             }
 
             @Override
-            protected void onPostExecute(ArrayList<UUID> pageIds)
+            protected void onPostExecute(Boolean result)
             {
                 // Load roleplay asynchronously
-                UUID roleplayConstructorId = Roleplay.addAsyncConstructor(pageIds.size(),
-                                                                          sheetConstructorId);
+                TrackerId roleplayTrackerId = thisRoleplay.addAsyncTracker(sheetTrackerId);
 
-                for (UUID pageId : pageIds)
-                {
-                    Page.load(database, roleplayConstructorId, pageId);
+                for (Page page : thisRoleplay.getPages()) {
+                    page.load(roleplayTrackerId);
                 }
             }
 
@@ -191,26 +221,17 @@ public class Roleplay
 
     /**
      * Save to the database.
-     * @param database The SQLite database object.
-     * @param recursive If true, save all child objects as well.
      */
-    public void save(SQLiteDatabase database, UUID sheetId, UUID sheetTrackerId, boolean recursive)
+    public void save(TrackerId sheetTrackerId, boolean recursive)
     {
         if (!recursive) return;
 
-        ArrayList<UUID> pageIds = new ArrayList<>();
-        for (Page page : pages) {
-            pageIds.add(page.getId());
-        }
-        UUID roleplayTrackerId = Roleplay.addTracker(sheetTrackerId, pageIds);
-
+        TrackerId roleplayTrackerId = this.addAsyncTracker(sheetTrackerId);
 
         // Save all the roleplay data
-        for (Page page : pages)
-        {
-            page.save(database, roleplayTrackerId, sheetId, "roleplay", true);
+        for (Page page : this.getPages()) {
+            page.save(roleplayTrackerId, sheetId, "roleplay", true);
         }
-
     }
 
 
@@ -223,6 +244,7 @@ public class Roleplay
      * application components at any time. When the constructor reaches the desired state, then
      * it executes a callback.
      */
+    /*
     public static class AsyncConstructor
     {
         private UUID sheetConstructorId;
@@ -250,57 +272,49 @@ public class Roleplay
             Sheet.getAsyncConstructor(sheetConstructorId).setRoleplay(roleplay);
         }
 
-    }
+    }*/
 
 
     /**
      * Track the state of a Roleplay object. When the state reaches a desired configuration,
      * execute a callback.
      */
-    public static class SaveTracker
+    public static class AsyncTracker
     {
 
         // > PROPERTIES
         // --------------------------------------------------------------------------------------
 
-        private Map<UUID,Boolean> pageIdTracker;
-        private Integer pageIdsRemaining;
+        private Roleplay roleplay;
+        private TrackerId sheetTrackerId;
 
-        private UUID sheetTrackerId;
+        private Map<UUID,Boolean> pageIdTracker;
 
 
         // > CONSTRUCTORS
         // --------------------------------------------------------------------------------------
 
-        public SaveTracker(UUID sheetTrackerId, ArrayList<UUID> pageIds)
+        public AsyncTracker(Roleplay roleplay, TrackerId sheetTrackerId)
         {
+            this.roleplay = roleplay;
             this.sheetTrackerId = sheetTrackerId;
 
             pageIdTracker = new HashMap<>();
-            for (UUID pageId : pageIds)
-            {
-                pageIdTracker.put(pageId, false);
+            for (Page page : roleplay.getPages()) {
+                pageIdTracker.put(page.getId(), false);
             }
-            this.pageIdsRemaining = pageIds.size();
 
-            if (pageIds.size() == 0)
-                ready();
+            if (roleplay.getPages().size() == 0)  ready();
         }
 
 
         // > API
         // --------------------------------------------------------------------------------------
 
-        synchronized public void setPageId(UUID pageId)
+        synchronized public void markPageId(UUID pageId)
         {
-            if (pageIdTracker.containsKey(pageId)) {
-                boolean currentStatus = pageIdTracker.get(pageId);
-                if (!currentStatus) {
-                    pageIdTracker.put(pageId, true);
-                    pageIdsRemaining -= 1;
-                }
-            }
-
+            if (pageIdTracker.containsKey(pageId))
+                pageIdTracker.put(pageId, true);
             if (isReady()) ready();
         }
 
@@ -310,13 +324,16 @@ public class Roleplay
 
         private boolean isReady()
         {
-            return pageIdsRemaining == 0;
+            for (boolean status : this.pageIdTracker.values()) {
+                if (!status) return false;
+            }
+            return true;
         }
 
         private void ready()
         {
-            Log.d("***Roleplay", "roleplay is ready");
-            Sheet.getTracker(this.sheetTrackerId).setRoleplay();
+            Sheet.getAsyncTracker(this.sheetTrackerId.getCode())
+                 .markRoleplay();
         }
     }
 

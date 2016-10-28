@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.kispoko.tome.Global;
@@ -59,11 +60,12 @@ public class Cell implements Serializable
 
 
     @SuppressWarnings("unchecked")
-    public static Cell fromYaml(Map<String,Object> cellYaml, boolean isTemplate,
+    public static Cell fromYaml(Map<String,Object> cellYaml, UUID tableId, boolean isTemplate,
                                 Integer rowIndex, Integer columnIndex)
     {
         Map<String,Object> componentYaml = (Map<String,Object>) cellYaml.get("component");
-        return new Cell(Component.fromYaml(componentYaml), null, isTemplate, rowIndex, columnIndex);
+        return new Cell(Component.fromYaml(null, componentYaml),
+                        tableId, isTemplate, rowIndex, columnIndex);
     }
 
 
@@ -122,10 +124,17 @@ public class Cell implements Serializable
                 row.put("column_index", thisCell.columnIndex);
                 row.put("component_id", thisCell.component.getId().toString());
 
+                int templateIdInt = thisCell.isTemplate ? 1 : 0;
+                row.put("is_template", templateIdInt);
+
                 database.insertWithOnConflict(SheetContract.ComponentTableCell.TABLE_NAME,
                                               null,
                                               row,
                                               SQLiteDatabase.CONFLICT_REPLACE);
+
+//                database.insertOrThrow(SheetContract.ComponentTableCell.TABLE_NAME,
+//                                          null,
+//                                          row);
 
                 return true;
             }

@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -21,8 +20,8 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Types;
-import com.kispoko.tome.sheet.component.Image;
 import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
@@ -93,12 +92,13 @@ public class ListType extends Type implements Serializable
     // -------------------------------------------------------------------------------------------
 
 
-    public static void loadAll(final UUID typesConstructorId, final UUID sheetId)
+    public static void loadAll(final TrackerId typesTrackerId, final Types types,
+                               final UUID sheetId)
     {
-        new AsyncTask<Void,Void,List<ListType>>()
+        new AsyncTask<Void,Void,Boolean>()
         {
 
-            protected List<ListType> doInBackground(Void... args)
+            protected Boolean doInBackground(Void... args)
             {
                 SQLiteDatabase database = Global.getDatabase();
 
@@ -120,9 +120,6 @@ public class ListType extends Type implements Serializable
                         id = cursor.getString(0);
                         value = cursor.getString(1);
 
-                        Log.d("***LIST TYPE", "value  " + value);
-                        Log.d("***LIST TYPE", "id  " + id);
-
                         if (!id.equals(currentId) && currentId != null) {
                             listTypes.add(new ListType(id, sheetId, currentValues));
                             currentValues = new ArrayList<>();
@@ -132,25 +129,28 @@ public class ListType extends Type implements Serializable
                         currentValues.add(value);
                     }
                     listTypes.add(new ListType(id, sheetId, currentValues));
-                    Log.d("***LISTTYPE", "values " + Integer.toString(listTypes.size()));
                 }
                 finally {
                     cursor.close();
                 }
 
-                return listTypes;
+                for (ListType listType : listTypes) {
+                    types.addType(listType);
+                }
+
+                return true;
             }
 
-            protected void onPostExecute(List<ListType> listTypes)
+            protected void onPostExecute(Boolean result)
             {
-                Types.getAsyncConstructor(typesConstructorId).setListTypes(listTypes);
+                Types.getAsyncTracker(typesTrackerId.getCode()).markListTypes();
             }
 
         }.execute();
     }
 
 
-    public void save(final UUID typesTrackerId, final UUID sheetId)
+    public void save(final TrackerId typesTrackerId, final UUID sheetId)
     {
         final ListType thisListType = this;
 
@@ -183,7 +183,7 @@ public class ListType extends Type implements Serializable
 
             protected void onPostExecute(Boolean result)
             {
-                Types.getTracker(typesTrackerId).trackListType();
+                Types.getAsyncTracker(typesTrackerId.getCode()).markListTypes();
             }
 
         }.execute();

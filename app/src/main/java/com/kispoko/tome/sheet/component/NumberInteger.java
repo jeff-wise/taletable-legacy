@@ -71,11 +71,11 @@ public class NumberInteger extends Component implements Serializable
 
 
     @SuppressWarnings("unchecked")
-    public static NumberInteger fromYaml(Map<String, Object> integerYaml)
+    public static NumberInteger fromYaml(UUID groupId, Map<String, Object> integerYaml)
     {
-        // Values to parse
-        UUID id = null;
-        UUID groupId = null;
+        // VALUES TO PARSE
+        // --------------------------------------------------------------------------------------
+        UUID id = UUID.randomUUID();
         Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
@@ -83,46 +83,49 @@ public class NumberInteger extends Component implements Serializable
         Integer keyStat = null;
         Integer value = null;
 
-        // Parse Values
-        Map<String, Object> formatYaml = (Map<String, Object>) integerYaml.get("format");
-        Map<String, Object> dataYaml   = (Map<String, Object>) integerYaml.get("data");
+        // PARSE VALUES
+        // --------------------------------------------------------------------------------------
 
-        // >> Type Id
-        if (dataYaml.containsKey("type"))
-        {
-            Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
-            String _typeId = null;
-            String typeKind = null;
+        // > Top Level
+        // --------------------------------------------------------------------------------------
 
-            if (typeYaml.containsKey("id"))
-                _typeId = (String) typeYaml.get("id");
-
-            if (typeYaml.containsKey("kind"))
-                typeKind = (String) typeYaml.get("kind");
-
-            typeId = new Type.Id(typeKind, _typeId);
-        }
-
-        // >> Format
-        format = Component.parseFormatYaml(integerYaml);
-
-        // >> Actions
+        // ** Actions
         if (integerYaml.containsKey("actions"))
             actions = (List<String>) integerYaml.get("actions");
 
-        // >> Prefix
-        if (formatYaml.containsKey("prefix"))
-            prefix = (String) formatYaml.get("prefix");
-
-        // >> Key Stat
+        // ** Key Stat
         if (integerYaml.containsKey("key_stat"))
             keyStat = (Integer) integerYaml.get("key_stat");
 
-        // >> Value
-        if (dataYaml.containsKey("value"))
-            value = (Integer) dataYaml.get("value");
+        // >> Data
+        // --------------------------------------------------------------------------------------
+        Map<String, Object> dataYaml   = (Map<String, Object>) integerYaml.get("data");
 
-        // Create Integer
+        if (dataYaml != null)
+        {
+            // ** Type Id
+            typeId = Type.Id.fromYaml(dataYaml);
+
+            // ** Value
+            if (dataYaml.containsKey("value"))
+                value = (Integer) dataYaml.get("value");
+        }
+
+        // >> Format
+        // --------------------------------------------------------------------------------------
+        Map<String, Object> formatYaml = (Map<String, Object>) integerYaml.get("format");
+
+        if (formatYaml != null)
+        {
+            // *** Format
+            format = Component.parseFormatYaml(integerYaml);
+
+            // ** Prefix
+            if (formatYaml.containsKey("prefix"))
+                prefix = (String) formatYaml.get("prefix");
+        }
+
+        // CREATE INTEGER
         NumberInteger integer = new NumberInteger(id, groupId, typeId,
                                                   format, actions,
                                                   keyStat, value);
@@ -297,7 +300,10 @@ public class NumberInteger extends Component implements Serializable
                 }
 
                 thisInteger.setTypeId(new Type.Id(typeKind, typeId));
-                thisInteger.setFormat(new Format(label, row, column, width));
+                thisInteger.setLabel(label);
+                thisInteger.setRow(row);
+                thisInteger.setColumn(column);
+                thisInteger.setWidth(width);
                 thisInteger.setActions(actions);
                 thisInteger.setKeyStat(keyStat);
                 thisInteger.setValue(value);
@@ -345,14 +351,14 @@ public class NumberInteger extends Component implements Serializable
                 ContentValues componentRow = new ContentValues();
 
                 componentRow.put("component_id", thisInteger.getId().toString());
-                componentRow.put("group_id", thisInteger.getGroupId().toString());
+                SQL.putOptString(componentRow, "group_id", thisInteger.getGroupId());
                 componentRow.put("data_type", thisInteger.componentName());
                 componentRow.put("label", thisInteger.getLabel());
                 componentRow.put("row", thisInteger.getRow());
                 componentRow.put("column", thisInteger.getColumn());
                 componentRow.put("width", thisInteger.getWidth());
                 componentRow.put("actions", TextUtils.join(",", thisInteger.getActions()));
-                componentRow.put("text_value", thisInteger.getValue().toString());
+                SQL.putOptString(componentRow, "text_value", thisInteger.getValue());
                 componentRow.putNull("type_kind");
                 componentRow.putNull("type_id");
 

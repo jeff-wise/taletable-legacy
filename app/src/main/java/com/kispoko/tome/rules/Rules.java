@@ -3,6 +3,8 @@ package com.kispoko.tome.rules;
 
 
 import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.sheet.component.Table;
+import com.kispoko.tome.util.TrackerId;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -20,26 +22,35 @@ public class Rules implements Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    private UUID sheetId;
     private Types types;
 
 
     // >> STATIC
-    private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
+    //private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
 
-    private static Map<UUID,SaveTracker> trackerMap = new HashMap<>();
+    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
 
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Rules()
+//    public Rules()
+//    {
+//        this.types = new Types();
+//    }
+
+
+    public Rules(UUID sheetId)
     {
-        this.types = new Types();
+        this.sheetId = sheetId;
+        this.types = new Types(sheetId);
     }
 
 
-    public Rules(Types types)
+    public Rules(UUID sheetId, Types types)
     {
+        this.sheetId = sheetId;
         this.types = types;
     }
 
@@ -47,7 +58,7 @@ public class Rules implements Serializable
     // > API
     // ------------------------------------------------------------------------------------------
 
-    // >> Getters/Setters
+    // >> State
     // ------------------------------------------------------------------------------------------
 
     public Types getTypes() {
@@ -55,19 +66,25 @@ public class Rules implements Serializable
     }
 
 
-    // >> Async Constructor
-    // ------------------------------------------------------------------------------------------
-
-    private static UUID addAsyncConstructor(UUID sheetConstructorId) {
-        UUID constructorId = UUID.randomUUID();
-        Rules.asyncConstructorMap.put(constructorId, new AsyncConstructor(sheetConstructorId));
-        return constructorId;
+    public UUID getSheetId() {
+        return this.sheetId;
     }
 
 
-    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
+    // >> Async Constructor
+    // ------------------------------------------------------------------------------------------
+
+    private TrackerId addAsyncTracker(TrackerId sheetTrackerId)
     {
-        return Rules.asyncConstructorMap.get(constructorId);
+        UUID trackerCode = UUID.randomUUID();
+        Rules.asyncTrackerMap.put(trackerCode, new AsyncTracker(sheetTrackerId));
+        return new TrackerId(trackerCode, TrackerId.Target.RULES);
+    }
+
+
+    public static AsyncTracker getAsyncTracker(UUID trackerCode)
+    {
+        return Rules.asyncTrackerMap.get(trackerCode);
     }
 
 
@@ -78,38 +95,38 @@ public class Rules implements Serializable
      * Create a tracker for asynchronously tracking the state of a sheet.
      * @return The new tracker's ID.
      */
-    private static UUID addTracker(UUID sheetTrackerId) {
-        UUID trackerId = UUID.randomUUID();
-        Rules.trackerMap.put(trackerId, new SaveTracker(sheetTrackerId));
-        return trackerId;
-    }
-
-
-    public static SaveTracker getTracker(UUID trackerId) {
-        return Rules.trackerMap.get(trackerId);
-    }
+//    private static UUID addTracker(UUID sheetTrackerId) {
+//        UUID trackerCode = UUID.randomUUID();
+//        Rules.asyncTrackerMap.put(trackerId, new AsyncTracker(sheetTrackerId));
+//        return trackerId;
+//    }
+//
+//
+//    public static AsyncTracker getTracker(UUID trackerId) {
+//        return Rules.asyncTrackerMap.get(trackerId);
+//    }
 
 
 
     // >> Database
     // ------------------------------------------------------------------------------------------
 
-    public static void load(UUID sheetConstructorId, UUID sheetId)
+    public void load(TrackerId sheetTrackerId)
     {
-        UUID rulesConstructorId = Rules.addAsyncConstructor(sheetConstructorId);
+        TrackerId rulesTrackerId = this.addAsyncTracker( sheetTrackerId);
 
         // Load Rules components asynchronously
-        Types.loadAll(rulesConstructorId, sheetId);
+        this.types.load(rulesTrackerId, this.getSheetId());
     }
 
 
-    public void save(UUID sheetTrackerId, UUID sheetId, boolean recursive)
+    public void save(TrackerId sheetTrackerId, boolean recursive)
     {
         if (!recursive) return;
 
-        UUID rulesTrackerId = Rules.addTracker(sheetTrackerId);
+        TrackerId rulesTrackerId = this.addAsyncTracker(sheetTrackerId);
 
-        this.types.save(rulesTrackerId, sheetId, true);
+        this.types.save(rulesTrackerId, this.getSheetId(), true);
     }
 
 
@@ -117,6 +134,7 @@ public class Rules implements Serializable
     // > NESTED CLASSES
     // ------------------------------------------------------------------------------------------
 
+    /*
     public static class AsyncConstructor
     {
         private UUID sheetConstructorId;
@@ -147,24 +165,24 @@ public class Rules implements Serializable
             Sheet.getAsyncConstructor(sheetConstructorId).setRules(rules);
         }
 
-    }
+    }*/
 
 
     /**
      * Track state of Sheet.
      */
-    public static class SaveTracker
+    public static class AsyncTracker
     {
-        private UUID sheetTrackerId;
+        private TrackerId sheetTrackerId;
 
         private boolean types;
 
-        public SaveTracker(UUID sheetTrackerId) {
+        public AsyncTracker(TrackerId sheetTrackerId) {
             this.sheetTrackerId = sheetTrackerId;
             this.types = false;
         }
 
-        synchronized public void setTypes() {
+        synchronized public void markTypes() {
             this.types = true;
             if (isReady()) ready();
         }
@@ -174,7 +192,7 @@ public class Rules implements Serializable
         }
 
         private void ready() {
-            Sheet.getTracker(this.sheetTrackerId).setRules();
+            Sheet.getAsyncTracker(this.sheetTrackerId.getCode()).markRules();
         }
 
     }

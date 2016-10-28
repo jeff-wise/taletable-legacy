@@ -13,9 +13,14 @@ public class TrackerId
 {
 
     public static enum Target {
+        SHEET,
+        ROLEPLAY,
+        PAGE,
         GROUP,
         TABLE,
-        CELL
+        CELL,
+        RULES,
+        TYPES,
     }
 
     // > PROPERTIES

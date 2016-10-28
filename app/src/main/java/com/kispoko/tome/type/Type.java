@@ -2,6 +2,8 @@
 package com.kispoko.tome.type;
 
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -81,6 +83,8 @@ public abstract class Type implements Serializable
 
                 if (typeYaml.containsKey("kind"))
                     typeKind = (String) typeYaml.get("kind");
+
+                Log.d("***TYPE", "parsing type");
 
                 return new Type.Id(typeKind, _typeId);
             }
