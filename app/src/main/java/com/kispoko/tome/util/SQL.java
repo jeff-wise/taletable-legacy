@@ -26,4 +26,20 @@ public class SQL
             row.putNull(columnName);
     }
 
+
+    public static Integer boolAsInt(Boolean bool)
+    {
+        if (bool != null)
+            return bool ? 1 : 0;
+        return null;
+    }
+
+
+    public static Boolean intAsBool(Integer i)
+    {
+        if (i != null)
+            return i != 0;
+        return null;
+    }
+
 }

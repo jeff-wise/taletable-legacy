@@ -134,10 +134,10 @@ public class Sheet
      * @param sheetActivity SheetActivity object.
      * @return The new tracker's ID.
      */
-    private TrackerId addAsyncTracker(SheetActivity sheetActivity)
+    private TrackerId addAsyncTracker(SheetActivity sheetActivity, boolean isLoad)
     {
         UUID trackerCode = UUID.randomUUID();
-        Sheet.asyncTrackerMap.put(trackerCode, new AsyncTracker(sheetActivity));
+        Sheet.asyncTrackerMap.put(trackerCode, new AsyncTracker(this, sheetActivity, isLoad));
         return new TrackerId(trackerCode, TrackerId.Target.SHEET);
     }
 
@@ -241,7 +241,7 @@ public class Sheet
             protected void onPostExecute(Sheet sheet)
             {
                 // Create an asynchronous Sheet constructor
-                TrackerId sheetTrackerId = sheet.addAsyncTracker(sheetActivity);
+                TrackerId sheetTrackerId = sheet.addAsyncTracker(sheetActivity, true);
 
                 // Load the sheet components
                 sheet.getGame().load(sheetTrackerId);
@@ -294,7 +294,7 @@ public class Sheet
             {
                 if (!recursive) return;
 
-                TrackerId sheetTrackerId = thisSheet.addAsyncTracker(sheetActivity);
+                TrackerId sheetTrackerId = thisSheet.addAsyncTracker(sheetActivity, false);
 
                 // Save the child data to the database as well
                 thisSheet.roleplay.save(sheetTrackerId, true);
@@ -694,12 +694,18 @@ public class Sheet
     {
         private SheetActivity sheetActivity;
 
+        private Sheet sheet;
+        private boolean isLoad;
+
         private boolean game;
         private boolean roleplay;
         private boolean rules;
 
-        public AsyncTracker(SheetActivity sheetActivity)
+        public AsyncTracker(Sheet sheet, SheetActivity sheetActivity, boolean isLoad)
         {
+            this.sheet = sheet;
+            this.isLoad = isLoad;
+
             this.sheetActivity = sheetActivity;
             this.roleplay = game;
             this.roleplay = false;
@@ -732,6 +738,12 @@ public class Sheet
 
         private void ready() {
             Log.d("***SHEET", "sheet is ready to render");
+
+            if (isLoad) {
+                this.sheet.indexComponents();
+                this.sheetActivity.setSheet(this.sheet);
+            }
+
             this.sheetActivity.renderSheet();
         }
 

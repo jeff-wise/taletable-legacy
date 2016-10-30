@@ -153,6 +153,10 @@ public class SheetContract
         public static final String COLUMN_LABEL_NAME = "label";
         public static final String COLUMN_LABEL_TYPE = TYPE_TEXT;
 
+        // Column: Show Label
+        public static final String COLUMN_SHOW_LABEL_NAME = "show_label";
+        public static final String COLUMN_SHOW_LABEL_TYPE = TYPE_INTEGER;
+
         // Column: Row
         public static final String COLUMN_ROW_NAME = "row";
         public static final String COLUMN_ROW_TYPE = TYPE_INTEGER;
@@ -164,6 +168,10 @@ public class SheetContract
         // Column: Width
         public static final String COLUMN_WIDTH_NAME = "width";
         public static final String COLUMN_WIDTH_TYPE = TYPE_INTEGER;
+
+        // Column: Alignment
+        public static final String COLUMN_ALIGNMENT_NAME = "alignment";
+        public static final String COLUMN_ALIGNMENT_TYPE = TYPE_TEXT;
 
         // Column: Key Stat
         public static final String COLUMN_KEY_STAT_NAME = "key_stat";

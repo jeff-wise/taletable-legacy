@@ -157,8 +157,6 @@ public class Types implements Serializable
     {
         if (!recusrive) return;
 
-        Log.d("***TYPES", "save types");
-
         TrackerId typesTrackerId = this.addAsyncTracker(rulesTrackerId);
 
         for (ListType listType : this.listTypeIndex.values()) {

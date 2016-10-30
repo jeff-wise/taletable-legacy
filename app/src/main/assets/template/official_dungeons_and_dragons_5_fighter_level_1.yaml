@@ -392,6 +392,7 @@ sections:
           - edit
           format:
             label: Skills
+            show_label: false
             row: 1
             column: 1
             width: 1
@@ -405,16 +406,24 @@ sections:
             cells:
             - component:
                 type: text
+                format:
+                  alignment: left
+                  width: 3
                 data:
                   value: Skill Name
             - component:
                 type: integer
                 format:
                   prefix: '+'
+                  alignment: center
+                  width: 2
                 data:
                   value: 1
             - component:
                 type: boolean
+                format:
+                  alignment: center
+                  width: 2
                 data:
                   value: false
           data:
@@ -428,6 +437,8 @@ sections:
                   type: integer
               - component:
                   type: boolean
+                  data:
+                    value: true
             - cells:
               - component:
                   type: text
@@ -455,6 +466,8 @@ sections:
                   type: integer
               - component:
                   type: boolean
+                  data:
+                    value: true
             - cells:
               - component:
                   type: text

@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.component;
 
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -152,6 +153,20 @@ public class Bool extends Component implements Serializable
     }
 
 
+    public void setValue(Boolean value, Context context)
+    {
+        this.value = value;
+
+//        if (context != null) {
+//            TextView textView = (TextView) ((Activity) context)
+//                                    .findViewById(this.displayTextViewId);
+//            textView.setText(this.value);
+//        }
+
+        this.save(null);
+    }
+
+
     // >> Views
     // ------------------------------------------------------------------------------------------
 
@@ -190,8 +205,8 @@ public class Bool extends Component implements Serializable
 
                 // Query Component
                 String boolQuery =
-                    "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
-                           "comp.type_kind, comp.type_id, comp.actions, bool.value " +
+                    "SELECT comp.label, comp.show_label, comp.row, comp.column, comp.width, " +
+                           "comp.alignment, comp.type_kind, comp.type_id, comp.actions, bool.value " +
                     "FROM component comp " +
                     "INNER JOIN component_boolean bool on bool.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(thisBool.getId().toString());
@@ -199,28 +214,32 @@ public class Bool extends Component implements Serializable
 
                 Cursor cursor = database.rawQuery(boolQuery, null);
 
-                UUID groupId;
-                String label;
-                Integer row;
-                Integer column;
-                Integer width;
-                String typeKind;
-                String typeId;
-                Integer keyStat;
-                List<String> actions;
-                Boolean value;
+                String label = null;
+                Boolean showLabel = null;
+                Integer row = null;
+                Integer column = null;
+                Integer width = null;
+                Alignment alignment = null;
+                String typeKind = null;
+                String typeId = null;
+                Integer keyStat = null;
+                List<String> actions = null;
+                Boolean value = null;
                 try {
                     cursor.moveToFirst();
-                    groupId     = UUID.fromString(cursor.getString(0));
-                    label       = cursor.getString(1);
+                    label       = cursor.getString(0);
+                    showLabel   = SQL.intAsBool(cursor.getInt(1));
                     row         = cursor.getInt(2);
                     column      = cursor.getInt(3);
                     width       = cursor.getInt(4);
-                    typeKind    = cursor.getString(5);
-                    typeId      = cursor.getString(6);
+                    alignment   = Alignment.fromString(cursor.getString(5));
+                    typeKind    = cursor.getString(6);
+                    typeId      = cursor.getString(7);
                     actions     = new ArrayList<>(Arrays.asList(
-                                            TextUtils.split(cursor.getString(7), ",")));
-                    value       = cursor.getInt(8) != 0;
+                                            TextUtils.split(cursor.getString(8), ",")));
+                    value       = cursor.getInt(9) != 0;
+                } catch (Exception e) {
+                    Log.d("***BOOL", Log.getStackTraceString(e));
                 }
                 finally {
                     cursor.close();
@@ -228,9 +247,11 @@ public class Bool extends Component implements Serializable
 
                 thisBool.setTypeId(new Type.Id(typeKind, typeId));
                 thisBool.setLabel(label);
+                thisBool.setShowLabel(showLabel);
                 thisBool.setRow(row);
                 thisBool.setColumn(column);
                 thisBool.setWidth(width);
+                thisBool.setAlignment(alignment);
                 thisBool.setActions(actions);
                 thisBool.setValue(value);
 
@@ -275,18 +296,9 @@ public class Bool extends Component implements Serializable
                 // ------------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
 
-                componentRow.put("component_id", thisBool.getId().toString());
+                thisBool.putComponentSQLRows(componentRow);
 
-                SQL.putOptString(componentRow, "group_id", thisBool.getGroupId());
-                componentRow.put("data_type", thisBool.componentName());
-                componentRow.put("label", thisBool.getLabel());
-                componentRow.put("row", thisBool.getRow());
-                componentRow.put("column", thisBool.getColumn());
-                componentRow.put("width", thisBool.getWidth());
-                componentRow.put("actions", TextUtils.join(",", thisBool.getActions()));
                 SQL.putOptString(componentRow, "text_value", thisBool.getValue());
-                componentRow.putNull("type_kind");
-                componentRow.putNull("type_id");
 
                 database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
                         null,

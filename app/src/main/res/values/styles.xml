@@ -6,7 +6,7 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
-        <item name="colorControlNormal">#00FFFFFF</item>
+        <item name="colorControlNormal">@color/sheet_light_border</item>
         <item name="colorControlActivated">@color/blue_hard</item>
         <item name="colorControlHighlight">#876333</item>
     </style>

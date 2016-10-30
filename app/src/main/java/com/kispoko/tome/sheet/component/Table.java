@@ -6,11 +6,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -27,6 +27,7 @@ import com.kispoko.tome.sheet.component.table.Cell;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
+import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.R.attr.paddingBottom;
 
 
 /**
@@ -54,6 +56,8 @@ public class Table extends Component implements Serializable
 
     // STATIC
     private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
+
+    public static final int MAX_COLUMNS = 6;
 
 
     // > CONSTRUCTORS
@@ -142,7 +146,7 @@ public class Table extends Component implements Serializable
         for (Map<String,Object> cellYaml : rowTemplateCellsYaml)
         {
             rowTemplate.insertCell(templateColumnIndex,
-                                   Cell.fromYaml(cellYaml, id, true, null, templateColumnIndex));
+                                   Cell.fromYaml(cellYaml, id, true, null, templateColumnIndex, null));
             templateColumnIndex += 1;
         }
 
@@ -165,7 +169,9 @@ public class Table extends Component implements Serializable
             int columnIndex = 0;
             for (Map<String,Object> cellYaml : cellsYaml)
             {
-                row.insertCell(columnIndex, Cell.fromYaml(cellYaml, id, false, rowIndex, columnIndex));
+                Cell template = rowTemplate.getCell(columnIndex);
+                row.insertCell(columnIndex,
+                               Cell.fromYaml(cellYaml, id, false, rowIndex, columnIndex, template));
                 columnIndex += 1;
             }
 
@@ -173,6 +179,7 @@ public class Table extends Component implements Serializable
 
             rowIndex += 1;
         }
+
 
         return new Table(id, groupId, typeId, format, actions, width, height,
                          columnNames, rowTemplate, rows);
@@ -310,9 +317,8 @@ public class Table extends Component implements Serializable
                 // -----------------------------------------------------------------------------
 
                 String tableQuery =
-                    "SELECT comp.group_id, comp.row, comp.column, comp.width, comp.type_kind, " +
-                           "comp.type_id, comp.actions, " +
-                           "tbl.width, tbl.height, " +
+                    "SELECT comp.label, comp.show_label, comp.type_kind, comp.type_id, " +
+                            "comp.actions, tbl.width, tbl.height, " +
                            "tbl.column1_name, tbl.column2_name, tbl.column3_name, " +
                            "tbl.column4_name, tbl.column5_name, tbl.column6_name " +
                     "FROM Component comp " +
@@ -321,10 +327,8 @@ public class Table extends Component implements Serializable
 
                 Cursor tableCursor = database.rawQuery(tableQuery, null);
 
-                UUID groupId = null;
-                Integer rowIndex = null;
-                Integer columnIndex = null;
-                Integer width = null;
+                String label = null;
+                Boolean showLabel = null;
                 String typeKind = null;
                 String typeId = null;
                 List<String> actions = null;
@@ -335,25 +339,23 @@ public class Table extends Component implements Serializable
                 try {
                     tableCursor.moveToFirst();
 
-                    groupId     = UUID.fromString(tableCursor.getString(0));
-                    rowIndex    = tableCursor.getInt(1);
-                    columnIndex = tableCursor.getInt(2);
-                    width       = tableCursor.getInt(3);
-                    typeKind    = tableCursor.getString(4);
-                    typeId      = tableCursor.getString(5);
+                    label    = tableCursor.getString(0);
+                    showLabel = SQL.intAsBool(tableCursor.getInt(1));
+                    typeKind    = tableCursor.getString(2);
+                    typeId      = tableCursor.getString(3);
                     actions     = new ArrayList<>(Arrays.asList(
-                                        TextUtils.split(tableCursor.getString(6), ",")));
-                    tableWidth  = tableCursor.getInt(7);
-                    tableHeight = tableCursor.getInt(8);
+                                        TextUtils.split(tableCursor.getString(4), ",")));
+                    tableWidth  = tableCursor.getInt(5);
+                    tableHeight = tableCursor.getInt(6);
 
-                    columnNames = new String[width];
-                    for (int i = 9; i < 9 + width; i++) {
-                        String columnName = tableCursor.getString(i);
-                        columnNames[i - 9] = columnName;
+                    columnNames = new String[tableWidth];
+                    for (int i = 0; i < columnNames.length; i++) {
+                        String columnName = tableCursor.getString(i + 7);
+                        columnNames[i] = columnName;
 
                     }
                 } catch (Exception e) {
-                    Log.d("***table", Log.getStackTraceString(e));
+                    Log.d("***TABLE", Log.getStackTraceString(e));
                 }
                 finally {
                     tableCursor.close();
@@ -372,7 +374,7 @@ public class Table extends Component implements Serializable
 
                 Cursor rowTemplateCursor = database.rawQuery(rowTemplateQuery, null);
 
-                Row rowTemplate = new Row(width);
+                Row rowTemplate = new Row(tableWidth);
                 try
                 {
                     while (rowTemplateCursor.moveToNext())
@@ -385,9 +387,11 @@ public class Table extends Component implements Serializable
                                                              null, templateComponentKind),
                                              thisTable.getId(),
                                              true,
-                                             null, templateColumnIndex);
+                                             null, templateColumnIndex, null);
                         rowTemplate.insertCell(templateColumnIndex, cell);
                     }
+                } catch (Exception e) {
+                    Log.d("***TABLE", Log.getStackTraceString(e));
                 }
                 finally {
                     tableCursor.close();
@@ -398,7 +402,7 @@ public class Table extends Component implements Serializable
                 // -----------------------------------------------------------------------------
 
                 String tableCellsQuery =
-                    "SELECT cell.row_index, cell.column_index, cell.component_id, comp.type_kind " +
+                    "SELECT cell.row_index, cell.column_index, cell.component_id, comp.data_type " +
                     "FROM component_table_cell cell " +
                     "INNER JOIN component comp on comp.component_id = cell.component_id " +
                     "WHERE cell.table_id =  " + SQL.quoted(thisTable.getId().toString()) + " and " +
@@ -407,22 +411,30 @@ public class Table extends Component implements Serializable
 
                 Cursor tableCellsCursor = database.rawQuery(tableCellsQuery, null);
 
+                // Initialize rows
                 Row[] rows = new Row[tableHeight];
+                for (int i = 0; i < rows.length; i++) {
+                    rows[i] = new Row(tableWidth);
+                }
                 try
                 {
                     while (tableCellsCursor.moveToNext())
                     {
                         int tableRowIndex = tableCellsCursor.getInt(0);
                         int tableColIndex = tableCellsCursor.getInt(1);
+
                         UUID cellComponentId = UUID.fromString(tableCellsCursor.getString(2));
                         String componentKind = tableCellsCursor.getString(3);
 
+                        Cell template = rowTemplate.getCell(tableColIndex);
                         Cell cell = new Cell(Component.empty(cellComponentId, null, componentKind),
                                              thisTable.getId(),
                                              false,
-                                             tableRowIndex, tableColIndex);
+                                             tableRowIndex, tableColIndex, template);
                         rows[tableRowIndex].insertCell(tableColIndex, cell);
                     }
+                } catch (Exception e) {
+                    Log.d("***TABLE", Log.getStackTraceString(e));
                 }
                 finally {
                     tableCursor.close();
@@ -431,16 +443,18 @@ public class Table extends Component implements Serializable
 
                 // Set loaded values
                 thisTable.setTypeId(new Type.Id(typeKind, typeId));
-                thisTable.setLabel(null);
-                thisTable.setRow(null);
-                thisTable.setColumn(null);
-                thisTable.setWidth(null);
+                thisTable.setLabel(label);
+                thisTable.setShowLabel(showLabel);
+                thisTable.setRow(1);
+                thisTable.setColumn(1);
+                thisTable.setWidth(1);
                 thisTable.setActions(actions);
                 thisTable.setTableWidth(tableWidth);
                 thisTable.setTableHeight(tableHeight);
                 thisTable.setColumnNames(columnNames);
                 thisTable.setRowTemplate(rowTemplate);
                 thisTable.setRows(rows);
+
 
                 return true;
             }
@@ -450,11 +464,11 @@ public class Table extends Component implements Serializable
             {
                 TrackerId tableTrackerId = thisTable.addAsyncTracker(thisTable, groupTrackerId);
 
+                thisTable.rowTemplate.load(tableTrackerId);
+
                 // Load components in cells
                 for (int rowIndex = 0; rowIndex < thisTable.height; rowIndex++) {
-                    for (int colIndex = 0; colIndex < thisTable.width; colIndex++) {
-                        thisTable.getRow(rowIndex).getCell(colIndex).load(tableTrackerId);
-                    }
+                    thisTable.getRow(rowIndex).load(tableTrackerId);
                 }
             }
 
@@ -486,6 +500,8 @@ public class Table extends Component implements Serializable
                 SQL.putOptString(componentRow, "group_id", thisTable.getGroupId());
                 componentRow.put("data_type", thisTable.componentName());
                 componentRow.put("label", thisTable.getLabel());
+
+                componentRow.put("show_label", SQL.boolAsInt(thisTable.getShowLabel()));
                 componentRow.put("row", thisTable.getRow());
                 componentRow.put("column", thisTable.getColumn());
                 componentRow.put("width", thisTable.getWidth());
@@ -510,9 +526,11 @@ public class Table extends Component implements Serializable
 
                 ContentValues tableComponentRow = new ContentValues();
                 tableComponentRow.put("component_id", thisTable.getId().toString());
+                tableComponentRow.put("width", thisTable.getTableWidth());
+                tableComponentRow.put("height", thisTable.getTableHeight());
 
                 String[] columnNames = thisTable.columnNames;
-                for (int col = 0; col < thisTable.columnNames.length; col++)
+                for (int col = 0; col < columnNames.length && col < MAX_COLUMNS; col++)
                 {
                     String dbColName = "column" + Integer.toString(col + 1) + "_name";
                     tableComponentRow.put(dbColName, columnNames[col]);
@@ -532,17 +550,11 @@ public class Table extends Component implements Serializable
                 TrackerId tableTrackerId = thisTable.addAsyncTracker(thisTable, groupTrackerId);
 
                 // Save row template cells asynchronously
-                //Log.d("***TABLE", "saving row template");
                 thisTable.rowTemplate.save(tableTrackerId);
-
-                Log.d("***TABLE", "table saved, saving cells");
-                //thisTable.getRow(0).getCell(0).save(tableTrackerId);
 
                 // Save each cell asynchronously
                 for (int rowIndex = 0; rowIndex < thisTable.height; rowIndex++) {
-                    for (int colIndex = 0; colIndex < thisTable.width; colIndex++) {
-                        thisTable.getRow(rowIndex).getCell(colIndex).save(tableTrackerId);
-                    }
+                    thisTable.getRow(rowIndex).save(tableTrackerId);
                 }
             }
 
@@ -560,6 +572,10 @@ public class Table extends Component implements Serializable
      */
     public View getDisplayView(Context context, Rules rules)
     {
+        LinearLayout layout = this.linearLayout(context, rules);
+
+        layout.setPadding(0, 0, 0, 0);
+
         TableLayout tableLayout = new TableLayout(context);
 
         TableLayout.LayoutParams tableLayoutParams =
@@ -567,7 +583,14 @@ public class Table extends Component implements Serializable
                                              TableLayout.LayoutParams.MATCH_PARENT);
         tableLayout.setLayoutParams(tableLayoutParams);
 
-        tableLayout.setStretchAllColumns(true);
+        int tableLayoutPadding = (int) Util.getDim(context, R.dimen.one_dp);
+        tableLayout.setPadding(tableLayoutPadding, tableLayoutPadding,
+                               tableLayoutPadding, tableLayoutPadding);
+
+        tableLayout.setDividerDrawable(ContextCompat.getDrawable(context, R.drawable.table_row_divider));
+        tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+
+//        tableLayout.setStretchAllColumns(true);
         tableLayout.setShrinkAllColumns(true);
 
         tableLayout.addView(this.headerRow(context));
@@ -576,16 +599,29 @@ public class Table extends Component implements Serializable
         {
             TableRow tableRow = this.tableRow(context);
 
+            TableRow.LayoutParams tableRowLayoutParams =
+                    new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                                              TableRow.LayoutParams.WRAP_CONTENT);
+            tableRow.setLayoutParams(tableRowLayoutParams);
+
+            int tableRowPaddingHorz = (int) Util.getDim(context, R.dimen.comp_table_row_padding_horz);
+            int tableRowPaddingVert = (int) Util.getDim(context,
+                                                        R.dimen.comp_table_row_padding_vert);
+            tableRow.setPadding(tableRowPaddingHorz, tableRowPaddingVert,
+                                tableRowPaddingHorz, tableRowPaddingVert);
+
             for (Cell cell : row.getCells())
             {
-                TextView cellView = cell.getView(context);
+                View cellView = cell.getView(context);
                 tableRow.addView(cellView);
             }
 
             tableLayout.addView(tableRow);
         }
 
-        return tableLayout;
+        layout.addView(tableLayout);
+
+        return layout;
     }
 
 
@@ -608,49 +644,54 @@ public class Table extends Component implements Serializable
     }
 
 
-    private TextView textCell(Context context, String value)
-    {
-        TextView textView = new TextView(context);
-
-        int cellPadding = (int) context.getResources()
-                                       .getDimension(R.dimen.comp_table_cell_padding);
-        textView.setPadding(0, cellPadding, 0, cellPadding);
-
-        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
-
-        float editTextSize = (int) context.getResources()
-                                          .getDimension(R.dimen.comp_table_text_cell_text_size);
-        textView.setTextSize(editTextSize);
-
-        Typeface font = Typeface.createFromAsset(context.getAssets(),
-                                                 "fonts/DavidLibre-Regular.ttf");
-        textView.setTypeface(font);
-
-        if (value != null)
-            textView.setText(value);
-
-        return textView;
-    }
-
-
     private TableRow headerRow(Context context)
     {
         TableRow headerRow = new TableRow(context);
 
+        int paddingVert = (int) Util.getDim(context, R.dimen.comp_table_header_padding_vert);
+        int paddingHorz = (int) Util.getDim(context, R.dimen.comp_table_row_padding_horz);
+        headerRow.setPadding(paddingHorz, paddingVert, paddingHorz, paddingVert);
 
-        for (String columnName : this.columnNames)
+
+        for (int i = 0; i < columnNames.length; i++)
         {
             TextView headerText = new TextView(context);
+
+            TableRow.LayoutParams layoutParams =
+                    new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                                              TableRow.LayoutParams.WRAP_CONTENT);
+
+            Cell template = this.rowTemplate.getCell(i);
+            if (template.getComponent().getAlignment() != null) {
+                switch (template.getComponent().getAlignment()) {
+                    case LEFT:
+                        headerText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+                        break;
+                    case CENTER:
+                        headerText.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+                        break;
+                    case RIGHT:
+                        headerText.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                        break;
+                }
+            }
+
+            if (template.getComponent().getWidth() != null) {
+                layoutParams.width = 0;
+                layoutParams.weight = 1;
+            }
+
+            headerText.setLayoutParams(layoutParams);
 
             float headerTextSize = (int) context.getResources()
                                                 .getDimension(R.dimen.comp_table_header_text_size);
             headerText.setTextSize(headerTextSize);
 
-            headerText.setTextColor(ContextCompat.getColor(context, R.color.bluegrey_400));
+            headerText.setTextColor(ContextCompat.getColor(context, R.color.text_light));
 
-            headerText.setTypeface(null, Typeface.BOLD);
+            headerText.setTypeface(Util.sansSerifFontRegular(context));
 
-            headerText.setText(columnName.toUpperCase());
+            headerText.setText(columnNames[i].toUpperCase());
 
             headerRow.addView(headerText);
         }
@@ -677,6 +718,14 @@ public class Table extends Component implements Serializable
         {
             for (int i = 0; i < cells.length; i++) {
                 cells[i].save(tableTrackerId);
+            }
+        }
+
+
+        public void load(TrackerId tableTrackerId)
+        {
+            for (int i = 0; i < cells.length; i++) {
+                cells[i].load(tableTrackerId);
             }
         }
 

@@ -24,19 +24,19 @@
     <color name="paper">#eceff1</color>
     <color name="text">#494949</color>
     <color name="paper_dark">#EAEAEA</color>
-    <color name="sheet_light">#E4E4E4</color>
-    <color name="sheet_medium_light">#DBDBDB</color>
-    <color name="sheet_medium">#D6D6D6</color>
+    <color name="sheet_light">#EDEDED</color>
+    <color name="sheet_medium_light">#E3E3E3</color>
+    <color name="sheet_medium">#D3D3D3</color>
     <color name="sheet_medium_dark">#CACACA</color>
-    <color name="sheet_dark">#B9B9B9</color>
-    <color name="sheet_light_border">#D3D3D3</color>
+    <color name="sheet_dark">#AAA</color>
+    <color name="sheet_light_border">#C2C2C2</color>
 
     <!-- TEXT COLORS -->
     <color name="text_dark">#333333</color>
     <color name="text_medium_dark">#474747</color>
-    <color name="text_medium">#5A5A5A</color>
-    <color name="text_medium_light">#777777</color>
-    <color name="text_light">#888888</color>
+    <color name="text_medium">#6F6F6F</color>
+    <color name="text_medium_light">#848484</color>
+    <color name="text_light">#9C9C9C</color>
 
     <!-- MATERIAL DESIGN COLORS -->
     <color name="bluegrey_50">#eceff1</color>

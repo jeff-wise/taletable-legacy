@@ -65,9 +65,11 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             SheetContract.Component.COLUMN_GROUP_ID_NAME + " " + SheetContract.Component.COLUMN_GROUP_ID_TYPE + "," +
             SheetContract.Component.COLUMN_DATA_TYPE_NAME + " " + SheetContract.Component.COLUMN_DATA_TYPE_TYPE + "," +
             SheetContract.Component.COLUMN_LABEL_NAME + " " + SheetContract.Component.COLUMN_LABEL_TYPE + "," +
+            SheetContract.Component.COLUMN_SHOW_LABEL_NAME + " " + SheetContract.Component.COLUMN_SHOW_LABEL_TYPE + "," +
             SheetContract.Component.COLUMN_ROW_NAME + " " + SheetContract.Component.COLUMN_ROW_TYPE + "," +
             SheetContract.Component.COLUMN_COLUMN_NAME + " " + SheetContract.Component.COLUMN_COLUMN_TYPE + "," +
             SheetContract.Component.COLUMN_WIDTH_NAME + " " + SheetContract.Component.COLUMN_WIDTH_TYPE + "," +
+            SheetContract.Component.COLUMN_ALIGNMENT_NAME + " " + SheetContract.Component.COLUMN_ALIGNMENT_TYPE + "," +
             SheetContract.Component.COLUMN_KEY_STAT_NAME + " " + SheetContract.Component.COLUMN_KEY_STAT_TYPE + "," +
             SheetContract.Component.COLUMN_ACTIONS_NAME + " " + SheetContract.Component.COLUMN_ACTIONs_TYPE + "," +
             SheetContract.Component.COLUMN_TYPE_KIND_NAME + " " + SheetContract.Component.COLUMN_TYPE_KIND_TYPE + "," +

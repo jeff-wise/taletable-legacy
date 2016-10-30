@@ -192,7 +192,7 @@ public class Text extends Component implements Serializable
     }
 
 
-    public String getTextSizeStored() {
+    public String getTextSizeAsString() {
         if (this.textSize != null)
             return this.textSize.toString().toLowerCase();
         return null;
@@ -248,7 +248,7 @@ public class Text extends Component implements Serializable
         textView.setTextSize(ComponentUtil.getTextSizeSP(context, this.textSize));
 
         textView.setTypeface(Util.serifFontBold(context));
-        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium_dark));
+        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
         textView.setText(this.value);
 
@@ -394,39 +394,44 @@ public class Text extends Component implements Serializable
 
                 // Query Component
                 String textQuery =
-                    "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
-                           "comp.type_kind, comp.type_id, comp.key_stat, comp.actions, text.size, text.value " +
+                    "SELECT comp.label, comp.show_label, comp.row, comp.column, comp.width, " +
+                           "comp.alignment, comp.type_kind, comp.type_id, comp.actions, " +
+                           "comp.key_stat, text.size, text.value " +
                     "FROM Component comp " +
                     "INNER JOIN component_text text on text.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(thisText.getId().toString());
 
                 Cursor textCursor = database.rawQuery(textQuery, null);
 
-                UUID groupId;
-                String label;
-                Integer row;
-                Integer column;
-                Integer width;
-                String typeKind;
-                String typeId;
-                String textSize;
-                Integer keyStat;
-                List actions;
-                String value;
+                String label = null;
+                Boolean showLabel = null;
+                Integer row = null;
+                Integer column = null;
+                Integer width = null;
+                Alignment alignment = null;
+                String typeKind = null;
+                String typeId = null;
+                String textSize = null;
+                Integer keyStat = null;
+                List actions = null;
+                String value = null;
                 try {
                     textCursor.moveToFirst();
-                    groupId         = UUID.fromString(textCursor.getString(0));
-                    label           = textCursor.getString(1);
+                    label           = textCursor.getString(0);
+                    showLabel       = SQL.intAsBool(textCursor.getInt(1));
                     row             = textCursor.getInt(2);
                     column          = textCursor.getInt(3);
                     width           = textCursor.getInt(4);
-                    typeKind        = textCursor.getString(5);
-                    typeId          = textCursor.getString(6);
-                    keyStat         = textCursor.getInt(7);
+                    alignment       = Alignment.fromString(textCursor.getString(5));
+                    typeKind        = textCursor.getString(6);
+                    typeId          = textCursor.getString(7);
                     actions         = new ArrayList<>(Arrays.asList(
                                             TextUtils.split(textCursor.getString(8), ",")));
-                    textSize        = textCursor.getString(9);
-                    value           = textCursor.getString(10);
+                    keyStat         = textCursor.getInt(9);
+                    textSize        = textCursor.getString(10);
+                    value           = textCursor.getString(11);
+                } catch (Exception e) {
+                    Log.d("***TABLE", Log.getStackTraceString(e));
                 }
                 finally {
                     textCursor.close();
@@ -434,9 +439,11 @@ public class Text extends Component implements Serializable
 
                 thisText.setTypeId(new Type.Id(typeKind, typeId));
                 thisText.setLabel(label);
+                thisText.setShowLabel(showLabel);
                 thisText.setRow(row);
                 thisText.setColumn(column);
                 thisText.setWidth(width);
+                thisText.setAlignment(alignment);
                 thisText.setActions(actions);
                 thisText.setTextSize(TextSize.fromString(textSize));
                 thisText.setKeyStat(keyStat);
@@ -482,30 +489,13 @@ public class Text extends Component implements Serializable
                 // > Save Component Row
                 // ------------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
-
-                componentRow.put("component_id", thisText.getId().toString());
-                SQL.putOptString(componentRow, "group_id", thisText.getGroupId());
-                componentRow.put("data_type", thisText.componentName());
-                componentRow.put("label", thisText.getLabel());
-                componentRow.put("row", thisText.getRow());
-                componentRow.put("column", thisText.getColumn());
-                componentRow.put("width", thisText.getWidth());
-                componentRow.put("actions", TextUtils.join(",", thisText.getActions()));
+                thisText.putComponentSQLRows(componentRow);
                 componentRow.put("text_value", thisText.getValue());
-
-                if (thisText.getTypeId() != null) {
-                    componentRow.put("type_kind", thisText.getTypeId().getKind());
-                    componentRow.put("type_id", thisText.getTypeId().getId());
-                } else {
-                    componentRow.putNull("type_kind");
-                    componentRow.putNull("type_id");
-                }
 
                 if (thisText.getKeyStat() != null)
                     componentRow.put("key_stat", thisText.getKeyStat());
                 else
                     componentRow.putNull("key_stat");
-
 
                 database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
                         null,
@@ -518,7 +508,7 @@ public class Text extends Component implements Serializable
 
                 textComponentRow.put("component_id", thisText.getId().toString());
                 textComponentRow.put("value", thisText.getValue());
-                textComponentRow.put("size", thisText.getTextSizeStored());
+                textComponentRow.put("size", thisText.getTextSizeAsString());
 
                 database.insertWithOnConflict(SheetContract.ComponentText.TABLE_NAME,
                         null,

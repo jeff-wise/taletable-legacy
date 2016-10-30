@@ -24,27 +24,32 @@
     <dimen name="action_sheet_action_icon_margin_right">1.5dp</dimen>
 
 
+    <!-- PAGE -->
+    <dimen name="page_padding_top">12dp</dimen>
+
+
     <!-- GROUP -->
-    <dimen name="row_padding_top">15dp</dimen>
+    <dimen name="row_padding_bottom">18dp</dimen>
 
-    <dimen name="group_horz_margins">6dp</dimen>
-    <dimen name="group_vert_margins">4dp</dimen>
+    <dimen name="group_horz_margins">0dp</dimen>
+    <dimen name="group_margin_bottom">0dp</dimen>
 
-    <dimen name="group_padding_vert">12dp</dimen>
+    <dimen name="group_padding_top">0dp</dimen>
     <dimen name="group_padding_horz">3.5dp</dimen>
-    <dimen name="group_label_padding_left">7dp</dimen>
-    <dimen name="group_label_text_size">2.7sp</dimen>
+    <dimen name="group_label_padding_left">8dp</dimen>
+    <dimen name="group_label_padding_bottom">10dp</dimen>
+    <dimen name="group_label_text_size">4.5sp</dimen>
 
 
     <!-- COMPONENT LAYOUT -->
     <dimen name="comp_layout_margins_horz">6dp</dimen>
     <dimen name="comp_label_padding_bottom">9dp</dimen>
-    <dimen name="comp_label_text_size">2.7sp</dimen>
+    <dimen name="comp_label_text_size">2.4sp</dimen>
 
 
     <!-- COMPONENT: TEXT -->
     <dimen name="text_size_large">6.5dp</dimen>
-    <dimen name="text_size_medium">4.7dp</dimen>
+    <dimen name="text_size_medium">5dp</dimen>
     <dimen name="text_size_small">4dp</dimen>
 
 
@@ -63,10 +68,16 @@
 
     <!-- COMPONENT: TABLE -->
     <dimen name="comp_table_cell_padding">5dp</dimen>
-    <dimen name="comp_table_header_text_size">2.8dp</dimen>
-    <dimen name="comp_table_text_cell_text_size">4.6dp</dimen>
+    <dimen name="comp_table_header_text_size">2.5sp</dimen>
+    <dimen name="comp_table_row_padding_vert">22dp</dimen>
+    <dimen name="comp_table_row_padding_horz">15dp</dimen>
+    <dimen name="comp_table_layout_padding">5dp</dimen>
+    <dimen name="comp_table_header_padding_vert">16dp</dimen>
 
     <dimen name="prefix_padding_left">4.2dp</dimen>
+
+    <!-- COMPONENT: TABLE CELL -->
+    <dimen name="comp_table_cell_text_size">4.1dp</dimen>
 
 
     <!-- TEXT EDITOR -->

@@ -12,11 +12,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.Global;
+import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Unique;
+import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.R.attr.paddingTop;
 
 
 /**
@@ -230,6 +233,9 @@ public class Page implements Unique, Serializable
         LinearLayout.LayoutParams profileLayoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                               LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        int paddingTop = (int) Util.getDim(context, R.dimen.page_padding_top);
+        profileLayout.setPadding(0, paddingTop, 0, 0);
 
         profileLayout.setOrientation(LinearLayout.VERTICAL);
         profileLayout.setLayoutParams(profileLayoutParams);

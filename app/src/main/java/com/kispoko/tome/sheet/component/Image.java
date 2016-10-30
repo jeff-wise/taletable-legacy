@@ -172,7 +172,7 @@ public class Image extends Component implements Serializable
 
                 // Query Component
                 String imageQuery =
-                    "SELECT comp.group_id, comp.label, comp.row, comp.column, comp.width, " +
+                    "SELECT comp.label, comp.show_label, comp.row, comp.column, comp.width, " +
                            "comp.actions, im.image " +
                     "FROM Component comp " +
                     "INNER JOIN component_image im on im.component_id = comp.component_id " +
@@ -180,8 +180,8 @@ public class Image extends Component implements Serializable
 
                 Cursor imageCursor = database.rawQuery(imageQuery, null);
 
-                UUID groupId = null;
                 String label = null;
+                Boolean showLabel = null;
                 Integer row = null;
                 Integer column = null;
                 Integer width = null;
@@ -189,8 +189,8 @@ public class Image extends Component implements Serializable
                 byte[] imageBlob = null;
                 try {
                     imageCursor.moveToFirst();
-                    groupId     = UUID.fromString(imageCursor.getString(0));
-                    label       = imageCursor.getString(1);
+                    label       = imageCursor.getString(0);
+                    showLabel   = SQL.intAsBool(imageCursor.getInt(1));
                     row         = imageCursor.getInt(2);
                     column      = imageCursor.getInt(3);
                     width       = imageCursor.getInt(4);
@@ -208,6 +208,7 @@ public class Image extends Component implements Serializable
                     bitmap = Util.getImage(imageBlob);
 
                 thisImage.setLabel(label);
+                thisImage.setShowLabel(showLabel);
                 thisImage.setRow(row);
                 thisImage.setColumn(column);
                 thisImage.setWidth(width);
@@ -255,16 +256,8 @@ public class Image extends Component implements Serializable
                 // ------------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
 
-                componentRow.put("component_id", thisImage.getId().toString());
-                SQL.putOptString(componentRow, "group_id", thisImage.getGroupId());
-                componentRow.put("data_type", thisImage.componentName());
-                componentRow.put("label", thisImage.getLabel());
-                componentRow.put("row", thisImage.getRow());
-                componentRow.put("column", thisImage.getColumn());
-                componentRow.put("width", thisImage.getWidth());
-                componentRow.put("actions", TextUtils.join(",", thisImage.getActions()));
-                componentRow.putNull("type_kind");
-                componentRow.putNull("type_id");
+                thisImage.putComponentSQLRows(componentRow);
+
                 componentRow.putNull("text_value");
 
                 database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,

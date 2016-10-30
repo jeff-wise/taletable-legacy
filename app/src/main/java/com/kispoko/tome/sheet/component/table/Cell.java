@@ -6,21 +6,30 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.Global;
+import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.component.Bool;
+import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
+import com.kispoko.tome.sheet.component.Text;
 import com.kispoko.tome.util.TrackerId;
+import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static com.kispoko.tome.util.TrackerId.Target.CELL;
 
 
 
@@ -49,23 +58,25 @@ public class Cell implements Serializable
 
 
     public Cell(Component component, UUID tableId, boolean isTemplate,
-                Integer rowIndex, Integer columnIndex)
+                Integer rowIndex, Integer columnIndex, Cell template)
     {
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
         this.tableId = tableId;
         this.isTemplate = isTemplate;
         this.component = component;
+
+        this.initializeFromTemplate(template);
     }
 
 
     @SuppressWarnings("unchecked")
     public static Cell fromYaml(Map<String,Object> cellYaml, UUID tableId, boolean isTemplate,
-                                Integer rowIndex, Integer columnIndex)
+                                Integer rowIndex, Integer columnIndex, Cell template)
     {
         Map<String,Object> componentYaml = (Map<String,Object>) cellYaml.get("component");
         return new Cell(Component.fromYaml(null, componentYaml),
-                        tableId, isTemplate, rowIndex, columnIndex);
+                        tableId, isTemplate, rowIndex, columnIndex, template);
     }
 
 
@@ -79,7 +90,7 @@ public class Cell implements Serializable
     {
         UUID trackerCode = UUID.randomUUID();
         Cell.asyncTrackerMap.put(trackerCode, new AsyncTracker(this, trackerId));
-        return new TrackerId(trackerCode, CELL);
+        return new TrackerId(trackerCode, TrackerId.Target.CELL);
     }
 
 
@@ -165,16 +176,166 @@ public class Cell implements Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public TextView getView(Context context)
+    public View getView(Context context)
     {
-        TextView view = new TextView(context);
+        View view = new TextView(context);
 
-        view.setText(this.component.getTextValue());
+        if (this.component instanceof Text || this.component instanceof NumberInteger) {
+            view = this.textView(context);
+        } else if (this.component instanceof Bool) {
+            view = this.boolView(context);
+        }
+
+        TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) view.getLayoutParams();
+
+        // Configure alignment
+        if (this.component.getAlignment() != null) {
+            switch (this.component.getAlignment()) {
+                case LEFT:
+                    layoutParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
+                    break;
+                case CENTER:
+                    Log.d("***CELL", "setting center alignment");
+                    layoutParams.gravity = Gravity.CENTER | Gravity.CENTER_VERTICAL;
+                    break;
+                case RIGHT:
+                    layoutParams.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
+                    break;
+            }
+        }
+
+        //view.setBackgroundColor(ContextCompat.getColor(context, R.color.amber_a200));
+
+        // Configure column width
+        if (this.component.getWidth() != null) {
+            layoutParams.width = 0;
+            layoutParams.weight = 1;
+        }
 
         return view;
     }
 
 
+    private View textView(Context context)
+    {
+        TextView view = new TextView(context);
+
+        TableRow.LayoutParams layoutParams =
+                new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                                          TableRow.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 0, 0, 0);
+        view.setLayoutParams(layoutParams);
+
+        if (this.component.getAlignment() != null) {
+            switch (this.component.getAlignment()) {
+                case LEFT:
+                    view.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+                    break;
+                case CENTER:
+                    view.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+                    break;
+                case RIGHT:
+                    view.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                    break;
+            }
+        }
+
+        view.setPadding(0, 0, 0, 0);
+
+        view.setText(this.component.getTextValue());
+
+        view.setTextColor(ContextCompat.getColor(context, R.color.text_medium_light));
+        view.setTypeface(Util.serifFontBold(context));
+
+        float textSize = Util.getDim(context, R.dimen.comp_table_cell_text_size);
+        view.setTextSize(textSize);
+
+        return view;
+    }
+
+
+    private View boolView(final Context context)
+    {
+        final ImageView view = new ImageView(context);
+
+        final Bool bool = (Bool) this.component;
+
+        if (bool.getValue() != null) {
+            if (bool.getValue()) {
+                view.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
+            } else {
+                view.setImageDrawable(
+                        ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
+            }
+        }
+
+        TableRow.LayoutParams layoutParams =
+                new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                                          TableRow.LayoutParams.WRAP_CONTENT);
+        view.setLayoutParams(layoutParams);
+
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (bool.getValue()) {
+                    bool.setValue(false, null);
+                    view.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
+                } else {
+                    bool.setValue(true, null);
+                    view.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
+                }
+            }
+        });
+
+        return view;
+    }
+
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initializeFromTemplate(Cell template)
+    {
+        if (template == null) return;
+
+        if (this.component.getLabel() == null)
+            this.component.setLabel(template.component.getLabel());
+
+        if (this.component.getShowLabel() == null)
+            this.component.setShowLabel(template.component.getShowLabel());
+
+        if (this.component.getRow() == null)
+            this.component.setRow(template.component.getRow());
+
+        if (this.component.getColumn() == null)
+            this.component.setColumn(template.component.getColumn());
+
+        if (this.component.getWidth() == null)
+            this.component.setWidth(template.component.getWidth());
+
+        if (this.component.getAlignment() == null) {
+            this.component.setAlignment(template.component.getAlignment());
+        }
+
+        // Component specific initialization
+        if (this.component instanceof Bool)
+        {
+            Bool boolComponent = (Bool) this.component;
+            if (boolComponent.getValue() == null) {
+                boolComponent.setValue(((Bool) template.getComponent()).getValue());
+            }
+        }
+
+    }
+
+
+    // NESTED CLASSES
+    // ------------------------------------------------------------------------------------------
 
     /**
      * Track the state of a Group object. When the state reaches a desired configuration,
