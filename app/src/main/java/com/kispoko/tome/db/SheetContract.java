@@ -52,7 +52,7 @@ public class SheetContract
      */
     public static class Game implements BaseColumns
     {
-        // Table: Sheet
+        // Table: Game
         public static final String TABLE_NAME = "game";
 
         // Column: Game Id
@@ -134,7 +134,7 @@ public class SheetContract
      */
     public static class Component implements BaseColumns
     {
-        // Table: Component Info
+        // Table: Component
         public static final String TABLE_NAME = "component";
 
         // Column: Component Id
@@ -226,7 +226,7 @@ public class SheetContract
      */
     public static class ComponentInteger implements BaseColumns
     {
-        // Table: Integer
+        // Table: Component Integer
         public static final String TABLE_NAME = "component_integer";
 
         // Column: Component Id
@@ -248,7 +248,7 @@ public class SheetContract
      */
     public static class ComponentBoolean implements BaseColumns
     {
-        // Table: Integer
+        // Table: Component Boolean
         public static final String TABLE_NAME = "component_boolean";
 
         // Column: Component Id
@@ -266,7 +266,7 @@ public class SheetContract
      */
     public static class ComponentTable implements BaseColumns
     {
-        // Table: Data Table
+        // Table: Component Table
         public static final String TABLE_NAME = "component_table";
 
         // Column: Component Id
@@ -312,7 +312,7 @@ public class SheetContract
      */
     public static class ComponentTableCell implements BaseColumns
     {
-        // Table: Data Table Row
+        // Table: Component Table Cell
         public static final String TABLE_NAME = "component_table_cell";
 
         // Column: Table Id
@@ -342,7 +342,7 @@ public class SheetContract
      */
     public static class ComponentImage implements BaseColumns
     {
-        // Table: Integer
+        // Table: Image Component
         public static final String TABLE_NAME = "component_image";
 
         // Column: Component Id
@@ -360,7 +360,7 @@ public class SheetContract
      */
     public static class TypeList implements BaseColumns
     {
-        // Table: Data Table
+        // Table: List Type
         public static final String TABLE_NAME = "type_list";
 
         // Column: Component Id
@@ -382,43 +382,62 @@ public class SheetContract
      */
     public static class Function implements BaseColumns
     {
-        // Table: Data Table
+        // Table: Function
         public static final String TABLE_NAME = "function";
 
-        // Column: Component Id
-        public static final String COLUMN_LIST_ID_NAME = "list_id";
-        public static final String COLUMN_LIST_ID_TYPE = TYPE_TEXT;
+        // Column: Name
+        public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_TYPE = TYPE_TEXT;
 
-        // Column: Sheet Id
-        public static final String COLUMN_SHEET_ID_NAME = "sheet_id";
-        public static final String COLUMN_SHEET_ID_TYPE = TYPE_TEXT;
+        // Column: Result Type
+        public static final String COLUMN_RESULT_TYPE_NAME = "result_type";
+        public static final String COLUMN_RESULT_TYPE_TYPE = TYPE_TEXT;
 
-        // Column: Value
-        public static final String COLUMN_VALUE_NAME = "value";
-        public static final String COLUMN_VALUE_TYPE = TYPE_TEXT;
+        // Column: Number of Parameters
+        public static final String COLUMN_NUMBER_OF_PARAMETERS_NAME = "number_of_parameters";
+        public static final String COLUMN_NUMBER_OF_PARAMETERS_TYPE = TYPE_INTEGER;
+
+        // Column: Parameter Type (1)
+        public static final String COLUMN_PARAMETER_TYPE_1_NAME = "parameter_type_1";
+        public static final String COLUMN_PARAMETER_TYPE_1_TYPE = TYPE_TEXT;
+
+        // Column: Parameter Type (2)
+        public static final String COLUMN_PARAMETER_TYPE_2_NAME = "parameter_type_2";
+        public static final String COLUMN_PARAMETER_TYPE_2_TYPE = TYPE_TEXT;
+
+        // Column: Parameter Type (3)
+        public static final String COLUMN_PARAMETER_TYPE_3_NAME = "parameter_type_3";
+        public static final String COLUMN_PARAMETER_TYPE_3_TYPE = TYPE_TEXT;
     }
+
 
     /**
      * Tuple Table
      */
     public static class Tuple implements BaseColumns
     {
-        // Table: Data Table
+        // Table: Tuple
         public static final String TABLE_NAME = "tuple";
 
-        // Column: Component Id
-        public static final String COLUMN_LIST_ID_NAME = "list_id";
-        public static final String COLUMN_LIST_ID_TYPE = TYPE_TEXT;
+        // Column: Function Name
+        public static final String COLUMN_FUNCTION_NAME_NAME = "function_name";
+        public static final String COLUMN_FUNCTION_NAME_TYPE = TYPE_TEXT;
 
-        // Column: Sheet Id
-        public static final String COLUMN_SHEET_ID_NAME = "sheet_id";
-        public static final String COLUMN_SHEET_ID_TYPE = TYPE_TEXT;
+        // Column: Parameter 1 Value
+        public static final String COLUMN_PARAMETER_1_VALUE_NAME = "parameter1";
+        public static final String COLUMN_PARAMETER_1_VALUE_TYPE = TYPE_TEXT;
 
-        // Column: Value
-        public static final String COLUMN_VALUE_NAME = "value";
-        public static final String COLUMN_VALUE_TYPE = TYPE_TEXT;
+        // Column: Parameter 2 Value
+        public static final String COLUMN_PARAMETER_2_VALUE_NAME = "parameter2";
+        public static final String COLUMN_PARAMETER_2_VALUE_TYPE = TYPE_TEXT;
+
+        // Column: Parameter 3 Value
+        public static final String COLUMN_PARAMETER_3_VALUE_NAME = "parameter3";
+        public static final String COLUMN_PARAMETER_3_VALUE_TYPE = TYPE_TEXT;
+
+        // Column: Result Value
+        public static final String COLUMN_RESULT_VALUE_NAME = "result";
+        public static final String COLUMN_RESULT_VALUE_TYPE = TYPE_TEXT;
     }
-
-
 
 }

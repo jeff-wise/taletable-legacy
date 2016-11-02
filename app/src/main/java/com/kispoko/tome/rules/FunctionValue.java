@@ -5,10 +5,7 @@ package com.kispoko.tome.rules;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.Objects;
 
-import static android.R.attr.name;
-import static android.R.attr.switchMinWidth;
 
 /**
  * Function Value
@@ -49,6 +46,35 @@ public class FunctionValue
     public String getString() {
         return (String) this.value;
     }
+
+
+    public String asString()
+    {
+        switch (this.valueType)
+        {
+            case INTEGER:
+                return Integer.toString((Integer) this.value);
+            case STRING:
+                return (String) this.value;
+        }
+        return null;
+    }
+
+
+    public static FunctionValue fromString(String functionValueString, FunctionValueType _type)
+    {
+        switch (_type)
+        {
+            case INTEGER:
+                return new FunctionValue(Integer.parseInt(functionValueString),
+                                         FunctionValueType.INTEGER);
+            case STRING:
+                return new FunctionValue(functionValueString,
+                                         FunctionValueType.STRING);
+        }
+        return null;
+    }
+
 
 
     @Override

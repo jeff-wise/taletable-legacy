@@ -4,6 +4,7 @@ package com.kispoko.tome.rules.evaluation;
 
 import com.kispoko.tome.rules.BuiltInFunction;
 import com.kispoko.tome.rules.Function;
+import com.kispoko.tome.rules.FunctionIndex;
 import com.kispoko.tome.rules.FunctionValue;
 import com.kispoko.tome.rules.FunctionValueType;
 import com.kispoko.tome.rules.Program;
@@ -28,21 +29,17 @@ public class Evaluator
 
     //private Map<String,Component> componentIndex;
 
-    private Map<String,Function> functionByName;
     private BuiltInFunction builtInFunction;
+    private FunctionIndex functionIndex;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Evaluator(BuiltInFunction builtInFunction, List<Function> functions)
+    public Evaluator(BuiltInFunction builtInFunction, FunctionIndex functionIndex)
     {
         this.builtInFunction = builtInFunction;
-
-        for (Function function : functions)
-        {
-            functionByName.put(function.getName(), function);
-        }
+        this.functionIndex = functionIndex;
     }
 
 

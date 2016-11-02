@@ -101,6 +101,10 @@ public class Program
     // API
     // ------------------------------------------------------------------------------------------
 
+    public String getName() {
+        return this.name;
+    }
+
 
     public List<Statement> getStatements() {
         return this.statements;

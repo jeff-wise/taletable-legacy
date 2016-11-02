@@ -18,4 +18,12 @@ public enum FunctionValueType
         return null;
     }
 
+
+    public static String asString(FunctionValueType valueType)
+    {
+        if (valueType != null)
+            return valueType.toString().toLowerCase();
+        return null;
+    }
+
 }

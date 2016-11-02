@@ -21,6 +21,8 @@ public class TrackerId
         CELL,
         RULES,
         TYPES,
+        FUNCTION_INDEX,
+        PROGRAM_INDEX,
     }
 
     // > PROPERTIES

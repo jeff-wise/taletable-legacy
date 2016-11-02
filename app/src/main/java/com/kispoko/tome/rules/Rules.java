@@ -23,10 +23,11 @@ public class Rules implements Serializable
 
     private UUID sheetId;
     private Types types;
+    private FunctionIndex functionIndex;
+    private ProgramIndex programIndex;
 
     private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
-    private Map<String, Function> functionMap;
 
 
     // CONSTRUCTORS
@@ -39,12 +40,13 @@ public class Rules implements Serializable
     }
 
 
-    public Rules(UUID sheetId, Types types, List<Function> functionDefinitions)
+    public Rules(UUID sheetId, Types types, List<Function> functions, List<Program> programs)
     {
         this.sheetId = sheetId;
         this.types = types;
 
-        createFunctions(functionDefinitions);
+        this.functionIndex = new FunctionIndex(functions);
+        this.programIndex = new ProgramIndex(programs);
     }
 
 
@@ -99,7 +101,10 @@ public class Rules implements Serializable
 
         TrackerId rulesTrackerId = this.addAsyncTracker(sheetTrackerId);
 
+        // Save all Rules components
         this.types.save(rulesTrackerId, this.getSheetId(), true);
+        this.functionIndex.save(rulesTrackerId, true);
+        this.programIndex.save(rulesTrackerId, true);
     }
 
 
@@ -111,6 +116,8 @@ public class Rules implements Serializable
         private TrackerId sheetTrackerId;
 
         private boolean types;
+        private boolean functionIndex;
+        private boolean programIndex;
 
         public AsyncTracker(TrackerId sheetTrackerId) {
             this.sheetTrackerId = sheetTrackerId;
@@ -122,8 +129,20 @@ public class Rules implements Serializable
             if (isReady()) ready();
         }
 
+        synchronized public void markFunctionIndex() {
+            this.functionIndex = true;
+            if (isReady()) ready();
+        }
+
+        synchronized public void markProgramIndex() {
+            this.programIndex = true;
+            if (isReady()) ready();
+        }
+
         private boolean isReady() {
-            return this.types;
+            return this.types &&
+                   this.functionIndex &&
+                   this.programIndex;
         }
 
         private void ready() {
@@ -131,15 +150,5 @@ public class Rules implements Serializable
         }
 
     }
-
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-
-    private void createFunctions(List<Function> functionDefinitions) {
-
-    }
-
 
 }
