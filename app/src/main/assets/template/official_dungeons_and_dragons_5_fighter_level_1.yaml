@@ -23,6 +23,126 @@ rules:
     - Sorceror
     - Warlock
     - Wizard
+  functions:
+  - name: ability_modifier
+    definition:
+      parameter_types:
+      - integer
+      result_type: integer
+      tuples:
+      - parameters:
+        - 1
+        result: -5
+      - parameters:
+        - 2
+        result: -4
+      - parameters:
+        - 3
+        result: -4
+      - parameters:
+        - 4
+        result: -3
+      - parameters:
+        - 5
+        result: -3
+      - parameters:
+        - 6
+        result: -2
+      - parameters:
+        - 7
+        result: -2
+      - parameters:
+        - 8
+        result: -1
+      - parameters:
+        - 9
+        result: -1
+      - parameters:
+        - 10
+        result: 0
+      - parameters:
+        - 11
+        result: 0
+      - parameters:
+        - 12
+        result: 1
+      - parameters:
+        - 13
+        result: 1
+      - parameters:
+        - 14
+        result: 2
+      - parameters:
+        - 15
+        result: 2
+      - parameters:
+        - 16
+        result: 3
+      - parameters:
+        - 17
+        result: 3
+      - parameters:
+        - 18
+        result: 4
+      - parameters:
+        - 19
+        result: 4
+      - parameters:
+        - 20
+        result: 5
+      - parameters:
+        - 21
+        result: 5
+      - parameters:
+        - 22
+        result: 6
+      - parameters:
+        - 23
+        result: 6
+      - parameters:
+        - 24
+        result: 7
+      - parameters:
+        - 25
+        result: 7
+      - parameters:
+        - 26
+        result: 8
+      - parameters:
+        - 27
+        result: 8
+      - parameters:
+        - 28
+        result: 9
+      - parameters:
+        - 29
+        result: 9
+      - parameters:
+        - 30
+        result: 10
+  programs:
+  - name: ability_modifier
+    definition:
+      parameter_types:
+      - integer
+      result_type: integer
+      result_variable: result
+      statements:
+      - let: modifier
+        function: ability_modifier
+        parameters:
+        - type: parameter
+          value: 1
+      - let: modifier_string
+        function: modifier_string
+        parameters:
+        - type: variable
+          value: 'modifier'
+      - let: result
+        function: string_template
+        parameters:
+        - type: literal_string
+          value: '({{modifier_string}})'
 sections:
   roleplay:
     pages:
@@ -32,6 +152,7 @@ sections:
         number_of_rows: 2
         components:
         - type: text
+          name: name
           actions:
           - edit
           - generate
@@ -44,6 +165,7 @@ sections:
           data:
             value: Aladaisian Wineheart
         - type: image
+          name: picture
           actions:
           - choose
           - share
@@ -57,6 +179,7 @@ sections:
         components:
         - type: integer
           key_stat: 1
+          name: level
           actions:
           - edit
           format:
@@ -68,6 +191,7 @@ sections:
           data:
             value: 17
         - type: text
+          name: class
           key_stat: 2
           actions:
           - edit
@@ -83,6 +207,7 @@ sections:
               kind: list
               id: class
         - type: text
+          name: race
           actions:
           - edit
           key_stat: 3
@@ -95,6 +220,7 @@ sections:
           data:
             value: Human
         - type: text
+          name: alignment
           actions:
           - edit
           format:
@@ -109,6 +235,7 @@ sections:
         number_of_rows: 2
         components:
         - type: integer
+          name: age
           actions:
           - edit
           format:
@@ -120,6 +247,7 @@ sections:
           data:
             value: 41
         - type: text
+          name: height
           actions:
           - edit
           format:
@@ -131,6 +259,7 @@ sections:
           data:
             value: 5'11"
         - type: integer
+          name: weight
           actions:
           - edit
           format:
@@ -142,6 +271,7 @@ sections:
           data:
             value: 167
         - type: text
+          name: eyes
           actions:
           - edit
           format:
@@ -153,6 +283,7 @@ sections:
           data:
             value: Blue
         - type: text
+          name: skin
           actions:
           - edit
           format:
@@ -164,6 +295,7 @@ sections:
           data:
             value: Light
         - type: text
+          name: hair
           actions:
           - edit
           format:
@@ -180,6 +312,7 @@ sections:
         number_of_rows: 2
         components:
         - type: integer
+          name: strength
           actions:
           - edit
           format:
@@ -191,6 +324,7 @@ sections:
           data:
             value: 11
         - type: integer
+          name: dexterity
           actions:
           - edit
           format:
@@ -202,6 +336,7 @@ sections:
           data:
             value: 19
         - type: integer
+          name: constitution
           actions:
           - edit
           format:
@@ -213,6 +348,7 @@ sections:
           data:
             value: 15
         - type: integer
+          name: intelligence
           actions:
           - edit
           format:
@@ -224,6 +360,7 @@ sections:
           data:
             value: 22
         - type: integer
+          name: wisdom
           actions:
           - edit
           format:
@@ -235,6 +372,7 @@ sections:
           data:
             value: 14
         - type: integer
+          name: charisma
           actions:
           - edit
           format:
@@ -249,6 +387,7 @@ sections:
         number_of_rows: 1
         components:
         - type: integer
+          name: proficiency_bonus
           actions:
           - edit
           format:
@@ -261,6 +400,7 @@ sections:
           data:
             value: 6
         - type: integer
+          name: inspiration
           actions:
           - edit
           format:
@@ -275,6 +415,7 @@ sections:
         number_of_rows: 1
         components:
         - type: integer
+          name: armor_class
           actions:
           - edit
           format:
@@ -286,6 +427,7 @@ sections:
           data:
             value: 24
         - type: integer
+          name: initiative
           actions:
           - edit
           format:
@@ -298,6 +440,7 @@ sections:
           data:
             value: 7
         - type: integer
+          name: speed
           actions:
           - edit
           format:
@@ -312,6 +455,7 @@ sections:
         number_of_rows: 2
         components:
         - type: integer
+          name: saving_throw_strength
           actions:
           - edit
           format:
@@ -323,6 +467,7 @@ sections:
           data:
             value: 0
         - type: integer
+          name: saving_throw_dexterity
           actions:
           - edit
           format:
@@ -335,6 +480,7 @@ sections:
           data:
             value: 4
         - type: integer
+          name: saving_throw_constitution
           actions:
           - edit
           format:
@@ -347,6 +493,7 @@ sections:
           data:
             value: 2
         - type: integer
+          name: saving_throw_intelligence
           actions:
           - edit
           format:
@@ -359,6 +506,7 @@ sections:
           data:
             value: 12
         - type: integer
+          name: saving_throw_wisdom
           actions:
           - edit
           format:
@@ -371,6 +519,7 @@ sections:
           data:
             value: 8
         - type: integer
+          name: saving_throw_charisma
           actions:
           - edit
           format:

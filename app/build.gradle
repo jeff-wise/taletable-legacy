@@ -36,5 +36,6 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'org.yaml:snakeyaml:1.17'
+    compile 'org.apache.commons:commons-lang3:3.5'
     testCompile 'junit:junit:4.12'
 }

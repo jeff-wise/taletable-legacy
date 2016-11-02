@@ -3,14 +3,13 @@ package com.kispoko.tome.rules;
 
 
 import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.sheet.component.Table;
 import com.kispoko.tome.util.TrackerId;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 
 
 /**
@@ -19,27 +18,19 @@ import java.util.UUID;
 public class Rules implements Serializable
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
     private UUID sheetId;
     private Types types;
 
-
-    // >> STATIC
-    //private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
-
     private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
+    private Map<String, Function> functionMap;
 
-    // > CONSTRUCTORS
+
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
-
-//    public Rules()
-//    {
-//        this.types = new Types();
-//    }
-
 
     public Rules(UUID sheetId)
     {
@@ -48,17 +39,19 @@ public class Rules implements Serializable
     }
 
 
-    public Rules(UUID sheetId, Types types)
+    public Rules(UUID sheetId, Types types, List<Function> functionDefinitions)
     {
         this.sheetId = sheetId;
         this.types = types;
+
+        createFunctions(functionDefinitions);
     }
 
 
-    // > API
+    // API
     // ------------------------------------------------------------------------------------------
 
-    // >> State
+    // > State
     // ------------------------------------------------------------------------------------------
 
     public Types getTypes() {
@@ -71,7 +64,7 @@ public class Rules implements Serializable
     }
 
 
-    // >> Async Constructor
+    // > Async Tracker
     // ------------------------------------------------------------------------------------------
 
     private TrackerId addAsyncTracker(TrackerId sheetTrackerId)
@@ -88,27 +81,7 @@ public class Rules implements Serializable
     }
 
 
-    // >> Tracking
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Create a tracker for asynchronously tracking the state of a sheet.
-     * @return The new tracker's ID.
-     */
-//    private static UUID addTracker(UUID sheetTrackerId) {
-//        UUID trackerCode = UUID.randomUUID();
-//        Rules.asyncTrackerMap.put(trackerId, new AsyncTracker(sheetTrackerId));
-//        return trackerId;
-//    }
-//
-//
-//    public static AsyncTracker getTracker(UUID trackerId) {
-//        return Rules.asyncTrackerMap.get(trackerId);
-//    }
-
-
-
-    // >> Database
+    // > Database
     // ------------------------------------------------------------------------------------------
 
     public void load(TrackerId sheetTrackerId)
@@ -128,44 +101,6 @@ public class Rules implements Serializable
 
         this.types.save(rulesTrackerId, this.getSheetId(), true);
     }
-
-
-
-    // > NESTED CLASSES
-    // ------------------------------------------------------------------------------------------
-
-    /*
-    public static class AsyncConstructor
-    {
-        private UUID sheetConstructorId;
-
-        private Types types;
-
-        public AsyncConstructor(UUID sheetConstructorId)
-        {
-            this.sheetConstructorId = sheetConstructorId;
-
-            // Initialize async values
-            this.types = null;
-        }
-
-        synchronized public void setTypes(Types types)
-        {
-            this.types = types;
-            if (isReady()) ready();
-        }
-
-
-        private boolean isReady() {
-            return this.types != null;
-        }
-
-        private void ready() {
-            Rules rules = new Rules(this.types);
-            Sheet.getAsyncConstructor(sheetConstructorId).setRules(rules);
-        }
-
-    }*/
 
 
     /**
@@ -194,6 +129,15 @@ public class Rules implements Serializable
         private void ready() {
             Sheet.getAsyncTracker(this.sheetTrackerId.getCode()).markRules();
         }
+
+    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+
+    private void createFunctions(List<Function> functionDefinitions) {
 
     }
 

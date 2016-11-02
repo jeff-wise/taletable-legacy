@@ -49,8 +49,6 @@ public class Group implements Serializable
     private Integer index;
 
     // >> STATIC
-    //private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
-
     private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
 
 
@@ -60,7 +58,7 @@ public class Group implements Serializable
     public Group(UUID id, UUID pageId)
     {
         this.id = id;
-        this.pageId = id;
+        this.pageId = pageId;
     }
 
 
@@ -110,36 +108,7 @@ public class Group implements Serializable
     }
 
 
-
-    // > API
-    // ------------------------------------------------------------------------------------------
-
-    // >> Async Constructor
-    // ------------------------------------------------------------------------------------------
-
-    /*
-    private static UUID addAsyncConstructor(UUID id, Integer numberOfComponents,
-                                           UUID pageConstructorId)
-    {
-        UUID constructorId = UUID.randomUUID();
-
-        Group.asyncConstructorMap.put(constructorId, new AsyncConstructor(id,
-                                                                 numberOfComponents,
-                                                                 pageConstructorId));
-
-        return constructorId;
-    }
-
-
-    public static AsyncConstructor getAsyncConstructor(UUID constructorId)
-    {
-        return Group.asyncConstructorMap.get(constructorId);
-    }
-
-    */
-
-
-    // >> Tracking
+    // >> Async Tracking
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -377,7 +346,7 @@ public class Group implements Serializable
     }
 
 
-    // >> Views
+    // > Views
     // ------------------------------------------------------------------------------------------
 
     public View getView(Context context, Rules rules)
@@ -469,10 +438,10 @@ public class Group implements Serializable
 
 
 
-    // > INTERNAL
+    // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    // >> Views
+    // > Views
     // ------------------------------------------------------------------------------------------
 
     private LinearLayout labelView(Context context)
@@ -503,77 +472,6 @@ public class Group implements Serializable
 
         return layout;
     }
-
-
-    // > NESTED CLASSES
-    // ------------------------------------------------------------------------------------------
-
-    /*
-    public static class AsyncConstructor
-    {
-        private UUID pageConstructorId;
-
-        private Integer numberOfComponents;
-
-        private UUID id;
-        private String label;
-        private Integer index;
-        private Integer numberOfRows;
-        private ArrayList<Component> components;
-
-        public AsyncConstructor(UUID id, Integer numberOfComponents, UUID pageConstructorId)
-        {
-            this.id = id;
-
-            this.label = null;
-            this.index = null;
-            this.numberOfComponents = null;
-
-            this.pageConstructorId = pageConstructorId;
-            this.numberOfComponents = numberOfComponents;
-
-            this.components = new ArrayList<>();
-        }
-
-        synchronized public void setLabel(String label)
-        {
-            this.label = label;
-        }
-
-        synchronized public void setIndex(Integer index)
-        {
-            this.index = index;
-        }
-
-        synchronized public void addComponent(Component component)
-        {
-            this.components.add(component);
-
-            if (this.isReady())  ready();
-        }
-
-        synchronized public void setNumberOfRows(Integer numberOfRows)
-        {
-            this.numberOfRows = numberOfRows;
-
-            if (this.isReady())  ready();
-        }
-
-        private boolean isReady()
-        {
-            return this.label != null &&
-                   this.index != null &&
-                   this.numberOfRows != null &&
-                   this.components.size() == numberOfComponents;
-        }
-
-        private void ready()
-        {
-            Group group = new Group(this.id, this.label, this.index, this.numberOfRows, this.components);
-            Page.getAsyncConstructor(pageConstructorId).addGroup(group);
-        }
-
-    } */
 
 
     /**
@@ -637,7 +535,6 @@ public class Group implements Serializable
                 .markGroupId(this.group.getId());
         }
     }
-
 
 
 }

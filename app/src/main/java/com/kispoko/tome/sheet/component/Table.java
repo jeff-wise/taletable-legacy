@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static android.R.attr.data;
 import static android.R.attr.paddingBottom;
 
 
@@ -65,7 +66,7 @@ public class Table extends Component implements Serializable
 
     public Table(UUID id, UUID groupId)
     {
-        super(id, groupId, null, null, null);
+        super(id, null, groupId, null, null, null);
 
         this.width = null;
         this.height = null;
@@ -74,11 +75,11 @@ public class Table extends Component implements Serializable
         this.rows = null;
     }
 
-    public Table(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
-                 Integer width, Integer height, String[] columnNames,
+    public Table(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
+                 List<String> actions, Integer width, Integer height, String[] columnNames,
                  Row rowTemplate, Row[] rows)
     {
-        super(id, groupId, typeId, format, actions);
+        super(id, null, groupId, typeId, format, actions);
 
         this.width = width;
         this.height = height;
@@ -91,8 +92,10 @@ public class Table extends Component implements Serializable
     @SuppressWarnings("unchecked")
     public static Table fromYaml(UUID groupId, Map<String, Object> tableYaml)
     {
-        // Values to parse
+        // VALUES TO PARSE
+        // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
+        String name = null;
         Type.Id typeId = null;
         Format format;
         List<String> actions = null;
@@ -102,28 +105,23 @@ public class Table extends Component implements Serializable
         String[] columnNames = null;
         Row[] rows;
 
-        // Parse Values
+        // PARSE VALUES
+        // --------------------------------------------------------------------------------------
+
+        // > Top Level
+        // --------------------------------------------------------------------------------------
         Map<String,Object> formatYaml = (Map<String,Object>) tableYaml.get("format");
         Map<String,Object> dataYaml   = (Map<String,Object>) tableYaml.get("data");
 
         // >> Type Id
-        if (dataYaml.containsKey("type"))
-        {
-            Map<String, Object> typeYaml = (Map<String,Object>) dataYaml.get("type");
-            String _typeId = null;
-            String typeKind = null;
-
-            if (typeYaml.containsKey("id"))
-                _typeId = (String) typeYaml.get("id");
-
-            if (typeYaml.containsKey("kind"))
-                typeKind = (String) typeYaml.get("kind");
-
-            typeId = new Type.Id(typeKind, _typeId);
-        }
+        typeId = Type.Id.fromYaml(dataYaml);
 
         // >> Format
         format = Component.parseFormatYaml(tableYaml);
+
+        // >> Name
+        if (tableYaml.containsKey("name"))
+            name = (String) tableYaml.get("name");
 
         // >> Actions
         if (tableYaml.containsKey("actions"))
@@ -181,7 +179,7 @@ public class Table extends Component implements Serializable
         }
 
 
-        return new Table(id, groupId, typeId, format, actions, width, height,
+        return new Table(id, name, groupId, typeId, format, actions, width, height,
                          columnNames, rowTemplate, rows);
     }
 
@@ -317,7 +315,7 @@ public class Table extends Component implements Serializable
                 // -----------------------------------------------------------------------------
 
                 String tableQuery =
-                    "SELECT comp.label, comp.show_label, comp.type_kind, comp.type_id, " +
+                    "SELECT comp.name, comp.label, comp.show_label, comp.type_kind, comp.type_id, " +
                             "comp.actions, tbl.width, tbl.height, " +
                            "tbl.column1_name, tbl.column2_name, tbl.column3_name, " +
                            "tbl.column4_name, tbl.column5_name, tbl.column6_name " +
@@ -327,6 +325,7 @@ public class Table extends Component implements Serializable
 
                 Cursor tableCursor = database.rawQuery(tableQuery, null);
 
+                String name = null;
                 String label = null;
                 Boolean showLabel = null;
                 String typeKind = null;
@@ -339,18 +338,19 @@ public class Table extends Component implements Serializable
                 try {
                     tableCursor.moveToFirst();
 
-                    label    = tableCursor.getString(0);
-                    showLabel = SQL.intAsBool(tableCursor.getInt(1));
-                    typeKind    = tableCursor.getString(2);
-                    typeId      = tableCursor.getString(3);
+                    name        = tableCursor.getString(0);
+                    label       = tableCursor.getString(1);
+                    showLabel   = SQL.intAsBool(tableCursor.getInt(2));
+                    typeKind    = tableCursor.getString(3);
+                    typeId      = tableCursor.getString(4);
                     actions     = new ArrayList<>(Arrays.asList(
-                                        TextUtils.split(tableCursor.getString(4), ",")));
-                    tableWidth  = tableCursor.getInt(5);
-                    tableHeight = tableCursor.getInt(6);
+                                                  TextUtils.split(tableCursor.getString(5), ",")));
+                    tableWidth  = tableCursor.getInt(6);
+                    tableHeight = tableCursor.getInt(7);
 
                     columnNames = new String[tableWidth];
                     for (int i = 0; i < columnNames.length; i++) {
-                        String columnName = tableCursor.getString(i + 7);
+                        String columnName = tableCursor.getString(i + 8);
                         columnNames[i] = columnName;
 
                     }
@@ -442,6 +442,7 @@ public class Table extends Component implements Serializable
 
 
                 // Set loaded values
+                thisTable.setName(name);
                 thisTable.setTypeId(new Type.Id(typeKind, typeId));
                 thisTable.setLabel(label);
                 thisTable.setShowLabel(showLabel);

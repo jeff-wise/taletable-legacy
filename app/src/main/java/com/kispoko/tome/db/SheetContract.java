@@ -141,6 +141,10 @@ public class SheetContract
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
+        // Column: Name
+        public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_TYPE = TYPE_TEXT;
+
         // Column: Group Id
         public static final String COLUMN_GROUP_ID_NAME = "group_id";
         public static final String COLUMN_GROUP_ID_TYPE = TYPE_TEXT;
@@ -196,7 +200,7 @@ public class SheetContract
 
 
     /**
-     * Text Component
+     * Text Component Table
      */
     public static class ComponentText implements BaseColumns
     {
@@ -218,7 +222,7 @@ public class SheetContract
 
 
     /**
-     * Integer Component
+     * Integer Component Table
      */
     public static class ComponentInteger implements BaseColumns
     {
@@ -240,7 +244,7 @@ public class SheetContract
 
 
     /**
-     * Boolean Component
+     * Boolean Component Table
      */
     public static class ComponentBoolean implements BaseColumns
     {
@@ -258,7 +262,7 @@ public class SheetContract
 
 
     /**
-     * Table Component
+     * Table Component Table
      */
     public static class ComponentTable implements BaseColumns
     {
@@ -304,7 +308,7 @@ public class SheetContract
 
 
     /**
-     * Table Component
+     * Table Component Cell Table
      */
     public static class ComponentTableCell implements BaseColumns
     {
@@ -334,7 +338,7 @@ public class SheetContract
 
 
     /**
-     * Image Component
+     * Image Component Table
      */
     public static class ComponentImage implements BaseColumns
     {
@@ -352,7 +356,7 @@ public class SheetContract
 
 
     /**
-     * ListType Type
+     * ListType Type Table
      */
     public static class TypeList implements BaseColumns
     {
@@ -371,5 +375,50 @@ public class SheetContract
         public static final String COLUMN_VALUE_NAME = "value";
         public static final String COLUMN_VALUE_TYPE = TYPE_TEXT;
     }
+
+
+    /**
+     * Function Table
+     */
+    public static class Function implements BaseColumns
+    {
+        // Table: Data Table
+        public static final String TABLE_NAME = "function";
+
+        // Column: Component Id
+        public static final String COLUMN_LIST_ID_NAME = "list_id";
+        public static final String COLUMN_LIST_ID_TYPE = TYPE_TEXT;
+
+        // Column: Sheet Id
+        public static final String COLUMN_SHEET_ID_NAME = "sheet_id";
+        public static final String COLUMN_SHEET_ID_TYPE = TYPE_TEXT;
+
+        // Column: Value
+        public static final String COLUMN_VALUE_NAME = "value";
+        public static final String COLUMN_VALUE_TYPE = TYPE_TEXT;
+    }
+
+    /**
+     * Tuple Table
+     */
+    public static class Tuple implements BaseColumns
+    {
+        // Table: Data Table
+        public static final String TABLE_NAME = "tuple";
+
+        // Column: Component Id
+        public static final String COLUMN_LIST_ID_NAME = "list_id";
+        public static final String COLUMN_LIST_ID_TYPE = TYPE_TEXT;
+
+        // Column: Sheet Id
+        public static final String COLUMN_SHEET_ID_NAME = "sheet_id";
+        public static final String COLUMN_SHEET_ID_TYPE = TYPE_TEXT;
+
+        // Column: Value
+        public static final String COLUMN_VALUE_NAME = "value";
+        public static final String COLUMN_VALUE_TYPE = TYPE_TEXT;
+    }
+
+
 
 }

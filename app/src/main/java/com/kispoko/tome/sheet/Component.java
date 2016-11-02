@@ -46,6 +46,7 @@ public abstract class Component implements Unique, Serializable
     // ------------------------------------------------------------------------------------------
 
     private UUID id;
+    private String name;
     private UUID groupId;
     private Type.Id typeId;
     private List<String> actions;
@@ -77,13 +78,15 @@ public abstract class Component implements Unique, Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Component(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions)
+    public Component(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
+                     List<String> actions)
     {
         if (id != null)
             this.id = id;
         else
             this.id = UUID.randomUUID();
 
+        this.name = name;
         this.groupId = groupId;
         this.typeId = typeId;
 
@@ -144,6 +147,18 @@ public abstract class Component implements Unique, Serializable
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+
+    // >> Name
+    // ------------------------------------------------------------------------------------------
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 
@@ -296,6 +311,7 @@ public abstract class Component implements Unique, Serializable
     {
         try {
             row.put("component_id", this.getId().toString());
+            row.put("name", this.getName());
             SQL.putOptString(row, "group_id", this.getGroupId());
             row.put("data_type", this.componentName());
             row.put("label", this.getLabel());

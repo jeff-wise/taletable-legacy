@@ -56,16 +56,16 @@ public class NumberInteger extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
     public NumberInteger(UUID id, UUID groupId) {
-        super(id, groupId, null, null, null);
+        super(id, null, groupId, null, null, null);
         this.keyStat = null;
         this.value = null;
         this.textSize = TextSize.MEDIUM;
     }
 
-    public NumberInteger(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
-                         Integer keyStat, Integer value)
+    public NumberInteger(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
+                         List<String> actions, Integer keyStat, Integer value)
     {
-        super(id, groupId, typeId, format, actions);
+        super(id, name, groupId, typeId, format, actions);
         this.keyStat = keyStat;
         this.value = value;
         this.textSize = TextSize.MEDIUM;
@@ -78,6 +78,7 @@ public class NumberInteger extends Component implements Serializable
         // VALUES TO PARSE
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
+        String name = null;
         Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
@@ -90,6 +91,10 @@ public class NumberInteger extends Component implements Serializable
 
         // > Top Level
         // --------------------------------------------------------------------------------------
+
+        // ** Name
+        if (integerYaml.containsKey("name"))
+            name = (String) integerYaml.get("name");
 
         // ** Actions
         if (integerYaml.containsKey("actions"))
@@ -128,8 +133,7 @@ public class NumberInteger extends Component implements Serializable
         }
 
         // CREATE INTEGER
-        NumberInteger integer = new NumberInteger(id, groupId, typeId,
-                                                  format, actions,
+        NumberInteger integer = new NumberInteger(id, name, groupId, typeId, format, actions,
                                                   keyStat, value);
 
         if (prefix != null) integer.setPrefix(prefix);
@@ -261,7 +265,7 @@ public class NumberInteger extends Component implements Serializable
 
                 // Query Component
                 String integerQuery =
-                    "SELECT comp.label, comp.show_label, comp.row, comp.column, comp.width, " +
+                    "SELECT comp.name, comp.label, comp.show_label, comp.row, comp.column, comp.width, " +
                            "comp.alignment, comp.type_kind, comp.type_id, comp.key_stat, " +
                            "comp.actions, int.value, int.prefix " +
                     "FROM component comp " +
@@ -271,6 +275,7 @@ public class NumberInteger extends Component implements Serializable
 
                 Cursor integerCursor = database.rawQuery(integerQuery, null);
 
+                String name = null;
                 String label = null;
                 Boolean showLabel = null;
                 Integer row = null;
@@ -285,19 +290,20 @@ public class NumberInteger extends Component implements Serializable
                 String prefix = null;
                 try {
                     integerCursor.moveToFirst();
-                    label       = integerCursor.getString(0);
-                    showLabel   = SQL.intAsBool(integerCursor.getInt(1));
-                    row         = integerCursor.getInt(2);
-                    column      = integerCursor.getInt(3);
-                    width       = integerCursor.getInt(4);
-                    alignment   = Alignment.fromString(integerCursor.getString(5));
-                    typeKind    = integerCursor.getString(6);
-                    typeId      = integerCursor.getString(7);
-                    keyStat     = integerCursor.getInt(8);
+                    name        = integerCursor.getString(0);
+                    label       = integerCursor.getString(1);
+                    showLabel   = SQL.intAsBool(integerCursor.getInt(2));
+                    row         = integerCursor.getInt(3);
+                    column      = integerCursor.getInt(4);
+                    width       = integerCursor.getInt(5);
+                    alignment   = Alignment.fromString(integerCursor.getString(6));
+                    typeKind    = integerCursor.getString(7);
+                    typeId      = integerCursor.getString(8);
+                    keyStat     = integerCursor.getInt(9);
                     actions     = new ArrayList<>(Arrays.asList(
-                                        TextUtils.split(integerCursor.getString(9), ",")));
-                    value       = integerCursor.getInt(10);
-                    prefix      = integerCursor.getString(11);
+                                        TextUtils.split(integerCursor.getString(10), ",")));
+                    value       = integerCursor.getInt(11);
+                    prefix      = integerCursor.getString(12);
                 } catch (Exception e) {
                     Log.d("***INTEGER", Log.getStackTraceString(e));
                 }
@@ -305,6 +311,7 @@ public class NumberInteger extends Component implements Serializable
                     integerCursor.close();
                 }
 
+                thisInteger.setName(name);
                 thisInteger.setTypeId(new Type.Id(typeKind, typeId));
                 thisInteger.setLabel(label);
                 thisInteger.setShowLabel(showLabel);

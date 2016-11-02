@@ -65,15 +65,15 @@ public class Image extends Component implements Serializable
 
     public Image(UUID id, UUID groupId)
     {
-        super(id, groupId, null, null, null);
+        super(id, null, groupId, null, null, null);
         this.serialBitmap = null;
     }
 
 
-    public Image(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
-                 Bitmap bitmap)
+    public Image(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
+                 List<String> actions, Bitmap bitmap)
     {
-        super(id, groupId, typeId, format, actions);
+        super(id, name, groupId, typeId, format, actions);
 
         this.serialBitmap = null;
         this.setBitmap(bitmap);
@@ -86,6 +86,7 @@ public class Image extends Component implements Serializable
         // VALUES TO PARSE
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
+        String name = null;
         Format format = null;
         List<String> actions = null;
 
@@ -94,6 +95,10 @@ public class Image extends Component implements Serializable
 
         // > Top Level
         // --------------------------------------------------------------------------------------
+
+        // ** Name
+        if (imageYaml.containsKey("name"))
+            name = (String) imageYaml.get("name");
 
         // ** Actions
         if (imageYaml.containsKey("actions"))
@@ -109,7 +114,7 @@ public class Image extends Component implements Serializable
             format = Component.parseFormatYaml(imageYaml);
         }
 
-        return new Image(id, groupId, null, format, actions, null);
+        return new Image(id, name, groupId, null, format, actions, null);
     }
 
 
@@ -172,14 +177,15 @@ public class Image extends Component implements Serializable
 
                 // Query Component
                 String imageQuery =
-                    "SELECT comp.label, comp.show_label, comp.row, comp.column, comp.width, " +
-                           "comp.actions, im.image " +
+                    "SELECT comp.name, comp.label, comp.show_label, comp.row, comp.column, " +
+                           "comp.width, comp.actions, im.image " +
                     "FROM Component comp " +
                     "INNER JOIN component_image im on im.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(thisImage.getId().toString());
 
                 Cursor imageCursor = database.rawQuery(imageQuery, null);
 
+                String name = null;
                 String label = null;
                 Boolean showLabel = null;
                 Integer row = null;
@@ -189,14 +195,15 @@ public class Image extends Component implements Serializable
                 byte[] imageBlob = null;
                 try {
                     imageCursor.moveToFirst();
-                    label       = imageCursor.getString(0);
-                    showLabel   = SQL.intAsBool(imageCursor.getInt(1));
-                    row         = imageCursor.getInt(2);
-                    column      = imageCursor.getInt(3);
-                    width       = imageCursor.getInt(4);
+                    name        = imageCursor.getString(0);
+                    label       = imageCursor.getString(1);
+                    showLabel   = SQL.intAsBool(imageCursor.getInt(2));
+                    row         = imageCursor.getInt(3);
+                    column      = imageCursor.getInt(4);
+                    width       = imageCursor.getInt(5);
                     actions     = new ArrayList<>(Arrays.asList(
-                                        TextUtils.split(imageCursor.getString(5), ",")));
-                    imageBlob   = imageCursor.getBlob(6);
+                                        TextUtils.split(imageCursor.getString(6), ",")));
+                    imageBlob   = imageCursor.getBlob(7);
                 } catch (Exception e ) {
                     Log.d("***IMAGE", Log.getStackTraceString(e));
                 } finally {
@@ -207,6 +214,7 @@ public class Image extends Component implements Serializable
                 if (imageBlob != null)
                     bitmap = Util.getImage(imageBlob);
 
+                thisImage.setName(name);
                 thisImage.setLabel(label);
                 thisImage.setShowLabel(showLabel);
                 thisImage.setRow(row);

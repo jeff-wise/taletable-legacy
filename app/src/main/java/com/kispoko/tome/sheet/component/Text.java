@@ -68,17 +68,17 @@ public class Text extends Component implements Serializable
 
 
     public Text(UUID id, UUID groupId) {
-        super(id, groupId, null, null, null);
+        super(id, null, groupId, null, null, null);
         this.keyStat = null;
         this.value = null;
         this.textSize = null;
     }
 
 
-    public Text(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
-                TextSize textSize, Integer keyStat, String value)
+    public Text(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
+                List<String> actions, TextSize textSize, Integer keyStat, String value)
     {
-        super(id, groupId, typeId, format, actions);
+        super(id, name, groupId, typeId, format, actions);
         this.keyStat = keyStat;
         this.value = value;
         this.textSize = textSize;
@@ -92,6 +92,7 @@ public class Text extends Component implements Serializable
         // VALUES TO PARSE
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
+        String name = null;
         Type.Id typeId = null;
         Format format = null;
         ArrayList<String> actions = null;
@@ -104,6 +105,10 @@ public class Text extends Component implements Serializable
 
         // > Top Level
         // --------------------------------------------------------------------------------------
+
+        // ** Name
+        if (textYaml.containsKey("name"))
+            name = (String) textYaml.get("name");
 
         // ** Actions
         if (textYaml.containsKey("actions"))
@@ -141,7 +146,7 @@ public class Text extends Component implements Serializable
                 textSize = Component.TextSize.fromString((String) formatYaml.get("text_size"));
         }
 
-        return new Text(id, groupId, typeId, format, actions, textSize, keyStat, value);
+        return new Text(id, name, groupId, typeId, format, actions, textSize, keyStat, value);
     }
 
 
@@ -394,15 +399,16 @@ public class Text extends Component implements Serializable
 
                 // Query Component
                 String textQuery =
-                    "SELECT comp.label, comp.show_label, comp.row, comp.column, comp.width, " +
-                           "comp.alignment, comp.type_kind, comp.type_id, comp.actions, " +
-                           "comp.key_stat, text.size, text.value " +
+                    "SELECT comp.name, comp.label, comp.show_label, comp.row, comp.column, " +
+                           "comp.width, comp.alignment, comp.type_kind, comp.type_id, " +
+                           "comp.actions, comp.key_stat, text.size, text.value " +
                     "FROM Component comp " +
                     "INNER JOIN component_text text on text.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(thisText.getId().toString());
 
                 Cursor textCursor = database.rawQuery(textQuery, null);
 
+                String name = null;
                 String label = null;
                 Boolean showLabel = null;
                 Integer row = null;
@@ -417,19 +423,20 @@ public class Text extends Component implements Serializable
                 String value = null;
                 try {
                     textCursor.moveToFirst();
-                    label           = textCursor.getString(0);
-                    showLabel       = SQL.intAsBool(textCursor.getInt(1));
-                    row             = textCursor.getInt(2);
-                    column          = textCursor.getInt(3);
-                    width           = textCursor.getInt(4);
-                    alignment       = Alignment.fromString(textCursor.getString(5));
-                    typeKind        = textCursor.getString(6);
-                    typeId          = textCursor.getString(7);
+                    name            = textCursor.getString(0);
+                    label           = textCursor.getString(1);
+                    showLabel       = SQL.intAsBool(textCursor.getInt(2));
+                    row             = textCursor.getInt(3);
+                    column          = textCursor.getInt(4);
+                    width           = textCursor.getInt(5);
+                    alignment       = Alignment.fromString(textCursor.getString(6));
+                    typeKind        = textCursor.getString(7);
+                    typeId          = textCursor.getString(8);
                     actions         = new ArrayList<>(Arrays.asList(
-                                            TextUtils.split(textCursor.getString(8), ",")));
-                    keyStat         = textCursor.getInt(9);
-                    textSize        = textCursor.getString(10);
-                    value           = textCursor.getString(11);
+                                            TextUtils.split(textCursor.getString(9), ",")));
+                    keyStat         = textCursor.getInt(10);
+                    textSize        = textCursor.getString(11);
+                    value           = textCursor.getString(12);
                 } catch (Exception e) {
                     Log.d("***TABLE", Log.getStackTraceString(e));
                 }
@@ -437,6 +444,7 @@ public class Text extends Component implements Serializable
                     textCursor.close();
                 }
 
+                thisText.setName(name);
                 thisText.setTypeId(new Type.Id(typeKind, typeId));
                 thisText.setLabel(label);
                 thisText.setShowLabel(showLabel);

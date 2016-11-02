@@ -2,7 +2,6 @@
 package com.kispoko.tome.sheet.component;
 
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -48,14 +47,14 @@ public class Bool extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
     public Bool(UUID id, UUID groupId) {
-        super(id, groupId, null, null, null);
+        super(id, null, groupId, null, null, null);
         this.value = null;
     }
 
-    public Bool(UUID id, UUID groupId, Type.Id typeId, Format format, List<String> actions,
-                Boolean value)
+    public Bool(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
+                List<String> actions, Boolean value)
     {
-        super(id, groupId, typeId, format, actions);
+        super(id, name, groupId, typeId, format, actions);
         this.value = value;
     }
 
@@ -71,6 +70,7 @@ public class Bool extends Component implements Serializable
         // VALUES TO PARSE
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
+        String name = null;
         Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
@@ -82,10 +82,13 @@ public class Bool extends Component implements Serializable
         // > Top Level
         // --------------------------------------------------------------------------------------
 
+        // ** Name
+        if (boolYaml.containsKey("name"))
+            name = (String) boolYaml.get("name");
+
         // ** Actions
         if (boolYaml.containsKey("actions"))
             actions = (List<String>) boolYaml.get("actions");
-
 
         // >> Data
         // --------------------------------------------------------------------------------------
@@ -111,7 +114,7 @@ public class Bool extends Component implements Serializable
             format = Component.parseFormatYaml(boolYaml);
         }
 
-        return new Bool(id, groupId, typeId, format, actions, value);
+        return new Bool(id, name, groupId, typeId, format, actions, value);
     }
 
 
@@ -205,8 +208,9 @@ public class Bool extends Component implements Serializable
 
                 // Query Component
                 String boolQuery =
-                    "SELECT comp.label, comp.show_label, comp.row, comp.column, comp.width, " +
-                           "comp.alignment, comp.type_kind, comp.type_id, comp.actions, bool.value " +
+                    "SELECT comp.name, comp.label, comp.show_label, comp.row, comp.column, " +
+                           "comp.width, comp.alignment, comp.type_kind, comp.type_id, " +
+                           "comp.actions, bool.value " +
                     "FROM component comp " +
                     "INNER JOIN component_boolean bool on bool.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(thisBool.getId().toString());
@@ -214,6 +218,7 @@ public class Bool extends Component implements Serializable
 
                 Cursor cursor = database.rawQuery(boolQuery, null);
 
+                String name = null;
                 String label = null;
                 Boolean showLabel = null;
                 Integer row = null;
@@ -227,17 +232,18 @@ public class Bool extends Component implements Serializable
                 Boolean value = null;
                 try {
                     cursor.moveToFirst();
-                    label       = cursor.getString(0);
-                    showLabel   = SQL.intAsBool(cursor.getInt(1));
-                    row         = cursor.getInt(2);
-                    column      = cursor.getInt(3);
-                    width       = cursor.getInt(4);
-                    alignment   = Alignment.fromString(cursor.getString(5));
-                    typeKind    = cursor.getString(6);
-                    typeId      = cursor.getString(7);
+                    name        = cursor.getString(0);
+                    label       = cursor.getString(1);
+                    showLabel   = SQL.intAsBool(cursor.getInt(2));
+                    row         = cursor.getInt(3);
+                    column      = cursor.getInt(4);
+                    width       = cursor.getInt(5);
+                    alignment   = Alignment.fromString(cursor.getString(6));
+                    typeKind    = cursor.getString(7);
+                    typeId      = cursor.getString(8);
                     actions     = new ArrayList<>(Arrays.asList(
-                                            TextUtils.split(cursor.getString(8), ",")));
-                    value       = cursor.getInt(9) != 0;
+                                            TextUtils.split(cursor.getString(9), ",")));
+                    value       = cursor.getInt(10) != 0;
                 } catch (Exception e) {
                     Log.d("***BOOL", Log.getStackTraceString(e));
                 }
@@ -245,6 +251,7 @@ public class Bool extends Component implements Serializable
                     cursor.close();
                 }
 
+                thisBool.setName(name);
                 thisBool.setTypeId(new Type.Id(typeKind, typeId));
                 thisBool.setLabel(label);
                 thisBool.setShowLabel(showLabel);

@@ -62,6 +62,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
         final String CREATE_COMPONENT_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.Component.TABLE_NAME + " (" +
             SheetContract.Component.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.Component.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY," +
+            SheetContract.Component.COLUMN_NAME_NAME + " " + SheetContract.Component.COLUMN_NAME_TYPE + "," +
             SheetContract.Component.COLUMN_GROUP_ID_NAME + " " + SheetContract.Component.COLUMN_GROUP_ID_TYPE + "," +
             SheetContract.Component.COLUMN_DATA_TYPE_NAME + " " + SheetContract.Component.COLUMN_DATA_TYPE_TYPE + "," +
             SheetContract.Component.COLUMN_LABEL_NAME + " " + SheetContract.Component.COLUMN_LABEL_TYPE + "," +
