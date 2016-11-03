@@ -3,7 +3,6 @@ package com.kispoko.tome.rules.evaluation;
 
 
 import com.kispoko.tome.rules.BuiltInFunction;
-import com.kispoko.tome.rules.Function;
 import com.kispoko.tome.rules.FunctionIndex;
 import com.kispoko.tome.rules.FunctionValue;
 import com.kispoko.tome.rules.FunctionValueType;
@@ -139,8 +138,8 @@ public class Evaluator
             return BuiltInFunction.execute(functionName, parameters, context);
         }
         // Then custom functions
-        else if (this.functionByName.containsKey(functionName)) {
-            return this.functionByName.get(functionName).execute(parameters);
+        else if (this.functionIndex.hasFunction(functionName)) {
+            return this.functionIndex.getFunction(functionName).execute(parameters);
         }
 
         return null;

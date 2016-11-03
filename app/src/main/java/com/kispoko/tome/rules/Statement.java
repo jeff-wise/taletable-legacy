@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static android.R.attr.switchMinWidth;
+import static android.R.attr.valueType;
+
 
 /**
  * Statement
@@ -92,12 +95,23 @@ public class Statement
         VARIABLE,
         LITERAL_STRING;
 
+
         public static ParameterType fromString(String parameterType)
         {
             if (parameterType != null)
                 return ParameterType.valueOf(parameterType.toUpperCase());
             return null;
         }
+
+
+        public static String asString(ParameterType parameterType)
+        {
+            if (parameterType != null)
+                return parameterType.toString().toLowerCase();
+            // TODO should not happen
+            return null;
+        }
+
     }
 
 
@@ -107,8 +121,8 @@ public class Statement
         // PROPERTIES
         // --------------------------------------------------------------------------------------
 
-        Object value;
-        ParameterType _type;
+        private Object value;
+        private ParameterType _type;
 
 
         // CONSTRUCTORS
@@ -118,6 +132,7 @@ public class Statement
         {
             this.value = value;
             this._type = _type;
+            // TODO verify that value is compatible with type
         }
 
 
@@ -142,6 +157,32 @@ public class Statement
         }
 
 
+        /**
+         * Create a parameter from a string value. This method is usually used to deserialize a
+         * parameter, where the value was stored as a string, and we need to convert the value to
+         * the appropriate type.
+         * @param value Value represented as a string.
+         * @param _type The type of parameter.
+         * @return A parameter.
+         */
+        public static Parameter fromString(String value, ParameterType _type)
+        {
+            switch (_type)
+            {
+                case PARAMETER:
+                    Integer intValue = Integer.parseInt(value);
+                    return new Parameter(intValue, _type);
+                case VARIABLE:
+                    return new Parameter(value, _type);
+                case LITERAL_STRING:
+                    return new Parameter(value, _type);
+            }
+
+            // TODO should not happen
+            return null;
+        }
+
+
         // API
         // --------------------------------------------------------------------------------------
 
@@ -152,6 +193,23 @@ public class Statement
 
         public ParameterType getType() {
             return this._type;
+        }
+
+
+        public String valueAsString()
+        {
+            switch (this._type)
+            {
+                case PARAMETER:
+                    return Integer.toString((Integer) this.value);
+                case VARIABLE:
+                    return (String) this.value;
+                case LITERAL_STRING:
+                    return (String) this.value;
+            }
+
+            // TODO should not happen
+            return null;
         }
 
     }

@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static android.R.attr.label;
-import static android.text.style.TtsSpan.TYPE_TEXT;
 
 
 /**
@@ -31,7 +29,9 @@ public class Function
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    private UUID id;
     private String name;
+    private UUID sheetId;
     private List<FunctionValueType> parameterTypes;
     private FunctionValueType resultType;
     private List<Tuple> tuples;
@@ -42,10 +42,20 @@ public class Function
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Function(String name, List<FunctionValueType> parameterTypes,
+    public Function(UUID id, String name, UUID sheetId)
+    {
+        this.id = id;
+        this.name = name;
+        this.sheetId = sheetId;
+    }
+
+
+    public Function(UUID id, String name, UUID sheetId, List<FunctionValueType> parameterTypes,
                     FunctionValueType resultType, List<Tuple> tuples)
     {
+        this.id = id;
         this.name = name;
+        this.sheetId = sheetId;
         this.parameterTypes = parameterTypes;
         this.resultType = resultType;
         this.tuples = tuples;
@@ -53,10 +63,11 @@ public class Function
 
 
     @SuppressWarnings("unchecked")
-    public static Function fromYaml(Map<String,Object> functionDefinitionYaml)
+    public static Function fromYaml(UUID sheetId, Map<String,Object> functionDefinitionYaml)
     {
         // VALUES TO PARSE
         // --------------------------------------------------------------------------------------
+        UUID id = UUID.randomUUID();
         String name = null;
         List<FunctionValueType> parameterTypes = new ArrayList<>();
         FunctionValueType resultType = null;
@@ -97,8 +108,7 @@ public class Function
             }
         }
 
-        return new Function(name, parameterTypes, resultType, tuples);
-
+        return new Function(id, name, sheetId, parameterTypes, resultType, tuples);
     }
 
 
@@ -107,6 +117,11 @@ public class Function
 
     // > State
     // ------------------------------------------------------------------------------------------
+
+    public UUID getId() {
+        return this.id;
+    }
+
 
     // ** Name
     // ------------------------------------------------------------------------------------------
@@ -118,6 +133,14 @@ public class Function
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    // ** Sheet Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getSheetId() {
+        return this.sheetId;
     }
 
 
@@ -257,6 +280,10 @@ public class Function
     }
 
 
+    /**
+     * Save the program in the database.
+     * @param functionIndexTrackerId The ID of the caller's asynchronous tracker.
+     */
     public void save(final TrackerId functionIndexTrackerId)
     {
         final Function thisFunction = this;
@@ -271,7 +298,9 @@ public class Function
 
                 // Update Function table row
                 ContentValues functionRow = new ContentValues();
+                functionRow.put("function_id", thisFunction.getId().toString());
                 functionRow.put("name", thisFunction.getName());
+                functionRow.put("sheet_id", thisFunction.getSheetId().toString());
                 functionRow.put("number_of_parameters", thisFunction.getParameterTypes().size());
 
                 List<FunctionValueType> parameterTypes = thisFunction.getParameterTypes();

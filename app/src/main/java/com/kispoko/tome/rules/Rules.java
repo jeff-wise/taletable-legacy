@@ -37,6 +37,8 @@ public class Rules implements Serializable
     {
         this.sheetId = sheetId;
         this.types = new Types(sheetId);
+        this.functionIndex = new FunctionIndex(sheetId);
+        this.programIndex = new ProgramIndex(sheetId);
     }
 
 
@@ -45,8 +47,8 @@ public class Rules implements Serializable
         this.sheetId = sheetId;
         this.types = types;
 
-        this.functionIndex = new FunctionIndex(functions);
-        this.programIndex = new ProgramIndex(programs);
+        this.functionIndex = new FunctionIndex(sheetId, functions);
+        this.programIndex = new ProgramIndex(sheetId, programs);
     }
 
 
@@ -92,6 +94,8 @@ public class Rules implements Serializable
 
         // Load Rules components asynchronously
         this.types.load(rulesTrackerId, this.getSheetId());
+        this.functionIndex.load(rulesTrackerId);
+        this.programIndex.load(rulesTrackerId);
     }
 
 
@@ -103,8 +107,8 @@ public class Rules implements Serializable
 
         // Save all Rules components
         this.types.save(rulesTrackerId, this.getSheetId(), true);
-        this.functionIndex.save(rulesTrackerId, true);
-        this.programIndex.save(rulesTrackerId, true);
+        this.functionIndex.save(rulesTrackerId);
+        this.programIndex.save(rulesTrackerId);
     }
 
 

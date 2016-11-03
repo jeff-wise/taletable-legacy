@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import static com.kispoko.tome.db.SheetContract.Tuple.COLUMN_PARAMETER_3_VALUE_NAME;
 
 
 /**
@@ -63,6 +64,8 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "CREATE TABLE IF NOT EXISTS " + SheetContract.Component.TABLE_NAME + " (" +
             SheetContract.Component.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.Component.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY," +
             SheetContract.Component.COLUMN_NAME_NAME + " " + SheetContract.Component.COLUMN_NAME_TYPE + "," +
+            SheetContract.Component.COLUMN_VALUE_NAME + " " + SheetContract.Component.COLUMN_VALUE_TYPE + "," +
+            SheetContract.Component.COLUMN_VALUE_TYPE_NAME + " " + SheetContract.Component.COLUMN_VALUE_TYPE_TYPE + "," +
             SheetContract.Component.COLUMN_GROUP_ID_NAME + " " + SheetContract.Component.COLUMN_GROUP_ID_TYPE + "," +
             SheetContract.Component.COLUMN_DATA_TYPE_NAME + " " + SheetContract.Component.COLUMN_DATA_TYPE_TYPE + "," +
             SheetContract.Component.COLUMN_LABEL_NAME + " " + SheetContract.Component.COLUMN_LABEL_TYPE + "," +
@@ -83,7 +86,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentText.TABLE_NAME + " (" +
             SheetContract.ComponentText.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentText.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY, " +
             SheetContract.ComponentText.COLUMN_SIZE_NAME + " " + SheetContract.ComponentText.COLUMN_SIZE_TYPE + ", " +
-            SheetContract.ComponentText.COLUMN_VALUE_NAME + " " + SheetContract.ComponentText.COLUMN_VALUE_TYPE + ", " +
+            //SheetContract.ComponentText.COLUMN_VALUE_NAME + " " + SheetContract.ComponentText.COLUMN_VALUE_TYPE + ", " +
             "FOREIGN KEY (" + SheetContract.ComponentText.COLUMN_COMPONENT_ID_NAME + ") REFERENCES " +
                 SheetContract.Component.TABLE_NAME + "(" + SheetContract.Component.COLUMN_COMPONENT_ID_NAME + ") )";
 
@@ -91,14 +94,14 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentInteger.TABLE_NAME + " (" +
             SheetContract.ComponentInteger.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentInteger.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY, " +
             SheetContract.ComponentInteger.COLUMN_PREFIX_NAME + " " + SheetContract.ComponentInteger.COLUMN_PREFIX_TYPE + ", " +
-            SheetContract.ComponentInteger.COLUMN_VALUE_NAME + " " + SheetContract.ComponentInteger.COLUMN_VALUE_TYPE + ", " +
+            //SheetContract.ComponentInteger.COLUMN_VALUE_NAME + " " + SheetContract.ComponentInteger.COLUMN_VALUE_TYPE + ", " +
             "FOREIGN KEY (" + SheetContract.ComponentInteger.COLUMN_COMPONENT_ID_NAME + ") REFERENCES " +
                 SheetContract.Component.TABLE_NAME + "(" + SheetContract.Component.COLUMN_COMPONENT_ID_NAME + ") )";
 
         final String CREATE_COMPONENT_BOOLEAN_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentBoolean.TABLE_NAME + " (" +
             SheetContract.ComponentBoolean.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentBoolean.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY, " +
-            SheetContract.ComponentBoolean.COLUMN_VALUE_NAME + " " + SheetContract.ComponentBoolean.COLUMN_VALUE_TYPE + ", " +
+            //SheetContract.ComponentBoolean.COLUMN_VALUE_NAME + " " + SheetContract.ComponentBoolean.COLUMN_VALUE_TYPE + ", " +
             "FOREIGN KEY (" + SheetContract.ComponentBoolean.COLUMN_COMPONENT_ID_NAME + ") REFERENCES " +
                 SheetContract.Component.TABLE_NAME + "(" + SheetContract.Component.COLUMN_COMPONENT_ID_NAME + ") )";
 
@@ -142,6 +145,54 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             SheetContract.TypeList.COLUMN_SHEET_ID_NAME + " " + SheetContract.TypeList.COLUMN_SHEET_ID_TYPE + "," +
             SheetContract.TypeList.COLUMN_VALUE_NAME + " " + SheetContract.TypeList.COLUMN_VALUE_TYPE + ")";
 
+        final String CREATE_FUNCTION_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.Function.TABLE_NAME + " (" +
+            SheetContract.Function.COLUMN_FUNCTION_ID_NAME + " " + SheetContract.Function.COLUMN_FUNCTION_ID_TYPE + " PRIMARY KEY, " +
+            SheetContract.Function.COLUMN_NAME_NAME + " " + SheetContract.Function.COLUMN_NAME_TYPE + ", " +
+            SheetContract.Function.COLUMN_SHEET_ID_NAME + " " + SheetContract.Function.COLUMN_SHEET_ID_TYPE + ", " +
+            SheetContract.Function.COLUMN_RESULT_TYPE_NAME + " " + SheetContract.Function.COLUMN_RESULT_TYPE_TYPE + ", " +
+            SheetContract.Function.COLUMN_NUMBER_OF_PARAMETERS_NAME + " " + SheetContract.Function.COLUMN_NUMBER_OF_PARAMETERS_TYPE + ", " +
+            SheetContract.Function.COLUMN_PARAMETER_TYPE_1_NAME + " " + SheetContract.Function.COLUMN_PARAMETER_TYPE_1_TYPE + ", " +
+            SheetContract.Function.COLUMN_PARAMETER_TYPE_2_NAME + " " + SheetContract.Function.COLUMN_PARAMETER_TYPE_2_TYPE + ", " +
+            SheetContract.Function.COLUMN_PARAMETER_TYPE_3_NAME + " " + SheetContract.Function.COLUMN_PARAMETER_TYPE_3_TYPE + ")";
+
+        final String CREATE_TUPLE_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.Tuple.TABLE_NAME + " (" +
+            SheetContract.Tuple.COLUMN_FUNCTION_ID_NAME + " " + SheetContract.Tuple.COLUMN_FUNCTION_ID_NAME + ", " +
+            SheetContract.Tuple.COLUMN_PARAMETER_1_VALUE_NAME + " " + SheetContract.Tuple.COLUMN_PARAMETER_1_VALUE_TYPE + ", " +
+            SheetContract.Tuple.COLUMN_PARAMETER_2_VALUE_NAME + " " + SheetContract.Tuple.COLUMN_PARAMETER_2_VALUE_TYPE + ", " +
+            COLUMN_PARAMETER_3_VALUE_NAME + " " + SheetContract.Tuple.COLUMN_PARAMETER_3_VALUE_TYPE + ", " +
+            SheetContract.Tuple.COLUMN_RESULT_VALUE_NAME + " " + SheetContract.Tuple.COLUMN_RESULT_VALUE_TYPE + "," +
+            "FOREIGN KEY (" + SheetContract.Tuple.COLUMN_FUNCTION_ID_NAME + ") REFERENCES " +
+                SheetContract.Function.TABLE_NAME + "(" + SheetContract.Function.COLUMN_FUNCTION_ID_NAME + ") )";
+
+        final String CREATE_PROGRAM_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.Program.TABLE_NAME + " (" +
+            SheetContract.Program.COLUMN_PROGRAM_ID_NAME + " " + SheetContract.Program.COLUMN_PROGRAM_ID_TYPE + " PRIMARY KEY, " +
+            SheetContract.Program.COLUMN_PROGRAM_NAME + " " + SheetContract.Program.COLUMN_PROGRAM_TYPE + ", " +
+            SheetContract.Program.COLUMN_SHEET_ID_NAME + " " + SheetContract.Program.COLUMN_SHEET_ID_TYPE + ", " +
+            SheetContract.Program.COLUMN_RESULT_TYPE_NAME + " " + SheetContract.Program.COLUMN_RESULT_TYPE_TYPE + ", " +
+            SheetContract.Program.COLUMN_NUMBER_OF_PARAMETERS_NAME + " " + SheetContract.Program.COLUMN_NUMBER_OF_PARAMETERS_TYPE + ", " +
+            SheetContract.Program.COLUMN_PARAMETER_TYPE_1_NAME + " " + SheetContract.Program.COLUMN_PARAMETER_TYPE_1_TYPE + ", " +
+            SheetContract.Program.COLUMN_PARAMETER_TYPE_2_NAME + " " + SheetContract.Program.COLUMN_PARAMETER_TYPE_2_TYPE + ", " +
+            SheetContract.Program.COLUMN_PARAMETER_TYPE_3_NAME + " " + SheetContract.Program.COLUMN_PARAMETER_TYPE_3_TYPE + ", " +
+            SheetContract.Program.COLUMN_VARIABLE_NAME_NAME + " " + SheetContract.Program.COLUMN_VARIABLE_NAME_TYPE + ")";
+
+        final String CREATE_STATEMENT_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.Statement.TABLE_NAME + " (" +
+            SheetContract.Statement.COLUMN_PROGRAM_ID_NAME + " " + SheetContract.Statement.COLUMN_PROGRAM_ID_TYPE + ", " +
+            SheetContract.Statement.COLUMN_VARIABLE_NAME_NAME + " " + SheetContract.Statement.COLUMN_VARIABLE_NAME_TYPE + ", " +
+            SheetContract.Statement.COLUMN_FUNCTION_NAME_NAME + " " + SheetContract.Statement.COLUMN_FUNCTION_NAME_TYPE + ", " +
+            SheetContract.Statement.COLUMN_NUMBER_OF_PARAMETERS_NAME + " " + SheetContract.Statement.COLUMN_NUMBER_OF_PARAMETERS_TYPE + ", " +
+            SheetContract.Statement.COLUMN_PARAMETER_VALUE_1_NAME + " " + SheetContract.Statement.COLUMN_PARAMETER_VALUE_1_TYPE + ", " +
+            SheetContract.Statement.COLUMN_PARAMETER_TYPE_1_NAME + " " + SheetContract.Statement.COLUMN_PARAMETER_TYPE_1_TYPE + ", " +
+            SheetContract.Statement.COLUMN_PARAMETER_VALUE_2_NAME + " " + SheetContract.Statement.COLUMN_PARAMETER_VALUE_2_TYPE + ", " +
+            SheetContract.Statement.COLUMN_PARAMETER_TYPE_2_NAME + " " + SheetContract.Statement.COLUMN_PARAMETER_TYPE_2_TYPE + ", " +
+            SheetContract.Statement.COLUMN_PARAMETER_VALUE_3_NAME + " " + SheetContract.Statement.COLUMN_PARAMETER_VALUE_3_TYPE + ", " +
+            SheetContract.Statement.COLUMN_PARAMETER_TYPE_3_NAME + " " + SheetContract.Statement.COLUMN_PARAMETER_TYPE_3_TYPE + ", " +
+            "FOREIGN KEY (" + SheetContract.Tuple.COLUMN_FUNCTION_ID_NAME + ") REFERENCES " +
+                SheetContract.Function.TABLE_NAME + "(" + SheetContract.Function.COLUMN_FUNCTION_ID_NAME + ") )";
+
 
         // > RUN Create Table Queries
         // --------------------------------------------------------------------------------------
@@ -157,6 +208,10 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
         db.execSQL(CREATE_COMPONENT_TABLE_CELL_TABLE);
         db.execSQL(CREATE_COMPONENT_IMAGE_TABLE);
         db.execSQL(CREATE_TYPE_LIST_TABLE);
+        db.execSQL(CREATE_FUNCTION_TABLE);
+        db.execSQL(CREATE_TUPLE_TABLE);
+        db.execSQL(CREATE_PROGRAM_TABLE);
+        db.execSQL(CREATE_STATEMENT_TABLE);
     }
 
 

@@ -17,6 +17,7 @@ import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.ActionDialogFragment;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.component.Bool;
+import com.kispoko.tome.sheet.component.ComponentValue;
 import com.kispoko.tome.sheet.component.Image;
 import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
@@ -47,6 +48,7 @@ public abstract class Component implements Unique, Serializable
 
     private UUID id;
     private String name;
+    private ComponentValue value;
     private UUID groupId;
     private Type.Id typeId;
     private List<String> actions;
@@ -78,8 +80,8 @@ public abstract class Component implements Unique, Serializable
     // > CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Component(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
-                     List<String> actions)
+    public Component(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
+                     Format format, List<String> actions)
     {
         if (id != null)
             this.id = id;
@@ -87,6 +89,7 @@ public abstract class Component implements Unique, Serializable
             this.id = UUID.randomUUID();
 
         this.name = name;
+        this.value = value;
         this.groupId = groupId;
         this.typeId = typeId;
 
@@ -135,10 +138,14 @@ public abstract class Component implements Unique, Serializable
 
 
 
-    // > API
+    // API
     // ------------------------------------------------------------------------------------------
 
-    // >> Id
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+
+    // ** Id
     // ------------------------------------------------------------------------------------------
 
     public UUID getId() {
@@ -150,7 +157,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Name
+    // ** Name
     // ------------------------------------------------------------------------------------------
 
     public String getName() {
@@ -162,7 +169,20 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Group Id
+    // ** Value
+    // ------------------------------------------------------------------------------------------
+
+    public ComponentValue getValue() {
+        return this.value;
+    }
+
+
+    public void setValue(ComponentValue value) {
+        this.value = value;
+    }
+
+
+    // ** Group Id
     // ------------------------------------------------------------------------------------------
 
     public UUID getGroupId() {
@@ -174,7 +194,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Type Id
+    // ** Type Id
     // ------------------------------------------------------------------------------------------
 
     public Type.Id getTypeId() {
@@ -187,7 +207,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Label
+    // ** Label
     // ------------------------------------------------------------------------------------------
 
     public boolean hasLabel() {
@@ -205,7 +225,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Show Label
+    // ** Show Label
     // ------------------------------------------------------------------------------------------
 
     public Boolean getShowLabel() {
@@ -217,7 +237,7 @@ public abstract class Component implements Unique, Serializable
         this.showLabel = showLabel;
     }
 
-    // >> Row
+    // ** Row
     // ------------------------------------------------------------------------------------------
 
     public Integer getRow() {
@@ -230,7 +250,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Column
+    // ** Column
     // ------------------------------------------------------------------------------------------
 
     public Integer getColumn() {
@@ -243,7 +263,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Width
+    // ** Width
     // ------------------------------------------------------------------------------------------
 
     public Integer getWidth() {
@@ -256,7 +276,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Alignment
+    // ** Alignment
     // ------------------------------------------------------------------------------------------
 
     public Alignment getAlignment() {
@@ -276,7 +296,7 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    // >> Actions
+    // ** Actions
     // ------------------------------------------------------------------------------------------
 
     public List<String> getActions() {
@@ -312,6 +332,7 @@ public abstract class Component implements Unique, Serializable
         try {
             row.put("component_id", this.getId().toString());
             row.put("name", this.getName());
+            row.put("value", this.getValue().asString());
             SQL.putOptString(row, "group_id", this.getGroupId());
             row.put("data_type", this.componentName());
             row.put("label", this.getLabel());

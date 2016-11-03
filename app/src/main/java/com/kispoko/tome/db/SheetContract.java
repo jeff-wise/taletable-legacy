@@ -145,6 +145,14 @@ public class SheetContract
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_TYPE = TYPE_TEXT;
 
+        // Column: Value
+        public static final String COLUMN_VALUE_NAME = "value";
+        public static final String COLUMN_VALUE_TYPE = TYPE_TEXT;
+
+        // Column: Value Type
+        public static final String COLUMN_VALUE_TYPE_NAME = "value_type";
+        public static final String COLUMN_VALUE_TYPE_TYPE = TYPE_TEXT;
+
         // Column: Group Id
         public static final String COLUMN_GROUP_ID_NAME = "group_id";
         public static final String COLUMN_GROUP_ID_TYPE = TYPE_TEXT;
@@ -212,8 +220,8 @@ public class SheetContract
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
         // Column: Value
-        public static final String COLUMN_VALUE_NAME = "value";
-        public static final String COLUMN_VALUE_TYPE = TYPE_TEXT;
+//        public static final String COLUMN_VALUE_NAME = "value";
+//        public static final String COLUMN_VALUE_TYPE = TYPE_TEXT;
 
         // Column: Size
         public static final String COLUMN_SIZE_NAME = "size";
@@ -234,8 +242,8 @@ public class SheetContract
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
         // Column: Value
-        public static final String COLUMN_VALUE_NAME = "value";
-        public static final String COLUMN_VALUE_TYPE = TYPE_INTEGER;
+//        public static final String COLUMN_VALUE_NAME = "value";
+//        public static final String COLUMN_VALUE_TYPE = TYPE_INTEGER;
 
         // Column: Prefix
         public static final String COLUMN_PREFIX_NAME = "prefix";
@@ -256,8 +264,8 @@ public class SheetContract
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
         // Column: Value
-        public static final String COLUMN_VALUE_NAME = "value";
-        public static final String COLUMN_VALUE_TYPE = TYPE_INTEGER;
+//        public static final String COLUMN_VALUE_NAME = "value";
+//        public static final String COLUMN_VALUE_TYPE = TYPE_INTEGER;
     }
 
 
@@ -385,9 +393,17 @@ public class SheetContract
         // Table: Function
         public static final String TABLE_NAME = "function";
 
+        // Column: Function Id
+        public static final String COLUMN_FUNCTION_ID_NAME = "function_id";
+        public static final String COLUMN_FUNCTION_ID_TYPE = TYPE_TEXT;
+
         // Column: Name
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_TYPE = TYPE_TEXT;
+
+        // Column: Sheet Id
+        public static final String COLUMN_SHEET_ID_NAME = "sheet_id";
+        public static final String COLUMN_SHEET_ID_TYPE = TYPE_TEXT;
 
         // Column: Result Type
         public static final String COLUMN_RESULT_TYPE_NAME = "result_type";
@@ -420,8 +436,8 @@ public class SheetContract
         public static final String TABLE_NAME = "tuple";
 
         // Column: Function Name
-        public static final String COLUMN_FUNCTION_NAME_NAME = "function_name";
-        public static final String COLUMN_FUNCTION_NAME_TYPE = TYPE_TEXT;
+        public static final String COLUMN_FUNCTION_ID_NAME = "function_id";
+        public static final String COLUMN_FUNCTION_ID_TYPE = TYPE_TEXT;
 
         // Column: Parameter 1 Value
         public static final String COLUMN_PARAMETER_1_VALUE_NAME = "parameter1";
@@ -439,5 +455,102 @@ public class SheetContract
         public static final String COLUMN_RESULT_VALUE_NAME = "result";
         public static final String COLUMN_RESULT_VALUE_TYPE = TYPE_TEXT;
     }
+
+
+    /**
+     * Program Table
+     */
+    public static class Program implements BaseColumns
+    {
+        // Table: Program
+        public static final String TABLE_NAME = "program";
+
+        // Column: Program Id
+        public static final String COLUMN_PROGRAM_ID_NAME = "program_id";
+        public static final String COLUMN_PROGRAM_ID_TYPE = TYPE_TEXT;
+
+        // Column: Program Name
+        public static final String COLUMN_PROGRAM_NAME = "program_name";
+        public static final String COLUMN_PROGRAM_TYPE = TYPE_TEXT;
+
+        // Column: Sheet Id
+        public static final String COLUMN_SHEET_ID_NAME = "sheet_id";
+        public static final String COLUMN_SHEET_ID_TYPE = TYPE_TEXT;
+
+        // Column: Result Type
+        public static final String COLUMN_RESULT_TYPE_NAME = "result_type";
+        public static final String COLUMN_RESULT_TYPE_TYPE = TYPE_TEXT;
+
+        // Column: Number of Parameters
+        public static final String COLUMN_NUMBER_OF_PARAMETERS_NAME = "number_of_parameters";
+        public static final String COLUMN_NUMBER_OF_PARAMETERS_TYPE = TYPE_INTEGER;
+
+        // Column: Parameter Type (1)
+        public static final String COLUMN_PARAMETER_TYPE_1_NAME = "parameter_type_1";
+        public static final String COLUMN_PARAMETER_TYPE_1_TYPE = TYPE_TEXT;
+
+        // Column: Parameter Type (2)
+        public static final String COLUMN_PARAMETER_TYPE_2_NAME = "parameter_type_2";
+        public static final String COLUMN_PARAMETER_TYPE_2_TYPE = TYPE_TEXT;
+
+        // Column: Parameter Type (3)
+        public static final String COLUMN_PARAMETER_TYPE_3_NAME = "parameter_type_3";
+        public static final String COLUMN_PARAMETER_TYPE_3_TYPE = TYPE_TEXT;
+
+        // Column: Result Variable Name
+        public static final String COLUMN_VARIABLE_NAME_NAME = "variable_name";
+        public static final String COLUMN_VARIABLE_NAME_TYPE = TYPE_TEXT;
+    }
+
+
+    /**
+     * Statement Table
+     */
+    public static class Statement implements BaseColumns
+    {
+        // Table: Statement
+        public static final String TABLE_NAME = "statement";
+
+        // Column: Program Id
+        public static final String COLUMN_PROGRAM_ID_NAME = "program_id";
+        public static final String COLUMN_PROGRAM_ID_TYPE = TYPE_TEXT;
+
+        // Column: Variable Name
+        public static final String COLUMN_VARIABLE_NAME_NAME = "variable_name";
+        public static final String COLUMN_VARIABLE_NAME_TYPE = TYPE_TEXT;
+
+        // Column: Function Name
+        public static final String COLUMN_FUNCTION_NAME_NAME = "function_name";
+        public static final String COLUMN_FUNCTION_NAME_TYPE = TYPE_TEXT;
+
+        // Column: Number of Parameters Name
+        public static final String COLUMN_NUMBER_OF_PARAMETERS_NAME = "number_of_parameters";
+        public static final String COLUMN_NUMBER_OF_PARAMETERS_TYPE = TYPE_INTEGER;
+
+        // Column: Parameter 1 Value
+        public static final String COLUMN_PARAMETER_VALUE_1_NAME = "parameter_value_1";
+        public static final String COLUMN_PARAMETER_VALUE_1_TYPE = TYPE_TEXT;
+
+        // Column: Parameter 1 Type
+        public static final String COLUMN_PARAMETER_TYPE_1_NAME = "parameter_type_1";
+        public static final String COLUMN_PARAMETER_TYPE_1_TYPE = TYPE_TEXT;
+
+        // Column: Parameter 2 Value
+        public static final String COLUMN_PARAMETER_VALUE_2_NAME = "parameter_value_2";
+        public static final String COLUMN_PARAMETER_VALUE_2_TYPE = TYPE_TEXT;
+
+        // Column: Parameter 2 Type
+        public static final String COLUMN_PARAMETER_TYPE_2_NAME = "parameter_type_2";
+        public static final String COLUMN_PARAMETER_TYPE_2_TYPE = TYPE_TEXT;
+
+        // Column: Parameter 3 Value
+        public static final String COLUMN_PARAMETER_VALUE_3_NAME = "parameter_value_3";
+        public static final String COLUMN_PARAMETER_VALUE_3_TYPE = TYPE_TEXT;
+
+        // Column: Parameter 3 Type
+        public static final String COLUMN_PARAMETER_TYPE_3_NAME = "parameter_type_3";
+        public static final String COLUMN_PARAMETER_TYPE_3_TYPE = TYPE_TEXT;
+    }
+
 
 }

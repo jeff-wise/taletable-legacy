@@ -2,6 +2,13 @@
 package com.kispoko.tome.rules;
 
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.kispoko.tome.Global;
+import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
 
 import java.util.Collection;
@@ -21,6 +28,7 @@ public class FunctionIndex
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    private UUID sheetId;
     private Map<String,Function> functionByName;
 
     // Static
@@ -30,8 +38,18 @@ public class FunctionIndex
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public FunctionIndex(List<Function> functions)
+    public FunctionIndex(UUID sheetId)
     {
+        this.sheetId = sheetId;
+
+        functionByName = new HashMap<>();
+    }
+
+
+    public FunctionIndex(UUID sheetId, List<Function> functions)
+    {
+        this.sheetId = sheetId;
+
         functionByName = new HashMap<>();
         for (Function function : functions)
         {
@@ -45,6 +63,19 @@ public class FunctionIndex
 
     // > State
     // ------------------------------------------------------------------------------------------
+
+    // ** Sheet Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getSheetId() {
+        return this.sheetId;
+    }
+
+
+    public void addFunction(Function function) {
+        this.functionByName.put(function.getName(), function);
+    }
+
 
     public boolean hasFunction(String functionName) {
         return this.functionByName.containsKey(functionName);
@@ -94,8 +125,59 @@ public class FunctionIndex
     /**
      * Load all of the functions for the sheet into the index.
      */
-    public void load()
+    public void load(final TrackerId rulesTrackerId)
     {
+        final FunctionIndex thisFunctionIndex = this;
+
+        new AsyncTask<Void,Void,Boolean>()
+        {
+
+            @Override
+            protected Boolean doInBackground(Void... args)
+            {
+                SQLiteDatabase database = Global.getDatabase();
+
+                // Query Function Data
+                String query =
+                    "SELECT f.function_name " +
+                    "FROM Function f " +
+                    "WHERE f.sheet_id =  " + SQL.quoted(thisFunctionIndex.getSheetId().toString());
+
+                Cursor cursor = database.rawQuery(query, null);
+
+                try
+                {
+                    while (cursor.moveToNext())
+                    {
+                        UUID id     = UUID.fromString(cursor.getString(0));
+                        String name = cursor.getString(1);
+
+                        thisFunctionIndex.addFunction(
+                                new Function(id, name, thisFunctionIndex.getSheetId()));
+                    }
+
+                } catch (Exception e) {
+                    Log.d("***GROUP", Log.getStackTraceString(e));
+                }
+                finally {
+                    cursor.close();
+                }
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result)
+            {
+                TrackerId functionIndexTrackerId =
+                        thisFunctionIndex.addAsyncTracker(rulesTrackerId);
+
+                for (Function function : thisFunctionIndex.getAllFunctions()) {
+                    function.load(functionIndexTrackerId);
+                }
+            }
+
+        }.execute();
 
     }
 
@@ -103,18 +185,14 @@ public class FunctionIndex
     /**
      * Save all of the functions in the index.
      * @param rulesTrackerId The async tracker ID of the caller.
-     * @param recursive Save all components too?
      */
-    public void save(TrackerId rulesTrackerId, boolean recursive)
+    public void save(TrackerId rulesTrackerId)
     {
-        if (!recursive) return;
-
         TrackerId functionIndexTrackerId = this.addAsyncTracker(rulesTrackerId);
 
         for (Function function : this.getAllFunctions()) {
             function.save(functionIndexTrackerId);
         }
-
     }
 
 
