@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules;
+package com.kispoko.tome.rules.function;
 
 
 import org.apache.commons.lang3.builder.EqualsBuilder;

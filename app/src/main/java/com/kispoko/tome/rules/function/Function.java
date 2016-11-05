@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules;
+package com.kispoko.tome.rules.function;
 
 
 import android.content.ContentValues;
@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 
 import com.kispoko.tome.Global;
 import com.kispoko.tome.db.SheetContract;
-import com.kispoko.tome.rules.function.Tuple;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
 

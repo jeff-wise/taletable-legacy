@@ -163,8 +163,9 @@ sections:
             width: 1
             text_size: large
           data:
-            value_type: literal_string
-            value: Aladaisian Wineheart
+            value:
+              type: literal_string
+              value: Aladaisian Wineheart
         - type: image
           name: picture
           actions:
@@ -190,8 +191,9 @@ sections:
             width: 1
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 17
+            value:
+              type: literal_integer
+              value: 17
         - type: text
           name: class
           key_stat: 2
@@ -204,8 +206,9 @@ sections:
             width: 1
             text_size: medium
           data:
-            value_type: literal_string
-            value: Wizard
+            value:
+              type: literal_string
+              value: Wizard
             type:
               kind: list
               id: class
@@ -221,8 +224,9 @@ sections:
             width: 1
             text_size: medium
           data:
-            value_type: literal_string
-            value: Human
+            value:
+              type: literal_string
+              value: Human
         - type: text
           name: alignment
           actions:
@@ -234,8 +238,9 @@ sections:
             label: Alignment
             text_size: medium
           data:
-            value_type: literal_string
-            value: Lawful Good
+            value:
+              type: literal_string
+              value: Lawful Good
       - label: Appearance
         number_of_rows: 2
         components:
@@ -250,8 +255,9 @@ sections:
             label: Age
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 41
+            value:
+              type: literal_integer
+              value: 41
         - type: text
           name: height
           actions:
@@ -263,8 +269,9 @@ sections:
             label: Height
             text_size: medium
           data:
-            value_type: literal_string
-            value: 5'11"
+            value:
+              type: literal_string
+              value: 5'11"
         - type: integer
           name: weight
           actions:
@@ -276,8 +283,9 @@ sections:
             label: Weight
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 167
+            value:
+              type: literal_integer
+              value: 167
         - type: text
           name: eyes
           actions:
@@ -289,8 +297,9 @@ sections:
             label: Eyes
             text_size: medium
           data:
-            value_type: literal_string
-            value: Blue
+            value:
+              type: literal_string
+              value: Blue
         - type: text
           name: skin
           actions:
@@ -302,8 +311,9 @@ sections:
             label: Skin
             text_size: medium
           data:
-            value_type: literal_string
-            value: Light
+            value:
+              type: literal_string
+              value: Light
         - type: text
           name: hair
           actions:
@@ -315,8 +325,9 @@ sections:
             label: Hair
             text_size: medium
           data:
-            value_type: literal_string
-            value: Brown
+            value:
+              type: literal_string
+              value: Brown
     - label: Stats
       groups:
       - label: Ability Scores
@@ -333,15 +344,16 @@ sections:
             label: Strength
             text_size: medium
             postfix:
-              postfix_type: program
+              type: program
               value:
                 program: ability_modifier
                 parameters:
                 - type: reference
                   value: strength
           data:
-            value_type: literal_integer
-            value: 11
+            value:
+              type: literal_integer
+              value: 11
         - type: integer
           name: dexterity
           actions:
@@ -353,8 +365,9 @@ sections:
             label: Dexterity
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 19
+            value:
+              type: literal_integer
+              value: 19
         - type: integer
           name: constitution
           actions:
@@ -366,8 +379,9 @@ sections:
             label: Constitution
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 15
+            value:
+              type: literal_integer
+              value: 15
         - type: integer
           name: intelligence
           actions:
@@ -379,8 +393,9 @@ sections:
             label: Intelligence
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 22
+            value:
+              type: literal_integer
+              value: 22
         - type: integer
           name: wisdom
           actions:
@@ -392,8 +407,9 @@ sections:
             width: 1
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 14
+            value:
+              type: literal_integer
+              value: 14
         - type: integer
           name: charisma
           actions:
@@ -405,8 +421,9 @@ sections:
             label: Charisma
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 13
+            value:
+              type: literal_integer
+              value: 13
       - label: General
         number_of_rows: 1
         components:
@@ -422,8 +439,9 @@ sections:
             text_size: medium
             prefix: '+'
           data:
-            value_type: literal_integer
-            value: 6
+            value:
+              type: literal_integer
+              value: 6
         - type: integer
           name: inspiration
           actions:
@@ -435,8 +453,9 @@ sections:
             label: Inspiration
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 4
+            value:
+              type: literal_integer
+              value: 4
       - label: Combat
         number_of_rows: 1
         components:
@@ -451,8 +470,9 @@ sections:
             label: Armor Class
             text_size: medium
           data:
-            value_type: literal_integer
-            value: 24
+            value:
+              type: literal_integer
+              value: 24
         - type: integer
           name: initiative
           actions:
@@ -465,8 +485,9 @@ sections:
             prefix: '+'
             label: Initiative
           data:
-            value_type: literal_integer
-            value: 7
+            value:
+              type: literal_integer
+              value: 7
         - type: integer
           name: speed
           actions:
@@ -478,8 +499,9 @@ sections:
             text_size: medium
             label: Speed
           data:
-            value_type: literal_integer
-            value: 30
+            value:
+              type: literal_integer
+              value: 30
       - label: Saving Throws
         number_of_rows: 2
         components:
@@ -494,8 +516,9 @@ sections:
             text_size: medium
             label: Strength
           data:
-            value_type: literal_integer
-            value: 0
+            value:
+              type: literal_integer
+              value: 0
         - type: integer
           name: saving_throw_dexterity
           actions:
@@ -508,8 +531,9 @@ sections:
             prefix: '+'
             label: Dexterity
           data:
-            value_type: literal_integer
-            value: 4
+            value:
+              type: literal_integer
+              value: 4
         - type: integer
           name: saving_throw_constitution
           actions:
@@ -522,8 +546,9 @@ sections:
             prefix: '+'
             label: Constitution
           data:
-            value_type: literal_integer
-            value: 2
+            value:
+              type: literal_integer
+              value: 2
         - type: integer
           name: saving_throw_intelligence
           actions:
@@ -536,8 +561,9 @@ sections:
             prefix: '+'
             label: Intelligence
           data:
-            value_type: literal_integer
-            value: 12
+            value:
+              type: literal_integer
+              value: 12
         - type: integer
           name: saving_throw_wisdom
           actions:
@@ -550,8 +576,9 @@ sections:
             prefix: '+'
             label: Wisdom
           data:
-            value_type: literal_integer
-            value: 8
+            value:
+              type: literal_integer
+              value: 8
         - type: integer
           name: saving_throw_charisma
           actions:
@@ -564,8 +591,9 @@ sections:
             prefix: '+'
             label: Charisma
           data:
-            value_type: literal_integer
-            value: 1
+            value:
+              type: literal_integer
+              value: 1
     - label: Abilities
       groups:
       - label: Skills

@@ -47,15 +47,14 @@ public class Bool extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
     public Bool(UUID id, UUID groupId) {
-        super(id, null, groupId, null, null, null);
+        super(id, null, groupId, null, null, null, null);
         this.value = null;
     }
 
-    public Bool(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
-                List<String> actions, Boolean value)
+    public Bool(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
+                Format format, List<String> actions)
     {
-        super(id, name, groupId, typeId, format, actions);
-        this.value = value;
+        super(id, name, groupId, value, typeId, format, actions);
     }
 
 
@@ -71,10 +70,10 @@ public class Bool extends Component implements Serializable
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
         String name = null;
+        ComponentValue value = null;
         Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
-        Boolean value = null;
 
         // PARSE VALUES
         // --------------------------------------------------------------------------------------
@@ -98,7 +97,7 @@ public class Bool extends Component implements Serializable
         {
             // ** Value
             if (dataYaml.containsKey("value"))
-                value = (Boolean) dataYaml.get("value");
+                value = ComponentValue.fromYaml((Map<String,Object>) dataYaml.get("value"));
 
             // ** Type Id
             typeId = Type.Id.fromYaml(dataYaml);
@@ -114,7 +113,7 @@ public class Bool extends Component implements Serializable
             format = Component.parseFormatYaml(boolYaml);
         }
 
-        return new Bool(id, name, groupId, typeId, format, actions, value);
+        return new Bool(id, name, groupId, value, typeId, format, actions);
     }
 
 
@@ -134,25 +133,6 @@ public class Bool extends Component implements Serializable
     public String componentName()
     {
         return "boolean";
-    }
-
-
-
-    // >>> Value
-    // ------------------------------------------------------------------------------------------
-
-    public Boolean getValue() {
-        return this.value;
-    }
-
-
-    public int getValueAsInt() {
-        return this.value ? 1 : 0;
-    }
-
-
-    public void setValue(Boolean value) {
-        this.value = value;
     }
 
 
@@ -260,7 +240,7 @@ public class Bool extends Component implements Serializable
                 thisBool.setWidth(width);
                 thisBool.setAlignment(alignment);
                 thisBool.setActions(actions);
-                thisBool.setValue(value);
+                thisBool.setValue(new ComponentValue());
 
                 return true;
             }
@@ -268,15 +248,9 @@ public class Bool extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                UUID trackerCode = trackerId.getCode();
-                switch (trackerId.getTarget()) {
-                    case GROUP:
-                        Group.getAsyncTracker(trackerCode).markComponentId(thisBool.getId());
-                        break;
-                    case CELL:
-                        Cell.getAsyncTracker(trackerCode).markComponent();
-                        break;
-                }
+                TrackerId textTrackerId = thisBool.addComponentAsyncTracker(trackerId);
+
+                thisBool.getValue().load(thisBool, textTrackerId);
             }
 
         }.execute();
@@ -319,7 +293,7 @@ public class Bool extends Component implements Serializable
                 boolComponentRow.put("component_id", thisBool.getId().toString());
 
                 if (thisBool.getValue() != null)
-                    boolComponentRow.put("value", thisBool.getValueAsInt());
+                    boolComponentRow.put("value", thisBool.getValue().getBoolean());
                 else
                     boolComponentRow.putNull("value");
 
@@ -334,17 +308,9 @@ public class Bool extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                if (trackerId == null) return;
+                TrackerId textTrackerId = thisBool.addComponentAsyncTracker(trackerId);
 
-                UUID trackerCode = trackerId.getCode();
-                switch (trackerId.getTarget()) {
-                    case GROUP:
-                        Group.getAsyncTracker(trackerCode).markComponentId(thisBool.getId());
-                        break;
-                    case CELL:
-                        Cell.getAsyncTracker(trackerCode).markComponent();
-                        break;
-                }
+                thisBool.getValue().save(thisBool.getId(), textTrackerId);
             }
 
         }.execute();

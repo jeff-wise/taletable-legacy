@@ -82,6 +82,12 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "FOREIGN KEY (" + SheetContract.Component.COLUMN_GROUP_ID_NAME + ") REFERENCES " +
                 SheetContract.Group.TABLE_NAME + "(" + SheetContract.Group.COLUMN_GROUP_ID_NAME + ") )";
 
+        final String CREATE_COMPONENT_VALUE_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentValue.TABLE_NAME + " (" +
+            SheetContract.ComponentValue.COLUMN_COMPONENT_VALUE_ID_NAME + " " + SheetContract.ComponentValue.COLUMN_COMPONENT_VALUE_ID_TYPE + " PRIMARY KEY," +
+            SheetContract.ComponentValue.COLUMN_VALUE_NAME + " " + SheetContract.ComponentValue.COLUMN_VALUE_TYPE + "," +
+            SheetContract.ComponentValue.COLUMN_VALUE_TYPE_NAME + " " + SheetContract.ComponentValue.COLUMN_VALUE_TYPE_TYPE + ")";
+
         final String CREATE_COMPONENT_TEXT_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentText.TABLE_NAME + " (" +
             SheetContract.ComponentText.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentText.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY, " +
@@ -94,6 +100,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentInteger.TABLE_NAME + " (" +
             SheetContract.ComponentInteger.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentInteger.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY, " +
             SheetContract.ComponentInteger.COLUMN_PREFIX_NAME + " " + SheetContract.ComponentInteger.COLUMN_PREFIX_TYPE + ", " +
+            SheetContract.ComponentInteger.COLUMN_POSTFIX_NAME + " " + SheetContract.ComponentInteger.COLUMN_POSTFIX_TYPE + ", " +
             //SheetContract.ComponentInteger.COLUMN_VALUE_NAME + " " + SheetContract.ComponentInteger.COLUMN_VALUE_TYPE + ", " +
             "FOREIGN KEY (" + SheetContract.ComponentInteger.COLUMN_COMPONENT_ID_NAME + ") REFERENCES " +
                 SheetContract.Component.TABLE_NAME + "(" + SheetContract.Component.COLUMN_COMPONENT_ID_NAME + ") )";
@@ -193,6 +200,20 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             "FOREIGN KEY (" + SheetContract.Tuple.COLUMN_FUNCTION_ID_NAME + ") REFERENCES " +
                 SheetContract.Function.TABLE_NAME + "(" + SheetContract.Function.COLUMN_FUNCTION_ID_NAME + ") )";
 
+        final String CREATE_PROGRAM_INVOCATION_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.ProgramInvocation.TABLE_NAME + " (" +
+            SheetContract.ProgramInvocation.COLUMN_PROGRAM_INVOCATION_ID_NAME + " " + SheetContract.ProgramInvocation.COLUMN_PROGRAM_INVOCATION_ID_TYPE + ", " +
+            SheetContract.ProgramInvocation.COLUMN_PROGRAM_NAME_NAME + " " + SheetContract.ProgramInvocation.COLUMN_PROGRAM_NAME_TYPE + ", " +
+            SheetContract.ProgramInvocation.COLUMN_NUMBER_OF_PARAMETERS_NAME + " " + SheetContract.ProgramInvocation.COLUMN_NUMBER_OF_PARAMETERS_TYPE + ", " +
+            SheetContract.ProgramInvocation.COLUMN_PARAMETER_VALUE_1_NAME + " " + SheetContract.ProgramInvocation.COLUMN_PARAMETER_VALUE_1_TYPE + ", " +
+            SheetContract.ProgramInvocation.COLUMN_PARAMETER_TYPE_1_NAME + " " + SheetContract.ProgramInvocation.COLUMN_PARAMETER_TYPE_1_TYPE + ", " +
+            SheetContract.ProgramInvocation.COLUMN_PARAMETER_VALUE_2_NAME + " " + SheetContract.ProgramInvocation.COLUMN_PARAMETER_VALUE_2_TYPE + ", " +
+            SheetContract.ProgramInvocation.COLUMN_PARAMETER_TYPE_2_NAME + " " + SheetContract.ProgramInvocation.COLUMN_PARAMETER_TYPE_2_TYPE + ", " +
+            SheetContract.ProgramInvocation.COLUMN_PARAMETER_VALUE_3_NAME + " " + SheetContract.ProgramInvocation.COLUMN_PARAMETER_VALUE_3_TYPE + ", " +
+            SheetContract.ProgramInvocation.COLUMN_PARAMETER_TYPE_3_NAME + " " + SheetContract.ProgramInvocation.COLUMN_PARAMETER_TYPE_3_TYPE + ")";
+
+
+
 
         // > RUN Create Table Queries
         // --------------------------------------------------------------------------------------
@@ -201,6 +222,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
         db.execSQL(CREATE_PAGE_TABLE);
         db.execSQL(CREATE_GROUP_TABLE);
         db.execSQL(CREATE_COMPONENT_TABLE);
+        db.execSQL(CREATE_COMPONENT_VALUE_TABLE);
         db.execSQL(CREATE_COMPONENT_TEXT_TABLE);
         db.execSQL(CREATE_COMPONENT_INTEGER_TABLE);
         db.execSQL(CREATE_COMPONENT_BOOLEAN_TABLE);
@@ -212,6 +234,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
         db.execSQL(CREATE_TUPLE_TABLE);
         db.execSQL(CREATE_PROGRAM_TABLE);
         db.execSQL(CREATE_STATEMENT_TABLE);
+        db.execSQL(CREATE_PROGRAM_INVOCATION_TABLE);
     }
 
 

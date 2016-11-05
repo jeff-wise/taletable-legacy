@@ -26,6 +26,7 @@ import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.sheet.component.table.Cell;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.Tracker;
 import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
 
@@ -37,8 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static android.R.attr.data;
-import static android.R.attr.paddingBottom;
 
 
 /**
@@ -66,7 +65,7 @@ public class Table extends Component implements Serializable
 
     public Table(UUID id, UUID groupId)
     {
-        super(id, null, groupId, null, null, null);
+        super(id, null, groupId, null, null, null, null);
 
         this.width = null;
         this.height = null;
@@ -75,11 +74,11 @@ public class Table extends Component implements Serializable
         this.rows = null;
     }
 
-    public Table(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
-                 List<String> actions, Integer width, Integer height, String[] columnNames,
-                 Row rowTemplate, Row[] rows)
+    public Table(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
+                 Format format, List<String> actions, Integer width, Integer height,
+                 String[] columnNames, Row rowTemplate, Row[] rows)
     {
-        super(id, null, groupId, typeId, format, actions);
+        super(id, null, groupId, value, typeId, format, actions);
 
         this.width = width;
         this.height = height;
@@ -96,6 +95,7 @@ public class Table extends Component implements Serializable
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
         String name = null;
+        ComponentValue value = null;
         Type.Id typeId = null;
         Format format;
         List<String> actions = null;
@@ -179,7 +179,7 @@ public class Table extends Component implements Serializable
         }
 
 
-        return new Table(id, name, groupId, typeId, format, actions, width, height,
+        return new Table(id, name, groupId, value, typeId, format, actions, width, height,
                          columnNames, rowTemplate, rows);
     }
 
@@ -296,10 +296,10 @@ public class Table extends Component implements Serializable
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Load a Group from the database.
-     * @param groupTrackerId The tracker ID to locate the caller and deliver information asynchronously.
+     * Load a Text from the database.
+     * @param callerTrackerId The caller tracker id.
      */
-    public void load(final TrackerId groupTrackerId)
+    public void load(final UUID callerTrackerId)
     {
         final Table thisTable = this;
 
@@ -463,6 +463,22 @@ public class Table extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
+                List<String> trackingKeys = new ArrayList<>();
+
+                Tracker.OnReady onReady = new Tracker.OnReady() {
+                    @Override
+                    protected void go() {
+                        Global.getTracker(callerTrackerId).setKey(thisTable.getId().toString());
+                    }
+                };
+
+                UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
+
+                thisInteger.getValue().load(thisInteger.getId(), "value", textTrackerId);
+                thisInteger.getPrefix().load(thisInteger.getId(), "prefix", textTrackerId);
+                t
+
+
                 TrackerId tableTrackerId = thisTable.addAsyncTracker(thisTable, groupTrackerId);
 
                 thisTable.rowTemplate.load(tableTrackerId);
@@ -698,6 +714,34 @@ public class Table extends Component implements Serializable
         }
 
         return headerRow;
+    }
+
+
+    private UUID createTracker(final UUID callerTrackerId)
+    {
+        final Table thisTable = this;
+
+        List<String> trackingKeys = new ArrayList<>();
+        for (int i = 0; i < this.getTableHeight(); i++) {
+            for (int j = 0; j < this.getTableWidth(); j++) {
+                trackingKeys.add(Integer.toString(i) + "-" + Integer.toString(j));
+            }
+        }
+
+        for (int i = 0; i < tableWidth; i++) {
+            this.templateCellTracker[i] = false;
+        }
+
+        Tracker.OnReady onReady = new Tracker.OnReady() {
+            @Override
+            protected void go() {
+                Global.getTracker(callerTrackerId).setKey(thisTable.getId().toString());
+            }
+        };
+
+        UUID tableTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
+
+        return tableTrackerId;
     }
 
 

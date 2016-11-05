@@ -65,15 +65,15 @@ public class Image extends Component implements Serializable
 
     public Image(UUID id, UUID groupId)
     {
-        super(id, null, groupId, null, null, null);
+        super(id, null, groupId, null, null, null, null);
         this.serialBitmap = null;
     }
 
 
-    public Image(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
-                 List<String> actions, Bitmap bitmap)
+    public Image(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
+                 Format format, List<String> actions, Bitmap bitmap)
     {
-        super(id, name, groupId, typeId, format, actions);
+        super(id, name, groupId, value, typeId, format, actions);
 
         this.serialBitmap = null;
         this.setBitmap(bitmap);
@@ -114,7 +114,7 @@ public class Image extends Component implements Serializable
             format = Component.parseFormatYaml(imageYaml);
         }
 
-        return new Image(id, name, groupId, null, format, actions, null);
+        return new Image(id, name, groupId, null, null, format, actions, null);
     }
 
 

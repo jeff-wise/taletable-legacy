@@ -3,10 +3,10 @@ package com.kispoko.tome.rules.evaluation;
 
 
 import com.kispoko.tome.rules.BuiltInFunction;
-import com.kispoko.tome.rules.FunctionIndex;
-import com.kispoko.tome.rules.FunctionValue;
-import com.kispoko.tome.rules.FunctionValueType;
-import com.kispoko.tome.rules.Program;
+import com.kispoko.tome.rules.function.FunctionIndex;
+import com.kispoko.tome.rules.function.FunctionValue;
+import com.kispoko.tome.rules.function.FunctionValueType;
+import com.kispoko.tome.rules.program.Program;
 import com.kispoko.tome.rules.Statement;
 import com.kispoko.tome.rules.evaluation.error.ParameterWrongType;
 

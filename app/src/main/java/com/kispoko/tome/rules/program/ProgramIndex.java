@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules;
+package com.kispoko.tome.rules.program;
 
 
 import android.database.Cursor;
@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.kispoko.tome.Global;
+import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
 
@@ -18,18 +19,17 @@ import java.util.Map;
 import java.util.UUID;
 
 
-
 /**
- * Function Index
+ * Program Index
  */
-public class FunctionIndex
+public class ProgramIndex
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
     private UUID sheetId;
-    private Map<String,Function> functionByName;
+    private Map<String,Program> programByName;
 
     // Static
     private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
@@ -38,22 +38,23 @@ public class FunctionIndex
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public FunctionIndex(UUID sheetId)
+    public ProgramIndex(UUID sheetId)
     {
         this.sheetId = sheetId;
 
-        functionByName = new HashMap<>();
+        programByName = new HashMap<>();
     }
 
 
-    public FunctionIndex(UUID sheetId, List<Function> functions)
+    public ProgramIndex(UUID sheetId, List<Program> programs)
     {
         this.sheetId = sheetId;
 
-        functionByName = new HashMap<>();
-        for (Function function : functions)
-        {
-            functionByName.put(function.getName(), function);
+        // TODO ensure all programs have unique names
+
+        programByName = new HashMap<>();
+        for (Program program : programs) {
+            programByName.put(program.getName(), program);
         }
     }
 
@@ -64,31 +65,29 @@ public class FunctionIndex
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Sheet Id
-    // ------------------------------------------------------------------------------------------
-
     public UUID getSheetId() {
         return this.sheetId;
     }
 
 
-    public void addFunction(Function function) {
-        this.functionByName.put(function.getName(), function);
+    public boolean hasProgram(String programName) {
+        return this.programByName.containsKey(programName);
     }
 
 
-    public boolean hasFunction(String functionName) {
-        return this.functionByName.containsKey(functionName);
+    public Program getProgram(String programName) {
+        return this.programByName.get(programName);
     }
 
 
-    public Function getFunction(String functionName) {
-        return this.functionByName.get(functionName);
+    public void addProgram(Program program) {
+        // TODO make sure not duplicate
+        this.programByName.put(program.getName(), program);
     }
 
 
-    public Collection<Function> getAllFunctions() {
-        return this.functionByName.values();
+    public Collection<Program> getAllPrograms() {
+        return this.programByName.values();
     }
 
 
@@ -96,26 +95,26 @@ public class FunctionIndex
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Create a new asynchronous tracker for this function index.
+     * Create a new asynchronous tracker for this program index.
      * @param rulesTrackerId The async tracker ID of the caller.
      * @return The unique ID of the tracker.
      */
     private TrackerId addAsyncTracker(TrackerId rulesTrackerId)
     {
         UUID trackerCode = UUID.randomUUID();
-        FunctionIndex.asyncTrackerMap.put(trackerCode, new AsyncTracker(this, rulesTrackerId));
-        return new TrackerId(trackerCode, TrackerId.Target.FUNCTION_INDEX);
+        ProgramIndex.asyncTrackerMap.put(trackerCode, new AsyncTracker(this, rulesTrackerId));
+        return new TrackerId(trackerCode, TrackerId.Target.PROGRAM_INDEX);
     }
 
 
     /**
-     * Lookup a reference to a asynchronous tracker for a function index.
+     * Lookup a reference to a asynchronous tracker for a program index.
      * @param trackerCode The tracker's ID.
      * @return The asynchronous tracker.
      */
     public static AsyncTracker getAsyncTracker(UUID trackerCode)
     {
-        return FunctionIndex.asyncTrackerMap.get(trackerCode);
+        return ProgramIndex.asyncTrackerMap.get(trackerCode);
     }
 
 
@@ -123,11 +122,11 @@ public class FunctionIndex
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Load all of the functions for the sheet into the index.
+     * Load all of the programs for the sheet into the index.
      */
     public void load(final TrackerId rulesTrackerId)
     {
-        final FunctionIndex thisFunctionIndex = this;
+        final ProgramIndex thisProgramIndex = this;
 
         new AsyncTask<Void,Void,Boolean>()
         {
@@ -137,27 +136,25 @@ public class FunctionIndex
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query Function Data
+                // Query Program Data
                 String query =
-                    "SELECT f.function_name " +
-                    "FROM Function f " +
-                    "WHERE f.sheet_id =  " + SQL.quoted(thisFunctionIndex.getSheetId().toString());
+                    "SELECT p.program_id, p.program_name " +
+                    "FROM Program p " +
+                    "WHERE p.sheet_id =  " + SQL.quoted(thisProgramIndex.getSheetId().toString());
 
                 Cursor cursor = database.rawQuery(query, null);
 
-                try
-                {
-                    while (cursor.moveToNext())
-                    {
+                try {
+                    while (cursor.moveToNext()) {
+                        // Create "empty" program object for each entry
+                        // The remaining program data is loaded asynchronously into the objects
                         UUID id     = UUID.fromString(cursor.getString(0));
                         String name = cursor.getString(1);
-
-                        thisFunctionIndex.addFunction(
-                                new Function(id, name, thisFunctionIndex.getSheetId()));
+                        thisProgramIndex.addProgram(
+                                new Program(id, name, thisProgramIndex.getSheetId()));
                     }
-
                 } catch (Exception e) {
-                    Log.d("***GROUP", Log.getStackTraceString(e));
+                    Log.d("***PROGRAM_INDEX", Log.getStackTraceString(e));
                 }
                 finally {
                     cursor.close();
@@ -169,11 +166,11 @@ public class FunctionIndex
             @Override
             protected void onPostExecute(Boolean result)
             {
-                TrackerId functionIndexTrackerId =
-                        thisFunctionIndex.addAsyncTracker(rulesTrackerId);
+                TrackerId programIndexTrackerId =
+                        thisProgramIndex.addAsyncTracker(rulesTrackerId);
 
-                for (Function function : thisFunctionIndex.getAllFunctions()) {
-                    function.load(functionIndexTrackerId);
+                for (Program program : thisProgramIndex.getAllPrograms()) {
+                    program.load(programIndexTrackerId);
                 }
             }
 
@@ -183,15 +180,15 @@ public class FunctionIndex
 
 
     /**
-     * Save all of the functions in the index.
-     * @param rulesTrackerId The async tracker ID of the caller.
+     * Save all of the programs in the index to the database.
+     * @param rulesTrackerId The ID of the caller's async tracker.
      */
     public void save(TrackerId rulesTrackerId)
     {
-        TrackerId functionIndexTrackerId = this.addAsyncTracker(rulesTrackerId);
+        TrackerId programIndexTrackerId = this.addAsyncTracker(rulesTrackerId);
 
-        for (Function function : this.getAllFunctions()) {
-            function.save(functionIndexTrackerId);
+        for (Program program : this.getAllPrograms()) {
+            program.save(programIndexTrackerId);
         }
     }
 
@@ -208,23 +205,23 @@ public class FunctionIndex
         // PROPERTIES
         // --------------------------------------------------------------------------------------
 
-        private FunctionIndex functionIndex;
+        private ProgramIndex programIndex;
         private TrackerId rulesTrackerId;
 
-        private Map<String,Boolean> functionTracker;
+        private Map<String,Boolean> programTracker;
 
 
         // PROPERTIES
         // --------------------------------------------------------------------------------------
 
-        public AsyncTracker(FunctionIndex functionIndex, TrackerId rulesTrackerId)
+        public AsyncTracker(ProgramIndex programIndex, TrackerId rulesTrackerId)
         {
-            this.functionIndex = functionIndex;
+            this.programIndex = programIndex;
             this.rulesTrackerId = rulesTrackerId;
 
-            this.functionTracker = new HashMap<>();
-            for (Function function : functionIndex.getAllFunctions()) {
-                functionTracker.put(function.getName(), false);
+            this.programTracker = new HashMap<>();
+            for (Program program : programIndex.getAllPrograms()) {
+                this.programTracker.put(program.getName(), false);
             }
         }
 
@@ -232,24 +229,25 @@ public class FunctionIndex
         // API
         // --------------------------------------------------------------------------------------
 
-        synchronized public void markFunction(String functionName) {
-            if (functionName != null && this.functionTracker.containsKey(functionName))
-                this.functionTracker.put(functionName, true);
+        synchronized public void markProgram(String programName) {
+            if (programName != null && this.programTracker.containsKey(programName))
+                this.programTracker.put(programName, true);
             if (isReady()) ready();
         }
 
         private boolean isReady() {
-            for (Boolean flag : functionTracker.values()) {
+            for (Boolean flag : programTracker.values()) {
                 if (!flag) return false;
             }
             return true;
         }
 
         private void ready() {
-            Rules.getAsyncTracker(this.rulesTrackerId.getCode()).markFunctionIndex();
+            Rules.getAsyncTracker(this.rulesTrackerId.getCode()).markProgramIndex();
         }
 
     }
 
 
 }
+

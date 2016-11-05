@@ -22,6 +22,7 @@ import com.kispoko.tome.sheet.component.Image;
 import com.kispoko.tome.sheet.component.NumberInteger;
 import com.kispoko.tome.sheet.component.Table;
 import com.kispoko.tome.sheet.component.Text;
+import com.kispoko.tome.sheet.component.table.Cell;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
@@ -30,6 +31,7 @@ import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,7 +45,7 @@ import java.util.UUID;
 public abstract class Component implements Unique, Serializable
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
     private UUID id;
@@ -61,9 +63,11 @@ public abstract class Component implements Unique, Serializable
     private Integer width;
     private Alignment alignment;
 
+    // Static
+    private static Map<UUID,AsyncTracker> componentAsyncTrackerMap = new HashMap<>();
 
 
-    // > INTERFACE
+    // INTERFACE
     // ------------------------------------------------------------------------------------------
 
     abstract public View getDisplayView(Context context, Rules rules);
@@ -73,11 +77,11 @@ public abstract class Component implements Unique, Serializable
 
     abstract public String componentName();
 
-    abstract public void save(TrackerId trackerId);
-    abstract public void load(TrackerId trackerId);
+    abstract public void save(UUID callerTrackerId);
+    abstract public void load(UUID callerTrackerId);
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
     public Component(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
@@ -312,27 +316,13 @@ public abstract class Component implements Unique, Serializable
     }
 
 
-    public String getTextValue()
-    {
-
-        if (this instanceof Text) {
-            String value = ((Text) this).getValue();
-            return value != null ? value : "";
-        } else if (this instanceof NumberInteger) {
-            Integer value = ((NumberInteger) this).getValue();
-            return value != null ? value.toString() : "";
-        } else {
-            return "";
-        }
-    }
-
-
     protected void putComponentSQLRows(ContentValues row)
     {
-        try {
+        try
+        {
             row.put("component_id", this.getId().toString());
             row.put("name", this.getName());
-            row.put("value", this.getValue().asString());
+            row.put("value", this.getValue().getId().toString());
             SQL.putOptString(row, "group_id", this.getGroupId());
             row.put("data_type", this.componentName());
             row.put("label", this.getLabel());
@@ -354,6 +344,40 @@ public abstract class Component implements Unique, Serializable
             Log.d("***COMPONENT", Log.getStackTraceString(e));
         }
     }
+
+
+    // CONSTRAINTS
+    // ------------------------------------------------------------------------------------------
+
+    protected boolean constraint_isLoaded()
+    {
+        return true;
+    }
+
+
+    protected boolean constraint_isSaved()
+    {
+        return true;
+    }
+
+
+
+
+    // > Async Tracker
+    // ------------------------------------------------------------------------------------------
+//
+//    protected TrackerId addComponentAsyncTracker(TrackerId trackerId)
+//    {
+//        UUID trackerCode = UUID.randomUUID();
+//        Component.componentAsyncTrackerMap.put(trackerCode, new AsyncTracker(this, trackerId));
+//        return new TrackerId(trackerCode, TrackerId.Target.RULES);
+//    }
+//
+//
+//    public static AsyncTracker getComponentAsyncTracker(UUID trackerCode)
+//    {
+//        return Component.componentAsyncTrackerMap.get(trackerCode);
+//    }
 
 
     // >> STATIC METHODS
@@ -476,7 +500,6 @@ public abstract class Component implements Unique, Serializable
         if (formatYaml.containsKey("show_label"))
             showLabel = (Boolean) formatYaml.get("show_label");
 
-
         // >> Row
         if (formatYaml.containsKey("row"))
             row = (Integer) formatYaml.get("row");
@@ -574,50 +597,86 @@ public abstract class Component implements Unique, Serializable
             return this.label;
         }
 
-//        public void setLabel(String label) {
-//            this.label = label;
-//        }
 
         public Boolean getShowLabel() {
             return this.showLabel;
         }
 
-//        public void setShowLabel(Boolean showLabel) {
-//            this.showLabel = showLabel;
-//        }
 
         public Integer getRow() {
             return this.row;
         }
 
-//        public void setRow(Integer row) {
-//            this.row = row;
-//        }
 
         public Integer getColumn() {
             return this.column;
         }
 
-//        public void setColumn(Integer column) {
-//            this.column = column;
-//        }
 
         public Integer getWidth() {
             return this.width;
         }
 
-//        public void setWidth(Integer width) {
-//            this.width = width;
-//        }
 
         public Alignment getAlignment() {
             return this.alignment;
         }
 
-//        public void setAlignment(Alignment alignment) {
-//            this.alignment = alignment;
-//        }
+    }
+
+
+    /**
+     * Track state of Function Index
+     */
+    public static class AsyncTracker
+    {
+
+        // PROPERTIES
+        // --------------------------------------------------------------------------------------
+
+        private Component component;
+        private TrackerId trackerId;
+
+        private boolean value;
+
+
+        // PROPERTIES
+        // --------------------------------------------------------------------------------------
+
+        public AsyncTracker(Component component, TrackerId trackerId)
+        {
+            this.value = false;
+        }
+
+
+        // API
+        // --------------------------------------------------------------------------------------
+
+        synchronized public void markValue() {
+            this.value = true;
+            if (isReady()) ready();
+        }
+
+        private boolean isReady() {
+            return this.value;
+        }
+
+        private void ready()
+        {
+            if (trackerId == null) return;
+
+            UUID trackerCode = trackerId.getCode();
+            switch (trackerId.getTarget()) {
+                case GROUP:
+                    Group.getAsyncTracker(trackerCode).markComponentId(this.component.getId());
+                    break;
+                case CELL:
+                    Cell.getAsyncTracker(trackerCode).markComponent();
+                    break;
+            }
+        }
 
     }
+
 
 }

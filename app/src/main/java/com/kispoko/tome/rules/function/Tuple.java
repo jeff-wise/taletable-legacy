@@ -2,9 +2,6 @@
 package com.kispoko.tome.rules.function;
 
 
-import com.kispoko.tome.rules.FunctionValue;
-import com.kispoko.tome.rules.FunctionValueType;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

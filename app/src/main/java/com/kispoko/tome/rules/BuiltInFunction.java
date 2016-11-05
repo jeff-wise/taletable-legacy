@@ -2,9 +2,9 @@
 package com.kispoko.tome.rules;
 
 
-import com.kispoko.tome.rules.evaluation.EvaluationError;
 import com.kispoko.tome.rules.evaluation.EvaluationException;
-import com.kispoko.tome.rules.evaluation.Evaluator;
+import com.kispoko.tome.rules.function.FunctionValue;
+import com.kispoko.tome.rules.function.FunctionValueType;
 
 import java.util.ArrayList;
 import java.util.HashSet;

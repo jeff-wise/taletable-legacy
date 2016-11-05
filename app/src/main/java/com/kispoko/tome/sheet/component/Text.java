@@ -27,15 +27,14 @@ import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.Group;
-import com.kispoko.tome.sheet.component.table.Cell;
 import com.kispoko.tome.sheet.component.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.type.ListType;
 import com.kispoko.tome.type.Type;
+import com.kispoko.tome.util.Model;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
-import com.kispoko.tome.util.TrackerId;
+import com.kispoko.tome.util.Tracker;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
@@ -50,13 +49,12 @@ import java.util.UUID;
 /**
  * Text
  */
-public class Text extends Component implements Serializable
+public class Text extends Component implements Model, Serializable
 {
 
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String value;
     private TextSize textSize;
     private Integer keyStat;
 
@@ -68,19 +66,17 @@ public class Text extends Component implements Serializable
 
 
     public Text(UUID id, UUID groupId) {
-        super(id, null, groupId, null, null, null);
+        super(id, null, groupId, null, null, null, null);
         this.keyStat = null;
-        this.value = null;
         this.textSize = null;
     }
 
 
-    public Text(UUID id, String name, UUID groupId, Type.Id typeId, Format format,
-                List<String> actions, TextSize textSize, Integer keyStat, String value)
+    public Text(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
+                Format format, List<String> actions, TextSize textSize, Integer keyStat)
     {
-        super(id, name, groupId, typeId, format, actions);
+        super(id, name, groupId, value, typeId, format, actions);
         this.keyStat = keyStat;
-        this.value = value;
         this.textSize = textSize;
     }
 
@@ -93,12 +89,12 @@ public class Text extends Component implements Serializable
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
         String name = null;
+        ComponentValue value = null;
         Type.Id typeId = null;
         Format format = null;
         ArrayList<String> actions = null;
         TextSize textSize = null;
         Integer keyStat = null;
-        String value = null;
 
         // PARSE VALUES
         // --------------------------------------------------------------------------------------
@@ -129,7 +125,7 @@ public class Text extends Component implements Serializable
 
             // ** Value
             if (dataYaml.containsKey("value"))
-                value = (String) dataYaml.get("value");
+                value = ComponentValue.fromYaml((Map<String,Object>) dataYaml.get("value"));
         }
 
         // >> Format
@@ -146,50 +142,39 @@ public class Text extends Component implements Serializable
                 textSize = Component.TextSize.fromString((String) formatYaml.get("text_size"));
         }
 
-        return new Text(id, name, groupId, typeId, format, actions, textSize, keyStat, value);
+        return new Text(id, name, groupId, value, typeId, format, actions, textSize, keyStat);
     }
 
 
-    // > API
+    // API
     // ------------------------------------------------------------------------------------------
 
-    // >> State
+    // > State
     // ------------------------------------------------------------------------------------------
 
-    // >>> Value
+    // ** Value
     // ------------------------------------------------------------------------------------------
 
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public void setValue(String value, Context context)
+    public void setValue(ComponentValue value, Context context)
     {
-        this.value = value;
+        this.setValue(value);
 
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
                                     .findViewById(this.displayTextViewId);
-            textView.setText(this.value);
+            textView.setText(this.getValue().getString());
         }
 
         this.save(null);
     }
 
 
-    public String getValue()
-    {
-        return this.value;
-    }
-
-
-    public String componentName()
-    {
+    public String componentName() {
         return "text";
     }
 
 
-    // >>> Text Size
+    // ** Text Size
     // ------------------------------------------------------------------------------------------
 
     public TextSize getTextSize() {
@@ -209,7 +194,7 @@ public class Text extends Component implements Serializable
     }
 
 
-    // >>> Key Stat
+    // ** Key Stat
     // ------------------------------------------------------------------------------------------
 
     public Integer getKeyStat() {
@@ -236,7 +221,7 @@ public class Text extends Component implements Serializable
     }
 
 
-    // >> Views
+    // > Views
     // ------------------------------------------------------------------------------------------
 
     public View getDisplayView(final Context context, Rules rules)
@@ -255,7 +240,7 @@ public class Text extends Component implements Serializable
         textView.setTypeface(Util.serifFontBold(context));
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-        textView.setText(this.value);
+        textView.setText(this.getValue().getString());
 
         textLayout.addView(textView);
 
@@ -366,7 +351,7 @@ public class Text extends Component implements Serializable
         float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
         editView.setTextSize(valueTextSize);
 
-        editView.setText(this.value);
+        editView.setText(this.getValue().getString());
 
 
         // Define layout structure
@@ -383,9 +368,9 @@ public class Text extends Component implements Serializable
 
     /**
      * Load a Group from the database.
-     * @param trackerId The ID of the async tracker for the caller.
+     * @param callerTrackerId The ID of the async tracker for the caller.
      */
-    public void load(final TrackerId trackerId)
+    public void load(final UUID callerTrackerId)
     {
         final Text thisText = this;
 
@@ -399,9 +384,9 @@ public class Text extends Component implements Serializable
 
                 // Query Component
                 String textQuery =
-                    "SELECT comp.name, comp.label, comp.show_label, comp.row, comp.column, " +
-                           "comp.width, comp.alignment, comp.type_kind, comp.type_id, " +
-                           "comp.actions, comp.key_stat, text.size, text.value " +
+                    "SELECT comp.name, comp.value, comp.label, comp.show_label, comp.row, " +
+                           "comp.column, comp.width, comp.alignment, comp.type_kind, " +
+                           "comp.type_id, comp.actions, comp.key_stat, text.size " +
                     "FROM Component comp " +
                     "INNER JOIN component_text text on text.component_id = comp.component_id " +
                     "WHERE comp.component_id =  " + SQL.quoted(thisText.getId().toString());
@@ -409,6 +394,7 @@ public class Text extends Component implements Serializable
                 Cursor textCursor = database.rawQuery(textQuery, null);
 
                 String name = null;
+                UUID valueId = null;
                 String label = null;
                 Boolean showLabel = null;
                 Integer row = null;
@@ -420,23 +406,22 @@ public class Text extends Component implements Serializable
                 String textSize = null;
                 Integer keyStat = null;
                 List actions = null;
-                String value = null;
                 try {
                     textCursor.moveToFirst();
                     name            = textCursor.getString(0);
-                    label           = textCursor.getString(1);
-                    showLabel       = SQL.intAsBool(textCursor.getInt(2));
-                    row             = textCursor.getInt(3);
-                    column          = textCursor.getInt(4);
-                    width           = textCursor.getInt(5);
-                    alignment       = Alignment.fromString(textCursor.getString(6));
-                    typeKind        = textCursor.getString(7);
-                    typeId          = textCursor.getString(8);
+                    valueId         = UUID.fromString(textCursor.getString(1));
+                    label           = textCursor.getString(2);
+                    showLabel       = SQL.intAsBool(textCursor.getInt(3));
+                    row             = textCursor.getInt(4);
+                    column          = textCursor.getInt(5);
+                    width           = textCursor.getInt(6);
+                    alignment       = Alignment.fromString(textCursor.getString(7));
+                    typeKind        = textCursor.getString(8);
+                    typeId          = textCursor.getString(9);
                     actions         = new ArrayList<>(Arrays.asList(
-                                            TextUtils.split(textCursor.getString(9), ",")));
-                    keyStat         = textCursor.getInt(10);
-                    textSize        = textCursor.getString(11);
-                    value           = textCursor.getString(12);
+                                            TextUtils.split(textCursor.getString(10), ",")));
+                    keyStat         = textCursor.getInt(11);
+                    textSize        = textCursor.getString(12);
                 } catch (Exception e) {
                     Log.d("***TABLE", Log.getStackTraceString(e));
                 }
@@ -455,7 +440,7 @@ public class Text extends Component implements Serializable
                 thisText.setActions(actions);
                 thisText.setTextSize(TextSize.fromString(textSize));
                 thisText.setKeyStat(keyStat);
-                thisText.setValue(value);
+                thisText.setValue(new ComponentValue(valueId));
 
                 return null;
             }
@@ -463,15 +448,19 @@ public class Text extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                UUID trackerCode = trackerId.getCode();
-                switch (trackerId.getTarget()) {
-                    case GROUP:
-                        Group.getAsyncTracker(trackerCode).markComponentId(thisText.getId());
-                        break;
-                    case CELL:
-                        Cell.getAsyncTracker(trackerCode).markComponent();
-                        break;
-                }
+                List<String> trackingKeys = new ArrayList<>();
+                trackingKeys.add("value");
+
+                Tracker.OnReady onReady = new Tracker.OnReady() {
+                    @Override
+                    protected void go() {
+                        Global.getTracker(callerTrackerId).setKey(thisText.getId().toString());
+                    }
+                };
+
+                UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
+
+                thisText.getValue().load(thisText.getId(), "value", textTrackerId);
             }
 
         }.execute();
@@ -480,9 +469,9 @@ public class Text extends Component implements Serializable
 
     /**
      * Save to the database.
-     * @param trackerId The async tracker ID of the caller.
+     * @param callerTrackerId The async tracker ID of the caller.
      */
-    public void save(final TrackerId trackerId)
+    public void save(final UUID callerTrackerId)
     {
         final Text thisText = this;
 
@@ -498,7 +487,6 @@ public class Text extends Component implements Serializable
                 // ------------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
                 thisText.putComponentSQLRows(componentRow);
-                componentRow.put("text_value", thisText.getValue());
 
                 if (thisText.getKeyStat() != null)
                     componentRow.put("key_stat", thisText.getKeyStat());
@@ -515,7 +503,6 @@ public class Text extends Component implements Serializable
                 ContentValues textComponentRow = new ContentValues();
 
                 textComponentRow.put("component_id", thisText.getId().toString());
-                textComponentRow.put("value", thisText.getValue());
                 textComponentRow.put("size", thisText.getTextSizeAsString());
 
                 database.insertWithOnConflict(SheetContract.ComponentText.TABLE_NAME,
@@ -530,21 +517,24 @@ public class Text extends Component implements Serializable
             @Override
             protected void onPostExecute(Boolean result)
             {
-                if (trackerId == null) return;
+                List<String> trackingKeys = new ArrayList<>();
+                trackingKeys.add("value");
 
-                UUID trackerCode = trackerId.getCode();
-                switch (trackerId.getTarget()) {
-                    case GROUP:
-                        Group.getAsyncTracker(trackerCode).markComponentId(thisText.getId());
-                        break;
-                    case CELL:
-                        Cell.getAsyncTracker(trackerCode).markComponent();
-                        break;
-                }
+                Tracker.OnReady onReady = new Tracker.OnReady() {
+                    @Override
+                    protected void go() {
+                        Global.getTracker(callerTrackerId).setKey(thisText.getId().toString());
+                    }
+                };
+
+                UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
+
+                thisText.getValue().load(thisText.getId(), "value", textTrackerId);
             }
 
 
         }.execute();
     }
+
 
 }

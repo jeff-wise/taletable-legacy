@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -43,6 +42,7 @@ public class Cell implements Serializable
     // --------------------------------------------------------------------------------------
 
     // Instance Properties
+    private UUID id;
     private Integer rowIndex;
     private Integer columnIndex;
     private UUID tableId;
@@ -57,9 +57,10 @@ public class Cell implements Serializable
     // --------------------------------------------------------------------------------------
 
 
-    public Cell(Component component, UUID tableId, boolean isTemplate,
+    public Cell(UUID id, Component component, UUID tableId, boolean isTemplate,
                 Integer rowIndex, Integer columnIndex, Cell template)
     {
+        this.id = id;
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
         this.tableId = tableId;
