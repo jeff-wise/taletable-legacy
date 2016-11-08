@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.component.table;
+package com.kispoko.tome.sheet.component.type.table;
 
 
 import android.content.ContentValues;
@@ -17,11 +17,11 @@ import android.widget.TextView;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
-import com.kispoko.tome.sheet.Component;
-import com.kispoko.tome.sheet.component.Bool;
-import com.kispoko.tome.sheet.component.NumberInteger;
-import com.kispoko.tome.sheet.component.Table;
-import com.kispoko.tome.sheet.component.Text;
+import com.kispoko.tome.sheet.component.Component;
+import com.kispoko.tome.sheet.component.type.Bool;
+import com.kispoko.tome.sheet.component.type.Number;
+import com.kispoko.tome.sheet.component.type.Table;
+import com.kispoko.tome.sheet.component.type.Text;
 import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
 
@@ -181,7 +181,7 @@ public class Cell implements Serializable
     {
         View view = new TextView(context);
 
-        if (this.component instanceof Text || this.component instanceof NumberInteger) {
+        if (this.component instanceof Text || this.component instanceof Number) {
             view = this.textView(context);
         } else if (this.component instanceof Bool) {
             view = this.boolView(context);

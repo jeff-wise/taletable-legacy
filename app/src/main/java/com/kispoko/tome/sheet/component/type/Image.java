@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.component;
+package com.kispoko.tome.sheet.component.type;
 
 
 import android.app.Activity;
@@ -28,9 +28,10 @@ import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.component.Component;
 import com.kispoko.tome.sheet.Group;
-import com.kispoko.tome.sheet.component.table.Cell;
+import com.kispoko.tome.sheet.component.Variable;
+import com.kispoko.tome.sheet.component.type.table.Cell;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.SerialBitmap;
@@ -70,7 +71,7 @@ public class Image extends Component implements Serializable
     }
 
 
-    public Image(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
+    public Image(UUID id, String name, UUID groupId, Variable value, Type.Id typeId,
                  Format format, List<String> actions, Bitmap bitmap)
     {
         super(id, name, groupId, value, typeId, format, actions);

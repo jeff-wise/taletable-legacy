@@ -14,6 +14,7 @@ import com.kispoko.tome.activity.ManageSheetsActivity;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.sheet.component.Component;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.TrackerId;
 

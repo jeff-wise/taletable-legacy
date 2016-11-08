@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.component.Component;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.util.Util;
 

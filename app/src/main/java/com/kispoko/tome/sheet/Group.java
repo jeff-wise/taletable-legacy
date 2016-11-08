@@ -17,6 +17,7 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.sheet.component.Component;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;

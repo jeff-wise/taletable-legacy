@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.Component;
 
 /**
  * Component utility functions

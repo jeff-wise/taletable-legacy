@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.component;
+package com.kispoko.tome.sheet.component.type;
 
 
 import android.app.Activity;
@@ -27,8 +27,12 @@ import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.component.text.TextEditRecyclerViewAdapter;
-import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.component.ComponentUtil;
+import com.kispoko.tome.sheet.component.Variable;
+import com.kispoko.tome.sheet.component.Format;
+import com.kispoko.tome.sheet.component.type.text.TextEditRecyclerViewAdapter;
+import com.kispoko.tome.sheet.component.Component;
+import com.kispoko.tome.sheet.component.type.text.TextFormat;
 import com.kispoko.tome.type.ListType;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.Model;
@@ -36,12 +40,13 @@ import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Tracker;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -55,7 +60,8 @@ public class Text extends Component implements Model, Serializable
     // > PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private TextSize textSize;
+    private Variable value;
+    private TextFormat.Size textSize;
     private Integer keyStat;
 
     private int displayTextViewId;
@@ -65,84 +71,43 @@ public class Text extends Component implements Model, Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public Text(UUID id, UUID groupId) {
-        super(id, null, groupId, null, null, null, null);
-        this.keyStat = null;
-        this.textSize = null;
-    }
-
-
-    public Text(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
-                Format format, List<String> actions, TextSize textSize, Integer keyStat)
+    public Text(UUID id,
+                String name,
+                UUID groupId,
+                Type.Id typeId,
+                Format format,
+                List<String> actions,
+                Variable value,
+                TextFormat.Size textSize,
+                Integer keyStat)
     {
-        super(id, name, groupId, value, typeId, format, actions);
-        this.keyStat = keyStat;
+        super(id, name, groupId, typeId, format, actions);
+        this.value = value;
         this.textSize = textSize;
+        this.keyStat = keyStat;
     }
 
 
-    // TODO allow integer values as strings here too
-    @SuppressWarnings("unchecked")
-    public static Text fromYaml(UUID groupId, Map<String, Object> textYaml)
+    /**
+     * Create a text component from a Yaml representation.
+     * @param groupId The parent group identifier.
+     * @param yaml The yaml parsing object at the text component node.
+     * @return A new Text.
+     * @throws YamlException
+     */
+    public static Text fromYaml(UUID groupId, Yaml yaml)
+                  throws YamlException
     {
-        // VALUES TO PARSE
-        // --------------------------------------------------------------------------------------
-        UUID id = UUID.randomUUID();
-        String name = null;
-        ComponentValue value = null;
-        Type.Id typeId = null;
-        Format format = null;
-        ArrayList<String> actions = null;
-        TextSize textSize = null;
-        Integer keyStat = null;
+        UUID            id      = UUID.randomUUID();
+        String          name    = yaml.atKey("name").getString();
+        Type.Id         typeId  = Type.Id.fromYaml(yaml.atKey("data"));
+        TextFormat      format  = TextFormat.fromYaml(yaml.atKey("format"));
+        List<String>    actions = yaml.atKey("actions").getStringList();
+        Variable        value   = Variable.fromYaml(yaml.atKey("value"));
+        TextFormat.Size size    = TextFormat.Size.fromString(yaml.atKey("size").getString());
+        Integer         keyStat = yaml.atKey("key_stat").getInteger();
 
-        // PARSE VALUES
-        // --------------------------------------------------------------------------------------
-
-        // > Top Level
-        // --------------------------------------------------------------------------------------
-
-        // ** Name
-        if (textYaml.containsKey("name"))
-            name = (String) textYaml.get("name");
-
-        // ** Actions
-        if (textYaml.containsKey("actions"))
-            actions = (ArrayList<String>) textYaml.get("actions");
-
-        // ** Key Stat
-        if (textYaml.containsKey("key_stat"))
-            keyStat = (Integer) textYaml.get("key_stat");
-
-        // >> Data
-        // --------------------------------------------------------------------------------------
-        Map<String,Object> dataYaml   = (Map<String,Object>) textYaml.get("data");
-
-        if (dataYaml != null)
-        {
-            // ** Type Id
-            typeId = Type.Id.fromYaml(dataYaml);
-
-            // ** Value
-            if (dataYaml.containsKey("value"))
-                value = ComponentValue.fromYaml((Map<String,Object>) dataYaml.get("value"));
-        }
-
-        // >> Format
-        // --------------------------------------------------------------------------------------
-        Map<String,Object> formatYaml = (Map<String,Object>) textYaml.get("format");
-
-        if (formatYaml != null)
-        {
-            // ** Format
-            format = Component.parseFormatYaml(textYaml);
-
-            // ** Text Size
-            if (formatYaml.containsKey("text_size"))
-                textSize = Component.TextSize.fromString((String) formatYaml.get("text_size"));
-        }
-
-        return new Text(id, name, groupId, value, typeId, format, actions, textSize, keyStat);
+        return new Text(id, name, groupId, typeId, format, actions, value, size, keyStat);
     }
 
 
@@ -155,7 +120,7 @@ public class Text extends Component implements Model, Serializable
     // ** Value
     // ------------------------------------------------------------------------------------------
 
-    public void setValue(ComponentValue value, Context context)
+    public void setValue(Variable value, Context context)
     {
         this.setValue(value);
 
@@ -440,7 +405,7 @@ public class Text extends Component implements Model, Serializable
                 thisText.setActions(actions);
                 thisText.setTextSize(TextSize.fromString(textSize));
                 thisText.setKeyStat(keyStat);
-                thisText.setValue(new ComponentValue(valueId));
+                thisText.setValue(new Variable(valueId));
 
                 return null;
             }

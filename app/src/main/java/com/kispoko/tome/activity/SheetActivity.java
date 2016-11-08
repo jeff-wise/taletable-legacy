@@ -21,12 +21,11 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
-import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.component.Component;
 import com.kispoko.tome.activity.sheet.PageFragment;
 import com.kispoko.tome.db.SheetDatabaseManager;
-import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.sheet.component.Text;
+import com.kispoko.tome.sheet.component.type.Text;
 import com.kispoko.tome.util.Util;
 
 

@@ -1,13 +1,10 @@
 
-package com.kispoko.tome.rules;
+package com.kispoko.tome.rules.program;
 
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static android.R.attr.switchMinWidth;
-import static android.R.attr.valueType;
 
 
 /**

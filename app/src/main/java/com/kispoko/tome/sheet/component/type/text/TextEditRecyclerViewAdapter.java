@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.component.text;
+package com.kispoko.tome.sheet.component.type.text;
 
 
 import android.app.Activity;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.component.Text;
+import com.kispoko.tome.sheet.component.type.Text;
 import com.kispoko.tome.type.ListType;
 
 

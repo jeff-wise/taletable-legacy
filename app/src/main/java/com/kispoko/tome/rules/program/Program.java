@@ -11,7 +11,6 @@ import android.util.Log;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.function.FunctionValueType;
-import com.kispoko.tome.rules.Statement;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
 

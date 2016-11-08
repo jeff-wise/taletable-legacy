@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.component;
+package com.kispoko.tome.sheet.component.type;
 
 
 import android.content.ContentValues;
@@ -15,9 +15,8 @@ import android.widget.TextView;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.Component;
-import com.kispoko.tome.sheet.Group;
-import com.kispoko.tome.sheet.component.table.Cell;
+import com.kispoko.tome.sheet.component.Component;
+import com.kispoko.tome.sheet.component.Variable;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.TrackerId;
@@ -51,7 +50,7 @@ public class Bool extends Component implements Serializable
         this.value = null;
     }
 
-    public Bool(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
+    public Bool(UUID id, String name, UUID groupId, Variable value, Type.Id typeId,
                 Format format, List<String> actions)
     {
         super(id, name, groupId, value, typeId, format, actions);
@@ -70,7 +69,7 @@ public class Bool extends Component implements Serializable
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
         String name = null;
-        ComponentValue value = null;
+        Variable value = null;
         Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
@@ -97,7 +96,7 @@ public class Bool extends Component implements Serializable
         {
             // ** Value
             if (dataYaml.containsKey("value"))
-                value = ComponentValue.fromYaml((Map<String,Object>) dataYaml.get("value"));
+                value = Variable.fromYaml((Map<String,Object>) dataYaml.get("value"));
 
             // ** Type Id
             typeId = Type.Id.fromYaml(dataYaml);
@@ -240,7 +239,7 @@ public class Bool extends Component implements Serializable
                 thisBool.setWidth(width);
                 thisBool.setAlignment(alignment);
                 thisBool.setActions(actions);
-                thisBool.setValue(new ComponentValue());
+                thisBool.setValue(new Variable());
 
                 return true;
             }

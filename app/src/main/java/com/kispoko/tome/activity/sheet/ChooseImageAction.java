@@ -2,11 +2,10 @@
 package com.kispoko.tome.activity.sheet;
 
 
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.sheet.component.Image;
+import com.kispoko.tome.sheet.component.type.Image;
 
 
 

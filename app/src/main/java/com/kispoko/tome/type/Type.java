@@ -4,6 +4,9 @@ package com.kispoko.tome.type;
 
 import android.util.Log;
 
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -68,30 +71,14 @@ public abstract class Type implements Serializable
         }
 
 
-        @SuppressWarnings("unchecked")
-        public static Type.Id fromYaml(Map<String,Object> dataYaml)
+        public static Type.Id fromYaml(Yaml yaml)
+                      throws YamlException
         {
-            if (dataYaml.containsKey("type"))
-            {
-                Map<String, Object> typeYaml = (Map<String, Object>) dataYaml.get("type");
+            String typeId   = yaml.atKey("id").getString();
+            String typeKind = yaml.atKey("kind").getString();
 
-                String _typeId = null;
-                String typeKind = null;
-
-                if (typeYaml.containsKey("id"))
-                    _typeId = (String) typeYaml.get("id");
-
-                if (typeYaml.containsKey("kind"))
-                    typeKind = (String) typeYaml.get("kind");
-
-                Log.d("***TYPE", "parsing type");
-
-                return new Type.Id(typeKind, _typeId);
-            }
-
-            return null;
+            return new Type.Id(typeId, typeKind);
         }
-
 
 
         public boolean isNull()
@@ -99,10 +86,12 @@ public abstract class Type implements Serializable
             return this.kind == null && this.id == null;
         }
 
+
         public String getKind()
         {
             return this.kind;
         }
+
 
         public String getId()
         {

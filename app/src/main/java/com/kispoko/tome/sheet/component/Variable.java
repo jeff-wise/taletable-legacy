@@ -11,21 +11,24 @@ import android.util.Log;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.program.ProgramInvocation;
-import com.kispoko.tome.sheet.Component;
 import com.kispoko.tome.util.SQL;
-import com.kispoko.tome.util.TrackerId;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.Map;
 import java.util.UUID;
 
-import static com.kispoko.tome.sheet.component.ComponentValue.Type.PROGRAM;
+import static com.kispoko.tome.sheet.component.Variable.Type.PROGRAM;
 
 
 
 /**
- * Component Value
+ * Variable
+ *
+ * A variable is a piece of programmable state associated with a component. It could contain a
+ * literal value, or a be a value that is generated dynamically from a script.
  */
-public class ComponentValue
+public class Variable
 {
 
     // PROPERTIES
@@ -39,13 +42,13 @@ public class ComponentValue
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ComponentValue(UUID id)
+    public Variable(UUID id)
     {
         this.id = id;
     }
 
 
-    public ComponentValue(UUID id, Object value, Type _type)
+    public Variable(UUID id, Object value, Type _type)
     {
         this.id = id;
         this.value = value;
@@ -53,24 +56,14 @@ public class ComponentValue
     }
 
 
-    public static ComponentValue fromYaml(Map<String,Object> valueYaml)
+    public static Variable fromYaml(Yaml yaml)
+                  throws YamlException
     {
-        // VALUES TO PARSE
-        // --------------------------------------------------------------------------------------
-        UUID id = UUID.randomUUID();
-        Object value = null;
-        Type   _type = null;
+        UUID   id    = UUID.randomUUID();
+        Object value = yaml.atKey("value").getObject();
+        Type   _type = Type.fromString(yaml.atKey("type").getString());
 
-        // PARSE VALUES
-        // --------------------------------------------------------------------------------------
-
-        if (valueYaml.containsKey("value"))
-            value = valueYaml.get("value");
-
-        if (valueYaml.containsKey("type"))
-            _type = Type.fromString((String) valueYaml.get("type"));
-
-        return new ComponentValue(id, value, _type);
+        return new Variable(id, value, _type);
     }
 
 
@@ -166,7 +159,7 @@ public class ComponentValue
     }
 
 
-    public static ComponentValue fromDBString(UUID id, String valueString, Type _type)
+    public static Variable fromDBString(UUID id, String valueString, Type _type)
     {
         Object value = null;
 
@@ -186,7 +179,7 @@ public class ComponentValue
                 break;
         }
 
-        return new ComponentValue(id, value, _type);
+        return new Variable(id, value, _type);
     }
 
 
@@ -207,7 +200,7 @@ public class ComponentValue
      */
     public void load(final UUID componentId, final String key, final UUID trackerId)
     {
-        final ComponentValue thisValue = this;
+        final Variable thisValue = this;
 
         new AsyncTask<Void,Void,Boolean>()
         {
@@ -220,18 +213,18 @@ public class ComponentValue
                 // Query the Component Value
                 String query =
                     "SELECT cv.value, cv.value_type " +
-                    "FROM ComponentValue cv " +
+                    "FROM Variable cv " +
                     "WHERE cv.component_value_id =  " + SQL.quoted(componentId.toString());
 
                 Cursor cursor = database.rawQuery(query, null);
 
                 Object value = null;
-                ComponentValue.Type _type = null;
+                Variable.Type _type = null;
                 try
                 {
                     cursor.moveToFirst();
                     _type = Type.fromString(cursor.getString(1));
-                    value = ComponentValue.fromDBString(thisValue.getId(),
+                    value = Variable.fromDBString(thisValue.getId(),
                                                         cursor.getString(0), _type);
 
                     if (_type == PROGRAM) {
@@ -269,7 +262,7 @@ public class ComponentValue
      */
     public void save(final String key, final UUID callerTrackerId)
     {
-        final ComponentValue thisValue = this;
+        final Variable thisValue = this;
 
         new AsyncTask<Void,Void,Boolean>()
         {
@@ -294,7 +287,7 @@ public class ComponentValue
 
                 // > Save ProgramInvocation row, if necessary
                 // ------------------------------------------------------------------------------
-                if (thisValue.getType() == Type.PROGRAM) {
+                if (thisValue.getType() == PROGRAM) {
                     thisValue.getProgramInvocation().save();
                 }
 

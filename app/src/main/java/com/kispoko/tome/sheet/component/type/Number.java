@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.component;
+package com.kispoko.tome.sheet.component.type;
 
 
 import android.content.ContentValues;
@@ -19,7 +19,9 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.Component;
+import com.kispoko.tome.sheet.component.Component;
+import com.kispoko.tome.sheet.component.ComponentUtil;
+import com.kispoko.tome.sheet.component.Variable;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.SQL;
 import com.kispoko.tome.util.Tracker;
@@ -35,17 +37,17 @@ import java.util.UUID;
 
 
 /**
- * NumberInteger Component
+ * Number Component
  */
-public class NumberInteger extends Component implements Serializable
+public class Number extends Component implements Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
     private TextSize textSize;
-    private ComponentValue prefix;
-    private ComponentValue postfix;
+    private Variable prefix;
+    private Variable postfix;
     private Integer keyStat;
     private Integer value;
 
@@ -53,7 +55,7 @@ public class NumberInteger extends Component implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public NumberInteger(UUID id, UUID groupId) {
+    public Number(UUID id, UUID groupId) {
         super(id, null, groupId, null, null, null, null);
         this.keyStat = null;
         this.value = null;
@@ -61,8 +63,8 @@ public class NumberInteger extends Component implements Serializable
     }
 
 
-    public NumberInteger(UUID id, String name, UUID groupId, ComponentValue value, Type.Id typeId,
-                         Format format, List<String> actions, Integer keyStat)
+    public Number(UUID id, String name, UUID groupId, Variable value, Type.Id typeId,
+                  Format format, List<String> actions, Integer keyStat)
     {
         super(id, name, groupId, value, typeId, format, actions);
         this.keyStat = keyStat;
@@ -71,18 +73,18 @@ public class NumberInteger extends Component implements Serializable
 
 
     @SuppressWarnings("unchecked")
-    public static NumberInteger fromYaml(UUID groupId, Map<String, Object> integerYaml)
+    public static Number fromYaml(UUID groupId, Map<String, Object> integerYaml)
     {
         // VALUES TO PARSE
         // --------------------------------------------------------------------------------------
         UUID id = UUID.randomUUID();
         String name = null;
-        ComponentValue value = null;
+        Variable value = null;
         Type.Id typeId = null;
         Format format = null;
         List<String> actions = null;
-        ComponentValue prefix = null;
-        ComponentValue postfix = null;
+        Variable prefix = null;
+        Variable postfix = null;
         Integer keyStat = null;
 
         // PARSE VALUES
@@ -114,7 +116,7 @@ public class NumberInteger extends Component implements Serializable
 
             // ** Value
             if (dataYaml.containsKey("value"))
-                value = ComponentValue.fromYaml((Map<String,Object>) dataYaml.get("value"));
+                value = Variable.fromYaml((Map<String,Object>) dataYaml.get("value"));
         }
 
         // >> Format
@@ -128,15 +130,15 @@ public class NumberInteger extends Component implements Serializable
 
             // ** Prefix
             if (formatYaml.containsKey("prefix"))
-                prefix = ComponentValue.fromYaml((Map<String,Object>) dataYaml.get("prefix"));
+                prefix = Variable.fromYaml((Map<String,Object>) dataYaml.get("prefix"));
 
             // ** Postfix
             if (formatYaml.containsKey("postfix"))
-                postfix = ComponentValue.fromYaml((Map<String,Object>) dataYaml.get("postfix"));
+                postfix = Variable.fromYaml((Map<String,Object>) dataYaml.get("postfix"));
         }
 
         // CREATE INTEGER
-        NumberInteger integer = new NumberInteger(id, name, groupId, value, typeId, format,
+        Number integer = new Number(id, name, groupId, value, typeId, format,
                                                   actions, keyStat);
 
         integer.setPrefix(prefix);
@@ -174,12 +176,12 @@ public class NumberInteger extends Component implements Serializable
     // ** Prefix
     // ------------------------------------------------------------------------------------------
 
-    public ComponentValue getPrefix() {
+    public Variable getPrefix() {
         return this.prefix;
     }
 
 
-    public void setPrefix(ComponentValue prefix) {
+    public void setPrefix(Variable prefix) {
         this.prefix = prefix;
     }
 
@@ -187,12 +189,12 @@ public class NumberInteger extends Component implements Serializable
     // ** Prefix
     // ------------------------------------------------------------------------------------------
 
-    public ComponentValue getPostfix() {
+    public Variable getPostfix() {
         return this.prefix;
     }
 
 
-    public void setPostfix(ComponentValue postfix) {
+    public void setPostfix(Variable postfix) {
         this.postfix = postfix;
     }
 
@@ -258,7 +260,7 @@ public class NumberInteger extends Component implements Serializable
      */
     public void load(final UUID callerTrackerId)
     {
-        final NumberInteger thisInteger = this;
+        final Number thisInteger = this;
 
         new AsyncTask<Void,Void,Boolean>()
         {
@@ -330,9 +332,9 @@ public class NumberInteger extends Component implements Serializable
                 thisInteger.setAlignment(alignment);
                 thisInteger.setActions(actions);
                 thisInteger.setKeyStat(keyStat);
-                thisInteger.setValue(new ComponentValue(valueId));
-                thisInteger.setPrefix(new ComponentValue(prefixId));
-                thisInteger.setPostfix(new ComponentValue(postfixId));
+                thisInteger.setValue(new Variable(valueId));
+                thisInteger.setPrefix(new Variable(prefixId));
+                thisInteger.setPostfix(new Variable(postfixId));
 
                 return true;
             }
@@ -369,7 +371,7 @@ public class NumberInteger extends Component implements Serializable
      */
     public void save(final UUID callerTrackerId)
     {
-        final NumberInteger thisInteger = this;
+        final Number thisInteger = this;
 
         new AsyncTask<Void,Void,Boolean>()
         {
