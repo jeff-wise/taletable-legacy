@@ -150,8 +150,8 @@ sections:
       groups:
       - label: General
         number_of_rows: 2
-        components:
-        - type: text
+        widgetDatas:
+        - type: textWidget
           name: name
           actions:
           - edit
@@ -166,7 +166,7 @@ sections:
             value:
               type: literal_string
               value: Aladaisian Wineheart
-        - type: image
+        - type: imageWidget
           name: picture
           actions:
           - choose
@@ -178,7 +178,7 @@ sections:
             label: Picture
       - label: Features
         number_of_rows: 2
-        components:
+        widgetDatas:
         - type: integer
           key_stat: 1
           name: level
@@ -194,7 +194,7 @@ sections:
             value:
               type: literal_integer
               value: 17
-        - type: text
+        - type: textWidget
           name: class
           key_stat: 2
           actions:
@@ -212,7 +212,7 @@ sections:
             type:
               kind: list
               id: class
-        - type: text
+        - type: textWidget
           name: race
           actions:
           - edit
@@ -227,7 +227,7 @@ sections:
             value:
               type: literal_string
               value: Human
-        - type: text
+        - type: textWidget
           name: alignment
           actions:
           - edit
@@ -243,7 +243,7 @@ sections:
               value: Lawful Good
       - label: Appearance
         number_of_rows: 2
-        components:
+        widgetDatas:
         - type: integer
           name: age
           actions:
@@ -258,7 +258,7 @@ sections:
             value:
               type: literal_integer
               value: 41
-        - type: text
+        - type: textWidget
           name: height
           actions:
           - edit
@@ -286,7 +286,7 @@ sections:
             value:
               type: literal_integer
               value: 167
-        - type: text
+        - type: textWidget
           name: eyes
           actions:
           - edit
@@ -300,7 +300,7 @@ sections:
             value:
               type: literal_string
               value: Blue
-        - type: text
+        - type: textWidget
           name: skin
           actions:
           - edit
@@ -314,7 +314,7 @@ sections:
             value:
               type: literal_string
               value: Light
-        - type: text
+        - type: textWidget
           name: hair
           actions:
           - edit
@@ -332,7 +332,7 @@ sections:
       groups:
       - label: Ability Scores
         number_of_rows: 2
-        components:
+        widgetDatas:
         - type: integer
           name: strength
           actions:
@@ -426,7 +426,7 @@ sections:
               value: 13
       - label: General
         number_of_rows: 1
-        components:
+        widgetDatas:
         - type: integer
           name: proficiency_bonus
           actions:
@@ -458,7 +458,7 @@ sections:
               value: 4
       - label: Combat
         number_of_rows: 1
-        components:
+        widgetDatas:
         - type: integer
           name: armor_class
           actions:
@@ -504,7 +504,7 @@ sections:
               value: 30
       - label: Saving Throws
         number_of_rows: 2
-        components:
+        widgetDatas:
         - type: integer
           name: saving_throw_strength
           actions:
@@ -598,8 +598,8 @@ sections:
       groups:
       - label: Skills
         number_of_rows: 1
-        components:
-        - type: table
+        widgetDatas:
+        - type: tableWidget
           actions:
           - edit
           format:
@@ -616,14 +616,14 @@ sections:
           height: 18
           row_template:
             cells:
-            - component:
-                type: text
+            - widgetData:
+                type: textWidget
                 format:
                   alignment: left
                   width: 3
                 data:
                   value: Skill Name
-            - component:
+            - widgetData:
                 type: integer
                 format:
                   prefix: '+'
@@ -631,7 +631,7 @@ sections:
                   width: 2
                 data:
                   value: 1
-            - component:
+            - widgetData:
                 type: boolean
                 format:
                   alignment: center
@@ -641,170 +641,170 @@ sections:
           data:
             rows:
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Acrobatics
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
                   data:
                     value: true
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Animal Handling
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Arcana
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Athletics
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
                   data:
                     value: true
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Deception
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: History
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Insight
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Intimidation
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Investigation
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Medicine
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Nature
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Perception
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Performance
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Persuasion
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Religion
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Sleight of Hand
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Stealth
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
             - cells:
-              - component:
-                  type: text
+              - widgetData:
+                  type: textWidget
                   data:
                     value: Survival
-              - component:
+              - widgetData:
                   type: integer
-              - component:
+              - widgetData:
                   type: boolean
     - label: Backpack
       groups:

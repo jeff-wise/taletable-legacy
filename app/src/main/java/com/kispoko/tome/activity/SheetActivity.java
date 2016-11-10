@@ -21,11 +21,11 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
-import com.kispoko.tome.sheet.component.Component;
+import com.kispoko.tome.sheet.widget.WidgetData;
 import com.kispoko.tome.activity.sheet.PageFragment;
 import com.kispoko.tome.db.SheetDatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.sheet.component.type.Text;
+import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.util.Util;
 
 
@@ -120,7 +120,7 @@ public class SheetActivity
         // Skip Errors // TODO
         if (resultCode != RESULT_OK) return;
 
-        // Process Chosen Image
+        // Process Chosen ImageWidget
         if (requestCode == CHOOSE_IMAGE_FROM_FILE)
         {
             Uri uri = data.getData();
@@ -154,10 +154,10 @@ public class SheetActivity
     /**
      * Open the Edit activity.
      */
-    public void openEditActivity(Component component)
+    public void openEditActivity(WidgetData widgetData)
     {
         Intent intent = new Intent(this, EditActivity.class);
-        intent.putExtra("COMPONENT", component);
+        intent.putExtra("COMPONENT", widgetData);
         startActivityForResult(intent, COMPONENT_EDIT);
     }
 
@@ -188,7 +188,7 @@ public class SheetActivity
         tabLayout.setupWithViewPager(viewPager);
 
         TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText( ((Text) this.sheet.componentWithLabel("Name")).getValue());
+        titleView.setText( ((TextWidget) this.sheet.componentWithLabel("Name")).getValue());
     }
 
 

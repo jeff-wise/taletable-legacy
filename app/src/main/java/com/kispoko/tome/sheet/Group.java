@@ -17,8 +17,8 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.component.Component;
-import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.sheet.widget.WidgetData;
+import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
 
@@ -45,7 +45,7 @@ public class Group implements Serializable
     private UUID pageId;
 
     private String label;
-    private ArrayList<Component> components;
+    private ArrayList<WidgetData> widgetDatas;
     private Integer numberOfRows;
     private Integer index;
 
@@ -64,7 +64,7 @@ public class Group implements Serializable
 
 
     public Group(UUID id, UUID pageId, String label, Integer index, Integer numberOfRows,
-                 ArrayList<Component> components)
+                 ArrayList<WidgetData> widgetDatas)
     {
         if (id != null)
             this.id = id;
@@ -76,7 +76,7 @@ public class Group implements Serializable
         this.label = label;
         this.index = index;
         this.numberOfRows = numberOfRows;
-        this.components = components;
+        this.widgetDatas = widgetDatas;
     }
 
 
@@ -87,25 +87,25 @@ public class Group implements Serializable
         UUID id = UUID.randomUUID();
         String label = null;
         Integer numberOfRows = null;
-        ArrayList<Component> components = new ArrayList<>();
+        ArrayList<WidgetData> widgetDatas = new ArrayList<>();
 
         // Parse values
         // >> Label
         if (groupYaml.containsKey("label"))
             label = (String) groupYaml.get("label");
 
-        // >> Number of Rows
+        // >> NumberWidget of Rows
         if (groupYaml.containsKey("number_of_rows"))
             numberOfRows = (Integer) groupYaml.get("number_of_rows");
 
         // >> Components
-        ArrayList<Object> componentsYaml = (ArrayList<Object>) groupYaml.get("components");
+        ArrayList<Object> componentsYaml = (ArrayList<Object>) groupYaml.get("widgetDatas");
         for (Object componentYaml : componentsYaml) {
-            Component component = Component.fromYaml(id, (Map<String, Object>) componentYaml);
-            components.add(component);
+            WidgetData widgetData = WidgetData.fromYaml(id, (Map<String, Object>) componentYaml);
+            widgetDatas.add(widgetData);
         }
 
-        return new Group(id, pageId, label, null, numberOfRows, components);
+        return new Group(id, pageId, label, null, numberOfRows, widgetDatas);
     }
 
 
@@ -136,13 +136,13 @@ public class Group implements Serializable
     // >>> Components
     // ------------------------------------------------------------------------------------------
 
-    public ArrayList<Component> getComponents() {
-        return this.components;
+    public ArrayList<WidgetData> getWidgetDatas() {
+        return this.widgetDatas;
     }
 
 
-    public void setComponents(ArrayList<Component> components) {
-        this.components = components;
+    public void setWidgetDatas(ArrayList<WidgetData> widgetDatas) {
+        this.widgetDatas = widgetDatas;
     }
 
 
@@ -172,7 +172,7 @@ public class Group implements Serializable
     }
 
 
-    // >>> Number of Rows
+    // >>> NumberWidget of Rows
     // ------------------------------------------------------------------------------------------
 
     public Integer getNumberOfRows() {
@@ -269,15 +269,15 @@ public class Group implements Serializable
                     cursor.close();
                 }
 
-                ArrayList<Component> components = new ArrayList<Component>();
+                ArrayList<WidgetData> widgetDatas = new ArrayList<WidgetData>();
                 for (int i = 0; i < componentIds.size(); i++) {
-                    components.add(
-                            Component.empty(componentIds.get(i), thisGroup.getId(),
+                    widgetDatas.add(
+                            WidgetData.empty(componentIds.get(i), thisGroup.getId(),
                                             componentTypes.get(i))
                     );
                 }
 
-                thisGroup.setComponents(components);
+                thisGroup.setWidgetDatas(widgetDatas);
                 thisGroup.setLabel(label);
                 thisGroup.setNumberOfRows(numberOfRows);
                 thisGroup.setIndex(index);
@@ -292,9 +292,9 @@ public class Group implements Serializable
                 // Create Asynchronous Constructor
                 TrackerId groupTrackerId = thisGroup.addAsyncTracker(pageTrackerId);
 
-                // >> Asynchronous load components
-                for (Component component : thisGroup.getComponents()) {
-                    component.load(groupTrackerId);
+                // >> Asynchronous load widgetDatas
+                for (WidgetData widgetData : thisGroup.getWidgetDatas()) {
+                    widgetData.load(groupTrackerId);
                 }
             }
 
@@ -338,8 +338,8 @@ public class Group implements Serializable
                 TrackerId groupTrackerId = thisGroup.addAsyncTracker(pageTrackerId);
 
                 // Save the entire sheet to the database
-                for (Component component : thisGroup.components) {
-                    component.save(groupTrackerId);
+                for (WidgetData widgetData : thisGroup.widgetDatas) {
+                    widgetData.save(groupTrackerId);
                 }
             }
 
@@ -369,24 +369,24 @@ public class Group implements Serializable
         groupLayout.setPadding(groupPaddingHorz, groupPaddingTop, groupPaddingHorz, 0);
 
 
-        ArrayList<ArrayList<Component>> rows = new ArrayList<>();
+        ArrayList<ArrayList<WidgetData>> rows = new ArrayList<>();
         for (int i = 0; i  < this.numberOfRows; i++) {
-            rows.add(new ArrayList<Component>());
+            rows.add(new ArrayList<WidgetData>());
         }
 
         // Sort by row
-        for (Component component : this.components)
+        for (WidgetData widgetData : this.widgetDatas)
         {
-            int rowIndex = component.getRow() - 1;
-            rows.get(rowIndex).add(component);
+            int rowIndex = widgetData.getRow() - 1;
+            rows.get(rowIndex).add(widgetData);
         }
 
         // Sort by column
         for (int j = 0; j < this.numberOfRows; j++) {
-            ArrayList<Component> row = rows.get(j);
-            Collections.sort(row, new Comparator<Component>() {
+            ArrayList<WidgetData> row = rows.get(j);
+            Collections.sort(row, new Comparator<WidgetData>() {
                 @Override
-                public int compare(Component c1,Component c2) {
+                public int compare(WidgetData c1, WidgetData c2) {
                     if (c1.getColumn() > c2.getColumn())
                         return 1;
                     if (c1.getColumn() < c2.getColumn())
@@ -398,7 +398,7 @@ public class Group implements Serializable
 
         groupLayout.addView(this.labelView(context));
 
-        for (ArrayList<Component> row : rows)
+        for (ArrayList<WidgetData> row : rows)
         {
             LinearLayout rowLayout = new LinearLayout(context);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -407,23 +407,23 @@ public class Group implements Serializable
                                               .getDimension(R.dimen.row_padding_bottom);
             rowLayout.setPadding(0, 0, 0, rowPaddingBottom);
 
-            for (Component component : row)
+            for (WidgetData widgetData : row)
             {
                 LinearLayout frameLayout = new LinearLayout(context);
                 frameLayout.setOrientation(LinearLayout.VERTICAL);
                 LinearLayout.LayoutParams frameLayoutParams = Util.linearLayoutParamsWrap();
                 frameLayoutParams.width = 0;
-                frameLayoutParams.weight = component.getWidth();
+                frameLayoutParams.weight = widgetData.getWidth();
                 frameLayout.setLayoutParams(frameLayoutParams);
 
-//                if (component.hasLabel())
-//                    frameLayout.addView(component.labelView(context));
-                // Add Component Label
-//                if (component.hasLabel() && !component.getLabel().equals(this.getLabel())) {
+//                if (widgetData.hasLabel())
+//                    frameLayout.addView(widgetData.labelView(context));
+                // Add WidgetData Label
+//                if (widgetData.hasLabel() && !widgetData.getLabel().equals(this.getLabel())) {
 //                }
 
-                // Add Component View
-                View componentView = component.getDisplayView(context, rules);
+                // Add WidgetData View
+                View componentView = widgetData.getDisplayView(context, rules);
                 frameLayout.addView(componentView);
 
                 rowLayout.addView(frameLayout);
@@ -500,11 +500,11 @@ public class Group implements Serializable
             this.pageTrackerId = pageTrackerId;
 
             componentIdTrackerMap = new HashMap<>();
-            for (Component component : this.group.getComponents()) {
-                componentIdTrackerMap.put(component.getId(), false);
+            for (WidgetData widgetData : this.group.getWidgetDatas()) {
+                componentIdTrackerMap.put(widgetData.getId(), false);
             }
 
-            if (group.getComponents().size() == 0) ready();
+            if (group.getWidgetDatas().size() == 0) ready();
         }
 
 

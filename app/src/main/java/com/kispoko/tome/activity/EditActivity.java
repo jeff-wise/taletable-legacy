@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.component.Component;
+import com.kispoko.tome.sheet.widget.WidgetData;
 import com.kispoko.tome.util.UI;
 
 
@@ -25,7 +25,7 @@ public class EditActivity extends AppCompatActivity
     // > PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private Component component;
+    private WidgetData widgetData;
     private Rules rules;
 
 
@@ -40,7 +40,7 @@ public class EditActivity extends AppCompatActivity
         // Read parameters passed from previous activity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            this.component = (Component) extras.getSerializable("COMPONENT");
+            this.widgetData = (WidgetData) extras.getSerializable("COMPONENT");
             this.rules = (Rules) extras.getSerializable("RULES");
         }
 
@@ -102,27 +102,27 @@ public class EditActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
 
-        String title = "Edit "; // + this.component.getLabel();
+        String title = "Edit "; // + this.widgetData.getLabel();
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
 
         TextView editActionView = (TextView) findViewById(R.id.edit_action_label);
 
-        if (this.component.getTypeId() != null)
-            editActionView.setText("Select a " + this.component.getLabel());
+        if (this.widgetData.getTypeId() != null)
+            editActionView.setText("Select a " + this.widgetData.getLabel());
         else
-            editActionView.setText(this.component.getLabel());
+            editActionView.setText(this.widgetData.getLabel());
     }
 
 
     /**
-     * Create the editor view for the component.
+     * Create the editor view for the widgetData.
      */
     private void initializeEditorView()
     {
         LinearLayout layout = (LinearLayout) findViewById(R.id.edit_content);
 
-        layout.addView(this.component.getEditorView(this, this.rules));
+        layout.addView(this.widgetData.getEditorView(this, this.rules));
 
     }
 

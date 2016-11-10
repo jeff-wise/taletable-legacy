@@ -5,10 +5,9 @@ package com.kispoko.tome.sheet;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.kispoko.tome.Global;
-import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.TrackerId;
 
 import java.util.ArrayList;

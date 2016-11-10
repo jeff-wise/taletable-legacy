@@ -37,13 +37,13 @@
                 android:textColor="@color/amber_300"
                 android:textSize="19dp"
                 android:textStyle="bold"
-                android:text="@string/from_official_template"/>
+                android:textWidget="@string/from_official_template"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/bluegrey_200"
-                android:text="@string/from_official_template_description"/>
+                android:textWidget="@string/from_official_template_description"/>
 
         </LinearLayout>
 
@@ -87,13 +87,13 @@
                 android:textColor="@color/amber_300"
                 android:textSize="19dp"
                 android:textStyle="bold"
-                android:text="@string/from_character_hub"/>
+                android:textWidget="@string/from_character_hub"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/bluegrey_200"
-                android:text="@string/from_character_hub_description"/>
+                android:textWidget="@string/from_character_hub_description"/>
 
         </LinearLayout>
 
@@ -138,13 +138,13 @@
                 android:textColor="@color/amber_300"
                 android:textSize="19dp"
                 android:textStyle="bold"
-                android:text="@string/from_file"/>
+                android:textWidget="@string/from_file"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/bluegrey_200"
-                android:text="@string/from_file_description"/>
+                android:textWidget="@string/from_file_description"/>
 
         </LinearLayout>
 

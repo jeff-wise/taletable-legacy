@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.kispoko.tome.Global;
 import com.kispoko.tome.db.SheetContract;
-import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.TrackerId;
 
 import java.util.Map;

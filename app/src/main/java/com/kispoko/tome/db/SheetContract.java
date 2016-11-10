@@ -26,11 +26,11 @@ public class SheetContract
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Sheet Table
+     * Sheet TableWidget
      */
     public static class Sheet implements BaseColumns
     {
-        // Table: Sheet
+        // TableWidget: Sheet
         public static final String TABLE_NAME = "sheet";
 
         // Column: Sheet Id
@@ -52,7 +52,7 @@ public class SheetContract
      */
     public static class Game implements BaseColumns
     {
-        // Table: Game
+        // TableWidget: Game
         public static final String TABLE_NAME = "game";
 
         // Column: Game Id
@@ -70,11 +70,11 @@ public class SheetContract
 
 
     /**
-     * Page Table
+     * Page TableWidget
      */
     public static class Page implements BaseColumns
     {
-        // Table: Page
+        // TableWidget: Page
         public static final String TABLE_NAME = "page";
 
         // Column: Page Id
@@ -100,11 +100,11 @@ public class SheetContract
 
 
     /**
-     * Group Table
+     * Group TableWidget
      */
     public static class Group implements BaseColumns
     {
-        // Table: Group
+        // TableWidget: Group
         public static final String TABLE_NAME = "_group";
 
         // Column: Group Id
@@ -123,21 +123,21 @@ public class SheetContract
         public static final String COLUMN_LABEL_NAME = "label";
         public static final String COLUMN_LABEL_TYPE = TYPE_TEXT;
 
-        // Column: Number Of Rows
+        // Column: NumberWidget Of Rows
         public static final String COLUMN_NUMBER_OF_ROWS_NAME = "number_of_rows";
         public static final String COLUMN_NUMBER_OF_ROWS_TYPE = TYPE_INTEGER;
     }
 
 
     /**
-     * Component Table
+     * WidgetData TableWidget
      */
     public static class Component implements BaseColumns
     {
-        // Table: Component
+        // TableWidget: WidgetData
         public static final String TABLE_NAME = "component";
 
-        // Column: Component Id
+        // Column: WidgetData Id
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
@@ -153,9 +153,35 @@ public class SheetContract
         public static final String COLUMN_GROUP_ID_NAME = "group_id";
         public static final String COLUMN_GROUP_ID_TYPE = TYPE_TEXT;
 
-        // Column: Data Type
-        public static final String COLUMN_DATA_TYPE_NAME = "data_type";
-        public static final String COLUMN_DATA_TYPE_TYPE = TYPE_TEXT;
+        // Column: Type Id
+        public static final String COLUMN_TYPE_ID_NAME = "type_id";
+        public static final String COLUMN_TYPE_ID_TYPE = TYPE_TEXT;
+
+        // Column: Key Stat
+        public static final String COLUMN_KEY_STAT_NAME = "key_stat";
+        public static final String COLUMN_KEY_STAT_TYPE = TYPE_INTEGER;
+
+        // Column: Actions
+        public static final String COLUMN_ACTIONS_NAME = "actions";
+        public static final String COLUMN_ACTIONs_TYPE = TYPE_TEXT;
+
+        // Column: TextWidget Value (for easier querying in some cases)
+        public static final String COLUMN_TEXT_VALUE_NAME = "text_value";
+        public static final String COLUMN_TEXT_VALUE_TYPE = TYPE_TEXT;
+    }
+
+
+    /**
+     * WidgetData Format
+     */
+    public static class ComponentFormat implements BaseColumns
+    {
+        // TableWidget: WidgetData
+        public static final String TABLE_NAME = "component_format";
+
+        // Column: WidgetData Id
+        public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
+        public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
         // Column: Label
         public static final String COLUMN_LABEL_NAME = "label";
@@ -180,40 +206,20 @@ public class SheetContract
         // Column: Alignment
         public static final String COLUMN_ALIGNMENT_NAME = "alignment";
         public static final String COLUMN_ALIGNMENT_TYPE = TYPE_TEXT;
-
-        // Column: Key Stat
-        public static final String COLUMN_KEY_STAT_NAME = "key_stat";
-        public static final String COLUMN_KEY_STAT_TYPE = TYPE_INTEGER;
-
-        // Column: Actions
-        public static final String COLUMN_ACTIONS_NAME = "actions";
-        public static final String COLUMN_ACTIONs_TYPE = TYPE_TEXT;
-
-        // Column: Type Kind
-        public static final String COLUMN_TYPE_KIND_NAME = "type_kind";
-        public static final String COLUMN_TYPE_KIND_TYPE = TYPE_TEXT;
-
-        // Column: Type Id
-        public static final String COLUMN_TYPE_ID_NAME = "type_id";
-        public static final String COLUMN_TYPE_ID_TYPE = TYPE_TEXT;
-
-        // Column: Text Value (for easier querying in some cases)
-        public static final String COLUMN_TEXT_VALUE_NAME = "text_value";
-        public static final String COLUMN_TEXT_VALUE_TYPE = TYPE_TEXT;
     }
 
 
     /**
-     * Component Table
+     * Variable TableWidget
      */
-    public static class ComponentValue implements BaseColumns
+    public static class Variable implements BaseColumns
     {
-        // Table: Component
-        public static final String TABLE_NAME = "component_value";
+        // TableWidget: WidgetData
+        public static final String TABLE_NAME = "variable";
 
-        // Column: Component Id
-        public static final String COLUMN_COMPONENT_VALUE_ID_NAME = "component_value_id";
-        public static final String COLUMN_COMPONENT_VALUE_ID_TYPE = TYPE_TEXT;
+        // Column: WidgetData Id
+        public static final String COLUMN_VARIABLE_ID_NAME = "variable_id";
+        public static final String COLUMN_VARIABLE_ID_TYPE = TYPE_TEXT;
 
         // Column: Value
         public static final String COLUMN_VALUE_NAME = "value";
@@ -226,14 +232,14 @@ public class SheetContract
 
 
     /**
-     * Text Component Table
+     * TextWidget WidgetData TableWidget
      */
     public static class ComponentText implements BaseColumns
     {
-        // Table: Component Text
+        // TableWidget: WidgetData TextWidget
         public static final String TABLE_NAME = "component_text";
 
-        // Column: Text Id
+        // Column: TextWidget Id
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
@@ -248,14 +254,14 @@ public class SheetContract
 
 
     /**
-     * Integer Component Table
+     * Integer WidgetData TableWidget
      */
     public static class ComponentInteger implements BaseColumns
     {
-        // Table: Component Integer
+        // TableWidget: WidgetData Integer
         public static final String TABLE_NAME = "component_integer";
 
-        // Column: Component Id
+        // Column: WidgetData Id
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
@@ -274,14 +280,14 @@ public class SheetContract
 
 
     /**
-     * Boolean Component Table
+     * Boolean WidgetData TableWidget
      */
     public static class ComponentBoolean implements BaseColumns
     {
-        // Table: Component Boolean
+        // TableWidget: WidgetData Boolean
         public static final String TABLE_NAME = "component_boolean";
 
-        // Column: Component Id
+        // Column: WidgetData Id
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
@@ -292,14 +298,14 @@ public class SheetContract
 
 
     /**
-     * Table Component Table
+     * TableWidget WidgetData TableWidget
      */
     public static class ComponentTable implements BaseColumns
     {
-        // Table: Component Table
+        // TableWidget: WidgetData TableWidget
         public static final String TABLE_NAME = "component_table";
 
-        // Column: Component Id
+        // Column: WidgetData Id
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
@@ -338,14 +344,14 @@ public class SheetContract
 
 
     /**
-     * Table Component Cell Table
+     * TableWidget WidgetData Cell TableWidget
      */
     public static class ComponentTableCell implements BaseColumns
     {
-        // Table: Component Table Cell
+        // TableWidget: WidgetData TableWidget Cell
         public static final String TABLE_NAME = "component_table_cell";
 
-        // Column: Table Id
+        // Column: TableWidget Id
         public static final String COLUMN_TABLE_ID_NAME = "table_id";
         public static final String COLUMN_TABLE_ID_TYPE = TYPE_TEXT;
 
@@ -361,39 +367,61 @@ public class SheetContract
         public static final String COLUMN_IS_TEMPLATE_NAME = "is_template";
         public static final String COLUMN_IS_TEMPLATE_TYPE = TYPE_INTEGER;
 
-        // Column: Component Id
+        // Column: WidgetData Id
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
     }
 
 
     /**
-     * Image Component Table
+     * ImageWidget WidgetData TableWidget
      */
     public static class ComponentImage implements BaseColumns
     {
-        // Table: Image Component
+        // TableWidget: ImageWidget WidgetData
         public static final String TABLE_NAME = "component_image";
 
-        // Column: Component Id
+        // Column: WidgetData Id
         public static final String COLUMN_COMPONENT_ID_NAME = "component_id";
         public static final String COLUMN_COMPONENT_ID_TYPE = TYPE_TEXT;
 
-        // Column: Image
+        // Column: ImageWidget
         public static final String COLUMN_IMAGE_NAME = "image";
         public static final String COLUMN_IMAGE_TYPE = TYPE_BLOB;
     }
 
 
     /**
-     * ListType Type Table
+     * Type TableWidget
+     */
+    public static class Type implements BaseColumns
+    {
+        // TableWidget: Type
+        public static final String TABLE_NAME = "type";
+
+        // Column: Type Id
+        public static final String COLUMN_TYPE_ID_NAME = "type_id";
+        public static final String COLUMN_TYPE_ID_TYPE = TYPE_TEXT;
+
+        // Column: Type Id
+        public static final String COLUMN_TYPE_VALUE_ID_NAME = "type_id";
+        public static final String COLUMN_TYPE_VALUE_ID_TYPE = TYPE_TEXT;
+
+        // Column: Type Kind
+        public static final String COLUMN_TYPE_KIND_NAME = "type_kind";
+        public static final String COLUMN_TYPE_KIND_TYPE = TYPE_TEXT;
+    }
+
+
+    /**
+     * ListType Type TableWidget
      */
     public static class TypeList implements BaseColumns
     {
-        // Table: List Type
+        // TableWidget: List Type
         public static final String TABLE_NAME = "type_list";
 
-        // Column: Component Id
+        // Column: WidgetData Id
         public static final String COLUMN_LIST_ID_NAME = "list_id";
         public static final String COLUMN_LIST_ID_TYPE = TYPE_TEXT;
 
@@ -408,11 +436,11 @@ public class SheetContract
 
 
     /**
-     * Function Table
+     * Function TableWidget
      */
     public static class Function implements BaseColumns
     {
-        // Table: Function
+        // TableWidget: Function
         public static final String TABLE_NAME = "function";
 
         // Column: Function Id
@@ -431,7 +459,7 @@ public class SheetContract
         public static final String COLUMN_RESULT_TYPE_NAME = "result_type";
         public static final String COLUMN_RESULT_TYPE_TYPE = TYPE_TEXT;
 
-        // Column: Number of Parameters
+        // Column: NumberWidget of Parameters
         public static final String COLUMN_NUMBER_OF_PARAMETERS_NAME = "number_of_parameters";
         public static final String COLUMN_NUMBER_OF_PARAMETERS_TYPE = TYPE_INTEGER;
 
@@ -450,11 +478,11 @@ public class SheetContract
 
 
     /**
-     * Tuple Table
+     * Tuple TableWidget
      */
     public static class Tuple implements BaseColumns
     {
-        // Table: Tuple
+        // TableWidget: Tuple
         public static final String TABLE_NAME = "tuple";
 
         // Column: Function Name
@@ -480,11 +508,11 @@ public class SheetContract
 
 
     /**
-     * Program Table
+     * Program TableWidget
      */
     public static class Program implements BaseColumns
     {
-        // Table: Program
+        // TableWidget: Program
         public static final String TABLE_NAME = "program";
 
         // Column: Program Id
@@ -503,7 +531,7 @@ public class SheetContract
         public static final String COLUMN_RESULT_TYPE_NAME = "result_type";
         public static final String COLUMN_RESULT_TYPE_TYPE = TYPE_TEXT;
 
-        // Column: Number of Parameters
+        // Column: NumberWidget of Parameters
         public static final String COLUMN_NUMBER_OF_PARAMETERS_NAME = "number_of_parameters";
         public static final String COLUMN_NUMBER_OF_PARAMETERS_TYPE = TYPE_INTEGER;
 
@@ -526,11 +554,11 @@ public class SheetContract
 
 
     /**
-     * Statement Table
+     * Statement TableWidget
      */
     public static class Statement implements BaseColumns
     {
-        // Table: Statement
+        // TableWidget: Statement
         public static final String TABLE_NAME = "statement";
 
         // Column: Program Id
@@ -545,7 +573,7 @@ public class SheetContract
         public static final String COLUMN_FUNCTION_NAME_NAME = "function_name";
         public static final String COLUMN_FUNCTION_NAME_TYPE = TYPE_TEXT;
 
-        // Column: Number of Parameters Name
+        // Column: NumberWidget of Parameters Name
         public static final String COLUMN_NUMBER_OF_PARAMETERS_NAME = "number_of_parameters";
         public static final String COLUMN_NUMBER_OF_PARAMETERS_TYPE = TYPE_INTEGER;
 
@@ -576,11 +604,11 @@ public class SheetContract
 
 
     /**
-     * Statement Table
+     * Statement TableWidget
      */
     public static class ProgramInvocation implements BaseColumns
     {
-        // Table: Program Invocation
+        // TableWidget: Program Invocation
         public static final String TABLE_NAME = "program_invocation";
 
         // Column: Program Invocation Id
@@ -591,7 +619,7 @@ public class SheetContract
         public static final String COLUMN_PROGRAM_NAME_NAME = "program_name";
         public static final String COLUMN_PROGRAM_NAME_TYPE = TYPE_TEXT;
 
-        // Column: Number of Parameters Name
+        // Column: NumberWidget of Parameters Name
         public static final String COLUMN_NUMBER_OF_PARAMETERS_NAME = "number_of_parameters";
         public static final String COLUMN_NUMBER_OF_PARAMETERS_TYPE = TYPE_INTEGER;
 

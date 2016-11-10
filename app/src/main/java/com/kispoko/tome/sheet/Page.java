@@ -15,9 +15,8 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.util.SQL;
+import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.TrackerId;
-import com.kispoko.tome.util.Unique;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;
@@ -27,8 +26,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static android.R.attr.paddingTop;
 
 
 /**

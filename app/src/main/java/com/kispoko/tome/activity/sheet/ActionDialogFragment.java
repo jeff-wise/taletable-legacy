@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.component.Component;
-import com.kispoko.tome.sheet.component.Action;
+import com.kispoko.tome.sheet.widget.WidgetData;
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.Util;
 
 
@@ -25,15 +25,15 @@ import com.kispoko.tome.util.Util;
 public class ActionDialogFragment extends BottomSheetDialogFragment
 {
 
-    private Component component;
+    private WidgetData widgetData;
     private Rules rules;
 
 
-    public static final ActionDialogFragment newInstance(Component component, Rules rules)
+    public static final ActionDialogFragment newInstance(WidgetData widgetData, Rules rules)
     {
         ActionDialogFragment actionDialogFragment = new ActionDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("COMPONENT", component);
+        bundle.putSerializable("COMPONENT", widgetData);
         bundle.putSerializable("RULES", rules);
         actionDialogFragment.setArguments(bundle);
         return actionDialogFragment;
@@ -44,7 +44,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.component = (Component) getArguments().getSerializable("COMPONENT");
+        this.widgetData = (WidgetData) getArguments().getSerializable("COMPONENT");
         this.rules = (Rules) getArguments().getSerializable("RULES");
     }
 
@@ -63,7 +63,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
         int layoutPaddingVert = (int) Util.getDim(getContext(), R.dimen.action_sheet_padding_vert);
         layout.setPadding(0, layoutPaddingVert, 0, layoutPaddingVert);
 
-        for (final String actionName : this.component.getActions())
+        for (final String actionName : this.widgetData.getActions())
         {
             // Row Layout
             LinearLayout actionRowLayout = new LinearLayout(getContext());
@@ -78,11 +78,11 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
             actionRowLayout.setOrientation(LinearLayout.HORIZONTAL);
             actionRowLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            final Component thisComponent = this.component;
+            final WidgetData thisWidgetData = this.widgetData;
             actionRowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    thisComponent.runAction(actionName, getContext(), rules);
+                    thisWidgetData.runAction(actionName, getContext(), rules);
                     dialog.dismiss();
                 }
             });
@@ -90,7 +90,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
             // Icon
             actionRowLayout.addView(Action.iconView(getContext(), actionName));
 
-            // Action Text
+            // Action TextWidget
             TextView actionView = new TextView(getContext());
             LinearLayout.LayoutParams actionViewLayoutParams =
                     Util.linearLayoutParamsWrap();

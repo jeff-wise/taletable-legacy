@@ -25,7 +25,7 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
     {
 
-        // > DEFINE Create Table Queries
+        // > DEFINE Create TableWidget Queries
         // --------------------------------------------------------------------------------------
 
         final String CREATE_SHEET_TABLE =
@@ -65,28 +65,30 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             SheetContract.Component.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.Component.COLUMN_COMPONENT_ID_TYPE + " PRIMARY KEY," +
             SheetContract.Component.COLUMN_NAME_NAME + " " + SheetContract.Component.COLUMN_NAME_TYPE + "," +
             SheetContract.Component.COLUMN_VALUE_NAME + " " + SheetContract.Component.COLUMN_VALUE_TYPE + "," +
-            SheetContract.Component.COLUMN_VALUE_TYPE_NAME + " " + SheetContract.Component.COLUMN_VALUE_TYPE_TYPE + "," +
             SheetContract.Component.COLUMN_GROUP_ID_NAME + " " + SheetContract.Component.COLUMN_GROUP_ID_TYPE + "," +
             SheetContract.Component.COLUMN_DATA_TYPE_NAME + " " + SheetContract.Component.COLUMN_DATA_TYPE_TYPE + "," +
-            SheetContract.Component.COLUMN_LABEL_NAME + " " + SheetContract.Component.COLUMN_LABEL_TYPE + "," +
-            SheetContract.Component.COLUMN_SHOW_LABEL_NAME + " " + SheetContract.Component.COLUMN_SHOW_LABEL_TYPE + "," +
-            SheetContract.Component.COLUMN_ROW_NAME + " " + SheetContract.Component.COLUMN_ROW_TYPE + "," +
-            SheetContract.Component.COLUMN_COLUMN_NAME + " " + SheetContract.Component.COLUMN_COLUMN_TYPE + "," +
-            SheetContract.Component.COLUMN_WIDTH_NAME + " " + SheetContract.Component.COLUMN_WIDTH_TYPE + "," +
-            SheetContract.Component.COLUMN_ALIGNMENT_NAME + " " + SheetContract.Component.COLUMN_ALIGNMENT_TYPE + "," +
             SheetContract.Component.COLUMN_KEY_STAT_NAME + " " + SheetContract.Component.COLUMN_KEY_STAT_TYPE + "," +
             SheetContract.Component.COLUMN_ACTIONS_NAME + " " + SheetContract.Component.COLUMN_ACTIONs_TYPE + "," +
-            SheetContract.Component.COLUMN_TYPE_KIND_NAME + " " + SheetContract.Component.COLUMN_TYPE_KIND_TYPE + "," +
             SheetContract.Component.COLUMN_TYPE_ID_NAME + " " + SheetContract.Component.COLUMN_TYPE_ID_TYPE + "," +
             SheetContract.Component.COLUMN_TEXT_VALUE_NAME + " " + SheetContract.Component.COLUMN_TEXT_VALUE_TYPE + "," +
             "FOREIGN KEY (" + SheetContract.Component.COLUMN_GROUP_ID_NAME + ") REFERENCES " +
                 SheetContract.Group.TABLE_NAME + "(" + SheetContract.Group.COLUMN_GROUP_ID_NAME + ") )";
 
-        final String CREATE_COMPONENT_VALUE_TABLE =
-            "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentValue.TABLE_NAME + " (" +
-            SheetContract.ComponentValue.COLUMN_COMPONENT_VALUE_ID_NAME + " " + SheetContract.ComponentValue.COLUMN_COMPONENT_VALUE_ID_TYPE + " PRIMARY KEY," +
-            SheetContract.ComponentValue.COLUMN_VALUE_NAME + " " + SheetContract.ComponentValue.COLUMN_VALUE_TYPE + "," +
-            SheetContract.ComponentValue.COLUMN_VALUE_TYPE_NAME + " " + SheetContract.ComponentValue.COLUMN_VALUE_TYPE_TYPE + ")";
+        final String CREATE_COMPONENT_FORMAT_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentFormat.TABLE_NAME + " (" +
+            SheetContract.ComponentFormat.COLUMN_COMPONENT_ID_NAME + " " + SheetContract.ComponentFormat.COLUMN_COMPONENT_ID_TYPE + ", " +
+            SheetContract.ComponentFormat.COLUMN_LABEL_NAME + " " + SheetContract.ComponentFormat.COLUMN_LABEL_TYPE + "," +
+            SheetContract.ComponentFormat.COLUMN_SHOW_LABEL_NAME + " " + SheetContract.ComponentFormat.COLUMN_SHOW_LABEL_TYPE + "," +
+            SheetContract.ComponentFormat.COLUMN_ROW_NAME + " " + SheetContract.ComponentFormat.COLUMN_ROW_TYPE + "," +
+            SheetContract.ComponentFormat.COLUMN_COLUMN_NAME + " " + SheetContract.ComponentFormat.COLUMN_COLUMN_TYPE + "," +
+            SheetContract.ComponentFormat.COLUMN_WIDTH_NAME + " " + SheetContract.ComponentFormat.COLUMN_WIDTH_TYPE + "," +
+            SheetContract.ComponentFormat.COLUMN_ALIGNMENT_NAME + " " + SheetContract.ComponentFormat.COLUMN_ALIGNMENT_TYPE + ")";
+
+        final String CREATE_VARIABLE_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.Variable.TABLE_NAME + " (" +
+            SheetContract.Variable.COLUMN_VARIABLE_ID_NAME + " " + SheetContract.Variable.COLUMN_VARIABLE_ID_TYPE + " PRIMARY KEY," +
+            SheetContract.Variable.COLUMN_VALUE_NAME + " " + SheetContract.Variable.COLUMN_VALUE_TYPE + "," +
+            SheetContract.Variable.COLUMN_VALUE_TYPE_NAME + " " + SheetContract.Variable.COLUMN_VALUE_TYPE_TYPE + ")";
 
         final String CREATE_COMPONENT_TEXT_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.ComponentText.TABLE_NAME + " (" +
@@ -145,6 +147,12 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
             SheetContract.ComponentImage.COLUMN_IMAGE_NAME + " " + SheetContract.ComponentImage.COLUMN_IMAGE_TYPE + ", " +
             "FOREIGN KEY (" + SheetContract.ComponentImage.COLUMN_COMPONENT_ID_NAME + ") REFERENCES " +
                 SheetContract.Component.TABLE_NAME + "(" + SheetContract.Component.COLUMN_COMPONENT_ID_NAME + ") )";
+
+        final String CREATE_TYPE_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + SheetContract.Type.TABLE_NAME + " (" +
+            SheetContract.Type.COLUMN_TYPE_ID_NAME + " " + SheetContract.Type.COLUMN_TYPE_ID_TYPE + ", " +
+            SheetContract.Type.COLUMN_TYPE_VALUE_ID_NAME + " " + SheetContract.Type.COLUMN_TYPE_VALUE_ID_TYPE + "," +
+            SheetContract.Type.COLUMN_TYPE_KIND_NAME + " " + SheetContract.Type.COLUMN_TYPE_KIND_TYPE + ")";
 
         final String CREATE_TYPE_LIST_TABLE =
             "CREATE TABLE IF NOT EXISTS " + SheetContract.TypeList.TABLE_NAME + " (" +
@@ -215,20 +223,22 @@ public class SheetDatabaseManager extends SQLiteOpenHelper
 
 
 
-        // > RUN Create Table Queries
+        // > RUN Create TableWidget Queries
         // --------------------------------------------------------------------------------------
         db.execSQL(CREATE_SHEET_TABLE);
         db.execSQL(CREATE_GAME_TABLE);
         db.execSQL(CREATE_PAGE_TABLE);
         db.execSQL(CREATE_GROUP_TABLE);
         db.execSQL(CREATE_COMPONENT_TABLE);
-        db.execSQL(CREATE_COMPONENT_VALUE_TABLE);
+        db.execSQL(CREATE_COMPONENT_FORMAT_TABLE);
+        db.execSQL(CREATE_VARIABLE_TABLE);
         db.execSQL(CREATE_COMPONENT_TEXT_TABLE);
         db.execSQL(CREATE_COMPONENT_INTEGER_TABLE);
         db.execSQL(CREATE_COMPONENT_BOOLEAN_TABLE);
         db.execSQL(CREATE_COMPONENT_TABLE_TABLE);
         db.execSQL(CREATE_COMPONENT_TABLE_CELL_TABLE);
         db.execSQL(CREATE_COMPONENT_IMAGE_TABLE);
+        db.execSQL(CREATE_TYPE_TABLE);
         db.execSQL(CREATE_TYPE_LIST_TABLE);
         db.execSQL(CREATE_FUNCTION_TABLE);
         db.execSQL(CREATE_TUPLE_TABLE);

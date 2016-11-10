@@ -14,7 +14,7 @@ import com.kispoko.tome.activity.ManageSheetsActivity;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.component.Component;
+import com.kispoko.tome.sheet.widget.WidgetData;
 import com.kispoko.tome.type.Type;
 import com.kispoko.tome.util.TrackerId;
 
@@ -51,8 +51,8 @@ public class Sheet
     private Roleplay roleplay;
     private Rules rules;
 
-    private Map<UUID,Component> componentById;
-    private Map<String,Component> componentByLabel;
+    private Map<UUID,WidgetData> componentById;
+    private Map<String,WidgetData> componentByLabel;
 
     // >> STATIC
     //private static Map<UUID,AsyncConstructor> asyncConstructorMap = new HashMap<>();
@@ -174,12 +174,12 @@ public class Sheet
     }
 
 
-    public Component componentWithId(UUID componentId) {
+    public WidgetData componentWithId(UUID componentId) {
         return this.componentById.get(componentId);
     }
 
 
-    public Component componentWithLabel(String componentLabel) {
+    public WidgetData componentWithLabel(String componentLabel) {
         return this.componentByLabel.get(componentLabel.toLowerCase());
     }
 
@@ -536,12 +536,12 @@ public class Sheet
         {
             for (Group group : page.getGroups())
             {
-                for (Component component : group.getComponents())
+                for (WidgetData widgetData : group.getWidgetDatas())
                 {
-                    componentById.put(component.getId(), component);
+                    componentById.put(widgetData.getId(), widgetData);
 
-                    if (component.hasLabel())
-                        componentByLabel.put(component.getLabel().toLowerCase(), component);
+                    if (widgetData.hasLabel())
+                        componentByLabel.put(widgetData.getLabel().toLowerCase(), widgetData);
                 }
             }
         }

@@ -5,7 +5,7 @@ package com.kispoko.tome.activity.sheet;
 import android.net.Uri;
 
 import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.sheet.component.type.Image;
+import com.kispoko.tome.sheet.widget.ImageWidget;
 
 
 
@@ -14,16 +14,16 @@ import com.kispoko.tome.sheet.component.type.Image;
 public class ChooseImageAction
 {
 
-    private Image image;
+    private ImageWidget imageWidget;
 
-    public ChooseImageAction(Image image)
+    public ChooseImageAction(ImageWidget imageWidget)
     {
-        this.image = image;
+        this.imageWidget = imageWidget;
     }
 
     public void setImage(SheetActivity sheetActivity, Uri uri)
     {
-        this.image.setImageFromURI(sheetActivity, uri);
+        this.imageWidget.setImageFromURI(sheetActivity, uri);
     }
 
 }

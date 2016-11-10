@@ -225,7 +225,7 @@ public class ChooseTemplateActivity extends AppCompatActivity
             templatesCreatedIcon.setPadding(0, 0, gamePlayersIconPaddingRight, 0);
 
 
-            // >> Number
+            // >> NumberWidget
             TextView templatesCreatedNumberView = new TextView(this);
 
             templatesCreatedNumberView.setLayoutParams(Util.linearLayoutParamsWrap());

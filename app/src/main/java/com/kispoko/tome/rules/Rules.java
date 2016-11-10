@@ -2,10 +2,11 @@
 package com.kispoko.tome.rules;
 
 
-import com.kispoko.tome.rules.function.Function;
-import com.kispoko.tome.rules.function.FunctionIndex;
-import com.kispoko.tome.rules.program.Program;
-import com.kispoko.tome.rules.program.ProgramIndex;
+import com.kispoko.tome.rules.programming.function.Function;
+import com.kispoko.tome.rules.programming.function.FunctionIndex;
+import com.kispoko.tome.rules.programming.program.Program;
+import com.kispoko.tome.rules.programming.program.ProgramIndex;
+import com.kispoko.tome.rules.types.Types;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.TrackerId;
 

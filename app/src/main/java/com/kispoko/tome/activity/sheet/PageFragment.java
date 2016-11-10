@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.component.Component;
+import com.kispoko.tome.sheet.widget.WidgetData;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.util.Util;
 
@@ -110,7 +110,7 @@ public class PageFragment extends Fragment
     public interface EventListener
     {
         void setChooseImageAction(ChooseImageAction chooseImageAction);
-        void openEditActivity(Component component);
+        void openEditActivity(WidgetData widgetData);
     }
 
 }

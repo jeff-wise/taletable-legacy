@@ -2,8 +2,8 @@
 package com.kispoko.tome.activity;
 
 
-import com.kispoko.tome.sheet.component.Component;
-import com.kispoko.tome.sheet.component.type.Text;
+import com.kispoko.tome.sheet.widget.WidgetData;
+import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.Sheet;
 
 import java.io.Serializable;
@@ -51,12 +51,12 @@ public class EditResult implements Serializable
 
     public void applyResult(SheetActivity sheetActivity, Sheet sheet)
     {
-        Component component = sheet.componentWithId(this.componentId);
+        WidgetData widgetData = sheet.componentWithId(this.componentId);
 
         switch (this.resultType)
         {
             case TEXT_VALUE:
-                ((Text) component).setValue((String) this.result, sheetActivity);
+                ((TextWidget) widgetData).setValue((String) this.result, sheetActivity);
                 break;
         }
     }

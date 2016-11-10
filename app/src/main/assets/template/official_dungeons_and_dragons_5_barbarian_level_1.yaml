@@ -28,18 +28,18 @@ sections:
     - label: Profile
       groups:
       - label: Name
-        components:
-        - type: text
+        widgetDatas:
+        - type: textWidget
           size: large
           label: Name
           data:
             value: Hildebrand
       - label: Picture
-        components:
-        - type: image
+        widgetDatas:
+        - type: imageWidget
           label: Picture
       - label: Features
-        components:
+        widgetDatas:
         - type: integer
           id: level
           format:
@@ -47,20 +47,20 @@ sections:
             label: Level
           data:
             value: 17
-        - type: text
+        - type: textWidget
           label: Class
           size: medium
           label: Class
           data:
             value: Wizard
             type: class
-        - type: text
+        - type: textWidget
           label: Race
           size: medium
           label: Race
           data:
             value: Human
-        - type: text
+        - type: textWidget
           label: Alignment
           size: medium
           label: Alignment
@@ -79,14 +79,14 @@ sections:
             - label: Alignment
               width: 0.5
       - label: Appearance
-        components:
+        widgetDatas:
         - type: integer
           label: Age
           size: medium
           label: Age
           data:
             value: 41
-        - type: text
+        - type: textWidget
           label: Height
           size: medium
           label: Height
@@ -98,19 +98,19 @@ sections:
           label: Weight
           data:
             value: 167
-        - type: text
+        - type: textWidget
           label: Eyes
           size: medium
           label: Eyes
           data:
             value: Blue
-        - type: text
+        - type: textWidget
           label: Skin
           size: medium
           label: Skin
           data:
             value: Light
-        - type: text
+        - type: textWidget
           label: Hair
           size: medium
           label: Hair
@@ -133,67 +133,67 @@ sections:
             - label: Hair
               width: 0.33
       - label: Characteristics
-        components:
-        - type: table
+        widgetDatas:
+        - type: tableWidget
           label: Personality Traits
           columns:
           - Personality Traits
           data:
             rows:
             - cells:
-              - type: text
+              - type: textWidget
                 data:
                   value: >
                     Hildebrand is very confident.
             - cells:
-              - type: text
+              - type: textWidget
                 data:
                   value: >
                     Hildebrand is incredibly handsome.
-        - type: table
+        - type: tableWidget
           label: Ideals
           columns:
           - Ideals
           data:
             rows:
             - cells:
-              - type: text
+              - type: textWidget
                 data:
                   value: >
                     Hildebrand believes that the greater good is an infinitely large
                     composition of miniscule good actions that form a lattice of integrity
                     that intertwines every creature of the land.
             - cells:
-              - type: text
+              - type: textWidget
                 data:
                   value: >
                     Hildebrand thinks that every person deserves a second chance.
             - cells:
-              - type: text
+              - type: textWidget
                 data:
                   value: >
                     He believes that the purpose of life is understanding the mysteries
                     of the universe, and mastering of magic in order to further understanding.
-        - type: table
+        - type: tableWidget
           label: Bonds
           columns:
           - Bonds
           data:
             rows:
             - cells:
-              - type: text
+              - type: textWidget
                 data:
                   value: >
                     Hildebrand has a special bond with Jade and often accompanies her on
                     missions in order to pursue great research opportunities.
-        - type: table
+        - type: tableWidget
           label: Flaws
           columns:
           - Flaws
           data:
             rows:
             - cells:
-              - type: text
+              - type: textWidget
                 data:
                   value: >
                     Hildebrand is occasionally possessed by a familiar demon that causes him to
@@ -201,7 +201,7 @@ sections:
     - label: Stats
       groups:
       - label: Ability Scores
-        components:
+        widgetDatas:
         - type: integer
           label: Strength
           size: medium
@@ -255,7 +255,7 @@ sections:
             - label: Charisma
               width: 0.33
       - label: General
-        components:
+        widgetDatas:
         - type: integer
           label: proficiency_bonus
           size: medium
@@ -277,7 +277,7 @@ sections:
             - label: inspiration
               width: 0.5
       - label: Combat
-        components:
+        widgetDatas:
         - type: integer
           label: armor_class
           size: medium
@@ -307,7 +307,7 @@ sections:
             - label: speed
               width: 0.33
       - label: Saving Throws
-        components:
+        widgetDatas:
         - type: integer
           label: strength
           size: medium
