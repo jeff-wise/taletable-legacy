@@ -263,7 +263,7 @@ public class Program
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query Program Data
+                // ModelQuery Program Data
                 String programQuery =
                     "SELECT p.result_type, p.number_of_parameters, p.variable_name, " +
                            "p.parameter_type_1, p.parameter_type2, p.parameter_type_3 " +
@@ -292,7 +292,7 @@ public class Program
                     programCursor.close();
                 }
 
-                // Query Statements
+                // ModelQuery Statements
                 String statementsQuery =
                     "SELECT s.variable_name, s.function_name, s.number_of_parameters, " +
                            "s.parameter_value_1, s.parameter_type_1, s.parameter_value_2, " +

@@ -136,7 +136,7 @@ public class ProgramIndex
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query Program Data
+                // ModelQuery Program Data
                 String query =
                     "SELECT p.program_id, p.program_name " +
                     "FROM Program p " +

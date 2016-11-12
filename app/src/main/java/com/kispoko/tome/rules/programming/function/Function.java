@@ -203,7 +203,7 @@ public class Function
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query Function Data
+                // ModelQuery Function Data
                 String functionQuery =
                     "SELECT f.name, f.result_type, f.number_of_parameters, f.parameter_type_1, " +
                            "f.parameter_type2, f.parameter_type_3 " +
@@ -232,7 +232,7 @@ public class Function
                     functionCursor.close();
                 }
 
-                // Query Tuples
+                // ModelQuery Tuples
                 String tuplesQuery =
                     "SELECT t.result, t.parameter1, t.parameter2, t.parameter3 " +
                     "FROM tuple t " +

@@ -184,7 +184,7 @@ public class BooleanWidget extends WidgetData implements Serializable
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query WidgetData
+                // ModelQuery WidgetData
                 String boolQuery =
                     "SELECT comp.name, comp.label, comp.show_label, comp.row, comp.column, " +
                            "comp.width, comp.alignment, comp.type_kind, comp.type_id, " +

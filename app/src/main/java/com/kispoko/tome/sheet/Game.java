@@ -127,7 +127,7 @@ public class Game
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query for the game
+                // ModelQuery for the game
                 String gameQuery =
                     "SELECT game.label, game.description " +
                     "FROM game " +

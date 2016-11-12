@@ -10,38 +10,42 @@ import java.util.UUID;
 
 
 /**
- * Query
+ * Collection Query
  */
-public class Query
+public class CollectionQuery
 {
 
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
     private String      tableName;
-    private UUID        rowId;
+    private String      parentTableName;
+    private UUID        parentId;
     private Set<String> columnNames;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public Query(String tableName, UUID rowId, Set<String> columnNames)
+    public CollectionQuery(String tableName,
+                           String parentTableName,
+                           UUID parentId,
+                           Set<String> columnNames)
     {
-        this.tableName   = tableName;
-        this.rowId       = rowId;
-        this.columnNames = columnNames;
+        this.tableName       = tableName;
+        this.parentTableName = parentTableName;
+        this.parentId        = parentId;
+        this.columnNames     = columnNames;
     }
 
 
     // API
     // --------------------------------------------------------------------------------------
 
-
     public List<ResultRow> result()
     {
-
         return new ArrayList<>();
     }
 
 }
+

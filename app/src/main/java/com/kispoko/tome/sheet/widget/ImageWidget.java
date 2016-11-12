@@ -175,7 +175,7 @@ public class ImageWidget extends WidgetData implements Serializable
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query WidgetData
+                // ModelQuery WidgetData
                 String imageQuery =
                     "SELECT comp.name, comp.label, comp.show_label, comp.row, comp.column, " +
                            "comp.width, comp.actions, im.image " +

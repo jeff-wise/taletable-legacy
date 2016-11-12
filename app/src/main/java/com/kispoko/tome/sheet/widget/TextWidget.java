@@ -40,7 +40,7 @@ import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Tracker;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.database.query.Query;
+import com.kispoko.tome.util.database.query.ModelQuery;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -319,14 +319,14 @@ public class TextWidget implements Model, Widget, Serializable
     // ------------------------------------------------------------------------------------------
 
 
-    public static Query loadQuery(UUID textId)
+    public static ModelQuery loadQuery(UUID textId)
     {
         String componentTable = SheetContract.Component.TABLE_NAME;
         String textTable = SheetContract.ComponentText.TABLE_NAME;
 
         String idString = this.getId().toString();
 
-        return Query.from(componentTable)
+        return ModelQuery.from(componentTable)
                     .select("name").select("type_id").select("value")
                     .from(textTable);
                     .select("size")

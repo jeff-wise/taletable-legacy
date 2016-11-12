@@ -263,7 +263,7 @@ public class Page implements Unique, Serializable
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query Page Data
+                // ModelQuery Page Data
                 String pageQuery =
                     "SELECT page.label, page.page_index " +
                     "FROM Page page " +
@@ -282,7 +282,7 @@ public class Page implements Unique, Serializable
                     pageCursor.close();
                 }
 
-                // Query Page Groups
+                // ModelQuery Page Groups
                 String groupsOfPageQuery =
                     "SELECT grp.group_id " +
                     "FROM _group grp " +

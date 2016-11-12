@@ -1,47 +1,44 @@
 
-package com.kispoko.tome.util;
+package com.kispoko.tome.util.promise;
 
 
 import android.os.AsyncTask;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.kispoko.tome.util.Model;
+
+import java.util.List;
 
 
 
 /**
- * LoadValuePromise
+ * Promise: Load Collection Value
  */
-public class AsyncFunction<A>
+public class LoadCollectionValuePromise<A extends Model>
 {
 
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private AsyncTask<Void,Void,A> asyncTask;
+    private AsyncTask<Void,Void,List<A>> asyncTask;
     private OnReady<A>             onReady;
-
-    private Map<String,Object>     parameters;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public AsyncFunction(final Action<A> action)
+    public LoadCollectionValuePromise(final Action<A> action)
     {
-        parameters = new HashMap<>();
-
-        this.asyncTask = new AsyncTask<Void,Void,A>()
+        this.asyncTask = new AsyncTask<Void,Void,List<A>>()
         {
 
             @Override
-            protected A doInBackground(Void... args)
+            protected List<A> doInBackground(Void... args)
             {
-                return action.run(parameters);
+                return action.run();
             }
 
             @Override
-            protected void onPostExecute(A result)
+            protected void onPostExecute(List<A> result)
             {
                 onReady.run(result);
             }
@@ -52,27 +49,21 @@ public class AsyncFunction<A>
     // API
     // --------------------------------------------------------------------------------------
 
-    public void setParameter(String name, Object value)
-    {
-        this.parameters.put(name, value);
-    }
-
-
     public void run(OnReady<A> onReady)
     {
-        this.onReady = onReady;
+        this.onReady            = onReady;
         this.asyncTask.execute();
     }
 
 
     public abstract static class Action<A>
     {
-        abstract public A run(Map<String,Object> parameters);
+        abstract public List<A> run();
     }
 
 
     public abstract static class OnReady<A>
     {
-        abstract public void run(A result);
+        abstract public void run(List<A> result);
     }
 }

@@ -269,7 +269,7 @@ public class NumberWidget extends WidgetData implements Serializable
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query WidgetData
+                // ModelQuery WidgetData
                 String integerQuery =
                     "SELECT comp.name, comp.value, comp.label, comp.show_label, comp.row, " +
                            "comp.column, comp.width, " +
@@ -380,7 +380,7 @@ public class NumberWidget extends WidgetData implements Serializable
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // > Query WidgetData TableWidget
+                // > ModelQuery WidgetData TableWidget
                 // ------------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
 
@@ -396,7 +396,7 @@ public class NumberWidget extends WidgetData implements Serializable
                                               componentRow,
                                               SQLiteDatabase.CONFLICT_REPLACE);
 
-                // > Query IntegerComponent TableWidget
+                // > ModelQuery IntegerComponent TableWidget
                 // ------------------------------------------------------------------------------
                 ContentValues integerComponentRow = new ContentValues();
 

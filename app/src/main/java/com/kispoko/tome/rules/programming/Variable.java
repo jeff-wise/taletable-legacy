@@ -209,7 +209,7 @@ public class Variable
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query the WidgetData Value
+                // ModelQuery the WidgetData Value
                 String query =
                     "SELECT cv.value, cv.value_type " +
                     "FROM Variable cv " +

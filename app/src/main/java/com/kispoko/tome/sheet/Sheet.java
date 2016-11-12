@@ -331,7 +331,7 @@ public class Sheet
 
 
     /**
-     * Query basic information about the stored sheets.
+     * ModelQuery basic information about the stored sheets.
      * @param database The SQLite database object.
      * @return Array of sheet summary info objects.
      */

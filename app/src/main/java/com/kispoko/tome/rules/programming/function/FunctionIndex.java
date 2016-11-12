@@ -138,7 +138,7 @@ public class FunctionIndex
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query Function Data
+                // ModelQuery Function Data
                 String query =
                     "SELECT f.function_name " +
                     "FROM Function f " +

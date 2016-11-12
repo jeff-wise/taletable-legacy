@@ -4,33 +4,33 @@ package com.kispoko.tome.util.database.error;
 
 
 /**
- * No Parser Found for Java Value Database Error
- *
+ * The query for the table row representing the model either returned no rows, or more than
+ * one row.
  */
-public class NoParserFoundForJavaValueError
+public class ModelRowNotUniqueError
 {
 
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private String javaTypeName;
+    private Integer rowsReturned;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public NoParserFoundForJavaValueError(String javaTypeName)
+    public ModelRowNotUniqueError(Integer rowsReturned)
     {
-        this.javaTypeName = javaTypeName;
+        this.rowsReturned = rowsReturned;
     }
 
 
     // API
     // -----------------------------------------------------------------------------------------
 
-    public String getJavaTypeName()
+    public Integer getRowsReturned()
     {
-        return this.javaTypeName;
+        return this.rowsReturned;
     }
 
 }

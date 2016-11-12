@@ -224,7 +224,7 @@ public class Group implements Serializable
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query Group Data
+                // ModelQuery Group Data
                 String groupQuery =
                     "SELECT grp.label, grp.group_index, grp.number_of_rows " +
                     "FROM _group grp " +
@@ -247,7 +247,7 @@ public class Group implements Serializable
                     groupCursor.close();
                 }
 
-                // Query Components
+                // ModelQuery Components
                 String componentsOfGroupQuery =
                     "SELECT c.component_id, c.data_type " +
                     "FROM component c " +

@@ -311,7 +311,7 @@ public class TableWidget extends WidgetData implements Serializable
             {
                 SQLiteDatabase database = Global.getDatabase();
 
-                // Query TableWidget
+                // ModelQuery TableWidget
                 // -----------------------------------------------------------------------------
 
                 String tableQuery =
@@ -361,7 +361,7 @@ public class TableWidget extends WidgetData implements Serializable
                     tableCursor.close();
                 }
 
-                // Query Row Template
+                // ModelQuery Row Template
                 // -----------------------------------------------------------------------------
 
                 String rowTemplateQuery =
@@ -398,7 +398,7 @@ public class TableWidget extends WidgetData implements Serializable
                 }
 
 
-                // Query TableWidget Cells
+                // ModelQuery TableWidget Cells
                 // -----------------------------------------------------------------------------
 
                 String tableCellsQuery =
