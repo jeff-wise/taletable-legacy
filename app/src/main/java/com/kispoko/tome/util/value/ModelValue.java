@@ -38,15 +38,16 @@ public class ModelValue<A extends Model> extends Value<A>
     // > State
     // --------------------------------------------------------------------------------------
 
-    public ColumnProperties getColumnProperties()
-    {
-        return this.columnProperties;
-    }
-
 
     public Class<A> getModelClass()
     {
         return this.modelClass;
+    }
+
+
+    public ColumnProperties getColumnProperties()
+    {
+        return this.columnProperties;
     }
 
 

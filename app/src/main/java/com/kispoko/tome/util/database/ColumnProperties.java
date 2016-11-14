@@ -2,6 +2,7 @@
 package com.kispoko.tome.util.database;
 
 
+import com.kispoko.tome.util.database.sql.SQLValue;
 
 /**
  * Column Properties
@@ -13,17 +14,17 @@ public class ColumnProperties
     // -----------------------------------------------------------------------------------------
 
     private String         columnName;
-    private SQL.DataType   dataType;
+    private SQLValue.Type  sqlType;
     private SQL.Constraint constraint;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public ColumnProperties(String columnName, SQL.DataType dataType, SQL.Constraint constraint)
+    public ColumnProperties(String columnName, SQLValue.Type sqlType, SQL.Constraint constraint)
     {
         this.columnName = columnName;
-        this.dataType   = dataType;
+        this.sqlType    = sqlType;
         this.constraint = constraint;
     }
 
@@ -40,9 +41,9 @@ public class ColumnProperties
     }
 
 
-    public SQL.DataType getDataType()
+    public SQLValue.Type getSQLType()
     {
-        return this.dataType;
+        return this.sqlType;
     }
 
 

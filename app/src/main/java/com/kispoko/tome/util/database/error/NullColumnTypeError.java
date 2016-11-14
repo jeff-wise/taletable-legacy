@@ -4,33 +4,41 @@ package com.kispoko.tome.util.database.error;
 
 
 /**
- * The query for the table row representing the model either returned no rows, or more than
- * one row.
+ * Database Error: Null Column Type
  */
-public class ModelRowNotUniqueError
+public class NullColumnTypeError
 {
 
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private Integer rowsReturned;
+    private String tableName;
+    private String columnName;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public ModelRowNotUniqueError(Integer rowsReturned)
+    public NullColumnTypeError(String tableName, String columnName)
     {
-        this.rowsReturned = rowsReturned;
+        this.tableName  = tableName;
+        this.columnName = columnName;
     }
 
 
     // API
     // -----------------------------------------------------------------------------------------
 
-    public Integer getRowsReturned()
+
+    public String getTableName()
     {
-        return this.rowsReturned;
+        return this.tableName;
+    }
+
+
+    public String getColumnName()
+    {
+        return this.columnName;
     }
 
 }

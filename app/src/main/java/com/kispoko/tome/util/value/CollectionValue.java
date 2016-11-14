@@ -3,7 +3,6 @@ package com.kispoko.tome.util.value;
 
 
 import com.kispoko.tome.util.Model;
-import com.kispoko.tome.util.database.ColumnProperties;
 import com.kispoko.tome.util.promise.LoadCollectionValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
 
@@ -20,25 +19,22 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // PROPERTIES
     // -------------------------------------------------------------------------------------
 
-    private List<A>          value;
-    private ColumnProperties columnProperties;
-    private String           childModelName;
-    private Class<A>         modelClass;
+    private String   childModelName;
+    private Class<A> modelClass;
+
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
     public CollectionValue(List<A> value,
                            Model model,
-                           ColumnProperties columnProperties,
                            String childModelName,
                            Class<A> modelClass)
+
     {
         super(value, model);
-        this.value            = value;
-        this.columnProperties = columnProperties;
-        this.childModelName   = childModelName;
-        this.modelClass       = modelClass;
+        this.childModelName = childModelName;
+        this.modelClass     = modelClass;
     }
 
 

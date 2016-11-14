@@ -2,9 +2,12 @@
 package com.kispoko.tome.util.database.query;
 
 
+import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.error.ColumnDoesNotExistError;
+import com.kispoko.tome.util.database.sql.SQLValue;
+
 import java.util.HashMap;
 import java.util.Map;
-
 
 
 /**
@@ -14,12 +17,13 @@ public class ResultRow
 {
 
     // PROPERTIES
-    // --------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 
-    private Map<String,Object> resultMap;
+    private Map<String,SQLValue> resultMap;
+
 
     // CONSTRUCTORS
-    // --------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 
     public ResultRow()
     {
@@ -31,27 +35,22 @@ public class ResultRow
     // --------------------------------------------------------------------------------------
 
 
-    public void putResult(String columnName, Object columnValue)
+    public void putSQLValue(String columnName, SQLValue sqlValue)
     {
-        this.resultMap.put(columnName, columnValue);
+        this.resultMap.put(columnName, sqlValue);
     }
 
 
-    public String getTextResult(String columnName)
+    public SQLValue getSQLValue(String columnName)
+           throws DatabaseException
     {
-        return (String) this.resultMap.get(columnName);
-    }
-
-
-    public Integer getIntegerResult(String columnName)
-    {
-        return (Integer) this.resultMap.get(columnName);
-    }
-
-
-    public byte[] getBlobResult(String columnName)
-    {
-        return (byte[]) this.resultMap.get(columnName);
+        if (this.resultMap.containsKey(columnName)) {
+            return this.resultMap.get(columnName);
+        }
+        else {
+            throw new DatabaseException(new ColumnDoesNotExistError(columnName),
+                    DatabaseException.ErrorType.COLUMN_DOES_NOT_EXIST);
+        }
     }
 
 

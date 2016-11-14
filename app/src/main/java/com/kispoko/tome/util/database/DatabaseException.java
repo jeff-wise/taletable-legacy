@@ -39,10 +39,11 @@ public class DatabaseException extends Exception
 
     public enum ErrorType
     {
-        LITERAL_VALUE_HAS_UNEXPECTED_TYPE,
-        NO_PARSER_FOUND_FOR_JAVA_VALUE,
-        MODEL_ROW_NOT_UNIQUE,
-        VALUE_NOT_SERIALIZABLE_TO_DB_TYPE
+        VALUE_NOT_SERIALIZABLE,
+        UNEXPECTED_SQL_TYPE,
+        COLUMN_DOES_NOT_EXIST,
+        NULL_COLUMN_TYPE,
+        QUERY
     }
 
 }

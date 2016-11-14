@@ -3,6 +3,10 @@ package com.kispoko.tome.util.database.query;
 
 
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.kispoko.tome.Global;
+import com.kispoko.tome.db.SheetContract;
 
 import java.util.UUID;
 
@@ -36,9 +40,18 @@ public class UpsertQuery
     // API
     // --------------------------------------------------------------------------------------
 
+    /**
+     * Run an upsert query using the Android SQLite library insertWithOnConflict function. If the
+     * row doesn't exist, it will be created. We must provide all the values every time though.
+     */
     public void run()
     {
+        SQLiteDatabase database = Global.getDatabase();
 
+        database.insertWithOnConflict(this.tableName,
+                                      null,
+                                      this.row,
+                                      SQLiteDatabase.CONFLICT_REPLACE);
     }
 
 

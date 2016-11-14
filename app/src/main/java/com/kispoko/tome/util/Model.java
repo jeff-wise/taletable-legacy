@@ -6,14 +6,15 @@ import android.content.ContentValues;
 
 import com.kispoko.tome.util.database.ColumnProperties;
 import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.query.CollectionQuery;
 import com.kispoko.tome.util.database.query.ModelQuery;
 import com.kispoko.tome.util.database.query.ResultRow;
 import com.kispoko.tome.util.database.query.UpsertQuery;
+import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.promise.LoadCollectionValuePromise;
 import com.kispoko.tome.util.promise.LoadValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
+import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.tuple.Tuple3;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.ModelValue;
@@ -22,11 +23,7 @@ import com.kispoko.tome.util.value.Value;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -179,18 +176,12 @@ public abstract class Model<A>
                                                          Class<A> classObject)
                                      throws DatabaseException
     {
-        // > Get Columns
+        // GET SQL columns
         A dummyModel = Model.newModel(classObject);
-        Tuple3<Map<String,PrimitiveValue<?>>,
-               Map<String,ModelValue<?>>,
-               List<CollectionValue<?>>> modelValues = Model.modelValues(dummyModel);
+        List<Tuple2<String,SQLValue.Type>> sqlColumns = Model.sqlColumns(dummyModel);
 
-        Set<String> columnNameSet = new HashSet<>();
-        columnNameSet.addAll(modelValues.getItem1().keySet());
-        columnNameSet.addAll(modelValues.getItem2().keySet());
-
-        // > Run the query
-        ModelQuery modelQuery = new ModelQuery(modelName, modelId, columnNameSet);
+        // RUN the query
+        ModelQuery modelQuery = new ModelQuery(modelName, modelId, sqlColumns);
         ResultRow row = modelQuery.result();
 
         return Model.modelFromRow(classObject, row);
@@ -208,33 +199,20 @@ public abstract class Model<A>
                                                                     Class<A> classObject)
                        throws DatabaseException
     {
-        // [1] GET columns
-        // --------------------------------------------------------------------------------------
+        // GET SQL columns
         A dummyModel = Model.newModel(classObject);
-        Tuple3<Map<String,PrimitiveValue<?>>,
-               Map<String,ModelValue<?>>,
-               List<CollectionValue<?>>> modelValues = Model.modelValues(dummyModel);
+        List<Tuple2<String,SQLValue.Type>> sqlColumns = Model.sqlColumns(dummyModel);
 
-        Set<String> columnNameSet = new HashSet<>();
-        columnNameSet.addAll(modelValues.getItem1().keySet());
-        columnNameSet.addAll(modelValues.getItem2().keySet());
-
-        // [2] RUN collection query
-        // --------------------------------------------------------------------------------------
-
+        // RUN the query
         CollectionQuery collectionQuery = new CollectionQuery(modelName,
                                                               parentModelName,
                                                               parentModelId,
-                                                              columnNameSet);
+                                                              sqlColumns);
         List<ResultRow> resultRows = collectionQuery.result();
 
-        // [3] CREATE each of the queried models in the collection
-        // --------------------------------------------------------------------------------------
-
+        // FOR EACH row, add a model to the collection
         List<A> models = new ArrayList<>();
-
-        for (ResultRow row : resultRows)
-        {
+        for (ResultRow row : resultRows) {
             models.add(Model.modelFromRow(classObject, row));
         }
 
@@ -299,20 +277,26 @@ public abstract class Model<A>
         // ** Save all of the primitive values
         for (PrimitiveValue primitiveValue : primitiveValues)
         {
+            SQLValue         sqlValue         = primitiveValue.toSQLValue();
             ColumnProperties columnProperties = primitiveValue.getColumnProperties();
-            SQL.DataType dataType             = columnProperties.getDataType();
-            String       columnName           = columnProperties.getColumnName();
+            String           columnName       = columnProperties.getColumnName();
 
-            switch (dataType)
+            switch (sqlValue.getType())
             {
                 case INTEGER:
-                    row.put(columnName, primitiveValue.asInteger());
+                    row.put(columnName, sqlValue.getInteger());
+                    break;
+                case REAL:
+                    row.put(columnName, sqlValue.getReal());
                     break;
                 case TEXT:
-                    row.put(columnName, primitiveValue.asText());
+                    row.put(columnName, sqlValue.getText());
                     break;
                 case BLOB:
-                    row.put(columnName, primitiveValue.asBlob());
+                    row.put(columnName, sqlValue.getBlob());
+                    break;
+                case NULL:
+                    row.putNull(columnName);
                     break;
             }
         }
@@ -350,8 +334,7 @@ public abstract class Model<A>
 
 
     @SuppressWarnings("unchecked")
-    private static <A extends Model> A modelFromRow(Class<A> classObject,
-                                                    ResultRow row)
+    private static <A extends Model> A modelFromRow(Class<A> classObject, ResultRow row)
                                      throws DatabaseException
     {
         // [A 1] Create Model
@@ -360,47 +343,31 @@ public abstract class Model<A>
 
         // [A 2] Get the Model's Values
         // --------------------------------------------------------------------------------------
-        Tuple3<Map<String,PrimitiveValue<?>>,
-               Map<String,ModelValue<?>>,
-               List<CollectionValue<?>>> modelValues = Model.modelValues(model);
+        Tuple3<List<PrimitiveValue<?>>,
+               List<ModelValue<?>>,
+               List<CollectionValue<?>>> modelValuesTuple = Model.modelValues(model);
 
-        Map<String,PrimitiveValue<?>> primitiveValueMap = modelValues.getItem1();
-        Map<String,ModelValue<?>>     modelValueMap     = modelValues.getItem2();
-        List<CollectionValue<?>>      collectionValues  = modelValues.getItem3();
+        List<PrimitiveValue<?>>  primitiveValues  = modelValuesTuple.getItem1();
+        List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
+        List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
 
         // [B 1] Evaluate primitive model values
         // --------------------------------------------------------------------------------------
 
-        for (Map.Entry<String,PrimitiveValue<?>> entry : primitiveValueMap.entrySet())
+        for (PrimitiveValue<?> primitiveValue : primitiveValues)
         {
-            String            columnName     = entry.getKey();
-            PrimitiveValue<?> primitiveValue = entry.getValue();
-
-            SQL.DataType valueDataType = primitiveValue.getColumnProperties().getDataType();
-
-            switch (valueDataType)
-            {
-                case INTEGER:
-                    primitiveValue.fromInteger(row.getIntegerResult(columnName));
-                    break;
-                case TEXT:
-                    primitiveValue.fromText(row.getTextResult(columnName));
-                    break;
-                case BLOB:
-                    primitiveValue.fromBlob(row.getBlobResult(columnName));
-                    break;
-            }
+            String columnName = primitiveValue.getColumnProperties().getColumnName();
+            primitiveValue.fromSQLValue(row.getSQLValue(columnName));
         }
 
         // [B 2] Evaluate model values (many-to-one values)
         // --------------------------------------------------------------------------------------
 
-        for (Map.Entry<String,ModelValue<?>> entry : modelValueMap.entrySet())
+        for (ModelValue<?> modelValue : modelValues)
         {
-            String        columnName = entry.getKey();
-            ModelValue<? extends Model> modelValue = entry.getValue();
+            String columnName = modelValue.getColumnProperties().getColumnName();
 
-            UUID modelValueId = UUID.fromString(row.getTextResult(columnName));
+            UUID modelValueId = UUID.fromString(row.getSQLValue(columnName).getText());
             // Unchecked assignment. Type errors here didn't make sense, but the compiler doesn't
             // know that the class in modelValue.getModelClass should be over the same type A as
             // the ModelValue parameter type A. Though I think it should know that. Really not sure
@@ -437,9 +404,9 @@ public abstract class Model<A>
      * @return The Model's values, sorted.
      * @throws DatabaseException
      */
-    private static <A> Tuple3<Map<String,PrimitiveValue<?>>,
-                              Map<String,ModelValue<?>>,
-                              List<CollectionValue<?>>>   modelValues(A model)
+    private static <A> Tuple3<List<PrimitiveValue<?>>,
+                              List<ModelValue<?>>,
+                              List<CollectionValue<?>>> modelValues(A model)
                        throws DatabaseException
     {
         // [1] Get all of the class's Value fields
@@ -455,9 +422,9 @@ public abstract class Model<A>
 
         // [2] Store the value fields by type and map to columns
         // --------------------------------------------------------------------------------------
-        Map<String,PrimitiveValue<?>> primitiveValueMap = new HashMap<>();
-        Map<String,ModelValue<?>>     modelValueMap     = new HashMap<>();
-        List<CollectionValue<?>>      collectionValues  = new ArrayList<>();
+        List<PrimitiveValue<?>>                primitiveValues  = new ArrayList<>();
+        List<ModelValue<? extends Model>>      modelValues      = new ArrayList<>();
+        List<CollectionValue<? extends Model>> collectionValues = new ArrayList<>();
 
         try
         {
@@ -467,26 +434,62 @@ public abstract class Model<A>
 
                 // Sort values by database value type
                 if (PrimitiveValue.class.isAssignableFrom(field.getType())) {
-                    PrimitiveValue<?> primitiveValue = (PrimitiveValue<?>) value;
-                    String columName = primitiveValue.getColumnProperties().getColumnName();
-                    primitiveValueMap.put(columName, primitiveValue);
+                    primitiveValues.add((PrimitiveValue) value);
                 }
                 else if (ModelValue.class.isAssignableFrom(field.getType())) {
-                    ModelValue<?> modelValue = (ModelValue<?>) value;
-                    String columnName = modelValue.getColumnProperties().getColumnName();
-                    modelValueMap.put(columnName, modelValue);
+                    modelValues.add((ModelValue<? extends Model>) value);
                 }
                 else if (CollectionValue.class.isAssignableFrom(field.getType())) {
                     collectionValues.add((CollectionValue<? extends Model>) value);
                 }
             }
         }
-        catch (IllegalAccessException e) {
+        catch (IllegalAccessException e)
+        {
             throw new DatabaseException();
         }
 
-        return new Tuple3<>(primitiveValueMap, modelValueMap, collectionValues);
+        return new Tuple3<>(primitiveValues, modelValues, collectionValues);
     }
+
+
+    /**
+     * Get the SQL column representations for all of the values in the model. Both primitive and
+     * model values have representations in the model's row. Collection values are stored in
+     * their own model's table and contain the foreign key to the parent model.
+     * @param model The model.
+     * @return
+     * @throws DatabaseException
+     */
+    private static List<Tuple2<String,SQLValue.Type>> sqlColumns(Model model)
+                   throws DatabaseException
+    {
+        Tuple3<List<PrimitiveValue<?>>,
+                   List<ModelValue<?>>,
+                   List<CollectionValue<?>>> modelValuesTuple = Model.modelValues(model);
+
+        // Get all of model's database columns. Both primitive values and model values have
+        // column representations
+        List<Tuple2<String,SQLValue.Type>> columns = new ArrayList<>();
+
+        for (PrimitiveValue<?> primitiveValue : modelValuesTuple.getItem1())
+        {
+            ColumnProperties columnProperties = primitiveValue.getColumnProperties();
+            columns.add(new Tuple2<>(columnProperties.getColumnName(),
+                                     columnProperties.getSQLType()));
+        }
+
+        for (ModelValue<?> modelValue : modelValuesTuple.getItem2())
+        {
+            ColumnProperties columnProperties = modelValue.getColumnProperties();
+            columns.add(new Tuple2<>(columnProperties.getColumnName(),
+                                     columnProperties.getSQLType()));
+        }
+
+        return columns;
+    }
+
+
 
 
     /**

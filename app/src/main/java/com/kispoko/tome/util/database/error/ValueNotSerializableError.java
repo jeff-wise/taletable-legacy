@@ -14,17 +14,15 @@ public class ValueNotSerializableError
     // -----------------------------------------------------------------------------------------
 
     private Direction    direction;
-    private SQL.DataType dbValueType;
     private String       javaTypeName;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public ValueNotSerializableError(Direction direction, SQL.DataType dbValueType, String javaTypeName)
+    public ValueNotSerializableError(Direction direction, String javaTypeName)
     {
         this.direction    = direction;
-        this.dbValueType  = dbValueType;
         this.javaTypeName = javaTypeName;
     }
 
@@ -35,12 +33,6 @@ public class ValueNotSerializableError
     public Direction getDirection()
     {
         return this.direction;
-    }
-
-
-    public SQL.DataType getDBValueType()
-    {
-        return this.dbValueType;
     }
 
 
