@@ -14,17 +14,15 @@ public class ColumnProperties
     // -----------------------------------------------------------------------------------------
 
     private String         columnName;
-    private SQLValue.Type  sqlType;
     private SQL.Constraint constraint;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public ColumnProperties(String columnName, SQLValue.Type sqlType, SQL.Constraint constraint)
+    public ColumnProperties(String columnName, SQL.Constraint constraint)
     {
         this.columnName = columnName;
-        this.sqlType    = sqlType;
         this.constraint = constraint;
     }
 
@@ -38,12 +36,6 @@ public class ColumnProperties
     public String getColumnName()
     {
         return this.columnName;
-    }
-
-
-    public SQLValue.Type getSQLType()
-    {
-        return this.sqlType;
     }
 
 

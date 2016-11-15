@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.kispoko.tome.db.SheetDatabaseManager;
+import com.kispoko.tome.db.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
 
 
@@ -26,8 +26,8 @@ public class LaunchActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        SheetDatabaseManager sheetDatabaseManager = new SheetDatabaseManager(this);
-        SQLiteDatabase database = sheetDatabaseManager.getWritableDatabase();
+        DatabaseManager databaseManager = new DatabaseManager(this);
+        SQLiteDatabase database = databaseManager.getWritableDatabase();
 
         Intent intent;
         // No characters exist, go to New Character Activity

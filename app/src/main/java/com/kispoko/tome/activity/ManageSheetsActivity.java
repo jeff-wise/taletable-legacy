@@ -19,7 +19,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.db.SheetDatabaseManager;
+import com.kispoko.tome.db.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.Util;
@@ -50,8 +50,8 @@ public class ManageSheetsActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        SheetDatabaseManager sheetDatabaseManager = new SheetDatabaseManager(this);
-        SQLiteDatabase database = sheetDatabaseManager.getWritableDatabase();
+        DatabaseManager databaseManager = new DatabaseManager(this);
+        SQLiteDatabase database = databaseManager.getWritableDatabase();
 
         Sheet.summaryInfo(database, this);
 

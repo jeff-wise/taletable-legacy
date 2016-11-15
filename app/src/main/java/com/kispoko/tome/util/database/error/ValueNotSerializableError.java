@@ -2,8 +2,6 @@
 package com.kispoko.tome.util.database.error;
 
 
-import com.kispoko.tome.util.database.SQL;
-
 /**
  * Value Not Serializable to Database Type Error
  */
@@ -13,16 +11,16 @@ public class ValueNotSerializableError
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private Direction    direction;
-    private String       javaTypeName;
+    private Type   type;
+    private String javaTypeName;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public ValueNotSerializableError(Direction direction, String javaTypeName)
+    public ValueNotSerializableError(Type type, String javaTypeName)
     {
-        this.direction    = direction;
+        this.type = type;
         this.javaTypeName = javaTypeName;
     }
 
@@ -30,9 +28,9 @@ public class ValueNotSerializableError
     // API
     // -----------------------------------------------------------------------------------------
 
-    public Direction getDirection()
+    public Type getType()
     {
-        return this.direction;
+        return this.type;
     }
 
 
@@ -45,10 +43,11 @@ public class ValueNotSerializableError
     // NESTED DEFINITIONS
     // -----------------------------------------------------------------------------------------
 
-    public enum Direction
+    public enum Type
     {
         TO,
-        FROM
+        FROM,
+        UNKNOWN_SQL_REPRESENTATION
     }
 
 

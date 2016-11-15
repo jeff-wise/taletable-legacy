@@ -143,670 +143,669 @@ rules:
         parameters:
         - type: literal_string
           value: '({{modifier_string}})'
-sections:
-  roleplay:
-    pages:
-    - label: Profile
-      groups:
-      - label: General
-        number_of_rows: 2
-        widgetDatas:
-        - type: textWidget
-          name: name
-          actions:
-          - edit
-          - generate
-          format:
-            label: Name
-            row: 1
-            column: 1
-            width: 1
-            text_size: large
-          data:
+roleplay:
+  pages:
+  - label: Profile
+    groups:
+    - label: General
+      number_of_rows: 2
+      widgetDatas:
+      - type: textWidget
+        name: name
+        actions:
+        - edit
+        - generate
+        format:
+          label: Name
+          row: 1
+          column: 1
+          width: 1
+          text_size: large
+        data:
+          value:
+            type: literal_string
+            value: Aladaisian Wineheart
+      - type: imageWidget
+        name: picture
+        actions:
+        - choose
+        - share
+        format:
+          row: 2
+          column: 1
+          width: 1
+          label: Picture
+    - label: Features
+      number_of_rows: 2
+      widgetDatas:
+      - type: integer
+        key_stat: 1
+        name: level
+        actions:
+        - edit
+        format:
+          label: Level
+          row: 1
+          column: 1
+          width: 1
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 17
+      - type: textWidget
+        name: class
+        key_stat: 2
+        actions:
+        - edit
+        format:
+          label: Class
+          row: 1
+          column: 2
+          width: 1
+          text_size: medium
+        data:
+          value:
+            type: literal_string
+            value: Wizard
+          type:
+            kind: list
+            id: class
+      - type: textWidget
+        name: race
+        actions:
+        - edit
+        key_stat: 3
+        format:
+          label: Race
+          row: 2
+          column: 1
+          width: 1
+          text_size: medium
+        data:
+          value:
+            type: literal_string
+            value: Human
+      - type: textWidget
+        name: alignment
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 2
+          width: 1
+          label: Alignment
+          text_size: medium
+        data:
+          value:
+            type: literal_string
+            value: Lawful Good
+    - label: Appearance
+      number_of_rows: 2
+      widgetDatas:
+      - type: integer
+        name: age
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 1
+          width: 1
+          label: Age
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 41
+      - type: textWidget
+        name: height
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 2
+          width: 1
+          label: Height
+          text_size: medium
+        data:
+          value:
+            type: literal_string
+            value: 5'11"
+      - type: integer
+        name: weight
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 3
+          width: 1
+          label: Weight
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 167
+      - type: textWidget
+        name: eyes
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 1
+          width: 1
+          label: Eyes
+          text_size: medium
+        data:
+          value:
+            type: literal_string
+            value: Blue
+      - type: textWidget
+        name: skin
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 2
+          width: 1
+          label: Skin
+          text_size: medium
+        data:
+          value:
+            type: literal_string
+            value: Light
+      - type: textWidget
+        name: hair
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 3
+          width: 1
+          label: Hair
+          text_size: medium
+        data:
+          value:
+            type: literal_string
+            value: Brown
+  - label: Stats
+    groups:
+    - label: Ability Scores
+      number_of_rows: 2
+      widgetDatas:
+      - type: integer
+        name: strength
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 1
+          width: 1
+          label: Strength
+          text_size: medium
+          postfix:
+            type: program
             value:
-              type: literal_string
-              value: Aladaisian Wineheart
-        - type: imageWidget
-          name: picture
-          actions:
-          - choose
-          - share
-          format:
-            row: 2
-            column: 1
-            width: 1
-            label: Picture
-      - label: Features
-        number_of_rows: 2
-        widgetDatas:
-        - type: integer
-          key_stat: 1
-          name: level
-          actions:
-          - edit
-          format:
-            label: Level
-            row: 1
-            column: 1
-            width: 1
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 17
-        - type: textWidget
-          name: class
-          key_stat: 2
-          actions:
-          - edit
-          format:
-            label: Class
-            row: 1
-            column: 2
-            width: 1
-            text_size: medium
-          data:
-            value:
-              type: literal_string
-              value: Wizard
-            type:
-              kind: list
-              id: class
-        - type: textWidget
-          name: race
-          actions:
-          - edit
-          key_stat: 3
-          format:
-            label: Race
-            row: 2
-            column: 1
-            width: 1
-            text_size: medium
-          data:
-            value:
-              type: literal_string
-              value: Human
-        - type: textWidget
-          name: alignment
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 2
-            width: 1
-            label: Alignment
-            text_size: medium
-          data:
-            value:
-              type: literal_string
-              value: Lawful Good
-      - label: Appearance
-        number_of_rows: 2
-        widgetDatas:
-        - type: integer
-          name: age
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 1
-            width: 1
-            label: Age
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 41
-        - type: textWidget
-          name: height
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            label: Height
-            text_size: medium
-          data:
-            value:
-              type: literal_string
-              value: 5'11"
-        - type: integer
-          name: weight
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 3
-            width: 1
-            label: Weight
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 167
-        - type: textWidget
-          name: eyes
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 1
-            width: 1
-            label: Eyes
-            text_size: medium
-          data:
-            value:
-              type: literal_string
-              value: Blue
-        - type: textWidget
-          name: skin
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 2
-            width: 1
-            label: Skin
-            text_size: medium
-          data:
-            value:
-              type: literal_string
-              value: Light
-        - type: textWidget
-          name: hair
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 3
-            width: 1
-            label: Hair
-            text_size: medium
-          data:
-            value:
-              type: literal_string
-              value: Brown
-    - label: Stats
-      groups:
-      - label: Ability Scores
-        number_of_rows: 2
-        widgetDatas:
-        - type: integer
-          name: strength
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 1
-            width: 1
-            label: Strength
-            text_size: medium
-            postfix:
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: strength
-          data:
-            value:
-              type: literal_integer
-              value: 11
-        - type: integer
-          name: dexterity
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            label: Dexterity
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 19
-        - type: integer
-          name: constitution
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 3
-            width: 1
-            label: Constitution
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 15
-        - type: integer
-          name: intelligence
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 1
-            width: 1
-            label: Intelligence
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 22
-        - type: integer
-          name: wisdom
-          actions:
-          - edit
-          format:
-            label: Wisdom
-            row: 2
-            column: 2
-            width: 1
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 14
-        - type: integer
-          name: charisma
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 3
-            width: 1
-            label: Charisma
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 13
-      - label: General
-        number_of_rows: 1
-        widgetDatas:
-        - type: integer
-          name: proficiency_bonus
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            label: Proficiency Bonus
-            text_size: medium
-            prefix: '+'
-          data:
-            value:
-              type: literal_integer
-              value: 6
-        - type: integer
-          name: inspiration
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            label: Inspiration
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 4
-      - label: Combat
-        number_of_rows: 1
-        widgetDatas:
-        - type: integer
-          name: armor_class
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 1
-            width: 1
-            label: Armor Class
-            text_size: medium
-          data:
-            value:
-              type: literal_integer
-              value: 24
-        - type: integer
-          name: initiative
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            text_size: medium
-            prefix: '+'
-            label: Initiative
-          data:
-            value:
-              type: literal_integer
-              value: 7
-        - type: integer
-          name: speed
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 3
-            width: 1
-            text_size: medium
-            label: Speed
-          data:
-            value:
-              type: literal_integer
-              value: 30
-      - label: Saving Throws
-        number_of_rows: 2
-        widgetDatas:
-        - type: integer
-          name: saving_throw_strength
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 1
-            width: 1
-            text_size: medium
-            label: Strength
-          data:
-            value:
-              type: literal_integer
-              value: 0
-        - type: integer
-          name: saving_throw_dexterity
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            text_size: medium
-            prefix: '+'
-            label: Dexterity
-          data:
-            value:
-              type: literal_integer
-              value: 4
-        - type: integer
-          name: saving_throw_constitution
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 3
-            width: 1
-            text_size: medium
-            prefix: '+'
-            label: Constitution
-          data:
-            value:
-              type: literal_integer
-              value: 2
-        - type: integer
-          name: saving_throw_intelligence
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 1
-            width: 1
-            text_size: medium
-            prefix: '+'
-            label: Intelligence
-          data:
-            value:
-              type: literal_integer
-              value: 12
-        - type: integer
-          name: saving_throw_wisdom
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 2
-            width: 1
-            text_size: medium
-            prefix: '+'
-            label: Wisdom
-          data:
-            value:
-              type: literal_integer
-              value: 8
-        - type: integer
-          name: saving_throw_charisma
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 3
-            width: 1
-            text_size: medium
-            prefix: '+'
-            label: Charisma
-          data:
-            value:
-              type: literal_integer
-              value: 1
-    - label: Abilities
-      groups:
-      - label: Skills
-        number_of_rows: 1
-        widgetDatas:
-        - type: tableWidget
-          actions:
-          - edit
-          format:
-            label: Skills
-            show_label: false
-            row: 1
-            column: 1
-            width: 1
-          columns:
-          - Skill
-          - Modifier
-          - Proficient?
-          width: 3
-          height: 18
-          row_template:
-            cells:
+              program: ability_modifier
+              parameters:
+              - type: reference
+                value: strength
+        data:
+          value:
+            type: literal_integer
+            value: 11
+      - type: integer
+        name: dexterity
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 2
+          width: 1
+          label: Dexterity
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 19
+      - type: integer
+        name: constitution
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 3
+          width: 1
+          label: Constitution
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 15
+      - type: integer
+        name: intelligence
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 1
+          width: 1
+          label: Intelligence
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 22
+      - type: integer
+        name: wisdom
+        actions:
+        - edit
+        format:
+          label: Wisdom
+          row: 2
+          column: 2
+          width: 1
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 14
+      - type: integer
+        name: charisma
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 3
+          width: 1
+          label: Charisma
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 13
+    - label: General
+      number_of_rows: 1
+      widgetDatas:
+      - type: integer
+        name: proficiency_bonus
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 2
+          width: 1
+          label: Proficiency Bonus
+          text_size: medium
+          prefix: '+'
+        data:
+          value:
+            type: literal_integer
+            value: 6
+      - type: integer
+        name: inspiration
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 2
+          width: 1
+          label: Inspiration
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 4
+    - label: Combat
+      number_of_rows: 1
+      widgetDatas:
+      - type: integer
+        name: armor_class
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 1
+          width: 1
+          label: Armor Class
+          text_size: medium
+        data:
+          value:
+            type: literal_integer
+            value: 24
+      - type: integer
+        name: initiative
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 2
+          width: 1
+          text_size: medium
+          prefix: '+'
+          label: Initiative
+        data:
+          value:
+            type: literal_integer
+            value: 7
+      - type: integer
+        name: speed
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 3
+          width: 1
+          text_size: medium
+          label: Speed
+        data:
+          value:
+            type: literal_integer
+            value: 30
+    - label: Saving Throws
+      number_of_rows: 2
+      widgetDatas:
+      - type: integer
+        name: saving_throw_strength
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 1
+          width: 1
+          text_size: medium
+          label: Strength
+        data:
+          value:
+            type: literal_integer
+            value: 0
+      - type: integer
+        name: saving_throw_dexterity
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 2
+          width: 1
+          text_size: medium
+          prefix: '+'
+          label: Dexterity
+        data:
+          value:
+            type: literal_integer
+            value: 4
+      - type: integer
+        name: saving_throw_constitution
+        actions:
+        - edit
+        format:
+          row: 1
+          column: 3
+          width: 1
+          text_size: medium
+          prefix: '+'
+          label: Constitution
+        data:
+          value:
+            type: literal_integer
+            value: 2
+      - type: integer
+        name: saving_throw_intelligence
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 1
+          width: 1
+          text_size: medium
+          prefix: '+'
+          label: Intelligence
+        data:
+          value:
+            type: literal_integer
+            value: 12
+      - type: integer
+        name: saving_throw_wisdom
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 2
+          width: 1
+          text_size: medium
+          prefix: '+'
+          label: Wisdom
+        data:
+          value:
+            type: literal_integer
+            value: 8
+      - type: integer
+        name: saving_throw_charisma
+        actions:
+        - edit
+        format:
+          row: 2
+          column: 3
+          width: 1
+          text_size: medium
+          prefix: '+'
+          label: Charisma
+        data:
+          value:
+            type: literal_integer
+            value: 1
+  - label: Abilities
+    groups:
+    - label: Skills
+      number_of_rows: 1
+      widgetDatas:
+      - type: tableWidget
+        actions:
+        - edit
+        format:
+          label: Skills
+          show_label: false
+          row: 1
+          column: 1
+          width: 1
+        columns:
+        - Skill
+        - Modifier
+        - Proficient?
+        width: 3
+        height: 18
+        row_template:
+          cells:
+          - widgetData:
+              type: textWidget
+              format:
+                alignment: left
+                width: 3
+              data:
+                value: Skill Name
+          - widgetData:
+              type: integer
+              format:
+                prefix: '+'
+                alignment: center
+                width: 2
+              data:
+                value: 1
+          - widgetData:
+              type: boolean
+              format:
+                alignment: center
+                width: 2
+              data:
+                value: false
+        data:
+          rows:
+          - cells:
             - widgetData:
                 type: textWidget
-                format:
-                  alignment: left
-                  width: 3
                 data:
-                  value: Skill Name
+                  value: Acrobatics
             - widgetData:
                 type: integer
-                format:
-                  prefix: '+'
-                  alignment: center
-                  width: 2
-                data:
-                  value: 1
             - widgetData:
                 type: boolean
-                format:
-                  alignment: center
-                  width: 2
                 data:
-                  value: false
-          data:
-            rows:
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Acrobatics
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-                  data:
-                    value: true
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Animal Handling
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Arcana
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Athletics
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-                  data:
-                    value: true
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Deception
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: History
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Insight
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Intimidation
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Investigation
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Medicine
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Nature
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Perception
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Performance
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Persuasion
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Religion
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Sleight of Hand
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Stealth
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-            - cells:
-              - widgetData:
-                  type: textWidget
-                  data:
-                    value: Survival
-              - widgetData:
-                  type: integer
-              - widgetData:
-                  type: boolean
-    - label: Backpack
-      groups:
-    - label: Spellbook
-      groups:
+                  value: true
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Animal Handling
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Arcana
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Athletics
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+                data:
+                  value: true
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Deception
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: History
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Insight
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Intimidation
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Investigation
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Medicine
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Nature
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Perception
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Performance
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Persuasion
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Religion
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Sleight of Hand
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Stealth
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+          - cells:
+            - widgetData:
+                type: textWidget
+                data:
+                  value: Survival
+            - widgetData:
+                type: integer
+            - widgetData:
+                type: boolean
+  - label: Backpack
+    groups:
+  - label: Spellbook
+    groups:

@@ -6,6 +6,7 @@ import android.content.ContentValues;
 
 import com.kispoko.tome.util.database.ColumnProperties;
 import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.query.CollectionQuery;
 import com.kispoko.tome.util.database.query.ModelQuery;
 import com.kispoko.tome.util.database.query.ResultRow;
@@ -44,16 +45,20 @@ public abstract class Model<A>
     // --------------------------------------------------------------------------------------
 
     private UUID   id;
-    private String name;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public Model(UUID id, String name)
+    public Model()
+    {
+        this.id   = null;
+    }
+
+
+    public Model(UUID id)
     {
         this.id   = id;
-        this.name = name;
     }
 
 
@@ -72,12 +77,18 @@ public abstract class Model<A>
     }
 
 
-    // ** Name
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // > Helpers
     // ------------------------------------------------------------------------------------------
 
-    public String getName()
+    public String name()
     {
-        return this.name;
+        return SQL.asValidIdentifier(this.getClass().getName().toLowerCase());
     }
 
 
@@ -241,38 +252,23 @@ public abstract class Model<A>
         // [A 2] Group values by type
         // --------------------------------------------------------------------------------------
 
-        List<PrimitiveValue<?>>                primitiveValues  = new ArrayList<>();
-        List<ModelValue<? extends Model>>      modelValues      = new ArrayList<>();
-        List<CollectionValue<? extends Model>> collectionValues = new ArrayList<>();
+        Tuple3<List<PrimitiveValue<?>>,
+               List<ModelValue<?>>,
+               List<CollectionValue<?>>> modelValuesTuple = Model.modelValues(this);
 
-        try
-        {
-            for (Field field : valueFields)
-            {
-                Value<?> value = (Value<?>) field.get(this);
+        List<PrimitiveValue<?>>  primitiveValues  = modelValuesTuple.getItem1();
+        List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
+        List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
 
-                // Sort values by database value type
-                if (PrimitiveValue.class.isAssignableFrom(field.getType())) {
-                    primitiveValues.add((PrimitiveValue) value);
-                }
-                else if (ModelValue.class.isAssignableFrom(field.getType())) {
-                    modelValues.add((ModelValue<? extends Model>) value);
-                }
-                else if (CollectionValue.class.isAssignableFrom(field.getType())) {
-                    collectionValues.add((CollectionValue<? extends Model>) value);
-                }
-            }
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new DatabaseException();
-        }
 
         // [B 1] Save Model row
         // --------------------------------------------------------------------------------------
 
         // > Save each column value into a ContentValues
         ContentValues row = new ContentValues();
+
+        // ** Save the model values
+        row.put("_id", this.getId().toString());
 
         // ** Save all of the primitive values
         for (PrimitiveValue primitiveValue : primitiveValues)
@@ -304,12 +300,12 @@ public abstract class Model<A>
         // ** Save all of the model value identifiers (as foreign keys)
         for (ModelValue<? extends Model> modelValue : modelValues)
         {
-            String columnName = modelValue.getColumnProperties().getColumnName();
+            String columnName = modelValue.sqlColumnName();
             row.put(columnName, modelValue.getValue().getId().toString());
         }
 
         // > Save the row, creating a new one if necessary.
-        UpsertQuery upsertQuery = new UpsertQuery(this.name, this.id, row);
+        UpsertQuery upsertQuery = new UpsertQuery(this.name(), this.id, row);
         upsertQuery.run();
 
         // [B 2] Save Shared Value Rows
@@ -351,7 +347,13 @@ public abstract class Model<A>
         List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
         List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
 
-        // [B 1] Evaluate primitive model values
+        // [B 1] Evaluate model values
+        // --------------------------------------------------------------------------------------
+
+        SQLValue idSqlValue   = row.getSQLValue("_id");
+        model.setId(UUID.fromString(idSqlValue.getText()));
+
+        // [B 2] Evaluate primitive model values
         // --------------------------------------------------------------------------------------
 
         for (PrimitiveValue<?> primitiveValue : primitiveValues)
@@ -360,12 +362,12 @@ public abstract class Model<A>
             primitiveValue.fromSQLValue(row.getSQLValue(columnName));
         }
 
-        // [B 2] Evaluate model values (many-to-one values)
+        // [B 3] Evaluate model values (many-to-one values)
         // --------------------------------------------------------------------------------------
 
         for (ModelValue<?> modelValue : modelValues)
         {
-            String columnName = modelValue.getColumnProperties().getColumnName();
+            String columnName = modelValue.sqlColumnName();
 
             UUID modelValueId = UUID.fromString(row.getSQLValue(columnName).getText());
             // Unchecked assignment. Type errors here didn't make sense, but the compiler doesn't
@@ -373,7 +375,7 @@ public abstract class Model<A>
             // the ModelValue parameter type A. Though I think it should know that. Really not sure
             // here but it should work, so not worth the time.
             LoadValuePromise loadValuePromise =
-                    Model.loadModelValuePromise(modelValue.getValue().getName(),
+                    Model.loadModelValuePromise(modelValue.getValue().name(),
                                                 modelValueId,
                                                 modelValue.getModelClass());
             modelValue.loadValue(loadValuePromise);
@@ -386,7 +388,7 @@ public abstract class Model<A>
         {
             LoadCollectionValuePromise loadCollectionValuePromise =
                     Model.loadCollectionValuePromise(collectionValue.getChildModelName(),
-                                                     model.getName(),
+                                                     model.name(),
                                                      model.getId(),
                                                      collectionValue.getModelClass());
             collectionValue.loadValue(loadCollectionValuePromise);
@@ -472,24 +474,27 @@ public abstract class Model<A>
         // column representations
         List<Tuple2<String,SQLValue.Type>> columns = new ArrayList<>();
 
+        // > Add MODEL columns
+        columns.add(new Tuple2<>("_id", SQLValue.Type.TEXT));
+        columns.add(new Tuple2<>("model_name", SQLValue.Type.TEXT));
+
+        // > Add PRIMITIVE VALUE columns
         for (PrimitiveValue<?> primitiveValue : modelValuesTuple.getItem1())
         {
             ColumnProperties columnProperties = primitiveValue.getColumnProperties();
             columns.add(new Tuple2<>(columnProperties.getColumnName(),
-                                     columnProperties.getSQLType()));
+                                     primitiveValue.sqlType()));
         }
 
+        // > Add MODEL VALUE columns
         for (ModelValue<?> modelValue : modelValuesTuple.getItem2())
         {
-            ColumnProperties columnProperties = modelValue.getColumnProperties();
-            columns.add(new Tuple2<>(columnProperties.getColumnName(),
-                                     columnProperties.getSQLType()));
+            columns.add(new Tuple2<>(modelValue.sqlColumnName(),
+                                     SQLValue.Type.TEXT));
         }
 
         return columns;
     }
-
-
 
 
     /**
@@ -512,5 +517,69 @@ public abstract class Model<A>
         return model;
     }
 
+
+    // > Tables
+    // ------------------------------------------------------------------------------------------
+
+    public static <A extends Model> String defineTableSQLString(Class<A> modelClass)
+                                    throws DatabaseException
+    {
+        StringBuilder tableBuilder = new StringBuilder();
+
+        // [1] Create Table
+        // --------------------------------------------------------------------------------------
+        tableBuilder.append("CREATE TABLE IF NOT EXISTS ");
+        tableBuilder.append(modelClass.getName());
+        tableBuilder.append(" ( ");
+
+        // [2] Column Definitions
+        // --------------------------------------------------------------------------------------
+
+        // > Get Model values
+
+        Model dummyModel = Model.newModel(modelClass);
+
+        Tuple3<List<PrimitiveValue<?>>,
+                List<ModelValue<?>>,
+                List<CollectionValue<?>>> modelValuesTuple = Model.modelValues(dummyModel);
+
+        List<PrimitiveValue<?>> primitiveValues = modelValuesTuple.getItem1();
+        List<ModelValue<?>>     modelValues     = modelValuesTuple.getItem2();
+
+        // ** Model Id
+        tableBuilder.append("_id");
+        tableBuilder.append(" ");
+        tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
+        tableBuilder.append(" PRIMARY KEY");
+
+        // ** Primitive Values
+        for (PrimitiveValue<?> primitiveValue : primitiveValues)
+        {
+            String        columnName = primitiveValue.getColumnProperties().getColumnName();
+            SQLValue.Type columnType = primitiveValue.sqlType();
+
+            tableBuilder.append(", ");
+            tableBuilder.append(columnName);
+            tableBuilder.append(" ");
+            tableBuilder.append(columnType.name().toUpperCase());
+        }
+
+        for (ModelValue<?> modelValue : modelValues)
+        {
+            String columnName = modelValue.sqlColumnName();
+
+            tableBuilder.append(", ");
+            tableBuilder.append(columnName);
+            tableBuilder.append(" ");
+            tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
+        }
+
+        // [2] End
+        // --------------------------------------------------------------------------------------
+
+        tableBuilder.append(" )");
+
+        return tableBuilder.toString();
+    }
 
 }

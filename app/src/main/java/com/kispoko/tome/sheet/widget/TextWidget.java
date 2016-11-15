@@ -25,7 +25,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.EditActivity;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.widget.util.ComponentUtil;
 import com.kispoko.tome.sheet.widget.format.Format;

@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.kispoko.tome.Global;
-import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.util.database.SQL;
 
 import java.util.ArrayList;

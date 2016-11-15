@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.kispoko.tome.Global;
-import com.kispoko.tome.db.SheetContract;
 
 import java.util.UUID;
 

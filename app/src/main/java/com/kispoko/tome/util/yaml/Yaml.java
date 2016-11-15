@@ -2,6 +2,7 @@
 package com.kispoko.tome.util.yaml;
 
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,31 +21,31 @@ import java.util.Map;
 public class Yaml
 {
 
-    public enum ObjectType
-    {
-        STRING,
-        INTEGER,
-        BOOLEAN,
-        MAP,
-        LIST,
-        LIST_STRING
-    }
+    // PROPERTIES
+    // ------------------------------------------------------------------------------------------
 
     private Object yamlObject;
 
 
-    public Yaml(Object yamlObject)
+    // CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
+
+    private Yaml(Object yamlObject)
     {
         this.yamlObject = yamlObject;
     }
 
 
-    public static Yaml with(Object yamlObject)
+    public static Yaml fromFile(InputStream yamlFileIS)
     {
-        Yaml yaml = new Yaml(yamlObject);
-        return yaml;
+        org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
+        Object yamlObject = yaml.load(yamlFileIS);
+        return new Yaml(yamlObject);
     }
 
+
+    // API
+    // ------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
     public Yaml atKey(String key)
@@ -204,33 +205,18 @@ public class Yaml
     }
 
 
-
-
-    /*
-    @SuppressWarnings("unchecked")
-    public Map<String,Object> getMap()
-           throws YamlException
-    {
-        Map<String,Object> mapValue;
-
-        try {
-            mapValue = (Map<String,Object>) this.yamlObject;
-        } catch (ClassCastException e) {
-            throw new YamlException(new YamlError.UnexpectedType(ObjectType.MAP),
-                                    YamlException.Type.UNEXPECTED_TYPE);
-        }
-
-        return mapValue;
-    }*/
-
-
-    // INTERNAL
-    // -----------------------------------------------------------------------------------------
-
-
-
     // NESTED DEFINITIONS
     // -----------------------------------------------------------------------------------------
+
+    public enum ObjectType
+    {
+        STRING,
+        INTEGER,
+        BOOLEAN,
+        MAP,
+        LIST,
+        LIST_STRING
+    }
 
 
 }

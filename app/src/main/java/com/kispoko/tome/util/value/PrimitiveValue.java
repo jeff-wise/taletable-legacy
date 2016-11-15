@@ -51,6 +51,49 @@ public class PrimitiveValue<A> extends Value<A>
     }
 
 
+    // > Helpers
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * Determine the SQL representation of this value based on its class.
+     * @return
+     */
+    public SQLValue.Type sqlType()
+           throws DatabaseException
+    {
+        if (this.getValue() instanceof String) {
+            return SQLValue.Type.TEXT;
+        }
+        else if (this.getValue() instanceof Integer) {
+            return SQLValue.Type.INTEGER;
+        }
+        else if (this.getValue() instanceof Long) {
+            return SQLValue.Type.INTEGER;
+        }
+        else if (this.getValue() instanceof Double) {
+            return SQLValue.Type.REAL;
+        }
+        else if (this.getValue() instanceof Boolean) {
+            return SQLValue.Type.INTEGER;
+        }
+        else if (this.getValue() instanceof UUID) {
+            return SQLValue.Type.TEXT;
+        }
+        else if (this.getValue() instanceof byte[]) {
+            return SQLValue.Type.BLOB;
+        }
+        else if (this.isNull()) {
+            return SQLValue.Type.NULL;
+        } else {
+            // value not serializable to
+            throw new DatabaseException(
+                    new ValueNotSerializableError(
+                            ValueNotSerializableError.Type.UNKNOWN_SQL_REPRESENTATION,
+                            this.getValue().getClass().getName()),
+                    DatabaseException.ErrorType.VALUE_NOT_SERIALIZABLE);
+        }
+    }
+
     // > Serialization
     // --------------------------------------------------------------------------------------
 
@@ -61,14 +104,17 @@ public class PrimitiveValue<A> extends Value<A>
             return SQLValue.newText((String) this.getValue());
         }
         else if (this.getValue() instanceof Integer) {
-            return SQLValue.newInteger((Integer) this.getValue());
+            return SQLValue.newInteger((Long) this.getValue());
+        }
+        else if (this.getValue() instanceof Long) {
+            return SQLValue.newInteger((Long) this.getValue());
         }
         else if (this.getValue() instanceof Double) {
             return SQLValue.newReal((Double) this.getValue());
         }
         else if (this.getValue() instanceof Boolean) {
-            int boolAsInt = (Boolean) this.getValue() ? 1 : 0;
-            return SQLValue.newInteger(boolAsInt);
+            long boolAsInt = (Boolean) this.getValue() ? 1 : 0;
+            return SQLValue.newInteger(Long.valueOf(boolAsInt));
         }
         else if (this.getValue() instanceof UUID) {
             return SQLValue.newText(this.getValue().toString());
@@ -81,7 +127,7 @@ public class PrimitiveValue<A> extends Value<A>
         } else {
             // value not serializable to
             throw new DatabaseException(
-                    new ValueNotSerializableError(ValueNotSerializableError.Direction.TO,
+                    new ValueNotSerializableError(ValueNotSerializableError.Type.TO,
                                                   this.getValue().getClass().getName()),
                     DatabaseException.ErrorType.VALUE_NOT_SERIALIZABLE);
         }
@@ -98,6 +144,9 @@ public class PrimitiveValue<A> extends Value<A>
         else if (this.valueClass.isAssignableFrom(Integer.class)) {
             this.setValue((A) sqlValue.getInteger());
         }
+        else if (this.valueClass.isAssignableFrom(Long.class)) {
+            this.setValue((A) sqlValue.getInteger());
+        }
         else if (this.valueClass.isAssignableFrom(Double.class)) {
             this.setValue((A) sqlValue.getReal());
         }
@@ -112,7 +161,7 @@ public class PrimitiveValue<A> extends Value<A>
             this.setValue((A) sqlValue.getBlob());
         } else {
             throw new DatabaseException(
-                    new ValueNotSerializableError(ValueNotSerializableError.Direction.FROM,
+                    new ValueNotSerializableError(ValueNotSerializableError.Type.FROM,
                                                   this.getValue().getClass().getName()),
                     DatabaseException.ErrorType.VALUE_NOT_SERIALIZABLE);
         }

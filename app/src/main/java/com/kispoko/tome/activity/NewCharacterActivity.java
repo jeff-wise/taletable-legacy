@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.db.SheetDatabaseManager;
+import com.kispoko.tome.db.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.Util;
 
@@ -40,8 +40,8 @@ public class NewCharacterActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        SheetDatabaseManager sheetDatabaseManager = new SheetDatabaseManager(this);
-        SQLiteDatabase database = sheetDatabaseManager.getWritableDatabase();
+        DatabaseManager databaseManager = new DatabaseManager(this);
+        SQLiteDatabase database = databaseManager.getWritableDatabase();
 
         if (Sheet.count(database) == 0)
             this.firstCharacter = true;

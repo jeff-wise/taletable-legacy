@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.kispoko.tome.Global;
-import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.programming.function.FunctionValueType;
 import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.TrackerId;

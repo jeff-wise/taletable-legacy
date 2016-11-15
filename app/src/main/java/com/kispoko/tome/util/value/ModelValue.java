@@ -3,9 +3,9 @@ package com.kispoko.tome.util.value;
 
 
 import com.kispoko.tome.util.Model;
-import com.kispoko.tome.util.database.ColumnProperties;
 import com.kispoko.tome.util.promise.LoadValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
+
 
 
 /**
@@ -17,17 +17,15 @@ public class ModelValue<A extends Model> extends Value<A>
     // PROPERTIES
     // -------------------------------------------------------------------------------------
 
-    private ColumnProperties columnProperties;
     private Class<A>         modelClass;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public ModelValue(A value, Model model, ColumnProperties columnProperties, Class<A> modelClass)
+    public ModelValue(A value, Model model, Class<A> modelClass)
     {
         super(value, model);
-        this.columnProperties = columnProperties;
         this.modelClass       = modelClass;
     }
 
@@ -38,16 +36,19 @@ public class ModelValue<A extends Model> extends Value<A>
     // > State
     // --------------------------------------------------------------------------------------
 
-
     public Class<A> getModelClass()
     {
         return this.modelClass;
     }
 
 
-    public ColumnProperties getColumnProperties()
+    // > Helpers
+    // --------------------------------------------------------------------------------------
+
+
+    public String sqlColumnName()
     {
-        return this.columnProperties;
+        return this.getValue().getName() + "_id";
     }
 
 

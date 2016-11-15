@@ -23,7 +23,7 @@ import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.sheet.widget.WidgetData;
 import com.kispoko.tome.activity.sheet.PageFragment;
-import com.kispoko.tome.db.SheetDatabaseManager;
+import com.kispoko.tome.db.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.util.Util;
@@ -287,8 +287,8 @@ public class SheetActivity
         if (getIntent().hasExtra("TEMPLATE_ID"))
             templateId = getIntent().getStringExtra("TEMPLATE_ID");
 
-        SheetDatabaseManager sheetDatabaseManager = new SheetDatabaseManager(this);
-        Global.setDatabase(sheetDatabaseManager.getWritableDatabase());
+        DatabaseManager databaseManager = new DatabaseManager(this);
+        Global.setDatabase(databaseManager.getWritableDatabase());
 
         // This will be a new character sheet
         if (templateId != null) {

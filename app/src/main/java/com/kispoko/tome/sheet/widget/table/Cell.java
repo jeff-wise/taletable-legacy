@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
-import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.sheet.widget.WidgetData;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
 import com.kispoko.tome.sheet.widget.NumberWidget;

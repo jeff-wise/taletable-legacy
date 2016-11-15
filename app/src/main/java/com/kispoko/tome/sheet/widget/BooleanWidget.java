@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.Global;
-import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.rules.programming.Variable;
 import com.kispoko.tome.type.Type;

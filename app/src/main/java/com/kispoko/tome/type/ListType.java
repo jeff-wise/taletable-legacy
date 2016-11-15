@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
-import com.kispoko.tome.db.SheetContract;
 import com.kispoko.tome.rules.types.Types;
 import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.TrackerId;
