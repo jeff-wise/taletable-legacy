@@ -1,11 +1,11 @@
 label:
-  id: wizard_level_1
+  name: wizard_level_1
   label: 'Paladin - Level 1'
 game:
-  id: dungeons_and_dragons_5
+  name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 types:
-- id: class
+- name: class
   kind: listType
   label: Classes
   values:
@@ -67,7 +67,7 @@ sections:
             value: Wizard
             type:
               kind: listType
-              id: class
+              name: class
         - type: textWidget
           format:
             label: Race

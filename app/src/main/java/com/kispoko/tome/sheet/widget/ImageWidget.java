@@ -180,7 +180,7 @@ public class ImageWidget extends WidgetData implements Serializable
                            "comp.width, comp.actions, im.image " +
                     "FROM WidgetData comp " +
                     "INNER JOIN component_image im on im.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(thisImageWidget.getId().toString());
+                    "WHERE comp.component_id =  " + SQL.quoted(thisImageWidget.getName().toString());
 
                 Cursor imageCursor = database.rawQuery(imageQuery, null);
 
@@ -231,7 +231,7 @@ public class ImageWidget extends WidgetData implements Serializable
                 UUID trackerCode = trackerId.getCode();
                 switch (trackerId.getTarget()) {
                     case GROUP:
-                        Group.getAsyncTracker(trackerCode).markComponentId(thisImageWidget.getId());
+                        Group.getAsyncTracker(trackerCode).markComponentId(thisImageWidget.getName());
                         break;
                     case CELL:
                         Cell.getAsyncTracker(trackerCode).markComponent();
@@ -276,7 +276,7 @@ public class ImageWidget extends WidgetData implements Serializable
                 // ------------------------------------------------------------------------------
                 ContentValues imageComponentRow = new ContentValues();
 
-                imageComponentRow.put("component_id", thisImageWidget.getId().toString());
+                imageComponentRow.put("component_id", thisImageWidget.getName().toString());
 
                 if (thisImageWidget.serialBitmap != null) {
                     if (thisImageWidget.serialBitmap.getBitmap() != null) {
@@ -304,7 +304,7 @@ public class ImageWidget extends WidgetData implements Serializable
                 UUID trackerCode = trackerId.getCode();
                 switch (trackerId.getTarget()) {
                     case GROUP:
-                        Group.getAsyncTracker(trackerCode).markComponentId(thisImageWidget.getId());
+                        Group.getAsyncTracker(trackerCode).markComponentId(thisImageWidget.getName());
                         break;
                     case CELL:
                         Cell.getAsyncTracker(trackerCode).markComponent();

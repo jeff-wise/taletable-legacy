@@ -1,13 +1,13 @@
 
 label:
-  id: fighter_level_1
+  name: fighter_level_1
   label: 'Fighter - Level 1'
 game:
-  id: dungeons_and_dragons_5
+  name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 rules:
   types:
-  - id: class
+  - name: class
     kind: list
     label: Classes
     values:
@@ -210,7 +210,7 @@ roleplay:
             value: Wizard
           type:
             kind: list
-            id: class
+            name: class
       - type: textWidget
         name: race
         actions:

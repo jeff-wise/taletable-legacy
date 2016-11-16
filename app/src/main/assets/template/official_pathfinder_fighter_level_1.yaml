@@ -1,9 +1,9 @@
 
 label:
-  id: fighter_level_1
+  name: fighter_level_1
   label: 'Fighter - Level 1'
 game:
-  id: pathfinder
+  name: pathfinder
   label: 'Pathfinder'
 types:
 - label: class

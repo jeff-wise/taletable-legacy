@@ -21,8 +21,8 @@ public class PrimitiveValue<A> extends Value<A>
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private ColumnProperties columnProperties;
     private Class<A>         valueClass;
+    private String           columnName;
 
 
     // CONSTRUCTORS
@@ -30,11 +30,9 @@ public class PrimitiveValue<A> extends Value<A>
 
     public PrimitiveValue(A value,
                           Model model,
-                          Class<A> valueClass,
-                          ColumnProperties columnProperties)
+                          Class<A> valueClass)
     {
         super(value, model);
-        this.columnProperties = columnProperties;
         this.valueClass       = valueClass;
     }
 
@@ -45,9 +43,18 @@ public class PrimitiveValue<A> extends Value<A>
     // > State
     // --------------------------------------------------------------------------------------
 
-    public ColumnProperties getColumnProperties()
+    // ** Column Name
+    // --------------------------------------------------------------------------------------
+
+    public String getColumnName()
     {
-        return this.columnProperties;
+        return this.columnName;
+    }
+
+
+    public void setColumnName(String columnName)
+    {
+        this.columnName = columnName;
     }
 
 

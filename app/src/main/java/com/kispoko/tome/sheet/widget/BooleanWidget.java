@@ -190,7 +190,7 @@ public class BooleanWidget extends WidgetData implements Serializable
                            "comp.actions, bool.value " +
                     "FROM component comp " +
                     "INNER JOIN component_boolean bool on bool.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(thisBooleanWidget.getId().toString());
+                    "WHERE comp.component_id =  " + SQL.quoted(thisBooleanWidget.getName().toString());
 
 
                 Cursor cursor = database.rawQuery(boolQuery, null);
@@ -287,7 +287,7 @@ public class BooleanWidget extends WidgetData implements Serializable
                 // ------------------------------------------------------------------------------
                 ContentValues boolComponentRow = new ContentValues();
 
-                boolComponentRow.put("component_id", thisBooleanWidget.getId().toString());
+                boolComponentRow.put("component_id", thisBooleanWidget.getName().toString());
 
                 if (thisBooleanWidget.getValue() != null)
                     boolComponentRow.put("value", thisBooleanWidget.getValue().getBoolean());
@@ -307,7 +307,7 @@ public class BooleanWidget extends WidgetData implements Serializable
             {
                 TrackerId textTrackerId = thisBooleanWidget.addComponentAsyncTracker(trackerId);
 
-                thisBooleanWidget.getValue().save(thisBooleanWidget.getId(), textTrackerId);
+                thisBooleanWidget.getValue().save(thisBooleanWidget.getName(), textTrackerId);
             }
 
         }.execute();

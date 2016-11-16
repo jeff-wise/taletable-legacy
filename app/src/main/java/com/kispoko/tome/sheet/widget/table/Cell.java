@@ -133,7 +133,7 @@ public class Cell implements Serializable
                 row.put("table_id", thisCell.tableId.toString());
                 row.put("row_index", thisCell.rowIndex);
                 row.put("column_index", thisCell.columnIndex);
-                row.put("component_id", thisCell.widgetData.getId().toString());
+                row.put("component_id", thisCell.widgetData.getName().toString());
 
                 int templateIdInt = thisCell.isTemplate ? 1 : 0;
                 row.put("is_template", templateIdInt);

@@ -100,7 +100,7 @@ public class TextEditRecyclerViewAdapter
 
                     // Set chosen value as result of activity and finish
                     EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
-                                                           textWidget.getId(), newValue);
+                                                           textWidget.getName(), newValue);
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("RESULT", editResult);
                     activity.setResult(Activity.RESULT_OK, resultIntent);

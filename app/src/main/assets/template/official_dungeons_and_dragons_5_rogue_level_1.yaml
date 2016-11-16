@@ -1,9 +1,9 @@
 
 label:
-  id: rogue_level_1
+  name: rogue_level_1
   label: 'Rogue - Level 1'
 game:
-  id: dungeons_and_dragons_5
+  name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 types:
 - label: class

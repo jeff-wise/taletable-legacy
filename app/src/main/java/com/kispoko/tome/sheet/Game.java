@@ -2,202 +2,94 @@
 package com.kispoko.tome.sheet;
 
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.kispoko.tome.Global;
-import com.kispoko.tome.util.database.SQL;
-import com.kispoko.tome.util.TrackerId;
+import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.util.Model;
+import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.Value;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.Map;
+import java.util.UUID;
 
 
 
 /**
  * Game
+ *
+ * // TODO when do these get loaded? how do they get updated? can you create custom games?
  */
-public class Game
+public class Game extends Model
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String id;
-    private String label;
-    private String description;
+    private Value<String> name;
+    private Value<String> label;
+    private Value<String> description;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Game(String id)
+    public Game(UUID id, String name, String label, String description)
     {
-        this.id = id;
-        this.label = null;
-        this.description = null;
+        super(id);
+
+        this.name        = new PrimitiveValue<>(name, this, String.class);
+        this.label       = new PrimitiveValue<>(label, this, String.class);
+        this.description = new PrimitiveValue<>(description, this, String.class);
     }
 
 
-    public Game(String id, String label, String description)
-    {
-        this.id = id;
-        this.label = label;
-        this.description = description;
-    }
-
-
-    public static Game fromYaml(Map<String,Object> gameYaml)
+    public static Game fromYaml(Yaml yaml)
+                  throws YamlException
     {
         // Values to parse
-        String id = null;
-        String label = null;
-        String description = null;
+        UUID id            = UUID.randomUUID();
+        String name        = yaml.atKey("name").getString();
+        String label       = yaml.atKey("label").getString();
+        String description = yaml.atKey("description").getString();
 
-        // Parse values
-        // >> Id
-        if (gameYaml.containsKey("id"))
-            id = (String) gameYaml.get("id");
-
-        // >> Label
-        if (gameYaml.containsKey("label"))
-            label = (String) gameYaml.get("label");
-
-        // >> Description
-        if (gameYaml.containsKey("description"))
-            description = (String) gameYaml.get("description");
-
-
-        return new Game(id, label, description);
+        return new Game(id, name, label, description);
     }
 
 
-    // > API
+    // API
     // ------------------------------------------------------------------------------------------
 
-    // >> State
+    // > State
     // ------------------------------------------------------------------------------------------
 
-    public String getId()
+    // ** Name
+    // ------------------------------------------------------------------------------------------
+
+    public String getName()
     {
-        return this.id;
+        return this.name.getValue();
     }
 
 
-    // >>> Label
+    // ** Label
     // ------------------------------------------------------------------------------------------
 
     public String getLabel() {
-        return this.label;
+        return this.label.getValue();
     }
 
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-
-    // >>> Description
+    // ** Description
     // ------------------------------------------------------------------------------------------
 
     public String getDescription() {
-        return this.description;
+        return this.description.getValue();
     }
 
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-    // >> Database
+    // > Model
     // ------------------------------------------------------------------------------------------
 
-    public void load(final TrackerId sheetTrackerId)
-    {
-        final Game thisGame = this;
-
-        new AsyncTask<Void, Void, Boolean>() {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // ModelQuery for the game
-                String gameQuery =
-                    "SELECT game.label, game.description " +
-                    "FROM game " +
-                    "WHERE game.game_id =  " + SQL.quoted(thisGame.getId());
-
-                Cursor gameCursor = database.rawQuery(gameQuery, null);
-
-                String label;
-                String description;
-                try {
-                    gameCursor.moveToFirst();
-                    label = gameCursor.getString(0);
-                    description = gameCursor.getString(1);
-                } finally {
-                    gameCursor.close();
-                }
-
-                thisGame.setLabel(label);
-                thisGame.setDescription(description);
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                Sheet.getAsyncTracker(sheetTrackerId.getCode()).markGame();
-            }
-
-        }.execute();
-    }
-
-
-    public void save(final TrackerId sheetTrackerId)
-    {
-
-        final Game thisGame = this;
-
-        new AsyncTask<Void,Void,Boolean>() {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // Insert Game Row (if doesn't exist)
-                // -----------------------------------------------------------------------------
-                ContentValues gameRow = new ContentValues();
-                gameRow.put("game_id", thisGame.getId());
-                gameRow.put("label", thisGame.getLabel());
-
-                if (thisGame.getDescription() != null)
-                    gameRow.put("description", thisGame.getId());
-                else
-                    gameRow.putNull("description");
-
-                database.insertWithOnConflict(SheetContract.Game.TABLE_NAME,
-                        null,
-                        gameRow,
-                        SQLiteDatabase.CONFLICT_REPLACE);
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                Log.d("***GAME", "saved game");
-                Sheet.getAsyncTracker(sheetTrackerId.getCode()).markGame();
-            }
-        }.execute();
-    }
+    public void onUpdateModel(String field) { }
 }
 

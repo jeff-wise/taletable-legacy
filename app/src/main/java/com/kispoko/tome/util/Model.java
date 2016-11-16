@@ -5,7 +5,6 @@ package com.kispoko.tome.util;
 import android.content.ContentValues;
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.util.database.ColumnProperties;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.query.CollectionQuery;
@@ -36,7 +35,7 @@ import java.util.UUID;
 /**
  * Model
  */
-public abstract class Model<A>
+public abstract class Model
 {
 
     // ABSTRACT METHODS
@@ -201,8 +200,8 @@ public abstract class Model<A>
     // INTERNAL
     // --------------------------------------------------------------------------------------
 
-    private static <A> Integer count(String tableName)
-                       throws DatabaseException
+    private static Integer count(String tableName)
+                   throws DatabaseException
     {
         CountQuery countQuery = new CountQuery(tableName);
         return countQuery.run();
@@ -271,18 +270,8 @@ public abstract class Model<A>
     private void toDatabase()
            throws DatabaseException
     {
-        // [A 1] Get all of the class's Value fields
-        // --------------------------------------------------------------------------------------
-        List<Field> valueFields = new ArrayList<>();
 
-        Field[] fields = this.getClass().getFields();
-        for (int i = 0; i < fields.length; i++)
-        {
-            if (Value.class.isAssignableFrom(fields[i].getType()))
-                valueFields.add(fields[i]);
-        }
-
-        // [A 2] Group values by type
+        // [A 1] Group values by type
         // --------------------------------------------------------------------------------------
 
         Tuple3<List<PrimitiveValue<?>>,
@@ -292,7 +281,6 @@ public abstract class Model<A>
         List<PrimitiveValue<?>>  primitiveValues  = modelValuesTuple.getItem1();
         List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
         List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
-
 
         // [B 1] Save Model row
         // --------------------------------------------------------------------------------------
@@ -307,8 +295,7 @@ public abstract class Model<A>
         for (PrimitiveValue primitiveValue : primitiveValues)
         {
             SQLValue         sqlValue         = primitiveValue.toSQLValue();
-            ColumnProperties columnProperties = primitiveValue.getColumnProperties();
-            String           columnName       = columnProperties.getColumnName();
+            String           columnName       = primitiveValue.getColumnName();
 
             switch (sqlValue.getType())
             {
@@ -391,7 +378,7 @@ public abstract class Model<A>
 
         for (PrimitiveValue<?> primitiveValue : primitiveValues)
         {
-            String columnName = primitiveValue.getColumnProperties().getColumnName();
+            String columnName = primitiveValue.getColumnName();
             primitiveValue.fromSQLValue(row.getSQLValue(columnName));
         }
 
@@ -471,7 +458,9 @@ public abstract class Model<A>
 
                 // Sort values by database value type
                 if (PrimitiveValue.class.isAssignableFrom(field.getType())) {
-                    primitiveValues.add((PrimitiveValue) value);
+                    PrimitiveValue primitiveValue = (PrimitiveValue) value;
+                    primitiveValue.setColumnName(field.getName().toLowerCase());
+                    primitiveValues.add(primitiveValue);
                 }
                 else if (ModelValue.class.isAssignableFrom(field.getType())) {
                     modelValues.add((ModelValue<? extends Model>) value);
@@ -516,8 +505,7 @@ public abstract class Model<A>
         // > Add PRIMITIVE VALUE columns
         for (PrimitiveValue<?> primitiveValue : modelValuesTuple.getItem1())
         {
-            ColumnProperties columnProperties = primitiveValue.getColumnProperties();
-            columns.add(new Tuple2<>(columnProperties.getColumnName(),
+            columns.add(new Tuple2<>(primitiveValue.getColumnName(),
                                      primitiveValue.sqlType()));
         }
 
@@ -590,7 +578,7 @@ public abstract class Model<A>
         // ** Primitive Values
         for (PrimitiveValue<?> primitiveValue : primitiveValues)
         {
-            String        columnName = primitiveValue.getColumnProperties().getColumnName();
+            String        columnName = primitiveValue.getColumnName();
             SQLValue.Type columnType = primitiveValue.sqlType();
 
             tableBuilder.append(", ");

@@ -276,7 +276,7 @@ public class NumberWidget extends WidgetData implements Serializable
                            "comp.actions, int.prefix, int.postfix " +
                     "FROM component comp " +
                     "INNER JOIN component_integer int on int.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(thisInteger.getId().toString());
+                    "WHERE comp.component_id =  " + SQL.quoted(thisInteger.getName().toString());
 
 
                 Cursor integerCursor = database.rawQuery(integerQuery, null);
@@ -348,15 +348,15 @@ public class NumberWidget extends WidgetData implements Serializable
                 Tracker.OnReady onReady = new Tracker.OnReady() {
                     @Override
                     protected void go() {
-                        Global.getTracker(callerTrackerId).setKey(thisInteger.getId().toString());
+                        Global.getTracker(callerTrackerId).setKey(thisInteger.getName().toString());
                     }
                 };
 
                 UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
 
-                thisInteger.getValue().load(thisInteger.getId(), "value", textTrackerId);
-                thisInteger.getPrefix().load(thisInteger.getId(), "prefix", textTrackerId);
-                thisInteger.getPostfix().load(thisInteger.getId(), "postfix", textTrackerId);
+                thisInteger.getValue().load(thisInteger.getName(), "value", textTrackerId);
+                thisInteger.getPrefix().load(thisInteger.getName(), "prefix", textTrackerId);
+                thisInteger.getPostfix().load(thisInteger.getName(), "postfix", textTrackerId);
             }
 
         }.execute();
@@ -399,7 +399,7 @@ public class NumberWidget extends WidgetData implements Serializable
                 // ------------------------------------------------------------------------------
                 ContentValues integerComponentRow = new ContentValues();
 
-                integerComponentRow.put("component_id", thisInteger.getId().toString());
+                integerComponentRow.put("component_id", thisInteger.getName().toString());
                 integerComponentRow.put("prefix", thisInteger.getPrefix().getId().toString());
                 integerComponentRow.put("postfix", thisInteger.getPostfix().getId().toString());
 
@@ -422,7 +422,7 @@ public class NumberWidget extends WidgetData implements Serializable
                 Tracker.OnReady onReady = new Tracker.OnReady() {
                     @Override
                     protected void go() {
-                        Global.getTracker(callerTrackerId).setKey(thisInteger.getId().toString());
+                        Global.getTracker(callerTrackerId).setKey(thisInteger.getName().toString());
                     }
                 };
 

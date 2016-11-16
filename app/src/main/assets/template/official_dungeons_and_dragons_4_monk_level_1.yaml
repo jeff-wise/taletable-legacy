@@ -1,9 +1,9 @@
 
 label:
-  id: monk_level_1
+  name: monk_level_1
   label: 'Monk - Level 1'
 game:
-  id: dungeons_and_dragons_4
+  name: dungeons_and_dragons_4
   label: 'Dungeons & Dragons 4th Edition'
 types:
 - label: class

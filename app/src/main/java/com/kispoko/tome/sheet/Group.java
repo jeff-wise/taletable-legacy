@@ -500,7 +500,7 @@ public class Group implements Serializable
 
             componentIdTrackerMap = new HashMap<>();
             for (WidgetData widgetData : this.group.getWidgetDatas()) {
-                componentIdTrackerMap.put(widgetData.getId(), false);
+                componentIdTrackerMap.put(widgetData.getName(), false);
             }
 
             if (group.getWidgetDatas().size() == 0) ready();

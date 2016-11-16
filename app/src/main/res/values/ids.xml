@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="component_label" type="id"/>
+    <item name="component_label" type="name"/>
 
     <!-- COMPONENTS -->
-    <item name="text_component_edit_text" type="id"/>
-    <item name="document_component_edit_text" type="id"/>
+    <item name="text_component_edit_text" type="name"/>
+    <item name="document_component_edit_text" type="name"/>
 
 
     <!-- COMPONENT: TEXT -->
-    <item name="comp_text_editor_value" type="id"/>
+    <item name="comp_text_editor_value" type="name"/>
 
 
-    <item name="type_list_item_name" type="id"/>
-    <item name="type_list_item_icon" type="id"/>
+    <item name="type_list_item_name" type="name"/>
+    <item name="type_list_item_icon" type="name"/>
 
 
 </resources>

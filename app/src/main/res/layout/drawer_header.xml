@@ -10,7 +10,7 @@
     android:gravity="bottom">
 
     <TextView
-        android:id="@+id/drawer_header_title"
+        android:name="@+name/drawer_header_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textWidget="@string/drawer_header_text"

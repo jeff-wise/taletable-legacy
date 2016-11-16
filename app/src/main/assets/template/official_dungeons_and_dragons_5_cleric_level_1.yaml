@@ -1,9 +1,9 @@
 
 label:
-  id: cleric_level_1
+  name: cleric_level_1
   label: 'Cleric - Level 1'
 game:
-  id: dungeons_and_dragons_5
+  name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 types:
 - label: class

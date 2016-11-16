@@ -1,9 +1,9 @@
 
 label:
-  id: warlock_level_1
+  name: warlock_level_1
   label: 'Warlock - Level 1'
 game:
-  id: dungeons_and_dragons_5
+  name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 types:
 - label: class

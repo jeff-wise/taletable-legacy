@@ -1,9 +1,9 @@
 
 label:
-  id: barbarian_level_1
+  name: barbarian_level_1
   label: 'Barbarian - Level 1'
 game:
-  id: dungeons_and_dragons_5
+  name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 types:
 - label: class
@@ -41,7 +41,7 @@ sections:
       - label: Features
         widgetDatas:
         - type: integer
-          id: level
+          name: level
           format:
             size: medium
             label: Level

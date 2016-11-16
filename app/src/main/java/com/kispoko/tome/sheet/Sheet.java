@@ -3,19 +3,14 @@ package com.kispoko.tome.sheet;
 
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.Global;
-import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.sheet.widget.WidgetData;
 import com.kispoko.tome.util.Model;
-import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.database.ColumnProperties;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -72,8 +67,7 @@ public class Sheet extends Model
         // --------------------------------------------------------------------------------------
         Long currentTimeMS = System.currentTimeMillis();
 
-        this.lastUsed = new PrimitiveValue<>(currentTimeMS, this, Long.class,
-                                             new ColumnProperties("last_used", null));
+        this.lastUsed = new PrimitiveValue<>(currentTimeMS, this, Long.class);
 
         this.game     = new ModelValue<>(game, this, Game.class);
         this.roleplay = new ModelValue<>(roleplay, this, Roleplay.class);
@@ -185,39 +179,7 @@ public class Sheet extends Model
     }
 
 
-    // >>>> Queries
-    // ------------------------------------------------------------------------------------------
-
-    public static Integer count(SQLiteDatabase database)
-    {
-        String sheetCountQuery = "SELECT count(*) FROM Sheet";
-
-        Cursor cursor = database.rawQuery(sheetCountQuery, null);
-
-        Integer count;
-        try {
-            cursor.moveToFirst();
-            count = cursor.getInt(0);
-        }
-        finally {
-            cursor.close();
-        }
-
-        return count;
-    }
-
-
-
-    // >>> Files
-    // ------------------------------------------------------------------------------------------
-
-
-
-    // >> View Methods
-    // ------------------------------------------------------------------------------------------
-
-
-    // > INTERNAL
+    // INTERNAL
     // ------------------------------------------------------------------------------------------
 
     private void indexComponents()
@@ -232,7 +194,7 @@ public class Sheet extends Model
             {
                 for (WidgetData widgetData : group.getWidgetDatas())
                 {
-                    componentById.put(widgetData.getId(), widgetData);
+                    componentById.put(widgetData.getName(), widgetData);
 
                     if (widgetData.hasLabel())
                         componentByLabel.put(widgetData.getLabel().toLowerCase(), widgetData);
@@ -241,7 +203,6 @@ public class Sheet extends Model
         }
 
     }
-
 
 
     // NESTED DEFINITIONS
@@ -279,7 +240,7 @@ public class Sheet extends Model
     }
 
 
-    // > Listeners
+    // Listeners
     // ------------------------------------------------------------------------------------------
 
     public interface OnSheetListener {

@@ -1,15 +1,15 @@
 games:
-- id: dungeons_and_dragons_5
+- name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
   description: >
     The fifth edition of the world's most famous roleplaying game, with simplified game
     mechanics and more focus on roleplaying and storytelling.
-- id: dungeons_and_dragons_4
+- name: dungeons_and_dragons_4
   label: 'Dungeons & Dragons 4th Edition'
   description: >
     Dungeons and Dragons 4th Edition departed from the classic game mechanics of previous editions
     and presented a more simplified and unique take on roleplaying adventure games.
-- id: pathfinder
+- name: pathfinder
   label: 'Pathfinder'
   description: >
     Pathfinder takes the best rules from Dungeons and Dragons 3.5, fixing many defects while
@@ -17,85 +17,85 @@ games:
 templates:
 - game: dungeons_and_dragons_4
   template:
-    id: monk_level_1
+    name: monk_level_1
     label: 'Monk - Level 1'
     description: >
       Start your game with a Monk!
 - game: dungeons_and_dragons_5
   template:
-    id: barbarian_level_1
+    name: barbarian_level_1
     label: 'Barbarian - Level 1'
     description: >
       Start your game with a Barbarian!
 - game: dungeons_and_dragons_5
   template:
-    id: bard_level_1
+    name: bard_level_1
     label: 'Bard - Level 1'
     description: >
       Start your game with a Bard!
 - game: dungeons_and_dragons_5
   template:
-    id: cleric_level_1
+    name: cleric_level_1
     label: 'Cleric - Level 1'
     description: >
       Start your game with a Cleric!
 - game: dungeons_and_dragons_5
   template:
-    id: druid_level_1
+    name: druid_level_1
     label: 'Druid - Level 1'
     description: >
       Start your game with a Druid!
 - game: dungeons_and_dragons_5
   template:
-    id: fighter_level_1
+    name: fighter_level_1
     label: 'Fighter - Level 1'
     description: >
       Start your game with a Fighter!
 - game: dungeons_and_dragons_5
   template:
-    id: monk_level_1
+    name: monk_level_1
     label: 'Monk - Level 1'
     description: >
       Start your game with a Monk!
 - game: dungeons_and_dragons_5
   template:
-    id: paladin_level_1
+    name: paladin_level_1
     label: 'Paladin - Level 1'
     description: >
       Start your game with a Paladin!
 - game: dungeons_and_dragons_5
   template:
-    id: ranger_level_1
+    name: ranger_level_1
     label: 'Ranger - Level 1'
     description: >
       Start your game with a Ranger!
 - game: dungeons_and_dragons_5
   template:
-    id: rogue_level_1
+    name: rogue_level_1
     label: 'Rogue - Level 1'
     description: >
       Start your game with a Rogue!
 - game: dungeons_and_dragons_5
   template:
-    id: sorceror_level_1
+    name: sorceror_level_1
     label: 'Sorceror - Level 1'
     description: >
       Start your game with a Sorceror!
 - game: dungeons_and_dragons_5
   template:
-    id: warlock_level_1
+    name: warlock_level_1
     label: 'Warlock - Level 1'
     description: >
       Start your game with a Warlock!
 - game: dungeons_and_dragons_5
   template:
-    id: wizard_level_1
+    name: wizard_level_1
     label: 'Wizard - Level 1'
     description: >
       Start your game with a Wizard!
 - game: pathfinder
   template:
-    id: figther_level_1
+    name: figther_level_1
     label: 'Fighter - Level 1'
     description: >
       Start your game with a Fighter!

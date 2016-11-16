@@ -275,7 +275,7 @@ public class TextWidget implements Model, Widget, Serializable
                 Activity editActivity = (Activity) context;
                 String newValue = thisEditView.getText().toString();
                 EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
-                                                       thisTextWidget.getId(), newValue);
+                                                       thisTextWidget.getName(), newValue);
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("RESULT", editResult);
                 editActivity.setResult(Activity.RESULT_OK, resultIntent);
@@ -323,7 +323,7 @@ public class TextWidget implements Model, Widget, Serializable
         String componentTable = SheetContract.Component.TABLE_NAME;
         String textTable = SheetContract.ComponentText.TABLE_NAME;
 
-        String idString = this.getId().toString();
+        String idString = this.getName().toString();
 
         return ModelQuery.from(componentTable)
                     .select("name").select("type_id").select("value")
@@ -435,13 +435,13 @@ public class TextWidget implements Model, Widget, Serializable
                 Tracker.OnReady onReady = new Tracker.OnReady() {
                     @Override
                     protected void go() {
-                        Global.getTracker(callerTrackerId).setKey(thisTextWidget.getId().toString());
+                        Global.getTracker(callerTrackerId).setKey(thisTextWidget.getName().toString());
                     }
                 };
 
                 UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
 
-                thisTextWidget.getValue().load(thisTextWidget.getId(), "value", textTrackerId);
+                thisTextWidget.getValue().load(thisTextWidget.getName(), "value", textTrackerId);
             }
 
         }.execute();
@@ -483,7 +483,7 @@ public class TextWidget implements Model, Widget, Serializable
                 // ------------------------------------------------------------------------------
                 ContentValues textComponentRow = new ContentValues();
 
-                textComponentRow.put("component_id", thisTextWidget.getId().toString());
+                textComponentRow.put("component_id", thisTextWidget.getName().toString());
                 textComponentRow.put("size", thisTextWidget.getTextSizeAsString());
 
                 database.insertWithOnConflict(SheetContract.ComponentText.TABLE_NAME,
@@ -504,13 +504,13 @@ public class TextWidget implements Model, Widget, Serializable
                 Tracker.OnReady onReady = new Tracker.OnReady() {
                     @Override
                     protected void go() {
-                        Global.getTracker(callerTrackerId).setKey(thisTextWidget.getId().toString());
+                        Global.getTracker(callerTrackerId).setKey(thisTextWidget.getName().toString());
                     }
                 };
 
                 UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
 
-                thisTextWidget.getValue().load(thisTextWidget.getId(), "value", textTrackerId);
+                thisTextWidget.getValue().load(thisTextWidget.getName(), "value", textTrackerId);
             }
 
 

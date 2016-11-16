@@ -153,7 +153,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
                     Intent intent = new Intent(ChooseTemplateGameActivity.this, ChooseTemplateActivity.class);
 
                     Bundle bundle = new Bundle();
-                    String gameId = thisGame.getId();
+                    String gameId = thisGame.getName();
                     bundle.putString("game_id", gameId);
                     intent.putExtras(bundle);
 
@@ -222,7 +222,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
 
             gamePlayersNumberView.setLayoutParams(Util.linearLayoutParamsWrap());
 
-            int numberOfPlayers = Statistics.gamePlayers(game.getId());
+            int numberOfPlayers = Statistics.gamePlayers(game.getName());
             gamePlayersNumberView.setText(Integer.toString(numberOfPlayers));
             gamePlayersNumberView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_100));
 

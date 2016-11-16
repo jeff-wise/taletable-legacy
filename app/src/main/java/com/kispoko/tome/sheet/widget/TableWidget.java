@@ -320,7 +320,7 @@ public class TableWidget extends WidgetData implements Serializable
                            "tbl.column4_name, tbl.column5_name, tbl.column6_name " +
                     "FROM WidgetData comp " +
                     "INNER JOIN component_table tbl on tbl.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(thisTableWidget.getId().toString());
+                    "WHERE comp.component_id =  " + SQL.quoted(thisTableWidget.getName().toString());
 
                 Cursor tableCursor = database.rawQuery(tableQuery, null);
 
@@ -367,7 +367,7 @@ public class TableWidget extends WidgetData implements Serializable
                     "SELECT cell.column_index, cell.component_id, comp.data_type " +
                     "FROM component_table_cell cell " +
                     "INNER JOIN component comp on comp.component_id = cell.component_id " +
-                    "WHERE cell.table_id = " + SQL.quoted(thisTableWidget.getId().toString()) + " and " +
+                    "WHERE cell.table_id = " + SQL.quoted(thisTableWidget.getName().toString()) + " and " +
                           "cell.is_template = 1 " +
                     "ORDER BY cell.column_index";
 
@@ -384,7 +384,7 @@ public class TableWidget extends WidgetData implements Serializable
 
                         Cell cell = new Cell(WidgetData.empty(templateComponentId,
                                                              null, templateComponentKind),
-                                             thisTableWidget.getId(),
+                                             thisTableWidget.getName(),
                                              true,
                                              null, templateColumnIndex, null);
                         rowTemplate.insertCell(templateColumnIndex, cell);
@@ -404,7 +404,7 @@ public class TableWidget extends WidgetData implements Serializable
                     "SELECT cell.row_index, cell.column_index, cell.component_id, comp.data_type " +
                     "FROM component_table_cell cell " +
                     "INNER JOIN component comp on comp.component_id = cell.component_id " +
-                    "WHERE cell.table_id =  " + SQL.quoted(thisTableWidget.getId().toString()) + " and " +
+                    "WHERE cell.table_id =  " + SQL.quoted(thisTableWidget.getName().toString()) + " and " +
                           "cell.is_template = 0 " +
                     "ORDER BY cell.row_index, cell.column_index";
 
@@ -427,7 +427,7 @@ public class TableWidget extends WidgetData implements Serializable
 
                         Cell template = rowTemplate.getCell(tableColIndex);
                         Cell cell = new Cell(WidgetData.empty(cellComponentId, null, componentKind),
-                                             thisTableWidget.getId(),
+                                             thisTableWidget.getName(),
                                              false,
                                              tableRowIndex, tableColIndex, template);
                         rows[tableRowIndex].insertCell(tableColIndex, cell);
@@ -467,7 +467,7 @@ public class TableWidget extends WidgetData implements Serializable
                 Tracker.OnReady onReady = new Tracker.OnReady() {
                     @Override
                     protected void go() {
-                        Global.getTracker(callerTrackerId).setKey(thisTableWidget.getId().toString());
+                        Global.getTracker(callerTrackerId).setKey(thisTableWidget.getName().toString());
                     }
                 };
 
@@ -512,7 +512,7 @@ public class TableWidget extends WidgetData implements Serializable
                 // -----------------------------------------------------------------------------
                 ContentValues componentRow = new ContentValues();
 
-                componentRow.put("component_id", thisTableWidget.getId().toString());
+                componentRow.put("component_id", thisTableWidget.getName().toString());
                 SQL.putOptString(componentRow, "group_id", thisTableWidget.getGroupId());
                 componentRow.put("data_type", thisTableWidget.componentName());
                 componentRow.put("label", thisTableWidget.getLabel());
@@ -541,7 +541,7 @@ public class TableWidget extends WidgetData implements Serializable
                 // -----------------------------------------------------------------------------
 
                 ContentValues tableComponentRow = new ContentValues();
-                tableComponentRow.put("component_id", thisTableWidget.getId().toString());
+                tableComponentRow.put("component_id", thisTableWidget.getName().toString());
                 tableComponentRow.put("width", thisTableWidget.getTableWidth());
                 tableComponentRow.put("height", thisTableWidget.getTableHeight());
 
@@ -734,7 +734,7 @@ public class TableWidget extends WidgetData implements Serializable
         Tracker.OnReady onReady = new Tracker.OnReady() {
             @Override
             protected void go() {
-                Global.getTracker(callerTrackerId).setKey(thisTableWidget.getId().toString());
+                Global.getTracker(callerTrackerId).setKey(thisTableWidget.getName().toString());
             }
         };
 
@@ -887,7 +887,7 @@ public class TableWidget extends WidgetData implements Serializable
             if (groupTrackerId == null) return;
 
             UUID trackerCode = groupTrackerId.getCode();
-            Group.getAsyncTracker(trackerCode).markComponentId(this.tableWidget.getId());
+            Group.getAsyncTracker(trackerCode).markComponentId(this.tableWidget.getName());
         }
     }
 

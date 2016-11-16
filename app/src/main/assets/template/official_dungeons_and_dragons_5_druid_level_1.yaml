@@ -1,9 +1,9 @@
 
 label:
-  id: druid_level_1
+  name: druid_level_1
   label: 'Druid - Level 1'
 game:
-  id: dungeons_and_dragons_5
+  name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 types:
 - label: class
