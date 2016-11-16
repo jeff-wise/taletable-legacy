@@ -3,7 +3,7 @@ package com.kispoko.tome.util.value;
 
 
 import com.kispoko.tome.util.Model;
-import com.kispoko.tome.util.promise.LoadCollectionValuePromise;
+import com.kispoko.tome.util.promise.CollectionValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
 
 import java.util.List;
@@ -59,9 +59,9 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // > Asynchronous Operations
     // --------------------------------------------------------------------------------------
 
-    public void loadValue(final LoadCollectionValuePromise<A> promise)
+    public void loadValue(final CollectionValuePromise<A> promise)
     {
-        promise.run(new LoadCollectionValuePromise.OnReady<A>() {
+        promise.run(new CollectionValuePromise.OnReady<A>() {
             @Override
             public void run(List<A> result) {
                 setValue(result);

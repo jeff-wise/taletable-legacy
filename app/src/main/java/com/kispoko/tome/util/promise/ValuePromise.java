@@ -6,39 +6,38 @@ import android.os.AsyncTask;
 
 import com.kispoko.tome.util.Model;
 
-import java.util.List;
 
 
 
 /**
- * Promise: Load Collection Value
+ * Promise: Load Model Value
  */
-public class LoadCollectionValuePromise<A extends Model>
+public class ValuePromise<A extends Model>
 {
 
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private AsyncTask<Void,Void,List<A>> asyncTask;
+    private AsyncTask<Void,Void,A> asyncTask;
     private OnReady<A>             onReady;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public LoadCollectionValuePromise(final Action<A> action)
+    public ValuePromise(final Action<A> action)
     {
-        this.asyncTask = new AsyncTask<Void,Void,List<A>>()
+        this.asyncTask = new AsyncTask<Void,Void,A>()
         {
 
             @Override
-            protected List<A> doInBackground(Void... args)
+            protected A doInBackground(Void... args)
             {
                 return action.run();
             }
 
             @Override
-            protected void onPostExecute(List<A> result)
+            protected void onPostExecute(A result)
             {
                 onReady.run(result);
             }
@@ -58,12 +57,12 @@ public class LoadCollectionValuePromise<A extends Model>
 
     public abstract static class Action<A>
     {
-        abstract public List<A> run();
+        abstract public A run();
     }
 
 
     public abstract static class OnReady<A>
     {
-        abstract public void run(List<A> result);
+        abstract public void run(A result);
     }
 }

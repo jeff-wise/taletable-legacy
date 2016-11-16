@@ -3,9 +3,8 @@ package com.kispoko.tome.util.value;
 
 
 import com.kispoko.tome.util.Model;
-import com.kispoko.tome.util.promise.LoadValuePromise;
+import com.kispoko.tome.util.promise.ValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
-
 
 
 /**
@@ -55,9 +54,9 @@ public class ModelValue<A extends Model> extends Value<A>
     // > Asynchronous Operations
     // --------------------------------------------------------------------------------------
 
-    public void loadValue(final LoadValuePromise<A> promise)
+    public void loadValue(final ValuePromise<A> promise)
     {
-        promise.run(new LoadValuePromise.OnReady<A>() {
+        promise.run(new ValuePromise.OnReady<A>() {
             @Override
             public void run(A result) {
                 setValue(result);

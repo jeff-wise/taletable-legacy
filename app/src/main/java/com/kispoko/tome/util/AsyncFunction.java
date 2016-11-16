@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 /**
- * LoadValuePromise
+ * ValuePromise
  */
 public class AsyncFunction<A>
 {

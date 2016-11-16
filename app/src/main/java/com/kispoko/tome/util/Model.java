@@ -4,16 +4,20 @@ package com.kispoko.tome.util;
 
 import android.content.ContentValues;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.util.database.ColumnProperties;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.query.CollectionQuery;
+import com.kispoko.tome.util.database.query.CountQuery;
 import com.kispoko.tome.util.database.query.ModelQuery;
+import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.query.ResultRow;
 import com.kispoko.tome.util.database.query.UpsertQuery;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.promise.LoadCollectionValuePromise;
-import com.kispoko.tome.util.promise.LoadValuePromise;
+import com.kispoko.tome.util.promise.CollectionValuePromise;
+import com.kispoko.tome.util.promise.Promise;
+import com.kispoko.tome.util.promise.ValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
 import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.tuple.Tuple3;
@@ -92,20 +96,44 @@ public abstract class Model<A>
     }
 
 
+    public static <A> String name(Class<A> modelClass)
+    {
+        return SQL.asValidIdentifier(modelClass.getName().toLowerCase());
+    }
+
+
     // > Serialization
     // ------------------------------------------------------------------------------------------
 
-    public static <A extends Model> LoadValuePromise<A>
-                                    loadModelValuePromise(final String modelName,
-                                                          final UUID modelId,
-                                                          final Class<A> classObject)
+    public static <A extends Model> Promise<Integer> modelCountPromise(final Class<A> modelClass)
     {
-        return new LoadValuePromise<>(new LoadValuePromise.Action<A>() {
+        return new Promise<>(new Promise.Action<Integer>() {
+            @Override
+            public Integer run() {
+                Integer count = null;
+                try {
+                    String tableName = Model.name(modelClass);
+                    count = Model.count(tableName);
+                } catch (DatabaseException e) {
+                    ApplicationFailure.database(e);
+                }
+
+                return count;
+            }
+        });
+    }
+
+
+    public static <A extends Model> ValuePromise<A>
+                                modelValuePromise(final Class<A> classObject,
+                                                  final ModelQueryParameters queryParameters)
+    {
+        return new ValuePromise<>(new ValuePromise.Action<A>() {
             @Override
             public A run() {
                 A loadedValue = null;
                 try {
-                    loadedValue = Model.modelFromDatabase(modelName, modelId, classObject);
+                    loadedValue = Model.fromDatabase(classObject, queryParameters);
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }
@@ -115,19 +143,17 @@ public abstract class Model<A>
     }
 
 
-    public static <A extends Model> LoadCollectionValuePromise<A>
-                                    loadCollectionValuePromise(final String modelName,
-                                                               final String parentModelName,
+    public static <A extends Model> CollectionValuePromise<A>
+                                        collectionValuePromise(final String parentModelName,
                                                                final UUID parentModelId,
                                                                final Class<A> classObject)
     {
-        return new LoadCollectionValuePromise<>(new LoadCollectionValuePromise.Action<A>() {
+        return new CollectionValuePromise<>(new CollectionValuePromise.Action<A>() {
             @Override
             public List<A> run() {
                 List<A> loadedCollection = null;
                 try {
-                    loadedCollection = Model.collectionFromDatabase(modelName,
-                                                                    parentModelName,
+                    loadedCollection = Model.collectionFromDatabase(parentModelName,
                                                                     parentModelId,
                                                                     classObject);
                 } catch (DatabaseException e) {
@@ -175,6 +201,13 @@ public abstract class Model<A>
     // INTERNAL
     // --------------------------------------------------------------------------------------
 
+    private static <A> Integer count(String tableName)
+                       throws DatabaseException
+    {
+        CountQuery countQuery = new CountQuery(tableName);
+        return countQuery.run();
+    }
+
     /**
      * Automatically load this model from the database using reflection on its Value properties
      * and the database data stored within them.
@@ -182,9 +215,8 @@ public abstract class Model<A>
      * @throws DatabaseException
      */
     @SuppressWarnings("unchecked")
-    private static <A extends Model> A modelFromDatabase(String modelName,
-                                                         UUID modelId,
-                                                         Class<A> classObject)
+    private static <A extends Model> A fromDatabase(Class<A> classObject,
+                                                    ModelQueryParameters queryParameters)
                                      throws DatabaseException
     {
         // GET SQL columns
@@ -192,7 +224,9 @@ public abstract class Model<A>
         List<Tuple2<String,SQLValue.Type>> sqlColumns = Model.sqlColumns(dummyModel);
 
         // RUN the query
-        ModelQuery modelQuery = new ModelQuery(modelName, modelId, sqlColumns);
+        ModelQuery modelQuery = new ModelQuery(Model.name(classObject),
+                                               sqlColumns,
+                                               queryParameters);
         ResultRow row = modelQuery.result();
 
         return Model.modelFromRow(classObject, row);
@@ -204,8 +238,7 @@ public abstract class Model<A>
      * @throws DatabaseException
      */
     @SuppressWarnings("unchecked")
-    private static <A extends Model> List<A> collectionFromDatabase(String modelName,
-                                                                    String parentModelName,
+    private static <A extends Model> List<A> collectionFromDatabase(String parentModelName,
                                                                     UUID parentModelId,
                                                                     Class<A> classObject)
                        throws DatabaseException
@@ -215,7 +248,7 @@ public abstract class Model<A>
         List<Tuple2<String,SQLValue.Type>> sqlColumns = Model.sqlColumns(dummyModel);
 
         // RUN the query
-        CollectionQuery collectionQuery = new CollectionQuery(modelName,
+        CollectionQuery collectionQuery = new CollectionQuery(Model.name(classObject),
                                                               parentModelName,
                                                               parentModelId,
                                                               sqlColumns);
@@ -374,11 +407,14 @@ public abstract class Model<A>
             // know that the class in modelValue.getModelClass should be over the same type A as
             // the ModelValue parameter type A. Though I think it should know that. Really not sure
             // here but it should work, so not worth the time.
-            LoadValuePromise loadValuePromise =
-                    Model.loadModelValuePromise(modelValue.getValue().name(),
-                                                modelValueId,
-                                                modelValue.getModelClass());
-            modelValue.loadValue(loadValuePromise);
+            ModelQueryParameters queryParameters =
+                    new ModelQueryParameters(new ModelQueryParameters.PrimaryKey(modelValueId),
+                                             ModelQueryParameters.Type.PRIMARY_KEY);
+            ValuePromise valuePromise =
+                    Model.modelValuePromise(modelValue.getModelClass(),
+                                            queryParameters);
+
+            modelValue.loadValue(valuePromise);
         }
 
         // [B 2] Evaluate collection values (one-to-many values)
@@ -386,12 +422,11 @@ public abstract class Model<A>
 
         for (CollectionValue<? extends Model> collectionValue : collectionValues)
         {
-            LoadCollectionValuePromise loadCollectionValuePromise =
-                    Model.loadCollectionValuePromise(collectionValue.getChildModelName(),
-                                                     model.name(),
-                                                     model.getId(),
-                                                     collectionValue.getModelClass());
-            collectionValue.loadValue(loadCollectionValuePromise);
+            CollectionValuePromise collectionValuePromise =
+                    Model.collectionValuePromise(model.name(),
+                                                 model.getId(),
+                                                 collectionValue.getModelClass());
+            collectionValue.loadValue(collectionValuePromise);
         }
 
         return model;

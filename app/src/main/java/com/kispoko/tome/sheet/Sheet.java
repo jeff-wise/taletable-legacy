@@ -185,51 +185,6 @@ public class Sheet extends Model
     }
 
 
-    public static void loadMostRecent(final SheetActivity sheetActivity)
-    {
-        new AsyncTask<Void,Void,Sheet>()
-        {
-
-            protected Sheet doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                String mostRecentSheetIdQuery =
-                    "SELECT sheet.sheet_id, sheet.game_id " +
-                    "FROM sheet " +
-                    "ORDER BY datetime(sheet.last_used) DESC " +
-                    "LIMIT 1";
-
-                Cursor cursor = database.rawQuery(mostRecentSheetIdQuery, null);
-
-                UUID sheetId;
-                String gameId;
-                try {
-                    cursor.moveToFirst();
-                    sheetId = UUID.fromString(cursor.getString(0));
-                    gameId  = cursor.getString(1);
-                }
-                finally {
-                    cursor.close();
-                }
-
-                return new Sheet(sheetId, gameId);
-            }
-
-            protected void onPostExecute(Sheet sheet)
-            {
-                // Create an asynchronous Sheet constructor
-                TrackerId sheetTrackerId = sheet.addAsyncTracker(sheetActivity, true);
-
-                // Load the sheet components
-                sheet.getGame().load(sheetTrackerId);
-                sheet.getRoleplay().load(sheetTrackerId);
-                sheet.getRules().load(sheetTrackerId);
-            }
-
-        }.execute();
-    }
-
     // >>>> Queries
     // ------------------------------------------------------------------------------------------
 
