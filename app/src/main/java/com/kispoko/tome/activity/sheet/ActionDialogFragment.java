@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.widget.WidgetData;
+import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.Util;
 

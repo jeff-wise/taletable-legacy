@@ -5,7 +5,6 @@ package com.kispoko.tome.rules.types;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.type.ListType;
 import com.kispoko.tome.type.Type;
-import com.kispoko.tome.util.TrackerId;
 
 import java.io.Serializable;
 import java.util.HashMap;

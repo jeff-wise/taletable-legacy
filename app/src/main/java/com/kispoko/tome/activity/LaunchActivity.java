@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.kispoko.tome.db.DatabaseManager;
+import com.kispoko.tome.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
 
 

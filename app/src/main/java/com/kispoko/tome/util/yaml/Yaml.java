@@ -2,6 +2,9 @@
 package com.kispoko.tome.util.yaml;
 
 
+import com.kispoko.tome.util.yaml.error.MissingKeyError;
+import com.kispoko.tome.util.yaml.error.UnexpectedTypeError;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,10 +63,10 @@ public class Yaml
             if (yamlMap.containsKey(key))
                 yamlObjectAtKey = yamlMap.get(key);
             else
-                throw new YamlException(new YamlError.MissingKey(key),
+                throw new YamlException(new MissingKeyError(key),
                                         YamlException.Type.MISSING_KEY);
         } catch (ClassCastException e) {
-            throw new YamlException(new YamlError.UnexpectedType(ObjectType.MAP),
+            throw new YamlException(new UnexpectedTypeError(ObjectType.MAP),
                                     YamlException.Type.UNEXPECTED_TYPE);
         }
 
@@ -83,7 +86,7 @@ public class Yaml
             Map<String,Object> yamlMap = (Map<String,Object>) this.yamlObject;
             yamlObjectAtKey = yamlMap.get(key);
         } catch (ClassCastException e) {
-            throw new YamlException(new YamlError.UnexpectedType(ObjectType.MAP),
+            throw new YamlException(new UnexpectedTypeError(ObjectType.MAP),
                                     YamlException.Type.UNEXPECTED_TYPE);
         }
 
@@ -102,11 +105,11 @@ public class Yaml
 
         try {
             List<Object> objectList = (List<Object>) this.yamlObject;
-            for (Object object : objectList) {
-                list.add(forEach.forEach(new Yaml(object)));
+            for (int i = 0; i < objectList.size(); i++) {
+                list.add(forEach.forEach(new Yaml(objectList.get(i)), i));
             }
         } catch (ClassCastException e) {
-            throw new YamlException(new YamlError.UnexpectedType(ObjectType.LIST),
+            throw new YamlException(new UnexpectedTypeError(ObjectType.LIST),
                                     YamlException.Type.UNEXPECTED_TYPE);
         }
 
@@ -114,11 +117,10 @@ public class Yaml
     }
 
 
-    public abstract class ForEach<A>
+    public abstract static class ForEach<A>
     {
-        public ForEach() { }
-
-        abstract A forEach(Yaml yaml);
+        abstract public A forEach(Yaml yaml, int index)
+                        throws YamlException;
     }
 
 
@@ -134,7 +136,7 @@ public class Yaml
         try {
             stringList = (List<String>) this.yamlObject;
         } catch (ClassCastException e) {
-            throw new YamlException(new YamlError.UnexpectedType(ObjectType.LIST_STRING),
+            throw new YamlException(new UnexpectedTypeError(ObjectType.LIST_STRING),
                                     YamlException.Type.UNEXPECTED_TYPE);
         }
 
@@ -153,7 +155,7 @@ public class Yaml
         try {
             stringValue = (String) this.yamlObject;
         } catch (ClassCastException e) {
-            throw new YamlException(new YamlError.UnexpectedType(ObjectType.STRING),
+            throw new YamlException(new UnexpectedTypeError(ObjectType.STRING),
                                     YamlException.Type.UNEXPECTED_TYPE);
         }
 
@@ -172,7 +174,7 @@ public class Yaml
         try {
             integerValue = (Integer) this.yamlObject;
         } catch (ClassCastException e) {
-            throw new YamlException(new YamlError.UnexpectedType(ObjectType.INTEGER),
+            throw new YamlException(new UnexpectedTypeError(ObjectType.INTEGER),
                                     YamlException.Type.UNEXPECTED_TYPE);
         }
 
@@ -191,7 +193,7 @@ public class Yaml
         try {
             booleanValue = (Boolean) this.yamlObject;
         } catch (ClassCastException e) {
-            throw new YamlException(new YamlError.UnexpectedType(ObjectType.BOOLEAN),
+            throw new YamlException(new UnexpectedTypeError(ObjectType.BOOLEAN),
                                     YamlException.Type.UNEXPECTED_TYPE);
         }
 

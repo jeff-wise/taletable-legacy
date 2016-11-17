@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.util;
+package com.kispoko.tome.util.model;
 
 
 import android.content.ContentValues;
@@ -30,74 +30,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.mode;
 
 
 /**
- * Model
+ * Modeler
  */
-public abstract class Model
+public class Modeler
 {
-
-    // ABSTRACT METHODS
-    // --------------------------------------------------------------------------------------
-
-    abstract public void onUpdateModel(String name);
-
-
-    // PROPERTIES
-    // --------------------------------------------------------------------------------------
-
-    private UUID   id;
-
-
-    // CONSTRUCTORS
-    // --------------------------------------------------------------------------------------
-
-    public Model()
-    {
-        this.id   = null;
-    }
-
-
-    public Model(UUID id)
-    {
-        this.id   = id;
-    }
-
-
-    // API
-    // --------------------------------------------------------------------------------------
-
-    // > State
-    // --------------------------------------------------------------------------------------
-
-    // ** Id
-    // --------------------------------------------------------------------------------------
-
-    public UUID getId()
-    {
-        return this.id;
-    }
-
-
-    public void setId(UUID id)
-    {
-        this.id = id;
-    }
-
-
-    // > Helpers
-    // ------------------------------------------------------------------------------------------
-
-    public String name()
-    {
-        return SQL.asValidIdentifier(this.getClass().getName().toLowerCase());
-    }
 
 
     public static <A> String name(Class<A> modelClass)
     {
         return SQL.asValidIdentifier(modelClass.getName().toLowerCase());
+    }
+
+
+    public static String name(Model model)
+    {
+        return SQL.asValidIdentifier(model.getClass().getName().toLowerCase());
     }
 
 
@@ -111,8 +62,8 @@ public abstract class Model
             public Integer run() {
                 Integer count = null;
                 try {
-                    String tableName = Model.name(modelClass);
-                    count = Model.count(tableName);
+                    String tableName = Modeler.name(modelClass);
+                    count = Modeler.count(tableName);
                 } catch (DatabaseException e) {
                     ApplicationFailure.database(e);
                 }
@@ -132,7 +83,7 @@ public abstract class Model
             public A run() {
                 A loadedValue = null;
                 try {
-                    loadedValue = Model.fromDatabase(classObject, queryParameters);
+                    loadedValue = Modeler.fromDatabase(classObject, queryParameters);
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }
@@ -145,16 +96,16 @@ public abstract class Model
     public static <A extends Model> CollectionValuePromise<A>
                                         collectionValuePromise(final String parentModelName,
                                                                final UUID parentModelId,
-                                                               final Class<A> classObject)
+                                                               final List<Class<A>> modelClasses)
     {
         return new CollectionValuePromise<>(new CollectionValuePromise.Action<A>() {
             @Override
             public List<A> run() {
                 List<A> loadedCollection = null;
                 try {
-                    loadedCollection = Model.collectionFromDatabase(parentModelName,
-                                                                    parentModelId,
-                                                                    classObject);
+                    loadedCollection = Modeler.collectionFromDatabase(parentModelName,
+                                                                      parentModelId,
+                                                                      modelClasses);
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }
@@ -170,7 +121,7 @@ public abstract class Model
             @Override
             public void run() {
                 try {
-                    model.toDatabase();
+                    Modeler.toDatabase(model);
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }
@@ -186,7 +137,7 @@ public abstract class Model
             public void run() {
                 try {
                     for (Model model : models) {
-                        model.toDatabase();
+                        Modeler.toDatabase(model);
                     }
                 }
                 catch (DatabaseException e) {
@@ -219,16 +170,16 @@ public abstract class Model
                                      throws DatabaseException
     {
         // GET SQL columns
-        A dummyModel = Model.newModel(classObject);
-        List<Tuple2<String,SQLValue.Type>> sqlColumns = Model.sqlColumns(dummyModel);
+        A dummyModel = Modeler.newModel(classObject);
+        List<Tuple2<String,SQLValue.Type>> sqlColumns = Modeler.sqlColumns(dummyModel);
 
         // RUN the query
-        ModelQuery modelQuery = new ModelQuery(Model.name(classObject),
+        ModelQuery modelQuery = new ModelQuery(Modeler.name(classObject),
                                                sqlColumns,
                                                queryParameters);
         ResultRow row = modelQuery.result();
 
-        return Model.modelFromRow(classObject, row);
+        return Modeler.modelFromRow(classObject, row);
     }
 
 
@@ -239,24 +190,29 @@ public abstract class Model
     @SuppressWarnings("unchecked")
     private static <A extends Model> List<A> collectionFromDatabase(String parentModelName,
                                                                     UUID parentModelId,
-                                                                    Class<A> classObject)
+                                                                    List<Class<A>> modelClasses)
                        throws DatabaseException
     {
-        // GET SQL columns
-        A dummyModel = Model.newModel(classObject);
-        List<Tuple2<String,SQLValue.Type>> sqlColumns = Model.sqlColumns(dummyModel);
-
-        // RUN the query
-        CollectionQuery collectionQuery = new CollectionQuery(Model.name(classObject),
-                                                              parentModelName,
-                                                              parentModelId,
-                                                              sqlColumns);
-        List<ResultRow> resultRows = collectionQuery.result();
-
-        // FOR EACH row, add a model to the collection
         List<A> models = new ArrayList<>();
-        for (ResultRow row : resultRows) {
-            models.add(Model.modelFromRow(classObject, row));
+
+        // For each concrete model type, query all of the matching models
+        for (Class<A> modelClass : modelClasses)
+        {
+            // GET SQL columns
+            A dummyModel = Modeler.newModel(modelClass);
+            List<Tuple2<String,SQLValue.Type>> sqlColumns = Modeler.sqlColumns(dummyModel);
+
+            // RUN the query
+            CollectionQuery collectionQuery = new CollectionQuery(Modeler.name(modelClass),
+                                                                  parentModelName,
+                                                                  parentModelId,
+                                                                  sqlColumns);
+            List<ResultRow> resultRows = collectionQuery.result();
+
+            // FOR EACH row, add a model to the collection
+            for (ResultRow row : resultRows) {
+                models.add(Modeler.modelFromRow(modelClass, row));
+            }
         }
 
         return models;
@@ -267,7 +223,7 @@ public abstract class Model
      * Save the model to the database.
      * @throws DatabaseException
      */
-    private void toDatabase()
+    private static void toDatabase(Model model)
            throws DatabaseException
     {
 
@@ -276,20 +232,20 @@ public abstract class Model
 
         Tuple3<List<PrimitiveValue<?>>,
                List<ModelValue<?>>,
-               List<CollectionValue<?>>> modelValuesTuple = Model.modelValues(this);
+               List<CollectionValue<?>>> modelValuesTuple = Modeler.modelValues(model);
 
         List<PrimitiveValue<?>>  primitiveValues  = modelValuesTuple.getItem1();
         List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
         List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
 
-        // [B 1] Save Model row
+        // [B 1] Save Modeler row
         // --------------------------------------------------------------------------------------
 
         // > Save each column value into a ContentValues
         ContentValues row = new ContentValues();
 
         // ** Save the model values
-        row.put("_id", this.getId().toString());
+        row.put("_id", model.getId().toString());
 
         // ** Save all of the primitive values
         for (PrimitiveValue primitiveValue : primitiveValues)
@@ -325,7 +281,7 @@ public abstract class Model
         }
 
         // > Save the row, creating a new one if necessary.
-        UpsertQuery upsertQuery = new UpsertQuery(this.name(), this.id, row);
+        UpsertQuery upsertQuery = new UpsertQuery(Modeler.name(model), model.getId(), row);
         upsertQuery.run();
 
         // [B 2] Save Shared Value Rows
@@ -333,7 +289,7 @@ public abstract class Model
 
         for (ModelValue<? extends Model> modelValue : modelValues)
         {
-            modelValue.saveValue(Model.saveValuePromise(modelValue.getValue()));
+            modelValue.saveValue(Modeler.saveValuePromise(modelValue.getValue()));
         }
 
         // [B 3] Save Collection Values
@@ -342,7 +298,7 @@ public abstract class Model
         for (CollectionValue<? extends Model> collectionValue : collectionValues)
         {
             collectionValue.saveValue(
-                    Model.saveCollectionValuePromise(collectionValue.getValue()));
+                    Modeler.saveCollectionValuePromise(collectionValue.getValue()));
         }
 
 
@@ -353,15 +309,15 @@ public abstract class Model
     private static <A extends Model> A modelFromRow(Class<A> classObject, ResultRow row)
                                      throws DatabaseException
     {
-        // [A 1] Create Model
+        // [A 1] Create Modeler
         // --------------------------------------------------------------------------------------
-        A model = Model.newModel(classObject);
+        A model = Modeler.newModel(classObject);
 
-        // [A 2] Get the Model's Values
+        // [A 2] Get the Modeler's Values
         // --------------------------------------------------------------------------------------
         Tuple3<List<PrimitiveValue<?>>,
                List<ModelValue<?>>,
-               List<CollectionValue<?>>> modelValuesTuple = Model.modelValues(model);
+               List<CollectionValue<?>>> modelValuesTuple = Modeler.modelValues(model);
 
         List<PrimitiveValue<?>>  primitiveValues  = modelValuesTuple.getItem1();
         List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
@@ -398,7 +354,7 @@ public abstract class Model
                     new ModelQueryParameters(new ModelQueryParameters.PrimaryKey(modelValueId),
                                              ModelQueryParameters.Type.PRIMARY_KEY);
             ValuePromise valuePromise =
-                    Model.modelValuePromise(modelValue.getModelClass(),
+                    Modeler.modelValuePromise(modelValue.getModelClass(),
                                             queryParameters);
 
             modelValue.loadValue(valuePromise);
@@ -410,9 +366,9 @@ public abstract class Model
         for (CollectionValue<? extends Model> collectionValue : collectionValues)
         {
             CollectionValuePromise collectionValuePromise =
-                    Model.collectionValuePromise(model.name(),
-                                                 model.getId(),
-                                                 collectionValue.getModelClass());
+                    Modeler.collectionValuePromise(Modeler.name(model),
+                                                   model.getId(),
+                                                   collectionValue.getModelClasses());
             collectionValue.loadValue(collectionValuePromise);
         }
 
@@ -421,11 +377,11 @@ public abstract class Model
 
 
     /**
-     * Collect all of the Model's values and return them in data structures suitable for
+     * Collect all of the Modeler's values and return them in data structures suitable for
      * further analysis.
-     * @param model A Model instance to get the values of.
+     * @param model A Modeler instance to get the values of.
      * @param <A> The model type.
-     * @return The Model's values, sorted.
+     * @return The Modeler's values, sorted.
      * @throws DatabaseException
      */
     private static <A> Tuple3<List<PrimitiveValue<?>>,
@@ -492,7 +448,7 @@ public abstract class Model
     {
         Tuple3<List<PrimitiveValue<?>>,
                    List<ModelValue<?>>,
-                   List<CollectionValue<?>>> modelValuesTuple = Model.modelValues(model);
+                   List<CollectionValue<?>>> modelValuesTuple = Modeler.modelValues(model);
 
         // Get all of model's database columns. Both primitive values and model values have
         // column representations
@@ -521,9 +477,9 @@ public abstract class Model
 
 
     /**
-     * Create a new Model instance of the provided class.
-     * @param classObject The Model class to create.
-     * @param <A> The type of Model.
+     * Create a new Modeler instance of the provided class.
+     * @param classObject The Modeler class to create.
+     * @param <A> The type of Modeler.
      * @return A new model instance.
      * @throws DatabaseException
      */
@@ -558,18 +514,18 @@ public abstract class Model
         // [2] Column Definitions
         // --------------------------------------------------------------------------------------
 
-        // > Get Model values
+        // > Get Modeler values
 
-        Model dummyModel = Model.newModel(modelClass);
+        Model dummyModel = Modeler.newModel(modelClass);
 
         Tuple3<List<PrimitiveValue<?>>,
                 List<ModelValue<?>>,
-                List<CollectionValue<?>>> modelValuesTuple = Model.modelValues(dummyModel);
+                List<CollectionValue<?>>> modelValuesTuple = Modeler.modelValues(dummyModel);
 
         List<PrimitiveValue<?>> primitiveValues = modelValuesTuple.getItem1();
         List<ModelValue<?>>     modelValues     = modelValuesTuple.getItem2();
 
-        // ** Model Id
+        // ** Modeler Id
         tableBuilder.append("_id");
         tableBuilder.append(" ");
         tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());

@@ -10,7 +10,6 @@ import android.util.Log;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.util.database.SQL;
-import com.kispoko.tome.util.TrackerId;
 
 import java.util.Collection;
 import java.util.HashMap;

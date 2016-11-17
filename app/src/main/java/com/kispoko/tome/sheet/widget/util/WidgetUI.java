@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget;
+package com.kispoko.tome.sheet.widget.util;
 
 
 import android.content.Context;
@@ -29,7 +29,7 @@ public class WidgetUI
      * @param context Context object.
      * @return A LinearLayout that represents the outer-most container of a component view.
      */
-    protected LinearLayout linearLayout(Context context, final Rules rules) {
+    public static LinearLayout linearLayout(Context context, final Rules rules) {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams linearLayoutParams =
@@ -77,4 +77,23 @@ public class WidgetUI
 
         return layout;
     }
+
+
+
+    public static TextView prefixView(Context context, String prefix, WidgetData.TextSize textSize)
+    {
+        TextView textView = new TextView(context);
+
+        textView.setTextSize(getTextSizeSP(context, textSize) * 0.7f);
+
+        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+
+        textView.setText(prefix);
+
+        int padding = (int) context.getResources().getDimension(R.dimen.prefix_padding_left);
+        textView.setPadding(padding, 0, 0, padding);
+
+        return textView;
+    }
+
 }

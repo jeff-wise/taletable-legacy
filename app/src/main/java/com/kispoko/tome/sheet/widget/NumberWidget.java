@@ -2,205 +2,146 @@
 package com.kispoko.tome.sheet.widget;
 
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.widget.util.ComponentUtil;
 import com.kispoko.tome.rules.programming.Variable;
-import com.kispoko.tome.type.Type;
-import com.kispoko.tome.util.database.SQL;
-import com.kispoko.tome.util.Tracker;
+import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.sheet.widget.util.WidgetFormat;
+import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 
 
 /**
- * NumberWidget WidgetData
+ * Widget: Number
  */
-public class NumberWidget extends WidgetData implements Serializable
+public class NumberWidget implements Widget, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private TextSize textSize;
-    private Variable prefix;
-    private Variable postfix;
-    private Integer keyStat;
-    private Integer value;
+    private UUID                              id;
+
+    private ModelValue<WidgetData>            widgetData;
+    private PrimitiveValue<WidgetFormat.Size> size;
+    private ModelValue<Variable>              value;
+    private ModelValue<Variable>              prefix;
+    private ModelValue<Variable>              postfix;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public NumberWidget(UUID id, UUID groupId) {
-        super(id, null, groupId, null, null, null, null);
-        this.keyStat = null;
-        this.value = null;
-        this.textSize = TextSize.MEDIUM;
+    public NumberWidget(UUID id,
+                        WidgetData widgetData,
+                        WidgetFormat.Size size,
+                        Variable value,
+                        Variable prefix,
+                        Variable postfix)
+    {
+        this.id   = id;
+
+        this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
+        this.size       = new PrimitiveValue<>(size, this, WidgetFormat.Size.class);
+        this.value      = new ModelValue<>(value, this, Variable.class);
+        this.prefix     = new ModelValue<>(prefix, this, Variable.class);
+        this.postfix    = new ModelValue<>(postfix, this, Variable.class);
     }
 
 
-    public NumberWidget(UUID id, String name, UUID groupId, Variable value, Type.Id typeId,
-                        Format format, List<String> actions, Integer keyStat)
+    public static NumberWidget fromYaml(Yaml yaml)
+                  throws YamlException
     {
-        super(id, name, groupId, value, typeId, format, actions);
-        this.keyStat = keyStat;
-        this.textSize = TextSize.MEDIUM;
-    }
+        UUID              id         = UUID.randomUUID();
+        WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
+        WidgetFormat.Size size       = WidgetFormat.Size.fromYaml(yaml.atKey("size"));
+        Variable          value      = Variable.fromYaml(yaml.atKey("value"));
+        Variable          prefix     = Variable.fromYaml(yaml.atKey("prefix"));
+        Variable          postfix    = Variable.fromYaml(yaml.atKey("postfix"));
 
-
-    @SuppressWarnings("unchecked")
-    public static NumberWidget fromYaml(UUID groupId, Map<String, Object> integerYaml)
-    {
-        // VALUES TO PARSE
-        // --------------------------------------------------------------------------------------
-        UUID id = UUID.randomUUID();
-        String name = null;
-        Variable value = null;
-        Type.Id typeId = null;
-        Format format = null;
-        List<String> actions = null;
-        Variable prefix = null;
-        Variable postfix = null;
-        Integer keyStat = null;
-
-        // PARSE VALUES
-        // --------------------------------------------------------------------------------------
-
-        // > Top Level
-        // --------------------------------------------------------------------------------------
-
-        // ** Name
-        if (integerYaml.containsKey("name"))
-            name = (String) integerYaml.get("name");
-
-        // ** Actions
-        if (integerYaml.containsKey("actions"))
-            actions = (List<String>) integerYaml.get("actions");
-
-        // ** Key Stat
-        if (integerYaml.containsKey("key_stat"))
-            keyStat = (Integer) integerYaml.get("key_stat");
-
-        // >> Data
-        // --------------------------------------------------------------------------------------
-        Map<String, Object> dataYaml   = (Map<String, Object>) integerYaml.get("data");
-
-        if (dataYaml != null)
-        {
-            // ** Type Id
-            typeId = Type.Id.fromYaml(dataYaml);
-
-            // ** Value
-            if (dataYaml.containsKey("value"))
-                value = Variable.fromYaml((Map<String,Object>) dataYaml.get("value"));
-        }
-
-        // >> Format
-        // --------------------------------------------------------------------------------------
-        Map<String, Object> formatYaml = (Map<String, Object>) integerYaml.get("format");
-
-        if (formatYaml != null)
-        {
-            // *** Format
-            format = WidgetData.parseFormatYaml(integerYaml);
-
-            // ** Prefix
-            if (formatYaml.containsKey("prefix"))
-                prefix = Variable.fromYaml((Map<String,Object>) dataYaml.get("prefix"));
-
-            // ** Postfix
-            if (formatYaml.containsKey("postfix"))
-                postfix = Variable.fromYaml((Map<String,Object>) dataYaml.get("postfix"));
-        }
-
-        // CREATE INTEGER
-        NumberWidget integer = new NumberWidget(id, name, groupId, value, typeId, format,
-                                                  actions, keyStat);
-
-        integer.setPrefix(prefix);
-        integer.setPostfix(postfix);
-
-        return integer;
+        return new NumberWidget(id, widgetData, size, value, prefix, postfix);
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
+
+    // > Widget
+    // ------------------------------------------------------------------------------------------
+
+    public String name() {
+        return "text";
+    }
+
+
+    public void runAction(String actionName, Context context, Rules rules) { }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
-    public String componentName()
-    {
-        return "integer";
-    }
-
-
-    // ** Key Stat
+    // ** Value
     // ------------------------------------------------------------------------------------------
 
-    public Integer getKeyStat() {
-        return this.keyStat;
+    public Variable getValue()
+    {
+        return this.value.getValue();
     }
-
-
-    public void setKeyStat(Integer keyStat) {
-        this.keyStat = keyStat;
-    }
-
 
     // ** Prefix
     // ------------------------------------------------------------------------------------------
 
     public Variable getPrefix() {
-        return this.prefix;
+        return this.prefix.getValue();
     }
 
 
-    public void setPrefix(Variable prefix) {
-        this.prefix = prefix;
-    }
-
-
-    // ** Prefix
+    // ** Postfix
     // ------------------------------------------------------------------------------------------
 
     public Variable getPostfix() {
-        return this.prefix;
+        return this.prefix.getValue();
     }
 
-
-    public void setPostfix(Variable postfix) {
-        this.postfix = postfix;
-    }
-
-
-    public void runAction(String actionName, Context context, Rules rules)
-    {
-
-    }
 
 
     // > Views
@@ -208,7 +149,7 @@ public class NumberWidget extends WidgetData implements Serializable
 
     public View getDisplayView(Context context, Rules rules)
     {
-        LinearLayout integerLayout = this.linearLayout(context, rules);
+        LinearLayout integerLayout = WidgetUI.linearLayout(context, rules);
 
         LinearLayout contentLayout = new LinearLayout(context);
         contentLayout.setLayoutParams(Util.linearLayoutParamsMatch());
@@ -225,7 +166,7 @@ public class NumberWidget extends WidgetData implements Serializable
         // Add text view
         TextView textView = new TextView(context);
 
-        textView.setTextSize(ComponentUtil.getTextSizeSP(context, this.textSize));
+        textView.setTextSize(this.size.getValue().toSP(context));
 
         textView.setTypeface(Util.serifFontBold(context));
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
@@ -246,194 +187,6 @@ public class NumberWidget extends WidgetData implements Serializable
     public View getEditorView(Context context, Rules rules)
     {
         return new LinearLayout(context);
-    }
-
-
-    // > Database
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Load a Group from the database.
-     * @param callerTrackerId The async tracker ID of the caller.
-     */
-    public void load(final UUID callerTrackerId)
-    {
-        final NumberWidget thisInteger = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // ModelQuery WidgetData
-                String integerQuery =
-                    "SELECT comp.name, comp.value, comp.label, comp.show_label, comp.row, " +
-                           "comp.column, comp.width, " +
-                           "comp.alignment, comp.type_kind, comp.type_id, comp.key_stat, " +
-                           "comp.actions, int.prefix, int.postfix " +
-                    "FROM component comp " +
-                    "INNER JOIN component_integer int on int.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(thisInteger.getName().toString());
-
-
-                Cursor integerCursor = database.rawQuery(integerQuery, null);
-
-                String name = null;
-                UUID valueId = null;
-                String label = null;
-                Boolean showLabel = null;
-                Integer row = null;
-                Integer column = null;
-                Integer width = null;
-                Alignment alignment = null;
-                String typeKind = null;
-                String typeId = null;
-                Integer keyStat = null;
-                List<String> actions = null;
-                UUID prefixId = null;
-                UUID postfixId = null;
-                try
-                {
-                    integerCursor.moveToFirst();
-                    name        = integerCursor.getString(0);
-                    valueId     = UUID.fromString(integerCursor.getString(1));
-                    label       = integerCursor.getString(2);
-                    showLabel   = SQL.intAsBool(integerCursor.getInt(3));
-                    row         = integerCursor.getInt(4);
-                    column      = integerCursor.getInt(5);
-                    width       = integerCursor.getInt(6);
-                    alignment   = Alignment.fromString(integerCursor.getString(7));
-                    typeKind    = integerCursor.getString(8);
-                    typeId      = integerCursor.getString(9);
-                    keyStat     = integerCursor.getInt(10);
-                    actions     = new ArrayList<>(Arrays.asList(
-                                        TextUtils.split(integerCursor.getString(11), ",")));
-                    prefixId    = UUID.fromString(integerCursor.getString(12));
-                    postfixId   = UUID.fromString(integerCursor.getString(13));
-                } catch (Exception e) {
-                    Log.d("***INTEGER", Log.getStackTraceString(e));
-                }
-                finally {
-                    integerCursor.close();
-                }
-
-                thisInteger.setName(name);
-                thisInteger.setTypeId(new Type.Id(typeKind, typeId));
-                thisInteger.setLabel(label);
-                thisInteger.setShowLabel(showLabel);
-                thisInteger.setRow(row);
-                thisInteger.setColumn(column);
-                thisInteger.setWidth(width);
-                thisInteger.setAlignment(alignment);
-                thisInteger.setActions(actions);
-                thisInteger.setKeyStat(keyStat);
-                thisInteger.setValue(new Variable(valueId));
-                thisInteger.setPrefix(new Variable(prefixId));
-                thisInteger.setPostfix(new Variable(postfixId));
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                List<String> trackingKeys = new ArrayList<>();
-                trackingKeys.add("value");
-                trackingKeys.add("prefix");
-                trackingKeys.add("postfix");
-
-                Tracker.OnReady onReady = new Tracker.OnReady() {
-                    @Override
-                    protected void go() {
-                        Global.getTracker(callerTrackerId).setKey(thisInteger.getName().toString());
-                    }
-                };
-
-                UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
-
-                thisInteger.getValue().load(thisInteger.getName(), "value", textTrackerId);
-                thisInteger.getPrefix().load(thisInteger.getName(), "prefix", textTrackerId);
-                thisInteger.getPostfix().load(thisInteger.getName(), "postfix", textTrackerId);
-            }
-
-        }.execute();
-    }
-
-
-    /**
-     * Save to the database.
-     * @param callerTrackerId The async tracker ID for the caller.
-     */
-    public void save(final UUID callerTrackerId)
-    {
-        final NumberWidget thisInteger = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // > ModelQuery WidgetData TableWidget
-                // ------------------------------------------------------------------------------
-                ContentValues componentRow = new ContentValues();
-
-                thisInteger.putComponentSQLRows(componentRow);
-
-                if (thisInteger.getKeyStat() != null)
-                    componentRow.put("key_stat", thisInteger.getKeyStat());
-                else
-                    componentRow.putNull("key_stat");
-
-                database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
-                                              null,
-                                              componentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
-
-                // > ModelQuery IntegerComponent TableWidget
-                // ------------------------------------------------------------------------------
-                ContentValues integerComponentRow = new ContentValues();
-
-                integerComponentRow.put("component_id", thisInteger.getName().toString());
-                integerComponentRow.put("prefix", thisInteger.getPrefix().getId().toString());
-                integerComponentRow.put("postfix", thisInteger.getPostfix().getId().toString());
-
-                database.insertWithOnConflict(SheetContract.ComponentInteger.TABLE_NAME,
-                                              null,
-                                              integerComponentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                List<String> trackingKeys = new ArrayList<>();
-                trackingKeys.add("value");
-                trackingKeys.add("prefix");
-                trackingKeys.add("postfix");
-
-                Tracker.OnReady onReady = new Tracker.OnReady() {
-                    @Override
-                    protected void go() {
-                        Global.getTracker(callerTrackerId).setKey(thisInteger.getName().toString());
-                    }
-                };
-
-                UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
-
-                thisInteger.getValue().save("value", textTrackerId);
-                thisInteger.getPrefix().save("prefix", textTrackerId);
-                thisInteger.getPostfix().save("postfix", textTrackerId);
-            }
-
-        }.execute();
     }
 
 }

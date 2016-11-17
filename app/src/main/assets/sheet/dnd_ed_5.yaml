@@ -24,7 +24,7 @@ sections:
       groups:
       - label: Name
         widgetDatas:
-        - type: textWidget
+        - type: text
           size: large
           label: Name
           data:
@@ -41,20 +41,20 @@ sections:
           label: Level
           data:
             value: 17
-        - type: textWidget
+        - type: text
           label: Class
           size: medium
           label: Class
           data:
             value: Wizard
             type: class
-        - type: textWidget
+        - type: text
           label: Race
           size: medium
           label: Race
           data:
             value: Human
-        - type: textWidget
+        - type: text
           label: Alignment
           size: medium
           label: Alignment
@@ -80,7 +80,7 @@ sections:
           label: Age
           data:
             value: 41
-        - type: textWidget
+        - type: text
           label: Height
           size: medium
           label: Height
@@ -92,19 +92,19 @@ sections:
           label: Weight
           data:
             value: 167
-        - type: textWidget
+        - type: text
           label: Eyes
           size: medium
           label: Eyes
           data:
             value: Blue
-        - type: textWidget
+        - type: text
           label: Skin
           size: medium
           label: Skin
           data:
             value: Light
-        - type: textWidget
+        - type: text
           label: Hair
           size: medium
           label: Hair
@@ -135,12 +135,12 @@ sections:
           data:
             rows:
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand is very confident.
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand is incredibly handsome.
@@ -151,19 +151,19 @@ sections:
           data:
             rows:
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand believes that the greater good is an infinitely large
                     composition of miniscule good actions that form a lattice of integrity
                     that intertwines every creature of the land.
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand thinks that every person deserves a second chance.
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     He believes that the purpose of life is understanding the mysteries
@@ -175,7 +175,7 @@ sections:
           data:
             rows:
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand has a special bond with Jade and often accompanies her on
@@ -187,7 +187,7 @@ sections:
           data:
             rows:
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand is occasionally possessed by a familiar demon that causes him to

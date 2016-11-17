@@ -2,13 +2,15 @@
 package com.kispoko.tome.util.value;
 
 
-import com.kispoko.tome.util.Model;
+import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.model.Modeler;
 import com.kispoko.tome.util.promise.ValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
 
 
+
 /**
- * Model Value
+ * Modeler Value
  */
 public class ModelValue<A extends Model> extends Value<A>
 {
@@ -47,7 +49,7 @@ public class ModelValue<A extends Model> extends Value<A>
 
     public String sqlColumnName()
     {
-        return this.getValue().getName() + "_id";
+        return Modeler.name(this.getValue().getClass()) + "_id";
     }
 
 

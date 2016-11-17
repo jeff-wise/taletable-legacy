@@ -9,9 +9,8 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.error.TemplateFileReadError;
-import com.kispoko.tome.sheet.widget.WidgetData;
-import com.kispoko.tome.util.Model;
-import com.kispoko.tome.util.database.ColumnProperties;
+import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.util.model.Modeler;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -31,7 +30,7 @@ import java.util.UUID;
  * This class represents the structure and representation of character sheet. Character sheets
  * can therefore be customized for different roleplaying games or even different campaigns.
  */
-public class Sheet extends Model
+public class Sheet extends Modeler
 {
 
     // PROPERTIES
@@ -77,11 +76,9 @@ public class Sheet extends Model
     }
 
 
-    @SuppressWarnings("unchecked")
     public static Sheet fromYaml(Yaml yaml)
                   throws YamlException
     {
-        // Values to parse
         UUID id = UUID.randomUUID();
         Game game = Game.fromYaml(yaml.atKey("game"));
         Roleplay roleplay = Roleplay.fromYaml(yaml.atKey("roleplay"));

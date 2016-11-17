@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 
 import com.kispoko.tome.Global;
 import com.kispoko.tome.util.database.SQL;
-import com.kispoko.tome.util.TrackerId;
 
 import java.util.ArrayList;
 import java.util.List;

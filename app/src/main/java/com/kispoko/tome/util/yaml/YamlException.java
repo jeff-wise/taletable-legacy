@@ -2,6 +2,10 @@
 package com.kispoko.tome.util.yaml;
 
 
+import com.kispoko.tome.util.yaml.error.MissingKeyError;
+import com.kispoko.tome.util.yaml.error.UnexpectedTypeError;
+
+
 
 /**
  * Yaml Parse Exception
@@ -44,15 +48,15 @@ public class YamlException extends Exception
     // > Errors
     // ------------------------------------------------------------------------------------------
 
-    public YamlError.MissingKey getMissingKeyError()
+    public MissingKeyError getMissingKeyError()
     {
-        return (YamlError.MissingKey) this.error;
+        return (MissingKeyError) this.error;
     }
 
 
-    public YamlError.UnexpectedType getUnexpectedTypeError()
+    public UnexpectedTypeError getUnexpectedTypeError()
     {
-        return (YamlError.UnexpectedType) this.error;
+        return (UnexpectedTypeError) this.error;
     }
 
 
@@ -62,7 +66,8 @@ public class YamlException extends Exception
     public enum Type
     {
         MISSING_KEY,
-        UNEXPECTED_TYPE
+        UNEXPECTED_TYPE,
+        INVALID_ENUM
     }
 
 

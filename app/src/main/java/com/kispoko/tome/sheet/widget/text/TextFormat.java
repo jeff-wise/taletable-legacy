@@ -2,16 +2,16 @@
 package com.kispoko.tome.sheet.widget.text;
 
 
-import com.kispoko.tome.sheet.widget.format.Format;
+import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 
 
 /**
- * TextWidget Format
+ * TextWidget WidgetFormat
  */
-public class TextFormat extends Format
+public class TextFormat extends WidgetFormat
 {
 
     // PROPERTIES
@@ -73,23 +73,5 @@ public class TextFormat extends Format
         this.size = size;
     }
 
-
-    // NESTED DEFINITIONS
-    // ------------------------------------------------------------------------------------------
-
-    public enum Size
-    {
-        SMALL,
-        MEDIUM,
-        LARGE;
-
-        public static Size fromString(String size)
-        {
-            if (size != null)
-                return Size.valueOf(size.toUpperCase());
-            return null;
-        }
-
-    }
 
 }

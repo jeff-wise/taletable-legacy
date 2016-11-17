@@ -3,18 +3,13 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -22,25 +17,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.Global;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.Group;
-import com.kispoko.tome.rules.programming.Variable;
-import com.kispoko.tome.sheet.widget.table.Cell;
-import com.kispoko.tome.type.Type;
-import com.kispoko.tome.util.database.SQL;
+import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.SerialBitmap;
-import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -48,76 +39,105 @@ import java.util.UUID;
 /**
  * ImageWidget
  */
-public class ImageWidget extends WidgetData implements Serializable
+public class ImageWidget implements Widget, Serializable
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // ** Model Values
+    private UUID                         id;
+
+    private ModelValue<WidgetData>       widgetData;
+    private PrimitiveValue<SerialBitmap> bitmap;
+
+    // ** Internal
     private int imageViewId;
     private int chooseImageButtonId;
-    private SerialBitmap serialBitmap;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ImageWidget(UUID id, UUID groupId)
+
+    public ImageWidget(UUID id, WidgetData widgetData, Bitmap bitmap)
     {
-        super(id, null, groupId, null, null, null, null);
-        this.serialBitmap = null;
+        this.id = id;
+
+        this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
+
+        SerialBitmap serialBitmap = new SerialBitmap(bitmap);
+        this.bitmap     = new PrimitiveValue<>(serialBitmap, this, SerialBitmap.class);
     }
 
 
-    public ImageWidget(UUID id, String name, UUID groupId, Variable value, Type.Id typeId,
-                       Format format, List<String> actions, Bitmap bitmap)
+    /**
+     * Create an ImageWidget from its yaml representation.
+     * @param yaml The Yaml parser object.
+     * @return A new ImageWidget.
+     * @throws YamlException
+     */
+    public static ImageWidget fromYaml(Yaml yaml)
+                  throws YamlException
     {
-        super(id, name, groupId, value, typeId, format, actions);
+        UUID       id         = UUID.randomUUID();
+        WidgetData widgetData = WidgetData.fromYaml(yaml.atKey("data"));
 
-        this.serialBitmap = null;
-        this.setBitmap(bitmap);
+        return new ImageWidget(id, widgetData, null);
     }
 
 
-    @SuppressWarnings("unchecked")
-    public static ImageWidget fromYaml(UUID groupId, Map<String, Object> imageYaml)
+    // API
+    // ------------------------------------------------------------------------------------------
+
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the model identifier.
+     * @return The model UUID.
+     */
+    public UUID getId()
     {
-        // VALUES TO PARSE
-        // --------------------------------------------------------------------------------------
-        UUID id = UUID.randomUUID();
-        String name = null;
-        Format format = null;
-        List<String> actions = null;
-
-        // PARSE VALUES
-        // --------------------------------------------------------------------------------------
-
-        // > Top Level
-        // --------------------------------------------------------------------------------------
-
-        // ** Name
-        if (imageYaml.containsKey("name"))
-            name = (String) imageYaml.get("name");
-
-        // ** Actions
-        if (imageYaml.containsKey("actions"))
-            actions = (List<String>) imageYaml.get("actions");
-
-        // >> Format
-        // --------------------------------------------------------------------------------------
-        Map<String, Object> formatYaml = (Map<String, Object>) imageYaml.get("format");
-
-        if (formatYaml != null)
-        {
-            // ** Format
-            format = WidgetData.parseFormatYaml(imageYaml);
-        }
-
-        return new ImageWidget(id, name, groupId, null, null, format, actions, null);
+        return this.id;
     }
 
 
-    // > API
+    /**
+     * Set the model identifier.
+     * @param id The new model UUID.
+     */
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
+
+    // > Widget
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The widget type as a string.
+     * @return The widget's type as a string.
+     */
+    public String name() {
+        return "text";
+    }
+
+
+    public void runAction(String actionName, Context context, Rules rules) { }
+
+
+    // > Image
     // ------------------------------------------------------------------------------------------
 
     public void setImageFromURI(Activity activity, Uri uri)
@@ -129,194 +149,16 @@ public class ImageWidget extends WidgetData implements Serializable
         chooseImageButton.setVisibility(View.GONE);
         imageView.setImageURI(uri);
 
-        this.serialBitmap = new SerialBitmap(((BitmapDrawable)imageView.getDrawable()).getBitmap());
+        SerialBitmap serialBitmap =
+                new SerialBitmap(((BitmapDrawable)imageView.getDrawable()).getBitmap());
+        this.bitmap.setValue(serialBitmap);
 
-        this.save(null);
+        // > Save the Image Widget with the new bitmap
+        Modeler.saveValuePromise(this).run(null);
     }
 
 
-    // >> Getters/Setters
-    // ------------------------------------------------------------------------------------------
-
-    public String componentName()
-    {
-        return "image";
-    }
-
-
-    public void setBitmap(Bitmap bitmap) {
-        if (bitmap != null)
-            this.serialBitmap = new SerialBitmap(bitmap);
-    }
-
-
-    public void runAction(String actionName, Context context, Rules rules)
-    {
-    }
-
-    // >> Database
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Load a Group from the database.
-     * @param trackerId The async tracker ID of the caller.
-     */
-    public void load(final TrackerId trackerId)
-    {
-
-        final ImageWidget thisImageWidget = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // ModelQuery WidgetData
-                String imageQuery =
-                    "SELECT comp.name, comp.label, comp.show_label, comp.row, comp.column, " +
-                           "comp.width, comp.actions, im.image " +
-                    "FROM WidgetData comp " +
-                    "INNER JOIN component_image im on im.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(thisImageWidget.getName().toString());
-
-                Cursor imageCursor = database.rawQuery(imageQuery, null);
-
-                String name = null;
-                String label = null;
-                Boolean showLabel = null;
-                Integer row = null;
-                Integer column = null;
-                Integer width = null;
-                List<String> actions = null;
-                byte[] imageBlob = null;
-                try {
-                    imageCursor.moveToFirst();
-                    name        = imageCursor.getString(0);
-                    label       = imageCursor.getString(1);
-                    showLabel   = SQL.intAsBool(imageCursor.getInt(2));
-                    row         = imageCursor.getInt(3);
-                    column      = imageCursor.getInt(4);
-                    width       = imageCursor.getInt(5);
-                    actions     = new ArrayList<>(Arrays.asList(
-                                        TextUtils.split(imageCursor.getString(6), ",")));
-                    imageBlob   = imageCursor.getBlob(7);
-                } catch (Exception e ) {
-                    Log.d("***IMAGE", Log.getStackTraceString(e));
-                } finally {
-                    imageCursor.close();
-                }
-
-                Bitmap bitmap = null;
-                if (imageBlob != null)
-                    bitmap = Util.getImage(imageBlob);
-
-                thisImageWidget.setName(name);
-                thisImageWidget.setLabel(label);
-                thisImageWidget.setShowLabel(showLabel);
-                thisImageWidget.setRow(row);
-                thisImageWidget.setColumn(column);
-                thisImageWidget.setWidth(width);
-                thisImageWidget.setActions(actions);
-                thisImageWidget.setBitmap(bitmap);
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                UUID trackerCode = trackerId.getCode();
-                switch (trackerId.getTarget()) {
-                    case GROUP:
-                        Group.getAsyncTracker(trackerCode).markComponentId(thisImageWidget.getName());
-                        break;
-                    case CELL:
-                        Cell.getAsyncTracker(trackerCode).markComponent();
-                        break;
-                }
-            }
-
-        }.execute();
-    }
-
-
-    /**
-     * Save to the database.
-     * @param trackerId The async tracker ID of the caller.
-     */
-    public void save(final TrackerId trackerId)
-    {
-        final ImageWidget thisImageWidget = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // > Save WidgetData Row
-                // ------------------------------------------------------------------------------
-                ContentValues componentRow = new ContentValues();
-
-                thisImageWidget.putComponentSQLRows(componentRow);
-
-                componentRow.putNull("text_value");
-
-                database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
-                                              null,
-                                              componentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
-
-                // > Save ImageComponent Row
-                // ------------------------------------------------------------------------------
-                ContentValues imageComponentRow = new ContentValues();
-
-                imageComponentRow.put("component_id", thisImageWidget.getName().toString());
-
-                if (thisImageWidget.serialBitmap != null) {
-                    if (thisImageWidget.serialBitmap.getBitmap() != null) {
-                        byte[] bytes = Util.getBytes(thisImageWidget.serialBitmap.getBitmap());
-                        imageComponentRow.put("image", bytes);
-                        Log.d("***IMAGE", "image saved " + Integer.toString(bytes.length));
-                    }
-                } else {
-                    imageComponentRow.putNull("image");
-                }
-
-                database.insertWithOnConflict(SheetContract.ComponentImage.TABLE_NAME,
-                                              null,
-                                              imageComponentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                if (trackerId == null) return;
-
-                UUID trackerCode = trackerId.getCode();
-                switch (trackerId.getTarget()) {
-                    case GROUP:
-                        Group.getAsyncTracker(trackerCode).markComponentId(thisImageWidget.getName());
-                        break;
-                    case CELL:
-                        Cell.getAsyncTracker(trackerCode).markComponent();
-                        break;
-                }
-            }
-
-        }.execute();
-    }
-
-
-    // >> Views
+    // > Views
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -329,7 +171,7 @@ public class ImageWidget extends WidgetData implements Serializable
     public View getDisplayView(final Context context, Rules rules)
     {
         // Layout
-        final LinearLayout imageLayout = this.linearLayout(context, rules);
+        final LinearLayout imageLayout = WidgetUI.linearLayout(context, rules);
         imageLayout.setGravity(Gravity.CENTER);
         //imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
 
@@ -374,11 +216,11 @@ public class ImageWidget extends WidgetData implements Serializable
         imageLayout.addView(chooseImageButton);
 
         // Have a picture, show it
-        if (this.serialBitmap != null)
+        if (this.bitmap.getValue() != null)
         {
             chooseImageButton.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
-            imageView.setImageBitmap(this.serialBitmap.getBitmap());
+            imageView.setImageBitmap(this.bitmap.getValue().getBitmap());
             Log.d("***IMAGE", "set image bitmap");
         }
         // No stored picture, give user upload button

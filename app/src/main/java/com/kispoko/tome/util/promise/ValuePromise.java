@@ -4,13 +4,12 @@ package com.kispoko.tome.util.promise;
 
 import android.os.AsyncTask;
 
-import com.kispoko.tome.util.Model;
-
+import com.kispoko.tome.util.model.Model;
 
 
 
 /**
- * Promise: Load Model Value
+ * Promise: Load Modeler Value
  */
 public class ValuePromise<A extends Model>
 {

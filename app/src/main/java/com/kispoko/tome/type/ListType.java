@@ -19,7 +19,6 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.types.Types;
 import com.kispoko.tome.util.database.SQL;
-import com.kispoko.tome.util.TrackerId;
 import com.kispoko.tome.util.Util;
 
 import java.io.Serializable;

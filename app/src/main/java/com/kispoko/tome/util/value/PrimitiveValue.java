@@ -2,8 +2,7 @@
 package com.kispoko.tome.util.value;
 
 
-import com.kispoko.tome.util.Model;
-import com.kispoko.tome.util.database.ColumnProperties;
+import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.error.ValueNotSerializableError;
 import com.kispoko.tome.util.database.sql.SQLValue;

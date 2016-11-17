@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.db;
+package com.kispoko.tome;
 
 
 import android.content.Context;
@@ -22,13 +22,12 @@ import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
-import com.kispoko.tome.sheet.widget.format.Format;
+import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.sheet.widget.table.Cell;
 import com.kispoko.tome.type.ListType;
 import com.kispoko.tome.type.Type;
-import com.kispoko.tome.util.Model;
+import com.kispoko.tome.util.model.Modeler;
 import com.kispoko.tome.util.database.DatabaseException;
-
 
 
 /**
@@ -49,26 +48,26 @@ public class DatabaseManager extends SQLiteOpenHelper
     {
         try
         {
-            db.execSQL(Model.defineTableSQLString(Sheet.class));
-            db.execSQL(Model.defineTableSQLString(Game.class));
-            db.execSQL(Model.defineTableSQLString(Page.class));
-            db.execSQL(Model.defineTableSQLString(Group.class));
-            db.execSQL(Model.defineTableSQLString(Widget.class));
-            db.execSQL(Model.defineTableSQLString(TextWidget.class));
-            db.execSQL(Model.defineTableSQLString(NumberWidget.class));
-            db.execSQL(Model.defineTableSQLString(Boolean.class));
-            db.execSQL(Model.defineTableSQLString(Image.class));
-            db.execSQL(Model.defineTableSQLString(TableWidget.class));
-            db.execSQL(Model.defineTableSQLString(Cell.class));
-            db.execSQL(Model.defineTableSQLString(Format.class));
-            db.execSQL(Model.defineTableSQLString(Type.class));
-            db.execSQL(Model.defineTableSQLString(ListType.class));
-            db.execSQL(Model.defineTableSQLString(Program.class));
-            db.execSQL(Model.defineTableSQLString(Statement.class));
-            db.execSQL(Model.defineTableSQLString(ProgramInvocation.class));
-            db.execSQL(Model.defineTableSQLString(Function.class));
-            db.execSQL(Model.defineTableSQLString(Tuple.class));
-            db.execSQL(Model.defineTableSQLString(Variable.class));
+            db.execSQL(Modeler.defineTableSQLString(Sheet.class));
+            db.execSQL(Modeler.defineTableSQLString(Game.class));
+            db.execSQL(Modeler.defineTableSQLString(Page.class));
+            db.execSQL(Modeler.defineTableSQLString(Group.class));
+            db.execSQL(Modeler.defineTableSQLString(Widget.class));
+            db.execSQL(Modeler.defineTableSQLString(TextWidget.class));
+            db.execSQL(Modeler.defineTableSQLString(NumberWidget.class));
+            db.execSQL(Modeler.defineTableSQLString(Boolean.class));
+            db.execSQL(Modeler.defineTableSQLString(Image.class));
+            db.execSQL(Modeler.defineTableSQLString(TableWidget.class));
+            db.execSQL(Modeler.defineTableSQLString(Cell.class));
+            db.execSQL(Modeler.defineTableSQLString(WidgetFormat.class));
+            db.execSQL(Modeler.defineTableSQLString(Type.class));
+            db.execSQL(Modeler.defineTableSQLString(ListType.class));
+            db.execSQL(Modeler.defineTableSQLString(Program.class));
+            db.execSQL(Modeler.defineTableSQLString(Statement.class));
+            db.execSQL(Modeler.defineTableSQLString(ProgramInvocation.class));
+            db.execSQL(Modeler.defineTableSQLString(Function.class));
+            db.execSQL(Modeler.defineTableSQLString(Tuple.class));
+            db.execSQL(Modeler.defineTableSQLString(Variable.class));
         }
         catch (DatabaseException e)
         {

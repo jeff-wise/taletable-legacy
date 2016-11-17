@@ -37,7 +37,8 @@ public class SaveValuePromise
             @Override
             protected void onPostExecute(Boolean result)
             {
-                onReady.run();
+                if (onReady != null)
+                    onReady.run();
             }
         };
     }

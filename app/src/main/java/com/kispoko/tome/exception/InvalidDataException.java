@@ -4,9 +4,9 @@ package com.kispoko.tome.exception;
 
 
 /**
- * Exception: Template File
+ * Exception: Invalid Data
  */
-public class TemplateFileException extends Exception
+public class InvalidDataException extends Exception
 {
 
     // PROPERTIES
@@ -19,7 +19,7 @@ public class TemplateFileException extends Exception
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public TemplateFileException(Object error, ErrorType errorType)
+    public InvalidDataException(Object error, ErrorType errorType)
     {
         this.error     = error;
         this.errorType = errorType;
@@ -46,7 +46,7 @@ public class TemplateFileException extends Exception
 
     public enum ErrorType
     {
-        TEMPLATE_FILE_READ
+        INVALID_ENUM
     }
 
 }

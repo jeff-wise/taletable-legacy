@@ -2,8 +2,9 @@
 package com.kispoko.tome.activity;
 
 
-import com.kispoko.tome.sheet.widget.WidgetData;
 import com.kispoko.tome.sheet.widget.TextWidget;
+import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.sheet.widget.text;
 import com.kispoko.tome.sheet.Sheet;
 
 import java.io.Serializable;

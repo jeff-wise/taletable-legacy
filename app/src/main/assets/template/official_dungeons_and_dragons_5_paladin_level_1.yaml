@@ -29,8 +29,8 @@ sections:
       groups:
       - label: General
         number_of_rows: 1
-        widgetDatas:
-        - type: textWidget
+        widgets:
+        - type: text
           format:
             label: Name
             row: 1
@@ -39,7 +39,7 @@ sections:
             text_size: large
           data:
             value: Danolin the Promised
-        - type: imageWidget
+        - type: image
           format:
             row: 2
             column: 1
@@ -47,7 +47,7 @@ sections:
             label: Picture
       - label: Features
         number_of_rows: 2
-        widgetDatas:
+        widgets:
         - type: integer
           format:
             label: Level
@@ -57,7 +57,7 @@ sections:
             text_size: medium
           data:
             value: 17
-        - type: textWidget
+        - type: text
           format:
             label: Class
             row: 1
@@ -69,7 +69,7 @@ sections:
             type:
               kind: listType
               name: class
-        - type: textWidget
+        - type: text
           format:
             label: Race
             row: 2
@@ -78,7 +78,7 @@ sections:
             text_size: medium
           data:
             value: Human
-        - type: textWidget
+        - type: text
           format:
             row: 2
             column: 2
@@ -89,7 +89,7 @@ sections:
             value: Lawful Good
       - label: Appearance
         number_of_rows: 2
-        widgetDatas:
+        widgets:
         - type: integer
           format:
             row: 1
@@ -99,7 +99,7 @@ sections:
             text_size: medium
           data:
             value: 41
-        - type: textWidget
+        - type: text
           format:
             row: 1
             column: 2
@@ -117,7 +117,7 @@ sections:
             text_size: medium
           data:
             value: 167
-        - type: textWidget
+        - type: text
           format:
             row: 2
             column: 1
@@ -126,7 +126,7 @@ sections:
             text_size: medium
           data:
             value: Blue
-        - type: textWidget
+        - type: text
           format:
             row: 2
             column: 2
@@ -135,7 +135,7 @@ sections:
             text_size: medium
           data:
             value: Light
-        - type: textWidget
+        - type: text
           format:
             row: 2
             column: 3
@@ -146,8 +146,8 @@ sections:
             value: Brown
       - label: Characteristics
         number_of_rows: 1
-        widgetDatas:
-        - type: tableWidget
+        widgets:
+        - type: table
           format:
             label: Personality Traits
             row: 1
@@ -158,16 +158,16 @@ sections:
           data:
             rows:
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand is very confident.
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand is incredibly handsome.
-        - type: tableWidget
+        - type: table
           format:
             label: Ideals
             row: 1
@@ -178,24 +178,24 @@ sections:
           data:
             rows:
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand believes that the greater good is an infinitely large
                     composition of miniscule good actions that form a lattice of integrity
                     that intertwines every creature of the land.
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand thinks that every person deserves a second chance.
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     He believes that the purpose of life is understanding the mysteries
                     of the universe, and mastering of magic in order to further understanding.
-        - type: tableWidget
+        - type: table
           format:
             label: Bonds
             row: 1
@@ -206,12 +206,12 @@ sections:
           data:
             rows:
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand has a special bond with Jade and often accompanies her on
                     missions in order to pursue great research opportunities.
-        - type: tableWidget
+        - type: table
           format:
             label: Flaws
             row: 1
@@ -222,7 +222,7 @@ sections:
           data:
             rows:
             - cells:
-              - type: textWidget
+              - type: text
                 data:
                   value: >
                     Hildebrand is occasionally possessed by a familiar demon that causes him to
@@ -231,7 +231,7 @@ sections:
       groups:
       - label: Ability Scores
         number_of_rows: 2
-        widgetDatas:
+        widgets:
         - type: integer
           format:
             row: 1
@@ -288,7 +288,7 @@ sections:
             value: 13
       - label: General
         number_of_rows: 1
-        widgetDatas:
+        widgets:
         - type: integer
           format:
             row: 1
@@ -310,7 +310,7 @@ sections:
             value: 4
       - label: Combat
         number_of_rows: 1
-        widgetDatas:
+        widgets:
         - type: integer
           format:
             row: 1
@@ -341,7 +341,7 @@ sections:
             value: 30
       - label: Saving Throws
         number_of_rows: 2
-        widgetDatas:
+        widgets:
         - type: integer
           format:
             row: 1

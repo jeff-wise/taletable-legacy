@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.db.DatabaseManager;
+import com.kispoko.tome.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.Util;
 

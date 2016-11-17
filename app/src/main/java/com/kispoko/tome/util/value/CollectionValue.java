@@ -2,7 +2,7 @@
 package com.kispoko.tome.util.value;
 
 
-import com.kispoko.tome.util.Model;
+import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.promise.CollectionValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
 
@@ -19,8 +19,7 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // PROPERTIES
     // -------------------------------------------------------------------------------------
 
-    private String   childModelName;
-    private Class<A> modelClass;
+    private List<Class<A>> modelClasses;
 
 
     // CONSTRUCTORS
@@ -28,13 +27,10 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
 
     public CollectionValue(List<A> value,
                            Model model,
-                           String childModelName,
-                           Class<A> modelClass)
-
+                           List<Class<A>> modelClasses)
     {
         super(value, model);
-        this.childModelName = childModelName;
-        this.modelClass     = modelClass;
+        this.modelClasses = modelClasses;
     }
 
 
@@ -44,15 +40,9 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // > State
     // --------------------------------------------------------------------------------------
 
-    public String getChildModelName()
+    public List<Class<A>> getModelClasses()
     {
-        return this.childModelName;
-    }
-
-
-    public Class<A> getModelClass()
-    {
-        return this.modelClass;
+        return this.modelClasses;
     }
 
 

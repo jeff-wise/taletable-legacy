@@ -39,4 +39,11 @@ public class ApplicationFailure
     {
         Log.d("***APP", "database exception");
     }
+
+
+    public static void invalidEnum(IllegalArgumentException exception)
+    {
+        Log.d("***APP", "invalid enum");
+        exception.printStackTrace();
+    }
 }

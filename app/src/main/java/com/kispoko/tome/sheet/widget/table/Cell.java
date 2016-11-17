@@ -2,10 +2,7 @@
 package com.kispoko.tome.sheet.widget.table;
 
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -14,162 +11,82 @@ import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.widget.WidgetData;
+import com.kispoko.tome.sheet.widget.Widget;
+import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
 import com.kispoko.tome.sheet.widget.NumberWidget;
-import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.util.TrackerId;
+import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 
 
 /**
- * A TableWidget Cell.
+ * Table Widget Cell
  */
-public class Cell implements Serializable
+public class Cell implements Model, Serializable
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    // Instance Properties
-    private UUID id;
-    private Integer rowIndex;
-    private Integer columnIndex;
-    private UUID tableId;
-    private boolean isTemplate;
-    private WidgetData widgetData;
+    private UUID                    id;
 
-    // STATIC
-    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
+    private PrimitiveValue<Integer> rowIndex;
+    private PrimitiveValue<Integer> columnIndex;
+    private ModelValue<Widget>      widget;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
 
-    public Cell(UUID id, WidgetData widgetData, UUID tableId, boolean isTemplate,
-                Integer rowIndex, Integer columnIndex, Cell template)
+    public Cell(UUID id, Integer rowIndex, Integer columnIndex, Widget widget, Cell template)
     {
-        this.id = id;
-        this.rowIndex = rowIndex;
-        this.columnIndex = columnIndex;
-        this.tableId = tableId;
-        this.isTemplate = isTemplate;
-        this.widgetData = widgetData;
+        this.id          = id;
+
+        this.rowIndex    = new PrimitiveValue<>(rowIndex, this, Integer.class);
+        this.columnIndex = new PrimitiveValue<>(columnIndex, this, Integer.class);
+        this.widget      = new ModelValue<>(widget, this, Widget.class);
 
         this.initializeFromTemplate(template);
     }
 
 
-    @SuppressWarnings("unchecked")
-    public static Cell fromYaml(Map<String,Object> cellYaml, UUID tableId, boolean isTemplate,
-                                Integer rowIndex, Integer columnIndex, Cell template)
+    public static Cell fromYaml(Yaml yaml, int rowIndex, int columnIndex)
+                  throws YamlException
     {
-        Map<String,Object> componentYaml = (Map<String,Object>) cellYaml.get("widgetData");
-        return new Cell(WidgetData.fromYaml(null, componentYaml),
-                        tableId, isTemplate, rowIndex, columnIndex, template);
+        UUID id  =  UUID.randomUUID();
+
+        Widget widget = Widget.fromYaml
+
+
+        return new Cell(id, rowIndex, columnIndex, widget, template);
     }
 
 
-    // > API
+    // API
     // --------------------------------------------------------------------------------------
 
-    // >> Async Tracker
+    // > State
     // ------------------------------------------------------------------------------------------
 
-    private TrackerId addAsyncTracker(TrackerId trackerId)
+    public Widget getWidget()
     {
-        UUID trackerCode = UUID.randomUUID();
-        Cell.asyncTrackerMap.put(trackerCode, new AsyncTracker(this, trackerId));
-        return new TrackerId(trackerCode, TrackerId.Target.CELL);
+        return this.widget.getValue();
     }
 
 
-    public static AsyncTracker getAsyncTracker(UUID trackerCode)
-    {
-        return Cell.asyncTrackerMap.get(trackerCode);
-    }
-
-
-    // >> State
-    // ------------------------------------------------------------------------------------------
-
-    public WidgetData getWidgetData() {
-        return this.widgetData;
-    }
-
-
-
-    // >> Database
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Save this cell to the database.
-     */
-    public void save(final TrackerId tableTrackerId)
-    {
-        final Cell thisCell = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // > Update ComponentTableCell
-                ContentValues row = new ContentValues();
-
-                row.put("table_id", thisCell.tableId.toString());
-                row.put("row_index", thisCell.rowIndex);
-                row.put("column_index", thisCell.columnIndex);
-                row.put("component_id", thisCell.widgetData.getName().toString());
-
-                int templateIdInt = thisCell.isTemplate ? 1 : 0;
-                row.put("is_template", templateIdInt);
-
-                database.insertWithOnConflict(SheetContract.ComponentTableCell.TABLE_NAME,
-                                              null,
-                                              row,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
-
-//                database.insertOrThrow(SheetContract.ComponentTableCell.TABLE_NAME,
-//                                          null,
-//                                          row);
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                TrackerId cellTrackerId = thisCell.addAsyncTracker(tableTrackerId);
-                thisCell.widgetData.save(cellTrackerId);
-            }
-
-        }.execute();
-    }
-
-
-    /**
-     * Load
-     * @param tableTrackerId TableWidget tracker ID.
-     */
-    public void load(TrackerId tableTrackerId)
-    {
-        TrackerId cellTrackerId = this.addAsyncTracker(tableTrackerId);
-        this.widgetData.load(cellTrackerId);
-    }
 
 
     // >> View
@@ -303,75 +220,35 @@ public class Cell implements Serializable
     {
         if (template == null) return;
 
-        if (this.widgetData.getLabel() == null)
-            this.widgetData.setLabel(template.widgetData.getLabel());
+        WidgetFormat templateFormat = template.getWidget().data().getFormat();
 
-        if (this.widgetData.getShowLabel() == null)
-            this.widgetData.setShowLabel(template.widgetData.getShowLabel());
+        WidgetFormat thisFormat = this.getWidget().data().getFormat();
 
-        if (this.widgetData.getRow() == null)
-            this.widgetData.setRow(template.widgetData.getRow());
+        if (thisFormat.getLabel() == null)
+            thisFormat.setLabel(templateFormat.getLabel());
 
-        if (this.widgetData.getColumn() == null)
-            this.widgetData.setColumn(template.widgetData.getColumn());
+        if (thisFormat.getShowLabel() == null)
+            thisFormat.setShowLabel(templateFormat.getShowLabel());
 
-        if (this.widgetData.getWidth() == null)
-            this.widgetData.setWidth(template.widgetData.getWidth());
+        if (thisFormat.getRow() == null)
+            thisFormat.setRow(templateFormat.getRow());
 
-        if (this.widgetData.getAlignment() == null) {
-            this.widgetData.setAlignment(template.widgetData.getAlignment());
+        if (thisFormat.getColumn() == null)
+            thisFormat.setColumn(templateFormat.getColumn());
+
+        if (thisFormat.getWidth() == null)
+            thisFormat.setWidth(templateFormat.getWidth());
+
+        if (thisFormat.getAlignment() == null) {
+            thisFormat.setAlignment(templateFormat.getAlignment());
         }
 
         // WidgetData specific initialization
-        if (this.widgetData instanceof BooleanWidget)
+        if (this.widget.getValue() instanceof BooleanWidget)
         {
-            BooleanWidget booleanWidgetComponent = (BooleanWidget) this.widgetData;
-            if (booleanWidgetComponent.getValue() == null) {
-                booleanWidgetComponent.setValue(((BooleanWidget) template.getWidgetData()).getValue());
-            }
-        }
-
-    }
-
-
-    // NESTED CLASSES
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Track the state of a Group object. When the state reaches a desired configuration,
-     * execute a callback.
-     */
-    public static class AsyncTracker
-    {
-
-        // > PROPERTIES
-        // --------------------------------------------------------------------------------------
-
-        TrackerId tableTrackerId;
-        Cell cell;
-
-
-        // > CONSTRUCTORS
-        // --------------------------------------------------------------------------------------
-
-        public AsyncTracker(Cell cell, TrackerId tableTrackerId)
-        {
-            this.cell = cell;
-            this.tableTrackerId = tableTrackerId;
-        }
-
-
-        // > API
-        // --------------------------------------------------------------------------------------
-
-        synchronized public void markComponent()
-        {
-            if (this.cell.isTemplate) {
-                TableWidget.getAsyncTracker(this.tableTrackerId.getCode())
-                     .markTemplateCell(this.cell.columnIndex);
-            } else {
-                TableWidget.getAsyncTracker(this.tableTrackerId.getCode())
-                        .markCell(this.cell.rowIndex, this.cell.columnIndex);
+            BooleanWidget booleanWidget = (BooleanWidget) this.widget.getValue();
+            if (booleanWidget.getValue() == null) {
+                booleanWidget.setValue(((BooleanWidget) template.getWidgetData()).getValue());
             }
         }
 

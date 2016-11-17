@@ -2,7 +2,7 @@
 package com.kispoko.tome.util.value;
 
 
-import com.kispoko.tome.util.Model;
+import com.kispoko.tome.util.model.Model;
 
 
 
@@ -18,7 +18,7 @@ public abstract class Value<A>
     private A        value;
     private Model    model;
 
-    private boolean  isSaved;
+    private boolean isSaved;
 
 
     // CONSTRUCTORS
@@ -67,7 +67,7 @@ public abstract class Value<A>
     {
         if (this.value != null) {
             this.value = value;
-        //    model.onUpdateModel(this.name);
+        //    model.onModelUpdate(this.name);
         }
     }
 

@@ -85,7 +85,7 @@ public class CollectionQuery
                     switch (columnTypes.get(i))
                     {
                         case INTEGER:
-                            columnValue = SQLValue.newInteger(cursor.getInt(i));
+                            columnValue = SQLValue.newInteger(cursor.getLong(i));
                             break;
                         case REAL:
                             columnValue = SQLValue.newReal(cursor.getDouble(i));

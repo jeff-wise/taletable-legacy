@@ -2,14 +2,8 @@
 package com.kispoko.tome.sheet.widget;
 
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,565 +14,225 @@ import android.widget.TextView;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.Group;
-import com.kispoko.tome.rules.programming.Variable;
 import com.kispoko.tome.sheet.widget.table.Cell;
-import com.kispoko.tome.type.Type;
-import com.kispoko.tome.util.database.SQL;
-import com.kispoko.tome.util.Tracker;
-import com.kispoko.tome.util.TrackerId;
+import com.kispoko.tome.sheet.widget.table.Row;
+import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 
-
 /**
- * TableWidget WidgetData
+ * Widget: Table
  */
-public class TableWidget extends WidgetData implements Serializable
+public class TableWidget implements Widget, Serializable
 {
-    // > PROPERTIES
+
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Integer width;
-    private Integer height;
-    private String[] columnNames;
-    private Row rowTemplate;
-    private Row[] rows;
+    private UUID id;
 
-    // STATIC
-    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
+    private ModelValue<WidgetData>   widgetData;
+    private PrimitiveValue<Integer>  width;
+    private PrimitiveValue<Integer>  height;
+    private PrimitiveValue<String[]> columnNames;
+    private ModelValue<Row>          rowTemplate;
+    private CollectionValue<Row>     rows;
 
-    public static final int MAX_COLUMNS = 6;
+    // > Internal
+    private static final int MAX_COLUMNS = 6;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TableWidget(UUID id, UUID groupId)
+    public TableWidget(UUID id,
+                       WidgetData widgetData,
+                       Integer width, Integer height,
+                       String[] columnNames,
+                       Row rowTemplate,
+                       List<Row> rows)
     {
-        super(id, null, groupId, null, null, null, null);
+        this.id = id;
 
-        this.width = null;
-        this.height = null;
-        this.columnNames = null;
-        this.rowTemplate = null;
-        this.rows = null;
-    }
+        this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
+        this.width       = new PrimitiveValue<>(width, this, Integer.class);
+        this.height      = new PrimitiveValue<>(height, this, Integer.class);
+        this.columnNames = new PrimitiveValue<>(columnNames, this, String[].class);
+        this.rowTemplate = new ModelValue<>(rowTemplate, this, Row.class);
 
-    public TableWidget(UUID id, String name, UUID groupId, Variable value, Type.Id typeId,
-                       Format format, List<String> actions, Integer width, Integer height,
-                       String[] columnNames, Row rowTemplate, Row[] rows)
-    {
-        super(id, null, groupId, value, typeId, format, actions);
-
-        this.width = width;
-        this.height = height;
-        this.columnNames = columnNames;
-        this.rowTemplate = rowTemplate;
-        this.rows = rows;
+        List<Class<Row>> rowClassList = Arrays.asList(Row.class);
+        this.rows        = new CollectionValue<>(rows, this, rowClassList);
     }
 
 
-    @SuppressWarnings("unchecked")
-    public static TableWidget fromYaml(UUID groupId, Map<String, Object> tableYaml)
+    /**
+     * Create a Table Widget from its yaml representation.
+     * @param yaml The Yaml parser object.
+     * @return A new TableWidget.
+     * @throws YamlException
+     */
+    public static TableWidget fromYaml(Yaml yaml)
+                  throws YamlException
     {
-        // VALUES TO PARSE
-        // --------------------------------------------------------------------------------------
-        UUID id = UUID.randomUUID();
-        String name = null;
-        Variable value = null;
-        Type.Id typeId = null;
-        Format format;
-        List<String> actions = null;
-        Integer width = null;
-        Integer height = null;
-        Row rowTemplate;
-        String[] columnNames = null;
-        Row[] rows;
+        UUID         id             = UUID.randomUUID();
 
-        // PARSE VALUES
-        // --------------------------------------------------------------------------------------
+        WidgetData   widgetData     = WidgetData.fromYaml(yaml.atKey("data"));
 
-        // > Top Level
-        // --------------------------------------------------------------------------------------
-        Map<String,Object> formatYaml = (Map<String,Object>) tableYaml.get("format");
-        Map<String,Object> dataYaml   = (Map<String,Object>) tableYaml.get("data");
+        Integer      width          = yaml.atKey("width").getInteger();
+        Integer      height         = yaml.atKey("height").getInteger();
 
-        // >> Type Id
-        typeId = Type.Id.fromYaml(dataYaml);
+        List<String> columnNameList = yaml.atKey("column_names").getStringList();
+        String[]     columnNames    = columnNameList.toArray(new String[0]);
 
-        // >> Format
-        format = WidgetData.parseFormatYaml(tableYaml);
+        Row          rowTemplate    = Row.fromYaml(yaml.atKey("row_template"));
 
-        // >> Name
-        if (tableYaml.containsKey("name"))
-            name = (String) tableYaml.get("name");
-
-        // >> Actions
-        if (tableYaml.containsKey("actions"))
-            actions = (List<String>) tableYaml.get("actions");
-
-        // >> Width
-        if (tableYaml.containsKey("width"))
-            width = (Integer) tableYaml.get("width");
-
-        // >> Height
-        if (tableYaml.containsKey("height"))
-            height = (Integer) tableYaml.get("height");
-
-        // >> Row Template
-        Map<String,Object> rowTemplateYaml = (Map<String,Object>) tableYaml.get("row_template");
-        List<Map<String,Object>> rowTemplateCellsYaml =
-                                (List<Map<String,Object>>) rowTemplateYaml.get("cells");
-        rowTemplate = new Row(width);
-        int templateColumnIndex = 0;
-        for (Map<String,Object> cellYaml : rowTemplateCellsYaml)
-        {
-            rowTemplate.insertCell(templateColumnIndex,
-                                   Cell.fromYaml(cellYaml, id, true, null, templateColumnIndex, null));
-            templateColumnIndex += 1;
-        }
-
-        // >> Column Names
-        if (tableYaml.containsKey("columns"))
-            columnNames = ((ArrayList<String>) tableYaml.get("columns")).toArray(new String[width]);
-
-        // >> Rows
-        ArrayList<Map<String,Object>> rowsYaml =
-                (ArrayList<Map<String,Object>>) dataYaml.get("rows");
-
-        rows = new Row[height];
-        int rowIndex = 0;
-        for (Map<String,Object> rowYaml : rowsYaml)
-        {
-            ArrayList<Map<String,Object>> cellsYaml =
-                    (ArrayList<Map<String,Object>>) rowYaml.get("cells");
-
-            Row row = new Row(width);
-            int columnIndex = 0;
-            for (Map<String,Object> cellYaml : cellsYaml)
-            {
-                Cell template = rowTemplate.getCell(columnIndex);
-                row.insertCell(columnIndex,
-                               Cell.fromYaml(cellYaml, id, false, rowIndex, columnIndex, template));
-                columnIndex += 1;
+        List<Row>    rows           = yaml.atKey("rows").forEach(new Yaml.ForEach<Row>() {
+            @Override
+            public Row forEach(Yaml yaml, int index) throws YamlException {
+                return Row.fromYaml(yaml, index);
             }
+        });
 
-            rows[rowIndex] = row;
-
-            rowIndex += 1;
-        }
-
-
-        return new TableWidget(id, name, groupId, value, typeId, format, actions, width, height,
-                         columnNames, rowTemplate, rows);
+        return new TableWidget(id, widgetData, width, height, columnNames, rowTemplate, rows);
     }
 
 
-
-    // > API
+    // API
     // ------------------------------------------------------------------------------------------
 
-    // >> State
+    // > Model
     // ------------------------------------------------------------------------------------------
 
-    public String componentName()
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the model identifier.
+     * @return The model UUID.
+     */
+    public UUID getId()
     {
-        return "tableWidget";
+        return this.id;
     }
 
 
-    public void runAction(String actionName, Context context, Rules rules)
+    /**
+     * Set the model identifier.
+     * @param id The new model UUID.
+     */
+    public void setId(UUID id)
     {
-
+        this.id = id;
     }
 
 
-    // >>> TableWidget Width
+    // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public Integer getTableWidth() {
-        return this.width;
-    }
+    public void onModelUpdate(String valueName) { }
 
 
-    public void setTableWidth(Integer width) {
-        this.width = width;
-    }
-
-
-    // >>> TableWidget Height
+    // > Widget
     // ------------------------------------------------------------------------------------------
 
-    public Integer getTableHeight() {
-        return this.height;
+    /**
+     * The widget type as a string.
+     * @return The widget's type as a string.
+     */
+    public String name() {
+        return "text";
     }
 
 
-    public void setTableHeight(Integer height) {
-        this.height = height;
-    }
+    public void runAction(String actionName, Context context, Rules rules) { }
 
 
-    // >>> Column Names
+    // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Width
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the table width (number of columns).
+     * @return The table width.
+     */
+    public Integer getWidth() {
+        return this.width.getValue();
+    }
+
+    // ** Height
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the table height (number of rows, not counting header).
+     * @return The table height.
+     */
+    public Integer getHeight() {
+        return this.height.getValue();
+    }
+
+
+    // ** Column Names
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the names of the table columns.
+     * @return Array of table column names.
+     */
     public String[] getColumnNames() {
-        return this.columnNames;
+        return this.columnNames.getValue();
     }
 
 
-    public void setColumnNames(String[] columnNames) {
-        this.columnNames = columnNames;
-    }
-
-
-    // >>> Row Template
+    // ** Row Template
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * Get the row template for the table. The row template is a row that is used as a blueprint
+     * for all new table rows, for example to fill in default values.
+     * @return The table's row template.
+     */
     public Row getRowTemplate() {
-        return this.rowTemplate;
+        return this.rowTemplate.getValue();
     }
 
 
-    public void setRowTemplate(Row rowTemplate) {
-        this.rowTemplate = rowTemplate;
-    }
-
-
-    // >>> Rows
+    // ** Rows
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * Get a specific row in the table (header does not count).
+     * @param index The row index (starting at 0).
+     * @return The table row at the specified index.
+     */
     public Row getRow(Integer index) {
-        if (index < this.rows.length)
-            return this.rows[index];
-        return null;
-    }
-
-
-    public Row[] getRows() {
-        return this.rows;
-    }
-
-
-    public void setRows(Row[] rows) {
-        this.rows = rows;
-    }
-
-
-    // >> Async Tracker
-    // ------------------------------------------------------------------------------------------
-
-    private TrackerId addAsyncTracker(TableWidget tableWidget, TrackerId groupTrackerId)
-    {
-        UUID trackerCode = UUID.randomUUID();
-        TableWidget.asyncTrackerMap.put(trackerCode, new AsyncTracker(tableWidget, groupTrackerId));
-        return new TrackerId(trackerCode, TrackerId.Target.TABLE);
-    }
-
-
-    public static AsyncTracker getAsyncTracker(UUID trackerId)
-    {
-        return TableWidget.asyncTrackerMap.get(trackerId);
-    }
-
-
-    // >> Database
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Load a TextWidget from the database.
-     * @param callerTrackerId The caller tracker id.
-     */
-    public void load(final UUID callerTrackerId)
-    {
-        final TableWidget thisTableWidget = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // ModelQuery TableWidget
-                // -----------------------------------------------------------------------------
-
-                String tableQuery =
-                    "SELECT comp.name, comp.label, comp.show_label, comp.type_kind, comp.type_id, " +
-                            "comp.actions, tbl.width, tbl.height, " +
-                           "tbl.column1_name, tbl.column2_name, tbl.column3_name, " +
-                           "tbl.column4_name, tbl.column5_name, tbl.column6_name " +
-                    "FROM WidgetData comp " +
-                    "INNER JOIN component_table tbl on tbl.component_id = comp.component_id " +
-                    "WHERE comp.component_id =  " + SQL.quoted(thisTableWidget.getName().toString());
-
-                Cursor tableCursor = database.rawQuery(tableQuery, null);
-
-                String name = null;
-                String label = null;
-                Boolean showLabel = null;
-                String typeKind = null;
-                String typeId = null;
-                List<String> actions = null;
-                Integer tableWidth = null;
-                Integer tableHeight = null;
-                String[] columnNames = null;
-
-                try {
-                    tableCursor.moveToFirst();
-
-                    name        = tableCursor.getString(0);
-                    label       = tableCursor.getString(1);
-                    showLabel   = SQL.intAsBool(tableCursor.getInt(2));
-                    typeKind    = tableCursor.getString(3);
-                    typeId      = tableCursor.getString(4);
-                    actions     = new ArrayList<>(Arrays.asList(
-                                                  TextUtils.split(tableCursor.getString(5), ",")));
-                    tableWidth  = tableCursor.getInt(6);
-                    tableHeight = tableCursor.getInt(7);
-
-                    columnNames = new String[tableWidth];
-                    for (int i = 0; i < columnNames.length; i++) {
-                        String columnName = tableCursor.getString(i + 8);
-                        columnNames[i] = columnName;
-
-                    }
-                } catch (Exception e) {
-                    Log.d("***TABLE", Log.getStackTraceString(e));
-                }
-                finally {
-                    tableCursor.close();
-                }
-
-                // ModelQuery Row Template
-                // -----------------------------------------------------------------------------
-
-                String rowTemplateQuery =
-                    "SELECT cell.column_index, cell.component_id, comp.data_type " +
-                    "FROM component_table_cell cell " +
-                    "INNER JOIN component comp on comp.component_id = cell.component_id " +
-                    "WHERE cell.table_id = " + SQL.quoted(thisTableWidget.getName().toString()) + " and " +
-                          "cell.is_template = 1 " +
-                    "ORDER BY cell.column_index";
-
-                Cursor rowTemplateCursor = database.rawQuery(rowTemplateQuery, null);
-
-                Row rowTemplate = new Row(tableWidth);
-                try
-                {
-                    while (rowTemplateCursor.moveToNext())
-                    {
-                        int templateColumnIndex = rowTemplateCursor.getInt(0);
-                        UUID templateComponentId = UUID.fromString(rowTemplateCursor.getString(1));
-                        String templateComponentKind = rowTemplateCursor.getString(2);
-
-                        Cell cell = new Cell(WidgetData.empty(templateComponentId,
-                                                             null, templateComponentKind),
-                                             thisTableWidget.getName(),
-                                             true,
-                                             null, templateColumnIndex, null);
-                        rowTemplate.insertCell(templateColumnIndex, cell);
-                    }
-                } catch (Exception e) {
-                    Log.d("***TABLE", Log.getStackTraceString(e));
-                }
-                finally {
-                    tableCursor.close();
-                }
-
-
-                // ModelQuery TableWidget Cells
-                // -----------------------------------------------------------------------------
-
-                String tableCellsQuery =
-                    "SELECT cell.row_index, cell.column_index, cell.component_id, comp.data_type " +
-                    "FROM component_table_cell cell " +
-                    "INNER JOIN component comp on comp.component_id = cell.component_id " +
-                    "WHERE cell.table_id =  " + SQL.quoted(thisTableWidget.getName().toString()) + " and " +
-                          "cell.is_template = 0 " +
-                    "ORDER BY cell.row_index, cell.column_index";
-
-                Cursor tableCellsCursor = database.rawQuery(tableCellsQuery, null);
-
-                // Initialize rows
-                Row[] rows = new Row[tableHeight];
-                for (int i = 0; i < rows.length; i++) {
-                    rows[i] = new Row(tableWidth);
-                }
-                try
-                {
-                    while (tableCellsCursor.moveToNext())
-                    {
-                        int tableRowIndex = tableCellsCursor.getInt(0);
-                        int tableColIndex = tableCellsCursor.getInt(1);
-
-                        UUID cellComponentId = UUID.fromString(tableCellsCursor.getString(2));
-                        String componentKind = tableCellsCursor.getString(3);
-
-                        Cell template = rowTemplate.getCell(tableColIndex);
-                        Cell cell = new Cell(WidgetData.empty(cellComponentId, null, componentKind),
-                                             thisTableWidget.getName(),
-                                             false,
-                                             tableRowIndex, tableColIndex, template);
-                        rows[tableRowIndex].insertCell(tableColIndex, cell);
-                    }
-                } catch (Exception e) {
-                    Log.d("***TABLE", Log.getStackTraceString(e));
-                }
-                finally {
-                    tableCursor.close();
-                }
-
-
-                // Set loaded values
-                thisTableWidget.setName(name);
-                thisTableWidget.setTypeId(new Type.Id(typeKind, typeId));
-                thisTableWidget.setLabel(label);
-                thisTableWidget.setShowLabel(showLabel);
-                thisTableWidget.setRow(1);
-                thisTableWidget.setColumn(1);
-                thisTableWidget.setWidth(1);
-                thisTableWidget.setActions(actions);
-                thisTableWidget.setTableWidth(tableWidth);
-                thisTableWidget.setTableHeight(tableHeight);
-                thisTableWidget.setColumnNames(columnNames);
-                thisTableWidget.setRowTemplate(rowTemplate);
-                thisTableWidget.setRows(rows);
-
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                List<String> trackingKeys = new ArrayList<>();
-
-                Tracker.OnReady onReady = new Tracker.OnReady() {
-                    @Override
-                    protected void go() {
-                        Global.getTracker(callerTrackerId).setKey(thisTableWidget.getName().toString());
-                    }
-                };
-
-                UUID textTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
-
-                thisInteger.getValue().load(thisInteger.getId(), "value", textTrackerId);
-                thisInteger.getPrefix().load(thisInteger.getId(), "prefix", textTrackerId);
-                t
-
-
-                TrackerId tableTrackerId = thisTableWidget.addAsyncTracker(thisTableWidget, groupTrackerId);
-
-                thisTableWidget.rowTemplate.load(tableTrackerId);
-
-                // Load components in cells
-                for (int rowIndex = 0; rowIndex < thisTableWidget.height; rowIndex++) {
-                    thisTableWidget.getRow(rowIndex).load(tableTrackerId);
-                }
-            }
-
-        }.execute();
+        return this.rows.getValue().get(index);
     }
 
 
     /**
-     * Save to the database.
-     * @param groupTrackerId The async tracker ID of the caller.
+     * Get all of the table rows.
+     * @return The table row list (excluding header).
      */
-    public void save(final TrackerId groupTrackerId)
-    {
-        final TableWidget thisTableWidget = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // Update WidgetData TableWidget
-                // -----------------------------------------------------------------------------
-                ContentValues componentRow = new ContentValues();
-
-                componentRow.put("component_id", thisTableWidget.getName().toString());
-                SQL.putOptString(componentRow, "group_id", thisTableWidget.getGroupId());
-                componentRow.put("data_type", thisTableWidget.componentName());
-                componentRow.put("label", thisTableWidget.getLabel());
-
-                componentRow.put("show_label", SQL.boolAsInt(thisTableWidget.getShowLabel()));
-                componentRow.put("row", thisTableWidget.getRow());
-                componentRow.put("column", thisTableWidget.getColumn());
-                componentRow.put("width", thisTableWidget.getWidth());
-                componentRow.put("actions", TextUtils.join(",", thisTableWidget.getActions()));
-                componentRow.putNull("text_value");
-
-                if (thisTableWidget.getTypeId() != null) {
-                    componentRow.put("type_kind", thisTableWidget.getTypeId().getKind());
-                    componentRow.put("type_id", thisTableWidget.getTypeId().getId());
-                } else {
-                    componentRow.putNull("type_kind");
-                    componentRow.putNull("type_id");
-                }
-
-                database.insertWithOnConflict(SheetContract.Component.TABLE_NAME,
-                                              null,
-                                              componentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
-
-                // Update TableWidget WidgetData TableWidget
-                // -----------------------------------------------------------------------------
-
-                ContentValues tableComponentRow = new ContentValues();
-                tableComponentRow.put("component_id", thisTableWidget.getName().toString());
-                tableComponentRow.put("width", thisTableWidget.getTableWidth());
-                tableComponentRow.put("height", thisTableWidget.getTableHeight());
-
-                String[] columnNames = thisTableWidget.columnNames;
-                for (int col = 0; col < columnNames.length && col < MAX_COLUMNS; col++)
-                {
-                    String dbColName = "column" + Integer.toString(col + 1) + "_name";
-                    tableComponentRow.put(dbColName, columnNames[col]);
-                }
-
-                database.insertWithOnConflict(SheetContract.ComponentTable.TABLE_NAME,
-                                              null,
-                                              tableComponentRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                TrackerId tableTrackerId = thisTableWidget.addAsyncTracker(thisTableWidget, groupTrackerId);
-
-                // Save row template cells asynchronously
-                thisTableWidget.rowTemplate.save(tableTrackerId);
-
-                // Save each cell asynchronously
-                for (int rowIndex = 0; rowIndex < thisTableWidget.height; rowIndex++) {
-                    thisTableWidget.getRow(rowIndex).save(tableTrackerId);
-                }
-            }
-
-        }.execute();
+    public List<Row> getRows() {
+        return this.rows.getValue();
     }
 
 
-    // >> Views
+    // > Views
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -588,7 +242,7 @@ public class TableWidget extends WidgetData implements Serializable
      */
     public View getDisplayView(Context context, Rules rules)
     {
-        LinearLayout layout = this.linearLayout(context, rules);
+        LinearLayout layout = WidgetUI.linearLayout(context, rules);
 
         layout.setPadding(0, 0, 0, 0);
 
@@ -611,7 +265,7 @@ public class TableWidget extends WidgetData implements Serializable
 
         tableLayout.addView(this.headerRow(context));
 
-        for (Row row : this.rows)
+        for (Row row : this.rows.getValue())
         {
             TableRow tableRow = this.tableRow(context);
 
@@ -647,8 +301,7 @@ public class TableWidget extends WidgetData implements Serializable
     }
 
 
-
-    // > INTERNAL
+    // INTERNAL
     // ------------------------------------------------------------------------------------------
 
 
@@ -742,154 +395,5 @@ public class TableWidget extends WidgetData implements Serializable
 
         return tableTrackerId;
     }
-
-
-    // > NESTED CLASSES
-    // ------------------------------------------------------------------------------------------
-
-
-    public static class Row implements Serializable
-    {
-        private Cell[] cells;
-
-        public Row(Integer width)
-        {
-            this.cells = new Cell[width];
-        }
-
-
-        public void save(TrackerId tableTrackerId)
-        {
-            for (int i = 0; i < cells.length; i++) {
-                cells[i].save(tableTrackerId);
-            }
-        }
-
-
-        public void load(TrackerId tableTrackerId)
-        {
-            for (int i = 0; i < cells.length; i++) {
-                cells[i].load(tableTrackerId);
-            }
-        }
-
-
-        public Cell[] getCells() {
-            return this.cells;
-        }
-
-
-        public Cell getCell(Integer index) {
-            if (index < cells.length)
-                return this.cells[index];
-            return null;
-        }
-
-
-        public void insertCell(Integer columnIndex, Cell cell) {
-            if (columnIndex < cells.length)
-                this.cells[columnIndex] = cell;
-        }
-    }
-
-
-    /**
-     * Track the state of a Group object. When the state reaches a desired configuration,
-     * execute a callback.
-     */
-    public static class AsyncTracker
-    {
-
-        // > PROPERTIES
-        // --------------------------------------------------------------------------------------
-
-        private TableWidget tableWidget;
-        private TrackerId groupTrackerId;
-
-        private boolean[][] cellTracker;
-        private boolean[] templateCellTracker;
-
-        private Integer tableHeight;
-        private Integer tableWidth;
-
-
-        // > CONSTRUCTORS
-        // --------------------------------------------------------------------------------------
-
-        public AsyncTracker(TableWidget tableWidget, TrackerId groupTrackerId)
-        {
-            this.tableWidget = tableWidget;
-            this.groupTrackerId = groupTrackerId;
-
-            // Save, for frequent access
-            tableHeight = this.tableWidget.getTableHeight();
-            tableWidth  = this.tableWidget.getTableWidth();
-
-            cellTracker = new boolean[tableHeight][tableWidth];
-            for (int i = 0; i < tableHeight; i++) {
-                for (int j = 0; j < tableWidth; j++) {
-                    cellTracker[i][j] = false;
-                }
-            }
-
-            templateCellTracker = new boolean[tableWidth];
-            for (int i = 0; i < tableWidth; i++) {
-                this.templateCellTracker[i] = false;
-            }
-        }
-
-
-        // > API
-        // --------------------------------------------------------------------------------------
-
-        synchronized public void markCell(int rowIndex, int columnIndex)
-        {
-            if (rowIndex >= tableHeight || columnIndex >= tableWidth)
-                return;
-
-            cellTracker[rowIndex][columnIndex] = true;
-
-            if (isReady()) ready();
-        }
-
-
-        synchronized public void markTemplateCell(int columnIndex)
-        {
-            if (columnIndex >= tableWidth)  return;
-
-            this.templateCellTracker[columnIndex] = true;
-
-            if (isReady()) ready();
-        }
-
-
-
-        // > INTERNAL
-        // --------------------------------------------------------------------------------------
-
-        private boolean isReady()
-        {
-            for (int i = 0; i < tableHeight; i++) {
-                for (int j = 0; j < tableWidth; j++) {
-                    if (!this.cellTracker[i][j]) return false;
-                }
-            }
-
-            for (int i = 0; i < tableWidth; i++) {
-                if (!this.templateCellTracker[i]) return false;
-            }
-
-            return true;
-        }
-
-        private void ready()
-        {
-            if (groupTrackerId == null) return;
-
-            UUID trackerCode = groupTrackerId.getCode();
-            Group.getAsyncTracker(trackerCode).markComponentId(this.tableWidget.getName());
-        }
-    }
-
 
 }

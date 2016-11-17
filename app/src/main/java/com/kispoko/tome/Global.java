@@ -4,8 +4,6 @@ package com.kispoko.tome;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import com.kispoko.tome.util.Tracker;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

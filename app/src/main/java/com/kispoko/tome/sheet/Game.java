@@ -2,14 +2,11 @@
 package com.kispoko.tome.sheet;
 
 
-import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.util.Model;
+import com.kispoko.tome.util.model.Modeler;
 import com.kispoko.tome.util.value.PrimitiveValue;
-import com.kispoko.tome.util.value.Value;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -19,15 +16,15 @@ import java.util.UUID;
  *
  * // TODO when do these get loaded? how do they get updated? can you create custom games?
  */
-public class Game extends Model
+public class Game extends Modeler
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Value<String> name;
-    private Value<String> label;
-    private Value<String> description;
+    private PrimitiveValue<String> name;
+    private PrimitiveValue<String> label;
+    private PrimitiveValue<String> description;
 
 
     // CONSTRUCTORS
@@ -87,9 +84,9 @@ public class Game extends Model
     }
 
 
-    // > Model
+    // > Modeler
     // ------------------------------------------------------------------------------------------
 
-    public void onUpdateModel(String field) { }
+    public void onModelUpdate(String field) { }
 }
 
