@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.type;
+package com.kispoko.tome.rules.refinement;
 
 
 import com.kispoko.tome.exception.InvalidDataException;

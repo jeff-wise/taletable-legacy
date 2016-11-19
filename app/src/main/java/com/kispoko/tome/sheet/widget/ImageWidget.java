@@ -39,7 +39,7 @@ import java.util.UUID;
 /**
  * ImageWidget
  */
-public class ImageWidget implements Widget, Serializable
+public class ImageWidget extends Widget implements Serializable
 {
 
     // PROPERTIES
@@ -113,6 +113,19 @@ public class ImageWidget implements Widget, Serializable
     public void setId(UUID id)
     {
         this.id = id;
+    }
+
+
+    // ** Data
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the image widget's WidgetData object.
+     * @return The WidgetData.
+     */
+    public WidgetData data()
+    {
+        return this.widgetData.getValue();
     }
 
 
@@ -270,7 +283,7 @@ public class ImageWidget implements Widget, Serializable
         int textSize = (int) context.getResources()
                 .getDimension(R.dimen.comp_image_button_text_size);
         button.setTextSize(textSize);
-        button.setTextColor(ContextCompat.getColor(context, R.color.text));
+        button.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
         // Set button icon
         button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_a_photo_17dp, 0, 0, 0);

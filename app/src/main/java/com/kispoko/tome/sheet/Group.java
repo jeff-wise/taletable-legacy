@@ -83,28 +83,17 @@ public class Group implements Model, Serializable
         List<Widget> groups = yaml.atKey("widgets").forEach(new Yaml.ForEach<Widget>() {
             @Override
             public Widget forEach(Yaml yaml, int index) throws YamlException {
-                String widgetType = yaml.atKey("type").getString();
-                switch (widgetType)
-                {
-                    case "text":
-                        return TextWidget.fromYaml(yaml);
-                    case "number":
-                        return NumberWidget.fromYaml(yaml);
-                    case "boolean":
-                        return BooleanWidget.fromYaml(yaml);
-                    case "image":
-                        return ImageWidget.fromYaml(yaml);
-                    case "table":
-                        return TableWidget.fromYaml(yaml);
-                    default:
-                        return null;
-                }
+                return Widget.fromYaml(yaml);
+
             }
         });
 
         return new Group(id, label, index, numberOfRows, groups);
     }
 
+
+    // API
+    // ------------------------------------------------------------------------------------------
 
     // > Model
     // ------------------------------------------------------------------------------------------
@@ -128,6 +117,35 @@ public class Group implements Model, Serializable
     // ------------------------------------------------------------------------------------------
 
     public void onModelUpdate(String valueName) { }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    // ** Index
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the group's index (starting at 0) , which is its position in the page.
+     * @return The group index.
+     */
+    public Integer getIndex()
+    {
+        return this.index.getValue();
+    }
+
+
+    // ** Widgets
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the widgets in the group.
+     * @return The group's widgets.
+     */
+    public List<Widget> getWidgets()
+    {
+        return this.widgets.getValue();
+    }
 
 
     // > Views

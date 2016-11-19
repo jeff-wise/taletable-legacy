@@ -4,10 +4,8 @@ package com.kispoko.tome.rules.programming.evaluation;
 
 import com.kispoko.tome.rules.programming.BuiltInFunction;
 import com.kispoko.tome.rules.programming.function.FunctionIndex;
-import com.kispoko.tome.rules.programming.function.FunctionValue;
-import com.kispoko.tome.rules.programming.function.FunctionValueType;
 import com.kispoko.tome.rules.programming.program.Program;
-import com.kispoko.tome.rules.programming.program.Statement;
+import com.kispoko.tome.rules.programming.program.statement.Statement;
 import com.kispoko.tome.rules.programming.evaluation.error.ParameterWrongType;
 
 import java.util.ArrayList;
@@ -45,16 +43,16 @@ public class Evaluator
     // API
     // ------------------------------------------------------------------------------------------
 
-    public FunctionValue evaluate(Program program, List<FunctionValue> parameters)
+    public ProgramValue evaluate(Program program, List<ProgramValue> parameters)
                          throws EvaluationException
     {
-        Map<String,FunctionValue> variables = new HashMap<>();
+        Map<String,ProgramValue> variables = new HashMap<>();
 
         // Evaluate Statements
         for (Statement statement : program.getStatements())
         {
             String variableName = statement.getVariableName();
-            FunctionValue statementValue = evaluateStatement(statement, parameters, variables);
+            ProgramValue statementValue = evaluateStatement(statement, parameters, variables);
             variables.put(variableName, statementValue);
         }
 
@@ -67,14 +65,14 @@ public class Evaluator
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private FunctionValue evaluateStatement(Statement statement,
-                                            List<FunctionValue> programParameters,
-                                            Map<String,FunctionValue> variables)
+    private ProgramValue evaluateStatement(Statement statement,
+                                           List<ProgramValue> programParameters,
+                                           Map<String,ProgramValue> variables)
                           throws EvaluationException
     {
         String functionName = statement.getFunctionName();
 
-        List<FunctionValue> parameters = new ArrayList<>();
+        List<ProgramValue> parameters = new ArrayList<>();
         int i = 0;
         for (Statement.Parameter parameter : statement.getParameters())
         {
@@ -86,9 +84,9 @@ public class Evaluator
     }
 
 
-    private FunctionValue evaluateParameter(Statement.Parameter parameter,
-                                            List<FunctionValue> programParameters,
-                                            Map<String,FunctionValue> variables, Integer index)
+    private ProgramValue evaluateParameter(Statement.Parameter parameter,
+                                           List<ProgramValue> programParameters,
+                                           Map<String,ProgramValue> variables, Integer index)
                           throws EvaluationException
     {
         switch (parameter.getType())
@@ -117,7 +115,7 @@ public class Evaluator
             case LITERAL_STRING:
                 try {
                     String s = (String) parameter.getValue();
-                    return new FunctionValue(s, FunctionValueType.STRING);
+                    return new ProgramValue(s, ProgramValueType.STRING);
                 } catch (ClassCastException e) {
                     throw new EvaluationException(
                             new ParameterWrongType(index, parameter.getType()),
@@ -129,8 +127,8 @@ public class Evaluator
     }
 
 
-    private FunctionValue evaluateFunction(String functionName, List<FunctionValue> parameters,
-                                           Map<String,FunctionValue> context)
+    private ProgramValue evaluateFunction(String functionName, List<ProgramValue> parameters,
+                                          Map<String,ProgramValue> context)
                           throws EvaluationException
     {
         // Check built-ins first

@@ -5,6 +5,7 @@ package com.kispoko.tome;
 import android.util.Log;
 
 import com.kispoko.tome.exception.TemplateFileException;
+import com.kispoko.tome.rules.programming.function.InvalidFunctionException;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -44,6 +45,13 @@ public class ApplicationFailure
     public static void invalidEnum(IllegalArgumentException exception)
     {
         Log.d("***APP", "invalid enum");
+        exception.printStackTrace();
+    }
+
+
+    public static void invalidFunction(InvalidFunctionException exception)
+    {
+        Log.d("***APP", "invalid function");
         exception.printStackTrace();
     }
 }

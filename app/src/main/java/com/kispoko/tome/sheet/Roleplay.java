@@ -2,11 +2,12 @@
 package com.kispoko.tome.sheet;
 
 
-import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,11 +21,13 @@ import java.util.UUID;
  * The roleplay section of the character sheet contains all of the static information and stats
  * for a character.
  */
-public class Roleplay extends Modeler
+public class Roleplay implements Model
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
+
+    private UUID                  id;
 
     private CollectionValue<Page> pages;
 
@@ -34,9 +37,10 @@ public class Roleplay extends Modeler
 
     public Roleplay(UUID id, List<Page> pages)
     {
-        super(id);
+        this.id = id;
 
-        this.pages = new CollectionValue<>(pages, this, Page.class);
+        List<Class<Page>> pageClasses = Arrays.asList(Page.class);
+        this.pages = new CollectionValue<>(pages, this, pageClasses);
 
         // Make sure pages are sorted
         Collections.sort(pages, new Comparator<Page>() {
@@ -70,6 +74,30 @@ public class Roleplay extends Modeler
     // API
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -84,12 +112,5 @@ public class Roleplay extends Modeler
     {
         return this.pages.getValue();
     }
-
-
-    // > Modeler
-    // ------------------------------------------------------------------------------------------
-
-    public void onModelUpdate(String fieldName) { }
-
 
 }

@@ -2,356 +2,200 @@
 package com.kispoko.tome.rules.programming.function;
 
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
+import com.kispoko.tome.rules.programming.evaluation.ProgramValueType;
+import com.kispoko.tome.rules.programming.function.error.InvalidTupleLengthError;
+import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
-import com.kispoko.tome.Global;
-import com.kispoko.tome.util.database.SQL;
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 
 
 /**
- * Function Definition
+ * Function
  */
-public class Function
+public class Function implements Model
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
-    private String name;
-    private UUID sheetId;
-    private List<FunctionValueType> parameterTypes;
-    private FunctionValueType resultType;
-    private List<Tuple> tuples;
+    private UUID                               id;
 
-    private Map<List<FunctionValue>,FunctionValue> lookupMap;
+    private PrimitiveValue<String>             name;
+    private PrimitiveValue<ProgramValueType[]> parameterTypes;
+    private PrimitiveValue<ProgramValueType>   resultType;
+    private CollectionValue<Tuple>             tuples;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Function(UUID id, String name, UUID sheetId)
+    public Function(UUID id,
+                    String name,
+                    List<ProgramValueType> parameterTypes,
+                    ProgramValueType resultType,
+                    List<Tuple> tuples)
+           throws InvalidFunctionException
     {
-        this.id = id;
-        this.name = name;
-        this.sheetId = sheetId;
-    }
-
-
-    public Function(UUID id, String name, UUID sheetId, List<FunctionValueType> parameterTypes,
-                    FunctionValueType resultType, List<Tuple> tuples)
-    {
-        this.id = id;
-        this.name = name;
-        this.sheetId = sheetId;
-        this.parameterTypes = parameterTypes;
-        this.resultType = resultType;
-        this.tuples = tuples;
-    }
-
-
-    @SuppressWarnings("unchecked")
-    public static Function fromYaml(UUID sheetId, Map<String,Object> functionDefinitionYaml)
-    {
-        // VALUES TO PARSE
-        // --------------------------------------------------------------------------------------
-        UUID id = UUID.randomUUID();
-        String name = null;
-        List<FunctionValueType> parameterTypes = new ArrayList<>();
-        FunctionValueType resultType = null;
-        List<Tuple> tuples = new ArrayList<>();
-
-        // PARSE VALUES
-        // --------------------------------------------------------------------------------------
-
-        // > Top Level
-        // --------------------------------------------------------------------------------------
+        // ** Model Id
+        this.id             = id;
 
         // ** Name
-        if (functionDefinitionYaml.containsKey("name"))
-            name = (String) functionDefinitionYaml.get("name");
-
-        // > Definition
-        // --------------------------------------------------------------------------------------
+        this.name           = new PrimitiveValue<>(name, this, String.class);
 
         // ** Parameter Types
-        if (functionDefinitionYaml.containsKey("parameter_types")) {
-            List<String> parameterTypeList =
-                    ((List<String>) functionDefinitionYaml.get("parameter_types"));
-            for (String parameterType : parameterTypeList) {
-                parameterTypes.add(FunctionValueType.fromString(parameterType));
-            }
-        }
+        ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
+                                                    new ProgramValueType[parameterTypes.size()]);
+        this.parameterTypes = new PrimitiveValue<>(parameterTypeArray, this,
+                                                   ProgramValueType[].class);
 
         // ** Result Type
-        if (functionDefinitionYaml.containsKey("result_type")) {
-            resultType = FunctionValueType.fromString(
-                            (String) functionDefinitionYaml.get("result_type"));
-        }
-        if (functionDefinitionYaml.containsKey("tuples")) {
-            List<Map<String,Object>> tuplesYaml =
-                    (List<Map<String,Object>>) functionDefinitionYaml.get("tuples");
-            for (Map<String,Object> tupleYaml : tuplesYaml) {
-                tuples.add(Tuple.fromYaml(parameterTypes, resultType, tupleYaml));
-            }
-        }
+        this.resultType     = new PrimitiveValue<>(resultType, this, ProgramValueType.class);
 
-        return new Function(id, name, sheetId, parameterTypes, resultType, tuples);
+        // ** Tuples
+        List<Class<Tuple>> tupleClasses = Arrays.asList(Tuple.class);
+        this.tuples         = new CollectionValue<>(tuples, this, tupleClasses);
+
+        // > Validate the function definition
+        this.validate();
+    }
+
+
+    public static Function fromYaml(Yaml yaml)
+                  throws InvalidFunctionException, YamlException
+    {
+        // ** Model Id
+        UUID id = UUID.randomUUID();
+
+        // ** Name
+        String name = yaml.atKey("name").getString();
+
+        // ** Parameter Types
+        final List<ProgramValueType> parameterTypes
+                = yaml.atKey("parameter_types").forEach(new Yaml.ForEach<ProgramValueType>() {
+            @Override
+            public ProgramValueType forEach(Yaml yaml, int index) throws YamlException {
+                return ProgramValueType.fromYaml(yaml);
+            }
+        });
+
+        // ** Result Type
+        final ProgramValueType resultType = ProgramValueType.fromYaml(yaml.atKey("result_type"));
+
+        // ** Tuples
+        List<Tuple> tuples = yaml.atKey("tuples").forEach(new Yaml.ForEach<Tuple>() {
+            @Override
+            public Tuple forEach(Yaml yaml, int index) throws YamlException {
+                return Tuple.fromYaml(yaml, parameterTypes, resultType);
+            }
+        });
+
+        return new Function(id, name, parameterTypes, resultType, tuples);
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
 
-    // > State
+    // > Model
     // ------------------------------------------------------------------------------------------
 
-    public UUID getId() {
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the model identifier.
+     * @return The model UUID.
+     */
+    public UUID getId()
+    {
         return this.id;
     }
 
 
+    /**
+     * Set the model identifier.
+     * @param id The new model UUID.
+     */
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
     // ** Name
     // ------------------------------------------------------------------------------------------
 
-    public String getName() {
-        return this.name;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    // ** Sheet Id
-    // ------------------------------------------------------------------------------------------
-
-    public UUID getSheetId() {
-        return this.sheetId;
+    /**
+     * Get the function name.
+     * @return The function name String.
+     */
+    public String getName()
+    {
+        return this.name.getValue();
     }
 
 
     // ** Parameter Types
     // ------------------------------------------------------------------------------------------
 
-    public List<FunctionValueType> getParameterTypes() {
-        return this.parameterTypes;
-    }
-
-
-    public void setParameterTypes(List<FunctionValueType> parameterTypes) {
-        this.parameterTypes = parameterTypes;
+    /**
+     * Get the function's parameter type list.
+     * @return The parameter type list.
+     */
+    public List<ProgramValueType> getParameterTypes()
+    {
+        return Arrays.asList(this.parameterTypes.getValue());
     }
 
 
     // ** Result Type
     // ------------------------------------------------------------------------------------------
 
-    public FunctionValueType getResultType() {
-        return this.resultType;
-    }
-
-
-    public void setResultType(FunctionValueType resultType) {
-        this.resultType = resultType;
-    }
-
-
-    // ** Tuples
-    // ------------------------------------------------------------------------------------------
-
-    public List<Tuple> getTuples() {
-        return this.tuples;
-    }
-
-
-    public void setTuples(List<Tuple> tuples) {
-        this.tuples = tuples;
-    }
-
-
-    public FunctionValue execute(List<FunctionValue> parameters)
-    {
-        return lookupMap.get(parameters);
-    }
-
-
-    // > Database
-    // ------------------------------------------------------------------------------------------
-
-    public void load(final TrackerId functionIndexTrackerId)
-    {
-        final Function thisFunction = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // ModelQuery Function Data
-                String functionQuery =
-                    "SELECT f.name, f.result_type, f.number_of_parameters, f.parameter_type_1, " +
-                           "f.parameter_type2, f.parameter_type_3 " +
-                    "FROM Function f " +
-                    "WHERE f.function_name =  " + SQL.quoted(thisFunction.getName());
-
-                Cursor functionCursor = database.rawQuery(functionQuery, null);
-
-                String name = null;
-                FunctionValueType resultType = null;
-                Integer numberOfParameters = null;
-                List<FunctionValueType> parameterTypes = new ArrayList<>();
-
-                try {
-                    functionCursor.moveToFirst();
-                    name = functionCursor.getString(0);
-                    resultType = FunctionValueType.fromString(functionCursor.getString(1));
-                    numberOfParameters = functionCursor.getInt(2);
-
-                    for (int i = 0; i < numberOfParameters; i++) {
-                        parameterTypes.add(
-                                FunctionValueType.fromString(functionCursor.getString(i + 3)));
-                    }
-                }
-                finally {
-                    functionCursor.close();
-                }
-
-                // ModelQuery Tuples
-                String tuplesQuery =
-                    "SELECT t.result, t.parameter1, t.parameter2, t.parameter3 " +
-                    "FROM tuple t " +
-                    "WHERE t.function_name = " + SQL.quoted(thisFunction.getName());
-
-                Cursor tuplesCursor = database.rawQuery(tuplesQuery, null);
-
-                List<Tuple> tuples = new ArrayList<>();
-                try {
-                    while (tuplesCursor.moveToNext()) {
-                        FunctionValue result = FunctionValue.fromString(tuplesCursor.getString(0),
-                                                                        resultType);
-                        List<FunctionValue> parameters = new ArrayList<>();
-
-                        for (int i = 0; i < numberOfParameters; i++) {
-                            String parameterString = tuplesCursor.getString(i + 1);
-                            parameters.add(FunctionValue.fromString(parameterString,
-                                                                    parameterTypes.get(i)));
-                        }
-                        tuples.add(new Tuple(parameters, result));
-                    }
-                }
-                finally {
-                    tuplesCursor.close();
-                }
-
-                thisFunction.setName(name);
-                thisFunction.setResultType(resultType);
-                thisFunction.setParameterTypes(parameterTypes);
-                thisFunction.setTuples(tuples);
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                FunctionIndex.getAsyncTracker(functionIndexTrackerId.getCode())
-                        .markFunction(thisFunction.getName());
-            }
-
-        }.execute();
-
-    }
-
-
     /**
-     * Save the program in the database.
-     * @param functionIndexTrackerId The ID of the caller's asynchronous tracker.
+     * Get the function's result type.
+     * @return The function's result type.
      */
-    public void save(final TrackerId functionIndexTrackerId)
+    public ProgramValueType getResultType()
     {
-        final Function thisFunction = this;
+        return this.resultType.getValue();
+    }
 
-        new AsyncTask<Void,Void,Boolean>()
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void validate()
+            throws InvalidFunctionException
+    {
+        // [1] Make sure each tuple has the same number of parameters as specified by the function
+
+        int numberOfParameters = this.parameterTypes.getValue().length;
+        List<Tuple> tuples = this.tuples.getValue();
+
+        for (int i = 0; i < tuples.size(); i++)
         {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // Update Function table row
-                ContentValues functionRow = new ContentValues();
-                functionRow.put("function_id", thisFunction.getId().toString());
-                functionRow.put("name", thisFunction.getName());
-                functionRow.put("sheet_id", thisFunction.getSheetId().toString());
-                functionRow.put("number_of_parameters", thisFunction.getParameterTypes().size());
-
-                List<FunctionValueType> parameterTypes = thisFunction.getParameterTypes();
-                for (int i = 0; i < parameterTypes.size() && i < 3; i++) {
-                    String columnName = "parameter_type_" + Integer.toString(i);
-                    functionRow.put(columnName,
-                                    FunctionValueType.asString(parameterTypes.get(i)));
-                }
-
-                functionRow.put("result_type", FunctionValueType.asString(
-                                                    thisFunction.getResultType()));
-
-                database.insertWithOnConflict(SheetContract.Function.TABLE_NAME,
-                                              null,
-                                              functionRow,
-                                              SQLiteDatabase.CONFLICT_REPLACE);
-
-                // Update Tuple rows
-
-                // Delete current values, before inserting new ones, since that's a lot easier than
-                // tracking which values were deleted and which were changed.
-                String hasFunctionName = "function_name = " + SQL.quoted(thisFunction.getName());
-                database.delete(SheetContract.Tuple.TABLE_NAME, hasFunctionName, null);
-
-                // Save each tuple
-                for (Tuple tuple : thisFunction.getTuples())
-                {
-                    ContentValues tupleRow = new ContentValues();
-                    tupleRow.put("function_name", thisFunction.getName());
-
-                    // Parameters
-                    List<FunctionValue> parameters = tuple.getParameters();
-                    for (int i = 0; i < parameters.size() && i < 3; i++) {
-                        String columnName = "parameter" + Integer.toString(i);
-                        tupleRow.put(columnName, parameters.get(i).asString());
-                    }
-
-                    tupleRow.put("result", tuple.getResult().asString());
-
-                    database.insert(SheetContract.Tuple.TABLE_NAME, null, tupleRow);
-                }
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                FunctionIndex.getAsyncTracker(functionIndexTrackerId.getCode())
-                             .markFunction(thisFunction.getName());
-            }
-
-        }.execute();
-
+            int tupleSize = tuples.get(i).getParameters().size();
+            if (tupleSize != numberOfParameters)
+                throw new InvalidFunctionException(
+                        new InvalidTupleLengthError(i, numberOfParameters, tupleSize),
+                        InvalidFunctionException.ErrorType.INVALID_TUPLE_LENGTH);
+        }
     }
 
 }

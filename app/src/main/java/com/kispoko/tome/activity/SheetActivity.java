@@ -27,7 +27,15 @@ import com.kispoko.tome.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.database.query.ModelQueryParameters;
+import com.kispoko.tome.util.database.sql.Function;
+import com.kispoko.tome.util.database.sql.OrderBy;
+import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.util.promise.SaveValuePromise;
+import com.kispoko.tome.util.promise.ValuePromise;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -36,13 +44,14 @@ import com.kispoko.tome.util.Util;
  */
 public class SheetActivity
        extends AppCompatActivity
-       implements PageFragment.EventListener
+       implements PageFragment.EventListener,
+                  Sheet.OnSheetListener
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    // >> Requests
+    // > Requests
     public static final int CHOOSE_IMAGE_FROM_FILE = 0;
     public static final int COMPONENT_EDIT = 1;
 
@@ -55,8 +64,10 @@ public class SheetActivity
 
     private ChooseImageAction chooseImageAction;
 
+    private static String characterName;
 
-    // > ACTIVITY EVENTS
+
+    // ACTIVITY EVENTS
     // -------------------------------------------------------------------------------------------
 
     @Override
@@ -96,7 +107,8 @@ public class SheetActivity
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -137,10 +149,8 @@ public class SheetActivity
     }
 
 
-
-    // > FRAGMENT EVENTS
+    // FRAGMENT EVENTS
     // -------------------------------------------------------------------------------------------
-
 
     /**
      *
@@ -162,7 +172,7 @@ public class SheetActivity
     }
 
 
-    // > API
+    // API
     // -------------------------------------------------------------------------------------------
 
     /**
@@ -176,7 +186,18 @@ public class SheetActivity
     }
 
 
-    public void renderSheet()
+    /**
+     * Set the character name for the Sheet Activity to display. If a text widget has the
+     * name "name", then it calls this method.
+     * @param name
+     */
+    public static void setCharacterName(String name)
+    {
+        characterName = name;
+    }
+
+
+    public void render()
     {
         PagePagerAdapter pagePagerAdapter =
                 new PagePagerAdapter(getSupportFragmentManager(), this.sheet);
@@ -188,13 +209,21 @@ public class SheetActivity
         tabLayout.setupWithViewPager(viewPager);
 
         TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText( ((TextWidget) this.sheet.componentWithLabel("Name")).getValue());
+        titleView.setText(SheetActivity.characterName);
     }
 
 
-    public void saveSheet(boolean recursive)
+    public void onSheet(Sheet sheet)
     {
-        this.sheet.save(this, recursive);
+        this.sheet = sheet;
+
+        // Save the new sheet, and render it after it is saved.
+        Modeler.saveValuePromise(this.sheet).run(new SaveValuePromise.OnReady() {
+            @Override
+            public void run() {
+                render();
+            }
+        });
     }
 
 
@@ -273,8 +302,7 @@ public class SheetActivity
     }
 
 
-
-    // >> Data
+    // > Data
     // -------------------------------------------------------------------------------------------
 
     /**
@@ -291,12 +319,30 @@ public class SheetActivity
         Global.setDatabase(databaseManager.getWritableDatabase());
 
         // This will be a new character sheet
-        if (templateId != null) {
-            Sheet.loadFromFile(this, templateId);
+        if (templateId != null)
+        {
+            Sheet.fromFile(this, this, templateId);
         }
         // Load the most recently used character sheet
-        else {
-            Sheet.loadMostRecent(this);
+        else
+        {
+            // Construct query
+            List<OrderBy.Field> fields = new ArrayList<>();
+            fields.add(new OrderBy.Field("last_used", Function.DATETIME));
+            OrderBy orderBy = new OrderBy(fields, OrderBy.Order.DESC);
+
+            ModelQueryParameters.TopResult topResultQuery =
+                    new ModelQueryParameters.TopResult(orderBy);
+            ModelQueryParameters queryParameters =
+                    new ModelQueryParameters(topResultQuery, ModelQueryParameters.Type.TOP_RESULT);
+
+            Modeler.modelValuePromise(Sheet.class, queryParameters)
+                   .run(new ValuePromise.OnReady<Sheet>() {
+                @Override
+                public void run(Sheet result) {
+                    onSheet(result);
+                }
+            });
         }
 
     }

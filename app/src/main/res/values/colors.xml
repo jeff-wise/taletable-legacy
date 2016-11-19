@@ -22,7 +22,6 @@
     <!-- GENERAL -->
     <color name="primary">#333333</color>
     <color name="paper">#eceff1</color>
-    <color name="textWidget">#494949</color>
     <color name="paper_dark">#EAEAEA</color>
     <color name="sheet_light">#EDEDED</color>
     <color name="sheet_medium_light">#E3E3E3</color>

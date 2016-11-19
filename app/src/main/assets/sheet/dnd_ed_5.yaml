@@ -1,8 +1,8 @@
 
 label: dnd_ed_5
-types:
+refinementIndex:
 - label: class
-  type: listType
+  type: memberOf
   label: Classes
   values:
   - Barbarian

@@ -3,8 +3,8 @@ package com.kispoko.tome.rules.programming;
 
 
 import com.kispoko.tome.rules.programming.evaluation.EvaluationException;
-import com.kispoko.tome.rules.programming.function.FunctionValue;
-import com.kispoko.tome.rules.programming.function.FunctionValueType;
+import com.kispoko.tome.rules.programming.evaluation.ProgramValue;
+import com.kispoko.tome.rules.programming.evaluation.ProgramValueType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,8 +48,8 @@ public class BuiltInFunction
     }
 
 
-    public static FunctionValue execute(String functionName, List<FunctionValue> parameters,
-                                        Map<String,FunctionValue> context)
+    public static ProgramValue execute(String functionName, List<ProgramValue> parameters,
+                                       Map<String,ProgramValue> context)
                                 throws EvaluationException
     {
         switch (functionName)
@@ -67,16 +67,16 @@ public class BuiltInFunction
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private static FunctionValue modifierString(List<FunctionValue> parameters)
+    private static ProgramValue modifierString(List<ProgramValue> parameters)
                                  throws EvaluationException
     {
         // Sanity check parameters and extract integer value
         if (parameters.size() != 1)
             throw new EvaluationException();
 
-        FunctionValue modifierFunctionValue = parameters.get(0);
+        ProgramValue modifierFunctionValue = parameters.get(0);
 
-        if (modifierFunctionValue.getType() != FunctionValueType.INTEGER)
+        if (modifierFunctionValue.getType() != ProgramValueType.INTEGER)
             throw new EvaluationException();
 
         int modifier = modifierFunctionValue.getInteger();
@@ -91,21 +91,21 @@ public class BuiltInFunction
         else
             modifierString = "+" + Integer.toString(modifier);
 
-        return new FunctionValue(modifierString, FunctionValueType.STRING);
+        return new ProgramValue(modifierString, ProgramValueType.STRING);
     }
 
 
-    private static FunctionValue stringTemplate(List<FunctionValue> parameters,
-                                                Map<String,FunctionValue> context)
+    private static ProgramValue stringTemplate(List<ProgramValue> parameters,
+                                               Map<String,ProgramValue> context)
                                  throws EvaluationException
     {
         // Sanity check parameters and extract integer value
         if (parameters.size() != 1)
             throw new EvaluationException();
 
-        FunctionValue templateFunctionValue = parameters.get(0);
+        ProgramValue templateFunctionValue = parameters.get(0);
 
-        if (templateFunctionValue.getType() != FunctionValueType.STRING)
+        if (templateFunctionValue.getType() != ProgramValueType.STRING)
             throw new EvaluationException();
 
         // Replace all variables in template
@@ -124,8 +124,8 @@ public class BuiltInFunction
         {
             String variableValue;
             if (context.containsKey(templateVariable)) {
-                FunctionValue variableFunctionValue = context.get(templateVariable);
-                if (variableFunctionValue.getType() != FunctionValueType.STRING)
+                ProgramValue variableFunctionValue = context.get(templateVariable);
+                if (variableFunctionValue.getType() != ProgramValueType.STRING)
                     throw new EvaluationException();
                 else
                     variableValue = variableFunctionValue.getString();
@@ -139,7 +139,7 @@ public class BuiltInFunction
             templateString = variableMatcher.replaceFirst(variableValue);
         }
 
-        return new FunctionValue(templateString, FunctionValueType.STRING);
+        return new ProgramValue(templateString, ProgramValueType.STRING);
     }
 
 

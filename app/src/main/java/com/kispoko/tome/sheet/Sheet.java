@@ -9,8 +9,8 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.error.TemplateFileReadError;
-import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.sheet.widget.Widget;
+import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -30,11 +30,13 @@ import java.util.UUID;
  * This class represents the structure and representation of character sheet. Character sheets
  * can therefore be customized for different roleplaying games or even different campaigns.
  */
-public class Sheet extends Modeler
+public class Sheet implements Model
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
+
+    private UUID                 id;
 
     private PrimitiveValue<Long> lastUsed;
 
@@ -42,14 +44,7 @@ public class Sheet extends Modeler
     private ModelValue<Roleplay> roleplay;
     private ModelValue<Rules>    rules;
 
-    private Map<UUID,WidgetData> componentById;
-    private Map<String,WidgetData> componentByLabel;
-
-
-    // > Internal
-    // ------------------------------------------------------------------------------------------
-
-    final private static String modelName = "sheet";
+    private Map<UUID,Widget> componentById;
 
 
     // CONSTRUCTORS
@@ -60,10 +55,8 @@ public class Sheet extends Modeler
                  Roleplay roleplay,
                  Rules rules)
     {
-        super(id);
+        this.id = id;
 
-        // CREATE model values
-        // --------------------------------------------------------------------------------------
         Long currentTimeMS = System.currentTimeMillis();
 
         this.lastUsed = new PrimitiveValue<>(currentTimeMS, this, Long.class);
@@ -142,20 +135,44 @@ public class Sheet extends Modeler
     // API
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
 
-    public WidgetData componentWithId(UUID componentId)
+    public Widget componentWithId(UUID componentId)
     {
         return this.componentById.get(componentId);
     }
 
 
-    public WidgetData componentWithLabel(String componentLabel)
-    {
-        return this.componentByLabel.get(componentLabel.toLowerCase());
-    }
+//    public WidgetData componentWithLabel(String componentLabel)
+//    {
+//        return this.componentByLabel.get(componentLabel.toLowerCase());
+//    }
 
 
     public Roleplay getRoleplay()
@@ -183,18 +200,18 @@ public class Sheet extends Modeler
     {
         // Index components
         componentById = new HashMap<>();
-        componentByLabel = new HashMap<>();
+//        componentByLabel = new HashMap<>();
 
-        for (Page page : this.roleplay.getPages())
+        for (Page page : this.roleplay.getValue().getPages())
         {
             for (Group group : page.getGroups())
             {
-                for (WidgetData widgetData : group.getWidgetDatas())
+                for (Widget widget : group.getWidgets())
                 {
-                    componentById.put(widgetData.getName(), widgetData);
+                    componentById.put(widget.getId(), widget);
 
-                    if (widgetData.hasLabel())
-                        componentByLabel.put(widgetData.getLabel().toLowerCase(), widgetData);
+//                    if (widgetData.hasLabel())
+//                        componentByLabel.put(widgetData.getLabel().toLowerCase(), widgetData);
                 }
             }
         }

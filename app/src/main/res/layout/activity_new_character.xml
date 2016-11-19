@@ -7,7 +7,7 @@
     android:background="@color/bluegrey_800">
 
     <LinearLayout
-        android:name="@+name/from_template_button"
+        android:id="@+id/from_template_button"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -31,19 +31,19 @@
             android:orientation="vertical">
 
             <TextView
-                android:name="@+name/from_offical_template"
+                android:id="@+id/from_offical_template"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/amber_300"
                 android:textSize="19dp"
                 android:textStyle="bold"
-                android:textWidget="@string/from_official_template"/>
+                android:text="@string/from_official_template"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/bluegrey_200"
-                android:textWidget="@string/from_official_template_description"/>
+                android:text="@string/from_official_template_description"/>
 
         </LinearLayout>
 
@@ -81,19 +81,19 @@
             android:orientation="vertical">
 
             <TextView
-                android:name="@+name/from_character_hub"
+                android:id="@+id/from_character_hub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/amber_300"
                 android:textSize="19dp"
                 android:textStyle="bold"
-                android:textWidget="@string/from_character_hub"/>
+                android:text="@string/from_character_hub"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/bluegrey_200"
-                android:textWidget="@string/from_character_hub_description"/>
+                android:text="@string/from_character_hub_description"/>
 
         </LinearLayout>
 
@@ -132,19 +132,19 @@
             android:orientation="vertical">
 
             <TextView
-                android:name="@+name/from_file"
+                android:id="@+id/from_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/amber_300"
                 android:textSize="19dp"
                 android:textStyle="bold"
-                android:textWidget="@string/from_file"/>
+                android:text="@string/from_file"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/bluegrey_200"
-                android:textWidget="@string/from_file_description"/>
+                android:text="@string/from_file_description"/>
 
         </LinearLayout>
 

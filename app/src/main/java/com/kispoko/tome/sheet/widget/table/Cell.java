@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.Widget;
-import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
 import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
@@ -26,7 +25,6 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -34,7 +32,7 @@ import java.util.UUID;
 /**
  * Table Widget Cell
  */
-public class Cell implements Model, Serializable
+public class Cell extends Model implements Serializable
 {
 
     // PROPERTIES
@@ -63,13 +61,11 @@ public class Cell implements Model, Serializable
     }
 
 
-    public static Cell fromYaml(Yaml yaml, int rowIndex, int columnIndex)
+    public static Cell fromYaml(Yaml yaml, int rowIndex, Cell template, int columnIndex)
                   throws YamlException
     {
-        UUID id  =  UUID.randomUUID();
-
-        Widget widget = Widget.fromYaml
-
+        UUID   id     =  UUID.randomUUID();
+        Widget widget = Widget.fromYaml(yaml.atKey("widget"));
 
         return new Cell(id, rowIndex, columnIndex, widget, template);
     }
@@ -77,6 +73,38 @@ public class Cell implements Model, Serializable
 
     // API
     // --------------------------------------------------------------------------------------
+
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the model identifier.
+     * @return The model UUID.
+     */
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+
+    /**
+     * Set the model identifier.
+     * @param id The new model UUID.
+     */
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
 
     // > State
     // ------------------------------------------------------------------------------------------
@@ -87,11 +115,8 @@ public class Cell implements Model, Serializable
     }
 
 
-
-
-    // >> View
+    // > Views
     // ------------------------------------------------------------------------------------------
-
 
     public View getView(Context context)
     {
@@ -120,8 +145,6 @@ public class Cell implements Model, Serializable
                     break;
             }
         }
-
-        //view.setBackgroundColor(ContextCompat.getColor(context, R.color.amber_a200));
 
         // Configure column width
         if (this.widgetData.getWidth() != null) {
@@ -243,7 +266,9 @@ public class Cell implements Model, Serializable
             thisFormat.setAlignment(templateFormat.getAlignment());
         }
 
-        // WidgetData specific initialization
+        // > Initialize Widget-specific data
+
+        // ** Boolean Widget
         if (this.widget.getValue() instanceof BooleanWidget)
         {
             BooleanWidget booleanWidget = (BooleanWidget) this.widget.getValue();

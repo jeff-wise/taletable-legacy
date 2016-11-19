@@ -17,6 +17,7 @@ import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.widget.table.Cell;
 import com.kispoko.tome.sheet.widget.table.Row;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
@@ -331,8 +332,10 @@ public class TableWidget implements Widget, Serializable
                                               TableRow.LayoutParams.WRAP_CONTENT);
 
             Cell template = this.rowTemplate.getCell(i);
-            if (template.getWidgetData().getAlignment() != null) {
-                switch (template.getWidgetData().getAlignment()) {
+            WidgetFormat.Alignment alignment = template.getWidget().data()
+                    .getFormat().getAlignment();
+            if (alignment != null) {
+                switch (alignment) {
                     case LEFT:
                         headerText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
                         break;

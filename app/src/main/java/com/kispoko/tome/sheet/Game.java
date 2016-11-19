@@ -2,7 +2,7 @@
 package com.kispoko.tome.sheet;
 
 
-import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -16,11 +16,13 @@ import java.util.UUID;
  *
  * // TODO when do these get loaded? how do they get updated? can you create custom games?
  */
-public class Game extends Modeler
+public class Game implements Model
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
+
+    private UUID                   id;
 
     private PrimitiveValue<String> name;
     private PrimitiveValue<String> label;
@@ -32,7 +34,7 @@ public class Game extends Modeler
 
     public Game(UUID id, String name, String label, String description)
     {
-        super(id);
+        this.id = id;
 
         this.name        = new PrimitiveValue<>(name, this, String.class);
         this.label       = new PrimitiveValue<>(label, this, String.class);
@@ -55,6 +57,30 @@ public class Game extends Modeler
 
     // API
     // ------------------------------------------------------------------------------------------
+
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
 
     // > State
     // ------------------------------------------------------------------------------------------
@@ -83,10 +109,5 @@ public class Game extends Modeler
         return this.description.getValue();
     }
 
-
-    // > Modeler
-    // ------------------------------------------------------------------------------------------
-
-    public void onModelUpdate(String field) { }
 }
 

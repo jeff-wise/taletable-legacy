@@ -6,9 +6,9 @@ game:
   name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
 rules:
-  types:
+  refinements:
   - name: class
-    kind: list
+    type: member_of
     label: Classes
     values:
     - Barbarian
@@ -25,124 +25,122 @@ rules:
     - Wizard
   functions:
   - name: ability_modifier
-    definition:
-      parameter_types:
-      - integer
-      result_type: integer
-      tuples:
-      - parameters:
-        - 1
-        result: -5
-      - parameters:
-        - 2
-        result: -4
-      - parameters:
-        - 3
-        result: -4
-      - parameters:
-        - 4
-        result: -3
-      - parameters:
-        - 5
-        result: -3
-      - parameters:
-        - 6
-        result: -2
-      - parameters:
-        - 7
-        result: -2
-      - parameters:
-        - 8
-        result: -1
-      - parameters:
-        - 9
-        result: -1
-      - parameters:
-        - 10
-        result: 0
-      - parameters:
-        - 11
-        result: 0
-      - parameters:
-        - 12
-        result: 1
-      - parameters:
-        - 13
-        result: 1
-      - parameters:
-        - 14
-        result: 2
-      - parameters:
-        - 15
-        result: 2
-      - parameters:
-        - 16
-        result: 3
-      - parameters:
-        - 17
-        result: 3
-      - parameters:
-        - 18
-        result: 4
-      - parameters:
-        - 19
-        result: 4
-      - parameters:
-        - 20
-        result: 5
-      - parameters:
-        - 21
-        result: 5
-      - parameters:
-        - 22
-        result: 6
-      - parameters:
-        - 23
-        result: 6
-      - parameters:
-        - 24
-        result: 7
-      - parameters:
-        - 25
-        result: 7
-      - parameters:
-        - 26
-        result: 8
-      - parameters:
-        - 27
-        result: 8
-      - parameters:
-        - 28
-        result: 9
-      - parameters:
-        - 29
-        result: 9
-      - parameters:
-        - 30
-        result: 10
+    parameter_types:
+    - integer
+    result_type: integer
+    tuples:
+    - parameters:
+      - 1
+      result: -5
+    - parameters:
+      - 2
+      result: -4
+    - parameters:
+      - 3
+      result: -4
+    - parameters:
+      - 4
+      result: -3
+    - parameters:
+      - 5
+      result: -3
+    - parameters:
+      - 6
+      result: -2
+    - parameters:
+      - 7
+      result: -2
+    - parameters:
+      - 8
+      result: -1
+    - parameters:
+      - 9
+      result: -1
+    - parameters:
+      - 10
+      result: 0
+    - parameters:
+      - 11
+      result: 0
+    - parameters:
+      - 12
+      result: 1
+    - parameters:
+      - 13
+      result: 1
+    - parameters:
+      - 14
+      result: 2
+    - parameters:
+      - 15
+      result: 2
+    - parameters:
+      - 16
+      result: 3
+    - parameters:
+      - 17
+      result: 3
+    - parameters:
+      - 18
+      result: 4
+    - parameters:
+      - 19
+      result: 4
+    - parameters:
+      - 20
+      result: 5
+    - parameters:
+      - 21
+      result: 5
+    - parameters:
+      - 22
+      result: 6
+    - parameters:
+      - 23
+      result: 6
+    - parameters:
+      - 24
+      result: 7
+    - parameters:
+      - 25
+      result: 7
+    - parameters:
+      - 26
+      result: 8
+    - parameters:
+      - 27
+      result: 8
+    - parameters:
+      - 28
+      result: 9
+    - parameters:
+      - 29
+      result: 9
+    - parameters:
+      - 30
+      result: 10
   programs:
   - name: ability_modifier
-    definition:
-      parameter_types:
-      - integer
-      result_type: integer
-      result_variable: result
-      statements:
-      - let: modifier
-        function: ability_modifier
-        parameters:
-        - type: parameter
-          value: 1
-      - let: modifier_string
-        function: modifier_string
-        parameters:
-        - type: variable
-          value: 'modifier'
-      - let: result
-        function: string_template
-        parameters:
-        - type: literal_string
-          value: '({{modifier_string}})'
+    parameter_types:
+    - integer
+    result_type: integer
+    statements:
+    - let: modifier
+      function: ability_modifier
+      parameters:
+      - type: parameter
+        value: 1
+    - let: modifier_string
+      function: modifier_string
+      parameters:
+      - type: variable
+        value: 'modifier'
+    result_statement:
+      let: result
+      function: string_template
+      parameters:
+      - type: literal_string
+        value: '({{modifier_string}})'
 roleplay:
   pages:
   - label: Profile

@@ -49,7 +49,7 @@ public class WidgetData implements Model, Serializable
         WidgetFormat widgetFormat = WidgetFormat.fromYaml(yaml.atKey("format"));
 
         List<String> actionList   = yaml.atKey("actions").getStringList();
-        String[]     actions      = actionList.toArray(new String[0]);
+        String[]     actions      = actionList.toArray(new String[actionList.size()]);
 
         return new WidgetData(id, widgetFormat, actions);
     }

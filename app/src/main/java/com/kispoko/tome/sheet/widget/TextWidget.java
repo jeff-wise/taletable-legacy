@@ -20,12 +20,12 @@ import com.kispoko.tome.activity.EditActivity;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.rules.programming.Variable;
+import com.kispoko.tome.rules.programming.variable.Variable;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
-import com.kispoko.tome.type.ListType;
+import com.kispoko.tome.rules.refinement.MemberOf;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.ModelValue;
@@ -41,7 +41,7 @@ import java.util.UUID;
 /**
  * TextWidget
  */
-public class TextWidget implements Widget, Serializable
+public class TextWidget extends Widget implements Serializable
 {
 
     // PROPERTIES
@@ -119,6 +119,12 @@ public class TextWidget implements Widget, Serializable
 
     public String name() {
         return "text";
+    }
+
+
+    public WidgetData data()
+    {
+        return this.widgetData.getValue();
     }
 
 
@@ -202,9 +208,9 @@ public class TextWidget implements Widget, Serializable
         textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
 
         // Create adapter passing in the sample user data
-        ListType listType = (ListType) rules.getTypes().getType(this.getTypeId());
-        TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, listType);
-        Log.d("***TEXT", "list type size " + Integer.toString(listType.size()));
+        MemberOf memberOf = (MemberOf) rules.getRefinementIndex().getType(this.getTypeId());
+        TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
+        Log.d("***TEXT", "list type size " + Integer.toString(memberOf.size()));
         textEditorView.setAdapter(adapter);
         // Set layout manager to position the items
         textEditorView.setLayoutManager(new LinearLayoutManager(context));

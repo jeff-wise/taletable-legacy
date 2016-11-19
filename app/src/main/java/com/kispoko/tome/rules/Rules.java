@@ -2,161 +2,109 @@
 package com.kispoko.tome.rules;
 
 
-import com.kispoko.tome.rules.programming.function.Function;
 import com.kispoko.tome.rules.programming.function.FunctionIndex;
-import com.kispoko.tome.rules.programming.program.Program;
 import com.kispoko.tome.rules.programming.program.ProgramIndex;
-import com.kispoko.tome.rules.types.Types;
-import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.rules.refinement.RefinementIndex;
+import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+
 
 
 /**
  * Rules Engine
  */
-public class Rules implements Serializable
+public class Rules implements Model, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID sheetId;
-    private Types types;
-    private FunctionIndex functionIndex;
-    private ProgramIndex programIndex;
+    private UUID id;
 
-    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
-
+    private ModelValue<RefinementIndex> refinementIndex;
+    private ModelValue<FunctionIndex>   functionIndex;
+    private ModelValue<ProgramIndex>    programIndex;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Rules(UUID sheetId)
+    public Rules(UUID id,
+                 RefinementIndex refinementIndex,
+                 ProgramIndex programIndex,
+                 FunctionIndex functionIndex)
     {
-        this.sheetId = sheetId;
-        this.types = new Types(sheetId);
-        this.functionIndex = new FunctionIndex(sheetId);
-        this.programIndex = new ProgramIndex(sheetId);
+        this.id = id;
+
+        this.refinementIndex = new ModelValue<>(refinementIndex, this, RefinementIndex.class);
+        this.functionIndex   = new ModelValue<>(functionIndex, this, FunctionIndex.class);
+        this.programIndex    = new ModelValue<>(programIndex, this, ProgramIndex.class);
     }
 
 
-    public Rules(UUID sheetId, Types types, List<Function> functions, List<Program> programs)
+    public static Rules fromYaml(Yaml yaml)
+                  throws YamlException
     {
-        this.sheetId = sheetId;
-        this.types = types;
+        UUID            id              = UUID.randomUUID();
 
-        this.functionIndex = new FunctionIndex(sheetId, functions);
-        this.programIndex = new ProgramIndex(sheetId, programs);
+        RefinementIndex refinementIndex = RefinementIndex.fromYaml(yaml.atKey("refinements"));
+        ProgramIndex    programIndex    = ProgramIndex.fromYaml(yaml.atKey("programs"));
+        FunctionIndex   functionIndex   = FunctionIndex.fromYaml(yaml.atKey("functions"));
+
+        return new Rules(id, refinementIndex, programIndex, functionIndex);
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
 
-    // > State
+    // > Model
     // ------------------------------------------------------------------------------------------
 
-    public Types getTypes() {
-        return this.types;
-    }
-
-
-    public UUID getSheetId() {
-        return this.sheetId;
-    }
-
-
-    // > Async Tracker
+    // ** Id
     // ------------------------------------------------------------------------------------------
 
-    private TrackerId addAsyncTracker(TrackerId sheetTrackerId)
+    /**
+     * Get the model identifier.
+     * @return The model UUID.
+     */
+    public UUID getId()
     {
-        UUID trackerCode = UUID.randomUUID();
-        Rules.asyncTrackerMap.put(trackerCode, new AsyncTracker(sheetTrackerId));
-        return new TrackerId(trackerCode, TrackerId.Target.RULES);
-    }
-
-
-    public static AsyncTracker getAsyncTracker(UUID trackerCode)
-    {
-        return Rules.asyncTrackerMap.get(trackerCode);
-    }
-
-
-    // > Database
-    // ------------------------------------------------------------------------------------------
-
-    public void load(TrackerId sheetTrackerId)
-    {
-        TrackerId rulesTrackerId = this.addAsyncTracker( sheetTrackerId);
-
-        // Load Rules components asynchronously
-        this.types.load(rulesTrackerId, this.getSheetId());
-        this.functionIndex.load(rulesTrackerId);
-        this.programIndex.load(rulesTrackerId);
-    }
-
-
-    public void save(TrackerId sheetTrackerId, boolean recursive)
-    {
-        if (!recursive) return;
-
-        TrackerId rulesTrackerId = this.addAsyncTracker(sheetTrackerId);
-
-        // Save all Rules components
-        this.types.save(rulesTrackerId, this.getSheetId(), true);
-        this.functionIndex.save(rulesTrackerId);
-        this.programIndex.save(rulesTrackerId);
+        return this.id;
     }
 
 
     /**
-     * Track state of Sheet.
+     * Set the model identifier.
+     * @param id The new model UUID.
      */
-    public static class AsyncTracker
+    public void setId(UUID id)
     {
-        private TrackerId sheetTrackerId;
+        this.id = id;
+    }
 
-        private boolean types;
-        private boolean functionIndex;
-        private boolean programIndex;
 
-        public AsyncTracker(TrackerId sheetTrackerId) {
-            this.sheetTrackerId = sheetTrackerId;
-            this.types = false;
-        }
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
 
-        synchronized public void markTypes() {
-            this.types = true;
-            if (isReady()) ready();
-        }
+    public void onModelUpdate(String valueName) { }
 
-        synchronized public void markFunctionIndex() {
-            this.functionIndex = true;
-            if (isReady()) ready();
-        }
 
-        synchronized public void markProgramIndex() {
-            this.programIndex = true;
-            if (isReady()) ready();
-        }
+    // > State
+    // ------------------------------------------------------------------------------------------
 
-        private boolean isReady() {
-            return this.types &&
-                   this.functionIndex &&
-                   this.programIndex;
-        }
-
-        private void ready() {
-            Sheet.getAsyncTracker(this.sheetTrackerId.getCode()).markRules();
-        }
-
+    /**
+     * Get the rules' refinement index.
+     * @return The RefinementIndex.
+     */
+    public RefinementIndex getRefinementIndex()
+    {
+        return this.refinementIndex.getValue();
     }
 
 }

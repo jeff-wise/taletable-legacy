@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.rules.programming.Variable;
+import com.kispoko.tome.rules.programming.variable.Variable;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.value.ModelValue;
@@ -23,7 +23,7 @@ import java.util.UUID;
 /**
  * Boolean WidgetData
  */
-public class BooleanWidget implements Widget, Serializable
+public class BooleanWidget extends Widget implements Serializable
 {
 
     // PROPERTIES

@@ -2,7 +2,7 @@
 package com.kispoko.tome.rules.programming.evaluation.error;
 
 
-import com.kispoko.tome.rules.programming.program.Statement;
+import com.kispoko.tome.rules.programming.program.statement.Statement;
 import com.kispoko.tome.rules.programming.evaluation.EvaluationError;
 
 

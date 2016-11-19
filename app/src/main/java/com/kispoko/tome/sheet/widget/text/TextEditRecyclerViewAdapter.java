@@ -14,12 +14,11 @@ import android.widget.TextView;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.type.ListType;
-
+import com.kispoko.tome.rules.refinement.MemberOf;
 
 
 /**
- * Recycler View Adapter for ListType Types
+ * Recycler View Adapter for MemberOf RefinementIndex
  */
 public class TextEditRecyclerViewAdapter
        extends RecyclerView.Adapter<TextEditRecyclerViewAdapter.ViewHolder>
@@ -29,24 +28,24 @@ public class TextEditRecyclerViewAdapter
     // -------------------------------------------------------------------------------------------
 
     private TextWidget textWidget;
-    private ListType listType;
+    private MemberOf memberOf;
 
 
     // > CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public TextEditRecyclerViewAdapter(TextWidget textWidget, ListType listType)
+    public TextEditRecyclerViewAdapter(TextWidget textWidget, MemberOf memberOf)
     {
         this.textWidget = textWidget;
-        this.listType = listType;
+        this.memberOf = memberOf;
     }
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = this.listType.getItemView(parent.getContext());
-        return new ViewHolder(itemView, this.listType, this.textWidget);
+        View itemView = this.memberOf.getItemView(parent.getContext());
+        return new ViewHolder(itemView, this.memberOf, this.textWidget);
     }
 
 
@@ -57,9 +56,9 @@ public class TextEditRecyclerViewAdapter
         View itemView = viewHolder.itemView;
 
         TextView textView = (TextView) itemView.findViewById(R.id.type_list_item_name);
-        textView.setText(this.listType.getValue(position));
+        textView.setText(this.memberOf.getValue(position));
 
-        if (this.listType.getValue(position).equals(this.textWidget.getValue())) {
+        if (this.memberOf.getValue(position).equals(this.textWidget.getValue())) {
             ImageView iconView = (ImageView) itemView.findViewById(R.id.type_list_item_icon);
             iconView.setImageDrawable(
                 ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_list_item_selected));
@@ -76,7 +75,7 @@ public class TextEditRecyclerViewAdapter
     // Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return this.listType.size();
+        return this.memberOf.size();
     }
 
 
@@ -85,7 +84,7 @@ public class TextEditRecyclerViewAdapter
 
         private View itemView;
 
-        public ViewHolder(final View itemView, final ListType listType, final TextWidget textWidget)
+        public ViewHolder(final View itemView, final MemberOf memberOf, final TextWidget textWidget)
         {
             super(itemView);
             this.itemView = itemView;
@@ -96,7 +95,7 @@ public class TextEditRecyclerViewAdapter
             this.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String newValue = listType.getValue(thisViewHolder.getAdapterPosition());
+                    String newValue = memberOf.getValue(thisViewHolder.getAdapterPosition());
 
                     // Set chosen value as result of activity and finish
                     EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,

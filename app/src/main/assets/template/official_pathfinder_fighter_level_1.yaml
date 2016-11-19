@@ -5,9 +5,9 @@ label:
 game:
   name: pathfinder
   label: 'Pathfinder'
-types:
+refinementIndex:
 - label: class
-  type: listType
+  type: memberOf
   label: Classes
   values:
   - Barbarian

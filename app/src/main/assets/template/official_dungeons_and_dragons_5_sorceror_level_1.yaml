@@ -5,9 +5,9 @@ label:
 game:
   name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
-types:
+refinementIndex:
 - label: class
-  type: listType
+  type: memberOf
   label: Classes
   values:
   - Barbarian

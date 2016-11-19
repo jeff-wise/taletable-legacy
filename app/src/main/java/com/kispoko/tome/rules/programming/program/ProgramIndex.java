@@ -2,250 +2,134 @@
 package com.kispoko.tome.rules.programming.program;
 
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
-import android.util.Log;
+import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
-import com.kispoko.tome.Global;
-import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.util.database.SQL;
-
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 
+
 /**
  * Program Index
  */
-public class ProgramIndex
+public class ProgramIndex implements Model
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID sheetId;
-    private Map<String,Program> programByName;
+    private UUID id;
 
-    // Static
-    private static Map<UUID,AsyncTracker> asyncTrackerMap = new HashMap<>();
+    private CollectionValue<Program> programs;
+
+
+    // > Internal
+    private Map<String,Program> programByName;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ProgramIndex(UUID sheetId)
+    public ProgramIndex(UUID id)
     {
-        this.sheetId = sheetId;
+        this.id = id;
 
-        programByName = new HashMap<>();
+        List<Class<Program>> programClasses = Arrays.asList(Program.class);
+        this.programs = new CollectionValue<>(new ArrayList<Program>(), this, programClasses);
     }
 
 
-    public ProgramIndex(UUID sheetId, List<Program> programs)
+    public static ProgramIndex fromYaml(Yaml yaml)
+                  throws YamlException
     {
-        this.sheetId = sheetId;
+        final ProgramIndex programIndex = new ProgramIndex(UUID.randomUUID());
 
-        // TODO ensure all programs have unique names
+        List<Program> programs = yaml.forEach(new Yaml.ForEach<Program>() {
+            @Override
+            public Program forEach(Yaml yaml, int index) throws YamlException {
+                return Program.fromYaml(yaml);
+            }
+        });
 
-        programByName = new HashMap<>();
         for (Program program : programs) {
-            programByName.put(program.getName(), program);
+            programIndex.addProgram(program);
         }
+
+        return programIndex;
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the model identifier.
+     * @return The model UUID.
+     */
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+
+    /**
+     * Set the model identifier.
+     * @param id The new model UUID.
+     */
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
-    public UUID getSheetId() {
-        return this.sheetId;
-    }
-
-
-    public boolean hasProgram(String programName) {
-        return this.programByName.containsKey(programName);
-    }
-
-
-    public Program getProgram(String programName) {
-        return this.programByName.get(programName);
-    }
-
-
-    public void addProgram(Program program) {
-        // TODO make sure not duplicate
-        this.programByName.put(program.getName(), program);
-    }
-
-
-    public Collection<Program> getAllPrograms() {
-        return this.programByName.values();
-    }
-
-
-    // > Async Tracker
-    // ------------------------------------------------------------------------------------------
-
     /**
-     * Create a new asynchronous tracker for this program index.
-     * @param rulesTrackerId The async tracker ID of the caller.
-     * @return The unique ID of the tracker.
+     * Add a new program to the index. If it has the same name as another program currently in
+     * the index, it will not be added.
+     * @param program The program to add to the index.
      */
-    private TrackerId addAsyncTracker(TrackerId rulesTrackerId)
+    public void addProgram(Program program)
     {
-        UUID trackerCode = UUID.randomUUID();
-        ProgramIndex.asyncTrackerMap.put(trackerCode, new AsyncTracker(this, rulesTrackerId));
-        return new TrackerId(trackerCode, TrackerId.Target.PROGRAM_INDEX);
-    }
-
-
-    /**
-     * Lookup a reference to a asynchronous tracker for a program index.
-     * @param trackerCode The tracker's ID.
-     * @return The asynchronous tracker.
-     */
-    public static AsyncTracker getAsyncTracker(UUID trackerCode)
-    {
-        return ProgramIndex.asyncTrackerMap.get(trackerCode);
-    }
-
-
-    // > Database
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Load all of the programs for the sheet into the index.
-     */
-    public void load(final TrackerId rulesTrackerId)
-    {
-        final ProgramIndex thisProgramIndex = this;
-
-        new AsyncTask<Void,Void,Boolean>()
-        {
-
-            @Override
-            protected Boolean doInBackground(Void... args)
-            {
-                SQLiteDatabase database = Global.getDatabase();
-
-                // ModelQuery Program Data
-                String query =
-                    "SELECT p.program_id, p.program_name " +
-                    "FROM Program p " +
-                    "WHERE p.sheet_id =  " + SQL.quoted(thisProgramIndex.getSheetId().toString());
-
-                Cursor cursor = database.rawQuery(query, null);
-
-                try {
-                    while (cursor.moveToNext()) {
-                        // Create "empty" program object for each entry
-                        // The remaining program data is loaded asynchronously into the objects
-                        UUID id     = UUID.fromString(cursor.getString(0));
-                        String name = cursor.getString(1);
-                        thisProgramIndex.addProgram(
-                                new Program(id, name, thisProgramIndex.getSheetId()));
-                    }
-                } catch (Exception e) {
-                    Log.d("***PROGRAM_INDEX", Log.getStackTraceString(e));
-                }
-                finally {
-                    cursor.close();
-                }
-
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result)
-            {
-                TrackerId programIndexTrackerId =
-                        thisProgramIndex.addAsyncTracker(rulesTrackerId);
-
-                for (Program program : thisProgramIndex.getAllPrograms()) {
-                    program.load(programIndexTrackerId);
-                }
-            }
-
-        }.execute();
-
-    }
-
-
-    /**
-     * Save all of the programs in the index to the database.
-     * @param rulesTrackerId The ID of the caller's async tracker.
-     */
-    public void save(TrackerId rulesTrackerId)
-    {
-        TrackerId programIndexTrackerId = this.addAsyncTracker(rulesTrackerId);
-
-        for (Program program : this.getAllPrograms()) {
-            program.save(programIndexTrackerId);
+        if (!this.programByName.containsKey(program.getName())) {
+            this.programByName.put(program.getName(), program);
+            this.programs.getValue().add(program);
         }
     }
 
 
-    // NESTED CLASSES
-    // ------------------------------------------------------------------------------------------
-
     /**
-     * Track state of Function Index
+     * Get the program in the index with the given name. Names are unique, so only one match
+     * may be found.
+     * @param name The name of the program to lookup.
+     * @return The Program with the given name, or null if no program with that name exists
+     *         in the index.
      */
-    public static class AsyncTracker
+    public Program programWithName(String name)
     {
-
-        // PROPERTIES
-        // --------------------------------------------------------------------------------------
-
-        private ProgramIndex programIndex;
-        private TrackerId rulesTrackerId;
-
-        private Map<String,Boolean> programTracker;
-
-
-        // PROPERTIES
-        // --------------------------------------------------------------------------------------
-
-        public AsyncTracker(ProgramIndex programIndex, TrackerId rulesTrackerId)
-        {
-            this.programIndex = programIndex;
-            this.rulesTrackerId = rulesTrackerId;
-
-            this.programTracker = new HashMap<>();
-            for (Program program : programIndex.getAllPrograms()) {
-                this.programTracker.put(program.getName(), false);
-            }
-        }
-
-
-        // API
-        // --------------------------------------------------------------------------------------
-
-        synchronized public void markProgram(String programName) {
-            if (programName != null && this.programTracker.containsKey(programName))
-                this.programTracker.put(programName, true);
-            if (isReady()) ready();
-        }
-
-        private boolean isReady() {
-            for (Boolean flag : programTracker.values()) {
-                if (!flag) return false;
-            }
-            return true;
-        }
-
-        private void ready() {
-            Rules.getAsyncTracker(this.rulesTrackerId.getCode()).markProgramIndex();
-        }
-
+        return this.programByName.get(name);
     }
+
+
 
 
 }

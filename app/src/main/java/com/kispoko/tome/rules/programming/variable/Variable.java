@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules.programming;
+package com.kispoko.tome.rules.programming.variable;
 
 
 import android.content.ContentValues;
@@ -16,7 +16,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.UUID;
 
-import static com.kispoko.tome.rules.programming.Variable.Type.PROGRAM;
+import static com.kispoko.tome.rules.programming.variable.Variable.Type.PROGRAM;
 
 
 

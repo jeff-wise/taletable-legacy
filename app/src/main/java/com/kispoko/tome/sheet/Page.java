@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -16,6 +16,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,11 +31,13 @@ import java.util.UUID;
  * to a specific theme. The fields are cotained in a list of groups, which group related
  * character content.
  */
-public class Page extends Modeler implements Serializable
+public class Page implements Model, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
+
+    private UUID                    id;
 
     private PrimitiveValue<String>  label;
     private PrimitiveValue<Integer> index;
@@ -44,12 +47,15 @@ public class Page extends Modeler implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Page(String label, Integer index, List<Group> groups)
+    public Page(UUID id, String label, Integer index, List<Group> groups)
     {
+        this.id     = id;
 
         this.label  = new PrimitiveValue<>(label, this, String.class);
         this.index  = new PrimitiveValue<>(index, this, Integer.class);
-        this.groups = new CollectionValue<>(groups, this, Group.class);
+
+        List<Class<Group>> groupClasses = Arrays.asList(Group.class);
+        this.groups = new CollectionValue<>(groups, this, groupClasses);
 
         // Make sure groups are sorted
         Collections.sort(groups, new Comparator<Group>() {
@@ -72,9 +78,9 @@ public class Page extends Modeler implements Serializable
         String     label  = yaml.atKey("label").getString();
         Integer    index  = pageIndex;
 
-        List<Page> groups = yaml.atKey("groups").forEach(new Yaml.ForEach<Group>() {
+        List<Group> groups = yaml.atKey("groups").forEach(new Yaml.ForEach<Group>() {
             @Override
-            public Group forEach(Yaml yaml, int index) {
+            public Group forEach(Yaml yaml, int index) throws YamlException {
                 return Group.fromYaml(yaml, index);
             }
         });
@@ -85,6 +91,30 @@ public class Page extends Modeler implements Serializable
 
     // API
     // ------------------------------------------------------------------------------------------
+
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
 
     // > State
     // ------------------------------------------------------------------------------------------
@@ -118,12 +148,6 @@ public class Page extends Modeler implements Serializable
     {
         return this.groups.getValue();
     }
-
-
-    // > Modeler
-    // ------------------------------------------------------------------------------------------
-
-    public void onModelUpdate(String valueName) { }
 
 
     // > Views

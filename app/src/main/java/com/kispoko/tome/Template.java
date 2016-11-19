@@ -80,7 +80,7 @@ public class Template
     /**
      * Read the template manifest file and retrive the list of games available.
      * @param context Context for accessing assets.
-     * @return ListType of template games.
+     * @return MemberOf of template games.
      */
     @SuppressWarnings("unchecked")
     public static ArrayList<Game> templateGames(Context context)

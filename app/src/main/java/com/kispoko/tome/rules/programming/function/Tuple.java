@@ -2,70 +2,129 @@
 package com.kispoko.tome.rules.programming.function;
 
 
-import java.util.ArrayList;
+import com.kispoko.tome.rules.programming.evaluation.ProgramValue;
+import com.kispoko.tome.rules.programming.evaluation.ProgramValueType;
+import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
+
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 
 
 /**
  * Tuple
  */
-public class Tuple
+public class Tuple implements Model
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private List<FunctionValue> parameters;
-    private FunctionValue result;
+    private UUID                          id;
+
+    private CollectionValue<ProgramValue> parameters;
+    private ModelValue<ProgramValue>      result;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Tuple(List<FunctionValue> parameters, FunctionValue result)
+    public Tuple(UUID id, List<ProgramValue> parameters, ProgramValue result)
     {
-        this.parameters = parameters;
-        this.result = result;
+        this.id         = id;
+
+        List<Class<ProgramValue>> programValueClasses = Arrays.asList(ProgramValue.class);
+        this.parameters = new CollectionValue<>(parameters, this, programValueClasses);
+
+        this.result     = new ModelValue<>(result, this, ProgramValue.class);
+
     }
 
 
-    @SuppressWarnings("unchecked")
-    public static Tuple fromYaml(List<FunctionValueType> parameterTypes,
-                                 FunctionValueType resultType,
-                                 Map<String,Object> tupleYaml)
+    public static Tuple fromYaml(Yaml yaml,
+                                 final List<ProgramValueType> parameterTypes,
+                                 ProgramValueType resultType)
+                  throws YamlException
     {
-        List<FunctionValue> parameters = new ArrayList<>();
-        FunctionValue result = null;
+        UUID id = UUID.randomUUID();
 
-        if (tupleYaml.containsKey("parameters")) {
-            List<Object> parametersYaml = ((List<Object>) tupleYaml.get("parameters"));
-            int i = 0;
-            for (Object parameterYaml : parametersYaml) {
-                FunctionValueType parameterType = parameterTypes.get(i);
-                parameters.add(new FunctionValue(parameterYaml, parameterType));
-                i++;
+        // ** Parameters
+        List<ProgramValue> parameters = yaml.atKey("parameters")
+                                            .forEach(new Yaml.ForEach<ProgramValue>() {
+            @Override
+            public ProgramValue forEach(Yaml yaml, int index) throws YamlException {
+                return ProgramValue.fromYaml(yaml, parameterTypes.get(index));
             }
-        }
+        });
 
-        if (tupleYaml.containsKey("result"))
-            result = new FunctionValue(tupleYaml.get("result"), resultType);
+        // ** Result
+        ProgramValue result = ProgramValue.fromYaml(yaml.atKey("result"), resultType);
 
-        return new Tuple(parameters, result);
+        return new Tuple(id, parameters, result);
     }
 
 
     // > API
     // ------------------------------------------------------------------------------------------
 
-    public List<FunctionValue> getParameters() {
-        return this.parameters;
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the model identifier.
+     * @return The model UUID.
+     */
+    public UUID getId()
+    {
+        return this.id;
     }
 
 
-    public FunctionValue getResult() {
-        return this.result;
+    /**
+     * Set the model identifier.
+     * @param id The new model UUID.
+     */
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the tuple parameters. These represent the input to one case of a function.
+     * @return List of ordered tuple parameters.
+     */
+    public List<ProgramValue> getParameters()
+    {
+        return this.parameters.getValue();
+    }
+
+
+    /**
+     * Get the tuple result. Represents the result of one case of the function, determined
+     * by the inputs.
+     * @return ProgramValue result of the tuple.
+     */
+    public ProgramValue getResult()
+    {
+        return this.result.getValue();
     }
 
 }

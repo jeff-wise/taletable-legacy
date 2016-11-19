@@ -7,13 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.media.Image;
 
-import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.rules.programming.Variable;
+import com.kispoko.tome.rules.programming.variable.Variable;
 import com.kispoko.tome.rules.programming.function.Function;
 import com.kispoko.tome.rules.programming.function.Tuple;
 import com.kispoko.tome.rules.programming.program.Program;
 import com.kispoko.tome.rules.programming.program.ProgramInvocation;
-import com.kispoko.tome.rules.programming.program.Statement;
+import com.kispoko.tome.rules.programming.program.statement.Statement;
 import com.kispoko.tome.sheet.Game;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.sheet.Page;
@@ -24,8 +23,7 @@ import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.sheet.widget.table.Cell;
-import com.kispoko.tome.type.ListType;
-import com.kispoko.tome.type.Type;
+import com.kispoko.tome.rules.refinement.MemberOf;
 import com.kispoko.tome.util.model.Modeler;
 import com.kispoko.tome.util.database.DatabaseException;
 
@@ -61,7 +59,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             db.execSQL(Modeler.defineTableSQLString(Cell.class));
             db.execSQL(Modeler.defineTableSQLString(WidgetFormat.class));
             db.execSQL(Modeler.defineTableSQLString(Type.class));
-            db.execSQL(Modeler.defineTableSQLString(ListType.class));
+            db.execSQL(Modeler.defineTableSQLString(MemberOf.class));
             db.execSQL(Modeler.defineTableSQLString(Program.class));
             db.execSQL(Modeler.defineTableSQLString(Statement.class));
             db.execSQL(Modeler.defineTableSQLString(ProgramInvocation.class));
