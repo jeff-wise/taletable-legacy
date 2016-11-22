@@ -10,6 +10,7 @@ import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +39,8 @@ public class Tuple implements Model
     {
         this.id         = id;
 
-        List<Class<ProgramValue>> programValueClasses = Arrays.asList(ProgramValue.class);
+        List<Class<? extends ProgramValue>> programValueClasses = new ArrayList<>();
+        programValueClasses.add(ProgramValue.class);
         this.parameters = new CollectionValue<>(parameters, this, programValueClasses);
 
         this.result     = new ModelValue<>(result, this, ProgramValue.class);

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.exception.TemplateFileException;
+import com.kispoko.tome.game.Game;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.sheet.widget.Widget;
@@ -221,37 +222,6 @@ public class Sheet implements Model
 
     // NESTED DEFINITIONS
     // ------------------------------------------------------------------------------------------
-
-
-    public static class Name
-    {
-        private String name;
-        private String label;
-        private String description;
-
-        public Name(String name, String label, String description)
-        {
-            this.name = name;
-            this.label = label;
-            this.description = description;
-        }
-
-        public String getName()
-        {
-            return this.name;
-        }
-
-        public String getLabel()
-        {
-            return this.label;
-        }
-
-        public String getDescription()
-        {
-            return this.description;
-        }
-
-    }
 
 
     // Listeners

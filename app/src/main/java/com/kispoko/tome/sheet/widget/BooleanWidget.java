@@ -91,12 +91,41 @@ public class BooleanWidget extends Widget implements Serializable
     // > Widget
     // ------------------------------------------------------------------------------------------
 
-    public String name() {
+    // ** Name
+    // ------------------------------------------------------------------------------------------
+
+    public String name()
+    {
         return "text";
     }
 
 
+    // ** Data
+    // ------------------------------------------------------------------------------------------
+
+    public WidgetData data()
+    {
+        return this.widgetData.getValue();
+    }
+
+
+    // ** Run Action
+    // ------------------------------------------------------------------------------------------
+
     public void runAction(String actionName, Context context, Rules rules) { }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the BooleanWidget's value variable (of type boolean).
+     * @return The Variable for the BoolenWidget value.
+     */
+    public Variable getValue()
+    {
+        return this.value.getValue();
+    }
 
 
 //    public void setValue(Boolean value, Context context)
@@ -119,7 +148,7 @@ public class BooleanWidget extends Widget implements Serializable
     {
         TextView view = new TextView(context);
 
-        view.setText(this.getValue().toString());
+        view.setText(this.value.getValue().getBoolean().toString());
 
         return view;
     }

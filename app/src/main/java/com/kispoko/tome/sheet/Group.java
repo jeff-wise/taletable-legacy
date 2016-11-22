@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet;
 
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,7 +16,6 @@ import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
-import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
@@ -27,7 +25,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -62,11 +59,12 @@ public class Group implements Model, Serializable
         this.index        = new PrimitiveValue<>(index, this, Integer.class);
         this.numberOfRows = new PrimitiveValue<>(numberOfRows, this, Integer.class);
 
-        List<Class<Widget>> widgetClasses = Arrays.asList(TextWidget.class,
-                                                          NumberWidget.class,
-                                                          BooleanWidget.class,
-                                                          TableWidget.class,
-                                                          Image.class);
+        List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
+        widgetClasses.add(TextWidget.class);
+        widgetClasses.add(NumberWidget.class);
+        widgetClasses.add(BooleanWidget.class);
+        widgetClasses.add(TableWidget.class);
+        widgetClasses.add(ImageWidget.class);
         this.widgets      = new CollectionValue<>(widgets, this, widgetClasses);
     }
 
@@ -122,6 +120,19 @@ public class Group implements Model, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Label
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the group label.
+     * @return The group label String.
+     */
+    public String getLabel()
+    {
+        return this.label.getValue();
+    }
+
+
     // ** Index
     // ------------------------------------------------------------------------------------------
 
@@ -148,6 +159,21 @@ public class Group implements Model, Serializable
     }
 
 
+    // ** Number Of Rows
+    // ------------------------------------------------------------------------------------------
+
+
+    /**
+     * Get the number of rows in this group.
+     * @return Number of rows in group.
+     */
+    public Integer getNumberOfRows()
+    {
+        return this.numberOfRows.getValue();
+    }
+
+
+
     // > Views
     // ------------------------------------------------------------------------------------------
 
@@ -170,27 +196,29 @@ public class Group implements Model, Serializable
         groupLayout.setPadding(groupPaddingHorz, groupPaddingTop, groupPaddingHorz, 0);
 
 
-        ArrayList<ArrayList<WidgetData>> rows = new ArrayList<>();
-        for (int i = 0; i  < this.numberOfRows; i++) {
-            rows.add(new ArrayList<WidgetData>());
+        List<List<Widget>> rows = new ArrayList<>();
+        for (int i = 0; i  < this.getNumberOfRows(); i++) {
+            rows.add(new ArrayList<Widget>());
         }
 
         // Sort by row
-        for (WidgetData widgetData : this.widgetDatas)
+        for (Widget widget : this.getWidgets())
         {
-            int rowIndex = widgetData.getRow() - 1;
-            rows.get(rowIndex).add(widgetData);
+            int rowIndex = widget.data().getFormat().getRow() - 1;
+            rows.get(rowIndex).add(widget);
         }
 
         // Sort by column
-        for (int j = 0; j < this.numberOfRows; j++) {
-            ArrayList<WidgetData> row = rows.get(j);
-            Collections.sort(row, new Comparator<WidgetData>() {
+        for (int j = 0; j < this.getNumberOfRows(); j++) {
+            List<Widget> row = rows.get(j);
+            Collections.sort(row, new Comparator<Widget>() {
                 @Override
-                public int compare(WidgetData c1, WidgetData c2) {
-                    if (c1.getColumn() > c2.getColumn())
+                public int compare(Widget c1, Widget c2) {
+                    Integer c1Column = c1.data().getFormat().getColumn();
+                    Integer c2Column = c2.data().getFormat().getColumn();
+                    if (c1Column > c2Column)
                         return 1;
-                    if (c1.getColumn() < c2.getColumn())
+                    if (c1Column < c2Column)
                         return -1;
                     return 0;
                 }
@@ -199,7 +227,7 @@ public class Group implements Model, Serializable
 
         groupLayout.addView(this.labelView(context));
 
-        for (ArrayList<WidgetData> row : rows)
+        for (List<Widget> row : rows)
         {
             LinearLayout rowLayout = new LinearLayout(context);
             rowLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -208,17 +236,17 @@ public class Group implements Model, Serializable
                                               .getDimension(R.dimen.row_padding_bottom);
             rowLayout.setPadding(0, 0, 0, rowPaddingBottom);
 
-            for (WidgetData widgetData : row)
+            for (Widget widget : row)
             {
                 LinearLayout frameLayout = new LinearLayout(context);
                 frameLayout.setOrientation(LinearLayout.VERTICAL);
                 LinearLayout.LayoutParams frameLayoutParams = Util.linearLayoutParamsWrap();
                 frameLayoutParams.width = 0;
-                frameLayoutParams.weight = widgetData.getWidth();
+                frameLayoutParams.weight = widget.data().getFormat().getWidth();
                 frameLayout.setLayoutParams(frameLayoutParams);
 
                 // Add WidgetData View
-                View componentView = widgetData.getDisplayView(context, rules);
+                View componentView = widget.getDisplayView(context, rules);
                 frameLayout.addView(componentView);
 
                 rowLayout.addView(frameLayout);
@@ -259,7 +287,7 @@ public class Group implements Model, Serializable
         textView.setTypeface(Util.sansSerifFontRegular(context));
 
         //textView.setText(this.label.toUpperCase());
-        textView.setText(this.label);
+        textView.setText(this.getLabel());
 
         layout.addView(textView);
 

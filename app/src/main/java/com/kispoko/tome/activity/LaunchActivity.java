@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.kispoko.tome.DatabaseManager;
+import com.kispoko.tome.Global;
 import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.query.CountQuery;
 
 
 /**
@@ -19,6 +22,7 @@ import com.kispoko.tome.sheet.Sheet;
  * activity.
  */
 public class LaunchActivity extends AppCompatActivity
+                            implements CountQuery.OnCountListener
 {
 
     @Override
@@ -26,12 +30,28 @@ public class LaunchActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        // Create database reference and save it for use in application lifecycle.
         DatabaseManager databaseManager = new DatabaseManager(this);
         SQLiteDatabase database = databaseManager.getWritableDatabase();
+        Global.setDatabase(database);
+
+        CountQuery.fromModel(Sheet.class).run(this);
+
+    }
+
+
+    // LISTENERS
+    // ------------------------------------------------------------------------------------------
+
+    // > On Count
+    // ------------------------------------------------------------------------------------------
+
+    public void onCountResult(String modelName, Integer result)
+    {
 
         Intent intent;
         // No characters exist, go to New Character Activity
-        if (Sheet.count(database) == 0)
+        if (result == 0)
         {
             intent = new Intent(this, NewCharacterActivity.class);
         }
@@ -42,7 +62,15 @@ public class LaunchActivity extends AppCompatActivity
         }
 
         startActivity(intent);
-        finish();
     }
+
+
+    public void onCountError(DatabaseException exception)
+    {
+        // TODO handle properly
+    }
+
+
+
 
 }

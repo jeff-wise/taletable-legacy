@@ -2,6 +2,7 @@
 package com.kispoko.tome.rules.programming.evaluation.error;
 
 
+import com.kispoko.tome.rules.programming.program.statement.ParameterType;
 import com.kispoko.tome.rules.programming.program.statement.Statement;
 import com.kispoko.tome.rules.programming.evaluation.EvaluationError;
 
@@ -17,28 +18,30 @@ public class ParameterWrongType extends EvaluationError
     // ------------------------------------------------------------------------------------------
 
     private Integer parameterIndex;
-    private Statement.ParameterType expectedType;
+    private ParameterType expectedType;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ParameterWrongType(Integer parameterIndex, Statement.ParameterType expectedType)
+    public ParameterWrongType(Integer parameterIndex, ParameterType expectedType)
     {
         this.parameterIndex = parameterIndex;
-        this.expectedType = expectedType;
+        this.expectedType   = expectedType;
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
 
-    public Integer getParameterIndex() {
+    public Integer getParameterIndex()
+    {
         return this.parameterIndex;
     }
 
 
-    public Statement.ParameterType getExpectedType() {
+    public ParameterType getExpectedType()
+    {
         return this.expectedType;
     }
 

@@ -13,6 +13,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.ActionDialogFragment;
 import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.Util;
 
 
@@ -29,7 +30,8 @@ public class WidgetUI
      * @param context Context object.
      * @return A LinearLayout that represents the outer-most container of a component view.
      */
-    public static LinearLayout linearLayout(Context context, final Rules rules) {
+    public static LinearLayout linearLayout(final Widget widget, Context context, final Rules rules)
+    {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams linearLayoutParams =
@@ -43,14 +45,12 @@ public class WidgetUI
 
         layout.setBackgroundResource(R.drawable.bg_component);
 
-        final WidgetData thisWidgetData = this;
-
         final SheetActivity thisActivity = (SheetActivity) context;
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActionDialogFragment actionDialogFragment =
-                        ActionDialogFragment.newInstance(thisWidgetData, rules);
+                        ActionDialogFragment.newInstance(widget, rules);
                 actionDialogFragment.show(thisActivity.getSupportFragmentManager(),
                         actionDialogFragment.getTag());
             }
@@ -60,7 +60,7 @@ public class WidgetUI
         // Add label
         TextView labelView = new TextView(context);
         labelView.setGravity(Gravity.CENTER_HORIZONTAL);
-        labelView.setText(this.getLabel().toUpperCase());
+        labelView.setText(widget.data().getFormat().getLabel().toUpperCase());
         float labelTextSize = (int) Util.getDim(context, R.dimen.comp_label_text_size);
         labelView.setTextSize(labelTextSize);
 
@@ -72,7 +72,7 @@ public class WidgetUI
         labelView.setTypeface(Util.sansSerifFontRegular(context));
 
 
-        if (this.getShowLabel())
+        if (widget.data().getFormat().getShowLabel())
             layout.addView(labelView);
 
         return layout;
@@ -80,11 +80,11 @@ public class WidgetUI
 
 
 
-    public static TextView prefixView(Context context, String prefix, WidgetData.TextSize textSize)
+    public static TextView prefixView(Context context, String prefix, WidgetFormat.Size textSize)
     {
         TextView textView = new TextView(context);
 
-        textView.setTextSize(getTextSizeSP(context, textSize) * 0.7f);
+        textView.setTextSize(textSize.toSP(context));
 
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 

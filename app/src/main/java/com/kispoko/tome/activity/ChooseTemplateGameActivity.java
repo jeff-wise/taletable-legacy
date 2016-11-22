@@ -18,12 +18,10 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.Statistics;
-import com.kispoko.tome.sheet.Game;
-import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.game.Game;
+import com.kispoko.tome.game.GameIndex;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.Util;
-
-import java.util.ArrayList;
 
 
 
@@ -33,11 +31,10 @@ import java.util.ArrayList;
 public class ChooseTemplateGameActivity extends AppCompatActivity
 {
 
-
-    // > PROPERTIES
+    // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private ArrayList<Game> templateGames;
+    private GameIndex gameIndex;
 
 
     // > ACTIVITY EVENTS
@@ -52,7 +49,12 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
 
         initializeToolbar();
 
-        this.templateGames = Sheet.templateGames(this);
+        try {
+            this.gameIndex = GameIndex.fromManifest(this);
+        } catch (Exception e) {
+            // TODO handle gracefully
+            e.printStackTrace();
+        }
 
         renderGameButtons();
     }
@@ -85,8 +87,6 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
         switch (id) {
             case android.R.id.home:
                 finish();
-                return true;
-            case R.id.action_settings:
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -126,7 +126,7 @@ public class ChooseTemplateGameActivity extends AppCompatActivity
 
         scrollView.addView(layout);
 
-        for (Game game : this.templateGames)
+        for (Game game : this.gameIndex.getGames())
         {
             // Game Layout
             LinearLayout gameLayout = new LinearLayout(this);

@@ -8,7 +8,7 @@ games:
   label: 'Dungeons & Dragons 4th Edition'
   description: >
     Dungeons and Dragons 4th Edition departed from the classic game mechanics of previous editions
-    and presented a more simplified and unique take on roleplaying adventure games.
+    and presented a more simplified and unique take on roleplaying adventure.
 - name: pathfinder
   label: 'Pathfinder'
   description: >
@@ -16,87 +16,72 @@ games:
     providing a captivating setting boosted by well-designed game mechanics.
 templates:
 - game: dungeons_and_dragons_4
-  template:
-    name: monk_level_1
-    label: 'Monk - Level 1'
-    description: >
-      Start your game with a Monk!
+  name: monk_level_1
+  label: 'Monk - Level 1'
+  description: >
+    Start your game with a Monk!
 - game: dungeons_and_dragons_5
-  template:
-    name: barbarian_level_1
-    label: 'Barbarian - Level 1'
-    description: >
-      Start your game with a Barbarian!
+  name: barbarian_level_1
+  label: 'Barbarian - Level 1'
+  description: >
+    Start your game with a Barbarian!
 - game: dungeons_and_dragons_5
-  template:
-    name: bard_level_1
-    label: 'Bard - Level 1'
-    description: >
-      Start your game with a Bard!
+  name: bard_level_1
+  label: 'Bard - Level 1'
+  description: >
+    Start your game with a Bard!
 - game: dungeons_and_dragons_5
-  template:
-    name: cleric_level_1
-    label: 'Cleric - Level 1'
-    description: >
-      Start your game with a Cleric!
+  name: cleric_level_1
+  label: 'Cleric - Level 1'
+  description: >
+    Start your game with a Cleric!
 - game: dungeons_and_dragons_5
-  template:
-    name: druid_level_1
-    label: 'Druid - Level 1'
-    description: >
-      Start your game with a Druid!
+  name: druid_level_1
+  label: 'Druid - Level 1'
+  description: >
+    Start your game with a Druid!
 - game: dungeons_and_dragons_5
-  template:
-    name: fighter_level_1
-    label: 'Fighter - Level 1'
-    description: >
-      Start your game with a Fighter!
+  name: fighter_level_1
+  label: 'Fighter - Level 1'
+  description: >
+    Start your game with a Fighter!
 - game: dungeons_and_dragons_5
-  template:
-    name: monk_level_1
-    label: 'Monk - Level 1'
-    description: >
-      Start your game with a Monk!
+  name: monk_level_1
+  label: 'Monk - Level 1'
+  description: >
+    Start your game with a Monk!
 - game: dungeons_and_dragons_5
-  template:
-    name: paladin_level_1
-    label: 'Paladin - Level 1'
-    description: >
-      Start your game with a Paladin!
+  name: paladin_level_1
+  label: 'Paladin - Level 1'
+  description: >
+    Start your game with a Paladin!
 - game: dungeons_and_dragons_5
-  template:
-    name: ranger_level_1
-    label: 'Ranger - Level 1'
-    description: >
-      Start your game with a Ranger!
+  name: ranger_level_1
+  label: 'Ranger - Level 1'
+  description: >
+    Start your game with a Ranger!
 - game: dungeons_and_dragons_5
-  template:
-    name: rogue_level_1
-    label: 'Rogue - Level 1'
-    description: >
-      Start your game with a Rogue!
+  name: rogue_level_1
+  label: 'Rogue - Level 1'
+  description: >
+    Start your game with a Rogue!
 - game: dungeons_and_dragons_5
-  template:
-    name: sorceror_level_1
-    label: 'Sorceror - Level 1'
-    description: >
-      Start your game with a Sorceror!
+  name: sorceror_level_1
+  label: 'Sorceror - Level 1'
+  description: >
+    Start your game with a Sorceror!
 - game: dungeons_and_dragons_5
-  template:
-    name: warlock_level_1
-    label: 'Warlock - Level 1'
-    description: >
-      Start your game with a Warlock!
+  name: warlock_level_1
+  label: 'Warlock - Level 1'
+  description: >
+    Start your game with a Warlock!
 - game: dungeons_and_dragons_5
-  template:
-    name: wizard_level_1
-    label: 'Wizard - Level 1'
-    description: >
-      Start your game with a Wizard!
+  name: wizard_level_1
+  label: 'Wizard - Level 1'
+  description: >
+    Start your game with a Wizard!
 - game: pathfinder
-  template:
-    name: figther_level_1
-    label: 'Fighter - Level 1'
-    description: >
-      Start your game with a Fighter!
-
+  name: figther_level_1
+  label: 'Fighter - Level 1'
+  description: >
+    Start your game with a Fighter!

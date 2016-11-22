@@ -148,10 +148,19 @@ public class TextWidget extends Widget implements Serializable
     // ** Value
     // ------------------------------------------------------------------------------------------
 
-    /*
-    public void setValue(Variable value, Context context)
+    /**
+     * Get the TextWidget's value variable.
+     * @return The Variable for the TextWidget value.
+     */
+    public Variable getValue()
     {
-        this.setValue(value);
+        return this.value.getValue();
+    }
+
+
+    public void setValue(String stringValue, Context context)
+    {
+        this.getValue().setString(stringValue);
 
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
@@ -159,8 +168,8 @@ public class TextWidget extends Widget implements Serializable
             textView.setText(this.getValue().getString());
         }
 
-        this.save(null);
-    }*/
+        this.value.save();
+    }
 
 
     // > Views
@@ -168,7 +177,7 @@ public class TextWidget extends Widget implements Serializable
 
     public View getDisplayView(final Context context, Rules rules)
     {
-        LinearLayout textLayout = WidgetUI.linearLayout(context, rules);
+        LinearLayout textLayout = WidgetUI.linearLayout(this, context, rules);
 
 
         TextView textView = new TextView(context);
@@ -192,7 +201,7 @@ public class TextWidget extends Widget implements Serializable
 
     public View getEditorView(Context context, Rules rules)
     {
-        if (!this.getTypeId().isNull())
+        if (this.getValue().hasRefinement())
             return this.getTypeEditorView(context, rules);
         // No type is set, so allow free form edit
         else
@@ -208,9 +217,9 @@ public class TextWidget extends Widget implements Serializable
         textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
 
         // Create adapter passing in the sample user data
-        MemberOf memberOf = (MemberOf) rules.getRefinementIndex().getType(this.getTypeId());
+        MemberOf memberOf = rules.getRefinementIndex()
+                                 .memberOfWithName(this.getValue().getRefinementId().getName());
         TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
-        Log.d("***TEXT", "list type size " + Integer.toString(memberOf.size()));
         textEditorView.setAdapter(adapter);
         // Set layout manager to position the items
         textEditorView.setLayoutManager(new LinearLayoutManager(context));
@@ -281,7 +290,7 @@ public class TextWidget extends Widget implements Serializable
                 Activity editActivity = (Activity) context;
                 String newValue = thisEditView.getText().toString();
                 EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
-                                                       thisTextWidget.getName(), newValue);
+                                                       thisTextWidget.getId(), newValue);
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("RESULT", editResult);
                 editActivity.setResult(Activity.RESULT_OK, resultIntent);
@@ -293,8 +302,7 @@ public class TextWidget extends Widget implements Serializable
         float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
         editView.setTextSize(valueTextSize);
 
-        editView.setText();
-
+        editView.setText(this.getValue().getString());
 
         // Define layout structure
         layout.addView(editView);

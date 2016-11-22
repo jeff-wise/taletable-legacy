@@ -42,7 +42,8 @@ public class RefinementIndex implements Model, Serializable
     {
         this.id        = id;
 
-        List<Class<MemberOf>> memberOfClasses = Arrays.asList(MemberOf.class);
+        List<Class<? extends MemberOf>> memberOfClasses = new ArrayList<>();
+        memberOfClasses.add(MemberOf.class);
         this.memberOfs = new CollectionValue<>(new ArrayList<MemberOf>(), this, memberOfClasses);
 
         // > Initialize indexes
@@ -56,9 +57,9 @@ public class RefinementIndex implements Model, Serializable
         UUID id = UUID.randomUUID();
         final RefinementIndex refinementIndex = new RefinementIndex(id);
 
-        yaml.forEach(new Yaml.ForEach<Refinement>() {
+        yaml.forEach(new Yaml.ForEach<Void>() {
             @Override
-            public Refinement forEach(Yaml yaml, int index) throws YamlException {
+            public Void forEach(Yaml yaml, int index) throws YamlException {
                 String type = yaml.atKey("type").getString();
                 switch (type)
                 {

@@ -17,6 +17,7 @@ import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.rules.refinement.MemberOf;
 
 
+
 /**
  * Recycler View Adapter for MemberOf RefinementIndex
  */
@@ -24,14 +25,14 @@ public class TextEditRecyclerViewAdapter
        extends RecyclerView.Adapter<TextEditRecyclerViewAdapter.ViewHolder>
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
     private TextWidget textWidget;
     private MemberOf memberOf;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
     public TextEditRecyclerViewAdapter(TextWidget textWidget, MemberOf memberOf)
@@ -56,9 +57,9 @@ public class TextEditRecyclerViewAdapter
         View itemView = viewHolder.itemView;
 
         TextView textView = (TextView) itemView.findViewById(R.id.type_list_item_name);
-        textView.setText(this.memberOf.getValue(position));
+        textView.setText(this.memberOf.getValues().get(position));
 
-        if (this.memberOf.getValue(position).equals(this.textWidget.getValue())) {
+        if (this.memberOf.getValues().get(position).equals(this.textWidget.getValue())) {
             ImageView iconView = (ImageView) itemView.findViewById(R.id.type_list_item_icon);
             iconView.setImageDrawable(
                 ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_list_item_selected));
@@ -74,8 +75,9 @@ public class TextEditRecyclerViewAdapter
 
     // Returns the total count of items in the list
     @Override
-    public int getItemCount() {
-        return this.memberOf.size();
+    public int getItemCount()
+    {
+        return this.memberOf.getValues().size();
     }
 
 
@@ -95,11 +97,11 @@ public class TextEditRecyclerViewAdapter
             this.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String newValue = memberOf.getValue(thisViewHolder.getAdapterPosition());
+                    String newValue = memberOf.getValues().get(thisViewHolder.getAdapterPosition());
 
                     // Set chosen value as result of activity and finish
                     EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
-                                                           textWidget.getName(), newValue);
+                                                           textWidget.getId(), newValue);
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("RESULT", editResult);
                     activity.setResult(Activity.RESULT_OK, resultIntent);

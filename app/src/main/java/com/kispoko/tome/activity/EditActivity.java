@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.sheet.widget.TextWidget;
+import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.UI;
 
@@ -22,14 +24,14 @@ import com.kispoko.tome.util.UI;
 public class EditActivity extends AppCompatActivity
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private WidgetData widgetData;
-    private Rules rules;
+    private Widget widget;
+    private Rules  rules;
 
 
-    // > ACTIVITY EVENTS
+    // ACTIVITY LIFECYCLE EVENTS
     // -------------------------------------------------------------------------------------------
 
     @Override
@@ -40,7 +42,7 @@ public class EditActivity extends AppCompatActivity
         // Read parameters passed from previous activity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            this.widgetData = (WidgetData) extras.getSerializable("COMPONENT");
+            this.widget = (Widget) extras.getSerializable("COMPONENT");
             this.rules = (Rules) extras.getSerializable("RULES");
         }
 
@@ -87,10 +89,10 @@ public class EditActivity extends AppCompatActivity
     }
 
 
-    // > INTERNAL
+    // INTERNAL
     // -------------------------------------------------------------------------------------------
 
-    // >> User Interface
+    // > User Interface
     // -------------------------------------------------------------------------------------------
 
     /**
@@ -108,10 +110,13 @@ public class EditActivity extends AppCompatActivity
 
         TextView editActionView = (TextView) findViewById(R.id.edit_action_label);
 
-        if (this.widgetData.getTypeId() != null)
-            editActionView.setText("Select a " + this.widgetData.getLabel());
+        TextWidget textWidget = (TextWidget) this.widget;
+
+        String widgetLabel = this.widget.data().getFormat().getLabel();
+        if (textWidget.getValue().hasRefinement())
+            editActionView.setText("Select a " + widgetLabel);
         else
-            editActionView.setText(this.widgetData.getLabel());
+            editActionView.setText(widgetLabel);
     }
 
 
@@ -122,7 +127,7 @@ public class EditActivity extends AppCompatActivity
     {
         LinearLayout layout = (LinearLayout) findViewById(R.id.edit_content);
 
-        layout.addView(this.widgetData.getEditorView(this, this.rules));
+        layout.addView(this.widget.getEditorView(this, this.rules));
 
     }
 

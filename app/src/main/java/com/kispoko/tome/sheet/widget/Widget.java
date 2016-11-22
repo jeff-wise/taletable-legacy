@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.view.View;
 
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.rules.Rules;
@@ -13,26 +14,23 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
+import java.io.Serializable;
 
 
 /**
  * Widget
  */
-public abstract class Widget implements Model
+public abstract class Widget implements Model, Serializable
 {
 
 
-   // abstract public View getDisplayView(Context context, Rules rules);
-    //abstract public View getEditorView(Context context, Rules rules);
+    abstract public View getDisplayView(Context context, Rules rules);
+    abstract public View getEditorView(Context context, Rules rules);
 
     abstract public void runAction(String actionName, Context context, Rules rules);
     abstract public String name();
 
     abstract public WidgetData data();
-
-//    abstract public void save(UUID callerTrackerId);
-//    abstract public void load(UUID callerTrackerId);
-
 
 
     public static Widget fromYaml(Yaml yaml)

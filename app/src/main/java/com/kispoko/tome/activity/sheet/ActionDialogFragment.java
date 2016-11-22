@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.Util;
@@ -25,15 +26,15 @@ import com.kispoko.tome.util.Util;
 public class ActionDialogFragment extends BottomSheetDialogFragment
 {
 
-    private WidgetData widgetData;
-    private Rules rules;
+    private Widget widget;
+    private Rules  rules;
 
 
-    public static final ActionDialogFragment newInstance(WidgetData widgetData, Rules rules)
+    public static final ActionDialogFragment newInstance(Widget widget, Rules rules)
     {
         ActionDialogFragment actionDialogFragment = new ActionDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("COMPONENT", widgetData);
+        bundle.putSerializable("COMPONENT", widget);
         bundle.putSerializable("RULES", rules);
         actionDialogFragment.setArguments(bundle);
         return actionDialogFragment;
@@ -44,7 +45,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.widgetData = (WidgetData) getArguments().getSerializable("COMPONENT");
+        this.widget = (Widget) getArguments().getSerializable("COMPONENT");
         this.rules = (Rules) getArguments().getSerializable("RULES");
     }
 
@@ -63,7 +64,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
         int layoutPaddingVert = (int) Util.getDim(getContext(), R.dimen.action_sheet_padding_vert);
         layout.setPadding(0, layoutPaddingVert, 0, layoutPaddingVert);
 
-        for (final String actionName : this.widgetData.getActions())
+        for (final String actionName : this.widget.data().getActions())
         {
             // Row Layout
             LinearLayout actionRowLayout = new LinearLayout(getContext());
@@ -78,11 +79,10 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
             actionRowLayout.setOrientation(LinearLayout.HORIZONTAL);
             actionRowLayout.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            final WidgetData thisWidgetData = this.widgetData;
             actionRowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    thisWidgetData.runAction(actionName, getContext(), rules);
+                    widget.runAction(actionName, getContext(), rules);
                     dialog.dismiss();
                 }
             });

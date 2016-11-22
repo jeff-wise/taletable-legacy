@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet;
+package com.kispoko.tome.game;
 
 
 import com.kispoko.tome.util.model.Model;

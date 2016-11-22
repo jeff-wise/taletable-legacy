@@ -1,0 +1,28 @@
+
+how to arhitect software. model. data vs functional. constraints
+compositional
+
+handling enums
+
+handling all errors possible
+
+
+writing an ORM, worth it
+reflection is nice. type system has limits, but still fairly powerful generics
+still, hard after getting used to Haskell. though contraints are sometimes good
+becuase you have to stop somewhere. forces a reasonable boundary on type safety
+
+the model abstraction. how to use abstraction in java. what is abstraction.
+abstracting getting/setting values as well as serialization. and connecting them.
+
+java sum refinementIndex
+interfaces as constraints
+
+on the value of pretty code.
+
+developing alone. advantages/disadvantages. need more abstraction. can change things a lot
+
+
+the value of elegant DSLs
+
+the value of constraints and elegant program modeling

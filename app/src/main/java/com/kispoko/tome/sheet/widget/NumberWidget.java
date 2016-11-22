@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * Widget: Number
  */
-public class NumberWidget implements Widget, Serializable
+public class NumberWidget extends Widget implements Serializable
 {
 
     // PROPERTIES
@@ -108,10 +108,33 @@ public class NumberWidget implements Widget, Serializable
     // > Widget
     // ------------------------------------------------------------------------------------------
 
-    public String name() {
-        return "text";
+    // ** Name
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the name of the Widget.
+     * @return The widget's name as a String.
+     */
+    public String name()
+    {
+        return "number";
     }
 
+    // ** Data
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the widget's common data values.
+     * @return The widget's WidgetData.
+     */
+    public WidgetData data()
+    {
+        return this.widgetData.getValue();
+    }
+
+
+    // ** Run Action
+    // ------------------------------------------------------------------------------------------
 
     public void runAction(String actionName, Context context, Rules rules) { }
 
@@ -149,19 +172,12 @@ public class NumberWidget implements Widget, Serializable
 
     public View getDisplayView(Context context, Rules rules)
     {
-        LinearLayout integerLayout = WidgetUI.linearLayout(context, rules);
+        LinearLayout integerLayout = WidgetUI.linearLayout(this, context, rules);
 
         LinearLayout contentLayout = new LinearLayout(context);
         contentLayout.setLayoutParams(Util.linearLayoutParamsMatch());
         contentLayout.setOrientation(LinearLayout.HORIZONTAL);
         contentLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        // Add prefix if exists
-        if (this.prefix != null) {
-            contentLayout.addView(
-                    ComponentUtil.prefixView(context, this.prefix.getString(), this.textSize));
-        }
-
 
         // Add text view
         TextView textView = new TextView(context);
@@ -171,8 +187,9 @@ public class NumberWidget implements Widget, Serializable
         textView.setTypeface(Util.serifFontBold(context));
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-        if (this.value != null)
-            textView.setText(Integer.toString(this.value));
+        Integer integerValue = this.getValue().getInteger();
+        if (integerValue != null)
+            textView.setText(Integer.toString(integerValue));
         else
             textView.setText("");
 

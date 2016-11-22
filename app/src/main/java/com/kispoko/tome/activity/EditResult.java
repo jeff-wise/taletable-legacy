@@ -3,12 +3,14 @@ package com.kispoko.tome.activity;
 
 
 import com.kispoko.tome.sheet.widget.TextWidget;
+import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.sheet.widget.text;
 import com.kispoko.tome.sheet.Sheet;
 
 import java.io.Serializable;
 import java.util.UUID;
+
+
 
 /**
  * Edit Result
@@ -16,11 +18,10 @@ import java.util.UUID;
  * This class holds a value returned from the EditActivity which represents a change in
  * a component.
  */
-
 public class EditResult implements Serializable
 {
 
-    // > RESULT TYPE
+    // RESULT TYPE
     // ------------------------------------------------------------------------------------------
 
     public enum ResultType {
@@ -28,7 +29,7 @@ public class EditResult implements Serializable
     }
 
 
-    // > PROPERTIES
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
     private ResultType resultType;
@@ -36,7 +37,7 @@ public class EditResult implements Serializable
     private Object result;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
     public EditResult(ResultType resultType, UUID componentId, Object result)
@@ -47,17 +48,17 @@ public class EditResult implements Serializable
     }
 
 
-    // > API
+    // API
     // ------------------------------------------------------------------------------------------
 
     public void applyResult(SheetActivity sheetActivity, Sheet sheet)
     {
-        WidgetData widgetData = sheet.componentWithId(this.componentId);
+        Widget widget = sheet.componentWithId(this.componentId);
 
         switch (this.resultType)
         {
             case TEXT_VALUE:
-                ((TextWidget) widgetData).setValue((String) this.result, sheetActivity);
+                ((TextWidget) widget).setValue((String) this.result, sheetActivity);
                 break;
         }
     }

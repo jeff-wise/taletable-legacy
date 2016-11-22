@@ -2,12 +2,15 @@
 package com.kispoko.tome.util.value;
 
 
+import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.util.promise.AsyncFunction;
 import com.kispoko.tome.util.promise.CollectionValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
 
 import java.util.List;
-
+import java.util.UUID;
 
 
 /**
@@ -19,7 +22,7 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // PROPERTIES
     // -------------------------------------------------------------------------------------
 
-    private List<Class<A>> modelClasses;
+    private List<Class<? extends A>> modelClasses;
 
 
     // CONSTRUCTORS
@@ -27,7 +30,7 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
 
     public CollectionValue(List<A> value,
                            Model model,
-                           List<Class<A>> modelClasses)
+                           List<Class<? extends A>> modelClasses)
     {
         super(value, model);
         this.modelClasses = modelClasses;
@@ -40,7 +43,7 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // > State
     // --------------------------------------------------------------------------------------
 
-    public List<Class<A>> getModelClasses()
+    public List<Class<? extends A>> getModelClasses()
     {
         return this.modelClasses;
     }
@@ -49,11 +52,29 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // > Asynchronous Operations
     // --------------------------------------------------------------------------------------
 
-    public void loadValue(final CollectionValuePromise<A> promise)
+    public void loadValue(final String parentModelName, final UUID parentModelId)
     {
-        promise.run(new CollectionValuePromise.OnReady<A>() {
+        new AsyncFunction<>(new AsyncFunction.Action<List<A>>()
+        {
             @Override
-            public void run(List<A> result) {
+            public List<A> run()
+            {
+                List<A> loadedCollection = null;
+                try {
+                    loadedCollection = Modeler.collectionFromDatabase(parentModelName,
+                                                                      parentModelId,
+                                                                      modelClasses);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                }
+                return loadedCollection;
+            }
+        })
+        .run(new AsyncFunction.OnReady<List<A>>()
+        {
+            @Override
+            public void run(List<A> result)
+            {
                 setValue(result);
             }
         });

@@ -3,37 +3,37 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group
-        android:name="@+name/nav_group_character"
+        android:id="@+id/nav_group_character"
         android:checkableBehavior="all">
         <item
-            android:name="@+name/nav_stats"
+            android:id="@+id/nav_stats"
             android:icon="@drawable/ic_nav_profile"
             android:title="@string/nav_profile" />
         <item
-            android:name="@+name/nav_combat"
+            android:id="@+id/nav_combat"
             android:icon="@drawable/ic_nav_combat"
             android:title="@string/nav_combat" />
         <item
-            android:name="@+name/nav_campaign"
+            android:id="@+id/nav_campaign"
             android:icon="@drawable/ic_nav_campaign"
             android:title="@string/nav_campaign" />
     </group>
 
 
     <group
-        android:name="@+name/nav_group_rules"
+        android:id="@+id/nav_group_rules"
         android:checkableBehavior="all">
         <item
-            android:name="@+name/nav_rules"
+            android:id="@+id/nav_rules"
             android:icon="@drawable/ic_nav_rules"
             android:title="@string/nav_rules" />
     </group>
 
     <group
-        android:name="@+name/nav_gloup_manage"
+        android:id="@+id/nav_gloup_manage"
         android:checkableBehavior="all">
         <item
-            android:name="@+name/nav_characters"
+            android:id="@+id/nav_characters"
             android:icon="@drawable/ic_nav_characters"
             android:title="@string/nav_characters" />
     </group>

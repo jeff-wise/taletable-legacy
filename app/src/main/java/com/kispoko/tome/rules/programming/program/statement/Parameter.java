@@ -158,4 +158,50 @@ public class Parameter implements Model
 
     public void onModelUpdate(String valueName) { }
 
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+
+    /**
+     * Get the parameter type.
+     * @return The ParameterType.
+     */
+    public ParameterType getType()
+    {
+        return this.type.getValue();
+    }
+
+
+    /**
+     * Get the program parameter index.
+     * @return The program parameter index.
+     */
+    public Integer getParameter()
+    {
+        return this.programParameter.getValue();
+    }
+
+
+    /**
+     * If this parameter is a variable, get the variable name.
+     * @return The variable name String.
+     */
+    public String getVariable()
+    {
+        return this.variableName.getValue();
+    }
+
+
+    /**
+     * If this parameter is a string literal, get the string literal value.
+     * @return The string literal value.
+     */
+    public String getStringLiteral()
+    {
+        return this.literalString.getValue();
+    }
+
+
+
 }

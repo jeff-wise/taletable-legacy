@@ -16,6 +16,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,7 +55,8 @@ public class Page implements Model, Serializable
         this.label  = new PrimitiveValue<>(label, this, String.class);
         this.index  = new PrimitiveValue<>(index, this, Integer.class);
 
-        List<Class<Group>> groupClasses = Arrays.asList(Group.class);
+        List<Class<? extends Group>> groupClasses = new ArrayList<>();
+        groupClasses.add(Group.class);
         this.groups = new CollectionValue<>(groups, this, groupClasses);
 
         // Make sure groups are sorted

@@ -67,8 +67,9 @@ public class ModelValue<A extends Model> extends Value<A>
     }
 
 
-    public void saveValue(final SaveValuePromise promise)
+    public void save()
     {
+        SaveValuePromise promise = Modeler.saveValuePromise(this.getValue());
         promise.run(new SaveValuePromise.OnReady() {
             @Override
             public void run() {

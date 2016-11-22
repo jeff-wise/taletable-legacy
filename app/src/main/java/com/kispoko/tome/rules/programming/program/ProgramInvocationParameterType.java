@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules.programming.variable;
+package com.kispoko.tome.rules.programming.program;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
@@ -11,35 +11,31 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Variable Type
+ * Program Invocation Parameter Type
  */
-public enum VariableType
+public enum ProgramInvocationParameterType
 {
 
-    LITERAL_INTEGER,
-    LITERAL_STRING,
-    LITERAL_BOOLEAN,
-    PROGRAM;
+    REFERENCE;
 
 
-    public static VariableType fromString(String typeString)
+    public static ProgramInvocationParameterType fromString(String typeString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(VariableType.class, typeString);
+        return EnumUtils.fromString(ProgramInvocationParameterType.class, typeString);
     }
 
 
-    public static VariableType fromYaml(Yaml yaml)
+    public static ProgramInvocationParameterType fromYaml(Yaml yaml)
                   throws YamlException
     {
         String typeString = yaml.getString();
         try {
-            return VariableType.fromString(typeString);
+            return ProgramInvocationParameterType.fromString(typeString);
         } catch (InvalidDataException e) {
             throw new YamlException(new InvalidEnumError(typeString),
                                     YamlException.Type.INVALID_ENUM);
         }
     }
-
 
 }

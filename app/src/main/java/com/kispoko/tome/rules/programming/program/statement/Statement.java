@@ -2,7 +2,6 @@
 package com.kispoko.tome.rules.programming.program.statement;
 
 
-import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -10,10 +9,9 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+
 
 
 /**
@@ -40,7 +38,8 @@ public class Statement implements Model
         this.variableName = new PrimitiveValue<>(variableName, this, String.class);
         this.functionName = new PrimitiveValue<>(functionName, this, String.class);
 
-        List<Class<Parameter>> parameterClasses = Arrays.asList(Parameter.class);
+        List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
+        parameterClasses.add(Parameter.class);
         this.parameters   = new CollectionValue<>(parameters, this, parameterClasses);
     }
 
@@ -102,6 +101,41 @@ public class Statement implements Model
     // ------------------------------------------------------------------------------------------
 
     public void onModelUpdate(String valueName) { }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the name of the variable that this statements assigns a value to.
+     * @return The statement's variable name.
+     */
+    public String getVariableName()
+    {
+        return this.variableName.getValue();
+    }
+
+
+    /**
+     * Get the name of the function called by the statement. The result of this function is
+     * assigned to the statement's variable.
+     * @return The function name String.
+     */
+    public String getFunctionName()
+    {
+        return this.functionName.getValue();
+    }
+
+
+    /**
+     * Get the parameters of this statement. These parameters are used to evaluate the function
+     * and calcuate the result of the variable assigned by the statement.
+     * @return The statement Parameter List.
+     */
+    public List<Parameter> getParameters()
+    {
+        return this.parameters.getValue();
+    }
 
 
 }

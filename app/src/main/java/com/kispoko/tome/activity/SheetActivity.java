@@ -25,7 +25,6 @@ import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.activity.sheet.PageFragment;
 import com.kispoko.tome.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.sql.Function;
@@ -36,6 +35,7 @@ import com.kispoko.tome.util.promise.ValuePromise;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -117,8 +117,6 @@ public class SheetActivity
         switch (id) {
             case android.R.id.home:
                 this.drawerLayout.openDrawer(GravityCompat.START);
-                return true;
-            case R.id.action_settings:
                 return true;
         }
 

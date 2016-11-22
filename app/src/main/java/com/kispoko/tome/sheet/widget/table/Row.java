@@ -7,6 +7,7 @@ import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -33,12 +34,13 @@ public class Row implements Model
     {
         this.id = id;
 
-        List<Class<Cell>> cellClassList = Arrays.asList(Cell.class);
+        List<Class<? extends Cell>> cellClassList = new ArrayList<>();
+        cellClassList.add(Cell.class);
         this.cells = new CollectionValue<>(cells, this, cellClassList);
     }
 
 
-    public static Row fromYaml(Yaml yaml, int rowIndex)
+    public static Row fromYaml(Yaml yaml, final int rowIndex, final Row templateRow)
                   throws YamlException
     {
         UUID id = UUID.randomUUID();
@@ -46,7 +48,13 @@ public class Row implements Model
         List<Cell> cells = yaml.atKey("cells").forEach(new Yaml.ForEach<Cell>() {
             @Override
             public Cell forEach(Yaml yaml, int columnIndex) throws YamlException {
-                return Cell.fromYaml(yaml, rowIndex, columnIndex);
+
+                Cell templateCell = null;
+                if (templateRow != null)
+                    templateRow.cellAtIndex(columnIndex);
+
+                return Cell.fromYaml(yaml, rowIndex, columnIndex, templateCell);
+
             }
         });
 
@@ -95,6 +103,17 @@ public class Row implements Model
     public List<Cell> getCells()
     {
         return this.cells.getValue();
+    }
+
+
+    /**
+     * Get the cell at the given index in the row.
+     * @param index The index of the cell.
+     * @return The Cell in the row.
+     */
+    public Cell cellAtIndex(Integer index)
+    {
+        return this.getCells().get(index);
     }
 
 

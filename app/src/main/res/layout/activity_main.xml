@@ -18,14 +18,14 @@
             android:orientation="vertical">
 
             <android.support.v7.widgetData.Toolbar
-                android:name="@+name/toolbar"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/grey_900"
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <TextView
-                    android:name="@+name/page_title"
+                    android:id="@+id/page_title"
                     android:layout_gravity="center"
                     android:textSize="20sp"
                     android:textColor="@color/grey_300"
@@ -35,7 +35,7 @@
             </android.support.v7.widgetData.Toolbar>
 
             <android.support.design.widgetData.TabLayout
-                android:name="@+name/tab_layout"
+                android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/grey_900"
@@ -59,7 +59,7 @@
     </RelativeLayout>
 
     <android.support.design.widgetData.NavigationView
-        android:name="@+name/navigation_view"
+        android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

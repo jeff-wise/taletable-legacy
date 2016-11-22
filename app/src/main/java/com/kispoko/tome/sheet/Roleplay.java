@@ -7,6 +7,7 @@ import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,7 +40,8 @@ public class Roleplay implements Model
     {
         this.id = id;
 
-        List<Class<Page>> pageClasses = Arrays.asList(Page.class);
+        List<Class<? extends Page>> pageClasses = new ArrayList<>();
+        pageClasses.add(Page.class);
         this.pages = new CollectionValue<>(pages, this, pageClasses);
 
         // Make sure pages are sorted

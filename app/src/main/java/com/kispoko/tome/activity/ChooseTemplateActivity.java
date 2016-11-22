@@ -19,10 +19,14 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.Statistics;
 import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.template.Template;
+import com.kispoko.tome.template.TemplateIndex;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.yaml.YamlException;
 
-import java.util.ArrayList;
-
+import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -31,13 +35,8 @@ import java.util.ArrayList;
 public class ChooseTemplateActivity extends AppCompatActivity
 {
 
-    // > PROPERTIES
-    // -------------------------------------------------------------------------------------------
-
-
-
-    // > ACTIVITY EVENTS
-    // -------------------------------------------------------------------------------------------
+    // ACTIVITY LIFECYCLE EVENTS
+    // ------------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -93,9 +92,8 @@ public class ChooseTemplateActivity extends AppCompatActivity
     }
 
 
-    // > INTERNAL
-    // -------------------------------------------------------------------------------------------
-
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
 
     /**
      * Initialize the toolbar ComponentUtil components.
@@ -122,9 +120,17 @@ public class ChooseTemplateActivity extends AppCompatActivity
         LinearLayout templateListLayout = new LinearLayout(this);
         templateListLayout.setOrientation(LinearLayout.VERTICAL);
 
-        ArrayList<Sheet.Name> templateNames = Sheet.templateNamesByGame(this).get(gameId);
 
-        for (final Sheet.Name name : templateNames)
+        List<Template> templates = null;
+        try {
+            templates = TemplateIndex.fromManifest(this).getTemplates();
+        }
+        catch (Exception exception) {
+            // TODO something better
+            exception.printStackTrace();
+        }
+
+        for (final Template template : templates)
         {
 
             // Template Layout
@@ -149,12 +155,10 @@ public class ChooseTemplateActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ChooseTemplateActivity.this, SheetActivity.class);
-                    intent.putExtra("TEMPLATE_ID",
-                                    Sheet.officialTemplateId(gameId, name.getName()));
+                    intent.putExtra("TEMPLATE_ID", template.officialId());
                     startActivity(intent);
                 }
             });
-
 
 
             // >> Add Icon
@@ -189,7 +193,7 @@ public class ChooseTemplateActivity extends AppCompatActivity
 
             nameView.setLayoutParams(Util.linearLayoutParamsWrap());
 
-            nameView.setText(name.getLabel());
+            nameView.setText(template.getLabel());
 
             float nameViewTextSize = Util.getDim(this, R.dimen.choose_template_name_text_size);
             nameView.setTextSize(nameViewTextSize);
@@ -230,8 +234,7 @@ public class ChooseTemplateActivity extends AppCompatActivity
 
             templatesCreatedNumberView.setLayoutParams(Util.linearLayoutParamsWrap());
 
-            int numberOfPlayers = Statistics.templatesCreated(
-                    Sheet.officialTemplateId(gameId, name.getName()));
+            int numberOfPlayers = Statistics.templatesCreated(template.officialId());
             templatesCreatedNumberView.setText(Integer.toString(numberOfPlayers));
             templatesCreatedNumberView.setTextColor(
                     ContextCompat.getColor(this, R.color.bluegrey_100));
@@ -273,7 +276,7 @@ public class ChooseTemplateActivity extends AppCompatActivity
 
             // >> Description View
             TextView templateDescView = new TextView(this);
-            templateDescView.setText(name.getDescription());
+            templateDescView.setText(template.getDescription());
             templateDescView.setTextColor(ContextCompat.getColor(this, R.color.bluegrey_200));
 
 

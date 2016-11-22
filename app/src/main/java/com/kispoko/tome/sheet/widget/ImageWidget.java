@@ -184,7 +184,7 @@ public class ImageWidget extends Widget implements Serializable
     public View getDisplayView(final Context context, Rules rules)
     {
         // Layout
-        final LinearLayout imageLayout = WidgetUI.linearLayout(context, rules);
+        final LinearLayout imageLayout = WidgetUI.linearLayout(this, context, rules);
         imageLayout.setGravity(Gravity.CENTER);
         //imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
 

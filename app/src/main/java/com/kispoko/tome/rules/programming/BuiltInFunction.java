@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+
 /**
  * Built-in Function
  *
@@ -91,7 +92,7 @@ public class BuiltInFunction
         else
             modifierString = "+" + Integer.toString(modifier);
 
-        return new ProgramValue(modifierString, ProgramValueType.STRING);
+        return ProgramValue.asString(modifierString);
     }
 
 
@@ -139,7 +140,7 @@ public class BuiltInFunction
             templateString = variableMatcher.replaceFirst(variableValue);
         }
 
-        return new ProgramValue(templateString, ProgramValueType.STRING);
+        return ProgramValue.asString(templateString);
     }
 
 

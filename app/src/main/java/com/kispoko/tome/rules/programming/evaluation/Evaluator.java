@@ -5,6 +5,7 @@ package com.kispoko.tome.rules.programming.evaluation;
 import com.kispoko.tome.rules.programming.BuiltInFunction;
 import com.kispoko.tome.rules.programming.function.FunctionIndex;
 import com.kispoko.tome.rules.programming.program.Program;
+import com.kispoko.tome.rules.programming.program.statement.Parameter;
 import com.kispoko.tome.rules.programming.program.statement.Statement;
 import com.kispoko.tome.rules.programming.evaluation.error.ParameterWrongType;
 
@@ -56,9 +57,10 @@ public class Evaluator
             variables.put(variableName, statementValue);
         }
 
-        // Return result variable value
-        String resultVariableName = program.getResultVariableName();
-        return variables.get(resultVariableName);
+        ProgramValue resultValue = evaluateStatement(program.getResultStatement(),
+                                                     parameters,
+                                                     variables);
+        return resultValue;
     }
 
 
@@ -74,7 +76,7 @@ public class Evaluator
 
         List<ProgramValue> parameters = new ArrayList<>();
         int i = 0;
-        for (Statement.Parameter parameter : statement.getParameters())
+        for (Parameter parameter : statement.getParameters())
         {
             parameters.add(evaluateParameter(parameter, programParameters, variables, i));
             i++;
@@ -84,7 +86,7 @@ public class Evaluator
     }
 
 
-    private ProgramValue evaluateParameter(Statement.Parameter parameter,
+    private ProgramValue evaluateParameter(Parameter parameter,
                                            List<ProgramValue> programParameters,
                                            Map<String,ProgramValue> variables, Integer index)
                           throws EvaluationException
@@ -93,7 +95,7 @@ public class Evaluator
         {
             case PARAMETER:
                 try {
-                    int parameterIndex = (Integer) parameter.getValue();
+                    int parameterIndex = parameter.getParameter();
                     return programParameters.get(parameterIndex);
                 } catch (ClassCastException e) {
                     throw new EvaluationException(
@@ -102,7 +104,7 @@ public class Evaluator
                 }
             case VARIABLE:
                 try {
-                    String variableName = (String) parameter.getValue();
+                    String variableName = parameter.getVariable();
                     if (variables.containsKey(variableName))
                         return variables.get(variableName);
                     else
@@ -114,8 +116,8 @@ public class Evaluator
                 }
             case LITERAL_STRING:
                 try {
-                    String s = (String) parameter.getValue();
-                    return new ProgramValue(s, ProgramValueType.STRING);
+                    String stringLiteral = parameter.getStringLiteral();
+                    return ProgramValue.asString(stringLiteral);
                 } catch (ClassCastException e) {
                     throw new EvaluationException(
                             new ParameterWrongType(index, parameter.getType()),
@@ -137,7 +139,7 @@ public class Evaluator
         }
         // Then custom functions
         else if (this.functionIndex.hasFunction(functionName)) {
-            return this.functionIndex.getFunction(functionName).execute(parameters);
+            return this.functionIndex.functionWithName(functionName).execute(parameters);
         }
 
         return null;

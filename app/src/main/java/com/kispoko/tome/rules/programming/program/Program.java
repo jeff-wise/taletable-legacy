@@ -11,7 +11,7 @@ import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -62,7 +62,8 @@ public class Program implements Model
         this.resultType      = new PrimitiveValue<>(resultType, this, ProgramValueType.class);
 
         // **  Statements
-        List<Class<Statement>> statementClasses = Arrays.asList(Statement.class);
+        List<Class<? extends Statement>> statementClasses = new ArrayList<>();
+        statementClasses.add(Statement.class);
         this.statements      = new CollectionValue<>(statements, this, statementClasses);
 
         // **  Result Statement
@@ -229,5 +230,21 @@ public class Program implements Model
     {
         this.statements.setValue(statements);
     }
+
+
+    // ** Result Statement
+    // ------------------------------------------------------------------------------------------
+
+
+    /**
+     * Get the program's result statement. The result of the result statement is the result
+     * of the program.
+     * @return The result Statement.
+     */
+    public Statement getResultStatement()
+    {
+        return this.resultStatement.getValue();
+    }
+
 
 }

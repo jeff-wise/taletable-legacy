@@ -3,9 +3,6 @@ package com.kispoko.tome.rules.programming.function;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.rules.refinement.MemberOf;
-import com.kispoko.tome.rules.refinement.Refinement;
-import com.kispoko.tome.rules.refinement.RefinementIndex;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -44,7 +41,8 @@ public class FunctionIndex implements Model
     {
         this.id = id;
 
-        List<Class<Function>> functionClasses = Arrays.asList(Function.class);
+        List<Class<? extends Function>> functionClasses = new ArrayList<>();
+        functionClasses.add(Function.class);
         this.functions = new CollectionValue<>(new ArrayList<Function>(), this, functionClasses);
     }
 
@@ -138,6 +136,17 @@ public class FunctionIndex implements Model
     public Function functionWithName(String functionName)
     {
         return this.functionByName.get(functionName);
+    }
+
+
+    /**
+     * Returns true if the index contains the function with the given name.
+     * @param functionName The name of the function.
+     * @return True if the function with the given name exists in the index, false otherwise.
+     */
+    public boolean hasFunction(String functionName)
+    {
+        return this.functionByName.containsKey(functionName);
     }
 
 }

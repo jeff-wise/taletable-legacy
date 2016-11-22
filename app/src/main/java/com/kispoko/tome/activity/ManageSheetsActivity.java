@@ -27,7 +27,6 @@ import com.kispoko.tome.util.Util;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -53,7 +52,7 @@ public class ManageSheetsActivity extends AppCompatActivity
         DatabaseManager databaseManager = new DatabaseManager(this);
         SQLiteDatabase database = databaseManager.getWritableDatabase();
 
-        Sheet.summaryInfo(database, this);
+        //Sheet.summaryInfo(database, this);
 
         setContentView(R.layout.activity_manage_sheets);
 
@@ -89,8 +88,8 @@ public class ManageSheetsActivity extends AppCompatActivity
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.action_settings:
-                return true;
+//            case R.id.action_settings:
+//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -99,6 +98,7 @@ public class ManageSheetsActivity extends AppCompatActivity
     // > API
     // -------------------------------------------------------------------------------------------
 
+    /*
     public void renderSheetSummaries(List<Sheet.SummaryInfo> summaryInfos)
     {
         ScrollView sheetsMainView = (ScrollView) findViewById(R.id.sheet_list);
@@ -141,6 +141,7 @@ public class ManageSheetsActivity extends AppCompatActivity
         // Create view structure
         sheetsMainView.addView(summariesLayout);
     }
+    */
 
 
     // > INTERNAL

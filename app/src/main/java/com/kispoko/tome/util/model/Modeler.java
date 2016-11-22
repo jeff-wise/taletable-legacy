@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.mode;
 
 
 /**
@@ -55,25 +54,6 @@ public class Modeler
     // > Serialization
     // ------------------------------------------------------------------------------------------
 
-    public static <A extends Model> Promise<Integer> modelCountPromise(final Class<A> modelClass)
-    {
-        return new Promise<>(new Promise.Action<Integer>() {
-            @Override
-            public Integer run() {
-                Integer count = null;
-                try {
-                    String tableName = Modeler.name(modelClass);
-                    count = Modeler.count(tableName);
-                } catch (DatabaseException e) {
-                    ApplicationFailure.database(e);
-                }
-
-                return count;
-            }
-        });
-    }
-
-
     public static <A extends Model> ValuePromise<A>
                                 modelValuePromise(final Class<A> classObject,
                                                   final ModelQueryParameters queryParameters)
@@ -94,9 +74,9 @@ public class Modeler
 
 
     public static <A extends Model> CollectionValuePromise<A>
-                                        collectionValuePromise(final String parentModelName,
-                                                               final UUID parentModelId,
-                                                               final List<Class<A>> modelClasses)
+                                collectionValuePromise(final String parentModelName,
+                                                       final UUID parentModelId,
+                                                       final List<Class<? extends A>> modelClasses)
     {
         return new CollectionValuePromise<>(new CollectionValuePromise.Action<A>() {
             @Override
@@ -151,13 +131,6 @@ public class Modeler
     // INTERNAL
     // --------------------------------------------------------------------------------------
 
-    private static Integer count(String tableName)
-                   throws DatabaseException
-    {
-        CountQuery countQuery = new CountQuery(tableName);
-        return countQuery.run();
-    }
-
     /**
      * Automatically load this model from the database using reflection on its Value properties
      * and the database data stored within them.
@@ -188,15 +161,16 @@ public class Modeler
      * @throws DatabaseException
      */
     @SuppressWarnings("unchecked")
-    private static <A extends Model> List<A> collectionFromDatabase(String parentModelName,
-                                                                    UUID parentModelId,
-                                                                    List<Class<A>> modelClasses)
+    public static <A extends Model> List<A> collectionFromDatabase(
+                                                    String parentModelName,
+                                                    UUID parentModelId,
+                                                    List<Class<? extends A>> modelClasses)
                        throws DatabaseException
     {
         List<A> models = new ArrayList<>();
 
         // For each concrete model type, query all of the matching models
-        for (Class<A> modelClass : modelClasses)
+        for (Class<? extends A> modelClass : modelClasses)
         {
             // GET SQL columns
             A dummyModel = Modeler.newModel(modelClass);
@@ -289,7 +263,7 @@ public class Modeler
 
         for (ModelValue<? extends Model> modelValue : modelValues)
         {
-            modelValue.saveValue(Modeler.saveValuePromise(modelValue.getValue()));
+            modelValue.save();
         }
 
         // [B 3] Save Collection Values
@@ -365,11 +339,14 @@ public class Modeler
 
         for (CollectionValue<? extends Model> collectionValue : collectionValues)
         {
-            CollectionValuePromise collectionValuePromise =
-                    Modeler.collectionValuePromise(Modeler.name(model),
-                                                   model.getId(),
-                                                   collectionValue.getModelClasses());
-            collectionValue.loadValue(collectionValuePromise);
+//            CollectionValuePromise<? extends Model> collectionValuePromise =
+//                    Modeler.collectionValuePromise(
+//                            Modeler.name(model),
+//                            model.getId(),
+//                            // TODO might be wrong...
+//                            collectionValue.getModelClasses());
+//                            //(List<Class<? extends Model>>) collectionValue.getModelClasses());
+            collectionValue.loadValue(Modeler.name(model), model.getId());
         }
 
         return model;

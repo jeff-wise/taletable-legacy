@@ -40,7 +40,8 @@ public class ProgramIndex implements Model
     {
         this.id = id;
 
-        List<Class<Program>> programClasses = Arrays.asList(Program.class);
+        List<Class<? extends Program>> programClasses = new ArrayList<>();
+        programClasses.add(Program.class);
         this.programs = new CollectionValue<>(new ArrayList<Program>(), this, programClasses);
     }
 

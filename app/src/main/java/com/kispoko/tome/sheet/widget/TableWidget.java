@@ -11,7 +11,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.widget.table.Cell;
@@ -33,10 +32,11 @@ import java.util.List;
 import java.util.UUID;
 
 
+
 /**
  * Widget: Table
  */
-public class TableWidget implements Widget, Serializable
+public class TableWidget extends Widget implements Serializable
 {
 
     // PROPERTIES
@@ -50,9 +50,6 @@ public class TableWidget implements Widget, Serializable
     private PrimitiveValue<String[]> columnNames;
     private ModelValue<Row>          rowTemplate;
     private CollectionValue<Row>     rows;
-
-    // > Internal
-    private static final int MAX_COLUMNS = 6;
 
 
     // CONSTRUCTORS
@@ -73,7 +70,8 @@ public class TableWidget implements Widget, Serializable
         this.columnNames = new PrimitiveValue<>(columnNames, this, String[].class);
         this.rowTemplate = new ModelValue<>(rowTemplate, this, Row.class);
 
-        List<Class<Row>> rowClassList = Arrays.asList(Row.class);
+        List<Class<? extends Row>> rowClassList = new ArrayList<>();
+        rowClassList.add(Row.class);
         this.rows        = new CollectionValue<>(rows, this, rowClassList);
     }
 
@@ -97,12 +95,12 @@ public class TableWidget implements Widget, Serializable
         List<String> columnNameList = yaml.atKey("column_names").getStringList();
         String[]     columnNames    = columnNameList.toArray(new String[0]);
 
-        Row          rowTemplate    = Row.fromYaml(yaml.atKey("row_template"));
+        final Row    rowTemplate    = Row.fromYaml(yaml.atKey("row_template"), 0, null);
 
         List<Row>    rows           = yaml.atKey("rows").forEach(new Yaml.ForEach<Row>() {
             @Override
             public Row forEach(Yaml yaml, int index) throws YamlException {
-                return Row.fromYaml(yaml, index);
+                return Row.fromYaml(yaml, index, rowTemplate);
             }
         });
 
@@ -154,6 +152,16 @@ public class TableWidget implements Widget, Serializable
      */
     public String name() {
         return "text";
+    }
+
+
+    /**
+     * Get the widget's common data values.
+     * @return The widget's WidgetData.
+     */
+    public WidgetData data()
+    {
+        return this.widgetData.getValue();
     }
 
 
@@ -243,7 +251,7 @@ public class TableWidget implements Widget, Serializable
      */
     public View getDisplayView(Context context, Rules rules)
     {
-        LinearLayout layout = WidgetUI.linearLayout(context, rules);
+        LinearLayout layout = WidgetUI.linearLayout(this, context, rules);
 
         layout.setPadding(0, 0, 0, 0);
 
@@ -323,7 +331,7 @@ public class TableWidget implements Widget, Serializable
         headerRow.setPadding(paddingHorz, paddingVert, paddingHorz, paddingVert);
 
 
-        for (int i = 0; i < columnNames.length; i++)
+        for (int i = 0; i < getColumnNames().length; i++)
         {
             TextView headerText = new TextView(context);
 
@@ -331,7 +339,7 @@ public class TableWidget implements Widget, Serializable
                     new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                                               TableRow.LayoutParams.WRAP_CONTENT);
 
-            Cell template = this.rowTemplate.getCell(i);
+            Cell template = this.getRowTemplate().cellAtIndex(i);
             WidgetFormat.Alignment alignment = template.getWidget().data()
                     .getFormat().getAlignment();
             if (alignment != null) {
@@ -348,7 +356,8 @@ public class TableWidget implements Widget, Serializable
                 }
             }
 
-            if (template.getWidgetData().getWidth() != null) {
+            Integer templateWidth = template.getWidget().data().getFormat().getWidth();
+            if (templateWidth != null) {
                 layoutParams.width = 0;
                 layoutParams.weight = 1;
             }
@@ -363,40 +372,12 @@ public class TableWidget implements Widget, Serializable
 
             headerText.setTypeface(Util.sansSerifFontRegular(context));
 
-            headerText.setText(columnNames[i].toUpperCase());
+            headerText.setText(getColumnNames()[i].toUpperCase());
 
             headerRow.addView(headerText);
         }
 
         return headerRow;
-    }
-
-
-    private UUID createTracker(final UUID callerTrackerId)
-    {
-        final TableWidget thisTableWidget = this;
-
-        List<String> trackingKeys = new ArrayList<>();
-        for (int i = 0; i < this.getTableHeight(); i++) {
-            for (int j = 0; j < this.getTableWidth(); j++) {
-                trackingKeys.add(Integer.toString(i) + "-" + Integer.toString(j));
-            }
-        }
-
-        for (int i = 0; i < tableWidth; i++) {
-            this.templateCellTracker[i] = false;
-        }
-
-        Tracker.OnReady onReady = new Tracker.OnReady() {
-            @Override
-            protected void go() {
-                Global.getTracker(callerTrackerId).setKey(thisTableWidget.getName().toString());
-            }
-        };
-
-        UUID tableTrackerId = Global.addTracker(new Tracker(trackingKeys, onReady));
-
-        return tableTrackerId;
     }
 
 }

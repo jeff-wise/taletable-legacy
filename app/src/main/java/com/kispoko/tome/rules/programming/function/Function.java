@@ -2,6 +2,7 @@
 package com.kispoko.tome.rules.programming.function;
 
 
+import com.kispoko.tome.rules.programming.evaluation.ProgramValue;
 import com.kispoko.tome.rules.programming.evaluation.ProgramValueType;
 import com.kispoko.tome.rules.programming.function.error.InvalidTupleLengthError;
 import com.kispoko.tome.util.model.Model;
@@ -10,8 +11,10 @@ import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -31,6 +34,10 @@ public class Function implements Model
     private PrimitiveValue<ProgramValueType[]> parameterTypes;
     private PrimitiveValue<ProgramValueType>   resultType;
     private CollectionValue<Tuple>             tuples;
+
+
+    // > Internal
+    private Map<List<ProgramValue>,ProgramValue> functionMap;
 
 
     // CONSTRUCTORS
@@ -59,11 +66,17 @@ public class Function implements Model
         this.resultType     = new PrimitiveValue<>(resultType, this, ProgramValueType.class);
 
         // ** Tuples
-        List<Class<Tuple>> tupleClasses = Arrays.asList(Tuple.class);
+        List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
+        tupleClasses.add(Tuple.class);
         this.tuples         = new CollectionValue<>(tuples, this, tupleClasses);
 
         // > Validate the function definition
         this.validate();
+
+        // > Index the tuples
+        for (Tuple tuple : tuples) {
+            this.functionMap.put(tuple.getParameters(), tuple.getResult());
+        }
     }
 
 
@@ -174,6 +187,21 @@ public class Function implements Model
     public ProgramValueType getResultType()
     {
         return this.resultType.getValue();
+    }
+
+
+    // > Execute
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Execute the function. Returns a ProgramValue based on the provided parameters. If the
+     * function does not have a case for the given parameters, it returns null.
+     * @param parameters
+     * @return
+     */
+    public ProgramValue execute(List<ProgramValue> parameters)
+    {
+        return this.functionMap.get(parameters);
     }
 
 

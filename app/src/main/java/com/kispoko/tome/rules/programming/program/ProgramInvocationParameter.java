@@ -2,112 +2,127 @@
 package com.kispoko.tome.rules.programming.program;
 
 
-import java.util.Map;
+import com.kispoko.tome.rules.programming.variable.Variable;
+import com.kispoko.tome.rules.programming.variable.VariableType;
+import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
+import java.util.Map;
+import java.util.UUID;
+
+import static android.R.attr.value;
+import static com.kispoko.tome.rules.programming.program.ProgramInvocationParameterType.REFERENCE;
 
 
 /**
  * Program Invocation Parameter
  */
-public class ProgramInvocationParameter
+public class ProgramInvocationParameter implements Model
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Object value;
-    private Type _type;
+    private UUID                                           id;
+
+    private PrimitiveValue<String>                         referenceValue;
+
+    private PrimitiveValue<ProgramInvocationParameterType> type;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ProgramInvocationParameter(Object value, Type _type)
+    public ProgramInvocationParameter(UUID id, Object value, ProgramInvocationParameterType type)
     {
-        this.value = value;
-        this._type = _type;
+        this.id             = id;
+
+        this.referenceValue = new PrimitiveValue<>(null, this, String.class);
+
+        this.type           = new PrimitiveValue<>(type, this,
+                                                   ProgramInvocationParameterType.class);
+
+        // Set the value, depending on the case
+        switch (type)
+        {
+            case REFERENCE:
+                this.referenceValue.setValue((String) value);
+                break;
+        }
     }
 
 
-    public static ProgramInvocationParameter fromYaml(Map<String,Object> parameterYaml)
+    /**
+     * Create a "reference" parameter, that references a value in another variable.
+     * @param id The Model id.
+     * @param reference The reference string.
+     * @return A "reference" Program Inovcation parameter.
+     */
+    public static ProgramInvocationParameter asReference(UUID id, String reference)
     {
-        // VALUES TO PARSE
-        // --------------------------------------------------------------------------------------
-        Object value = null;
-        Type   _type = null;
+        return new ProgramInvocationParameter(id, reference,
+                                              ProgramInvocationParameterType.REFERENCE);
+    }
 
-        // PARSE VALUES
-        // --------------------------------------------------------------------------------------
 
-        // ** Value
-        if (parameterYaml.containsKey("value"))
-            value = parameterYaml.get("value");
+    /**
+     * Create a new ProgramInvocationParameter from its Yaml representation.
+     * @param yaml The Yaml parser.
+     * @return A new ProgramInvocationParameter.
+     */
+    public static ProgramInvocationParameter fromYaml(Yaml yaml)
+                  throws YamlException
+    {
+        UUID id = UUID.randomUUID();
 
-        // ** Type
-        if (parameterYaml.containsKey("type"))
-            _type = Type.fromString((String) parameterYaml.get("type"));
+        ProgramInvocationParameterType type =
+                                    ProgramInvocationParameterType.fromYaml(yaml.atKey("type"));
 
-        return new ProgramInvocationParameter(value, _type);
+        switch (type)
+        {
+            case REFERENCE:
+                String referenceValue = yaml.atKey("value").getString();
+                return ProgramInvocationParameter.asReference(id, referenceValue);
+        }
+
+        return null;
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
 
-    public String valueAsDBString()
-    {
-        switch (this._type)
-        {
-            case REFERENCE:
-                return (String) this.value;
-        }
-
-        // TODO should not happen
-        return null;
-    }
-
-
-    public String typeAsDBString()
-    {
-        return this._type.toString().toLowerCase();
-    }
-
-
-    public static ProgramInvocationParameter fromDBString(String valueString, Type _type)
-    {
-        Object value = null;
-
-        switch (_type)
-        {
-            case REFERENCE:
-                value = valueString;
-        }
-
-        return new ProgramInvocationParameter(value, _type);
-    }
-
-
-    // NESTED DEFINITIONS
+    // > Model
     // ------------------------------------------------------------------------------------------
 
-    public enum Type
+    // ** Id
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the model identifier.
+     * @return The model UUID.
+     */
+    public UUID getId()
     {
-        REFERENCE;
-
-        public static Type fromString(String _type)
-        {
-            if (_type != null)
-                return Type.valueOf(_type.toUpperCase());
-            return null;
-        }
-
-
-        public static String asString(Type _type)
-        {
-            if (_type != null)
-                return _type.toString().toLowerCase();
-            return null;
-        }
+        return this.id;
     }
+
+
+    /**
+     * Set the model identifier.
+     * @param id The new model UUID.
+     */
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Update
+    // ------------------------------------------------------------------------------------------
+
+    public void onModelUpdate(String valueName) { }
 
 }

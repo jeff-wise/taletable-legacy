@@ -32,7 +32,7 @@ import java.util.UUID;
 /**
  * Table Widget Cell
  */
-public class Cell extends Model implements Serializable
+public class Cell implements Model, Serializable
 {
 
     // PROPERTIES
@@ -61,7 +61,7 @@ public class Cell extends Model implements Serializable
     }
 
 
-    public static Cell fromYaml(Yaml yaml, int rowIndex, Cell template, int columnIndex)
+    public static Cell fromYaml(Yaml yaml, int rowIndex, int columnIndex, Cell template)
                   throws YamlException
     {
         UUID   id     =  UUID.randomUUID();
@@ -122,17 +122,19 @@ public class Cell extends Model implements Serializable
     {
         View view = new TextView(context);
 
-        if (this.widgetData instanceof TextWidget || this.widgetData instanceof NumberWidget) {
+        Widget widget = this.widget.getValue();
+        if (widget instanceof TextWidget || widget instanceof NumberWidget) {
             view = this.textView(context);
-        } else if (this.widgetData instanceof BooleanWidget) {
+        } else if (widget instanceof BooleanWidget) {
             view = this.boolView(context);
         }
 
         TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) view.getLayoutParams();
 
         // Configure alignment
-        if (this.widgetData.getAlignment() != null) {
-            switch (this.widgetData.getAlignment()) {
+        WidgetFormat.Alignment alignment = this.getWidget().data().getFormat().getAlignment();
+        if (alignment != null) {
+            switch (alignment) {
                 case LEFT:
                     layoutParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
                     break;
@@ -147,7 +149,8 @@ public class Cell extends Model implements Serializable
         }
 
         // Configure column width
-        if (this.widgetData.getWidth() != null) {
+        Integer width = this.getWidget().data().getFormat().getWidth();
+        if (width != null) {
             layoutParams.width = 0;
             layoutParams.weight = 1;
         }
@@ -166,8 +169,9 @@ public class Cell extends Model implements Serializable
         layoutParams.setMargins(0, 0, 0, 0);
         view.setLayoutParams(layoutParams);
 
-        if (this.widgetData.getAlignment() != null) {
-            switch (this.widgetData.getAlignment()) {
+        WidgetFormat.Alignment alignment = this.getWidget().data().getFormat().getAlignment();
+        if (alignment != null) {
+            switch (alignment) {
                 case LEFT:
                     view.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
                     break;
@@ -182,7 +186,8 @@ public class Cell extends Model implements Serializable
 
         view.setPadding(0, 0, 0, 0);
 
-        view.setText(this.widgetData.getTextValue());
+        String widgetValue = ((TextWidget) this.getWidget()).getValue().getString();
+        view.setText(widgetValue);
 
         view.setTextColor(ContextCompat.getColor(context, R.color.text_medium_light));
         view.setTypeface(Util.serifFontBold(context));
@@ -198,10 +203,11 @@ public class Cell extends Model implements Serializable
     {
         final ImageView view = new ImageView(context);
 
-        final BooleanWidget booleanWidget = (BooleanWidget) this.widgetData;
+        final BooleanWidget booleanWidget = ((BooleanWidget) this.widget.getValue());
+        final Boolean widgetValue = booleanWidget.getValue().getBoolean();
 
         if (booleanWidget.getValue() != null) {
-            if (booleanWidget.getValue()) {
+            if (widgetValue) {
                 view.setImageDrawable(
                         ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
             } else {
@@ -219,12 +225,12 @@ public class Cell extends Model implements Serializable
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (booleanWidget.getValue()) {
-                    booleanWidget.setValue(false, null);
+                if (widgetValue) {
+                    booleanWidget.getValue().setBoolean(false);
                     view.setImageDrawable(
                             ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
                 } else {
-                    booleanWidget.setValue(true, null);
+                    booleanWidget.getValue().setBoolean(true);
                     view.setImageDrawable(
                             ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
                 }
@@ -273,7 +279,8 @@ public class Cell extends Model implements Serializable
         {
             BooleanWidget booleanWidget = (BooleanWidget) this.widget.getValue();
             if (booleanWidget.getValue() == null) {
-                booleanWidget.setValue(((BooleanWidget) template.getWidgetData()).getValue());
+                booleanWidget.getValue().setBoolean(
+                        ((BooleanWidget) template.getWidget()).getValue().getBoolean());
             }
         }
 
