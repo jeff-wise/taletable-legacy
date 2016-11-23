@@ -3,8 +3,8 @@ package com.kispoko.tome.rules.programming;
 
 
 import com.kispoko.tome.rules.programming.evaluation.EvaluationException;
-import com.kispoko.tome.rules.programming.evaluation.ProgramValue;
-import com.kispoko.tome.rules.programming.evaluation.ProgramValueType;
+import com.kispoko.tome.rules.programming.program.ProgramValue;
+import com.kispoko.tome.rules.programming.program.ProgramValueType;
 
 import java.util.ArrayList;
 import java.util.HashSet;

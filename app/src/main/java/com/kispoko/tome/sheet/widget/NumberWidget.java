@@ -11,7 +11,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.rules.programming.variable.Variable;
+import com.kispoko.tome.rules.programming.variable.NumberVariable;
+import com.kispoko.tome.rules.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
@@ -39,28 +40,31 @@ public class NumberWidget extends Widget implements Serializable
 
     private ModelValue<WidgetData>            widgetData;
     private PrimitiveValue<WidgetFormat.Size> size;
-    private ModelValue<Variable>              value;
-    private ModelValue<Variable>              prefix;
-    private ModelValue<Variable>              postfix;
+    private ModelValue<NumberVariable>        value;
+    private ModelValue<TextVariable>          prefix;
+    private ModelValue<TextVariable>          postfix;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public NumberWidget() { }
+
+
     public NumberWidget(UUID id,
                         WidgetData widgetData,
                         WidgetFormat.Size size,
-                        Variable value,
-                        Variable prefix,
-                        Variable postfix)
+                        NumberVariable value,
+                        TextVariable prefix,
+                        TextVariable postfix)
     {
         this.id   = id;
 
         this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
         this.size       = new PrimitiveValue<>(size, this, WidgetFormat.Size.class);
-        this.value      = new ModelValue<>(value, this, Variable.class);
-        this.prefix     = new ModelValue<>(prefix, this, Variable.class);
-        this.postfix    = new ModelValue<>(postfix, this, Variable.class);
+        this.value      = new ModelValue<>(value, this, NumberVariable.class);
+        this.prefix     = new ModelValue<>(prefix, this, TextVariable.class);
+        this.postfix    = new ModelValue<>(postfix, this, TextVariable.class);
     }
 
 
@@ -70,9 +74,9 @@ public class NumberWidget extends Widget implements Serializable
         UUID              id         = UUID.randomUUID();
         WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
         WidgetFormat.Size size       = WidgetFormat.Size.fromYaml(yaml.atKey("size"));
-        Variable          value      = Variable.fromYaml(yaml.atKey("value"));
-        Variable          prefix     = Variable.fromYaml(yaml.atKey("prefix"));
-        Variable          postfix    = Variable.fromYaml(yaml.atKey("postfix"));
+        NumberVariable    value      = NumberVariable.fromYaml(yaml.atKey("value"));
+        TextVariable      prefix     = TextVariable.fromYaml(yaml.atMaybeKey("prefix"));
+        TextVariable      postfix    = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));
 
         return new NumberWidget(id, widgetData, size, value, prefix, postfix);
     }
@@ -145,7 +149,7 @@ public class NumberWidget extends Widget implements Serializable
     // ** Value
     // ------------------------------------------------------------------------------------------
 
-    public Variable getValue()
+    public NumberVariable getValue()
     {
         return this.value.getValue();
     }
@@ -153,7 +157,7 @@ public class NumberWidget extends Widget implements Serializable
     // ** Prefix
     // ------------------------------------------------------------------------------------------
 
-    public Variable getPrefix() {
+    public TextVariable getPrefix() {
         return this.prefix.getValue();
     }
 
@@ -161,7 +165,7 @@ public class NumberWidget extends Widget implements Serializable
     // ** Postfix
     // ------------------------------------------------------------------------------------------
 
-    public Variable getPostfix() {
+    public TextVariable getPostfix() {
         return this.prefix.getValue();
     }
 

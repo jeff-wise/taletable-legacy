@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules.programming.program;
+package com.kispoko.tome.sheet.widget.table.cell;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
@@ -11,30 +11,33 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Program Invocation Parameter Type
+ * CellUnion Type
  */
-public enum ProgramInvocationParameterType
+public enum CellType
 {
 
-    REFERENCE;
+    TEXT,
+    NUMBER,
+    BOOLEAN;
 
 
-    public static ProgramInvocationParameterType fromString(String typeString)
+    public static CellType fromString(String typeString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(ProgramInvocationParameterType.class, typeString);
+        return EnumUtils.fromString(CellType.class, typeString);
     }
 
 
-    public static ProgramInvocationParameterType fromYaml(Yaml yaml)
+    public static CellType fromYaml(Yaml yaml)
                   throws YamlException
     {
         String typeString = yaml.getString();
         try {
-            return ProgramInvocationParameterType.fromString(typeString);
+            return CellType.fromString(typeString);
         } catch (InvalidDataException e) {
             throw YamlException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
+
 
 }

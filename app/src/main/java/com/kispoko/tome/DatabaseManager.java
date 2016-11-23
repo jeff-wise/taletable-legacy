@@ -5,9 +5,14 @@ package com.kispoko.tome;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.media.Image;
 
-import com.kispoko.tome.rules.programming.variable.Variable;
+import com.kispoko.tome.rules.programming.function.FunctionIndex;
+import com.kispoko.tome.rules.programming.program.ProgramIndex;
+import com.kispoko.tome.rules.programming.program.ProgramValue;
+import com.kispoko.tome.rules.programming.program.statement.Parameter;
+import com.kispoko.tome.rules.programming.variable.BooleanVariable;
+import com.kispoko.tome.rules.programming.variable.NumberVariable;
+import com.kispoko.tome.rules.programming.variable.TextVariable;
 import com.kispoko.tome.rules.programming.function.Function;
 import com.kispoko.tome.rules.programming.function.Tuple;
 import com.kispoko.tome.rules.programming.program.Program;
@@ -24,8 +29,10 @@ import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
+import com.kispoko.tome.sheet.widget.table.cell.BooleanCell;
+import com.kispoko.tome.sheet.widget.table.cell.NumberCell;
+import com.kispoko.tome.sheet.widget.table.cell.TextCell;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
-import com.kispoko.tome.sheet.widget.table.Cell;
 import com.kispoko.tome.rules.refinement.MemberOf;
 import com.kispoko.tome.util.model.Modeler;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -59,16 +66,24 @@ public class DatabaseManager extends SQLiteOpenHelper
             db.execSQL(Modeler.defineTableSQLString(BooleanWidget.class));
             db.execSQL(Modeler.defineTableSQLString(ImageWidget.class));
             db.execSQL(Modeler.defineTableSQLString(TableWidget.class));
-            db.execSQL(Modeler.defineTableSQLString(Cell.class));
+            db.execSQL(Modeler.defineTableSQLString(TextCell.class));
+            db.execSQL(Modeler.defineTableSQLString(NumberCell.class));
+            db.execSQL(Modeler.defineTableSQLString(BooleanCell.class));
             db.execSQL(Modeler.defineTableSQLString(WidgetFormat.class));
             db.execSQL(Modeler.defineTableSQLString(RefinementId.class));
             db.execSQL(Modeler.defineTableSQLString(MemberOf.class));
             db.execSQL(Modeler.defineTableSQLString(Program.class));
+            db.execSQL(Modeler.defineTableSQLString(ProgramIndex.class));
             db.execSQL(Modeler.defineTableSQLString(Statement.class));
+            db.execSQL(Modeler.defineTableSQLString(Parameter.class));
             db.execSQL(Modeler.defineTableSQLString(ProgramInvocation.class));
+            db.execSQL(Modeler.defineTableSQLString(ProgramValue.class));
             db.execSQL(Modeler.defineTableSQLString(Function.class));
+            db.execSQL(Modeler.defineTableSQLString(FunctionIndex.class));
             db.execSQL(Modeler.defineTableSQLString(Tuple.class));
-            db.execSQL(Modeler.defineTableSQLString(Variable.class));
+            db.execSQL(Modeler.defineTableSQLString(TextVariable.class));
+            db.execSQL(Modeler.defineTableSQLString(NumberVariable.class));
+            db.execSQL(Modeler.defineTableSQLString(BooleanVariable.class));
         }
         catch (DatabaseException e)
         {

@@ -32,6 +32,9 @@ public class Game implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public Game() { }
+
+
     public Game(UUID id, String name, String label, String description)
     {
         this.id = id;

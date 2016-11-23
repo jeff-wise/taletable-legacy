@@ -2,18 +2,14 @@
 package com.kispoko.tome.rules.programming.program;
 
 
-import com.kispoko.tome.rules.programming.variable.Variable;
-import com.kispoko.tome.rules.programming.variable.VariableType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static android.R.attr.value;
-import static com.kispoko.tome.rules.programming.program.ProgramInvocationParameterType.REFERENCE;
 
 
 /**
@@ -34,6 +30,9 @@ public class ProgramInvocationParameter implements Model
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public ProgramInvocationParameter() { }
+
 
     public ProgramInvocationParameter(UUID id, Object value, ProgramInvocationParameterType type)
     {

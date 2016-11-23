@@ -11,6 +11,7 @@ import com.kispoko.tome.DatabaseManager;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.query.CountQuery;
 
 
@@ -30,13 +31,14 @@ public class LaunchActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        SQL.initialize();
+
         // Create database reference and save it for use in application lifecycle.
         DatabaseManager databaseManager = new DatabaseManager(this);
         SQLiteDatabase database = databaseManager.getWritableDatabase();
         Global.setDatabase(database);
 
         CountQuery.fromModel(Sheet.class).run(this);
-
     }
 
 

@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -13,10 +12,10 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.sheet.widget.table.Cell;
+import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.Row;
+import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
@@ -27,10 +26,10 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.width;
 
 
 /**
@@ -44,31 +43,29 @@ public class TableWidget extends Widget implements Serializable
 
     private UUID id;
 
-    private ModelValue<WidgetData>   widgetData;
-    private PrimitiveValue<Integer>  width;
-    private PrimitiveValue<Integer>  height;
-    private PrimitiveValue<String[]> columnNames;
-    private ModelValue<Row>          rowTemplate;
-    private CollectionValue<Row>     rows;
+    private ModelValue<WidgetData>  widgetData;
+    private CollectionValue<ColumnUnion> columns;
+    private CollectionValue<Row>    rows;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public TableWidget() { }
+
+
     public TableWidget(UUID id,
                        WidgetData widgetData,
-                       Integer width, Integer height,
-                       String[] columnNames,
-                       Row rowTemplate,
+                       List<ColumnUnion> columns,
                        List<Row> rows)
     {
         this.id = id;
 
         this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
-        this.width       = new PrimitiveValue<>(width, this, Integer.class);
-        this.height      = new PrimitiveValue<>(height, this, Integer.class);
-        this.columnNames = new PrimitiveValue<>(columnNames, this, String[].class);
-        this.rowTemplate = new ModelValue<>(rowTemplate, this, Row.class);
+
+        List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
+        columnClassList.add(ColumnUnion.class);
+        this.columns    = new CollectionValue<>(columns, this, columnClassList);
 
         List<Class<? extends Row>> rowClassList = new ArrayList<>();
         rowClassList.add(Row.class);
@@ -87,24 +84,27 @@ public class TableWidget extends Widget implements Serializable
     {
         UUID         id             = UUID.randomUUID();
 
+        // ** Widget Data
         WidgetData   widgetData     = WidgetData.fromYaml(yaml.atKey("data"));
 
-        Integer      width          = yaml.atKey("width").getInteger();
-        Integer      height         = yaml.atKey("height").getInteger();
+        // ** Columns
+        final List<ColumnUnion> columns
+                = yaml.atKey("columns").forEach(new Yaml.ForEach<ColumnUnion>() {
+             @Override
+             public ColumnUnion forEach(Yaml yaml, int index) throws YamlException {
+                 return ColumnUnion.fromYaml(yaml);
+             }
+        });
 
-        List<String> columnNameList = yaml.atKey("column_names").getStringList();
-        String[]     columnNames    = columnNameList.toArray(new String[0]);
-
-        final Row    rowTemplate    = Row.fromYaml(yaml.atKey("row_template"), 0, null);
-
+        // ** Rows
         List<Row>    rows           = yaml.atKey("rows").forEach(new Yaml.ForEach<Row>() {
             @Override
             public Row forEach(Yaml yaml, int index) throws YamlException {
-                return Row.fromYaml(yaml, index, rowTemplate);
+                return Row.fromYaml(yaml, columns);
             }
         });
 
-        return new TableWidget(id, widgetData, width, height, columnNames, rowTemplate, rows);
+        return new TableWidget(id, widgetData, columns, rows);
     }
 
 
@@ -179,7 +179,7 @@ public class TableWidget extends Widget implements Serializable
      * @return The table width.
      */
     public Integer getWidth() {
-        return this.width.getValue();
+        return this.getColumns().size();
     }
 
     // ** Height
@@ -190,32 +190,19 @@ public class TableWidget extends Widget implements Serializable
      * @return The table height.
      */
     public Integer getHeight() {
-        return this.height.getValue();
+        return this.rows.getValue().size();
     }
 
 
-    // ** Column Names
+    // ** Columns
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the names of the table columns.
-     * @return Array of table column names.
+     * Get the table columns.
+     * @return List of the table's columns.
      */
-    public String[] getColumnNames() {
-        return this.columnNames.getValue();
-    }
-
-
-    // ** Row Template
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the row template for the table. The row template is a row that is used as a blueprint
-     * for all new table rows, for example to fill in default values.
-     * @return The table's row template.
-     */
-    public Row getRowTemplate() {
-        return this.rowTemplate.getValue();
+    public List<ColumnUnion> getColumns() {
+        return this.columns.getValue();
     }
 
 
@@ -239,6 +226,27 @@ public class TableWidget extends Widget implements Serializable
     public List<Row> getRows() {
         return this.rows.getValue();
     }
+
+
+    // > Helpers
+    // ------------------------------------------------------------------------------------------
+
+
+    /**
+     * Get a list of the table's column names.
+     * @return A List of column names.
+     */
+    public List<String> columnNames()
+    {
+        List<String> columnNames = new ArrayList<>();
+
+        for (ColumnUnion columnUnion : this.getColumns()) {
+            columnNames.add(columnUnion.getColumn().getName());
+        }
+
+        return columnNames;
+    }
+
 
 
     // > Views
@@ -289,10 +297,10 @@ public class TableWidget extends Widget implements Serializable
             tableRow.setPadding(tableRowPaddingHorz, tableRowPaddingVert,
                                 tableRowPaddingHorz, tableRowPaddingVert);
 
-            for (Cell cell : row.getCells())
+            for (CellUnion cell : row.getCells())
             {
-                View cellView = cell.getView(context);
-                tableRow.addView(cellView);
+//                View cellView = cell.getView(context);
+//                tableRow.addView(cellView);
             }
 
             tableLayout.addView(tableRow);
@@ -331,7 +339,9 @@ public class TableWidget extends Widget implements Serializable
         headerRow.setPadding(paddingHorz, paddingVert, paddingHorz, paddingVert);
 
 
-        for (int i = 0; i < getColumnNames().length; i++)
+        List<String> columnNames = this.columnNames();
+
+        for (String columnName : columnNames)
         {
             TextView headerText = new TextView(context);
 
@@ -339,28 +349,28 @@ public class TableWidget extends Widget implements Serializable
                     new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
                                               TableRow.LayoutParams.WRAP_CONTENT);
 
-            Cell template = this.getRowTemplate().cellAtIndex(i);
-            WidgetFormat.Alignment alignment = template.getWidget().data()
-                    .getFormat().getAlignment();
-            if (alignment != null) {
-                switch (alignment) {
-                    case LEFT:
-                        headerText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-                        break;
-                    case CENTER:
-                        headerText.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
-                        break;
-                    case RIGHT:
-                        headerText.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-                        break;
-                }
-            }
+//            CellUnion template = this.getRowTemplate().cellAtIndex(i);
+//            WidgetFormat.Alignment alignment = template.getWidget().data()
+//                    .getFormat().getAlignment();
+//            if (alignment != null) {
+//                switch (alignment) {
+//                    case LEFT:
+//                        headerText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+//                        break;
+//                    case CENTER:
+//                        headerText.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
+//                        break;
+//                    case RIGHT:
+//                        headerText.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+//                        break;
+//                }
+//            }
 
-            Integer templateWidth = template.getWidget().data().getFormat().getWidth();
-            if (templateWidth != null) {
-                layoutParams.width = 0;
-                layoutParams.weight = 1;
-            }
+//            Integer templateWidth = template.getWidget().data().getFormat().getWidth();
+//            if (templateWidth != null) {
+//                layoutParams.width = 0;
+//                layoutParams.weight = 1;
+//            }
 
             headerText.setLayoutParams(layoutParams);
 
@@ -372,7 +382,7 @@ public class TableWidget extends Widget implements Serializable
 
             headerText.setTypeface(Util.sansSerifFontRegular(context));
 
-            headerText.setText(getColumnNames()[i].toUpperCase());
+            //headerText.setText(getColumnNames()[i].toUpperCase());
 
             headerRow.addView(headerText);
         }

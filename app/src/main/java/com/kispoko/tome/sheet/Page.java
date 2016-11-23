@@ -17,7 +17,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -47,6 +46,9 @@ public class Page implements Model, Serializable
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public Page() { }
+
 
     public Page(UUID id, String label, Integer index, List<Group> groups)
     {

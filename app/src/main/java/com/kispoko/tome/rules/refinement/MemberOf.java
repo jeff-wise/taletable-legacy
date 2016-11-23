@@ -44,6 +44,9 @@ public class MemberOf implements Model, Serializable
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
+    public MemberOf() { }
+
+
     public MemberOf(UUID id, String name, String label, List<String> values)
     {
         this.id     = id;

@@ -51,6 +51,9 @@ public class Group implements Model, Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public Group() { }
+
+
     public Group(UUID id, String label, Integer index, Integer numberOfRows,
                  List<Widget> widgets)
     {

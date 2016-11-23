@@ -42,7 +42,7 @@ public class PrimitiveValue<A> extends Value<A>
     // > State
     // --------------------------------------------------------------------------------------
 
-    // ** Column Name
+    // ** ColumnUnion Name
     // --------------------------------------------------------------------------------------
 
     public String getColumnName()

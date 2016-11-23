@@ -32,4 +32,10 @@ public class InvalidEnumError
         return this.enumValue;
     }
 
+
+    public String errorMessage()
+    {
+        return "Invalid Enum Error: " + this.enumValue;
+    }
+
 }

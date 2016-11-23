@@ -35,4 +35,10 @@ public class UnexpectedTypeError
         return this.expectedType;
     }
 
+
+    public String errorMessage()
+    {
+        return "Unexpected Type Error:\n Expected: " + this.expectedType.toString();
+    }
+
 }

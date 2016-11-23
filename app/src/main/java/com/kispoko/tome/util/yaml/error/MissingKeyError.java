@@ -32,4 +32,10 @@ public class MissingKeyError
         return this.key;
     }
 
+
+    public String errorMessage()
+    {
+        return "Missing Key Error:\n    Missing Key: " + this.key;
+    }
+
 }

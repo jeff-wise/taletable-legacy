@@ -9,7 +9,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.UUID;
 
-import static com.kispoko.tome.rules.programming.program.statement.ParameterType.VARIABLE;
 
 
 /**
@@ -32,6 +31,9 @@ public class Parameter implements Model
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
+
+    public Parameter() { }
+
 
     /**
      * Create a Parameter as a sum type. This constructor is private to force use of the safe

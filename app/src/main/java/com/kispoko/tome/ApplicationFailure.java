@@ -27,18 +27,20 @@ public class ApplicationFailure
     public static void templateFile(TemplateFileException exception)
     {
         Log.d("***APP", "template file exception");
+        exception.printStackTrace();
     }
 
 
     public static void yaml(YamlException exception)
     {
-        Log.d("***APP", "yaml exception");
+        Log.d("***APP", exception.errorMessage(), exception);
     }
 
 
     public static void database(DatabaseException exception)
     {
-        Log.d("***APP", "database exception");
+        Log.d("***APP", "database exception", exception);
+        //exception.printStackTrace();
     }
 
 

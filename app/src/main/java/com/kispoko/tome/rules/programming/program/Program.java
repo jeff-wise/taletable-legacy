@@ -2,7 +2,6 @@
 package com.kispoko.tome.rules.programming.program;
 
 
-import com.kispoko.tome.rules.programming.evaluation.ProgramValueType;
 import com.kispoko.tome.rules.programming.program.statement.Statement;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
@@ -39,6 +38,9 @@ public class Program implements Model
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public Program() { }
+
 
     public Program(UUID id,
                    String name,

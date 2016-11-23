@@ -5,6 +5,9 @@ label:
 game:
   name: dungeons_and_dragons_5
   label: 'Dungeons & Dragons 5th Edition'
+  description: >
+    The fifth edition of the world's most famous roleplaying game, with simplified game
+    mechanics and more focus on roleplaying and storytelling.
 rules:
   refinements:
   - name: class
@@ -139,7 +142,7 @@ rules:
       let: result
       function: string_template
       parameters:
-      - type: literal_string
+      - type: literal
         value: '({{modifier_string}})'
 roleplay:
   pages:
@@ -159,437 +162,402 @@ roleplay:
             row: 1
             column: 1
             width: 1
-            text_size: large
+        size: large
         value:
-          type: literal_string
+          type: literal
           value: Aladaisian Wineheart
       - type: image
-        name: picture
-        actions:
-        - choose
-        - share
-        format:
-          row: 2
-          column: 1
-          width: 1
-          label: Picture
+        data:
+          actions:
+          - choose
+          - share
+          format:
+            row: 2
+            column: 1
+            width: 1
+            label: Picture
     - label: Features
       number_of_rows: 2
       widgets:
       - type: number
-        key_stat: 1
-        name: level
-        actions:
-        - edit
-        format:
-          label: Level
-          row: 1
-          column: 1
-          width: 1
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 17
+          actions:
+          - edit
+          format:
+            label: Level
+            row: 1
+            column: 1
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 17
       - type: text
         name: class
-        key_stat: 2
-        actions:
-        - edit
-        format:
-          label: Class
-          row: 1
-          column: 2
-          width: 1
-          text_size: medium
+        data:
+          actions:
+          - edit
+          format:
+            label: Class
+            row: 1
+            column: 2
+            width: 1
+        size: medium
         value:
-          type: literal_string
+          type: literal
           value: Wizard
           refinement:
             name: class
             type: member_of
       - type: text
-        name: race
-        actions:
-        - edit
-        key_stat: 3
-        format:
-          label: Race
-          row: 2
-          column: 1
-          width: 1
-          text_size: medium
         data:
-          value:
-            type: literal_string
-            value: Human
+          actions:
+          - edit
+          format:
+            label: Race
+            row: 2
+            column: 1
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: Human
       - type: text
-        name: alignment
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 2
-          width: 1
-          label: Alignment
-          text_size: medium
         data:
-          value:
-            type: literal_string
-            value: Lawful Good
+          actions:
+          - edit
+          format:
+            row: 2
+            column: 2
+            width: 1
+            label: Alignment
+        size: medium
+        value:
+          type: literal
+          value: Lawful Good
     - label: Appearance
       number_of_rows: 2
       widgets:
       - type: number
-        name: age
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 1
-          width: 1
-          label: Age
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 41
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 1
+            width: 1
+            label: Age
+        size: medium
+        value:
+          type: literal
+          value: 41
       - type: text
-        name: height
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 2
-          width: 1
-          label: Height
-          text_size: medium
         data:
-          value:
-            type: literal_string
-            value: 5'11"
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 2
+            width: 1
+            label: Height
+        size: medium
+        value:
+          type: literal
+          value: 5'11"
       - type: number
-        name: weight
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 3
-          width: 1
-          label: Weight
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 167
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 3
+            width: 1
+            label: Weight
+        size: medium
+        value:
+          type: literal
+          value: 167
       - type: text
-        name: eyes
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 1
-          width: 1
-          label: Eyes
-          text_size: medium
         data:
-          value:
-            type: literal_string
-            value: Blue
+          actions:
+          - edit
+          format:
+            row: 2
+            column: 1
+            width: 1
+            label: Eyes
+        size: medium
+        value:
+          type: literal
+          value: Blue
       - type: text
-        name: skin
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 2
-          width: 1
-          label: Skin
-          text_size: medium
         data:
-          value:
-            type: literal_string
-            value: Light
+          actions:
+          - edit
+          format:
+            row: 2
+            column: 2
+            width: 1
+            label: Skin
+        size: medium
+        value:
+          type: literal
+          value: Light
       - type: text
-        name: hair
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 3
-          width: 1
-          label: Hair
-          text_size: medium
         data:
-          value:
-            type: literal_string
-            value: Brown
+          actions:
+          - edit
+          format:
+            row: 2
+            column: 3
+            width: 1
+            label: Hair
+        size: medium
+        value:
+          type: literal
+          value: Brown
   - label: Stats
     groups:
     - label: Ability Scores
       number_of_rows: 2
       widgets:
       - type: number
-        name: strength
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 1
-          width: 1
-          label: Strength
-          text_size: medium
-          postfix:
-            type: program
-            value:
-              program: ability_modifier
-              parameters:
-              - type: reference
-                value: strength
         data:
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 1
+            width: 1
+            label: Strength
+        size: medium
+        postfix:
+          type: program
           value:
-            type: literal_number
-            value: 11
+            program: ability_modifier
+            parameters:
+            - type: reference
+              value: strength
+        value:
+          type: literal
+          value: 11
       - type: number
-        name: dexterity
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 2
-          width: 1
-          label: Dexterity
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 19
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 2
+            width: 1
+            label: Dexterity
+        size: medium
+        value:
+          type: literal
+          value: 19
       - type: number
-        name: constitution
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 3
-          width: 1
-          label: Constitution
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 15
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 3
+            width: 1
+            label: Constitution
+        size: medium
+        value:
+          type: literal
+          value: 15
       - type: number
-        name: intelligence
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 1
-          width: 1
-          label: Intelligence
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 22
+          actions:
+          - edit
+          format:
+            row: 2
+            column: 1
+            width: 1
+            label: Intelligence
+        size: medium
+        value:
+          type: literal
+          value: 22
       - type: number
-        name: wisdom
-        actions:
-        - edit
-        format:
-          label: Wisdom
-          row: 2
-          column: 2
-          width: 1
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 14
+          actions:
+          - edit
+          format:
+            label: Wisdom
+            row: 2
+            column: 2
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 14
       - type: number
-        name: charisma
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 3
-          width: 1
-          label: Charisma
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 13
+          actions:
+          - edit
+          format:
+            row: 2
+            column: 3
+            width: 1
+            label: Charisma
+        size: medium
+        value:
+          type: literal
+          value: 13
     - label: General
       number_of_rows: 1
       widgets:
       - type: number
-        name: proficiency_bonus
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 2
-          width: 1
-          label: Proficiency Bonus
-          text_size: medium
-          prefix: '+'
         data:
-          value:
-            type: literal_number
-            value: 6
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 2
+            width: 1
+            label: Proficiency Bonus
+        size: medium
+        value:
+          type: literal
+          value: 6
       - type: number
-        name: inspiration
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 2
-          width: 1
-          label: Inspiration
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 4
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 2
+            width: 1
+            label: Inspiration
+        size: medium
+        value:
+          type: literal
+          value: 4
     - label: Combat
       number_of_rows: 1
       widgets:
       - type: number
-        name: armor_class
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 1
-          width: 1
-          label: Armor Class
-          text_size: medium
         data:
-          value:
-            type: literal_number
-            value: 24
+          actions:
+          - edit
+          format:
+            row: 1
+            column: 1
+            width: 1
+            label: Armor Class
+        size: medium
+        value:
+          type: literal
+          value: 24
       - type: number
-        name: initiative
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 2
-          width: 1
-          text_size: medium
-          prefix: '+'
-          label: Initiative
         data:
-          value:
-            type: literal_number
-            value: 7
+          actions:
+          - edit
+          format:
+            label: Initiative
+            row: 1
+            column: 2
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 7
       - type: number
-        name: speed
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 3
-          width: 1
-          text_size: medium
-          label: Speed
         data:
-          value:
-            type: literal_number
-            value: 30
+          actions:
+          - edit
+          format:
+            label: Speed
+            row: 1
+            column: 3
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 30
     - label: Saving Throws
       number_of_rows: 2
       widgets:
       - type: number
-        name: saving_throw_strength
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 1
-          width: 1
-          text_size: medium
-          label: Strength
         data:
-          value:
-            type: literal_number
-            value: 0
+          actions:
+          - edit
+          format:
+            label: Strength
+            row: 1
+            column: 1
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 0
       - type: number
-        name: saving_throw_dexterity
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 2
-          width: 1
-          text_size: medium
-          prefix: '+'
-          label: Dexterity
         data:
-          value:
-            type: literal_number
-            value: 4
+          actions:
+          - edit
+          format:
+            label: Dexterity
+            row: 1
+            column: 2
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 4
       - type: number
-        name: saving_throw_constitution
-        actions:
-        - edit
-        format:
-          row: 1
-          column: 3
-          width: 1
-          text_size: medium
-          prefix: '+'
-          label: Constitution
         data:
-          value:
-            type: literal_number
-            value: 2
+          actions:
+          - edit
+          format:
+            label: Constitution
+            row: 1
+            column: 3
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 2
       - type: number
-        name: saving_throw_intelligence
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 1
-          width: 1
-          text_size: medium
-          prefix: '+'
-          label: Intelligence
         data:
-          value:
-            type: literal_number
-            value: 12
+          actions:
+          - edit
+          format:
+            label: Intelligence
+            row: 2
+            column: 1
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 12
       - type: number
-        name: saving_throw_wisdom
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 2
-          width: 1
-          text_size: medium
-          prefix: '+'
-          label: Wisdom
         data:
-          value:
-            type: literal_number
-            value: 8
+          actions:
+          - edit
+          format:
+            label: Wisdom
+            row: 2
+            column: 2
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 8
       - type: number
-        name: saving_throw_charisma
-        actions:
-        - edit
-        format:
-          row: 2
-          column: 3
-          width: 1
-          text_size: medium
-          prefix: '+'
-          label: Charisma
         data:
-          value:
-            type: literal_number
-            value: 1
+          actions:
+          - edit
+          format:
+            label: Charisma
+            row: 2
+            column: 3
+            width: 1
+        size: medium
+        value:
+          type: literal
+          value: 1
   - label: Abilities
     groups:
     - label: Skills
@@ -605,204 +573,170 @@ roleplay:
             row: 1
             column: 1
             width: 1
-        column_names:
-        - Skill
-        - Modifier
-        - Proficient?
-        width: 3
-        height: 18
-        row_template:
-          cells:
-          - widget:
-              type: text
-              data:
-                format:
-                  alignment: left
-                  width: 3
-              value: Skill Name
-          - widget:
-              type: number
-              data:
-                format:
-                  prefix: '+'
-                  alignment: center
-                  width: 2
-              value: 1
-          - widget:
-              type: boolean
-              data:
-                format:
-                  alignment: center
-                  width: 2
-              value: false
-        data:
-          rows:
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Acrobatics
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-                data:
-                  value: true
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Animal Handling
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Arcana
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Athletics
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-                data:
-                  value: true
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Deception
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: History
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Insight
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Intimidation
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Investigation
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Medicine
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Nature
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Perception
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Performance
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Persuasion
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Religion
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Sleight of Hand
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Stealth
-            - widget:
-                type: number
-            - widget:
-                type: boolean
-          - cells:
-            - widget:
-                type: text
-                data:
-                  value: Survival
-            - widget:
-                type: number
-            - widget:
-                type: boolean
+        columns:
+        - type: text
+          column:
+            name: Skill Name
+            default_value: skill
+            width: 3
+            default_alignment: left
+        - type: number
+          column:
+            name: Modifier
+            default_value: 0
+            width: 2
+            default_alignment: center
+        - type: boolean
+          column:
+            name: Proficient?
+            default_value: false
+            width: 2
+            default_alignment: center
+        rows:
+        - cells:
+          - value:
+              type: literal
+              value: Acrobatics
+          -
+          - value:
+              type: literal
+              value: true
+        - cells:
+          - value:
+              type: literal
+              value: Animal Handling
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Arcana
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Athletics
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Deception
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: History
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Insight
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Intimidation
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Investigation
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Medicine
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Nature
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Perception
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Performance
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Persuasion
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Religion
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Sleight of Hand
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Stealth
+          -
+          - value:
+              type: literal
+              type: false
+        - cells:
+          - value:
+              type: literal
+              value: Survival
+          -
+          - value:
+              type: literal
+              type: false
   - label: Backpack
     groups:
   - label: Spellbook

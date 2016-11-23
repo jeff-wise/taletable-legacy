@@ -51,6 +51,9 @@ public class Sheet implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public Sheet() { }
+
+
     public Sheet(UUID id,
                  Game game,
                  Roleplay roleplay,

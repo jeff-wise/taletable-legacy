@@ -4,7 +4,7 @@ package com.kispoko.tome.util.database.error;
 
 
 /**
- * Database Error: Null Column Type
+ * Database Error: Null ColumnUnion Type
  */
 public class NullColumnTypeError
 {

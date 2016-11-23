@@ -36,6 +36,9 @@ public class ProgramIndex implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public ProgramIndex() { }
+
+
     public ProgramIndex(UUID id)
     {
         this.id = id;

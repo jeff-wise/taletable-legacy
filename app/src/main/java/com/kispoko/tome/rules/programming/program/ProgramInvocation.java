@@ -33,6 +33,9 @@ public class ProgramInvocation implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public ProgramInvocation() { }
+
+
     public ProgramInvocation(UUID id,
                              String programName,
                              List<ProgramInvocationParameter> parameters)

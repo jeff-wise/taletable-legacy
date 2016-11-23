@@ -2,7 +2,6 @@
 package com.kispoko.tome.rules.refinement;
 
 
-import com.kispoko.tome.rules.programming.function.Tuple;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -10,7 +9,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +35,9 @@ public class RefinementIndex implements Model, Serializable
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public RefinementIndex() { }
+
 
     public RefinementIndex(UUID id)
     {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widgetData.DrawerLayout
+<android.support.v4.widget.DrawerLayout
     android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <android.support.v7.widgetData.Toolbar
+            <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -32,9 +32,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-            </android.support.v7.widgetData.Toolbar>
+            </android.support.v7.widget.Toolbar>
 
-            <android.support.design.widgetData.TabLayout
+            <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
 
     </RelativeLayout>
 
-    <android.support.design.widgetData.NavigationView
+    <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -68,4 +68,4 @@
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/drawer"/>
 
-</android.support.v4.widgetData.DrawerLayout>
+</android.support.v4.widget.DrawerLayout>

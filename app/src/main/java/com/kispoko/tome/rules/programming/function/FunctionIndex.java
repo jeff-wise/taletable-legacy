@@ -9,7 +9,6 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,6 +35,9 @@ public class FunctionIndex implements Model
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public FunctionIndex() { }
+
 
     public FunctionIndex(UUID id)
     {

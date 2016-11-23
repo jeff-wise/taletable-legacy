@@ -4,18 +4,15 @@ package com.kispoko.tome.util.model;
 
 import android.content.ContentValues;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.query.CollectionQuery;
-import com.kispoko.tome.util.database.query.CountQuery;
 import com.kispoko.tome.util.database.query.ModelQuery;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.query.ResultRow;
 import com.kispoko.tome.util.database.query.UpsertQuery;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.promise.CollectionValuePromise;
-import com.kispoko.tome.util.promise.Promise;
 import com.kispoko.tome.util.promise.ValuePromise;
 import com.kispoko.tome.util.promise.SaveValuePromise;
 import com.kispoko.tome.util.tuple.Tuple2;
@@ -41,17 +38,27 @@ public class Modeler
 
     public static <A> String name(Class<A> modelClass)
     {
-        return SQL.asValidIdentifier(modelClass.getName().toLowerCase());
+        String modelName = modelClass.getName();
+
+        if (modelName.lastIndexOf('.') > 0)
+        {
+            modelName = modelName.substring(modelName.lastIndexOf('.') + 1); // Map$Entry
+            modelName = modelName.replace('$', '.');      // Map.Entry
+        }
+
+        modelName = SQL.asValidIdentifier(modelName).toLowerCase();
+
+        return modelName;
     }
 
 
     public static String name(Model model)
     {
-        return SQL.asValidIdentifier(model.getClass().getName().toLowerCase());
+        return Modeler.name(model.getClass());
     }
 
 
-    // > Serialization
+    // Serialization
     // ------------------------------------------------------------------------------------------
 
     public static <A extends Model> ValuePromise<A>
@@ -485,10 +492,10 @@ public class Modeler
         // [1] Create Table
         // --------------------------------------------------------------------------------------
         tableBuilder.append("CREATE TABLE IF NOT EXISTS ");
-        tableBuilder.append(modelClass.getName());
+        tableBuilder.append(Modeler.name(modelClass));
         tableBuilder.append(" ( ");
 
-        // [2] Column Definitions
+        // [2] ColumnUnion Definitions
         // --------------------------------------------------------------------------------------
 
         // > Get Modeler values

@@ -31,8 +31,7 @@ public enum RefinementType
         try {
             return RefinementType.fromString(sizeString);
         } catch (InvalidDataException e) {
-            throw new YamlException(new InvalidEnumError(sizeString),
-                                    YamlException.Type.INVALID_ENUM);
+            throw YamlException.invalidEnum(new InvalidEnumError(sizeString));
         }
     }
 

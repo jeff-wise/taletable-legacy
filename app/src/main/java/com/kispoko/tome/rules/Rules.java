@@ -34,6 +34,9 @@ public class Rules implements Model, Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public Rules() { }
+
+
     public Rules(UUID id,
                  RefinementIndex refinementIndex,
                  ProgramIndex programIndex,

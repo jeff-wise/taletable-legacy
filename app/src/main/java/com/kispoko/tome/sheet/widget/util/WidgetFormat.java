@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet.widget.util;
 
 
 import android.content.Context;
-import android.widget.GridLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
@@ -16,7 +15,6 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.R.attr.textSize;
 
 
 /**
@@ -189,7 +187,7 @@ public class WidgetFormat implements Model, Serializable
     }
 
 
-    // ** Column
+    // ** ColumnUnion
     // --------------------------------------------------------------------------------------
 
 
@@ -297,8 +295,7 @@ public class WidgetFormat implements Model, Serializable
             try {
                 return Alignment.fromString(alignmentString);
             } catch (InvalidDataException e) {
-                throw new YamlException(new InvalidEnumError(alignmentString),
-                                        YamlException.Type.INVALID_ENUM);
+                throw YamlException.invalidEnum(new InvalidEnumError(alignmentString));
             }
         }
 
@@ -319,15 +316,23 @@ public class WidgetFormat implements Model, Serializable
         }
 
 
+        /**
+         * Creates a Size enum from its Yaml representation. If there is no Yaml representation
+         * (it is null), then use MEDIUM as a default size.
+         * @param yaml The Yaml parser.
+         * @return A new Size enum, with MEDIUM as the default.
+         * @throws YamlException
+         */
         public static Size fromYaml(Yaml yaml)
                       throws YamlException
         {
+            if (yaml.isNull()) return MEDIUM;
+
             String sizeString = yaml.getString();
             try {
                 return Size.fromString(sizeString);
             } catch (InvalidDataException e) {
-                throw new YamlException(new InvalidEnumError(sizeString),
-                                        YamlException.Type.INVALID_ENUM);
+                throw YamlException.invalidEnum(new InvalidEnumError(sizeString));
             }
         }
 

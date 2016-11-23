@@ -29,6 +29,9 @@ public class RefinementId implements Model, Serializable
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
+    public RefinementId() { }
+
+
     public RefinementId(UUID id, String name, RefinementType type)
     {
         this.id   = id;
@@ -40,6 +43,10 @@ public class RefinementId implements Model, Serializable
     public static RefinementId fromYaml(Yaml yaml)
                   throws YamlException
     {
+        // TODO Consider using a Maybe type in these situations.
+        if (yaml.isNull())
+            return null;
+
         UUID           id   = UUID.randomUUID();
         String         name = yaml.atKey("name").getString();
         RefinementType type = RefinementType.fromYaml(yaml.atKey("type"));

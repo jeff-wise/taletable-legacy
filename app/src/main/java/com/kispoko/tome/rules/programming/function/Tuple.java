@@ -2,8 +2,8 @@
 package com.kispoko.tome.rules.programming.function;
 
 
-import com.kispoko.tome.rules.programming.evaluation.ProgramValue;
-import com.kispoko.tome.rules.programming.evaluation.ProgramValueType;
+import com.kispoko.tome.rules.programming.program.ProgramValue;
+import com.kispoko.tome.rules.programming.program.ProgramValueType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.ModelValue;
@@ -11,7 +11,6 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +33,9 @@ public class Tuple implements Model
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public Tuple() { }
+
 
     public Tuple(UUID id, List<ProgramValue> parameters, ProgramValue result)
     {

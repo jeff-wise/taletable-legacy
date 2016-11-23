@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -20,7 +19,7 @@ import com.kispoko.tome.activity.EditActivity;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.rules.programming.variable.Variable;
+import com.kispoko.tome.rules.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
@@ -51,20 +50,23 @@ public class TextWidget extends Widget implements Serializable
     private UUID                              id;
     private ModelValue<WidgetData>            widgetData;
     private PrimitiveValue<WidgetFormat.Size> size;
-    private ModelValue<Variable>              value;
+    private ModelValue<TextVariable>          value;
 
     // ** Internal
-    private int        displayTextViewId;
+    private int                               displayTextViewId;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TextWidget(UUID id, WidgetData widgetData, WidgetFormat.Size size, Variable value)
+    public TextWidget() { }
+
+
+    public TextWidget(UUID id, WidgetData widgetData, WidgetFormat.Size size, TextVariable value)
     {
         this.id         = id;
         this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
-        this.value      = new ModelValue<>(value, this, Variable.class);
+        this.value      = new ModelValue<>(value, this, TextVariable.class);
         this.size       = new PrimitiveValue<>(size, this, WidgetFormat.Size.class);
     }
 
@@ -80,8 +82,8 @@ public class TextWidget extends Widget implements Serializable
     {
         UUID              id         = UUID.randomUUID();
         WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
-        WidgetFormat.Size size       = WidgetFormat.Size.fromYaml(yaml.atKey("size"));
-        Variable          value      = Variable.fromYaml(yaml.atKey("value"));
+        WidgetFormat.Size size       = WidgetFormat.Size.fromYaml(yaml.atMaybeKey("size"));
+        TextVariable      value      = TextVariable.fromYaml(yaml.atKey("value"));
 
         return new TextWidget(id, widgetData, size, value);
     }
@@ -152,7 +154,7 @@ public class TextWidget extends Widget implements Serializable
      * Get the TextWidget's value variable.
      * @return The Variable for the TextWidget value.
      */
-    public Variable getValue()
+    public TextVariable getValue()
     {
         return this.value.getValue();
     }

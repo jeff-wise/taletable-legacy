@@ -4,7 +4,7 @@ package com.kispoko.tome.util.database.error;
 
 
 /**
- * Database Error: Column Does Not Exist
+ * Database Error: ColumnUnion Does Not Exist
  */
 public class ColumnDoesNotExistError
 {

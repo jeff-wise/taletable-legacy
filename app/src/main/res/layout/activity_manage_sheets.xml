@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widgetData.DrawerLayout
+<android.support.v4.widget.DrawerLayout
     android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,15 +17,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widgetData.Toolbar
-                android:name="@+name/toolbar"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/bluegrey_900"
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <TextView
-                    android:name="@+name/page_title"
+                    android:id="@+id/page_title"
                     android:layout_gravity="center"
                     android:textSize="21sp"
                     android:text="@string/activity_characters_title"
@@ -34,20 +34,20 @@
                     android:layout_height="wrap_content" />
 
 
-            </android.support.v7.widgetData.Toolbar>
+            </android.support.v7.widget.Toolbar>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/bluegrey_850" />
 
-            <android.support.design.widgetData.CoordinatorLayout
+            <android.support.design.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <ScrollView
                     xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:name="@+name/sheet_list"
+                    android:id="@+id/sheet_list"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -56,19 +56,19 @@
                 </ScrollView>
 
 
-                <android.support.design.widgetData.FloatingActionButton
-                    android:name="@+name/button_new_sheet"
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/button_new_sheet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:clickable="true"
                     android:src="@drawable/ic_new_sheet_plus"
-                    app:layout_anchor="@name/sheet_list"
+                    app:layout_anchor="@id/sheet_list"
                     app:layout_anchorGravity="bottom|right"
                     app:backgroundTint="@color/bluegrey_200"
                     app:rippleColor="#FFF" />
 
-            </android.support.design.widgetData.CoordinatorLayout>
+            </android.support.design.widget.CoordinatorLayout>
 
 
         </LinearLayout>
@@ -76,5 +76,5 @@
     </RelativeLayout>
 
 
-</android.support.v4.widgetData.DrawerLayout>
+</android.support.v4.widget.DrawerLayout>
 

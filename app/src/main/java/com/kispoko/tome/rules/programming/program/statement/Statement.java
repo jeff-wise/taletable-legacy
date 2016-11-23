@@ -33,6 +33,9 @@ public class Statement implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public Statement() { }
+
+
     public Statement(String variableName, String functionName, List<Parameter> parameters)
     {
         this.variableName = new PrimitiveValue<>(variableName, this, String.class);

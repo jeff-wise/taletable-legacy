@@ -16,9 +16,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 public enum VariableType
 {
 
-    LITERAL_INTEGER,
-    LITERAL_STRING,
-    LITERAL_BOOLEAN,
+    LITERAL,
     PROGRAM;
 
 
@@ -36,8 +34,7 @@ public enum VariableType
         try {
             return VariableType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw new YamlException(new InvalidEnumError(typeString),
-                                    YamlException.Type.INVALID_ENUM);
+            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 

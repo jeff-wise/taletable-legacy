@@ -34,8 +34,7 @@ public enum ParameterType
         try {
             return ParameterType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw new YamlException(new InvalidEnumError(typeString),
-                                    YamlException.Type.INVALID_ENUM);
+            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 

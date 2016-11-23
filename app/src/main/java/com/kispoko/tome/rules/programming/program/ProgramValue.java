@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules.programming.evaluation;
+package com.kispoko.tome.rules.programming.program;
 
 
 import com.kispoko.tome.util.model.Model;
@@ -35,6 +35,9 @@ public class ProgramValue implements Model
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public ProgramValue() { }
+
 
     /**
      * Create a new ProgramValue. This constructor is private to force use of the safe constructors,

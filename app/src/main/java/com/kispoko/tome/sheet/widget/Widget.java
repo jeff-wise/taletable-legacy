@@ -80,8 +80,7 @@ public abstract class Widget implements Model, Serializable
             try {
                 return Type.fromString(typeString);
             } catch (InvalidDataException e) {
-                throw new YamlException(new InvalidEnumError(typeString),
-                                        YamlException.Type.INVALID_ENUM);
+                throw YamlException.invalidEnum(new InvalidEnumError(typeString));
             }
         }
 

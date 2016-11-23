@@ -1,78 +1,134 @@
 
-package com.kispoko.tome.sheet.widget.table;
+package com.kispoko.tome.sheet.widget.table.cell;
 
 
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TableRow;
-import android.widget.TextView;
-
-import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.widget.Widget;
-import com.kispoko.tome.sheet.widget.BooleanWidget;
-import com.kispoko.tome.sheet.widget.NumberWidget;
-import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.sheet.widget.util.WidgetFormat;
-import com.kispoko.tome.util.Util;
+import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 
 
 /**
- * Table Widget Cell
+ * Table Widget CellUnion
  */
-public class Cell implements Model, Serializable
+public class CellUnion implements Model
 {
 
     // PROPERTIES
-    // --------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 
     private UUID                    id;
 
-    private PrimitiveValue<Integer> rowIndex;
-    private PrimitiveValue<Integer> columnIndex;
-    private ModelValue<Widget>      widget;
+    private ModelValue<TextCell>    textCell;
+    private ModelValue<NumberCell>  numberCell;
+    private ModelValue<BooleanCell> booleanCell;
+
+    private CellType                type;
 
 
     // CONSTRUCTORS
-    // --------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 
-
-    public Cell(UUID id, Integer rowIndex, Integer columnIndex, Widget widget, Cell template)
+    private CellUnion(UUID id, Object cell, CellType type)
     {
-        this.id          = id;
+        this.id   = id;
 
-        this.rowIndex    = new PrimitiveValue<>(rowIndex, this, Integer.class);
-        this.columnIndex = new PrimitiveValue<>(columnIndex, this, Integer.class);
-        this.widget      = new ModelValue<>(widget, this, Widget.class);
 
-        this.initializeFromTemplate(template);
+        this.textCell    = new ModelValue<>(null, this, TextCell.class);
+        this.numberCell  = new ModelValue<>(null, this, NumberCell.class);
+        this.booleanCell = new ModelValue<>(null, this, BooleanCell.class);
+
+        this.type = type;
+
+        switch (type)
+        {
+            case TEXT:
+                this.textCell.setValue((TextCell) cell);
+                break;
+            case NUMBER:
+                this.numberCell.setValue((NumberCell) cell);
+                break;
+            case BOOLEAN:
+                this.booleanCell.setValue((BooleanCell) cell);
+                break;
+        }
     }
 
 
-    public static Cell fromYaml(Yaml yaml, int rowIndex, int columnIndex, Cell template)
+    /**
+     * Create the "text" variant.
+     * @param id The Model id.
+     * @param textCell The text cell.
+     * @return The new CellUnion as the text case.
+     */
+    public static CellUnion asText(UUID id, TextCell textCell)
+    {
+        return new CellUnion(id, textCell, CellType.TEXT);
+    }
+
+
+    /**
+     * Create the "number" variant.
+     * @param id The Model id.
+     * @param numberCell The number cell.
+     * @return The new CellUnion as the number case.
+     */
+    public static CellUnion asNumber(UUID id, NumberCell numberCell)
+    {
+        return new CellUnion(id, numberCell, CellType.NUMBER);
+    }
+
+
+    /**
+     * Create the "boolean" variant.
+     * @param id The Model id.
+     * @param booleanCell The boolean cell.
+     * @return The new CellUnion as the boolean case.
+     */
+    public static CellUnion asBoolean(UUID id, BooleanCell booleanCell)
+    {
+        return new CellUnion(id, booleanCell, CellType.BOOLEAN);
+    }
+
+
+    /**
+     * Create a Cell Union from its Yaml representation.
+     * @param yaml The Yaml parser.
+     * @param column The column the cell belongs to.
+     * @return The parsed Cell Union.
+     * @throws YamlException
+     */
+    public static CellUnion fromYaml(Yaml yaml, ColumnUnion column)
                   throws YamlException
     {
-        UUID   id     =  UUID.randomUUID();
-        Widget widget = Widget.fromYaml(yaml.atKey("widget"));
+        UUID     id   = UUID.randomUUID();
+        CellType type = CellType.fromYaml(yaml.atKey("type"));
 
-        return new Cell(id, rowIndex, columnIndex, widget, template);
+        switch (type)
+        {
+            case TEXT:
+                TextCell textCell = TextCell.fromYaml(yaml.atKey("cell"));
+                return CellUnion.asText(id, textCell);
+            case NUMBER:
+                NumberCell numberCell = NumberCell.fromYaml(yaml.atKey("cell"));
+                return CellUnion.asNumber(id, numberCell);
+            case BOOLEAN:
+                BooleanCell booleanCell = BooleanCell.fromYaml(yaml.atKey("cell"));
+                return CellUnion.asBoolean(id, booleanCell);
+        }
+
+        // CANNOT REACH HERE. If VariableType is null, an InvalidEnum exception would be thrown.
+        return null;
+
     }
 
 
     // API
-    // --------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 
     // > Model
     // ------------------------------------------------------------------------------------------
@@ -106,18 +162,16 @@ public class Cell implements Model, Serializable
     public void onModelUpdate(String valueName) { }
 
 
-    // > State
-    // ------------------------------------------------------------------------------------------
 
-    public Widget getWidget()
-    {
-        return this.widget.getValue();
-    }
+
+
 
 
     // > Views
     // ------------------------------------------------------------------------------------------
 
+
+    /*
     public View getView(Context context)
     {
         View view = new TextView(context);
@@ -240,51 +294,8 @@ public class Cell implements Model, Serializable
         return view;
     }
 
+*/
 
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    private void initializeFromTemplate(Cell template)
-    {
-        if (template == null) return;
-
-        WidgetFormat templateFormat = template.getWidget().data().getFormat();
-
-        WidgetFormat thisFormat = this.getWidget().data().getFormat();
-
-        if (thisFormat.getLabel() == null)
-            thisFormat.setLabel(templateFormat.getLabel());
-
-        if (thisFormat.getShowLabel() == null)
-            thisFormat.setShowLabel(templateFormat.getShowLabel());
-
-        if (thisFormat.getRow() == null)
-            thisFormat.setRow(templateFormat.getRow());
-
-        if (thisFormat.getColumn() == null)
-            thisFormat.setColumn(templateFormat.getColumn());
-
-        if (thisFormat.getWidth() == null)
-            thisFormat.setWidth(templateFormat.getWidth());
-
-        if (thisFormat.getAlignment() == null) {
-            thisFormat.setAlignment(templateFormat.getAlignment());
-        }
-
-        // > Initialize Widget-specific data
-
-        // ** Boolean Widget
-        if (this.widget.getValue() instanceof BooleanWidget)
-        {
-            BooleanWidget booleanWidget = (BooleanWidget) this.widget.getValue();
-            if (booleanWidget.getValue() == null) {
-                booleanWidget.getValue().setBoolean(
-                        ((BooleanWidget) template.getWidget()).getValue().getBoolean());
-            }
-        }
-
-    }
 
 }
 

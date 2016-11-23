@@ -2,8 +2,8 @@
 package com.kispoko.tome.rules.programming.function;
 
 
-import com.kispoko.tome.rules.programming.evaluation.ProgramValue;
-import com.kispoko.tome.rules.programming.evaluation.ProgramValueType;
+import com.kispoko.tome.rules.programming.program.ProgramValue;
+import com.kispoko.tome.rules.programming.program.ProgramValueType;
 import com.kispoko.tome.rules.programming.function.error.InvalidTupleLengthError;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
@@ -42,6 +42,9 @@ public class Function implements Model
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
+
+    public Function() { }
+
 
     public Function(UUID id,
                     String name,

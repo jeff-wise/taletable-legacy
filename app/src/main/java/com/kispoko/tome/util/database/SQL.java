@@ -58,8 +58,7 @@ public class SQL
 
     public static String asValidIdentifier(String id)
     {
-
-        if (keywords.contains(id))
+        if (keywords.contains(id.toLowerCase()))
             return "_" + id;
         else
             return id;

@@ -59,6 +59,8 @@ public class ImageWidget extends Widget implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public ImageWidget() { }
+
 
     public ImageWidget(UUID id, WidgetData widgetData, Bitmap bitmap)
     {

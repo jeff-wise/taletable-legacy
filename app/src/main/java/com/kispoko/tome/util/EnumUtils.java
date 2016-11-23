@@ -21,7 +21,7 @@ public class EnumUtils
             return null;
 
         try {
-            return Enum.valueOf(enumClass, enumString);
+            return Enum.valueOf(enumClass, enumString.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new InvalidDataException(new InvalidEnumError(enumString),
                                            InvalidDataException.ErrorType.INVALID_ENUM);

@@ -2,6 +2,7 @@
 package com.kispoko.tome.util.yaml;
 
 
+import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 import com.kispoko.tome.util.yaml.error.MissingKeyError;
 import com.kispoko.tome.util.yaml.error.UnexpectedTypeError;
 
@@ -23,13 +24,28 @@ public class YamlException extends Exception
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public YamlException() { }
-
-
-    public YamlException(Object error, Type errorType)
+    private YamlException(Object error, Type errorType)
     {
         this.error = error;
         this.errorType = errorType;
+    }
+
+
+    public static YamlException missingKey(MissingKeyError missingKeyError)
+    {
+        return new YamlException(missingKeyError, Type.MISSING_KEY);
+    }
+
+
+    public static YamlException unexpectedType(UnexpectedTypeError unexpectedTypeError)
+    {
+        return new YamlException(unexpectedTypeError, Type.UNEXPECTED_TYPE);
+    }
+
+
+    public static YamlException invalidEnum(InvalidEnumError invalidEnumError)
+    {
+        return new YamlException(invalidEnumError, Type.INVALID_ENUM);
     }
 
 
@@ -60,6 +76,37 @@ public class YamlException extends Exception
     }
 
 
+    public InvalidEnumError getInvalidEnumError()
+    {
+        return (InvalidEnumError) this.error;
+    }
+
+
+    // > Error Message
+    // ------------------------------------------------------------------------------------------
+
+    public String errorMessage()
+    {
+        StringBuilder errorBuilder = new StringBuilder();
+        errorBuilder.append("Yaml Error: ");
+
+        switch (this.errorType)
+        {
+            case MISSING_KEY:
+                errorBuilder.append(this.getMissingKeyError().errorMessage());
+                break;
+            case UNEXPECTED_TYPE:
+                errorBuilder.append(this.getUnexpectedTypeError().errorMessage());
+                break;
+            case INVALID_ENUM:
+                errorBuilder.append(this.getInvalidEnumError().errorMessage());
+                break;
+        }
+
+        return errorBuilder.toString();
+    }
+
+
     // EXCEPTION TYPES
     // ------------------------------------------------------------------------------------------
 
@@ -69,7 +116,6 @@ public class YamlException extends Exception
         UNEXPECTED_TYPE,
         INVALID_ENUM
     }
-
 
 
 }

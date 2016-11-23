@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules.programming.evaluation;
+package com.kispoko.tome.rules.programming.program;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
@@ -32,8 +32,7 @@ public enum ProgramValueType
         try {
             return ProgramValueType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw new YamlException(new InvalidEnumError(typeString),
-                                    YamlException.Type.INVALID_ENUM);
+            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 

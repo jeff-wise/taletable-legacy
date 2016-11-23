@@ -63,11 +63,9 @@ public class Yaml
             if (yamlMap.containsKey(key))
                 yamlObjectAtKey = yamlMap.get(key);
             else
-                throw new YamlException(new MissingKeyError(key),
-                                        YamlException.Type.MISSING_KEY);
+                throw YamlException.missingKey(new MissingKeyError(key));
         } catch (ClassCastException e) {
-            throw new YamlException(new UnexpectedTypeError(ObjectType.MAP),
-                                    YamlException.Type.UNEXPECTED_TYPE);
+            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.MAP));
         }
 
         return new Yaml(yamlObjectAtKey);
@@ -86,8 +84,7 @@ public class Yaml
             Map<String,Object> yamlMap = (Map<String,Object>) this.yamlObject;
             yamlObjectAtKey = yamlMap.get(key);
         } catch (ClassCastException e) {
-            throw new YamlException(new UnexpectedTypeError(ObjectType.MAP),
-                                    YamlException.Type.UNEXPECTED_TYPE);
+            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.MAP));
         }
 
         return new Yaml(yamlObjectAtKey);
@@ -109,8 +106,7 @@ public class Yaml
                 list.add(forEach.forEach(new Yaml(objectList.get(i)), i));
             }
         } catch (ClassCastException e) {
-            throw new YamlException(new UnexpectedTypeError(ObjectType.LIST),
-                                    YamlException.Type.UNEXPECTED_TYPE);
+            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.LIST));
         }
 
         return list;
@@ -136,8 +132,7 @@ public class Yaml
         try {
             stringList = (List<String>) this.yamlObject;
         } catch (ClassCastException e) {
-            throw new YamlException(new UnexpectedTypeError(ObjectType.LIST_STRING),
-                                    YamlException.Type.UNEXPECTED_TYPE);
+            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.LIST_STRING));
         }
 
         return stringList;
@@ -155,8 +150,7 @@ public class Yaml
         try {
             stringValue = (String) this.yamlObject;
         } catch (ClassCastException e) {
-            throw new YamlException(new UnexpectedTypeError(ObjectType.STRING),
-                                    YamlException.Type.UNEXPECTED_TYPE);
+            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.STRING));
         }
 
         return stringValue;
@@ -174,8 +168,7 @@ public class Yaml
         try {
             integerValue = (Integer) this.yamlObject;
         } catch (ClassCastException e) {
-            throw new YamlException(new UnexpectedTypeError(ObjectType.INTEGER),
-                                    YamlException.Type.UNEXPECTED_TYPE);
+            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.INTEGER));
         }
 
         return integerValue;
@@ -193,8 +186,7 @@ public class Yaml
         try {
             booleanValue = (Boolean) this.yamlObject;
         } catch (ClassCastException e) {
-            throw new YamlException(new UnexpectedTypeError(ObjectType.BOOLEAN),
-                                    YamlException.Type.UNEXPECTED_TYPE);
+            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.BOOLEAN));
         }
 
         return booleanValue;
@@ -204,6 +196,12 @@ public class Yaml
     public Object getObject()
     {
         return this.yamlObject;
+    }
+
+
+    public boolean isNull()
+    {
+        return this.yamlObject == null;
     }
 
 

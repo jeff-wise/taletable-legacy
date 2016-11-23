@@ -13,24 +13,18 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.util.UUID;
 
 
-
 /**
- * Variable
- *
- * A variable is a piece of programmable state associated with a component. It could contain a
- * literal value, or a be a value that is generated dynamically from a script.
+ * Number Variable
  */
-public class Variable implements Model
+public class NumberVariable implements Model
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                          id;
+    private UUID id;
 
-    private PrimitiveValue<String>        stringValue;
     private PrimitiveValue<Integer>       integerValue;
-    private PrimitiveValue<Boolean>       booleanValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
     private PrimitiveValue<VariableType>  type;
@@ -41,6 +35,9 @@ public class Variable implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public NumberVariable() { }
+
+
     /**
      * Create a Variable. This constructor is private to enforce use of the case specific
      * constructors, so only valid value/type associations can be used.
@@ -48,30 +45,22 @@ public class Variable implements Model
      * @param value The Variable value.
      * @param type The Variable type.
      */
-    private Variable(UUID id, Object value, VariableType type, RefinementId refinementId)
+    private NumberVariable(UUID id, Object value, VariableType type, RefinementId refinementId)
     {
         this.id                     = id;
 
-        this.stringValue            = new PrimitiveValue<>(null, this, String.class);
         this.integerValue           = new PrimitiveValue<>(null, this, Integer.class);
-        this.booleanValue           = new PrimitiveValue<>(null, this, Boolean.class);
         this.programInvocationValue = new ModelValue<>(null, this, ProgramInvocation.class);
 
         this.type                   = new PrimitiveValue<>(type, this, VariableType.class);
 
         this.refinementId           = new ModelValue<>(refinementId, this, RefinementId.class);
 
-        // Set the value, depending on the variable type
+        // Set value according to variable type
         switch (type)
         {
-            case LITERAL_STRING:
-                this.stringValue.setValue((String) value);
-                break;
-            case LITERAL_INTEGER:
+            case LITERAL:
                 this.integerValue.setValue((Integer) value);
-                break;
-            case LITERAL_BOOLEAN:
-                this.booleanValue.setValue((Boolean) value);
                 break;
             case PROGRAM:
                 this.programInvocationValue.setValue((ProgramInvocation) value);
@@ -81,38 +70,14 @@ public class Variable implements Model
 
 
     /**
-     * Create a "string" valued variable.
-     * @param id The Model id.
-     * @param stringValue The string value.
-     * @return A new "string" variable.
-     */
-    public static Variable asString(UUID id, String stringValue, RefinementId refinementId)
-    {
-        return new Variable(id, stringValue, VariableType.LITERAL_STRING, refinementId);
-    }
-
-
-    /**
-     * Create an "integer" valued variable.
+     * Create a "literal" number variable that contains a value of type Integer.
      * @param id The Model id.
      * @param integerValue The Integer value.
-     * @return A new "integer" variable.
+     * @return A new "literal" Integer Variable.
      */
-    public static Variable asInteger(UUID id, Integer integerValue, RefinementId refinementId)
+    public static NumberVariable asInteger(UUID id, Integer integerValue, RefinementId refinementId)
     {
-        return new Variable(id, integerValue, VariableType.LITERAL_INTEGER, refinementId);
-    }
-
-
-    /**
-     * Create a "boolean" valued variable.
-     * @param id The Model id.
-     * @param booleanValue The Boolean value.
-     * @return A new "boolean" variable.
-     */
-    public static Variable asBoolean(UUID id, Boolean booleanValue, RefinementId refinementId)
-    {
-        return new Variable(id, booleanValue, VariableType.LITERAL_BOOLEAN, refinementId);
+        return new NumberVariable(id, integerValue, VariableType.LITERAL, refinementId);
     }
 
 
@@ -122,11 +87,11 @@ public class Variable implements Model
      * @param programInvocation The ProgramInvocation value.
      * @return A new "program" variable.
      */
-    public static Variable asProgram(UUID id,
-                                     ProgramInvocation programInvocation,
-                                     RefinementId refinementId)
+    public static NumberVariable asProgram(UUID id,
+                                           ProgramInvocation programInvocation,
+                                           RefinementId refinementId)
     {
-        return new Variable(id, programInvocation, VariableType.PROGRAM, refinementId);
+        return new NumberVariable(id, programInvocation, VariableType.PROGRAM, refinementId);
     }
 
 
@@ -136,27 +101,21 @@ public class Variable implements Model
      * @return The new Variable.
      * @throws YamlException
      */
-    public static Variable fromYaml(Yaml yaml)
+    public static NumberVariable fromYaml(Yaml yaml)
                   throws YamlException
     {
         UUID         id           = UUID.randomUUID();
         VariableType type         = VariableType.fromYaml(yaml.atKey("type"));
-        RefinementId refinementId = RefinementId.fromYaml(yaml.atKey("refinement"));
+        RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
 
         switch (type)
         {
-            case LITERAL_STRING:
-                String stringValue = yaml.atKey("value").getString();
-                return Variable.asString(id, stringValue, refinementId);
-            case LITERAL_INTEGER:
-                Integer integerValue = yaml.atKey("value").getInteger();
-                return Variable.asInteger(id, integerValue, refinementId);
-            case LITERAL_BOOLEAN:
-                Boolean booleanValue  = yaml.atKey("value").getBoolean();
-                return Variable.asBoolean(id, booleanValue, refinementId);
+            case LITERAL:
+                Integer integerValue  = yaml.atKey("value").getInteger();
+                return NumberVariable.asInteger(id, integerValue, refinementId);
             case PROGRAM:
                 ProgramInvocation invocation = ProgramInvocation.fromYaml(yaml.atKey("value"));
-                return Variable.asProgram(id, invocation, refinementId);
+                return NumberVariable.asProgram(id, invocation, refinementId);
         }
 
         // CANNOT REACH HERE. If VariableType is null, an InvalidEnum exception would be thrown.
@@ -211,37 +170,13 @@ public class Variable implements Model
     }
 
 
-    // ** String Value
+    // ** Number Value
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the string value.
-     * @return The variable's string value. Throws an InvalidCase exception if the variable
-     *         is not a String.
-     */
-    public String getString()
-    {
-        return this.stringValue.getValue();
-    }
-
-
-    /**
-     * Set the string value. Throws an InvalidCase exception if the variable is not a String.
-     * @param stringValue The String value.
-     */
-    public void setString(String stringValue)
-    {
-        this.stringValue.setValue(stringValue);
-    }
-
-
-    // ** Integer Value
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the integer value.
-     * @return The variable's integer value. Throws an InvalidCase exception if the variable
-     *         is not a Integer.
+     * Get the number value.
+     * @return The variable's Integer value. Throws an InvalidCase exception if the variable
+     *         is not a Number.
      */
     public Integer getInteger()
     {
@@ -250,36 +185,12 @@ public class Variable implements Model
 
 
     /**
-     * Set the integer value. Throws an InvalidCase exception if the variable is not a Integer.
-     * @param integerValue The Integer value.
+     * Set the number value. Throws an InvalidCase exception if the variable is not a Number.
+     * @param integerValue The Boolean value.
      */
     public void setInteger(Integer integerValue)
     {
         this.integerValue.setValue(integerValue);
-    }
-
-
-    // ** Boolean Value
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the boolean value.
-     * @return The variable's boolean value. Throws an InvalidCase exception if the variable
-     *         is not a Boolean.
-     */
-    public Boolean getBoolean()
-    {
-        return this.booleanValue.getValue();
-    }
-
-
-    /**
-     * Set the boolean value. Throws an InvalidCase exception if the variable is not a Boolean.
-     * @param booleanValue The Boolean value.
-     */
-    public void setBoolean(Boolean booleanValue)
-    {
-        this.booleanValue.setValue(booleanValue);
     }
 
 
@@ -310,7 +221,6 @@ public class Variable implements Model
 
     // ** Refinement
     // ------------------------------------------------------------------------------------------
-
 
     /**
      * Returns true if the variable has a refinement.

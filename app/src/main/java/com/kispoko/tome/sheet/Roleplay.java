@@ -36,6 +36,9 @@ public class Roleplay implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public Roleplay() { }
+
+
     public Roleplay(UUID id, List<Page> pages)
     {
         this.id = id;

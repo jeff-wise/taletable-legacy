@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.rules.programming.variable.Variable;
+import com.kispoko.tome.rules.programming.variable.BooleanVariable;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.value.ModelValue;
@@ -33,19 +33,25 @@ public class BooleanWidget extends Widget implements Serializable
 
     private ModelValue<WidgetData>            widgetData;
     private PrimitiveValue<WidgetFormat.Size> size;
-    private ModelValue<Variable>              value;
+    private ModelValue<BooleanVariable>       value;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public BooleanWidget(UUID id, WidgetData widgetData, WidgetFormat.Size size, Variable value)
+    public BooleanWidget() { }
+
+
+    public BooleanWidget(UUID id,
+                         WidgetData widgetData,
+                         WidgetFormat.Size size,
+                         BooleanVariable value)
     {
         this.id = id;
 
         this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
         this.size       = new PrimitiveValue<>(size, this, WidgetFormat.Size.class);
-        this.value      = new ModelValue<>(value, this, Variable.class);
+        this.value      = new ModelValue<>(value, this, BooleanVariable.class);
     }
 
 
@@ -55,7 +61,7 @@ public class BooleanWidget extends Widget implements Serializable
         UUID              id         = UUID.randomUUID();
         WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
         WidgetFormat.Size size       = WidgetFormat.Size.fromYaml(yaml.atKey("size"));
-        Variable          value      = Variable.fromYaml(yaml.atKey("value"));
+        BooleanVariable   value      = BooleanVariable.fromYaml(yaml.atKey("value"));
 
         return new BooleanWidget(id, widgetData, size, value);
     }
@@ -122,7 +128,7 @@ public class BooleanWidget extends Widget implements Serializable
      * Get the BooleanWidget's value variable (of type boolean).
      * @return The Variable for the BoolenWidget value.
      */
-    public Variable getValue()
+    public BooleanVariable getValue()
     {
         return this.value.getValue();
     }

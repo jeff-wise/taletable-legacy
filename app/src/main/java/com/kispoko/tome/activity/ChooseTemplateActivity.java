@@ -18,15 +18,13 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.Statistics;
-import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.template.Template;
 import com.kispoko.tome.template.TemplateIndex;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.yaml.YamlException;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -130,7 +128,16 @@ public class ChooseTemplateActivity extends AppCompatActivity
             exception.printStackTrace();
         }
 
-        for (final Template template : templates)
+
+        // Templates for the chosen game
+        List<Template> gameTemplates = new ArrayList<>();
+        for (Template template : templates)
+        {
+            if (template.getGame().equals(gameId))
+                gameTemplates.add(template);
+        }
+
+        for (final Template template : gameTemplates)
         {
 
             // Template Layout

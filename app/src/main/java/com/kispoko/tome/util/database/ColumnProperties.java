@@ -5,7 +5,7 @@ package com.kispoko.tome.util.database;
 import com.kispoko.tome.util.database.sql.SQLValue;
 
 /**
- * Column Properties
+ * ColumnUnion Properties
  */
 public class ColumnProperties
 {

@@ -26,3 +26,16 @@ developing alone. advantages/disadvantages. need more abstraction. can change th
 the value of elegant DSLs
 
 the value of constraints and elegant program modeling
+
+
+how to properly do async functions.
+
+fully flesh out dat model always, this includes errors. this is what actually saves time.
+always have exceptions. then don't ever need to have anxiety about testing app. if you see an error, 
+you will be able to know exactyl what caused it mos tof the time. this makes programming more efficient
+mentally because you don't ahve to feel stressed, can just have fun.
+
+
+more types is better. dry is not always the best method. type safety and a clean data model are.
+just because something is in common does not make it unelegant. quite the opposite sometimes. 
+depends on the inteface.
