@@ -8,7 +8,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,7 +36,16 @@ public class ProgramIndex implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ProgramIndex() { }
+    public ProgramIndex()
+    {
+        this.id            = null;
+
+        List<Class<? extends Program>> programClasses = new ArrayList<>();
+        programClasses.add(Program.class);
+        this.programs      = new CollectionValue<>(new ArrayList<Program>(), this, programClasses);
+
+        this.programByName = new HashMap<>();
+    }
 
 
     public ProgramIndex(UUID id)
@@ -46,6 +55,8 @@ public class ProgramIndex implements Model
         List<Class<? extends Program>> programClasses = new ArrayList<>();
         programClasses.add(Program.class);
         this.programs = new CollectionValue<>(new ArrayList<Program>(), this, programClasses);
+
+        this.programByName = new HashMap<>();
     }
 
 
@@ -101,7 +112,7 @@ public class ProgramIndex implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

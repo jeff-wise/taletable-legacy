@@ -3,7 +3,9 @@ package com.kispoko.tome.util.model;
 
 
 import android.content.ContentValues;
+import android.util.Log;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.query.CollectionQuery;
@@ -12,15 +14,14 @@ import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.query.ResultRow;
 import com.kispoko.tome.util.database.query.UpsertQuery;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.promise.CollectionValuePromise;
-import com.kispoko.tome.util.promise.ValuePromise;
-import com.kispoko.tome.util.promise.SaveValuePromise;
 import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.tuple.Tuple3;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.value.Value;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class Modeler
     // Serialization
     // ------------------------------------------------------------------------------------------
 
+    /*
     public static <A extends Model> ValuePromise<A>
                                 modelValuePromise(final Class<A> classObject,
                                                   final ModelQueryParameters queryParameters)
@@ -133,7 +135,7 @@ public class Modeler
             }
         });
     }
-
+*/
 
     // INTERNAL
     // --------------------------------------------------------------------------------------
@@ -145,7 +147,7 @@ public class Modeler
      * @throws DatabaseException
      */
     @SuppressWarnings("unchecked")
-    private static <A extends Model> A fromDatabase(Class<A> classObject,
+    public static <A extends Model> A fromDatabase(Class<A> classObject,
                                                     ModelQueryParameters queryParameters)
                                      throws DatabaseException
     {
@@ -204,8 +206,8 @@ public class Modeler
      * Save the model to the database.
      * @throws DatabaseException
      */
-    private static void toDatabase(Model model)
-           throws DatabaseException
+    public static void toDatabase(Model model)
+                  throws DatabaseException
     {
 
         // [A 1] Group values by type
@@ -232,7 +234,7 @@ public class Modeler
         for (PrimitiveValue primitiveValue : primitiveValues)
         {
             SQLValue         sqlValue         = primitiveValue.toSQLValue();
-            String           columnName       = primitiveValue.getColumnName();
+            String           columnName       = primitiveValue.sqlColumnName();
 
             switch (sqlValue.getType())
             {
@@ -258,7 +260,10 @@ public class Modeler
         for (ModelValue<? extends Model> modelValue : modelValues)
         {
             String columnName = modelValue.sqlColumnName();
-            row.put(columnName, modelValue.getValue().getId().toString());
+            if (!modelValue.isNull())
+                row.put(columnName, modelValue.getValue().getId().toString());
+            else
+                row.putNull(columnName);
         }
 
         // > Save the row, creating a new one if necessary.
@@ -270,7 +275,19 @@ public class Modeler
 
         for (ModelValue<? extends Model> modelValue : modelValues)
         {
-            modelValue.save();
+            if (!modelValue.isNull())
+            {
+                modelValue.save(new ModelValue.OnSaveListener() {
+                    @Override
+                    public void onSave() {
+                    }
+
+                    @Override
+                    public void onSaveError(DatabaseException exception) {
+                        ApplicationFailure.database(exception);
+                    }
+                });
+            }
         }
 
         // [B 3] Save Collection Values
@@ -278,14 +295,29 @@ public class Modeler
 
         for (CollectionValue<? extends Model> collectionValue : collectionValues)
         {
-            collectionValue.saveValue(
-                    Modeler.saveCollectionValuePromise(collectionValue.getValue()));
+            collectionValue.save(new CollectionValue.OnSaveListener() {
+                @Override
+                public void onSave() { }
+
+                @Override
+                public void onSaveError(DatabaseException exception) {
+                    ApplicationFailure.database(exception);
+                }
+            });
         }
 
 
     }
 
 
+    /**
+     * Notes: primitive values are always loaded if model value is updated.
+     * @param classObject
+     * @param row
+     * @param <A>
+     * @return
+     * @throws DatabaseException
+     */
     @SuppressWarnings("unchecked")
     private static <A extends Model> A modelFromRow(Class<A> classObject, ResultRow row)
                                      throws DatabaseException
@@ -315,7 +347,7 @@ public class Modeler
 
         for (PrimitiveValue<?> primitiveValue : primitiveValues)
         {
-            String columnName = primitiveValue.getColumnName();
+            String columnName = primitiveValue.sqlColumnName();
             primitiveValue.fromSQLValue(row.getSQLValue(columnName));
         }
 
@@ -334,11 +366,8 @@ public class Modeler
             ModelQueryParameters queryParameters =
                     new ModelQueryParameters(new ModelQueryParameters.PrimaryKey(modelValueId),
                                              ModelQueryParameters.Type.PRIMARY_KEY);
-            ValuePromise valuePromise =
-                    Modeler.modelValuePromise(modelValue.getModelClass(),
-                                            queryParameters);
 
-            modelValue.loadValue(valuePromise);
+            modelValue.load(queryParameters);
         }
 
         // [B 2] Evaluate collection values (one-to-many values)
@@ -353,7 +382,7 @@ public class Modeler
 //                            // TODO might be wrong...
 //                            collectionValue.getModelClasses());
 //                            //(List<Class<? extends Model>>) collectionValue.getModelClasses());
-            collectionValue.loadValue(Modeler.name(model), model.getId());
+            collectionValue.load(Modeler.name(model), model.getId());
         }
 
         return model;
@@ -377,11 +406,11 @@ public class Modeler
         // --------------------------------------------------------------------------------------
         List<Field> valueFields = new ArrayList<>();
 
-        Field[] fields = model.getClass().getFields();
-        for (int i = 0; i < fields.length; i++)
+        List<Field> allFields = FieldUtils.getAllFieldsList(model.getClass());
+        for (Field field : allFields)
         {
-            if (Value.class.isAssignableFrom(fields[i].getType()))
-                valueFields.add(fields[i]);
+            if (Value.class.isAssignableFrom(field.getType()))
+                valueFields.add(field);
         }
 
         // [2] Store the value fields by type and map to columns
@@ -394,19 +423,25 @@ public class Modeler
         {
             for (Field field : valueFields)
             {
-                Value<?> value = (Value<?>) field.get(model);
+                //Value<?> value = (Value<?>) field.get(model);
+                Value<?> value = (Value<?>) FieldUtils.readField(field, model, true);
 
                 // Sort values by database value type
                 if (PrimitiveValue.class.isAssignableFrom(field.getType())) {
                     PrimitiveValue primitiveValue = (PrimitiveValue) value;
-                    primitiveValue.setColumnName(field.getName().toLowerCase());
+                    primitiveValue.setField(field);
                     primitiveValues.add(primitiveValue);
                 }
                 else if (ModelValue.class.isAssignableFrom(field.getType())) {
-                    modelValues.add((ModelValue<? extends Model>) value);
+                    ModelValue<? extends Model> modelValue = (ModelValue<? extends Model>) value;
+                    modelValue.setField(field);
+                    modelValues.add(modelValue);
                 }
                 else if (CollectionValue.class.isAssignableFrom(field.getType())) {
-                    collectionValues.add((CollectionValue<? extends Model>) value);
+                    CollectionValue<? extends Model> collectionValue =
+                                                     (CollectionValue<? extends Model>) value;
+                    collectionValue.setField(field);
+                    collectionValues.add(collectionValue);
                 }
             }
         }
@@ -440,12 +475,11 @@ public class Modeler
 
         // > Add MODEL columns
         columns.add(new Tuple2<>("_id", SQLValue.Type.TEXT));
-        columns.add(new Tuple2<>("model_name", SQLValue.Type.TEXT));
 
         // > Add PRIMITIVE VALUE columns
         for (PrimitiveValue<?> primitiveValue : modelValuesTuple.getItem1())
         {
-            columns.add(new Tuple2<>(primitiveValue.getColumnName(),
+            columns.add(new Tuple2<>(primitiveValue.sqlColumnName(),
                                      primitiveValue.sqlType()));
         }
 
@@ -509,7 +543,7 @@ public class Modeler
         List<PrimitiveValue<?>> primitiveValues = modelValuesTuple.getItem1();
         List<ModelValue<?>>     modelValues     = modelValuesTuple.getItem2();
 
-        // ** Modeler Id
+        // ** Model Id
         tableBuilder.append("_id");
         tableBuilder.append(" ");
         tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
@@ -518,7 +552,7 @@ public class Modeler
         // ** Primitive Values
         for (PrimitiveValue<?> primitiveValue : primitiveValues)
         {
-            String        columnName = primitiveValue.getColumnName();
+            String        columnName = primitiveValue.sqlColumnName();
             SQLValue.Type columnType = primitiveValue.sqlType();
 
             tableBuilder.append(", ");
@@ -527,6 +561,7 @@ public class Modeler
             tableBuilder.append(columnType.name().toUpperCase());
         }
 
+        // ** Model Values
         for (ModelValue<?> modelValue : modelValues)
         {
             String columnName = modelValue.sqlColumnName();

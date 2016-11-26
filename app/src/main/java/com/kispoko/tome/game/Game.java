@@ -32,7 +32,14 @@ public class Game implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Game() { }
+    public Game()
+    {
+        this.id          = null;
+
+        this.name        = new PrimitiveValue<>(null, this, String.class);
+        this.label       = new PrimitiveValue<>(null, this, String.class);
+        this.description = new PrimitiveValue<>(null, this, String.class);
+    }
 
 
     public Game(UUID id, String name, String label, String description)
@@ -82,7 +89,7 @@ public class Game implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

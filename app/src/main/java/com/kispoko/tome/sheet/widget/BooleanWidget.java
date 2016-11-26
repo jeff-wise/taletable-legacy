@@ -39,7 +39,14 @@ public class BooleanWidget extends Widget implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public BooleanWidget() { }
+    public BooleanWidget()
+    {
+        this.id         = null;
+
+        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
+        this.size       = new PrimitiveValue<>(null, this, WidgetFormat.Size.class);
+        this.value      = new ModelValue<>(null, this, BooleanVariable.class);
+    }
 
 
     public BooleanWidget(UUID id,
@@ -91,7 +98,7 @@ public class BooleanWidget extends Widget implements Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > Widget

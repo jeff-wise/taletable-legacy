@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 
 import com.kispoko.tome.rules.programming.variable.NumberVariable;
-import com.kispoko.tome.rules.programming.variable.TextVariable;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -32,7 +31,13 @@ public class NumberCell implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public NumberCell() { }
+    public NumberCell()
+    {
+        this.id        = null;
+
+        this.value     = new ModelValue<>(null, this, NumberVariable.class);
+        this.alignment = new PrimitiveValue<>(null, this, CellAlignment.class);
+    }
 
 
     public NumberCell(UUID id, NumberVariable value, CellAlignment alignment)
@@ -87,7 +92,7 @@ public class NumberCell implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

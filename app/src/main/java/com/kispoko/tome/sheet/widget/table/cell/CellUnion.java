@@ -5,6 +5,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -21,28 +22,40 @@ public class CellUnion implements Model
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                    id;
+    private UUID                     id;
 
-    private ModelValue<TextCell>    textCell;
-    private ModelValue<NumberCell>  numberCell;
-    private ModelValue<BooleanCell> booleanCell;
+    private ModelValue<TextCell>     textCell;
+    private ModelValue<NumberCell>   numberCell;
+    private ModelValue<BooleanCell>  booleanCell;
 
-    private CellType                type;
+    private PrimitiveValue<CellType> type;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public CellUnion()
+    {
+        this.id          = null;
+
+        this.textCell    = new ModelValue<>(null, this, TextCell.class);
+        this.numberCell  = new ModelValue<>(null, this, NumberCell.class);
+        this.booleanCell = new ModelValue<>(null, this, BooleanCell.class);
+
+        this.type        = new PrimitiveValue<>(null, this, CellType.class);
+    }
+
+
     private CellUnion(UUID id, Object cell, CellType type)
     {
-        this.id   = id;
+        this.id          = id;
 
 
         this.textCell    = new ModelValue<>(null, this, TextCell.class);
         this.numberCell  = new ModelValue<>(null, this, NumberCell.class);
         this.booleanCell = new ModelValue<>(null, this, BooleanCell.class);
 
-        this.type = type;
+        this.type        = new PrimitiveValue<>(type, this, CellType.class);
 
         switch (type)
         {
@@ -98,26 +111,25 @@ public class CellUnion implements Model
     /**
      * Create a Cell Union from its Yaml representation.
      * @param yaml The Yaml parser.
-     * @param column The column the cell belongs to.
+     * @param columnUnion The column the cell belongs to.
      * @return The parsed Cell Union.
      * @throws YamlException
      */
-    public static CellUnion fromYaml(Yaml yaml, ColumnUnion column)
+    public static CellUnion fromYaml(Yaml yaml, ColumnUnion columnUnion)
                   throws YamlException
     {
         UUID     id   = UUID.randomUUID();
-        CellType type = CellType.fromYaml(yaml.atKey("type"));
 
-        switch (type)
+        switch (columnUnion.getType())
         {
             case TEXT:
-                TextCell textCell = TextCell.fromYaml(yaml.atKey("cell"));
+                TextCell textCell = TextCell.fromYaml(yaml);
                 return CellUnion.asText(id, textCell);
             case NUMBER:
-                NumberCell numberCell = NumberCell.fromYaml(yaml.atKey("cell"));
+                NumberCell numberCell = NumberCell.fromYaml(yaml);
                 return CellUnion.asNumber(id, numberCell);
             case BOOLEAN:
-                BooleanCell booleanCell = BooleanCell.fromYaml(yaml.atKey("cell"));
+                BooleanCell booleanCell = BooleanCell.fromYaml(yaml);
                 return CellUnion.asBoolean(id, booleanCell);
         }
 
@@ -159,7 +171,7 @@ public class CellUnion implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
 

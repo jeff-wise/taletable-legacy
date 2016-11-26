@@ -33,11 +33,23 @@ public class Statement implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Statement() { }
-
-
-    public Statement(String variableName, String functionName, List<Parameter> parameters)
+    public Statement()
     {
+        this.id           = null;
+
+        this.variableName = new PrimitiveValue<>(null, this, String.class);
+        this.functionName = new PrimitiveValue<>(null, this, String.class);
+
+        List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
+        parameterClasses.add(Parameter.class);
+        this.parameters   = new CollectionValue<>(null, this, parameterClasses);
+    }
+
+
+    public Statement(UUID id, String variableName, String functionName, List<Parameter> parameters)
+    {
+        this.id           = id;
+
         this.variableName = new PrimitiveValue<>(variableName, this, String.class);
         this.functionName = new PrimitiveValue<>(functionName, this, String.class);
 
@@ -56,6 +68,8 @@ public class Statement implements Model
     public static Statement fromYaml(Yaml yaml)
                   throws YamlException
     {
+        UUID   id           = UUID.randomUUID();
+
         String variableName = yaml.atKey("let").getString();
         String functionName = yaml.atKey("function").getString();
 
@@ -67,7 +81,7 @@ public class Statement implements Model
             }
         });
 
-        return new Statement(variableName, functionName, parameters);
+        return new Statement(id, variableName, functionName, parameters);
     }
 
 
@@ -103,7 +117,7 @@ public class Statement implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

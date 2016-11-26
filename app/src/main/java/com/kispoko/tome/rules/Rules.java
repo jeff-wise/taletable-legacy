@@ -34,7 +34,15 @@ public class Rules implements Model, Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Rules() { }
+    public Rules()
+    {
+        this.id = null;
+
+        this.refinementIndex = new ModelValue<>(null, this, RefinementIndex.class);
+        this.functionIndex   = new ModelValue<>(null, this, FunctionIndex.class);
+        this.programIndex    = new ModelValue<>(null, this, ProgramIndex.class);
+
+    }
 
 
     public Rules(UUID id,
@@ -95,7 +103,7 @@ public class Rules implements Model, Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

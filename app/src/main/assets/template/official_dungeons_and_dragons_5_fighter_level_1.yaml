@@ -142,7 +142,7 @@ rules:
       let: result
       function: string_template
       parameters:
-      - type: literal
+      - type: literal_string
         value: '({{modifier_string}})'
 roleplay:
   pages:
@@ -597,7 +597,7 @@ roleplay:
           - value:
               type: literal
               value: Acrobatics
-          -
+          - null
           - value:
               type: literal
               value: true
@@ -605,138 +605,138 @@ roleplay:
           - value:
               type: literal
               value: Animal Handling
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Arcana
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Athletics
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Deception
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: History
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Insight
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Intimidation
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Investigation
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Medicine
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Nature
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Perception
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Performance
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Persuasion
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Religion
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Sleight of Hand
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Stealth
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
         - cells:
           - value:
               type: literal
               value: Survival
-          -
+          - null
           - value:
               type: literal
-              type: false
+              value: false
   - label: Backpack
     groups:
   - label: Spellbook

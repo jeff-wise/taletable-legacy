@@ -20,7 +20,6 @@ import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -29,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.width;
 
 
 /**
@@ -51,7 +49,20 @@ public class TableWidget extends Widget implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TableWidget() { }
+    public TableWidget()
+    {
+        this.id         = null;
+
+        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
+
+        List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
+        columnClassList.add(ColumnUnion.class);
+        this.columns    = new CollectionValue<>(null, this, columnClassList);
+
+        List<Class<? extends Row>> rowClassList = new ArrayList<>();
+        rowClassList.add(Row.class);
+        this.rows       = new CollectionValue<>(null, this, rowClassList);
+    }
 
 
     public TableWidget(UUID id,
@@ -140,7 +151,7 @@ public class TableWidget extends Widget implements Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > Widget

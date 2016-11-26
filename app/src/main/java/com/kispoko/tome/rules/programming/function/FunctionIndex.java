@@ -9,6 +9,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,7 +37,14 @@ public class FunctionIndex implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public FunctionIndex() { }
+    public FunctionIndex()
+    {
+        this.id        = null;
+
+        List<Class<? extends Function>> functionClasses = new ArrayList<>();
+        functionClasses.add(Function.class);
+        this.functions = new CollectionValue<>(new ArrayList<Function>(), this, functionClasses);
+    }
 
 
     public FunctionIndex(UUID id)
@@ -46,6 +54,8 @@ public class FunctionIndex implements Model
         List<Class<? extends Function>> functionClasses = new ArrayList<>();
         functionClasses.add(Function.class);
         this.functions = new CollectionValue<>(new ArrayList<Function>(), this, functionClasses);
+
+        this.functionByName = new HashMap<>();
     }
 
 
@@ -107,7 +117,7 @@ public class FunctionIndex implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

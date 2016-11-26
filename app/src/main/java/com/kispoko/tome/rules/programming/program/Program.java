@@ -39,7 +39,27 @@ public class Program implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Program() { }
+    public Program()
+    {
+         this.id             = null;
+
+        // ** Name
+        this.name            = new PrimitiveValue<>(null, this, String.class);
+
+        // ** Parameter Types
+        this.parameterTypes  = new PrimitiveValue<>(null, this, ProgramValueType[].class);
+
+        // ** Result Type
+        this.resultType      = new PrimitiveValue<>(null, this, ProgramValueType.class);
+
+        // **  Statements
+        List<Class<? extends Statement>> statementClasses = new ArrayList<>();
+        statementClasses.add(Statement.class);
+        this.statements      = new CollectionValue<>(null, this, statementClasses);
+
+        // **  Result Statement
+        this.resultStatement = new ModelValue<>(null, this, Statement.class);
+    }
 
 
     public Program(UUID id,
@@ -147,7 +167,7 @@ public class Program implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

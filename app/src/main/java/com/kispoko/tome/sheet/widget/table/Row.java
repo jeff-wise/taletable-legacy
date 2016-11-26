@@ -32,7 +32,14 @@ public class Row implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Row() { }
+    public Row()
+    {
+        this.id    = null;
+
+        List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
+        cellClassList.add(CellUnion.class);
+        this.cells = new CollectionValue<>(null, this, cellClassList);
+    }
 
 
     public Row(UUID id, List<CellUnion> cells)
@@ -93,7 +100,7 @@ public class Row implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

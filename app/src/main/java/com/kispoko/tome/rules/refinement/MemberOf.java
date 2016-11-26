@@ -44,7 +44,16 @@ public class MemberOf implements Model, Serializable
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public MemberOf() { }
+    public MemberOf()
+    {
+        this.id     = null;
+
+        this.name   = new PrimitiveValue<>(null, this, String.class);
+        this.label  = new PrimitiveValue<>(null, this, String.class);
+
+        this.values = new PrimitiveValue<>(null, this, String[].class);
+
+    }
 
 
     public MemberOf(UUID id, String name, String label, List<String> values)
@@ -104,7 +113,7 @@ public class MemberOf implements Model, Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

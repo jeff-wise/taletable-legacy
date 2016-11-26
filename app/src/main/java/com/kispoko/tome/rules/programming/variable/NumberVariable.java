@@ -35,7 +35,17 @@ public class NumberVariable implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public NumberVariable() { }
+    public NumberVariable()
+    {
+        this.id                     = null;
+
+        this.integerValue           = new PrimitiveValue<>(null, this, Integer.class);
+        this.programInvocationValue = new ModelValue<>(null, this, ProgramInvocation.class);
+
+        this.type                   = new PrimitiveValue<>(null, this, VariableType.class);
+
+        this.refinementId           = new ModelValue<>(null, this, RefinementId.class);
+    }
 
 
     /**
@@ -104,6 +114,9 @@ public class NumberVariable implements Model
     public static NumberVariable fromYaml(Yaml yaml)
                   throws YamlException
     {
+        if (yaml.isNull())
+            return null;
+
         UUID         id           = UUID.randomUUID();
         VariableType type         = VariableType.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
@@ -155,7 +168,7 @@ public class NumberVariable implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

@@ -59,12 +59,20 @@ public class TextWidget extends Widget implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TextWidget() { }
+    public TextWidget()
+    {
+        this.id         = id;
+
+        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
+        this.value      = new ModelValue<>(null, this, TextVariable.class);
+        this.size       = new PrimitiveValue<>(null, this, WidgetFormat.Size.class);
+    }
 
 
     public TextWidget(UUID id, WidgetData widgetData, WidgetFormat.Size size, TextVariable value)
     {
         this.id         = id;
+
         this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
         this.value      = new ModelValue<>(value, this, TextVariable.class);
         this.size       = new PrimitiveValue<>(size, this, WidgetFormat.Size.class);
@@ -113,7 +121,7 @@ public class TextWidget extends Widget implements Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > Widget

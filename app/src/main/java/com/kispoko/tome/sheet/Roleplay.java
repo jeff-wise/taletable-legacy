@@ -2,13 +2,13 @@
 package com.kispoko.tome.sheet;
 
 
+import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,22 +30,36 @@ public class Roleplay implements Model
 
     private UUID                  id;
 
+
+    // > Values
+    // ------------------------------------------------------------------------------------------
+
     private CollectionValue<Page> pages;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private PagePagerAdapter      pagePagerAdapter;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Roleplay() { }
+    public Roleplay()
+    {
+        this.id = null;
+        initialize();
+    }
 
 
     public Roleplay(UUID id, List<Page> pages)
     {
         this.id = id;
 
-        List<Class<? extends Page>> pageClasses = new ArrayList<>();
-        pageClasses.add(Page.class);
-        this.pages = new CollectionValue<>(pages, this, pageClasses);
+        initialize();
+
+        this.pages.setValue(pages);
 
         // Make sure pages are sorted
         Collections.sort(pages, new Comparator<Page>() {
@@ -62,7 +76,7 @@ public class Roleplay implements Model
 
 
     public static Roleplay fromYaml(Yaml yaml)
-                  throws YamlException
+    throws YamlException
     {
         UUID id = UUID.randomUUID();
         List<Page> pages = yaml.atKey("pages").forEach(new Yaml.ForEach<Page>() {
@@ -97,12 +111,6 @@ public class Roleplay implements Model
     }
 
 
-    // ** On Update
-    // ------------------------------------------------------------------------------------------
-
-    public void onModelUpdate(String valueName) { }
-
-
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -116,6 +124,55 @@ public class Roleplay implements Model
     public List<Page> getPages()
     {
         return this.pages.getValue();
+    }
+
+
+    // > Render
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Render the roleplay.
+     * @param pagePagerAdapter Render needs the pager adapter view so that the roleplay can update
+     *                         the view when the pages change.
+     */
+    public void render(PagePagerAdapter pagePagerAdapter)
+    {
+        if (pagePagerAdapter != null)
+            this.pagePagerAdapter = pagePagerAdapter;
+
+        if (!this.pages.isNull())
+            updateView();
+    }
+
+
+    /**
+     * Update the Roleplay by setting the pages in the pager adapter view.
+     */
+    private void updateView()
+    {
+        this.pagePagerAdapter.setPages(this.getPages());
+        this.pagePagerAdapter.notifyDataSetChanged();
+    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initialize()
+    {
+        // ** Configure Pages Value
+        List<Class<? extends Page>> pageClasses = new ArrayList<>();
+        pageClasses.add(Page.class);
+
+        CollectionValue.OnUpdateListener<Page> onPagesUpdateListener
+                = new CollectionValue.OnUpdateListener<Page>() {
+            @Override
+            public void onUpdate(List<Page> pages) {
+                updateView();
+            }
+        };
+
+        this.pages = new CollectionValue<>(null, pageClasses, onPagesUpdateListener);
     }
 
 }

@@ -41,4 +41,12 @@ public class UnexpectedSQLTypeError
         return this.actualType;
     }
 
+
+    public String errorMessage()
+    {
+        return "Unexpected SQL Type:\n" +
+               "    Expected Type: " + this.expectedType.toString() + "\n" +
+               "    Actual Type: " + this.actualType.toString();
+    }
+
 }

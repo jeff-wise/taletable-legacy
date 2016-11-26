@@ -2,12 +2,12 @@
 package com.kispoko.tome.sheet;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -44,22 +45,31 @@ public class Page implements Model, Serializable
     private CollectionValue<Group>  groups;
 
 
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private int                     pageViewId;
+
+
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Page() { }
+    public Page()
+    {
+        this.id = null;
+        initialize();
+    }
 
 
     public Page(UUID id, String label, Integer index, List<Group> groups)
     {
-        this.id     = id;
+        this.id = id;
 
-        this.label  = new PrimitiveValue<>(label, this, String.class);
-        this.index  = new PrimitiveValue<>(index, this, Integer.class);
+        initialize();
 
-        List<Class<? extends Group>> groupClasses = new ArrayList<>();
-        groupClasses.add(Group.class);
-        this.groups = new CollectionValue<>(groups, this, groupClasses);
+        this.label.setValue(label);
+        this.index.setValue(index);
+        this.groups.setValue(groups);
 
         // Make sure groups are sorted
         Collections.sort(groups, new Comparator<Group>() {
@@ -87,7 +97,7 @@ public class Page implements Model, Serializable
             public Group forEach(Yaml yaml, int index) throws YamlException {
                 return Group.fromYaml(yaml, index);
             }
-        });
+        }, true);
 
         return new Page(id, label, index, groups);
     }
@@ -112,12 +122,6 @@ public class Page implements Model, Serializable
     {
         this.id = id;
     }
-
-
-    // ** On Update
-    // ------------------------------------------------------------------------------------------
-
-    public void onModelUpdate(String valueName) { }
 
 
     // > State
@@ -154,35 +158,78 @@ public class Page implements Model, Serializable
     }
 
 
-    // > Views
+    // > View
     // ------------------------------------------------------------------------------------------
 
     /**
      * Returns an android view that represents this page.
-     * @param context The parent activity context.
      * @return A View of this page.
      */
-    public View getView(Context context, Rules rules)
+    public View view()
     {
-        LinearLayout profileLayout = new LinearLayout(context);
+        Context context = SheetManager.currentSheetContext();
+
+        LinearLayout pageLayout = new LinearLayout(context);
+        this.pageViewId = Util.generateViewId();
+        pageLayout.setId(this.pageViewId);
 
         LinearLayout.LayoutParams profileLayoutParams =
                 new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                               LinearLayout.LayoutParams.WRAP_CONTENT);
 
         int paddingTop = (int) Util.getDim(context, R.dimen.page_padding_top);
-        profileLayout.setPadding(0, paddingTop, 0, 0);
+        pageLayout.setPadding(0, paddingTop, 0, 0);
 
-        profileLayout.setOrientation(LinearLayout.VERTICAL);
-        profileLayout.setLayoutParams(profileLayoutParams);
+        pageLayout.setOrientation(LinearLayout.VERTICAL);
+        pageLayout.setLayoutParams(profileLayoutParams);
 
-        for (Group group : this.groups.getValue()) {
-            profileLayout.addView(group.getView(context, rules));
-        }
+        updateView(pageLayout);
 
-        return profileLayout;
+        return pageLayout;
     }
 
+
+    private void updateView(LinearLayout pageLayout)
+    {
+        // > Ensure page layout is available
+        // --------------------------------------------------------------------------------------
+        Context context = SheetManager.currentSheetContext();
+        if (pageLayout == null)
+            pageLayout = (LinearLayout) ((Activity) context).findViewById(this.pageViewId);
+
+        // > Views
+        // --------------------------------------------------------------------------------------
+
+        // ** Groups
+        // --------------------------------------------------------------------------------------
+        if (!this.groups.isNull()) {
+            for (Group group : this.groups.getValue()) {
+                pageLayout.addView(group.view(context));
+            }
+        }
+    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initialize()
+    {
+        this.label  = new PrimitiveValue<>(null, String.class);
+        this.index  = new PrimitiveValue<>(null, Integer.class);
+
+        List<Class<? extends Group>> groupClasses = new ArrayList<>();
+        groupClasses.add(Group.class);
+
+        CollectionValue.OnUpdateListener onUpdateListener = new CollectionValue.OnUpdateListener() {
+            @Override
+            public void onUpdate(List values) {
+                updateView(null);
+            }
+        };
+
+        this.groups = new CollectionValue<>(null, groupClasses);
+    }
 }
 
 

@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;

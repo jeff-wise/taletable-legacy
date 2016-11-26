@@ -32,6 +32,7 @@ public class GameIndex
 
     public GameIndex() { }
 
+
     public GameIndex(List<Game> games)
     {
         this.games = games;

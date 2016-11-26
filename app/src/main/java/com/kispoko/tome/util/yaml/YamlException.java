@@ -2,6 +2,7 @@
 package com.kispoko.tome.util.yaml;
 
 
+import com.kispoko.tome.util.yaml.error.EmptyValueError;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 import com.kispoko.tome.util.yaml.error.MissingKeyError;
 import com.kispoko.tome.util.yaml.error.UnexpectedTypeError;
@@ -49,6 +50,12 @@ public class YamlException extends Exception
     }
 
 
+    public static YamlException emptyValue(EmptyValueError emptyValueError)
+    {
+        return new YamlException(emptyValueError, Type.EMPTY_VALUE);
+    }
+
+
     // API
     // ------------------------------------------------------------------------------------------
 
@@ -82,6 +89,12 @@ public class YamlException extends Exception
     }
 
 
+    public EmptyValueError getEmptyValueError()
+    {
+        return (EmptyValueError) this.error;
+    }
+
+
     // > Error Message
     // ------------------------------------------------------------------------------------------
 
@@ -101,6 +114,9 @@ public class YamlException extends Exception
             case INVALID_ENUM:
                 errorBuilder.append(this.getInvalidEnumError().errorMessage());
                 break;
+            case EMPTY_VALUE:
+                errorBuilder.append(this.getEmptyValueError().errorMessage());
+                break;
         }
 
         return errorBuilder.toString();
@@ -114,6 +130,7 @@ public class YamlException extends Exception
     {
         MISSING_KEY,
         UNEXPECTED_TYPE,
+        EMPTY_VALUE,
         INVALID_ENUM
     }
 

@@ -33,6 +33,16 @@ public class NumberColumn implements Model, Column
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public NumberColumn()
+    {
+        this.id               = null;
+
+        this.name             = new PrimitiveValue<>(null, this, String.class);
+        this.defaultValue     = new PrimitiveValue<>(null, this, Integer.class);
+        this.defaultAlignment = new PrimitiveValue<>(null, this, CellAlignment.class);
+    }
+
+
     public NumberColumn(UUID id, String name, Integer defaultValue, CellAlignment defaultAlignment)
     {
         this.id               = id;
@@ -94,7 +104,7 @@ public class NumberColumn implements Model, Column
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

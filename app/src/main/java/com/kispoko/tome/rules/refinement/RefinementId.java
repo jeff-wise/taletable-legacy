@@ -29,12 +29,20 @@ public class RefinementId implements Model, Serializable
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public RefinementId() { }
+    public RefinementId()
+    {
+        this.id   = null;
+
+        this.name = new PrimitiveValue<>(null, this, String.class);
+        this.type = new PrimitiveValue<>(null, this, RefinementType.class);
+
+    }
 
 
     public RefinementId(UUID id, String name, RefinementType type)
     {
         this.id   = id;
+
         this.name = new PrimitiveValue<>(name, this, String.class);
         this.type = new PrimitiveValue<>(type, this, RefinementType.class);
     }
@@ -79,7 +87,7 @@ public class RefinementId implements Model, Serializable
     // ** On Update
     // --------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

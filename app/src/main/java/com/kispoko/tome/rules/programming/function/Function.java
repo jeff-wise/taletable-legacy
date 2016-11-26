@@ -13,6 +13,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,7 +44,17 @@ public class Function implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Function() { }
+    public Function()
+    {
+        this.id             = null;
+        this.name           = new PrimitiveValue<>(null, this, String.class);
+        this.parameterTypes = new PrimitiveValue<>(null, this, ProgramValueType[].class);
+        this.resultType     = new PrimitiveValue<>(null, this, ProgramValueType.class);
+
+        List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
+        tupleClasses.add(Tuple.class);
+        this.tuples         = new CollectionValue<>(null, this, tupleClasses);
+    }
 
 
     public Function(UUID id,
@@ -77,6 +88,7 @@ public class Function implements Model
         this.validate();
 
         // > Index the tuples
+        this.functionMap = new HashMap<>();
         for (Tuple tuple : tuples) {
             this.functionMap.put(tuple.getParameters(), tuple.getResult());
         }
@@ -148,7 +160,7 @@ public class Function implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

@@ -41,4 +41,12 @@ public class NullColumnTypeError
         return this.columnName;
     }
 
+
+    public String errorMessage()
+    {
+        return "Null Column Type:\n" +
+                "    Table: " + this.tableName + "\n" +
+                "    Column: " + this.columnName;
+    }
+
 }

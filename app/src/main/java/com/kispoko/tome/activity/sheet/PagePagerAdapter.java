@@ -6,7 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.sheet.Page;
+import com.kispoko.tome.sheet.SheetManager;
+
+import java.util.List;
 
 
 
@@ -17,31 +20,43 @@ import com.kispoko.tome.sheet.Sheet;
 public class PagePagerAdapter extends FragmentStatePagerAdapter
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Sheet sheet;
+    private List<Page> pages;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public PagePagerAdapter(FragmentManager fragmentManager, Sheet sheet)
+    public PagePagerAdapter(FragmentManager fragmentManager, List<Page> pages)
     {
         super(fragmentManager);
 
-        this.sheet = sheet;
+        this.pages = pages;
     }
 
 
-    // > API
+    // API
+    // ------------------------------------------------------------------------------------------
+
+    // > Pages
+    // ------------------------------------------------------------------------------------------
+
+    public void setPages(List<Page> pages)
+    {
+        this.pages = pages;
+    }
+
+
+    // > Pager Adapter Methods
     // ------------------------------------------------------------------------------------------
 
     // Returns total number of pages
     @Override
     public int getCount()
     {
-        return sheet.getRoleplay().getPages().size();
+        return this.pages.size();
     }
 
 
@@ -49,14 +64,19 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
     @Override
     public Fragment getItem(int position)
     {
-        return PageFragment.newInstance(this.sheet.getRoleplay().getPages().get(position),
-                                        this.sheet.getRules());
+        return PageFragment.newInstance(this.pages.get(position),
+                                        SheetManager.currentSheet().getRules());
     }
+
 
     @Override
     public CharSequence getPageTitle(int position)
     {
-        return this.sheet.getRoleplay().getPages().get(position).getLabel();
+        String pageLabel = this.pages.get(position).getLabel();
+        if (pageLabel != null)
+            return pageLabel;
+        else
+            return "";
     }
 
 }

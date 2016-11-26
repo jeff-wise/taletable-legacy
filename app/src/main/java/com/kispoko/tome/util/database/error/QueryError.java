@@ -35,4 +35,10 @@ public class QueryError
         return this.exception;
     }
 
+
+    public String errorMessage()
+    {
+        return "Query";
+    }
+
 }

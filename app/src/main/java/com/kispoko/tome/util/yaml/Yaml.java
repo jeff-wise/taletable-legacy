@@ -2,6 +2,7 @@
 package com.kispoko.tome.util.yaml;
 
 
+import com.kispoko.tome.util.yaml.error.EmptyValueError;
 import com.kispoko.tome.util.yaml.error.MissingKeyError;
 import com.kispoko.tome.util.yaml.error.UnexpectedTypeError;
 
@@ -92,11 +93,16 @@ public class Yaml
 
 
     @SuppressWarnings("unchecked")
-    public <A> List<A> forEach(ForEach<A> forEach)
+    public <A> List<A> forEach(ForEach<A> forEach, boolean canBeEmpty)
                throws YamlException
     {
         if (this.yamlObject == null)
-            return null;
+        {
+            if (canBeEmpty)
+                return new ArrayList<>();
+            else
+                throw YamlException.emptyValue(new EmptyValueError());
+        }
 
         List<A> list = new ArrayList<>();
 
@@ -110,6 +116,13 @@ public class Yaml
         }
 
         return list;
+    }
+
+
+    public <A> List<A> forEach(ForEach<A> forEach)
+               throws YamlException
+    {
+        return this.forEach(forEach, false);
     }
 
 

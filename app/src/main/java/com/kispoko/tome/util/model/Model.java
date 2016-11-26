@@ -11,8 +11,6 @@ import java.util.UUID;
  */
 public interface Model
 {
-    void onModelUpdate(String name);
     UUID getId();
     void setId(UUID id);
-
 }

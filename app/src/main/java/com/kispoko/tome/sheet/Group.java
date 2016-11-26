@@ -51,13 +51,29 @@ public class Group implements Model, Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Group() { }
+    public Group()
+    {
+        this.id           = null;
+
+        this.label        = new PrimitiveValue<>(null, this, String.class);
+        this.index        = new PrimitiveValue<>(null, this, Integer.class);
+        this.numberOfRows = new PrimitiveValue<>(null, this, Integer.class);
+
+        List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
+        widgetClasses.add(TextWidget.class);
+        widgetClasses.add(NumberWidget.class);
+        widgetClasses.add(BooleanWidget.class);
+        widgetClasses.add(TableWidget.class);
+        widgetClasses.add(ImageWidget.class);
+        this.widgets      = new CollectionValue<>(null, this, widgetClasses);
+    }
 
 
     public Group(UUID id, String label, Integer index, Integer numberOfRows,
                  List<Widget> widgets)
     {
         this.id           = id;
+
         this.label        = new PrimitiveValue<>(label, this, String.class);
         this.index        = new PrimitiveValue<>(index, this, Integer.class);
         this.numberOfRows = new PrimitiveValue<>(numberOfRows, this, Integer.class);
@@ -117,7 +133,7 @@ public class Group implements Model, Serializable
     // ** Updates
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State
@@ -177,10 +193,10 @@ public class Group implements Model, Serializable
 
 
 
-    // > Views
+    // > View
     // ------------------------------------------------------------------------------------------
 
-    public View getView(Context context, Rules rules)
+    public View view(Context context)
     {
         LinearLayout groupLayout = new LinearLayout(context);
         LinearLayout.LayoutParams mainLayoutParams =

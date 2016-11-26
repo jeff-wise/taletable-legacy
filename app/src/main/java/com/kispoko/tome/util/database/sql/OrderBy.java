@@ -51,6 +51,7 @@ public class OrderBy
         }
 
         // > ORDER
+        orderByBuilder.append(" ");
         orderByBuilder.append(this.order.name().toUpperCase());
 
         return orderByBuilder.toString();

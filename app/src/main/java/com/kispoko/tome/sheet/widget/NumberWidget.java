@@ -48,7 +48,16 @@ public class NumberWidget extends Widget implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public NumberWidget() { }
+    public NumberWidget()
+    {
+        this.id         = null;
+
+        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
+        this.size       = new PrimitiveValue<>(null, this, WidgetFormat.Size.class);
+        this.value      = new ModelValue<>(null, this, NumberVariable.class);
+        this.prefix     = new ModelValue<>(null, this, TextVariable.class);
+        this.postfix    = new ModelValue<>(null, this, TextVariable.class);
+    }
 
 
     public NumberWidget(UUID id,
@@ -106,7 +115,7 @@ public class NumberWidget extends Widget implements Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > Widget

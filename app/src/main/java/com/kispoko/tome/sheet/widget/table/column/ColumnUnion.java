@@ -2,6 +2,8 @@
 package com.kispoko.tome.sheet.widget.table.column;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -35,6 +37,18 @@ public class ColumnUnion implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public ColumnUnion()
+    {
+        this.id            = null;
+
+        this.textColumn    = new ModelValue<>(null, this, TextColumn.class);
+        this.numberColumn  = new ModelValue<>(null, this, NumberColumn.class);
+        this.booleanColumn = new ModelValue<>(null, this, BooleanColumn.class);
+
+        this.type          = new PrimitiveValue<>(null, this, ColumnType.class);
+    }
+
+
     private ColumnUnion(UUID id, Object column, ColumnType type)
     {
         this.id   = id;
@@ -48,7 +62,17 @@ public class ColumnUnion implements Model
         switch (type)
         {
             case TEXT:
+                if (column == null)
+                    Log.d("***COLUMN", "column is null");
+                else
+                    Log.d("***COLUMN", "column is NOT null");
+                TextColumn textColumn = (TextColumn) column;
+                if (textColumn == null)
+                    Log.d("***COLUMN", "text column is null after conversion");
                 this.textColumn.setValue((TextColumn) column);
+                Log.d("***COLUMN", "set text column value");
+                if (this.textColumn.getValue() == null)
+                    Log.d("***COLUMN", "text column is null after being set");
                 break;
             case NUMBER:
                 this.numberColumn.setValue((NumberColumn) column);
@@ -153,7 +177,7 @@ public class ColumnUnion implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State
@@ -174,12 +198,22 @@ public class ColumnUnion implements Model
         switch (this.getType())
         {
             case TEXT:
+                Log.d("***COLUMN", "return text column");
+                if (this.textColumn.getValue() == null)
+                    Log.d("***COLUMN", "returned text column is null");
                 return this.textColumn.getValue();
             case NUMBER:
+                Log.d("***COLUMN", "return number column");
                 return this.numberColumn.getValue();
             case BOOLEAN:
+                Log.d("***COLUMN", "return number column");
                 return this.booleanColumn.getValue();
         }
+
+        Log.d("***COLUMN", "did not match type");
+
+        if (this.getType() == null)
+            Log.d("***COLUMN", "type is null");
 
         // CANNOT REACH HERE. No constructor allows null column type.
         return null;

@@ -2,14 +2,9 @@
 package com.kispoko.tome.sheet;
 
 
-import android.content.Context;
-import android.os.AsyncTask;
-
-import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.exception.TemplateFileException;
+import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.rules.Rules;
-import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
@@ -17,8 +12,6 @@ import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -39,19 +32,39 @@ public class Sheet implements Model
 
     private UUID                 id;
 
-    private PrimitiveValue<Long> lastUsed;
 
-    private ModelValue<Game> game;
+    // > Values
+    // ------------------------------------------------------------------------------------------
+
+    private PrimitiveValue<Long> last_used;
+
+    private ModelValue<Game>     game;
     private ModelValue<Roleplay> roleplay;
     private ModelValue<Rules>    rules;
 
-    private Map<UUID,Widget> componentById;
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private Map<UUID,Widget>     componentById;
+
+    private PagePagerAdapter     pagePagerAdapter;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Sheet() { }
+    public Sheet()
+    {
+        this.id        = null;
+
+        Long currentTimeMS = System.currentTimeMillis();
+        this.last_used = new PrimitiveValue<>(currentTimeMS, Long.class);
+
+        this.game      = new ModelValue<>(null, Game.class);
+        this.roleplay  = new ModelValue<>(null, Roleplay.class);
+        this.rules     = new ModelValue<>(null, Rules.class);
+    }
 
 
     public Sheet(UUID id,
@@ -59,17 +72,17 @@ public class Sheet implements Model
                  Roleplay roleplay,
                  Rules rules)
     {
-        this.id = id;
+        this.id        = id;
 
         Long currentTimeMS = System.currentTimeMillis();
+        this.last_used = new PrimitiveValue<>(currentTimeMS, Long.class);
 
-        this.lastUsed = new PrimitiveValue<>(currentTimeMS, this, Long.class);
-
-        this.game     = new ModelValue<>(game, this, Game.class);
-        this.roleplay = new ModelValue<>(roleplay, this, Roleplay.class);
-        this.rules    = new ModelValue<>(rules, this, Rules.class);
+        this.game      = new ModelValue<>(game, Game.class);
+        this.roleplay  = new ModelValue<>(roleplay, Roleplay.class);
+        this.rules     = new ModelValue<>(rules, Rules.class);
 
         indexComponents();
+
     }
 
 
@@ -83,57 +96,6 @@ public class Sheet implements Model
 
         return new Sheet(id, game, roleplay, rules);
     }
-
-
-    /**
-     * Create a sheet from a sheet template file.
-     * @param sheetListener The listener for the new sheet.
-     * @param context The context object, for looking up the assets.
-     * @param templateId The ID of the template yaml file to load.
-     */
-    public static void fromFile(final OnSheetListener sheetListener,
-                                final Context context,
-                                String templateId)
-    {
-        final String templateFileName = "template/" + templateId + ".yaml";
-
-        new AsyncTask<Void,Void,Object>()
-        {
-
-            protected Object doInBackground(Void... args)
-            {
-                Sheet sheet;
-                try {
-                    InputStream yamlIS = context.getAssets().open(templateFileName);
-                    Yaml yaml = Yaml.fromFile(yamlIS);
-                    sheet = Sheet.fromYaml(yaml);
-                } catch (IOException e) {
-                    return new TemplateFileException(
-                                new TemplateFileReadError(templateFileName),
-                            TemplateFileException.ErrorType.TEMPLATE_FILE_READ);
-                } catch (YamlException e) {
-                    return e;
-                }
-
-                return sheet;
-            }
-
-            protected void onPostExecute(Object maybeSheet)
-            {
-                if (maybeSheet instanceof TemplateFileException) {
-                    ApplicationFailure.templateFile((TemplateFileException) maybeSheet);
-                }
-                else if (maybeSheet instanceof YamlException) {
-                    ApplicationFailure.yaml((YamlException) maybeSheet);
-                }
-                else if (maybeSheet instanceof Sheet) {
-                    sheetListener.onSheet((Sheet) maybeSheet);
-                }
-            }
-
-        }.execute();
-    }
-
 
 
     // API
@@ -157,12 +119,6 @@ public class Sheet implements Model
     }
 
 
-    // ** On Update
-    // ------------------------------------------------------------------------------------------
-
-    public void onModelUpdate(String valueName) { }
-
-
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -171,12 +127,6 @@ public class Sheet implements Model
     {
         return this.componentById.get(componentId);
     }
-
-
-//    public WidgetData componentWithLabel(String componentLabel)
-//    {
-//        return this.componentByLabel.get(componentLabel.toLowerCase());
-//    }
 
 
     public Roleplay getRoleplay()
@@ -197,37 +147,43 @@ public class Sheet implements Model
     }
 
 
-    // INTERNAL
+    // ** Page Pager Adapter
     // ------------------------------------------------------------------------------------------
 
-    private void indexComponents()
+    /**
+     * Render the sheet.
+     * @param pagePagerAdapter The Page Pager Adapter to be passed to the Roleplay instance so it
+     *                         can update the adapter view when the pages change.
+     *
+     */
+    public void render(PagePagerAdapter pagePagerAdapter)
     {
-        // Index components
-        componentById = new HashMap<>();
-//        componentByLabel = new HashMap<>();
-
-        for (Page page : this.roleplay.getValue().getPages())
-        {
-            for (Group group : page.getGroups())
-            {
-                for (Widget widget : group.getWidgets())
-                {
-                    componentById.put(widget.getId(), widget);
-
-//                    if (widgetData.hasLabel())
-//                        componentByLabel.put(widgetData.getLabel().toLowerCase(), widgetData);
-                }
-            }
-        }
-
+        this.pagePagerAdapter = pagePagerAdapter;
+        this.getRoleplay().render(pagePagerAdapter);
     }
 
 
-    // NESTED DEFINITIONS
+    // INTERNAL
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * Index the widgets by their id, so that can later be retrieved.
+     */
+    private void indexComponents()
+    {
+        componentById = new HashMap<>();
 
-    // Listeners
+        for (Page page : this.roleplay.getValue().getPages()) {
+            for (Group group : page.getGroups()) {
+                for (Widget widget : group.getWidgets()) {
+                    componentById.put(widget.getId(), widget);
+                }
+            }
+        }
+    }
+
+
+    // LISTENERS
     // ------------------------------------------------------------------------------------------
 
     public interface OnSheetListener {

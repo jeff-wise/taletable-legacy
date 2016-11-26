@@ -39,8 +39,7 @@ public class ApplicationFailure
 
     public static void database(DatabaseException exception)
     {
-        Log.d("***APP", "database exception", exception);
-        //exception.printStackTrace();
+        Log.d("***APP", exception.errorMessage(), exception);
     }
 
 

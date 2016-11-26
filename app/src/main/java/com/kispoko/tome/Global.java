@@ -4,8 +4,6 @@ package com.kispoko.tome;
 
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.UUID;
-
 
 
 /**

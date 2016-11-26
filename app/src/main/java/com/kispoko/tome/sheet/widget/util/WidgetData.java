@@ -31,6 +31,15 @@ public class WidgetData implements Model, Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public WidgetData()
+    {
+        this.id      = null;
+
+        this.format  = new ModelValue<>(null, this, WidgetFormat.class);
+        this.actions = new PrimitiveValue<>(null, this, String[].class);
+    }
+
+
     public WidgetData(UUID id,
                       WidgetFormat widgetFormat,
                       String[] actions)
@@ -78,7 +87,7 @@ public class WidgetData implements Model, Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

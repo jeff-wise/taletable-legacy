@@ -36,7 +36,17 @@ public class TextVariable implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TextVariable() { }
+    public TextVariable()
+    {
+        this.id                     = null;
+
+        this.stringValue            = new PrimitiveValue<>(null, this, String.class);
+        this.programInvocationValue = new ModelValue<>(null, this, ProgramInvocation.class);
+
+        this.type                   = new PrimitiveValue<>(null, this, VariableType.class);
+
+        this.refinementId           = new ModelValue<>(null, this, RefinementId.class);
+    }
 
 
     /**
@@ -105,6 +115,9 @@ public class TextVariable implements Model
     public static TextVariable fromYaml(Yaml yaml)
                   throws YamlException
     {
+        if (yaml.isNull())
+            return null;
+
         UUID         id           = UUID.randomUUID();
         VariableType type         = VariableType.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
@@ -156,7 +169,7 @@ public class TextVariable implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

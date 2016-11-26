@@ -32,7 +32,16 @@ public class Parameter implements Model
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public Parameter() { }
+    public Parameter()
+    {
+        this.id               = null;
+
+        this.type             = new PrimitiveValue<>(null, this, ParameterType.class);
+
+        this.programParameter = new PrimitiveValue<>(null, this, Integer.class);
+        this.variableName     = new PrimitiveValue<>(null, this, String.class);
+        this.literalString    = new PrimitiveValue<>(null, this, String.class);
+    }
 
 
     /**
@@ -41,8 +50,10 @@ public class Parameter implements Model
      * @param parameterValue
      * @param parameterType
      */
-    private Parameter(Object parameterValue, ParameterType parameterType)
+    private Parameter(UUID id, Object parameterValue, ParameterType parameterType)
     {
+        this.id               = id;
+
         this.type             = new PrimitiveValue<>(parameterType, this, ParameterType.class);
 
         this.programParameter = new PrimitiveValue<>(null, this, Integer.class);
@@ -69,9 +80,9 @@ public class Parameter implements Model
      * @param programParameter The integer index of the program parameter to reference.
      * @return A new "program parameter" Parameter.
      */
-    public static Parameter asParameter(Integer programParameter)
+    public static Parameter asParameter(UUID id, Integer programParameter)
     {
-        return new Parameter(programParameter, ParameterType.PARAMETER);
+        return new Parameter(id, programParameter, ParameterType.PARAMETER);
     }
 
 
@@ -80,9 +91,9 @@ public class Parameter implements Model
      * @param variableName The name of the program variable to reference.
      * @return A new "variable" Parameter.
      */
-    public static Parameter asVariable(String variableName)
+    public static Parameter asVariable(UUID id, String variableName)
     {
-        return new Parameter(variableName, ParameterType.VARIABLE);
+        return new Parameter(id, variableName, ParameterType.VARIABLE);
     }
 
 
@@ -91,9 +102,9 @@ public class Parameter implements Model
      * @param stringLiteral The string literal value.
      * @return A new "string literal" Parameter.
      */
-    public static Parameter asStringLiteral(String stringLiteral)
+    public static Parameter asStringLiteral(UUID id, String stringLiteral)
     {
-        return new Parameter(stringLiteral, ParameterType.LITERAL_STRING);
+        return new Parameter(id, stringLiteral, ParameterType.LITERAL_STRING);
     }
 
 
@@ -106,6 +117,7 @@ public class Parameter implements Model
     public static Parameter fromYaml(Yaml yaml)
                   throws YamlException
     {
+        UUID          id   = UUID.randomUUID();
         ParameterType type = ParameterType.fromYaml(yaml.atKey("type"));
 
         Object value = null;
@@ -122,7 +134,7 @@ public class Parameter implements Model
                 break;
         }
 
-        return new Parameter(value, type);
+        return new Parameter(id, value, type);
     }
 
 
@@ -158,7 +170,7 @@ public class Parameter implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

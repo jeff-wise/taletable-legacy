@@ -6,17 +6,18 @@ import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.model.Modeler;
 import com.kispoko.tome.util.promise.AsyncFunction;
-import com.kispoko.tome.util.promise.CollectionValuePromise;
-import com.kispoko.tome.util.promise.SaveValuePromise;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
+
 
 
 /**
  * Collection Value
  */
 public class CollectionValue<A extends Model> extends Value<List<A>>
+                                              implements Serializable
 {
 
     // PROPERTIES
@@ -24,21 +25,73 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
 
     private List<Class<? extends A>> modelClasses;
 
+    private OnUpdateListener<A> onUpdateListener;
+    private OnSaveListener      onSaveListener;
+    private OnLoadListener      onLoadListener;
+
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
     public CollectionValue(List<A> value,
-                           Model model,
+                           OnUpdateListener<A> onUpdateListener,
+                           List<Class<? extends A>> modelClasses,
+                           OnSaveListener onSaveListener,
+                           OnLoadListener onLoadListener)
+    {
+        super(value);
+
+        this.modelClasses     = modelClasses;
+
+        this.onUpdateListener = onUpdateListener;
+        this.onSaveListener   = onSaveListener;
+        this.onLoadListener   = onLoadListener;
+    }
+
+
+    public CollectionValue(List<A> value,
+                           List<Class<? extends A>> modelClasses,
+                           OnUpdateListener<A> onUpdateListener)
+    {
+        super(value);
+
+        this.modelClasses     = modelClasses;
+
+        this.onUpdateListener = onUpdateListener;
+        this.onSaveListener   = null;
+        this.onLoadListener   = null;
+    }
+
+
+    public CollectionValue(List<A> value,
                            List<Class<? extends A>> modelClasses)
     {
-        super(value, model);
-        this.modelClasses = modelClasses;
+        super(value);
+
+        this.modelClasses     = modelClasses;
+
+        this.onUpdateListener = null;
+        this.onSaveListener   = null;
+        this.onLoadListener   = null;
     }
+
 
 
     // API
     // --------------------------------------------------------------------------------------
+
+    // > Set Value
+    // --------------------------------------------------------------------------------------
+
+    @Override
+    public void setValue(List<A> newValues)
+    {
+        if (newValues != null) {
+            this.value = newValues;
+            this.onUpdateListener.onUpdate(newValues);
+        }
+    }
+
 
     // > State
     // --------------------------------------------------------------------------------------
@@ -52,43 +105,107 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // > Asynchronous Operations
     // --------------------------------------------------------------------------------------
 
-    public void loadValue(final String parentModelName, final UUID parentModelId)
+    @SuppressWarnings("unchecked")
+    public void load(final String parentModelName, final UUID parentModelId)
     {
-        new AsyncFunction<>(new AsyncFunction.Action<List<A>>()
+        new AsyncFunction<>(new AsyncFunction.Action<Object>()
         {
             @Override
-            public List<A> run()
+            public Object run()
             {
-                List<A> loadedCollection = null;
                 try {
-                    loadedCollection = Modeler.collectionFromDatabase(parentModelName,
-                                                                      parentModelId,
-                                                                      modelClasses);
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
+                    return Modeler.collectionFromDatabase(parentModelName,
+                                                          parentModelId,
+                                                          modelClasses);
+                } catch (DatabaseException exception) {
+                    return exception;
                 }
-                return loadedCollection;
             }
         })
-        .run(new AsyncFunction.OnReady<List<A>>()
+        .run(new AsyncFunction.OnReady<Object>()
         {
             @Override
-            public void run(List<A> result)
+            public void run(Object result)
             {
-                setValue(result);
+                if (result instanceof DatabaseException) {
+                    if (onLoadListener != null)
+                        onLoadListener.onLoadError((DatabaseException) result);
+                }
+                else {
+                    List<A> valueCollection = (List<A>) result;
+                    setValue(valueCollection);
+                    if (onLoadListener != null)
+                        onLoadListener.onLoad(valueCollection);
+                }
             }
         });
     }
 
 
-    public void saveValue(final SaveValuePromise promise)
+    public void save(final OnSaveListener oneTimeListener)
     {
-        promise.run(new SaveValuePromise.OnReady() {
+        new AsyncFunction<>(new AsyncFunction.Action<Object>()
+        {
             @Override
-            public void run() {
-                setIsSaved(true);
+            public Object run()
+            {
+                try {
+                    for (Model model : getValue()) {
+                        Modeler.toDatabase(model);
+                    }
+                    return null;
+                }
+                catch (DatabaseException exception) {
+                    return exception;
+                }
+            }
+        })
+        .run(new AsyncFunction.OnReady<Object>()
+        {
+            @Override
+            public void run(Object result)
+            {
+                if (result instanceof DatabaseException) {
+                    if (oneTimeListener != null)
+                        oneTimeListener.onSaveError((DatabaseException) result);
+                    if (onSaveListener != null)
+                        onSaveListener.onSaveError((DatabaseException) result);
+                }
+                else {
+                    setIsSaved(true);
+                    if (oneTimeListener != null)
+                        oneTimeListener.onSave();
+                    if (onSaveListener != null)
+                        onSaveListener.onSave();
+                }
             }
         });
+    }
+
+
+    public void save()
+    {
+        this.save(null);
+    }
+
+
+    // LISTENERS
+    // --------------------------------------------------------------------------------------
+
+    public interface OnUpdateListener<A> {
+        void onUpdate(List<A> values);
+    }
+
+
+    public interface OnSaveListener {
+        void onSave();
+        void onSaveError(DatabaseException exception);
+    }
+
+
+    public interface OnLoadListener<A> {
+        void onLoad(List<A> value);
+        void onLoadError(DatabaseException exception);
     }
 
 }

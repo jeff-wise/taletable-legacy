@@ -34,7 +34,16 @@ public class Tuple implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Tuple() { }
+    public Tuple()
+    {
+        this.id         = null;
+
+        List<Class<? extends ProgramValue>> programValueClasses = new ArrayList<>();
+        programValueClasses.add(ProgramValue.class);
+        this.parameters = new CollectionValue<>(null, this, programValueClasses);
+
+        this.result     = new ModelValue<>(null, this, ProgramValue.class);
+    }
 
 
     public Tuple(UUID id, List<ProgramValue> parameters, ProgramValue result)
@@ -105,7 +114,7 @@ public class Tuple implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

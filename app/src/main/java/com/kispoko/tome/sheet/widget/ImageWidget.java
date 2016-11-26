@@ -10,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +24,6 @@ import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.model.Modeler;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -59,12 +57,18 @@ public class ImageWidget extends Widget implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ImageWidget() { }
+    public ImageWidget()
+    {
+        this.id         = null;
+
+        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
+        this.bitmap     = new PrimitiveValue<>(null, this, SerialBitmap.class);
+    }
 
 
     public ImageWidget(UUID id, WidgetData widgetData, Bitmap bitmap)
     {
-        this.id = id;
+        this.id         = id;
 
         this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
 
@@ -134,7 +138,7 @@ public class ImageWidget extends Widget implements Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > Widget
@@ -169,7 +173,6 @@ public class ImageWidget extends Widget implements Serializable
         this.bitmap.setValue(serialBitmap);
 
         // > Save the Image Widget with the new bitmap
-        Modeler.saveValuePromise(this).run(null);
     }
 
 
@@ -236,7 +239,6 @@ public class ImageWidget extends Widget implements Serializable
             chooseImageButton.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
             imageView.setImageBitmap(this.bitmap.getValue().getBitmap());
-            Log.d("***IMAGE", "set image bitmap");
         }
         // No stored picture, give user upload button
         else {

@@ -9,8 +9,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.UUID;
 
-import static android.R.attr.value;
-
 
 /**
  * Program Invocation Parameter
@@ -122,6 +120,6 @@ public class ProgramInvocationParameter implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 }

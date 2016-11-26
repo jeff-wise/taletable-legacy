@@ -8,6 +8,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
@@ -26,17 +27,32 @@ public class WidgetFormat implements Model, Serializable
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private UUID      id;
-    private String    label;
-    private Boolean   showLabel;
-    private Integer   row;
-    private Integer   column;
-    private Integer   width;
-    private Alignment alignment;
+    private UUID                      id;
+
+    private PrimitiveValue<String>    label;
+    private PrimitiveValue<Boolean>   showLabel;
+    private PrimitiveValue<Integer>   row;
+    private PrimitiveValue<Integer>   column;
+    private PrimitiveValue<Integer>   width;
+    private PrimitiveValue<Alignment> alignment;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+
+    public WidgetFormat()
+    {
+        this.id        = null;
+
+        this.label     = new PrimitiveValue<>(null, this, String.class);
+        this.showLabel = new PrimitiveValue<>(null, this, Boolean.class);
+        this.row       = new PrimitiveValue<>(null, this, Integer.class);
+        this.column    = new PrimitiveValue<>(null, this, Integer.class);
+        this.width     = new PrimitiveValue<>(null, this, Integer.class);
+        this.alignment = new PrimitiveValue<>(null, this, Alignment.class);
+
+    }
+
 
     public WidgetFormat(UUID id,
                         String label,
@@ -47,6 +63,13 @@ public class WidgetFormat implements Model, Serializable
                         Alignment alignment)
     {
         this.id = id;
+
+        this.label     = new PrimitiveValue<>(label, this, String.class);
+        this.showLabel = new PrimitiveValue<>(showLabel, this, Boolean.class);
+        this.row       = new PrimitiveValue<>(row, this, Integer.class);
+        this.column    = new PrimitiveValue<>(column, this, Integer.class);
+        this.width     = new PrimitiveValue<>(width, this, Integer.class);
+        this.alignment = new PrimitiveValue<>(alignment, this, Alignment.class);
 
         this.setLabel(label);
         this.setShowLabel(showLabel);
@@ -103,7 +126,7 @@ public class WidgetFormat implements Model, Serializable
     // ** On Update
     // --------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State
@@ -118,7 +141,7 @@ public class WidgetFormat implements Model, Serializable
      */
     public String getLabel()
     {
-        return this.label;
+        return this.label.getValue();
     }
 
 
@@ -129,9 +152,9 @@ public class WidgetFormat implements Model, Serializable
     public void setLabel(String label)
     {
         if (label != null)
-            this.label = label;
+            this.label.setValue(label);
         else
-            this.label = "";
+            this.label.setValue("");
     }
 
 
@@ -144,7 +167,7 @@ public class WidgetFormat implements Model, Serializable
      */
     public Boolean getShowLabel()
     {
-        return this.showLabel;
+        return this.showLabel.getValue();
     }
 
 
@@ -155,9 +178,9 @@ public class WidgetFormat implements Model, Serializable
     public void setShowLabel(Boolean showLabel)
     {
         if (showLabel != null)
-            this.showLabel = showLabel;
+            this.showLabel.setValue(showLabel);
         else
-            this.showLabel = true;
+            this.showLabel.setValue(true);
     }
 
 
@@ -170,7 +193,7 @@ public class WidgetFormat implements Model, Serializable
      */
     public Integer getRow()
     {
-        return this.row;
+        return this.row.getValue();
     }
 
 
@@ -181,9 +204,9 @@ public class WidgetFormat implements Model, Serializable
     public void setRow(Integer row)
     {
         if (row != null)
-            this.row = row;
+            this.row.setValue(row);
         else
-            this.row = 1;
+            this.row.setValue(1);
     }
 
 
@@ -198,7 +221,7 @@ public class WidgetFormat implements Model, Serializable
      */
     public Integer getColumn()
     {
-        return this.column;
+        return this.column.getValue();
     }
 
 
@@ -209,9 +232,9 @@ public class WidgetFormat implements Model, Serializable
     public void setColumn(Integer column)
     {
         if (column != null)
-            this.column = column;
+            this.column.setValue(column);
         else
-            this.column = 1;
+            this.column.setValue(1);
     }
 
 
@@ -225,7 +248,7 @@ public class WidgetFormat implements Model, Serializable
      */
     public Integer getWidth()
     {
-        return this.width;
+        return this.width.getValue();
     }
 
 
@@ -236,9 +259,9 @@ public class WidgetFormat implements Model, Serializable
     public void setWidth(Integer width)
     {
         if (width != null)
-            this.width = width;
+            this.width.setValue(width);
         else
-            this.width = 1;
+            this.width.setValue(1);
     }
 
 
@@ -252,7 +275,7 @@ public class WidgetFormat implements Model, Serializable
      */
     public Alignment getAlignment()
     {
-        return this.alignment;
+        return this.alignment.getValue();
     }
 
 
@@ -263,9 +286,9 @@ public class WidgetFormat implements Model, Serializable
     public void setAlignment(Alignment alignment)
     {
         if (alignment != null)
-            this.alignment = alignment;
+            this.alignment.setValue(alignment);
         else
-            this.alignment = Alignment.CENTER;
+            this.alignment.setValue(Alignment.CENTER);
     }
 
 

@@ -17,25 +17,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.kispoko.tome.Global;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
+import com.kispoko.tome.sheet.Page;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.activity.sheet.PageFragment;
-import com.kispoko.tome.DatabaseManager;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.database.query.ModelQueryParameters;
-import com.kispoko.tome.util.database.sql.Function;
-import com.kispoko.tome.util.database.sql.OrderBy;
-import com.kispoko.tome.util.model.Modeler;
-import com.kispoko.tome.util.promise.SaveValuePromise;
-import com.kispoko.tome.util.promise.ValuePromise;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 
 /**
@@ -59,12 +51,11 @@ public class SheetActivity
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
 
-    // Data
-    private Sheet sheet;
-
     private ChooseImageAction chooseImageAction;
 
     private static String characterName;
+
+    private PagePagerAdapter pagePagerAdapter;
 
 
     // ACTIVITY EVENTS
@@ -82,6 +73,7 @@ public class SheetActivity
         initializeDrawer();
         initializeToolbar();
         initializeNavigation();
+        prepareSheetViews();
     }
 
 
@@ -142,7 +134,7 @@ public class SheetActivity
         else if (requestCode == COMPONENT_EDIT)
         {
             EditResult editResult = (EditResult) data.getExtras().getSerializable("RESULT");
-            editResult.applyResult(this, this.sheet);
+            editResult.applyResult(this, SheetManager.currentSheet());
         }
     }
 
@@ -174,17 +166,6 @@ public class SheetActivity
     // -------------------------------------------------------------------------------------------
 
     /**
-     * Set the activity's sheet. This is used primarily as a callback for asynchronous tasks
-     * that fetch the sheet from database or network.
-     * @param sheet The sheet.
-     */
-    public void setSheet(Sheet sheet)
-    {
-        this.sheet = sheet;
-    }
-
-
-    /**
      * Set the character name for the Sheet Activity to display. If a text widget has the
      * name "name", then it calls this method.
      * @param name
@@ -195,33 +176,10 @@ public class SheetActivity
     }
 
 
-    public void render()
-    {
-        PagePagerAdapter pagePagerAdapter =
-                new PagePagerAdapter(getSupportFragmentManager(), this.sheet);
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
-        viewPager.setAdapter(pagePagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
-
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(SheetActivity.characterName);
-    }
-
 
     public void onSheet(Sheet sheet)
     {
-        this.sheet = sheet;
-
-        // Save the new sheet, and render it after it is saved.
-        Modeler.saveValuePromise(this.sheet).run(new SaveValuePromise.OnReady() {
-            @Override
-            public void run() {
-                render();
-            }
-        });
+        sheet.render(this.pagePagerAdapter);
     }
 
 
@@ -300,6 +258,28 @@ public class SheetActivity
     }
 
 
+    /**
+     * Setup the main sheet activity views. The PagePagerAdapter controls the left-right-swiping
+     * between different character sheet pages.. It is connected to a tab layout, so that users
+     * may select the character sheet pages by name.
+     */
+    private void prepareSheetViews()
+    {
+        PagePagerAdapter pagePagerAdapter =
+                new PagePagerAdapter(getSupportFragmentManager(), new ArrayList<Page>());
+        this.pagePagerAdapter = pagePagerAdapter;
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
+        viewPager.setAdapter(pagePagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+
+        TextView titleView = (TextView) findViewById(R.id.page_title);
+        titleView.setText(SheetActivity.characterName);
+    }
+
+
     // > Data
     // -------------------------------------------------------------------------------------------
 
@@ -313,35 +293,12 @@ public class SheetActivity
         if (getIntent().hasExtra("TEMPLATE_ID"))
             templateId = getIntent().getStringExtra("TEMPLATE_ID");
 
-        DatabaseManager databaseManager = new DatabaseManager(this);
-        Global.setDatabase(databaseManager.getWritableDatabase());
-
-        // This will be a new character sheet
+        // > This will be a new character sheet
         if (templateId != null)
-        {
-            Sheet.fromFile(this, this, templateId);
-        }
-        // Load the most recently used character sheet
+            SheetManager.goToTemplate(this, templateId, this);
+        // > Load the most recently used character sheet
         else
-        {
-            // Construct query
-            List<OrderBy.Field> fields = new ArrayList<>();
-            fields.add(new OrderBy.Field("last_used", Function.DATETIME));
-            OrderBy orderBy = new OrderBy(fields, OrderBy.Order.DESC);
-
-            ModelQueryParameters.TopResult topResultQuery =
-                    new ModelQueryParameters.TopResult(orderBy);
-            ModelQueryParameters queryParameters =
-                    new ModelQueryParameters(topResultQuery, ModelQueryParameters.Type.TOP_RESULT);
-
-            Modeler.modelValuePromise(Sheet.class, queryParameters)
-                   .run(new ValuePromise.OnReady<Sheet>() {
-                @Override
-                public void run(Sheet result) {
-                    onSheet(result);
-                }
-            });
-        }
+            SheetManager.goToMostRecent(this, this);
 
     }
 

@@ -23,14 +23,14 @@ import com.kispoko.tome.util.Util;
 public class PageFragment extends Fragment
 {
 
-    // > PROPERTIES
+    // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
     private Page page;
     private Rules rules;
 
 
-    // > CONSTRUCTORS
+    // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
     public PageFragment() {
@@ -56,7 +56,7 @@ public class PageFragment extends Fragment
     }
 
 
-    // > API
+    // API
     // ------------------------------------------------------------------------------------------
 
     @Override
@@ -77,7 +77,7 @@ public class PageFragment extends Fragment
         ScrollView fragmentView = new ScrollView(getContext());
         fragmentView.setLayoutParams(Util.linearLayoutParamsMatch());
 
-        View pageView = this.page.getView(getContext(), this.rules);
+        View pageView = this.page.view(getContext());
         fragmentView.addView(pageView);
 
         return fragmentView;

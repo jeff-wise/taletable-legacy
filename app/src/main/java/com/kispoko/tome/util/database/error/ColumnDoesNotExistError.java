@@ -31,4 +31,11 @@ public class ColumnDoesNotExistError
     {
         return this.columnName;
     }
+
+
+    public String errorMessage()
+    {
+        return "Column Does Not Exist: Column Name: " + this.columnName;
+    }
+
 }

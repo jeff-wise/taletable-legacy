@@ -31,7 +31,13 @@ public class TextCell implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TextCell() { }
+    public TextCell()
+    {
+        this.id        = null;
+
+        this.value     = new ModelValue<>(null, this, TextVariable.class);
+        this.alignment = new PrimitiveValue<>(null, this, CellAlignment.class);
+    }
 
 
     public TextCell(UUID id, TextVariable value, CellAlignment alignment)
@@ -86,7 +92,7 @@ public class TextCell implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

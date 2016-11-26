@@ -33,6 +33,16 @@ public class BooleanColumn implements Model, Column
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
+    public BooleanColumn()
+    {
+        this.id               = null;
+
+        this.name             = new PrimitiveValue<>(null, this, String.class);
+        this.defaultValue     = new PrimitiveValue<>(null, this, Boolean.class);
+        this.defaultAlignment = new PrimitiveValue<>(null, this, CellAlignment.class);
+    }
+
+
     public BooleanColumn(UUID id, String name, Boolean defaultValue, CellAlignment defaultAlignment)
     {
         this.id               = id;
@@ -94,7 +104,7 @@ public class BooleanColumn implements Model, Column
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

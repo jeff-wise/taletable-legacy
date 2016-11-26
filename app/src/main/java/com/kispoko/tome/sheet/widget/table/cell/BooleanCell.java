@@ -31,7 +31,13 @@ public class BooleanCell implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public BooleanCell() { }
+    public BooleanCell()
+    {
+        this.id        = null;
+
+        this.value     = new ModelValue<>(null, this, BooleanVariable.class);
+        this.alignment = new PrimitiveValue<>(null, this, CellAlignment.class);
+    }
 
 
     public BooleanCell(UUID id, BooleanVariable value, CellAlignment alignment)
@@ -87,7 +93,7 @@ public class BooleanCell implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

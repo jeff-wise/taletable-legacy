@@ -38,7 +38,17 @@ public class BooleanVariable implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public BooleanVariable() { }
+    public BooleanVariable()
+    {
+        this.id                     = null;
+
+        this.booleanValue           = new PrimitiveValue<>(null, this, Boolean.class);
+        this.programInvocationValue = new ModelValue<>(null, this, ProgramInvocation.class);
+
+        this.type                   = new PrimitiveValue<>(null, this, VariableType.class);
+
+        this.refinementId           = new ModelValue<>(null, this, RefinementId.class);
+    }
 
 
     /**
@@ -109,6 +119,9 @@ public class BooleanVariable implements Model
     public static BooleanVariable fromYaml(Yaml yaml)
                   throws YamlException
     {
+        if (yaml.isNull())
+            return null;
+
         UUID         id           = UUID.randomUUID();
         VariableType type         = VariableType.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
@@ -160,7 +173,7 @@ public class BooleanVariable implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

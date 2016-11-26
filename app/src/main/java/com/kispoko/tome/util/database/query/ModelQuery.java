@@ -159,7 +159,6 @@ public class ModelQuery
         queryBuilder.append("WHERE ");
         queryBuilder.append(tableName);
         queryBuilder.append(".");
-        queryBuilder.append(tableName);
         queryBuilder.append("_id");
         queryBuilder.append(" = ");
         queryBuilder.append("'");

@@ -25,18 +25,26 @@ public class ProgramValue implements Model
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                    id;
+    private UUID                             id;
 
-    private PrimitiveValue<Integer> integerValue;
-    private PrimitiveValue<String>  stringValue;
+    private PrimitiveValue<Integer>          integerValue;
+    private PrimitiveValue<String>           stringValue;
 
-    private ProgramValueType        valueType;
+    private PrimitiveValue<ProgramValueType> valueType;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ProgramValue() { }
+    public ProgramValue()
+    {
+        this.id           = null;
+
+        this.integerValue = new PrimitiveValue<>(null, this, Integer.class);
+        this.stringValue  = new PrimitiveValue<>(null, this, String.class);
+
+        this.valueType    = new PrimitiveValue<>(null, this, ProgramValueType.class);
+    }
 
 
     /**
@@ -48,12 +56,12 @@ public class ProgramValue implements Model
      */
     private ProgramValue(UUID id, Object value, ProgramValueType valueType)
     {
-        this.id        = id;
+        this.id           = id;
 
         this.integerValue = new PrimitiveValue<>(null, this, Integer.class);
         this.stringValue  = new PrimitiveValue<>(null, this, String.class);
 
-        this.valueType = valueType;
+        this.valueType    = new PrimitiveValue<>(valueType, this, ProgramValueType.class);
 
         // Set the value
         switch (valueType)
@@ -142,7 +150,7 @@ public class ProgramValue implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State
@@ -154,7 +162,7 @@ public class ProgramValue implements Model
      */
     public ProgramValueType getType()
     {
-        return this.valueType;
+        return this.valueType.getValue();
     }
 
 

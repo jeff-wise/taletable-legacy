@@ -9,7 +9,6 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +32,17 @@ public class ProgramInvocation implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ProgramInvocation() { }
+    public ProgramInvocation()
+    {
+        this.id = null;
+
+        this.programName = new PrimitiveValue<>(null, this, String.class);
+
+        List<Class<? extends ProgramInvocationParameter>> parameterClasses
+                                                = new ArrayList<>();
+        parameterClasses.add(ProgramInvocationParameter.class);
+        this.parameters  = new CollectionValue<>(null, this, parameterClasses);
+    }
 
 
     public ProgramInvocation(UUID id,
@@ -101,7 +110,7 @@ public class ProgramInvocation implements Model
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     // > State

@@ -36,7 +36,14 @@ public class RefinementIndex implements Model, Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public RefinementIndex() { }
+    public RefinementIndex()
+    {
+        this.id        = null;
+
+        List<Class<? extends MemberOf>> memberOfClasses = new ArrayList<>();
+        memberOfClasses.add(MemberOf.class);
+        this.memberOfs = new CollectionValue<>(new ArrayList<MemberOf>(), this, memberOfClasses);
+    }
 
 
     public RefinementIndex(UUID id)
@@ -108,7 +115,7 @@ public class RefinementIndex implements Model, Serializable
     // ** On Update
     // ------------------------------------------------------------------------------------------
 
-    public void onModelUpdate(String valueName) { }
+    public void onValueUpdate(String valueName) { }
 
 
     /**

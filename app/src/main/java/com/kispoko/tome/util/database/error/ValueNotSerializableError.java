@@ -40,6 +40,15 @@ public class ValueNotSerializableError
     }
 
 
+    public String errorMessage()
+    {
+        return "Value Not Serializable:\n" +
+               "    Problem: " + this.type.toString() + "\n" +
+               "    Java Type: " + this.getJavaTypeName();
+
+    }
+
+
     // NESTED DEFINITIONS
     // -----------------------------------------------------------------------------------------
 
