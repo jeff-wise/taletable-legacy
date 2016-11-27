@@ -38,9 +38,9 @@ public class Rules implements Model, Serializable
     {
         this.id = null;
 
-        this.refinementIndex = new ModelValue<>(null, this, RefinementIndex.class);
-        this.functionIndex   = new ModelValue<>(null, this, FunctionIndex.class);
-        this.programIndex    = new ModelValue<>(null, this, ProgramIndex.class);
+        this.refinementIndex = new ModelValue<>(null, RefinementIndex.class);
+        this.functionIndex   = new ModelValue<>(null, FunctionIndex.class);
+        this.programIndex    = new ModelValue<>(null, ProgramIndex.class);
 
     }
 
@@ -52,9 +52,9 @@ public class Rules implements Model, Serializable
     {
         this.id = id;
 
-        this.refinementIndex = new ModelValue<>(refinementIndex, this, RefinementIndex.class);
-        this.functionIndex   = new ModelValue<>(functionIndex, this, FunctionIndex.class);
-        this.programIndex    = new ModelValue<>(programIndex, this, ProgramIndex.class);
+        this.refinementIndex = new ModelValue<>(refinementIndex, RefinementIndex.class);
+        this.functionIndex   = new ModelValue<>(functionIndex, FunctionIndex.class);
+        this.programIndex    = new ModelValue<>(programIndex, ProgramIndex.class);
     }
 
 

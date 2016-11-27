@@ -37,12 +37,12 @@ public class Statement implements Model
     {
         this.id           = null;
 
-        this.variableName = new PrimitiveValue<>(null, this, String.class);
-        this.functionName = new PrimitiveValue<>(null, this, String.class);
+        this.variableName = new PrimitiveValue<>(null, String.class);
+        this.functionName = new PrimitiveValue<>(null, String.class);
 
         List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
         parameterClasses.add(Parameter.class);
-        this.parameters   = new CollectionValue<>(null, this, parameterClasses);
+        this.parameters   = new CollectionValue<>(null, parameterClasses);
     }
 
 
@@ -50,12 +50,12 @@ public class Statement implements Model
     {
         this.id           = id;
 
-        this.variableName = new PrimitiveValue<>(variableName, this, String.class);
-        this.functionName = new PrimitiveValue<>(functionName, this, String.class);
+        this.variableName = new PrimitiveValue<>(variableName, String.class);
+        this.functionName = new PrimitiveValue<>(functionName, String.class);
 
         List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
         parameterClasses.add(Parameter.class);
-        this.parameters   = new CollectionValue<>(parameters, this, parameterClasses);
+        this.parameters   = new CollectionValue<>(parameters, parameterClasses);
     }
 
 

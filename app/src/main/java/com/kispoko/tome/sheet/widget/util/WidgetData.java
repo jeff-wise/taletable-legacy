@@ -35,8 +35,8 @@ public class WidgetData implements Model, Serializable
     {
         this.id      = null;
 
-        this.format  = new ModelValue<>(null, this, WidgetFormat.class);
-        this.actions = new PrimitiveValue<>(null, this, String[].class);
+        this.format  = new ModelValue<>(null, WidgetFormat.class);
+        this.actions = new PrimitiveValue<>(null, String[].class);
     }
 
 
@@ -46,8 +46,8 @@ public class WidgetData implements Model, Serializable
     {
         this.id      = id;
 
-        this.format  = new ModelValue<>(widgetFormat, this, WidgetFormat.class);
-        this.actions = new PrimitiveValue<>(actions, this, String[].class);
+        this.format  = new ModelValue<>(widgetFormat, WidgetFormat.class);
+        this.actions = new PrimitiveValue<>(actions, String[].class);
     }
 
 

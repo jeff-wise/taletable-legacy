@@ -77,18 +77,7 @@ public class ModelLib
             {
                 try
                 {
-                    // [1] GET SQL columns
-                    A dummyModel = ModelLib.newModel(modelClass);
-                    List<Tuple2<String, SQLValue.Type>> sqlColumns =
-                                                    ModelLib.sqlColumns(dummyModel);
-
-                    // [2] RUN the query
-                    ModelQuery modelQuery = new ModelQuery(ModelLib.name(modelClass),
-                                                           sqlColumns,
-                                                           queryParameters);
-                    ResultRow row = modelQuery.result();
-
-                    return row;
+                    return runLoadQuery(modelClass, queryParameters);
                 }
                 catch (DatabaseException exception)
                 {
@@ -250,7 +239,7 @@ public class ModelLib
             {
                 try
                 {
-                    saveQuery(model);
+                    runSaveQuery(model);
                     return null;
                 }
                 catch (DatabaseException exception)
@@ -309,7 +298,7 @@ public class ModelLib
                 try
                 {
                     for (Model model : models) {
-                        saveQuery(model);
+                        runSaveQuery(model);
                     }
                     return null;
                 }
@@ -385,18 +374,22 @@ public class ModelLib
 
             for (final ModelValue<? extends Model> modelValue : modelValues)
             {
-                ModelValue.OnSaveListener onSaveListener = new ModelValue.OnSaveListener() {
+                ModelValue.OnSaveListener onSaveListener = new ModelValue.OnSaveListener()
+                {
                     @Override
+
                     public void onSave() {
                         modelValue.setIsSaved(true);
+
                         if (ModelLib.valuesAreSaved(modelValues, collectionValues)) {
-                            if (onModelSaveListener!= null)
+                            if (onModelSaveListener != null)
                                 onModelSaveListener.onModelSave();
                         }
                     }
 
                     @Override
-                    public void onSaveError(DatabaseException exception) {
+                    public void onSaveError(DatabaseException exception)
+                    {
                         if (onModelSaveListener != null)
                             onModelSaveListener.onModelSaveError(exception);
                     }
@@ -810,8 +803,26 @@ public class ModelLib
     }
 
 
+    private static <A extends Model> ResultRow runLoadQuery(Class<A> modelClass,
+                                                            ModelQueryParameters queryParameters)
+                                     throws DatabaseException
+    {
+        // [1] GET SQL columns
+        A dummyModel = ModelLib.newModel(modelClass);
+        List<Tuple2<String, SQLValue.Type>> sqlColumns =
+                                        ModelLib.sqlColumns(dummyModel);
 
-    private static void saveQuery(Model model)
+        // [2] RUN the query
+        ModelQuery modelQuery = new ModelQuery(ModelLib.name(modelClass),
+                                               sqlColumns,
+                                               queryParameters);
+        ResultRow row = modelQuery.result();
+
+        return row;
+    }
+
+
+    private static void runSaveQuery(Model model)
                    throws DatabaseException
     {
         // [A 1] Group values by type
@@ -859,12 +870,14 @@ public class ModelLib
         }
 
         // ** Save all of the model value identifiers (as foreign keys)
-        for (ModelValue<? extends Model> modelValue : modelValues) {
+        for (ModelValue<? extends Model> modelValue : modelValues)
+        {
             String columnName = modelValue.sqlColumnName();
-            if (!modelValue.isNull())
-                row.put(columnName, modelValue.getValue().getId().toString());
-            else
+
+            if (modelValue.isNull())
                 row.putNull(columnName);
+            else
+                row.put(columnName, modelValue.getValue().getId().toString());
         }
 
         // > Save the row, creating a new one if necessary.

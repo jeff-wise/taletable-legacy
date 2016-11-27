@@ -5,6 +5,7 @@ package com.kispoko.tome.util.value;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
+import com.kispoko.tome.rules.programming.program.ProgramInvocationParameterType;
 import com.kispoko.tome.rules.programming.program.ProgramValueType;
 import com.kispoko.tome.rules.programming.program.statement.ParameterType;
 import com.kispoko.tome.rules.programming.variable.VariableType;
@@ -16,6 +17,7 @@ import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.error.ValueNotSerializableError;
 import com.kispoko.tome.util.database.sql.SQLValue;
 
@@ -37,28 +39,16 @@ public class PrimitiveValue<A> extends Value<A>
     // --------------------------------------------------------------------------------------
 
     private Class<A>            valueClass;
-    private OnUpdateListener<A> onUpdateListener;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
     public PrimitiveValue(A value,
-                          Class<A> valueClass,
-                          OnUpdateListener<A> onUpdateListener)
-    {
-        super(value);
-        this.valueClass       = valueClass;
-        this.onUpdateListener = onUpdateListener;
-    }
-
-
-    public PrimitiveValue(A value,
                           Class<A> valueClass)
     {
         super(value);
         this.valueClass       = valueClass;
-        this.onUpdateListener = null;
     }
 
 
@@ -70,7 +60,7 @@ public class PrimitiveValue<A> extends Value<A>
 
     public String sqlColumnName()
     {
-        return this.name();
+        return SQL.asValidIdentifier(this.name());
     }
 
 
@@ -82,7 +72,6 @@ public class PrimitiveValue<A> extends Value<A>
     {
         if (newValue != null) {
             this.value = newValue;
-            this.onUpdateListener.onUpdate(newValue);
         }
     }
 
@@ -98,10 +87,12 @@ public class PrimitiveValue<A> extends Value<A>
      * the listener is called with the updated value.
      * @param onUpdateListener The PrimitiveValue OnUpdateListener instance.
      */
+    /*
     public void setOnUpdateListener(OnUpdateListener<A> onUpdateListener)
     {
         this.onUpdateListener = onUpdateListener;
     }
+    */
 
 
 
@@ -170,6 +161,9 @@ public class PrimitiveValue<A> extends Value<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(VariableType.class)) {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(ProgramInvocationParameterType.class)) {
             return SQLValue.Type.TEXT;
         }
         else {
@@ -269,6 +263,11 @@ public class PrimitiveValue<A> extends Value<A>
         }
         else if (this.getValue() instanceof VariableType) {
             String enumString = ((VariableType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof ProgramInvocationParameterType) {
+            String enumString = ((ProgramInvocationParameterType)
+                                            this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else {

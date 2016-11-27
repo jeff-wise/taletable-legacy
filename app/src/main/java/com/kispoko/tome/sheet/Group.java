@@ -55,9 +55,9 @@ public class Group implements Model, Serializable
     {
         this.id           = null;
 
-        this.label        = new PrimitiveValue<>(null, this, String.class);
-        this.index        = new PrimitiveValue<>(null, this, Integer.class);
-        this.numberOfRows = new PrimitiveValue<>(null, this, Integer.class);
+        this.label        = new PrimitiveValue<>(null, String.class);
+        this.index        = new PrimitiveValue<>(null, Integer.class);
+        this.numberOfRows = new PrimitiveValue<>(null, Integer.class);
 
         List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
         widgetClasses.add(TextWidget.class);
@@ -65,7 +65,7 @@ public class Group implements Model, Serializable
         widgetClasses.add(BooleanWidget.class);
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
-        this.widgets      = new CollectionValue<>(null, this, widgetClasses);
+        this.widgets      = new CollectionValue<>(null, widgetClasses);
     }
 
 
@@ -74,9 +74,9 @@ public class Group implements Model, Serializable
     {
         this.id           = id;
 
-        this.label        = new PrimitiveValue<>(label, this, String.class);
-        this.index        = new PrimitiveValue<>(index, this, Integer.class);
-        this.numberOfRows = new PrimitiveValue<>(numberOfRows, this, Integer.class);
+        this.label        = new PrimitiveValue<>(label, String.class);
+        this.index        = new PrimitiveValue<>(index, Integer.class);
+        this.numberOfRows = new PrimitiveValue<>(numberOfRows, Integer.class);
 
         List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
         widgetClasses.add(TextWidget.class);
@@ -84,7 +84,7 @@ public class Group implements Model, Serializable
         widgetClasses.add(BooleanWidget.class);
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
-        this.widgets      = new CollectionValue<>(widgets, this, widgetClasses);
+        this.widgets      = new CollectionValue<>(widgets, widgetClasses);
     }
 
 
@@ -265,7 +265,8 @@ public class Group implements Model, Serializable
                 frameLayout.setLayoutParams(frameLayoutParams);
 
                 // Add WidgetData View
-                View componentView = widget.getDisplayView(context, rules);
+                View componentView = widget.getDisplayView(context,
+                        SheetManager.currentSheet().getRules());
                 frameLayout.addView(componentView);
 
                 rowLayout.addView(frameLayout);

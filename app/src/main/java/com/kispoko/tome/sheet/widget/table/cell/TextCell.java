@@ -35,8 +35,8 @@ public class TextCell implements Model
     {
         this.id        = null;
 
-        this.value     = new ModelValue<>(null, this, TextVariable.class);
-        this.alignment = new PrimitiveValue<>(null, this, CellAlignment.class);
+        this.value     = new ModelValue<>(null, TextVariable.class);
+        this.alignment = new PrimitiveValue<>(null, CellAlignment.class);
     }
 
 
@@ -44,8 +44,8 @@ public class TextCell implements Model
     {
         this.id        = id;
 
-        this.value     = new ModelValue<>(value, this, TextVariable.class);
-        this.alignment = new PrimitiveValue<>(alignment, this, CellAlignment.class);
+        this.value     = new ModelValue<>(value, TextVariable.class);
+        this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
     }
 
 

@@ -40,10 +40,10 @@ public class ProgramValue implements Model
     {
         this.id           = null;
 
-        this.integerValue = new PrimitiveValue<>(null, this, Integer.class);
-        this.stringValue  = new PrimitiveValue<>(null, this, String.class);
+        this.integerValue = new PrimitiveValue<>(null, Integer.class);
+        this.stringValue  = new PrimitiveValue<>(null, String.class);
 
-        this.valueType    = new PrimitiveValue<>(null, this, ProgramValueType.class);
+        this.valueType    = new PrimitiveValue<>(null, ProgramValueType.class);
     }
 
 
@@ -58,10 +58,10 @@ public class ProgramValue implements Model
     {
         this.id           = id;
 
-        this.integerValue = new PrimitiveValue<>(null, this, Integer.class);
-        this.stringValue  = new PrimitiveValue<>(null, this, String.class);
+        this.integerValue = new PrimitiveValue<>(null, Integer.class);
+        this.stringValue  = new PrimitiveValue<>(null, String.class);
 
-        this.valueType    = new PrimitiveValue<>(valueType, this, ProgramValueType.class);
+        this.valueType    = new PrimitiveValue<>(valueType, ProgramValueType.class);
 
         // Set the value
         switch (valueType)

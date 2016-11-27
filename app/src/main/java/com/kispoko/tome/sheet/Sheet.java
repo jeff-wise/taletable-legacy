@@ -48,8 +48,6 @@ public class Sheet implements Model
 
     private Map<UUID,Widget>     componentById;
 
-    private PagePagerAdapter     pagePagerAdapter;
-
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -158,7 +156,6 @@ public class Sheet implements Model
      */
     public void render(PagePagerAdapter pagePagerAdapter)
     {
-        this.pagePagerAdapter = pagePagerAdapter;
         this.getRoleplay().render(pagePagerAdapter);
     }
 

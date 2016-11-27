@@ -35,8 +35,8 @@ public class BooleanCell implements Model
     {
         this.id        = null;
 
-        this.value     = new ModelValue<>(null, this, BooleanVariable.class);
-        this.alignment = new PrimitiveValue<>(null, this, CellAlignment.class);
+        this.value     = new ModelValue<>(null, BooleanVariable.class);
+        this.alignment = new PrimitiveValue<>(null, CellAlignment.class);
     }
 
 
@@ -44,8 +44,8 @@ public class BooleanCell implements Model
     {
         this.id        = id;
 
-        this.value     = new ModelValue<>(value, this, BooleanVariable.class);
-        this.alignment = new PrimitiveValue<>(alignment, this, CellAlignment.class);
+        this.value     = new ModelValue<>(value, BooleanVariable.class);
+        this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
     }
 
 

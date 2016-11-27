@@ -40,9 +40,9 @@ public class Tuple implements Model
 
         List<Class<? extends ProgramValue>> programValueClasses = new ArrayList<>();
         programValueClasses.add(ProgramValue.class);
-        this.parameters = new CollectionValue<>(null, this, programValueClasses);
+        this.parameters = new CollectionValue<>(null, programValueClasses);
 
-        this.result     = new ModelValue<>(null, this, ProgramValue.class);
+        this.result     = new ModelValue<>(null, ProgramValue.class);
     }
 
 
@@ -52,9 +52,9 @@ public class Tuple implements Model
 
         List<Class<? extends ProgramValue>> programValueClasses = new ArrayList<>();
         programValueClasses.add(ProgramValue.class);
-        this.parameters = new CollectionValue<>(parameters, this, programValueClasses);
+        this.parameters = new CollectionValue<>(parameters, programValueClasses);
 
-        this.result     = new ModelValue<>(result, this, ProgramValue.class);
+        this.result     = new ModelValue<>(result, ProgramValue.class);
 
     }
 

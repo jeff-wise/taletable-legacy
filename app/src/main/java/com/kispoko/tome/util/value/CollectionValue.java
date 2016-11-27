@@ -133,17 +133,27 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
         return new OnLoadListener<A>()
         {
             @Override
-            public void onLoad(List<A> values) {
+            public void onLoad(List<A> values)
+            {
                 setValue(value);
+
                 setIsLoaded(true);
-                staticOnLoadListener.onLoad(value);
-                dynamicOnLoadListener.onLoad(value);
+
+                if (staticOnLoadListener != null)
+                    staticOnLoadListener.onLoad(value);
+
+                if (dynamicOnLoadListener != null)
+                    dynamicOnLoadListener.onLoad(value);
             }
 
             @Override
-            public void onLoadError(DatabaseException exception) {
-                staticOnLoadListener.onLoadError(exception);
-                dynamicOnLoadListener.onLoadError(exception);
+            public void onLoadError(DatabaseException exception)
+            {
+                if (staticOnLoadListener != null)
+                    staticOnLoadListener.onLoadError(exception);
+
+                if (dynamicOnLoadListener != null)
+                    dynamicOnLoadListener.onLoadError(exception);
             }
         };
     }
@@ -159,16 +169,27 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
         return new OnSaveListener()
         {
             @Override
-            public void onSave() {
+            public void onSave()
+            {
                 setIsSaved(true);
-                staticOnSaveListener.onSave();
-                dynamicOnSaveListener.onSave();
+
+                if (staticOnSaveListener != null)
+                    staticOnSaveListener.onSave();
+
+                if (dynamicOnSaveListener != null)
+                    dynamicOnSaveListener.onSave();
             }
 
             @Override
-            public void onSaveError(DatabaseException exception) {
-                staticOnSaveListener.onSaveError(exception);
-                dynamicOnSaveListener.onSaveError(exception);
+
+            public void onSaveError(DatabaseException exception)
+            {
+
+                if (staticOnSaveListener != null)
+                    staticOnSaveListener.onSaveError(exception);
+
+                if (dynamicOnSaveListener != null)
+                    dynamicOnSaveListener.onSaveError(exception);
             }
         };
     }

@@ -47,13 +47,13 @@ public class Function implements Model
     public Function()
     {
         this.id             = null;
-        this.name           = new PrimitiveValue<>(null, this, String.class);
-        this.parameterTypes = new PrimitiveValue<>(null, this, ProgramValueType[].class);
-        this.resultType     = new PrimitiveValue<>(null, this, ProgramValueType.class);
+        this.name           = new PrimitiveValue<>(null, String.class);
+        this.parameterTypes = new PrimitiveValue<>(null, ProgramValueType[].class);
+        this.resultType     = new PrimitiveValue<>(null, ProgramValueType.class);
 
         List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
         tupleClasses.add(Tuple.class);
-        this.tuples         = new CollectionValue<>(null, this, tupleClasses);
+        this.tuples         = new CollectionValue<>(null, tupleClasses);
     }
 
 
@@ -68,21 +68,20 @@ public class Function implements Model
         this.id             = id;
 
         // ** Name
-        this.name           = new PrimitiveValue<>(name, this, String.class);
+        this.name           = new PrimitiveValue<>(name, String.class);
 
         // ** Parameter Types
         ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
                                                     new ProgramValueType[parameterTypes.size()]);
-        this.parameterTypes = new PrimitiveValue<>(parameterTypeArray, this,
-                                                   ProgramValueType[].class);
+        this.parameterTypes = new PrimitiveValue<>(parameterTypeArray, ProgramValueType[].class);
 
         // ** Result Type
-        this.resultType     = new PrimitiveValue<>(resultType, this, ProgramValueType.class);
+        this.resultType     = new PrimitiveValue<>(resultType, ProgramValueType.class);
 
         // ** Tuples
         List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
         tupleClasses.add(Tuple.class);
-        this.tuples         = new CollectionValue<>(tuples, this, tupleClasses);
+        this.tuples         = new CollectionValue<>(tuples, tupleClasses);
 
         // > Validate the function definition
         this.validate();

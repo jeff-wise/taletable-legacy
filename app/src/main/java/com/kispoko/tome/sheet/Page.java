@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -220,14 +219,6 @@ public class Page implements Model, Serializable
 
         List<Class<? extends Group>> groupClasses = new ArrayList<>();
         groupClasses.add(Group.class);
-
-//        CollectionValue.OnUpdateListener<Group> onUpdateListener =
-//                new CollectionValue.OnUpdateListener<Group>() {
-//            @Override
-//            public void onUpdate(List<Group> values) {
-//                updateView(null);
-//            }
-//        };
 
         this.groups = new CollectionValue<>(null, groupClasses, null, null);
     }

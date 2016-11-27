@@ -36,11 +36,11 @@ public class Parameter implements Model
     {
         this.id               = null;
 
-        this.type             = new PrimitiveValue<>(null, this, ParameterType.class);
+        this.type             = new PrimitiveValue<>(null, ParameterType.class);
 
-        this.programParameter = new PrimitiveValue<>(null, this, Integer.class);
-        this.variableName     = new PrimitiveValue<>(null, this, String.class);
-        this.literalString    = new PrimitiveValue<>(null, this, String.class);
+        this.programParameter = new PrimitiveValue<>(null, Integer.class);
+        this.variableName     = new PrimitiveValue<>(null, String.class);
+        this.literalString    = new PrimitiveValue<>(null, String.class);
     }
 
 
@@ -54,11 +54,11 @@ public class Parameter implements Model
     {
         this.id               = id;
 
-        this.type             = new PrimitiveValue<>(parameterType, this, ParameterType.class);
+        this.type             = new PrimitiveValue<>(parameterType, ParameterType.class);
 
-        this.programParameter = new PrimitiveValue<>(null, this, Integer.class);
-        this.variableName     = new PrimitiveValue<>(null, this, String.class);
-        this.literalString    = new PrimitiveValue<>(null, this, String.class);
+        this.programParameter = new PrimitiveValue<>(null, Integer.class);
+        this.variableName     = new PrimitiveValue<>(null, String.class);
+        this.literalString    = new PrimitiveValue<>(null, String.class);
 
         switch (parameterType)
         {

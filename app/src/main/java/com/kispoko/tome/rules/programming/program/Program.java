@@ -44,21 +44,21 @@ public class Program implements Model
          this.id             = null;
 
         // ** Name
-        this.name            = new PrimitiveValue<>(null, this, String.class);
+        this.name            = new PrimitiveValue<>(null, String.class);
 
         // ** Parameter Types
-        this.parameterTypes  = new PrimitiveValue<>(null, this, ProgramValueType[].class);
+        this.parameterTypes  = new PrimitiveValue<>(null, ProgramValueType[].class);
 
         // ** Result Type
-        this.resultType      = new PrimitiveValue<>(null, this, ProgramValueType.class);
+        this.resultType      = new PrimitiveValue<>(null, ProgramValueType.class);
 
         // **  Statements
         List<Class<? extends Statement>> statementClasses = new ArrayList<>();
         statementClasses.add(Statement.class);
-        this.statements      = new CollectionValue<>(null, this, statementClasses);
+        this.statements      = new CollectionValue<>(null, statementClasses);
 
         // **  Result Statement
-        this.resultStatement = new ModelValue<>(null, this, Statement.class);
+        this.resultStatement = new ModelValue<>(null, Statement.class);
     }
 
 
@@ -72,24 +72,23 @@ public class Program implements Model
         this.id              = id;
 
         // ** Name
-        this.name            = new PrimitiveValue<>(name, this, String.class);
+        this.name            = new PrimitiveValue<>(name, String.class);
 
         // ** Parameter Types
         ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
                                                     new ProgramValueType[parameterTypes.size()]);
-        this.parameterTypes  = new PrimitiveValue<>(parameterTypeArray, this,
-                                                   ProgramValueType[].class);
+        this.parameterTypes  = new PrimitiveValue<>(parameterTypeArray, ProgramValueType[].class);
 
         // ** Result Type
-        this.resultType      = new PrimitiveValue<>(resultType, this, ProgramValueType.class);
+        this.resultType      = new PrimitiveValue<>(resultType, ProgramValueType.class);
 
         // **  Statements
         List<Class<? extends Statement>> statementClasses = new ArrayList<>();
         statementClasses.add(Statement.class);
-        this.statements      = new CollectionValue<>(statements, this, statementClasses);
+        this.statements      = new CollectionValue<>(statements, statementClasses);
 
         // **  Result Statement
-        this.resultStatement = new ModelValue<>(resultStatement, this, Statement.class);
+        this.resultStatement = new ModelValue<>(resultStatement, Statement.class);
     }
 
 

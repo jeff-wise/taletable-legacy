@@ -36,12 +36,12 @@ public class ProgramInvocation implements Model
     {
         this.id = null;
 
-        this.programName = new PrimitiveValue<>(null, this, String.class);
+        this.programName = new PrimitiveValue<>(null, String.class);
 
         List<Class<? extends ProgramInvocationParameter>> parameterClasses
                                                 = new ArrayList<>();
         parameterClasses.add(ProgramInvocationParameter.class);
-        this.parameters  = new CollectionValue<>(null, this, parameterClasses);
+        this.parameters  = new CollectionValue<>(null, parameterClasses);
     }
 
 
@@ -51,12 +51,12 @@ public class ProgramInvocation implements Model
     {
         this.id = id;
 
-        this.programName = new PrimitiveValue<>(programName, this, String.class);
+        this.programName = new PrimitiveValue<>(programName, String.class);
 
         List<Class<? extends ProgramInvocationParameter>> parameterClasses
                                                 = new ArrayList<>();
         parameterClasses.add(ProgramInvocationParameter.class);
-        this.parameters  = new CollectionValue<>(parameters, this, parameterClasses);
+        this.parameters  = new CollectionValue<>(parameters, parameterClasses);
     }
 
 

@@ -29,17 +29,22 @@ public class ProgramInvocationParameter implements Model
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ProgramInvocationParameter() { }
+    public ProgramInvocationParameter()
+    {
+        this.id             = null;
+
+        this.referenceValue = new PrimitiveValue<>(null, String.class);
+        this.type           = new PrimitiveValue<>(null, ProgramInvocationParameterType.class);
+    }
 
 
     public ProgramInvocationParameter(UUID id, Object value, ProgramInvocationParameterType type)
     {
         this.id             = id;
 
-        this.referenceValue = new PrimitiveValue<>(null, this, String.class);
+        this.referenceValue = new PrimitiveValue<>(null, String.class);
 
-        this.type           = new PrimitiveValue<>(type, this,
-                                                   ProgramInvocationParameterType.class);
+        this.type           = new PrimitiveValue<>(type, ProgramInvocationParameterType.class);
 
         // Set the value, depending on the case
         switch (type)

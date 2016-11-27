@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.rules.programming.function.FunctionIndex;
 import com.kispoko.tome.rules.programming.program.ProgramIndex;
+import com.kispoko.tome.rules.programming.program.ProgramInvocationParameter;
 import com.kispoko.tome.rules.programming.program.ProgramValue;
 import com.kispoko.tome.rules.programming.program.statement.Parameter;
 import com.kispoko.tome.rules.programming.variable.BooleanVariable;
@@ -109,6 +110,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             db.execSQL(ModelLib.defineTableSQLString(Statement.class));
             db.execSQL(ModelLib.defineTableSQLString(Parameter.class));
             db.execSQL(ModelLib.defineTableSQLString(ProgramInvocation.class));
+            db.execSQL(ModelLib.defineTableSQLString(ProgramInvocationParameter.class));
             db.execSQL(ModelLib.defineTableSQLString(ProgramValue.class));
 
             // ** Function

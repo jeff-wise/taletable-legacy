@@ -61,11 +61,11 @@ public class TextWidget extends Widget implements Serializable
 
     public TextWidget()
     {
-        this.id         = id;
+        this.id         = null;
 
-        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
-        this.value      = new ModelValue<>(null, this, TextVariable.class);
-        this.size       = new PrimitiveValue<>(null, this, WidgetFormat.Size.class);
+        this.widgetData = new ModelValue<>(null, WidgetData.class);
+        this.value      = new ModelValue<>(null, TextVariable.class);
+        this.size       = new PrimitiveValue<>(null, WidgetFormat.Size.class);
     }
 
 
@@ -73,9 +73,9 @@ public class TextWidget extends Widget implements Serializable
     {
         this.id         = id;
 
-        this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
-        this.value      = new ModelValue<>(value, this, TextVariable.class);
-        this.size       = new PrimitiveValue<>(size, this, WidgetFormat.Size.class);
+        this.widgetData = new ModelValue<>(widgetData, WidgetData.class);
+        this.value      = new ModelValue<>(value, TextVariable.class);
+        this.size       = new PrimitiveValue<>(size, WidgetFormat.Size.class);
     }
 
 

@@ -36,9 +36,9 @@ public class Game implements Model
     {
         this.id          = null;
 
-        this.name        = new PrimitiveValue<>(null, this, String.class);
-        this.label       = new PrimitiveValue<>(null, this, String.class);
-        this.description = new PrimitiveValue<>(null, this, String.class);
+        this.name        = new PrimitiveValue<>(null, String.class);
+        this.label       = new PrimitiveValue<>(null, String.class);
+        this.description = new PrimitiveValue<>(null, String.class);
     }
 
 
@@ -46,9 +46,9 @@ public class Game implements Model
     {
         this.id = id;
 
-        this.name        = new PrimitiveValue<>(name, this, String.class);
-        this.label       = new PrimitiveValue<>(label, this, String.class);
-        this.description = new PrimitiveValue<>(description, this, String.class);
+        this.name        = new PrimitiveValue<>(name, String.class);
+        this.label       = new PrimitiveValue<>(label, String.class);
+        this.description = new PrimitiveValue<>(description, String.class);
     }
 
 

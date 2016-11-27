@@ -39,12 +39,12 @@ public class NumberVariable implements Model
     {
         this.id                     = null;
 
-        this.integerValue           = new PrimitiveValue<>(null, this, Integer.class);
-        this.programInvocationValue = new ModelValue<>(null, this, ProgramInvocation.class);
+        this.integerValue           = new PrimitiveValue<>(null, Integer.class);
+        this.programInvocationValue = new ModelValue<>(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(null, this, VariableType.class);
+        this.type                   = new PrimitiveValue<>(null, VariableType.class);
 
-        this.refinementId           = new ModelValue<>(null, this, RefinementId.class);
+        this.refinementId           = new ModelValue<>(null, RefinementId.class);
     }
 
 
@@ -59,12 +59,12 @@ public class NumberVariable implements Model
     {
         this.id                     = id;
 
-        this.integerValue           = new PrimitiveValue<>(null, this, Integer.class);
-        this.programInvocationValue = new ModelValue<>(null, this, ProgramInvocation.class);
+        this.integerValue           = new PrimitiveValue<>(null, Integer.class);
+        this.programInvocationValue = new ModelValue<>(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(type, this, VariableType.class);
+        this.type                   = new PrimitiveValue<>(type, VariableType.class);
 
-        this.refinementId           = new ModelValue<>(refinementId, this, RefinementId.class);
+        this.refinementId           = new ModelValue<>(refinementId, RefinementId.class);
 
         // Set value according to variable type
         switch (type)

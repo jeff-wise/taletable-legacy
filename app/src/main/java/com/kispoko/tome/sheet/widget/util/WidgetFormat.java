@@ -44,12 +44,12 @@ public class WidgetFormat implements Model, Serializable
     {
         this.id        = null;
 
-        this.label     = new PrimitiveValue<>(null, this, String.class);
-        this.showLabel = new PrimitiveValue<>(null, this, Boolean.class);
-        this.row       = new PrimitiveValue<>(null, this, Integer.class);
-        this.column    = new PrimitiveValue<>(null, this, Integer.class);
-        this.width     = new PrimitiveValue<>(null, this, Integer.class);
-        this.alignment = new PrimitiveValue<>(null, this, Alignment.class);
+        this.label     = new PrimitiveValue<>(null, String.class);
+        this.showLabel = new PrimitiveValue<>(null, Boolean.class);
+        this.row       = new PrimitiveValue<>(null, Integer.class);
+        this.column    = new PrimitiveValue<>(null, Integer.class);
+        this.width     = new PrimitiveValue<>(null, Integer.class);
+        this.alignment = new PrimitiveValue<>(null, Alignment.class);
 
     }
 
@@ -64,12 +64,12 @@ public class WidgetFormat implements Model, Serializable
     {
         this.id = id;
 
-        this.label     = new PrimitiveValue<>(label, this, String.class);
-        this.showLabel = new PrimitiveValue<>(showLabel, this, Boolean.class);
-        this.row       = new PrimitiveValue<>(row, this, Integer.class);
-        this.column    = new PrimitiveValue<>(column, this, Integer.class);
-        this.width     = new PrimitiveValue<>(width, this, Integer.class);
-        this.alignment = new PrimitiveValue<>(alignment, this, Alignment.class);
+        this.label     = new PrimitiveValue<>(label, String.class);
+        this.showLabel = new PrimitiveValue<>(showLabel, Boolean.class);
+        this.row       = new PrimitiveValue<>(row, Integer.class);
+        this.column    = new PrimitiveValue<>(column, Integer.class);
+        this.width     = new PrimitiveValue<>(width, Integer.class);
+        this.alignment = new PrimitiveValue<>(alignment, Alignment.class);
 
         this.setLabel(label);
         this.setShowLabel(showLabel);

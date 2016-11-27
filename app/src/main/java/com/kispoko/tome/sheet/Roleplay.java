@@ -164,15 +164,7 @@ public class Roleplay implements Model
         List<Class<? extends Page>> pageClasses = new ArrayList<>();
         pageClasses.add(Page.class);
 
-        CollectionValue.OnUpdateListener<Page> onPagesUpdateListener
-                = new CollectionValue.OnUpdateListener<Page>() {
-            @Override
-            public void onUpdate(List<Page> pages) {
-                updateView();
-            }
-        };
-
-        this.pages = new CollectionValue<>(null, pageClasses, onPagesUpdateListener);
+        this.pages = new CollectionValue<>(null, pageClasses);
     }
 
 }

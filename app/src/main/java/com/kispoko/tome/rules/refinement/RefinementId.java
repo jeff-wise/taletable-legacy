@@ -33,8 +33,8 @@ public class RefinementId implements Model, Serializable
     {
         this.id   = null;
 
-        this.name = new PrimitiveValue<>(null, this, String.class);
-        this.type = new PrimitiveValue<>(null, this, RefinementType.class);
+        this.name = new PrimitiveValue<>(null, String.class);
+        this.type = new PrimitiveValue<>(null, RefinementType.class);
 
     }
 
@@ -43,8 +43,8 @@ public class RefinementId implements Model, Serializable
     {
         this.id   = id;
 
-        this.name = new PrimitiveValue<>(name, this, String.class);
-        this.type = new PrimitiveValue<>(type, this, RefinementType.class);
+        this.name = new PrimitiveValue<>(name, String.class);
+        this.type = new PrimitiveValue<>(type, RefinementType.class);
     }
 
 

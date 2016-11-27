@@ -43,9 +43,9 @@ public class BooleanWidget extends Widget implements Serializable
     {
         this.id         = null;
 
-        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
-        this.size       = new PrimitiveValue<>(null, this, WidgetFormat.Size.class);
-        this.value      = new ModelValue<>(null, this, BooleanVariable.class);
+        this.widgetData = new ModelValue<>(null, WidgetData.class);
+        this.size       = new PrimitiveValue<>(null, WidgetFormat.Size.class);
+        this.value      = new ModelValue<>(null, BooleanVariable.class);
     }
 
 
@@ -56,9 +56,9 @@ public class BooleanWidget extends Widget implements Serializable
     {
         this.id = id;
 
-        this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
-        this.size       = new PrimitiveValue<>(size, this, WidgetFormat.Size.class);
-        this.value      = new ModelValue<>(value, this, BooleanVariable.class);
+        this.widgetData = new ModelValue<>(widgetData, WidgetData.class);
+        this.size       = new PrimitiveValue<>(size, WidgetFormat.Size.class);
+        this.value      = new ModelValue<>(value, BooleanVariable.class);
     }
 
 

@@ -37,9 +37,9 @@ public class NumberColumn implements Model, Column
     {
         this.id               = null;
 
-        this.name             = new PrimitiveValue<>(null, this, String.class);
-        this.defaultValue     = new PrimitiveValue<>(null, this, Integer.class);
-        this.defaultAlignment = new PrimitiveValue<>(null, this, CellAlignment.class);
+        this.name             = new PrimitiveValue<>(null, String.class);
+        this.defaultValue     = new PrimitiveValue<>(null, Integer.class);
+        this.defaultAlignment = new PrimitiveValue<>(null, CellAlignment.class);
     }
 
 
@@ -47,9 +47,9 @@ public class NumberColumn implements Model, Column
     {
         this.id               = id;
 
-        this.name             = new PrimitiveValue<>(name, this, String.class);
-        this.defaultValue     = new PrimitiveValue<>(defaultValue, this, Integer.class);
-        this.defaultAlignment = new PrimitiveValue<>(defaultAlignment, this, CellAlignment.class);
+        this.name             = new PrimitiveValue<>(name, String.class);
+        this.defaultValue     = new PrimitiveValue<>(defaultValue, Integer.class);
+        this.defaultAlignment = new PrimitiveValue<>(defaultAlignment, CellAlignment.class);
     }
 
 

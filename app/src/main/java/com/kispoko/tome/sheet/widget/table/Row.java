@@ -38,7 +38,7 @@ public class Row implements Model
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells = new CollectionValue<>(null, this, cellClassList);
+        this.cells = new CollectionValue<>(null, cellClassList);
     }
 
 
@@ -48,7 +48,7 @@ public class Row implements Model
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells = new CollectionValue<>(cells, this, cellClassList);
+        this.cells = new CollectionValue<>(cells, cellClassList);
     }
 
 

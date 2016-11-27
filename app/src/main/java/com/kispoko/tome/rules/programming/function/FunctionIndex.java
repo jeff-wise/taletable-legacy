@@ -43,7 +43,7 @@ public class FunctionIndex implements Model
 
         List<Class<? extends Function>> functionClasses = new ArrayList<>();
         functionClasses.add(Function.class);
-        this.functions = new CollectionValue<>(new ArrayList<Function>(), this, functionClasses);
+        this.functions = new CollectionValue<>(new ArrayList<Function>(), functionClasses);
     }
 
 
@@ -53,7 +53,7 @@ public class FunctionIndex implements Model
 
         List<Class<? extends Function>> functionClasses = new ArrayList<>();
         functionClasses.add(Function.class);
-        this.functions = new CollectionValue<>(new ArrayList<Function>(), this, functionClasses);
+        this.functions = new CollectionValue<>(new ArrayList<Function>(), functionClasses);
 
         this.functionByName = new HashMap<>();
     }

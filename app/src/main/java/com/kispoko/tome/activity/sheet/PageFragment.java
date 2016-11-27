@@ -77,7 +77,7 @@ public class PageFragment extends Fragment
         ScrollView fragmentView = new ScrollView(getContext());
         fragmentView.setLayoutParams(Util.linearLayoutParamsMatch());
 
-        View pageView = this.page.view(getContext());
+        View pageView = this.page.view();
         fragmentView.addView(pageView);
 
         return fragmentView;

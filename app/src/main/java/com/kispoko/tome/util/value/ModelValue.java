@@ -2,6 +2,8 @@
 package com.kispoko.tome.util.value;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.model.Model;
@@ -140,7 +142,10 @@ public class ModelValue<A extends Model> extends Value<A>
 
     public void save(final OnSaveListener dynamicOnSaveListener)
     {
-        ModelLib.modelToDatabase(this.getValue(), this.onSaveListener(dynamicOnSaveListener));
+        if (this.getValue() != null) {
+            ModelLib.modelToDatabase(this.getValue(),
+                                     this.onSaveListener(dynamicOnSaveListener));
+        }
     }
 
 
@@ -160,17 +165,27 @@ public class ModelValue<A extends Model> extends Value<A>
         return new OnLoadListener<A>()
         {
             @Override
-            public void onLoad(A value) {
+            public void onLoad(A value)
+            {
                 setValue(value);
+
                 setIsLoaded(true);
-                staticOnLoadListener.onLoad(value);
-                dynamicOnLoadListener.onLoad(value);
+
+                if (staticOnLoadListener != null)
+                    staticOnLoadListener.onLoad(value);
+
+                if (dynamicOnLoadListener != null)
+                    dynamicOnLoadListener.onLoad(value);
             }
 
             @Override
-            public void onLoadError(DatabaseException exception) {
-                staticOnLoadListener.onLoadError(exception);
-                dynamicOnLoadListener.onLoadError(exception);
+            public void onLoadError(DatabaseException exception)
+            {
+                if (staticOnLoadListener != null)
+                    staticOnLoadListener.onLoadError(exception);
+
+                if (dynamicOnLoadListener != null)
+                    dynamicOnLoadListener.onLoadError(exception);
             }
         };
     }
@@ -186,16 +201,25 @@ public class ModelValue<A extends Model> extends Value<A>
         return new OnSaveListener()
         {
             @Override
-            public void onSave() {
+            public void onSave()
+            {
                 setIsSaved(true);
-                staticOnSaveListener.onSave();
-                dynamicOnSaveListener.onSave();
+
+                if (staticOnSaveListener != null)
+                    staticOnSaveListener.onSave();
+
+                if (dynamicOnSaveListener != null)
+                    dynamicOnSaveListener.onSave();
             }
 
             @Override
-            public void onSaveError(DatabaseException exception) {
-                staticOnSaveListener.onSave();
-                dynamicOnSaveListener.onSave();
+            public void onSaveError(DatabaseException exception)
+            {
+                if (staticOnSaveListener != null)
+                    staticOnSaveListener.onSave();
+
+                if (dynamicOnSaveListener != null)
+                    dynamicOnSaveListener.onSave();
             }
         };
     }

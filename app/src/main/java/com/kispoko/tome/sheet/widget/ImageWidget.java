@@ -61,8 +61,8 @@ public class ImageWidget extends Widget implements Serializable
     {
         this.id         = null;
 
-        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
-        this.bitmap     = new PrimitiveValue<>(null, this, SerialBitmap.class);
+        this.widgetData = new ModelValue<>(null, WidgetData.class);
+        this.bitmap     = new PrimitiveValue<>(null, SerialBitmap.class);
     }
 
 
@@ -70,10 +70,10 @@ public class ImageWidget extends Widget implements Serializable
     {
         this.id         = id;
 
-        this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
+        this.widgetData = new ModelValue<>(widgetData, WidgetData.class);
 
         SerialBitmap serialBitmap = new SerialBitmap(bitmap);
-        this.bitmap     = new PrimitiveValue<>(serialBitmap, this, SerialBitmap.class);
+        this.bitmap     = new PrimitiveValue<>(serialBitmap, SerialBitmap.class);
     }
 
 

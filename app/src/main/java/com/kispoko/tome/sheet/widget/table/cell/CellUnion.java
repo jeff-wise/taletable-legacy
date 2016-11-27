@@ -38,11 +38,11 @@ public class CellUnion implements Model
     {
         this.id          = null;
 
-        this.textCell    = new ModelValue<>(null, this, TextCell.class);
-        this.numberCell  = new ModelValue<>(null, this, NumberCell.class);
-        this.booleanCell = new ModelValue<>(null, this, BooleanCell.class);
+        this.textCell    = new ModelValue<>(null, TextCell.class);
+        this.numberCell  = new ModelValue<>(null, NumberCell.class);
+        this.booleanCell = new ModelValue<>(null, BooleanCell.class);
 
-        this.type        = new PrimitiveValue<>(null, this, CellType.class);
+        this.type        = new PrimitiveValue<>(null, CellType.class);
     }
 
 
@@ -51,11 +51,11 @@ public class CellUnion implements Model
         this.id          = id;
 
 
-        this.textCell    = new ModelValue<>(null, this, TextCell.class);
-        this.numberCell  = new ModelValue<>(null, this, NumberCell.class);
-        this.booleanCell = new ModelValue<>(null, this, BooleanCell.class);
+        this.textCell    = new ModelValue<>(null, TextCell.class);
+        this.numberCell  = new ModelValue<>(null, NumberCell.class);
+        this.booleanCell = new ModelValue<>(null, BooleanCell.class);
 
-        this.type        = new PrimitiveValue<>(type, this, CellType.class);
+        this.type        = new PrimitiveValue<>(type, CellType.class);
 
         switch (type)
         {

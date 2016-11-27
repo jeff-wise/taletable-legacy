@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.TemplateFileReadError;
@@ -87,16 +88,35 @@ public class SheetManager
 
             protected void onPostExecute(Object maybeSheet)
             {
-                if (maybeSheet instanceof TemplateFileException) {
+                if (maybeSheet instanceof TemplateFileException)
+                {
                     ApplicationFailure.templateFile((TemplateFileException) maybeSheet);
                 }
-                else if (maybeSheet instanceof YamlException) {
+                else if (maybeSheet instanceof YamlException)
+                {
                     ApplicationFailure.yaml((YamlException) maybeSheet);
                 }
-                else if (maybeSheet instanceof Sheet) {
+                else if (maybeSheet instanceof Sheet)
+                {
                     Sheet templateSheet = (Sheet) maybeSheet;
-                    currentSheet = new ModelValue<>(templateSheet, null, Sheet.class);
-                    currentSheet.save();
+
+                    currentSheet = new ModelValue<>(templateSheet, Sheet.class);
+                    currentSheetContext = context;
+
+                    currentSheet.save(new ModelValue.OnSaveListener()
+                    {
+                        @Override
+                        public void onSave() {
+
+                        }
+
+                        @Override
+                        public void onSaveError(DatabaseException exception) {
+                            Log.d("***SHEET MANAGER", "save error");
+                            ApplicationFailure.database(exception);
+                        }
+                    });
+
                     sheetListener.onSheet(templateSheet);
                 }
             }
@@ -119,7 +139,8 @@ public class SheetManager
             }
         };
 
-        currentSheet = new ModelValue<>(null, null, Sheet.class, null, onLoadListener);
+        currentSheet        = new ModelValue<>(null, Sheet.class, null, onLoadListener);
+        currentSheetContext = context;
 
         // Construct query
         List<OrderBy.Field> fields = new ArrayList<>();
@@ -132,7 +153,7 @@ public class SheetManager
         ModelQueryParameters queryParameters =
                 new ModelQueryParameters(topResultQuery, ModelQueryParameters.Type.TOP_RESULT);
 
-        currentSheet.load(queryParameters);
+        currentSheet.load(queryParameters, null);
     }
 
 }

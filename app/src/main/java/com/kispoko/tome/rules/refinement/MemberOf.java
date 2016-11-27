@@ -48,10 +48,10 @@ public class MemberOf implements Model, Serializable
     {
         this.id     = null;
 
-        this.name   = new PrimitiveValue<>(null, this, String.class);
-        this.label  = new PrimitiveValue<>(null, this, String.class);
+        this.name   = new PrimitiveValue<>(null, String.class);
+        this.label  = new PrimitiveValue<>(null, String.class);
 
-        this.values = new PrimitiveValue<>(null, this, String[].class);
+        this.values = new PrimitiveValue<>(null, String[].class);
 
     }
 
@@ -60,11 +60,11 @@ public class MemberOf implements Model, Serializable
     {
         this.id     = id;
 
-        this.name   = new PrimitiveValue<>(name, this, String.class);
-        this.label  = new PrimitiveValue<>(label, this, String.class);
+        this.name   = new PrimitiveValue<>(name, String.class);
+        this.label  = new PrimitiveValue<>(label, String.class);
 
         String[] valueArray = values.toArray(new String[values.size()]);
-        this.values = new PrimitiveValue<>(valueArray, this, String[].class);
+        this.values = new PrimitiveValue<>(valueArray, String[].class);
     }
 
 

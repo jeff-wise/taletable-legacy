@@ -53,15 +53,15 @@ public class TableWidget extends Widget implements Serializable
     {
         this.id         = null;
 
-        this.widgetData = new ModelValue<>(null, this, WidgetData.class);
+        this.widgetData = new ModelValue<>(null, WidgetData.class);
 
         List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
         columnClassList.add(ColumnUnion.class);
-        this.columns    = new CollectionValue<>(null, this, columnClassList);
+        this.columns    = new CollectionValue<>(null, columnClassList);
 
         List<Class<? extends Row>> rowClassList = new ArrayList<>();
         rowClassList.add(Row.class);
-        this.rows       = new CollectionValue<>(null, this, rowClassList);
+        this.rows       = new CollectionValue<>(null, rowClassList);
     }
 
 
@@ -72,15 +72,15 @@ public class TableWidget extends Widget implements Serializable
     {
         this.id = id;
 
-        this.widgetData = new ModelValue<>(widgetData, this, WidgetData.class);
+        this.widgetData = new ModelValue<>(widgetData, WidgetData.class);
 
         List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
         columnClassList.add(ColumnUnion.class);
-        this.columns    = new CollectionValue<>(columns, this, columnClassList);
+        this.columns    = new CollectionValue<>(columns, columnClassList);
 
         List<Class<? extends Row>> rowClassList = new ArrayList<>();
         rowClassList.add(Row.class);
-        this.rows        = new CollectionValue<>(rows, this, rowClassList);
+        this.rows        = new CollectionValue<>(rows, rowClassList);
     }
 
 

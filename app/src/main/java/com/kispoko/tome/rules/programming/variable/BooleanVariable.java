@@ -42,12 +42,12 @@ public class BooleanVariable implements Model
     {
         this.id                     = null;
 
-        this.booleanValue           = new PrimitiveValue<>(null, this, Boolean.class);
-        this.programInvocationValue = new ModelValue<>(null, this, ProgramInvocation.class);
+        this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
+        this.programInvocationValue = new ModelValue<>(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(null, this, VariableType.class);
+        this.type                   = new PrimitiveValue<>(null, VariableType.class);
 
-        this.refinementId           = new ModelValue<>(null, this, RefinementId.class);
+        this.refinementId           = new ModelValue<>(null, RefinementId.class);
     }
 
 
@@ -62,12 +62,12 @@ public class BooleanVariable implements Model
     {
         this.id                     = id;
 
-        this.booleanValue           = new PrimitiveValue<>(null, this, Boolean.class);
-        this.programInvocationValue = new ModelValue<>(null, this, ProgramInvocation.class);
+        this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
+        this.programInvocationValue = new ModelValue<>(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(type, this, VariableType.class);
+        this.type                   = new PrimitiveValue<>(type, VariableType.class);
 
-        this.refinementId           = new ModelValue<>(refinementId, this, RefinementId.class);
+        this.refinementId           = new ModelValue<>(refinementId, RefinementId.class);
 
         // Set value according to variable type
         switch (type)
