@@ -5,7 +5,7 @@ package com.kispoko.tome.util.value;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.util.model.ModelLib;
 import com.kispoko.tome.util.promise.AsyncFunction;
 
 import java.io.Serializable;
@@ -13,7 +13,7 @@ import java.io.Serializable;
 
 
 /**
- * Modeler Value
+ * ModelLib Value
  */
 public class ModelValue<A extends Model> extends Value<A>
                                          implements Serializable
@@ -22,43 +22,41 @@ public class ModelValue<A extends Model> extends Value<A>
     // PROPERTIES
     // -------------------------------------------------------------------------------------
 
-    private Class<A>            modelClass;
+    private Class<A>       modelClass;
 
-    private OnUpdateListener<A> onUpdateListener;
-    private OnSaveListener      onSaveListener;
-    private OnLoadListener<A>   onLoadListener;
+    private OnSaveListener staticOnSaveListener;
+    private OnLoadListener staticOnLoadListener;
+
+    private boolean        isLoaded;
+    private boolean        isSaved;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
+    /**
+     * This constructor should be used when the ModelValue is to be loaded asynchronously. The other
+     * constructors set isLoaded to TRUE by default. This constructor also allows static listeners
+     * for when the model is saved and loaded.
+     * @param value
+     * @param modelClass
+     * @param onSaveListener
+     * @param onLoadListener
+     */
     public ModelValue(A value,
-                      OnUpdateListener<A> onUpdateListener,
                       Class<A> modelClass,
                       OnSaveListener onSaveListener,
                       OnLoadListener onLoadListener)
     {
         super(value);
 
-        this.modelClass       = modelClass;
+        this.modelClass           = modelClass;
 
-        this.onUpdateListener = onUpdateListener;
-        this.onSaveListener   = onSaveListener;
-        this.onLoadListener   = onLoadListener;
-    }
+        this.staticOnSaveListener = onSaveListener;
+        this.staticOnLoadListener = onLoadListener;
 
-
-    public ModelValue(A value,
-                      OnUpdateListener<A> onUpdateListener,
-                      Class<A> modelClass)
-    {
-        super(value);
-
-        this.modelClass       = modelClass;
-
-        this.onUpdateListener = onUpdateListener;
-        this.onSaveListener   = null;
-        this.onLoadListener   = null;
+        this.isLoaded             = false;
+        this.isSaved              = false;
     }
 
 
@@ -67,30 +65,18 @@ public class ModelValue<A extends Model> extends Value<A>
     {
         super(value);
 
-        this.modelClass       = modelClass;
+        this.modelClass           = modelClass;
 
-        this.onUpdateListener = null;
-        this.onSaveListener   = null;
-        this.onLoadListener   = null;
+        this.staticOnSaveListener = null;
+        this.staticOnLoadListener = null;
+
+        this.isLoaded             = true;
+        this.isSaved              = false;
     }
-
 
 
     // API
     // --------------------------------------------------------------------------------------
-
-    // > Set Value
-    // --------------------------------------------------------------------------------------
-
-    @Override
-    public void setValue(A newValue)
-    {
-        if (newValue != null) {
-            this.value = newValue;
-            this.onUpdateListener.onUpdate(newValue);
-        }
-    }
-
 
     // > State
     // --------------------------------------------------------------------------------------
@@ -101,88 +87,60 @@ public class ModelValue<A extends Model> extends Value<A>
     }
 
 
-    // > Helpers
+    // ** Is Loaded
+    // ------------------------------------------------------------------------------------------
+
+    public boolean getIsLoaded()
+    {
+        return this.isLoaded;
+    }
+
+
+    public void setIsLoaded(boolean isLoaded)
+    {
+        this.isLoaded = isLoaded;
+    }
+
+
+    // ** Is Saved
+    // ------------------------------------------------------------------------------------------
+
+    public boolean getIsSaved()
+    {
+        return this.isSaved;
+    }
+
+
+    public void setIsSaved(boolean isSaved)
+    {
+        this.isSaved = isSaved;
+    }
+
+
+    // > SQL Column Name
     // ------------------------------------------------------------------------------------------
 
     public String sqlColumnName()
     {
-        return this.name() + "_" + Modeler.name(modelClass) + "_id";
+        return this.name() + "_" + ModelLib.name(modelClass) + "_id";
     }
 
 
     // > Asynchronous Operations
     // ------------------------------------------------------------------------------------------
 
-    public void load(final ModelQueryParameters queryParameters)
+    public void load(final ModelQueryParameters queryParameters,
+                     final OnLoadListener<A> dynamicOnLoadListener)
     {
-        new AsyncFunction<>(new AsyncFunction.Action<Object>()
-        {
-            @Override
-            public Object run()
-            {
-                try {
-                    return Modeler.fromDatabase(getModelClass(), queryParameters);
-                } catch (DatabaseException exception) {
-                    return exception;
-                }
-            }
-        })
-        .run(new AsyncFunction.OnReady<Object>()
-        {
-            @Override
-            public void run(Object result)
-            {
-                if (result instanceof DatabaseException) {
-                    if (onLoadListener != null)
-                        onLoadListener.onLoadError((DatabaseException) result);
-                }
-                else if (getModelClass().isAssignableFrom(result.getClass())) {
-                    A value = getModelClass().cast(result);
-                    setValue(value);
-                    if (onLoadListener != null)
-                        onLoadListener.onLoad(value);
-                }
-
-            }
-        });
+        ModelLib.modelFromDatabase(getModelClass(),
+                                   queryParameters,
+                                   onLoadListener(dynamicOnLoadListener));
     }
 
 
-    public void save(final OnSaveListener oneTimeListener)
+    public void save(final OnSaveListener dynamicOnSaveListener)
     {
-        new AsyncFunction<>(new AsyncFunction.Action<Object>()
-        {
-            @Override
-            public Object run()
-            {
-                try {
-                    Modeler.toDatabase(getValue());
-                    return null;
-                } catch (DatabaseException e) {
-                    return e;
-                }
-            }
-        })
-        .run(new AsyncFunction.OnReady<Object>()
-        {
-            @Override
-            public void run(Object result)
-            {
-                if (result instanceof DatabaseException) {
-                    if (oneTimeListener != null)
-                        oneTimeListener.onSaveError((DatabaseException) result);
-                    if (onSaveListener != null)
-                        onSaveListener.onSaveError((DatabaseException) result);
-                }
-                else {
-                    setIsSaved(true);
-                    if (oneTimeListener != null)
-                        oneTimeListener.onSave();
-                    if (onSaveListener != null)
-                        onSaveListener.onSave();
-                }
-            }
-        });
+        ModelLib.modelToDatabase(this.getValue(), this.onSaveListener(dynamicOnSaveListener));
     }
 
 
@@ -192,13 +150,59 @@ public class ModelValue<A extends Model> extends Value<A>
     }
 
 
-    // LISTENERS
-    // --------------------------------------------------------------------------------------
+    /**
+     * Wrap the dynamic and static listeners into one listener. This also sets the model value
+     * by default when the listener is called.
+     * @return
+     */
+    private OnLoadListener<A> onLoadListener(final OnLoadListener<A> dynamicOnLoadListener)
+    {
+        return new OnLoadListener<A>()
+        {
+            @Override
+            public void onLoad(A value) {
+                setValue(value);
+                setIsLoaded(true);
+                staticOnLoadListener.onLoad(value);
+                dynamicOnLoadListener.onLoad(value);
+            }
 
-    public interface OnUpdateListener<A> {
-        void onUpdate(A value);
+            @Override
+            public void onLoadError(DatabaseException exception) {
+                staticOnLoadListener.onLoadError(exception);
+                dynamicOnLoadListener.onLoadError(exception);
+            }
+        };
     }
 
+
+    /**
+     * Wrap the dynamic and static listeners into one listener. This also sets the model value
+     * by default when the listener is called.
+     * @return
+     */
+    private OnSaveListener onSaveListener(final OnSaveListener dynamicOnSaveListener)
+    {
+        return new OnSaveListener()
+        {
+            @Override
+            public void onSave() {
+                setIsSaved(true);
+                staticOnSaveListener.onSave();
+                dynamicOnSaveListener.onSave();
+            }
+
+            @Override
+            public void onSaveError(DatabaseException exception) {
+                staticOnSaveListener.onSave();
+                dynamicOnSaveListener.onSave();
+            }
+        };
+    }
+
+
+    // LISTENERS
+    // --------------------------------------------------------------------------------------
 
     public interface OnSaveListener {
         void onSave();
@@ -210,5 +214,6 @@ public class ModelValue<A extends Model> extends Value<A>
         void onLoad(A value);
         void onLoadError(DatabaseException exception);
     }
+
 
 }

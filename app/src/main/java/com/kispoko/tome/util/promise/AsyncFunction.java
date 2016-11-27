@@ -36,7 +36,8 @@ public class AsyncFunction<A>
             @Override
             protected void onPostExecute(A result)
             {
-                onReady.run(result);
+                if (onReady != null)
+                    onReady.run(result);
             }
         };
     }

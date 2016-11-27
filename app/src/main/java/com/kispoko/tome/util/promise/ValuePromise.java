@@ -9,7 +9,7 @@ import com.kispoko.tome.util.model.Model;
 
 
 /**
- * Promise: Load Modeler Value
+ * Promise: Load ModelLib Value
  */
 public class ValuePromise<A extends Model>
 {

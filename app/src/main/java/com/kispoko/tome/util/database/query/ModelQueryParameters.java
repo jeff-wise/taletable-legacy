@@ -9,7 +9,7 @@ import java.util.UUID;
 
 
 /**
- * Modeler Query Parameters
+ * ModelLib Query Parameters
  */
 public class ModelQueryParameters
 {

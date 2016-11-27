@@ -221,14 +221,15 @@ public class Page implements Model, Serializable
         List<Class<? extends Group>> groupClasses = new ArrayList<>();
         groupClasses.add(Group.class);
 
-        CollectionValue.OnUpdateListener onUpdateListener = new CollectionValue.OnUpdateListener() {
-            @Override
-            public void onUpdate(List values) {
-                updateView(null);
-            }
-        };
+//        CollectionValue.OnUpdateListener<Group> onUpdateListener =
+//                new CollectionValue.OnUpdateListener<Group>() {
+//            @Override
+//            public void onUpdate(List<Group> values) {
+//                updateView(null);
+//            }
+//        };
 
-        this.groups = new CollectionValue<>(null, groupClasses);
+        this.groups = new CollectionValue<>(null, groupClasses, null, null);
     }
 }
 

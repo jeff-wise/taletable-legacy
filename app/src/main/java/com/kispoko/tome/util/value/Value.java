@@ -2,6 +2,8 @@
 package com.kispoko.tome.util.value;
 
 
+import com.kispoko.tome.util.database.DatabaseException;
+
 import java.lang.reflect.Field;
 
 
@@ -67,7 +69,6 @@ public abstract class Value<A>
             this.value = newValue;
         }
     }
-
 
     // ** Field
     // --------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.error.QueryError;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.model.Modeler;
+import com.kispoko.tome.util.model.ModelLib;
 import com.kispoko.tome.util.promise.AsyncFunction;
 
 
@@ -33,7 +33,7 @@ public class CountQuery<A extends Model>
 
     private CountQuery(Class<A> modelClass)
     {
-        String tableName = Modeler.name(modelClass);
+        String tableName = ModelLib.name(modelClass);
 
         this.queryString = CountQuery.countQueryString(tableName);
         this.modelClass  = modelClass;
@@ -86,7 +86,7 @@ public class CountQuery<A extends Model>
                     listener.onCountError((DatabaseException) result);
                 }
                 else if (result instanceof Integer) {
-                    String tableName = Modeler.name(modelClass);
+                    String tableName = ModelLib.name(modelClass);
                     listener.onCountResult(tableName, (Integer) result);
                 }
             }

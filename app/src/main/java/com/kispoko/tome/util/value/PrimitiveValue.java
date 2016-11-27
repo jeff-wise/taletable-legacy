@@ -18,7 +18,6 @@ import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.error.ValueNotSerializableError;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.model.Modeler;
 
 import java.io.Serializable;
 import java.util.ArrayList;
