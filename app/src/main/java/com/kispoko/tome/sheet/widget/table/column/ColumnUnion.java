@@ -41,9 +41,9 @@ public class ColumnUnion implements Model
     {
         this.id            = null;
 
-        this.textColumn    = new ModelValue<>(null, TextColumn.class);
-        this.numberColumn  = new ModelValue<>(null, NumberColumn.class);
-        this.booleanColumn = new ModelValue<>(null, BooleanColumn.class);
+        this.textColumn    = ModelValue.empty(TextColumn.class);
+        this.numberColumn  = ModelValue.empty(NumberColumn.class);
+        this.booleanColumn = ModelValue.empty(BooleanColumn.class);
 
         this.type          = new PrimitiveValue<>(null, ColumnType.class);
     }
@@ -53,9 +53,9 @@ public class ColumnUnion implements Model
     {
         this.id   = id;
 
-        this.textColumn    = new ModelValue<>(null, TextColumn.class);
-        this.numberColumn  = new ModelValue<>(null, NumberColumn.class);
-        this.booleanColumn = new ModelValue<>(null, BooleanColumn.class);
+        this.textColumn    = ModelValue.full(null, TextColumn.class);
+        this.numberColumn  = ModelValue.full(null, NumberColumn.class);
+        this.booleanColumn = ModelValue.full(null, BooleanColumn.class);
 
         this.type          = new PrimitiveValue<>(type, ColumnType.class);
 

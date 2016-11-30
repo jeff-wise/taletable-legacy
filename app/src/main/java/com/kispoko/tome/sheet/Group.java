@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.Rules;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
 import com.kispoko.tome.sheet.widget.ImageWidget;
 import com.kispoko.tome.sheet.widget.NumberWidget;
@@ -65,7 +64,7 @@ public class Group implements Model, Serializable
         widgetClasses.add(BooleanWidget.class);
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
-        this.widgets      = new CollectionValue<>(null, widgetClasses);
+        this.widgets      = CollectionValue.empty(widgetClasses);
     }
 
 
@@ -84,7 +83,7 @@ public class Group implements Model, Serializable
         widgetClasses.add(BooleanWidget.class);
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
-        this.widgets      = new CollectionValue<>(widgets, widgetClasses);
+        this.widgets      = CollectionValue.full(widgets, widgetClasses);
     }
 
 

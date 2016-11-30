@@ -7,6 +7,8 @@ import android.content.Context;
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
+import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -322,6 +324,22 @@ public class WidgetFormat implements Model, Serializable
             }
         }
 
+
+        public static Alignment fromSQLValue(SQLValue sqlValue)
+                      throws DatabaseException
+        {
+            String enumString = "";
+            try {
+                enumString = sqlValue.getText();
+                Alignment alignment = Alignment.fromString(enumString);
+                return alignment;
+            } catch (InvalidDataException e) {
+                throw new DatabaseException(
+                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString),
+                        DatabaseException.ErrorType.INVALID_ENUM);
+            }
+        }
+
     }
 
 
@@ -360,6 +378,22 @@ public class WidgetFormat implements Model, Serializable
         }
 
 
+        public static Size fromSQLValue(SQLValue sqlValue)
+                      throws DatabaseException
+        {
+            String enumString = "";
+            try {
+                enumString = sqlValue.getText();
+                Size size = Size.fromString(enumString);
+                return size;
+            } catch (InvalidDataException e) {
+                throw new DatabaseException(
+                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString),
+                        DatabaseException.ErrorType.INVALID_ENUM);
+            }
+        }
+
+
         public float toSP(Context context)
         {
             switch (this)
@@ -375,6 +409,7 @@ public class WidgetFormat implements Model, Serializable
         }
 
     }
+
 
 }
 

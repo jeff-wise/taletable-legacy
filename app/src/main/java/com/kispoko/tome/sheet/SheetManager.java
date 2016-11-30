@@ -100,7 +100,7 @@ public class SheetManager
                 {
                     Sheet templateSheet = (Sheet) maybeSheet;
 
-                    currentSheet = new ModelValue<>(templateSheet, Sheet.class);
+                    currentSheet = ModelValue.full(templateSheet, Sheet.class);
                     currentSheetContext = context;
 
                     currentSheet.save(new ModelValue.OnSaveListener()
@@ -130,22 +130,29 @@ public class SheetManager
         ModelValue.OnLoadListener<Sheet> onLoadListener = new ModelValue.OnLoadListener<Sheet>() {
             @Override
             public void onLoad(Sheet value) {
+                Log.d("***SHEET MANAGER", "on load sheet");
                 listener.onSheet(value);
             }
 
             @Override
-            public void onLoadError(DatabaseException exception) {
-                exception.printStackTrace();
+            public void onLoadDBError(DatabaseException exception) {
+                ApplicationFailure.database(exception);
+            }
+
+            @Override
+            public void onLoadError(Exception exception) {
+                Log.d("***SHEET MANAGER", "other exception", exception);
             }
         };
 
-        currentSheet        = new ModelValue<>(null, Sheet.class, null, onLoadListener);
+        currentSheet        = ModelValue.empty(Sheet.class);
+        currentSheet.setOnLoadListener(onLoadListener);
         currentSheetContext = context;
 
         // Construct query
         List<OrderBy.Field> fields = new ArrayList<>();
         // TODO make this derived, not hardcoded
-        fields.add(new OrderBy.Field("lastused", Function.DATETIME));
+        fields.add(new OrderBy.Field("last_used", Function.DATETIME));
         OrderBy orderBy = new OrderBy(fields, OrderBy.Order.DESC);
 
         ModelQueryParameters.TopResult topResultQuery =

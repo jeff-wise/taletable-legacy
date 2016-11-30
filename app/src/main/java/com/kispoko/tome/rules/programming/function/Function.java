@@ -53,7 +53,7 @@ public class Function implements Model
 
         List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
         tupleClasses.add(Tuple.class);
-        this.tuples         = new CollectionValue<>(null, tupleClasses);
+        this.tuples         = CollectionValue.empty(tupleClasses);
     }
 
 
@@ -81,7 +81,7 @@ public class Function implements Model
         // ** Tuples
         List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
         tupleClasses.add(Tuple.class);
-        this.tuples         = new CollectionValue<>(tuples, tupleClasses);
+        this.tuples         = CollectionValue.full(tuples, tupleClasses);
 
         // > Validate the function definition
         this.validate();

@@ -4,41 +4,38 @@ package com.kispoko.tome.util.database.error;
 
 
 /**
- * Database Error: Query Error
- *
- * This error encapsulates any exception that may be thrown in the process of querying a value.
- * The exceptions are undocumented, so this type at least indicates where the exception came from.
+ * Database Error: Invalid Enum
  */
-public class QueryError
+public class InvalidEnumError
 {
 
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private String query;
+    private String enumValue;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public QueryError(String query)
+    public InvalidEnumError(String enumValue)
     {
-        this.query = query;
+        this.enumValue = enumValue;
     }
 
 
     // API
     // -----------------------------------------------------------------------------------------
 
-    public String getQuery()
+    public String getEnumValue()
     {
-        return this.query;
+        return this.enumValue;
     }
 
 
     public String errorMessage()
     {
-        return "Query: " + this.query;
+        return "Invalid Enum: Unknown Value: " + this.enumValue;
     }
 
 }

@@ -2,6 +2,8 @@
 package com.kispoko.tome.util.database.query;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.error.ColumnDoesNotExistError;
 import com.kispoko.tome.util.database.sql.SQLValue;

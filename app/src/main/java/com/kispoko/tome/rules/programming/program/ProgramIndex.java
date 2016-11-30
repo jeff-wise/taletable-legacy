@@ -42,7 +42,7 @@ public class ProgramIndex implements Model
 
         List<Class<? extends Program>> programClasses = new ArrayList<>();
         programClasses.add(Program.class);
-        this.programs      = new CollectionValue<>(new ArrayList<Program>(), programClasses);
+        this.programs      = CollectionValue.empty(programClasses);
 
         this.programByName = new HashMap<>();
     }
@@ -54,7 +54,7 @@ public class ProgramIndex implements Model
 
         List<Class<? extends Program>> programClasses = new ArrayList<>();
         programClasses.add(Program.class);
-        this.programs = new CollectionValue<>(new ArrayList<Program>(), programClasses);
+        this.programs = CollectionValue.full(new ArrayList<Program>(), programClasses);
 
         this.programByName = new HashMap<>();
     }

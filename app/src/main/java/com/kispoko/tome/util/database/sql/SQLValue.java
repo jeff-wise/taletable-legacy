@@ -5,6 +5,8 @@ package com.kispoko.tome.util.database.sql;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.error.UnexpectedSQLTypeError;
 
+
+
 /**
  * SQL Value
  */
@@ -36,10 +38,10 @@ public class SQLValue
     public static SQLValue newInteger(Long sqlInteger)
                   throws DatabaseException
     {
-        if (sqlInteger == null) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.INTEGER, Type.NULL),
-                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-        }
+//        if (sqlInteger == null) {
+//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.INTEGER, Type.NULL),
+//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+//        }
 
         return new SQLValue(sqlInteger, Type.INTEGER);
     }
@@ -48,10 +50,10 @@ public class SQLValue
     public static SQLValue newReal(Double sqlReal)
                   throws DatabaseException
     {
-        if (sqlReal == null) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.REAL, Type.NULL),
-                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-        }
+//        if (sqlReal == null) {
+//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.REAL, Type.NULL),
+//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+//        }
 
         return new SQLValue(sqlReal, Type.REAL);
     }
@@ -60,10 +62,10 @@ public class SQLValue
     public static SQLValue newText(String sqlText)
                   throws DatabaseException
     {
-        if (sqlText == null) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.TEXT, Type.NULL),
-                    DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-        }
+//        if (sqlText == null) {
+//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.TEXT, Type.NULL),
+//                    DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+//        }
 
         return new SQLValue(sqlText, Type.TEXT);
     }
@@ -72,10 +74,10 @@ public class SQLValue
     public static SQLValue newBlob(byte[] sqlBlob)
                   throws DatabaseException
     {
-        if (sqlBlob == null) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.BLOB, Type.NULL),
-                    DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-        }
+//        if (sqlBlob == null) {
+//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.BLOB, Type.NULL),
+//                    DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+//        }
 
         return new SQLValue(sqlBlob, Type.BLOB);
     }
@@ -99,10 +101,10 @@ public class SQLValue
     public Long getInteger()
            throws DatabaseException
     {
-        if (this.value == null) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.INTEGER, Type.NULL),
-                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-        }
+//        if (this.value == null) {
+//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.INTEGER, Type.NULL),
+//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+//        }
 
         try {
             return (Long) this.value;
@@ -116,10 +118,10 @@ public class SQLValue
     public Double getReal()
            throws DatabaseException
     {
-        if (this.value == null) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.REAL, Type.NULL),
-                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-        }
+//        if (this.value == null) {
+//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.REAL, Type.NULL),
+//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+//        }
 
         try {
             return (Double) this.value;
@@ -133,10 +135,10 @@ public class SQLValue
     public String getText()
            throws DatabaseException
     {
-        if (this.value == null) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.TEXT, Type.NULL),
-                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-        }
+//        if (this.value == null) {
+//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.TEXT, Type.NULL),
+//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+//        }
 
         return (String) this.value;
     }
@@ -145,12 +147,18 @@ public class SQLValue
     public byte[] getBlob()
            throws DatabaseException
     {
-        if (this.value == null) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.BLOB, Type.NULL),
-                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-        }
+//        if (this.value == null) {
+//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.BLOB, Type.NULL),
+//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+//        }
 
         return (byte[]) this.value;
+    }
+
+
+    public boolean isNull()
+    {
+        return this.value == null;
     }
 
 

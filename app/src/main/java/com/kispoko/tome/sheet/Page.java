@@ -12,6 +12,7 @@ import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.Value;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -56,6 +57,14 @@ public class Page implements Model, Serializable
     public Page()
     {
         this.id = null;
+
+        this.label  = new PrimitiveValue<>(null, String.class);
+        this.index  = new PrimitiveValue<>(null, Integer.class);
+
+        List<Class<? extends Group>> groupClasses = new ArrayList<>();
+        groupClasses.add(Group.class);
+        this.groups = CollectionValue.empty(groupClasses);
+
         initialize();
     }
 
@@ -64,23 +73,14 @@ public class Page implements Model, Serializable
     {
         this.id = id;
 
+        this.label  = new PrimitiveValue<>(label, String.class);
+        this.index  = new PrimitiveValue<>(index, Integer.class);
+
+        List<Class<? extends Group>> groupClasses = new ArrayList<>();
+        groupClasses.add(Group.class);
+        this.groups = CollectionValue.full(groups, groupClasses);
+
         initialize();
-
-        this.label.setValue(label);
-        this.index.setValue(index);
-        this.groups.setValue(groups);
-
-        // Make sure groups are sorted
-        Collections.sort(groups, new Comparator<Group>() {
-            @Override
-            public int compare(Group group1, Group group2) {
-                if (group1.getIndex() > group2.getIndex())
-                    return 1;
-                if (group1.getIndex() < group2.getIndex())
-                    return -1;
-                return 0;
-            }
-        });
     }
 
 
@@ -209,19 +209,44 @@ public class Page implements Model, Serializable
     }
 
 
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
     private void initialize()
     {
-        this.label  = new PrimitiveValue<>(null, String.class);
-        this.index  = new PrimitiveValue<>(null, Integer.class);
+        this.sortGroups();
 
-        List<Class<? extends Group>> groupClasses = new ArrayList<>();
-        groupClasses.add(Group.class);
-
-        this.groups = new CollectionValue<>(null, groupClasses, null, null);
+        this.groups.setOnUpdateListener(new Value.OnUpdateListener() {
+            @Override
+            public void onUpdate() {
+                sortGroups();
+            }
+        });
     }
+
+    /**
+     * Sort the pages by their index value, so they are displayed in the intended order.
+     */
+    private void sortGroups()
+    {
+        if (this.groups.isNull())
+            return;
+
+        // Make sure groups are sorted
+        Collections.sort(this.groups.getValue(), new Comparator<Group>() {
+            @Override
+            public int compare(Group group1, Group group2) {
+                if (group1.getIndex() > group2.getIndex())
+                    return 1;
+                if (group1.getIndex() < group2.getIndex())
+                    return -1;
+                return 0;
+            }
+        });
+    }
+
+
 }
 
 

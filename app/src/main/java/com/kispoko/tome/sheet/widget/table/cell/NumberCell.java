@@ -35,7 +35,7 @@ public class NumberCell implements Model
     {
         this.id        = null;
 
-        this.value     = new ModelValue<>(null, NumberVariable.class);
+        this.value     = ModelValue.empty(NumberVariable.class);
         this.alignment = new PrimitiveValue<>(null, CellAlignment.class);
     }
 
@@ -44,7 +44,7 @@ public class NumberCell implements Model
     {
         this.id        = id;
 
-        this.value     = new ModelValue<>(value, NumberVariable.class);
+        this.value     = ModelValue.full(value, NumberVariable.class);
         this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
     }
 

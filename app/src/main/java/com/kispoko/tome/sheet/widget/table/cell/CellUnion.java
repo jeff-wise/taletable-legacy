@@ -38,9 +38,9 @@ public class CellUnion implements Model
     {
         this.id          = null;
 
-        this.textCell    = new ModelValue<>(null, TextCell.class);
-        this.numberCell  = new ModelValue<>(null, NumberCell.class);
-        this.booleanCell = new ModelValue<>(null, BooleanCell.class);
+        this.textCell    = ModelValue.empty(TextCell.class);
+        this.numberCell  = ModelValue.empty(NumberCell.class);
+        this.booleanCell = ModelValue.empty(BooleanCell.class);
 
         this.type        = new PrimitiveValue<>(null, CellType.class);
     }
@@ -51,9 +51,9 @@ public class CellUnion implements Model
         this.id          = id;
 
 
-        this.textCell    = new ModelValue<>(null, TextCell.class);
-        this.numberCell  = new ModelValue<>(null, NumberCell.class);
-        this.booleanCell = new ModelValue<>(null, BooleanCell.class);
+        this.textCell    = ModelValue.full(null, TextCell.class);
+        this.numberCell  = ModelValue.full(null, NumberCell.class);
+        this.booleanCell = ModelValue.full(null, BooleanCell.class);
 
         this.type        = new PrimitiveValue<>(type, CellType.class);
 

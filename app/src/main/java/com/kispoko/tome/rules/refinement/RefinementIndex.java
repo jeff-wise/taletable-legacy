@@ -42,7 +42,7 @@ public class RefinementIndex implements Model, Serializable
 
         List<Class<? extends MemberOf>> memberOfClasses = new ArrayList<>();
         memberOfClasses.add(MemberOf.class);
-        this.memberOfs = new CollectionValue<>(new ArrayList<MemberOf>(), memberOfClasses);
+        this.memberOfs = CollectionValue.empty(memberOfClasses);
     }
 
 
@@ -52,7 +52,7 @@ public class RefinementIndex implements Model, Serializable
 
         List<Class<? extends MemberOf>> memberOfClasses = new ArrayList<>();
         memberOfClasses.add(MemberOf.class);
-        this.memberOfs = new CollectionValue<>(new ArrayList<MemberOf>(), memberOfClasses);
+        this.memberOfs = CollectionValue.full(new ArrayList<MemberOf>(), memberOfClasses);
 
         // > Initialize indexes
         memberOfIndex = new HashMap<>();

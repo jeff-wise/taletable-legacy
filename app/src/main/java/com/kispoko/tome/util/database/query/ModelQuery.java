@@ -119,7 +119,8 @@ public class ModelQuery
             throw e;
         }
         catch (Exception e) {
-            throw new DatabaseException(new QueryError(e), DatabaseException.ErrorType.QUERY);
+            throw new DatabaseException(new QueryError(this.queryString),
+                                        DatabaseException.ErrorType.QUERY);
         }
         // Ensure cursor is closed
         finally {

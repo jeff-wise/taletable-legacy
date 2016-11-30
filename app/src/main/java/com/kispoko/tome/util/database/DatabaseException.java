@@ -7,7 +7,7 @@ import com.kispoko.tome.util.database.error.NullColumnTypeError;
 import com.kispoko.tome.util.database.error.QueryError;
 import com.kispoko.tome.util.database.error.UnexpectedSQLTypeError;
 import com.kispoko.tome.util.database.error.ValueNotSerializableError;
-
+import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
@@ -66,6 +66,12 @@ public class DatabaseException extends Exception
     }
 
 
+    public InvalidEnumError getInvalidEnumError()
+    {
+        return (InvalidEnumError) this.error;
+    }
+
+
     public QueryError getQueryError()
     {
         return (QueryError) this.error;
@@ -95,6 +101,9 @@ public class DatabaseException extends Exception
             case NULL_COLUMN_TYPE:
                 errorBuilder.append(this.getNullColumnTypeError().errorMessage());
                 break;
+            case INVALID_ENUM:
+                errorBuilder.append(this.getInvalidEnumError().errorMessage());
+                break;
             case QUERY:
                 errorBuilder.append(this.getQueryError().errorMessage());
                 break;
@@ -113,6 +122,7 @@ public class DatabaseException extends Exception
         UNEXPECTED_SQL_TYPE,
         COLUMN_DOES_NOT_EXIST,
         NULL_COLUMN_TYPE,
+        INVALID_ENUM,
         QUERY
     }
 

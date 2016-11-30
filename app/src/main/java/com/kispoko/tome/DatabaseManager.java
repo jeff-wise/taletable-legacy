@@ -44,8 +44,12 @@ import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.rules.refinement.MemberOf;
+import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.model.ModelLib;
 import com.kispoko.tome.util.database.DatabaseException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -62,70 +66,74 @@ public class DatabaseManager extends SQLiteOpenHelper
     }
 
 
-    public void onCreate(SQLiteDatabase db)
+    public void onCreate(SQLiteDatabase database)
     {
         try
         {
+            List<Class<? extends Model>> modelClasses = new ArrayList<>();
+
             // ** Game
-            db.execSQL(ModelLib.defineTableSQLString(Game.class));
+            modelClasses.add(Game.class);
 
             // ** Sheet
-            db.execSQL(ModelLib.defineTableSQLString(Sheet.class));
-            db.execSQL(ModelLib.defineTableSQLString(Rules.class));
-            db.execSQL(ModelLib.defineTableSQLString(Roleplay.class));
-            db.execSQL(ModelLib.defineTableSQLString(Page.class));
-            db.execSQL(ModelLib.defineTableSQLString(Group.class));
+            modelClasses.add(Sheet.class);
+            modelClasses.add(Rules.class);
+            modelClasses.add(Roleplay.class);
+            modelClasses.add(Page.class);
+            modelClasses.add(Group.class);
 
             // ** Widget
-            db.execSQL(ModelLib.defineTableSQLString(TextWidget.class));
-            db.execSQL(ModelLib.defineTableSQLString(NumberWidget.class));
-            db.execSQL(ModelLib.defineTableSQLString(BooleanWidget.class));
-            db.execSQL(ModelLib.defineTableSQLString(ImageWidget.class));
-            db.execSQL(ModelLib.defineTableSQLString(TableWidget.class));
+            modelClasses.add(TextWidget.class);
+            modelClasses.add(NumberWidget.class);
+            modelClasses.add(BooleanWidget.class);
+            modelClasses.add(ImageWidget.class);
+            modelClasses.add(TableWidget.class);
 
-            db.execSQL(ModelLib.defineTableSQLString(Row.class));
-            db.execSQL(ModelLib.defineTableSQLString(WidgetData.class));
-            db.execSQL(ModelLib.defineTableSQLString(WidgetFormat.class));
+            modelClasses.add(Row.class);
+            modelClasses.add(WidgetData.class);
+            modelClasses.add(WidgetFormat.class);
 
             // ** Table Cell
-            db.execSQL(ModelLib.defineTableSQLString(CellUnion.class));
-            db.execSQL(ModelLib.defineTableSQLString(TextCell.class));
-            db.execSQL(ModelLib.defineTableSQLString(NumberCell.class));
-            db.execSQL(ModelLib.defineTableSQLString(BooleanCell.class));
+            modelClasses.add(CellUnion.class);
+            modelClasses.add(TextCell.class);
+            modelClasses.add(NumberCell.class);
+            modelClasses.add(BooleanCell.class);
 
             // ** Table Column
-            db.execSQL(ModelLib.defineTableSQLString(ColumnUnion.class));
-            db.execSQL(ModelLib.defineTableSQLString(BooleanColumn.class));
-            db.execSQL(ModelLib.defineTableSQLString(NumberColumn.class));
-            db.execSQL(ModelLib.defineTableSQLString(TextColumn.class));
+            modelClasses.add(ColumnUnion.class);
+            modelClasses.add(BooleanColumn.class);
+            modelClasses.add(NumberColumn.class);
+            modelClasses.add(TextColumn.class);
 
             // ** Refinements
-            db.execSQL(ModelLib.defineTableSQLString(RefinementId.class));
-            db.execSQL(ModelLib.defineTableSQLString(RefinementIndex.class));
-            db.execSQL(ModelLib.defineTableSQLString(MemberOf.class));
+            modelClasses.add(RefinementId.class);
+            modelClasses.add(RefinementIndex.class);
+            modelClasses.add(MemberOf.class);
 
             // ** Program
-            db.execSQL(ModelLib.defineTableSQLString(Program.class));
-            db.execSQL(ModelLib.defineTableSQLString(ProgramIndex.class));
-            db.execSQL(ModelLib.defineTableSQLString(Statement.class));
-            db.execSQL(ModelLib.defineTableSQLString(Parameter.class));
-            db.execSQL(ModelLib.defineTableSQLString(ProgramInvocation.class));
-            db.execSQL(ModelLib.defineTableSQLString(ProgramInvocationParameter.class));
-            db.execSQL(ModelLib.defineTableSQLString(ProgramValue.class));
+            modelClasses.add(Program.class);
+            modelClasses.add(ProgramIndex.class);
+            modelClasses.add(Statement.class);
+            modelClasses.add(Parameter.class);
+            modelClasses.add(ProgramInvocation.class);
+            modelClasses.add(ProgramInvocationParameter.class);
+            modelClasses.add(ProgramValue.class);
 
             // ** Function
-            db.execSQL(ModelLib.defineTableSQLString(Function.class));
-            db.execSQL(ModelLib.defineTableSQLString(FunctionIndex.class));
-            db.execSQL(ModelLib.defineTableSQLString(Tuple.class));
+            modelClasses.add(Function.class);
+            modelClasses.add(FunctionIndex.class);
+            modelClasses.add(Tuple.class);
 
             // ** Variable
-            db.execSQL(ModelLib.defineTableSQLString(TextVariable.class));
-            db.execSQL(ModelLib.defineTableSQLString(NumberVariable.class));
-            db.execSQL(ModelLib.defineTableSQLString(BooleanVariable.class));
+            modelClasses.add(TextVariable.class);
+            modelClasses.add(NumberVariable.class);
+            modelClasses.add(BooleanVariable.class);
+
+            ModelLib.createSchema(modelClasses, database);
         }
-        catch (DatabaseException e)
+        catch (DatabaseException exception)
         {
-            ApplicationFailure.database(e);
+            ApplicationFailure.database(exception);
         }
     }
 

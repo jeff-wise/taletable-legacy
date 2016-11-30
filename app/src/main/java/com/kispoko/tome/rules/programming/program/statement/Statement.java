@@ -42,7 +42,7 @@ public class Statement implements Model
 
         List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
         parameterClasses.add(Parameter.class);
-        this.parameters   = new CollectionValue<>(null, parameterClasses);
+        this.parameters   = CollectionValue.empty(parameterClasses);
     }
 
 
@@ -55,7 +55,7 @@ public class Statement implements Model
 
         List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
         parameterClasses.add(Parameter.class);
-        this.parameters   = new CollectionValue<>(parameters, parameterClasses);
+        this.parameters   = CollectionValue.full(parameters, parameterClasses);
     }
 
 

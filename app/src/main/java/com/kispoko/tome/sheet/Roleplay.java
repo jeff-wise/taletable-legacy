@@ -2,9 +2,12 @@
 package com.kispoko.tome.sheet;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.Value;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -37,11 +40,6 @@ public class Roleplay implements Model
     private CollectionValue<Page> pages;
 
 
-    // > Internal
-    // ------------------------------------------------------------------------------------------
-
-    private PagePagerAdapter      pagePagerAdapter;
-
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -49,7 +47,14 @@ public class Roleplay implements Model
     public Roleplay()
     {
         this.id = null;
-        initialize();
+
+        // ** Configure Pages Value
+        List<Class<? extends Page>> pageClasses = new ArrayList<>();
+        pageClasses.add(Page.class);
+
+        this.pages = CollectionValue.empty(pageClasses);
+
+        this.initialize();
     }
 
 
@@ -57,26 +62,18 @@ public class Roleplay implements Model
     {
         this.id = id;
 
-        initialize();
+        // ** Configure Pages Value
+        List<Class<? extends Page>> pageClasses = new ArrayList<>();
+        pageClasses.add(Page.class);
 
-        this.pages.setValue(pages);
+        this.pages = CollectionValue.full(pages, pageClasses);
 
-        // Make sure pages are sorted
-        Collections.sort(pages, new Comparator<Page>() {
-            @Override
-            public int compare(Page page1, Page page2) {
-                if (page1.getIndex() > page2.getIndex())
-                    return 1;
-                if (page1.getIndex() < page2.getIndex())
-                    return -1;
-                return 0;
-            }
-        });
+        this.initialize();
     }
 
 
     public static Roleplay fromYaml(Yaml yaml)
-    throws YamlException
+                  throws YamlException
     {
         UUID id = UUID.randomUUID();
         List<Page> pages = yaml.atKey("pages").forEach(new Yaml.ForEach<Page>() {
@@ -137,21 +134,9 @@ public class Roleplay implements Model
      */
     public void render(PagePagerAdapter pagePagerAdapter)
     {
-        if (pagePagerAdapter != null)
-            this.pagePagerAdapter = pagePagerAdapter;
-
-        if (!this.pages.isNull())
-            updateView();
-    }
-
-
-    /**
-     * Update the Roleplay by setting the pages in the pager adapter view.
-     */
-    private void updateView()
-    {
-        this.pagePagerAdapter.setPages(this.getPages());
-        this.pagePagerAdapter.notifyDataSetChanged();
+        Log.d("***ROLEPLAY", "pages: " + Integer.toString(this.getPages().size()));
+        pagePagerAdapter.setPages(this.getPages());
+        pagePagerAdapter.notifyDataSetChanged();
     }
 
 
@@ -160,11 +145,36 @@ public class Roleplay implements Model
 
     private void initialize()
     {
-        // ** Configure Pages Value
-        List<Class<? extends Page>> pageClasses = new ArrayList<>();
-        pageClasses.add(Page.class);
+        sortPages();
 
-        this.pages = new CollectionValue<>(null, pageClasses);
+        this.pages.setOnUpdateListener(new Value.OnUpdateListener() {
+            @Override
+            public void onUpdate() {
+                sortPages();
+            }
+        });
     }
+
+    /**
+     * Sort the pages by their index value, so they are displayed in the intended order.
+     */
+    private void sortPages()
+    {
+        if (this.pages.isNull())
+            return;
+
+        Collections.sort(this.pages.getValue(), new Comparator<Page>() {
+            @Override
+            public int compare(Page page1, Page page2) {
+                if (page1.getIndex() > page2.getIndex())
+                    return 1;
+                if (page1.getIndex() < page2.getIndex())
+                    return -1;
+                return 0;
+            }
+        });
+
+    }
+
 
 }

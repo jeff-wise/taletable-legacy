@@ -39,3 +39,8 @@ mentally because you don't ahve to feel stressed, can just have fun.
 more types is better. dry is not always the best method. type safety and a clean data model are.
 just because something is in common does not make it unelegant. quite the opposite sometimes. 
 depends on the inteface.
+
+
+"stress free programming". spending more time working on good error messages, easy to understand DSLs, 
+explicit data structures for solid debugging. then not worry so much aobut perfect code. if it breaks,
+it will be easy to fix. and almost easier to develop, because you can go iteratively.

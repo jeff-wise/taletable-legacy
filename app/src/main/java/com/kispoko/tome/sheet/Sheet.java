@@ -2,6 +2,8 @@
 package com.kispoko.tome.sheet;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.rules.Rules;
@@ -59,9 +61,9 @@ public class Sheet implements Model
         Long currentTimeMS = System.currentTimeMillis();
         this.last_used = new PrimitiveValue<>(currentTimeMS, Long.class);
 
-        this.game      = new ModelValue<>(null, Game.class);
-        this.roleplay  = new ModelValue<>(null, Roleplay.class);
-        this.rules     = new ModelValue<>(null, Rules.class);
+        this.game      = ModelValue.empty(Game.class);
+        this.roleplay  = ModelValue.empty(Roleplay.class);
+        this.rules     = ModelValue.empty(Rules.class);
     }
 
 
@@ -75,9 +77,9 @@ public class Sheet implements Model
         Long currentTimeMS = System.currentTimeMillis();
         this.last_used = new PrimitiveValue<>(currentTimeMS, Long.class);
 
-        this.game      = new ModelValue<>(game, Game.class);
-        this.roleplay  = new ModelValue<>(roleplay, Roleplay.class);
-        this.rules     = new ModelValue<>(rules, Rules.class);
+        this.game      = ModelValue.full(game, Game.class);
+        this.roleplay  = ModelValue.full(roleplay, Roleplay.class);
+        this.rules     = ModelValue.full(rules, Rules.class);
 
         indexComponents();
 
@@ -156,6 +158,7 @@ public class Sheet implements Model
      */
     public void render(PagePagerAdapter pagePagerAdapter)
     {
+        Log.d("***SHEET", "render sheet");
         this.getRoleplay().render(pagePagerAdapter);
     }
 

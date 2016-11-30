@@ -66,7 +66,7 @@ public class CountQuery<A extends Model>
                     count = cursor.getInt(0);
                 }
                 catch (Exception e) {
-                    return new DatabaseException(new QueryError(e),
+                    return new DatabaseException(new QueryError(queryString),
                                                  DatabaseException.ErrorType.QUERY);
                 }
                 // Ensure cursor is closed

@@ -41,7 +41,7 @@ public class ProgramInvocation implements Model
         List<Class<? extends ProgramInvocationParameter>> parameterClasses
                                                 = new ArrayList<>();
         parameterClasses.add(ProgramInvocationParameter.class);
-        this.parameters  = new CollectionValue<>(null, parameterClasses);
+        this.parameters  = CollectionValue.empty(parameterClasses);
     }
 
 
@@ -56,7 +56,7 @@ public class ProgramInvocation implements Model
         List<Class<? extends ProgramInvocationParameter>> parameterClasses
                                                 = new ArrayList<>();
         parameterClasses.add(ProgramInvocationParameter.class);
-        this.parameters  = new CollectionValue<>(parameters, parameterClasses);
+        this.parameters  = CollectionValue.full(parameters, parameterClasses);
     }
 
 

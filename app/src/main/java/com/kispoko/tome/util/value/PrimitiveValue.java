@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.kispoko.tome.rules.programming.program.ProgramInvocationParameterType;
 import com.kispoko.tome.rules.programming.program.ProgramValueType;
+import com.kispoko.tome.rules.programming.program.statement.Parameter;
 import com.kispoko.tome.rules.programming.program.statement.ParameterType;
 import com.kispoko.tome.rules.programming.variable.VariableType;
 import com.kispoko.tome.rules.refinement.RefinementType;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.bitmap;
 
 
 /**
@@ -106,67 +108,87 @@ public class PrimitiveValue<A> extends Value<A>
     public SQLValue.Type sqlType()
            throws DatabaseException
     {
-        if (valueClass.isAssignableFrom(String.class)) {
+        if (valueClass.isAssignableFrom(String.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(Integer.class)) {
+        else if (valueClass.isAssignableFrom(Integer.class))
+        {
             return SQLValue.Type.INTEGER;
         }
-        else if (valueClass.isAssignableFrom(Long.class)) {
+        else if (valueClass.isAssignableFrom(Long.class))
+        {
             return SQLValue.Type.INTEGER;
         }
-        else if (valueClass.isAssignableFrom(Double.class)) {
+        else if (valueClass.isAssignableFrom(Double.class))
+        {
             return SQLValue.Type.REAL;
         }
-        else if (valueClass.isAssignableFrom(Boolean.class)) {
+        else if (valueClass.isAssignableFrom(Boolean.class))
+        {
             return SQLValue.Type.INTEGER;
         }
-        else if (valueClass.isAssignableFrom(UUID.class)) {
+        else if (valueClass.isAssignableFrom(UUID.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(byte[].class)) {
+        else if (valueClass.isAssignableFrom(byte[].class))
+        {
             return SQLValue.Type.BLOB;
         }
-        else if (valueClass.isAssignableFrom(WidgetFormat.Size.class)) {
+        else if (valueClass.isAssignableFrom(WidgetFormat.Size.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(SerialBitmap.class)) {
+        else if (valueClass.isAssignableFrom(SerialBitmap.class))
+        {
             return SQLValue.Type.BLOB;
         }
-        else if (valueClass.isAssignableFrom(String[].class)) {
+        else if (valueClass.isAssignableFrom(String[].class))
+        {
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(WidgetFormat.Alignment.class)) {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(CellType.class)) {
+        else if (valueClass.isAssignableFrom(CellType.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(ColumnType.class)) {
+        else if (valueClass.isAssignableFrom(ColumnType.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(CellAlignment.class)) {
+        else if (valueClass.isAssignableFrom(CellAlignment.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(RefinementType.class)) {
+        else if (valueClass.isAssignableFrom(RefinementType.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(ProgramValueType.class)) {
+        else if (valueClass.isAssignableFrom(ProgramValueType.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(ProgramValueType[].class)) {
+        else if (valueClass.isAssignableFrom(ProgramValueType[].class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(ParameterType.class)) {
+        else if (valueClass.isAssignableFrom(ParameterType.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(VariableType.class)) {
+        else if (valueClass.isAssignableFrom(VariableType.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(ProgramInvocationParameterType.class)) {
+        else if (valueClass.isAssignableFrom(ProgramInvocationParameterType.class))
+        {
             return SQLValue.Type.TEXT;
         }
-        else {
+        else
+        {
             // value not serializable to
             throw new DatabaseException(
                     new ValueNotSerializableError(
@@ -182,36 +204,46 @@ public class PrimitiveValue<A> extends Value<A>
     public SQLValue toSQLValue()
            throws DatabaseException
     {
-        if (this.isNull()) {
+        if (this.isNull())
+        {
             return SQLValue.newNull();
         }
-        else if (this.getValue() instanceof String) {
+        else if (this.getValue() instanceof String)
+        {
             return SQLValue.newText((String) this.getValue());
         }
-        else if (this.getValue() instanceof Integer) {
+        else if (this.getValue() instanceof Integer)
+        {
             return SQLValue.newInteger(Long.valueOf((Integer) this.getValue()));
         }
-        else if (this.getValue() instanceof Long) {
+        else if (this.getValue() instanceof Long)
+        {
             return SQLValue.newInteger((Long) this.getValue());
         }
-        else if (this.getValue() instanceof Double) {
+        else if (this.getValue() instanceof Double)
+        {
             return SQLValue.newReal((Double) this.getValue());
         }
-        else if (this.getValue() instanceof Boolean) {
+        else if (this.getValue() instanceof Boolean)
+        {
             long boolAsInt = (Boolean) this.getValue() ? 1 : 0;
             return SQLValue.newInteger(boolAsInt);
         }
-        else if (this.getValue() instanceof UUID) {
+        else if (this.getValue() instanceof UUID)
+        {
             return SQLValue.newText(this.getValue().toString());
         }
-        else if (this.getValue() instanceof byte[]) {
+        else if (this.getValue() instanceof byte[])
+        {
             return SQLValue.newBlob((byte[]) this.getValue());
         }
-        else if (this.getValue() instanceof WidgetFormat.Size) {
+        else if (this.getValue() instanceof WidgetFormat.Size)
+        {
             String enumString = ((WidgetFormat.Size) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof SerialBitmap) {
+        else if (this.getValue() instanceof SerialBitmap)
+        {
             Bitmap bitmap = ((SerialBitmap) this.getValue()).getBitmap();
             if (bitmap != null) {
                 byte[] bytes = Util.getBytes(bitmap);
@@ -220,35 +252,43 @@ public class PrimitiveValue<A> extends Value<A>
                 return SQLValue.newNull();
             }
         }
-        else if (this.getValue() instanceof String[]) {
+        else if (this.getValue() instanceof String[])
+        {
             String arrayString = TextUtils.join("***", ((String[]) this.getValue()));
             return SQLValue.newText(arrayString);
         }
-        else if (this.getValue() instanceof WidgetFormat.Alignment) {
+        else if (this.getValue() instanceof WidgetFormat.Alignment)
+        {
             String enumString = ((WidgetFormat.Alignment) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof CellType) {
+        else if (this.getValue() instanceof CellType)
+        {
             String enumString = ((CellType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof ColumnType) {
+        else if (this.getValue() instanceof ColumnType)
+        {
             String enumString = ((ColumnType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof CellAlignment) {
+        else if (this.getValue() instanceof CellAlignment)
+        {
             String enumString = ((CellAlignment) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof RefinementType) {
+        else if (this.getValue() instanceof RefinementType)
+        {
             String enumString = ((RefinementType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof ProgramValueType) {
+        else if (this.getValue() instanceof ProgramValueType)
+        {
             String enumString = ((ProgramValueType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof ProgramValueType[]) {
+        else if (this.getValue() instanceof ProgramValueType[])
+        {
             ProgramValueType[] programValueTypeArray = (ProgramValueType[]) this.getValue();
             List<String> programValueTypeStrings = new ArrayList<>();
             for (int i = 0; i < programValueTypeArray.length; i++) {
@@ -257,20 +297,24 @@ public class PrimitiveValue<A> extends Value<A>
             String arrayString = TextUtils.join("***", programValueTypeStrings);
             return SQLValue.newText(arrayString);
         }
-        else if (this.getValue() instanceof ParameterType) {
+        else if (this.getValue() instanceof ParameterType)
+        {
             String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof VariableType) {
+        else if (this.getValue() instanceof VariableType)
+        {
             String enumString = ((VariableType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof ProgramInvocationParameterType) {
+        else if (this.getValue() instanceof ProgramInvocationParameterType)
+        {
             String enumString = ((ProgramInvocationParameterType)
                                             this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else {
+        else
+        {
             // value not serializable to
             throw new DatabaseException(
                     new ValueNotSerializableError(ValueNotSerializableError.Type.TO,
@@ -284,31 +328,132 @@ public class PrimitiveValue<A> extends Value<A>
     public void fromSQLValue(SQLValue sqlValue)
            throws DatabaseException
     {
-        if (this.valueClass.isAssignableFrom(String.class)) {
+        if (sqlValue.isNull()) return;
+
+        if (this.valueClass.isAssignableFrom(String.class))
+        {
             this.setValue((A) sqlValue.getText());
         }
-        else if (this.valueClass.isAssignableFrom(Integer.class)) {
+        else if (this.valueClass.isAssignableFrom(Integer.class))
+        {
+            Integer intValue = (int) (long) sqlValue.getInteger();
+            this.setValue((A) intValue);
+        }
+        else if (this.valueClass.isAssignableFrom(Long.class))
+        {
             this.setValue((A) sqlValue.getInteger());
         }
-        else if (this.valueClass.isAssignableFrom(Long.class)) {
-            this.setValue((A) sqlValue.getInteger());
-        }
-        else if (this.valueClass.isAssignableFrom(Double.class)) {
+        else if (this.valueClass.isAssignableFrom(Double.class))
+        {
             this.setValue((A) sqlValue.getReal());
         }
-        else if (this.valueClass.isAssignableFrom(Boolean.class)) {
+        else if (this.valueClass.isAssignableFrom(Boolean.class))
+        {
             Boolean boolFromInt = sqlValue.getInteger() == 1;
             this.setValue((A) boolFromInt);
         }
-        else if (this.valueClass.isAssignableFrom(UUID.class)) {
+        else if (this.valueClass.isAssignableFrom(UUID.class))
+        {
             this.setValue((A) UUID.fromString(sqlValue.getText()));
         }
-        else if (this.valueClass.isAssignableFrom(byte[].class)) {
+        else if (this.valueClass.isAssignableFrom(byte[].class))
+        {
             this.setValue((A) sqlValue.getBlob());
-        } else {
+        }
+        else if (this.valueClass.isAssignableFrom(CellType.class))
+        {
+            CellType cellType = CellType.fromSQLValue(sqlValue);
+            this.setValue((A) cellType);
+        }
+        else if (this.valueClass.isAssignableFrom(ColumnType.class))
+        {
+            ColumnType columnType = ColumnType.fromSQLValue(sqlValue);
+            this.setValue((A) columnType);
+        }
+        else if (this.valueClass.isAssignableFrom(String[].class))
+        {
+            String arrayString = sqlValue.getText();
+            if (arrayString != null) {
+                String[] stringArray = TextUtils.split(arrayString, "\\*\\*\\*");
+                this.setValue((A) stringArray);
+            }
+            else {
+                this.setValue(null);
+            }
+        }
+        else if (this.valueClass.isAssignableFrom(WidgetFormat.Size.class))
+        {
+            WidgetFormat.Size size = WidgetFormat.Size.fromSQLValue(sqlValue);
+            this.setValue((A) size);
+        }
+        else if (this.valueClass.isAssignableFrom(ProgramValueType.class))
+        {
+            ProgramValueType programValueType = ProgramValueType.fromSQLValue(sqlValue);
+            this.setValue((A) programValueType);
+        }
+        else if (this.valueClass.isAssignableFrom(ProgramValueType[].class))
+        {
+            String arrayString = sqlValue.getText();
+            if (arrayString != null) {
+                String[] stringArray = TextUtils.split(arrayString, "\\*\\*\\*");
+                ProgramValueType[] programValueTypes = new ProgramValueType[stringArray.length];
+                for (int i = 0; i < stringArray.length; i++) {
+                    programValueTypes[i] = ProgramValueType.fromSQLValue(
+                                                                SQLValue.newText(stringArray[i]));
+                }
+                this.setValue((A) programValueTypes);
+            }
+            else {
+                this.setValue(null);
+            }
+        }
+        else if (this.valueClass.isAssignableFrom(SerialBitmap.class))
+        {
+            byte[] bitmapBlob = sqlValue.getBlob();
+            if (bitmapBlob != null) {
+                Bitmap bitmap = Util.getImage(bitmapBlob);
+                SerialBitmap serialBitmap = new SerialBitmap(bitmap);
+                this.setValue((A) serialBitmap);
+            } else {
+                this.setValue(null);
+            }
+        }
+        else if (this.valueClass.isAssignableFrom(CellAlignment.class))
+        {
+            CellAlignment cellAlignment = CellAlignment.fromSQLValue(sqlValue);
+            this.setValue((A) cellAlignment);
+        }
+        else if (this.valueClass.isAssignableFrom(VariableType.class))
+        {
+            VariableType variableType = VariableType.fromSQLValue(sqlValue);
+            this.setValue((A) variableType);
+        }
+        else if (this.valueClass.isAssignableFrom(ProgramInvocationParameterType.class))
+        {
+            ProgramInvocationParameterType programInvocationParameterType =
+                    ProgramInvocationParameterType.fromSQLValue(sqlValue);
+            this.setValue((A) programInvocationParameterType);
+        }
+        else if (this.valueClass.isAssignableFrom(WidgetFormat.Alignment.class))
+        {
+            WidgetFormat.Alignment alignment = WidgetFormat.Alignment.fromSQLValue(sqlValue);
+            this.setValue((A) alignment);
+        }
+        else if (this.valueClass.isAssignableFrom(RefinementType.class))
+        {
+            RefinementType refinementType = RefinementType.fromSQLValue(sqlValue);
+            this.setValue((A) refinementType);
+        }
+        else if (this.valueClass.isAssignableFrom(ParameterType.class))
+        {
+            ParameterType parameterType = ParameterType.fromSQLValue(sqlValue);
+            this.setValue((A) parameterType);
+        }
+        else
+        {
             throw new DatabaseException(
                     new ValueNotSerializableError(ValueNotSerializableError.Type.FROM,
-                                                  this.getValue().getClass().getName()),
+                                                  valueClass.getName()),
                     DatabaseException.ErrorType.VALUE_NOT_SERIALIZABLE);
         }
     }

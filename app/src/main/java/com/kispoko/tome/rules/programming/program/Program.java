@@ -55,10 +55,10 @@ public class Program implements Model
         // **  Statements
         List<Class<? extends Statement>> statementClasses = new ArrayList<>();
         statementClasses.add(Statement.class);
-        this.statements      = new CollectionValue<>(null, statementClasses);
+        this.statements      = CollectionValue.empty(statementClasses);
 
         // **  Result Statement
-        this.resultStatement = new ModelValue<>(null, Statement.class);
+        this.resultStatement = ModelValue.empty(Statement.class);
     }
 
 
@@ -85,10 +85,10 @@ public class Program implements Model
         // **  Statements
         List<Class<? extends Statement>> statementClasses = new ArrayList<>();
         statementClasses.add(Statement.class);
-        this.statements      = new CollectionValue<>(statements, statementClasses);
+        this.statements      = CollectionValue.full(statements, statementClasses);
 
         // **  Result Statement
-        this.resultStatement = new ModelValue<>(resultStatement, Statement.class);
+        this.resultStatement = ModelValue.full(resultStatement, Statement.class);
     }
 
 

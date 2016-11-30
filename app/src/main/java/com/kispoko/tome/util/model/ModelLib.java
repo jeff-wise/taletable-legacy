@@ -3,7 +3,9 @@ package com.kispoko.tome.util.model;
 
 
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
@@ -12,6 +14,7 @@ import com.kispoko.tome.util.database.query.ModelQuery;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.query.ResultRow;
 import com.kispoko.tome.util.database.query.UpsertQuery;
+import com.kispoko.tome.util.database.sql.OneToManyRelation;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.tuple.Tuple3;
@@ -24,7 +27,9 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -83,6 +88,10 @@ public class ModelLib
                 {
                     return exception;
                 }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
             }
 
             @Override
@@ -91,7 +100,12 @@ public class ModelLib
                 if (result instanceof DatabaseException)
                 {
                     DatabaseException databaseException = (DatabaseException) result;
-                    onLoadListener.onLoadError(databaseException);
+                    onLoadListener.onLoadDBError(databaseException);
+                }
+                else if (result instanceof Exception)
+                {
+                    Exception exception = (Exception) result;
+                    onLoadListener.onLoadError(exception);
                 }
                 else if (result instanceof ResultRow)
                 {
@@ -106,7 +120,12 @@ public class ModelLib
                         }
 
                         @Override
-                        public void onModelLoadError(DatabaseException exception) {
+                        public void onModelLoadDBError(DatabaseException exception) {
+                            onLoadListener.onLoadDBError(exception);
+                        }
+
+                        @Override
+                        public void onModelLoadError(Exception exception) {
                             onLoadListener.onLoadError(exception);
                         }
                     };
@@ -125,8 +144,7 @@ public class ModelLib
      */
     @SuppressWarnings("unchecked")
     public static <A extends Model> void modelCollectionFromDatabase(
-                                            final String parentModelName,
-                                            final UUID parentModelId,
+                                            final OneToManyRelation oneToManyRelation,
                                             final List<Class<? extends A>> modelClasses,
                                             final CollectionValue.OnLoadListener<A> onLoadListener)
     {
@@ -150,10 +168,9 @@ public class ModelLib
 
                         // [2] RUN the query
                         CollectionQuery collectionQuery = new CollectionQuery(
-                                ModelLib.name(modelClass),
-                                parentModelName,
-                                parentModelId,
-                                sqlColumns);
+                                                                    ModelLib.name(modelClass),
+                                                                    oneToManyRelation,
+                                                                    sqlColumns);
                         List<ResultRow> resultRows = collectionQuery.result();
 
                         resultsList.add(resultRows);
@@ -165,6 +182,10 @@ public class ModelLib
                 {
                     return exception;
                 }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
             }
 
             @Override
@@ -173,7 +194,12 @@ public class ModelLib
                 if (result instanceof DatabaseException)
                 {
                     DatabaseException databaseException = (DatabaseException) result;
-                    onLoadListener.onLoadError(databaseException);
+                    onLoadListener.onLoadDBError(databaseException);
+                }
+                else if (result instanceof Exception)
+                {
+                    Exception exception = (Exception) result;
+                    onLoadListener.onLoadError(exception);
                 }
                 else if (result instanceof List)
                 {
@@ -198,7 +224,12 @@ public class ModelLib
                         }
 
                         @Override
-                        public void onModelLoadError(DatabaseException exception) {
+                        public void onModelLoadDBError(DatabaseException exception) {
+                            onLoadListener.onLoadDBError(exception);
+                        }
+
+                        @Override
+                        public void onModelLoadError(Exception exception) {
                             onLoadListener.onLoadError(exception);
                         }
                     };
@@ -214,6 +245,9 @@ public class ModelLib
                             ModelLib.modelFromRow(modelClass, row, onModelLoadListener);
                         }
                     }
+
+                    if (collectionSize == 0)
+                        onLoadListener.onLoad(models);
                 }
             }
 
@@ -239,7 +273,7 @@ public class ModelLib
             {
                 try
                 {
-                    runSaveQuery(model);
+                    runSaveQuery(model, new ArrayList<OneToManyRelation>());
                     return null;
                 }
                 catch (DatabaseException exception)
@@ -286,6 +320,7 @@ public class ModelLib
      */
     public static void modelCollectionToDatabase(
                                         final List<Model> models,
+                                        final List<OneToManyRelation> parentRelations,
                                         final CollectionValue.OnSaveListener onSaveListener)
     {
 
@@ -298,7 +333,7 @@ public class ModelLib
                 try
                 {
                     for (Model model : models) {
-                        runSaveQuery(model);
+                        runSaveQuery(model, parentRelations);
                     }
                     return null;
                 }
@@ -423,7 +458,11 @@ public class ModelLib
                     }
                 };
 
-                collectionValue.save(onSaveListener);
+                List<OneToManyRelation> parentRelations = new ArrayList<>();
+                parentRelations.add(new OneToManyRelation(ModelLib.name(model),
+                                                          collectionValue.name(),
+                                                          model.getId()));
+                collectionValue.save(parentRelations, onSaveListener);
             }
 
 
@@ -490,13 +529,29 @@ public class ModelLib
             // [B 3] Evaluate model values (many-to-one values)
             // ----------------------------------------------------------------------------------
 
-            for (final ModelValue<?> modelValue : modelValues) {
-                String columnName = modelValue.sqlColumnName();
+            for (final ModelValue<?> modelValue : modelValues)
+            {
+                String modelForeignKeyColumnName = modelValue.sqlColumnName();
+                SQLValue modelIdSqlValue = row.getSQLValue(modelForeignKeyColumnName);
 
-                UUID modelValueId = UUID.fromString(row.getSQLValue(columnName).getText());
+                // If there is no model currently
+                if (modelIdSqlValue.isNull())
+                {
+                    modelValue.setIsSaved(false);
+
+                    if (ModelLib.valuesAreLoaded(modelValues, collectionValues))
+                    {
+                        if (onModelLoadListener != null)
+                            onModelLoadListener.onModelLoad(model);
+                    }
+
+                    continue;
+                }
+
+                UUID modelValueId = UUID.fromString(modelIdSqlValue.getText());
                 ModelQueryParameters queryParameters =
                         new ModelQueryParameters(new ModelQueryParameters.PrimaryKey(modelValueId),
-                                ModelQueryParameters.Type.PRIMARY_KEY);
+                                                 ModelQueryParameters.Type.PRIMARY_KEY);
 
                 ModelValue.OnLoadListener onLoadListener = new ModelValue.OnLoadListener<A>() {
                     @Override
@@ -508,7 +563,13 @@ public class ModelLib
                     }
 
                     @Override
-                    public void onLoadError(DatabaseException exception) {
+                    public void onLoadDBError(DatabaseException exception) {
+                        if (onModelLoadListener != null)
+                            onModelLoadListener.onModelLoadDBError(exception);
+                    }
+
+                    @Override
+                    public void onLoadError(Exception exception) {
                         if (onModelLoadListener != null)
                             onModelLoadListener.onModelLoadError(exception);
                     }
@@ -535,13 +596,19 @@ public class ModelLib
                     }
 
                     @Override
-                    public void onLoadError(DatabaseException exception) {
+                    public void onLoadDBError(DatabaseException exception) {
+                        if (onModelLoadListener != null)
+                            onModelLoadListener.onModelLoadDBError(exception);
+                    }
+
+                    @Override
+                    public void onLoadError(Exception exception) {
                         if (onModelLoadListener != null)
                             onModelLoadListener.onModelLoadError(exception);
                     }
                 };
 
-                collectionValue.load(ModelLib.name(model), model.getId(), onLoadListener);
+                collectionValue.load(model, onLoadListener);
             }
 
 
@@ -554,6 +621,10 @@ public class ModelLib
             }
         }
         catch (DatabaseException exception)
+        {
+            onModelLoadListener.onModelLoadDBError(exception);
+        }
+        catch (Exception exception)
         {
             onModelLoadListener.onModelLoadError(exception);
         }
@@ -675,7 +746,7 @@ public class ModelLib
     private static <A> A newModel(Class<A> classObject)
                        throws DatabaseException
     {
-        A model = null;
+        A model;
         try {
             model = classObject.newInstance();
         }
@@ -689,7 +760,71 @@ public class ModelLib
     // > Tables
     // ------------------------------------------------------------------------------------------
 
-    public static <A extends Model> String defineTableSQLString(Class<A> modelClass)
+    public static void createSchema(List<Class<? extends Model>> modelClasses,
+                                    SQLiteDatabase database)
+                  throws DatabaseException
+    {
+
+        Map<String,List<Tuple2<String,String>>> childrenToParents
+                                = childToParentRelations(modelClasses);
+
+        for (Class<? extends Model> modelClass : modelClasses)
+        {
+            String tableName = ModelLib.name(modelClass);
+            List<Tuple2<String,String>> parentRelations = childrenToParents.get(tableName);
+            if (parentRelations == null)
+                parentRelations = new ArrayList<>();
+
+            String createTableQueryString = defineTableSQLString(modelClass, parentRelations);
+            database.execSQL(createTableQueryString);
+        }
+
+    }
+
+
+    private static Map<String,List<Tuple2<String,String>>>
+                        childToParentRelations(List<Class<? extends Model>> modelClasses)
+                                     throws DatabaseException
+    {
+        Map<String,List<Tuple2<String,String>>> relationMap = new HashMap<>();
+
+        for (Class<? extends Model> modelClass : modelClasses)
+        {
+            Model dummyModel = ModelLib.newModel(modelClass);
+
+            Tuple3<List<PrimitiveValue<?>>,
+                    List<ModelValue<?>>,
+                    List<CollectionValue<?>>> modelValuesTuple = ModelLib.modelValues(dummyModel);
+
+            List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
+
+            String parentName = ModelLib.name(modelClass);
+
+            for (CollectionValue<?> collectionValue : collectionValues)
+            {
+                String collectionName = collectionValue.name();
+
+                for (Class<?> collectionValueModelClass : collectionValue.getModelClasses())
+                {
+                    String childModelName = ModelLib.name(collectionValueModelClass);
+
+                    if (!relationMap.containsKey(childModelName))
+                        relationMap.put(childModelName, new ArrayList<Tuple2<String, String>>());
+
+                    List<Tuple2<String,String>> parents = relationMap.get(childModelName);
+                    parents.add(new Tuple2<>(parentName, collectionName));
+                    relationMap.put(childModelName, parents);
+                }
+            }
+        }
+
+        return relationMap;
+    }
+
+
+    private static <A extends Model> String defineTableSQLString(
+                                                    Class<A> modelClass,
+                                                    List<Tuple2<String,String>> parentRelations)
                                     throws DatabaseException
     {
         StringBuilder tableBuilder = new StringBuilder();
@@ -700,10 +835,11 @@ public class ModelLib
         tableBuilder.append(ModelLib.name(modelClass));
         tableBuilder.append(" ( ");
 
-        // [2] ColumnUnion Definitions
+
+        // [2] Column Definitions
         // --------------------------------------------------------------------------------------
 
-        // > Get ModelLib values
+        // > Get Model values
 
         Model dummyModel = ModelLib.newModel(modelClass);
 
@@ -743,6 +879,21 @@ public class ModelLib
             tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
         }
 
+
+        // ** Collection Value parents
+        for (Tuple2<String,String> parentInfo : parentRelations)
+        {
+            String parentName     = parentInfo.getItem1();
+            String collectionName = parentInfo.getItem2();
+
+            String columnName = "parent_" + collectionName + "_" + parentName + "_id";
+
+            tableBuilder.append(", ");
+            tableBuilder.append(columnName);
+            tableBuilder.append(" ");
+            tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
+        }
+
         // [2] End
         // --------------------------------------------------------------------------------------
 
@@ -758,8 +909,13 @@ public class ModelLib
     {
         boolean allLoaded = true;
 
-        for (ModelValue modelValue : modelValues) {
-            if (!modelValue.getIsLoaded()) {
+        for (ModelValue modelValue : modelValues)
+        {
+            if (modelValue.isNull() && !modelValue.getIsSaved())
+                continue;
+
+            if (!modelValue.getIsLoaded())
+            {
                 allLoaded = false;
                 break;
             }
@@ -767,7 +923,8 @@ public class ModelLib
 
         if (!allLoaded) return false;
 
-        for (CollectionValue collectionValue : collectionValues) {
+        for (CollectionValue collectionValue : collectionValues)
+        {
             if (!collectionValue.getIsLoaded()) {
                 allLoaded = false;
                 break;
@@ -822,7 +979,7 @@ public class ModelLib
     }
 
 
-    private static void runSaveQuery(Model model)
+    private static void runSaveQuery(Model model, List<OneToManyRelation> parentRelations)
                    throws DatabaseException
     {
         // [A 1] Group values by type
@@ -836,7 +993,7 @@ public class ModelLib
         final List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
 
 
-        // [B 1] Save ModelLib row
+        // [B 1] Save Model row
         // --------------------------------------------------------------------------------------
 
         // > Save each column value into a ContentValues
@@ -869,7 +1026,10 @@ public class ModelLib
             }
         }
 
-        // ** Save all of the model value identifiers (as foreign keys)
+
+        // [B 2] Save all child models in the row by foreign key
+        // --------------------------------------------------------------------------------------
+
         for (ModelValue<? extends Model> modelValue : modelValues)
         {
             String columnName = modelValue.sqlColumnName();
@@ -879,6 +1039,17 @@ public class ModelLib
             else
                 row.put(columnName, modelValue.getValue().getId().toString());
         }
+
+
+        // [B 3] Save all parent models in the row by foreign key
+        // --------------------------------------------------------------------------------------
+
+        for (OneToManyRelation parentRelation : parentRelations)
+        {
+            row.put(parentRelation.childSQLColumnName(),
+                    parentRelation.getParentId().toString());
+        }
+
 
         // > Save the row, creating a new one if necessary.
         UpsertQuery upsertQuery = new UpsertQuery(ModelLib.name(model), model.getId(), row);
@@ -892,7 +1063,8 @@ public class ModelLib
 
     private interface OnModelLoadListener<A> {
         void onModelLoad(A model);
-        void onModelLoadError(DatabaseException exception);
+        void onModelLoadDBError(DatabaseException exception);
+        void onModelLoadError(Exception exception);
     }
 
     private interface OnModelSaveListener {
@@ -920,6 +1092,5 @@ public class ModelLib
             return this.saveCounter;
         }
     }
-
 
 }

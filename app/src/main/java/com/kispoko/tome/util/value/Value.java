@@ -2,7 +2,6 @@
 package com.kispoko.tome.util.value;
 
 
-import com.kispoko.tome.util.database.DatabaseException;
 
 import java.lang.reflect.Field;
 
@@ -17,9 +16,11 @@ public abstract class Value<A>
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    protected A       value;
-    private   Field   field;
-    private   boolean isSaved;
+    protected A                value;
+
+    private   Field            field;
+
+    private   OnUpdateListener onUpdateListener;
 
 
     // CONSTRUCTORS
@@ -28,8 +29,6 @@ public abstract class Value<A>
     public Value(A value)
     {
         this.value            = value;
-
-        this.isSaved          = false;
     }
 
 
@@ -38,21 +37,6 @@ public abstract class Value<A>
 
     // > State
     // --------------------------------------------------------------------------------------
-
-    // ** Is Saved
-    // --------------------------------------------------------------------------------------
-
-    public void setIsSaved(boolean isSaved)
-    {
-        this.isSaved = isSaved;
-    }
-
-
-    public boolean getIsSaved()
-    {
-        return this.isSaved;
-    }
-
 
     // ** Value
     // --------------------------------------------------------------------------------------
@@ -65,10 +49,15 @@ public abstract class Value<A>
 
     public void setValue(A newValue)
     {
-        if (newValue != null) {
+        if (newValue != null)
+        {
             this.value = newValue;
+
+            if (this.onUpdateListener != null)
+                this.onUpdateListener.onUpdate();
         }
     }
+
 
     // ** Field
     // --------------------------------------------------------------------------------------
@@ -82,6 +71,15 @@ public abstract class Value<A>
     public void setField(Field field)
     {
         this.field = field;
+    }
+
+
+    // ** Value
+    // --------------------------------------------------------------------------------------
+
+    public void setOnUpdateListener(OnUpdateListener onUpdateListener)
+    {
+        this.onUpdateListener = onUpdateListener;
     }
 
 
@@ -108,5 +106,14 @@ public abstract class Value<A>
     {
         return this.field.getName().toLowerCase();
     }
+
+
+    // LISTENERS
+    // ------------------------------------------------------------------------------------------
+
+    public interface OnUpdateListener {
+        void onUpdate();
+    }
+
 
 }

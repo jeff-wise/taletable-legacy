@@ -2,13 +2,15 @@
 package com.kispoko.tome.util.value;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.sql.OneToManyRelation;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.model.ModelLib;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 
 
@@ -34,24 +36,10 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public CollectionValue(List<A> value,
+    private CollectionValue(List<A> value,
                            List<Class<? extends A>> modelClasses,
-                           OnSaveListener onSaveListener,
-                           OnLoadListener onLoadListener)
-    {
-        super(value);
-
-        this.modelClasses         = modelClasses;
-
-        this.staticOnSaveListener = onSaveListener;
-        this.staticOnLoadListener = onLoadListener;
-
-        this.isLoaded             = false;
-    }
-
-
-    public CollectionValue(List<A> value,
-                           List<Class<? extends A>> modelClasses)
+                           boolean isSaved,
+                           boolean isLoaded)
     {
         super(value);
 
@@ -60,7 +48,21 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
         this.staticOnSaveListener = null;
         this.staticOnLoadListener = null;
 
-        this.isLoaded             = true;
+        this.isSaved              = isSaved;
+        this.isLoaded             = isLoaded;
+    }
+
+
+    public static <A extends Model> CollectionValue<A> full(List<A> value,
+                                                            List<Class<? extends A>> modelClasses)
+    {
+        return new CollectionValue<>(value, modelClasses, false, true);
+    }
+
+
+    public static <A extends Model> CollectionValue<A> empty(List<Class<? extends A>> modelClasses)
+    {
+        return new CollectionValue<>(null, modelClasses, true, false);
     }
 
 
@@ -69,6 +71,21 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
 
     // > State
     // --------------------------------------------------------------------------------------
+
+    // ** Listeners
+    // ------------------------------------------------------------------------------------------
+
+    public void setOnSaveListener(OnSaveListener onSaveListener)
+    {
+        this.staticOnSaveListener = onSaveListener;
+    }
+
+
+    public void setOnLoadListener(OnLoadListener<A> onLoadListener)
+    {
+        this.staticOnLoadListener = onLoadListener;
+    }
+
 
     // ** Is Loaded
     // ------------------------------------------------------------------------------------------
@@ -100,25 +117,35 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     }
 
 
+    public List<Class<? extends A>> getModelClasses()
+    {
+        return this.modelClasses;
+    }
+
+
     // > Asynchronous Operations
     // --------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public void load(final String parentModelName,
-                     final UUID parentModelId,
+    public void load(final Model ownerModel,
                      final OnLoadListener dynamicOnLoadListener)
     {
-        ModelLib.<A>modelCollectionFromDatabase(parentModelName,
-                                             parentModelId,
-                                             modelClasses,
-                                             onLoadListener(dynamicOnLoadListener));
+        OneToManyRelation oneToManyRelation =
+                                new OneToManyRelation(ModelLib.name(ownerModel),
+                                                      this.name(),
+                                                      ownerModel.getId());
+        ModelLib.<A>modelCollectionFromDatabase(oneToManyRelation,
+                                                modelClasses,
+                                                this.onLoadListener(dynamicOnLoadListener));
     }
 
 
     @SuppressWarnings("unchecked")
-    public void save(final OnSaveListener dynamicOnSaveListener)
+    public void save(List<OneToManyRelation> parentRelations,
+                     OnSaveListener dynamicOnSaveListener)
     {
         ModelLib.modelCollectionToDatabase((List<Model>) this.getValue(),
+                                           parentRelations,
                                            this.onSaveListener(dynamicOnSaveListener));
     }
 
@@ -133,21 +160,33 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
         return new OnLoadListener<A>()
         {
             @Override
-            public void onLoad(List<A> values)
+            public void onLoad(List<A> loadedValues)
             {
-                setValue(value);
+                Log.d("***ON LOAD COLL", modelClasses.get(0).getName());
+
+                setValue(loadedValues);
 
                 setIsLoaded(true);
 
                 if (staticOnLoadListener != null)
-                    staticOnLoadListener.onLoad(value);
+                    staticOnLoadListener.onLoad(loadedValues);
 
                 if (dynamicOnLoadListener != null)
-                    dynamicOnLoadListener.onLoad(value);
+                    dynamicOnLoadListener.onLoad(loadedValues);
             }
 
             @Override
-            public void onLoadError(DatabaseException exception)
+            public void onLoadDBError(DatabaseException exception)
+            {
+                if (staticOnLoadListener != null)
+                    staticOnLoadListener.onLoadDBError(exception);
+
+                if (dynamicOnLoadListener != null)
+                    dynamicOnLoadListener.onLoadDBError(exception);
+            }
+
+            @Override
+            public void onLoadError(Exception exception)
             {
                 if (staticOnLoadListener != null)
                     staticOnLoadListener.onLoadError(exception);
@@ -156,6 +195,7 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
                     dynamicOnLoadListener.onLoadError(exception);
             }
         };
+
     }
 
 
@@ -207,8 +247,8 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
 
     public interface OnLoadListener<A> {
         void onLoad(List<A> value);
-        void onLoadError(DatabaseException exception);
+        void onLoadDBError(DatabaseException exception);
+        void onLoadError(Exception exception);
     }
-
 
 }

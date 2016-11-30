@@ -9,12 +9,12 @@ import com.kispoko.tome.Global;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.error.NullColumnTypeError;
 import com.kispoko.tome.util.database.error.QueryError;
+import com.kispoko.tome.util.database.sql.OneToManyRelation;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.tuple.Tuple2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 
@@ -28,8 +28,7 @@ public class CollectionQuery
     // --------------------------------------------------------------------------------------
 
     private String              tableName;
-    private String              parentTableName;
-    private UUID                parentId;
+    private OneToManyRelation   oneToManyRelation;
 
     private List<String>        columnNames;
     private List<SQLValue.Type> columnTypes;
@@ -40,13 +39,11 @@ public class CollectionQuery
     // --------------------------------------------------------------------------------------
 
     public CollectionQuery(String tableName,
-                           String parentTableName,
-                           UUID parentId,
+                           OneToManyRelation oneToManyRelation,
                            List<Tuple2<String,SQLValue.Type>> columns)
     {
-        this.tableName       = tableName;
-        this.parentTableName = parentTableName;
-        this.parentId        = parentId;
+        this.tableName         = tableName;
+        this.oneToManyRelation = oneToManyRelation;
 
         // Assign arbitrary index to column names and types for fetching from query by index
         this.columnNames = new ArrayList<>();
@@ -115,7 +112,8 @@ public class CollectionQuery
             throw e;
         }
         catch (Exception e) {
-            throw new DatabaseException(new QueryError(e), DatabaseException.ErrorType.QUERY);
+            throw new DatabaseException(new QueryError(this.queryString()),
+                                        DatabaseException.ErrorType.QUERY);
         }
         // Ensure cursor is closed
         finally {
@@ -160,13 +158,12 @@ public class CollectionQuery
         // WHERE Clause
         // --------------------------------------------------------------------------------------
         queryBuilder.append("WHERE ");
-        queryBuilder.append(this.parentTableName);
-        queryBuilder.append(".");
         queryBuilder.append(this.tableName);
-        queryBuilder.append("_id");
+        queryBuilder.append(".");
+        queryBuilder.append(this.oneToManyRelation.childSQLColumnName());
         queryBuilder.append(" = ");
         queryBuilder.append("'");
-        queryBuilder.append(this.parentId.toString());
+        queryBuilder.append(this.oneToManyRelation.getParentId());
         queryBuilder.append("'");
 
         return queryBuilder.toString();
