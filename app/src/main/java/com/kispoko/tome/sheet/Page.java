@@ -123,6 +123,15 @@ public class Page implements Model, Serializable
     }
 
 
+    // ** On Load
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * This method is called when the Page is completely loaded for the first time.
+     */
+    public void onLoad() { }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 

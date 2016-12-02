@@ -84,10 +84,14 @@ public class RefinementId implements Model, Serializable
     }
 
 
-    // ** On Update
+    // ** On Load
     // --------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Refinement Id is completely loaded for the first time.
+     */
+    public void onLoad() { }
+
 
 
     // > State

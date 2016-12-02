@@ -12,9 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.widget.Widget;
-import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.Util;
 
@@ -27,15 +26,15 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
 {
 
     private Widget widget;
-    private Rules  rules;
+    private RulesEngine rulesEngine;
 
 
-    public static final ActionDialogFragment newInstance(Widget widget, Rules rules)
+    public static final ActionDialogFragment newInstance(Widget widget, RulesEngine rulesEngine)
     {
         ActionDialogFragment actionDialogFragment = new ActionDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("COMPONENT", widget);
-        bundle.putSerializable("RULES", rules);
+        bundle.putSerializable("RULES", rulesEngine);
         actionDialogFragment.setArguments(bundle);
         return actionDialogFragment;
     }
@@ -46,7 +45,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
     {
         super.onCreate(savedInstanceState);
         this.widget = (Widget) getArguments().getSerializable("COMPONENT");
-        this.rules = (Rules) getArguments().getSerializable("RULES");
+        this.rulesEngine = (RulesEngine) getArguments().getSerializable("RULES");
     }
 
 
@@ -82,7 +81,7 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
             actionRowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    widget.runAction(actionName, getContext(), rules);
+                    widget.runAction(actionName, getContext(), rulesEngine);
                     dialog.dismiss();
                 }
             });

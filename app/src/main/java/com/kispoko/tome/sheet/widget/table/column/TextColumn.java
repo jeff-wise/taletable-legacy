@@ -101,10 +101,13 @@ public class TextColumn implements Model, Column
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Text Column is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State

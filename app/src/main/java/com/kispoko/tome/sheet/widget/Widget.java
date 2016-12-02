@@ -6,7 +6,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.model.Model;
@@ -24,10 +24,10 @@ public abstract class Widget implements Model, Serializable
 {
 
 
-    abstract public View getDisplayView(Context context, Rules rules);
-    abstract public View getEditorView(Context context, Rules rules);
+    abstract public View getDisplayView(Context context, RulesEngine rulesEngine);
+    abstract public View getEditorView(Context context, RulesEngine rulesEngine);
 
-    abstract public void runAction(String actionName, Context context, Rules rules);
+    abstract public void runAction(String actionName, Context context, RulesEngine rulesEngine);
     abstract public String name();
 
     abstract public WidgetData data();

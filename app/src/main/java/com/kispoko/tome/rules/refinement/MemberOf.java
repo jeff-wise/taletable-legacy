@@ -110,10 +110,13 @@ public class MemberOf implements Model, Serializable
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the MemberOf is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State

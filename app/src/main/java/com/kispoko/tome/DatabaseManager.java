@@ -6,7 +6,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.rules.programming.function.FunctionIndex;
 import com.kispoko.tome.rules.programming.program.ProgramIndex;
 import com.kispoko.tome.rules.programming.program.ProgramInvocationParameter;
@@ -77,7 +77,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             // ** Sheet
             modelClasses.add(Sheet.class);
-            modelClasses.add(Rules.class);
+            modelClasses.add(RulesEngine.class);
             modelClasses.add(Roleplay.class);
             modelClasses.add(Page.class);
             modelClasses.add(Group.class);

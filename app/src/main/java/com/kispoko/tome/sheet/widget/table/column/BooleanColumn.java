@@ -101,10 +101,13 @@ public class BooleanColumn implements Model, Column
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Boolean Column is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State

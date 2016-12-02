@@ -1,4 +1,4 @@
-# Add project specific ProGuard rules here.
+# Add project specific ProGuard rulesEngine here.
 # By default, the flags in this file are appended to flags specified
 # in /home/jeff/Android/Sdk/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles

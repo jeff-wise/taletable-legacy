@@ -12,8 +12,6 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.UUID;
 
-import static android.R.attr.value;
-
 
 
 /**
@@ -29,6 +27,7 @@ public class ProgramValue implements Model
 
     private PrimitiveValue<Integer>          integerValue;
     private PrimitiveValue<String>           stringValue;
+    private PrimitiveValue<Boolean>          booleanValue;
 
     private PrimitiveValue<ProgramValueType> valueType;
 
@@ -42,6 +41,7 @@ public class ProgramValue implements Model
 
         this.integerValue = new PrimitiveValue<>(null, Integer.class);
         this.stringValue  = new PrimitiveValue<>(null, String.class);
+        this.booleanValue = new PrimitiveValue<>(null, Boolean.class);
 
         this.valueType    = new PrimitiveValue<>(null, ProgramValueType.class);
     }
@@ -60,6 +60,7 @@ public class ProgramValue implements Model
 
         this.integerValue = new PrimitiveValue<>(null, Integer.class);
         this.stringValue  = new PrimitiveValue<>(null, String.class);
+        this.booleanValue = new PrimitiveValue<>(null, Boolean.class);
 
         this.valueType    = new PrimitiveValue<>(valueType, ProgramValueType.class);
 
@@ -72,29 +73,61 @@ public class ProgramValue implements Model
             case STRING:
                 this.stringValue.setValue((String) value);
                 break;
+            case BOOLEAN:
+                this.stringValue.setValue((String) value);
+                break;
         }
     }
 
 
     /**
-     * Create an "integer" ProgramValue.
+     * Create an "integer" variant.
      * @param integerValue The integer value.
-     * @return A ProgramValue that represents an Integer.
+     * @return A Program Value as the integer case.
      */
-    public static ProgramValue asInteger(Integer integerValue)
+    public static ProgramValue asInteger(UUID id, Integer integerValue)
     {
-        return new ProgramValue(UUID.randomUUID(), integerValue, ProgramValueType.INTEGER);
+        return new ProgramValue(id, integerValue, ProgramValueType.INTEGER);
+    }
+
+
+    public static ProgramValue asIntegerTemp(Integer integerValue)
+    {
+        return new ProgramValue(null, integerValue, ProgramValueType.INTEGER);
     }
 
 
     /**
-     * Create a "string" ProgramValue.
+     * Create a "string" variant.
      * @param stringValue The string value.
-     * @return A ProgramValue that represents a String.
+     * @return A Program Value as the string case.
      */
-    public static ProgramValue asString(String stringValue)
+    public static ProgramValue asString(UUID id, String stringValue)
     {
-        return new ProgramValue(UUID.randomUUID(), stringValue, ProgramValueType.STRING);
+        return new ProgramValue(id, stringValue, ProgramValueType.STRING);
+    }
+
+
+    public static ProgramValue asStringTemp(String stringValue)
+    {
+        return new ProgramValue(null, stringValue, ProgramValueType.STRING);
+    }
+
+
+    /**
+     * Create a "boolean" variant.
+     * @param booleanValue The boolean value.
+     * @return A Program Value as the boolean case.
+     */
+    public static ProgramValue asBoolean(UUID id, Boolean booleanValue)
+    {
+        return new ProgramValue(id, booleanValue, ProgramValueType.BOOLEAN);
+    }
+
+
+    public static ProgramValue asBooleanTemp(Boolean booleanValue)
+    {
+        return new ProgramValue(null, booleanValue, ProgramValueType.BOOLEAN);
     }
 
 
@@ -105,12 +138,12 @@ public class ProgramValue implements Model
 
         switch (valueType)
         {
-            case INTEGER:
-                Integer integerValue = yaml.getInteger();
-                return new ProgramValue(id, integerValue, ProgramValueType.INTEGER);
             case STRING:
-                String stringValue = yaml.getString();
-                return new ProgramValue(id, stringValue, ProgramValueType.STRING);
+                return ProgramValue.asString(id, yaml.getString());
+            case INTEGER:
+                return ProgramValue.asInteger(id, yaml.getInteger());
+            case BOOLEAN:
+                return ProgramValue.asBoolean(id, yaml.getBoolean());
         }
 
         // Shouldn't be possible for ProgramValueType to be null
@@ -147,10 +180,13 @@ public class ProgramValue implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Program Value is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State
@@ -186,6 +222,16 @@ public class ProgramValue implements Model
     }
 
 
+    /**
+     * Get the boolean value case for this ProgramValue
+     * @return The Boolean value.
+     */
+    public Boolean getBoolean()
+    {
+        return this.booleanValue.getValue();
+    }
+
+
     // > Custom Equality Methods
     // ------------------------------------------------------------------------------------------
 
@@ -206,18 +252,24 @@ public class ProgramValue implements Model
 
         switch (functionValue.getType())
         {
-            case INTEGER:
-                Integer thatInteger = functionValue.getInteger();
-                Integer thisInteger = this.getInteger();
-                return new EqualsBuilder()
-                            .append(thisInteger, thatInteger)
-                            .isEquals();
             case STRING:
                 String thatString = functionValue.getString();
                 String thisString = this.getString();
                 return new EqualsBuilder()
                             .append(thisString, thatString)
                             .isEquals();
+            case INTEGER:
+                Integer thatInteger = functionValue.getInteger();
+                Integer thisInteger = this.getInteger();
+                return new EqualsBuilder()
+                        .append(thisInteger, thatInteger)
+                        .isEquals();
+            case BOOLEAN:
+                Boolean thatBoolean = functionValue.getBoolean();
+                Boolean thisBoolean = this.getBoolean();
+                return new EqualsBuilder()
+                        .append(thisBoolean, thatBoolean)
+                        .isEquals();
         }
 
         return false;
@@ -227,7 +279,9 @@ public class ProgramValue implements Model
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                    .append(value)
+                    .append(stringValue)
+                    .append(integerValue)
+                    .append(booleanValue)
                     .append(valueType)
                     .toHashCode();
     }

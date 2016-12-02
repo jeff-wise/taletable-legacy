@@ -122,9 +122,42 @@ public class ProgramInvocationParameter implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Program Invocation Parameter is completely loaded
+     * for the first time.
+     */
+    public void onLoad() { }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    // ** Parameter Type
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the type of program invocation parameter.
+     * @return The Program Invocation Parameter Type.
+     */
+    public ProgramInvocationParameterType getType()
+    {
+        return this.type.getValue();
+    }
+
+
+    // ** Reference
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * When the parameter is the REFERENCE case, get the reference parameter (a variable name).
+     * @return The reference value.
+     */
+    public String getReference()
+    {
+        return this.referenceValue.getValue();
+    }
 
 }

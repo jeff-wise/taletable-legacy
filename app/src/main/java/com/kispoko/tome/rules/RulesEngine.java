@@ -2,8 +2,10 @@
 package com.kispoko.tome.rules;
 
 
+import com.kispoko.tome.rules.programming.evaluation.Evaluator;
 import com.kispoko.tome.rules.programming.function.FunctionIndex;
 import com.kispoko.tome.rules.programming.program.ProgramIndex;
+import com.kispoko.tome.rules.programming.variable.VariableIndex;
 import com.kispoko.tome.rules.refinement.RefinementIndex;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
@@ -16,9 +18,9 @@ import java.util.UUID;
 
 
 /**
- * Rules Engine
+ * RulesEngine Engine
  */
-public class Rules implements Model, Serializable
+public class RulesEngine implements Model, Serializable
 {
 
     // PROPERTIES
@@ -30,11 +32,15 @@ public class Rules implements Model, Serializable
     private ModelValue<FunctionIndex>   functionIndex;
     private ModelValue<ProgramIndex>    programIndex;
 
+    private VariableIndex               variableIndex;
+
+    private Evaluator                   evaluator;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Rules()
+    public RulesEngine()
     {
         this.id = null;
 
@@ -42,23 +48,32 @@ public class Rules implements Model, Serializable
         this.functionIndex   = ModelValue.empty(FunctionIndex.class);
         this.programIndex    = ModelValue.empty(ProgramIndex.class);
 
+        this.variableIndex   = new VariableIndex();
+
+        this.evaluator       = null;
     }
 
 
-    public Rules(UUID id,
-                 RefinementIndex refinementIndex,
-                 ProgramIndex programIndex,
-                 FunctionIndex functionIndex)
+    public RulesEngine(UUID id,
+                       RefinementIndex refinementIndex,
+                       ProgramIndex programIndex,
+                       FunctionIndex functionIndex)
     {
         this.id = id;
 
         this.refinementIndex = ModelValue.full(refinementIndex, RefinementIndex.class);
         this.functionIndex   = ModelValue.full(functionIndex, FunctionIndex.class);
         this.programIndex    = ModelValue.full(programIndex, ProgramIndex.class);
+
+        this.variableIndex   = new VariableIndex();
+
+        this.evaluator       = new Evaluator(this.programIndex.getValue(),
+                                             this.functionIndex.getValue(),
+                                             this.variableIndex);
     }
 
 
-    public static Rules fromYaml(Yaml yaml)
+    public static RulesEngine fromYaml(Yaml yaml)
                   throws YamlException
     {
         UUID            id              = UUID.randomUUID();
@@ -67,7 +82,7 @@ public class Rules implements Model, Serializable
         ProgramIndex    programIndex    = ProgramIndex.fromYaml(yaml.atKey("programs"));
         FunctionIndex   functionIndex   = FunctionIndex.fromYaml(yaml.atKey("functions"));
 
-        return new Rules(id, refinementIndex, programIndex, functionIndex);
+        return new RulesEngine(id, refinementIndex, programIndex, functionIndex);
     }
 
 
@@ -100,11 +115,18 @@ public class Rules implements Model, Serializable
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
-
+    /**
+     * This method is called when the RulesEngine is completely loaded for the first time.
+     */
+    public void onLoad()
+    {
+        this.evaluator = new Evaluator(this.getProgramIndex(),
+                                       this.getFunctionIndex(),
+                                       this.getVariableIndex());
+    }
 
     // > State
     // ------------------------------------------------------------------------------------------
@@ -117,5 +139,36 @@ public class Rules implements Model, Serializable
     {
         return this.refinementIndex.getValue();
     }
+
+
+    /**
+     * Get the variable index.
+     * @return The Variable Index.
+     */
+    public VariableIndex getVariableIndex()
+    {
+        return this.variableIndex;
+    }
+
+
+    /**
+     * Get the program index.
+     * @return The Program Index.
+     */
+    public ProgramIndex getProgramIndex()
+    {
+        return this.programIndex.getValue();
+    }
+
+
+    /**
+     * Get the function index.
+     * @return The Function Index.
+     */
+    public FunctionIndex getFunctionIndex()
+    {
+        return this.functionIndex.getValue();
+    }
+
 
 }

@@ -62,17 +62,7 @@ public class ColumnUnion implements Model
         switch (type)
         {
             case TEXT:
-                if (column == null)
-                    Log.d("***COLUMN", "column is null");
-                else
-                    Log.d("***COLUMN", "column is NOT null");
-                TextColumn textColumn = (TextColumn) column;
-                if (textColumn == null)
-                    Log.d("***COLUMN", "text column is null after conversion");
                 this.textColumn.setValue((TextColumn) column);
-                Log.d("***COLUMN", "set text column value");
-                if (this.textColumn.getValue() == null)
-                    Log.d("***COLUMN", "text column is null after being set");
                 break;
             case NUMBER:
                 this.numberColumn.setValue((NumberColumn) column);
@@ -139,7 +129,7 @@ public class ColumnUnion implements Model
                 return ColumnUnion.asBoolean(id, booleanColumn);
         }
 
-        // CANNOT REACH HERE. If VariableType is null, an InvalidEnum exception would be thrown.
+        // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
         return null;
 
     }
@@ -174,10 +164,13 @@ public class ColumnUnion implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Column Union is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State

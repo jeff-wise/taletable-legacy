@@ -4,12 +4,14 @@ package com.kispoko.tome.rules.programming.variable;
 
 import com.kispoko.tome.rules.programming.program.ProgramInvocation;
 import com.kispoko.tome.rules.refinement.RefinementId;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -17,7 +19,7 @@ import java.util.UUID;
 /**
  * Text Variable
  */
-public class TextVariable implements Model
+public class TextVariable implements Model, Variable, Serializable
 {
 
     // PROPERTIES
@@ -25,10 +27,12 @@ public class TextVariable implements Model
 
     private UUID id;
 
+    private PrimitiveValue<String>        name;
+
     private PrimitiveValue<String>        stringValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableType>  type;
+    private PrimitiveValue<VariableKind>  type;
 
     private ModelValue<RefinementId>      refinementId;
 
@@ -40,10 +44,12 @@ public class TextVariable implements Model
     {
         this.id                     = null;
 
+        this.name                   = new PrimitiveValue<>(null, String.class);
+
         this.stringValue            = new PrimitiveValue<>(null, String.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(null, VariableType.class);
+        this.type                   = new PrimitiveValue<>(null, VariableKind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
     }
@@ -56,14 +62,20 @@ public class TextVariable implements Model
      * @param value The Variable value.
      * @param type The Variable type.
      */
-    private TextVariable(UUID id, Object value, VariableType type, RefinementId refinementId)
+    private TextVariable(UUID id,
+                         String name,
+                         Object value,
+                         VariableKind type,
+                         RefinementId refinementId)
     {
         this.id                     = id;
+
+        this.name                   = new PrimitiveValue<>(name, String.class);
 
         this.stringValue            = new PrimitiveValue<>(null, String.class);
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(type, VariableType.class);
+        this.type                   = new PrimitiveValue<>(type, VariableKind.class);
 
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
 
@@ -77,6 +89,9 @@ public class TextVariable implements Model
                 this.programInvocationValue.setValue((ProgramInvocation) value);
                 break;
         }
+
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
     }
 
 
@@ -86,9 +101,12 @@ public class TextVariable implements Model
      * @param stringValue The String value.
      * @return A new "literal" Text Variable.
      */
-    public static TextVariable asText(UUID id, String stringValue, RefinementId refinementId)
+    public static TextVariable asText(UUID id,
+                                      String name,
+                                      String stringValue,
+                                      RefinementId refinementId)
     {
-        return new TextVariable(id, stringValue, VariableType.LITERAL, refinementId);
+        return new TextVariable(id, name, stringValue, VariableKind.LITERAL, refinementId);
     }
 
 
@@ -99,10 +117,11 @@ public class TextVariable implements Model
      * @return A new "program" variable.
      */
     public static TextVariable asProgram(UUID id,
+                                         String name,
                                          ProgramInvocation programInvocation,
                                          RefinementId refinementId)
     {
-        return new TextVariable(id, programInvocation, VariableType.PROGRAM, refinementId);
+        return new TextVariable(id, name, programInvocation, VariableKind.PROGRAM, refinementId);
     }
 
 
@@ -119,20 +138,21 @@ public class TextVariable implements Model
             return null;
 
         UUID         id           = UUID.randomUUID();
-        VariableType type         = VariableType.fromYaml(yaml.atKey("type"));
+        String       name         = yaml.atMaybeKey("name").getString();
+        VariableKind type         = VariableKind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
 
         switch (type)
         {
             case LITERAL:
                 String stringValue  = yaml.atKey("value").getString();
-                return TextVariable.asText(id, stringValue, refinementId);
+                return TextVariable.asText(id, name, stringValue, refinementId);
             case PROGRAM:
                 ProgramInvocation invocation = ProgramInvocation.fromYaml(yaml.atKey("value"));
-                return TextVariable.asProgram(id, invocation, refinementId);
+                return TextVariable.asProgram(id, name, invocation, refinementId);
         }
 
-        // CANNOT REACH HERE. If VariableType is null, an InvalidEnum exception would be thrown.
+        // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
         return null;
     }
 
@@ -166,10 +186,23 @@ public class TextVariable implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    public void onLoad()
+    {
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
+    }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    public String getName()
+    {
+        return this.name.getValue();
+    }
 
 
     // > State
@@ -178,7 +211,7 @@ public class TextVariable implements Model
     // ** Type
     // ------------------------------------------------------------------------------------------
 
-    public VariableType getType()
+    public VariableKind getType()
     {
         return this.type.getValue();
     }
@@ -236,7 +269,6 @@ public class TextVariable implements Model
     // ** Refinement
     // ------------------------------------------------------------------------------------------
 
-
     /**
      * Returns true if the variable has a refinement.
      * @return True if the variable has a refinement.
@@ -254,6 +286,23 @@ public class TextVariable implements Model
     public RefinementId getRefinementId()
     {
         return this.refinementId.getValue();
+    }
+
+
+    // > Null
+    // ------------------------------------------------------------------------------------------
+
+    public boolean isNull()
+    {
+        switch (getType())
+        {
+            case LITERAL:
+                return this.stringValue == null;
+            case PROGRAM:
+                return this.programInvocationValue == null;
+        }
+
+        return true;
     }
 
 

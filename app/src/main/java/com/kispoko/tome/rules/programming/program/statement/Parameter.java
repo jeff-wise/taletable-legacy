@@ -2,6 +2,10 @@
 package com.kispoko.tome.rules.programming.program.statement;
 
 
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.rules.programming.variable.VariableType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -167,10 +171,13 @@ public class Parameter implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Parameter is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State
@@ -193,6 +200,11 @@ public class Parameter implements Model
      */
     public Integer getParameter()
     {
+        if (this.getType() != ParameterType.PARAMETER) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("parameter", this.type.toString())));
+        }
         return this.programParameter.getValue();
     }
 
@@ -203,6 +215,11 @@ public class Parameter implements Model
      */
     public String getVariable()
     {
+        if (this.getType() != ParameterType.VARIABLE) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("variable", this.type.toString())));
+        }
         return this.variableName.getValue();
     }
 
@@ -213,6 +230,11 @@ public class Parameter implements Model
      */
     public String getStringLiteral()
     {
+        if (this.getType() != ParameterType.LITERAL_STRING) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("literal_string", this.type.toString())));
+        }
         return this.literalString.getValue();
     }
 

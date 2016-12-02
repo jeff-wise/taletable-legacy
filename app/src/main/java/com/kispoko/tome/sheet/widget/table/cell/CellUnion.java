@@ -133,7 +133,7 @@ public class CellUnion implements Model
                 return CellUnion.asBoolean(id, booleanCell);
         }
 
-        // CANNOT REACH HERE. If VariableType is null, an InvalidEnum exception would be thrown.
+        // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
         return null;
 
     }
@@ -168,15 +168,13 @@ public class CellUnion implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
-
-
-
-
-
+    /**
+     * This method is called when the Cell Union is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > Views

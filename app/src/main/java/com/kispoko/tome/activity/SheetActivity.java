@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
+import com.kispoko.tome.rules.programming.variable.TextVariable;
+import com.kispoko.tome.rules.programming.variable.VariableKind;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
@@ -165,21 +167,22 @@ public class SheetActivity
     // API
     // -------------------------------------------------------------------------------------------
 
-    /**
-     * Set the character name for the Sheet Activity to display. If a text widget has the
-     * name "name", then it calls this method.
-     * @param name
-     */
-    public static void setCharacterName(String name)
-    {
-        characterName = name;
-    }
-
-
-
     public void onSheet(Sheet sheet)
     {
+        // Render the sheet
         sheet.render(this.pagePagerAdapter);
+
+        // Set the title to the character's name, if available
+        String characterName = "Sheet";
+
+        TextVariable nameVariable = (TextVariable) sheet.getRules().getVariableIndex()
+                                                        .variableWithName("name");
+        if (!nameVariable.isNull() && nameVariable.getType() == VariableKind.LITERAL) {
+            characterName = nameVariable.getString();
+        }
+
+        TextView titleView = (TextView) findViewById(R.id.page_title);
+        titleView.setText(characterName);
     }
 
 
@@ -288,6 +291,9 @@ public class SheetActivity
      */
     private void loadSheet()
     {
+        // Ensure the sheet manager is ready to be used
+        SheetManager.initialize();
+
         // If previous activity was template chooser, get id of chosen template
         String templateId = null;
         if (getIntent().hasExtra("TEMPLATE_ID"))

@@ -176,7 +176,6 @@ public class ModelValue<A extends Model> extends Value<A>
             @Override
             public void onLoad(A loadedValue)
             {
-                Log.d("***ON LOAD MODEL", modelClass.getName());
                 setValue(loadedValue);
 
                 setIsLoaded(true);
@@ -191,8 +190,6 @@ public class ModelValue<A extends Model> extends Value<A>
             @Override
             public void onLoadDBError(DatabaseException exception)
             {
-                Log.d("***MODEL LOAD DB ERROR", exception.errorMessage(), exception);
-
                 if (staticOnLoadListener != null)
                     staticOnLoadListener.onLoadDBError(exception);
 
@@ -203,8 +200,6 @@ public class ModelValue<A extends Model> extends Value<A>
             @Override
             public void onLoadError(Exception exception)
             {
-                Log.d("***MODEL LOAD ERROR", "other exception", exception);
-
                 if (staticOnLoadListener != null)
                     staticOnLoadListener.onLoadError(exception);
 

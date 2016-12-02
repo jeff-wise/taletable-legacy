@@ -5,6 +5,7 @@ package com.kispoko.tome;
 import android.util.Log;
 
 import com.kispoko.tome.exception.TemplateFileException;
+import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.rules.programming.function.InvalidFunctionException;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -55,4 +56,11 @@ public class ApplicationFailure
         Log.d("***APP", "invalid function");
         exception.printStackTrace();
     }
+
+
+    public static void union(UnionException exception)
+    {
+        Log.d("***APP", exception.errorMessage(), exception);
+    }
+
 }

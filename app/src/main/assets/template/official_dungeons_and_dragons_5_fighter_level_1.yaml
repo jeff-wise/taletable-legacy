@@ -8,7 +8,7 @@ game:
   description: >
     The fifth edition of the world's most famous roleplaying game, with simplified game
     mechanics and more focus on roleplaying and storytelling.
-rules:
+rulesEngine:
   refinements:
   - name: class
     type: member_of
@@ -153,7 +153,6 @@ roleplay:
       widgets:
       - type: text
         data:
-          name: name
           actions:
           - edit
           - generate
@@ -164,6 +163,7 @@ roleplay:
             width: 1
         size: large
         value:
+          name: name
           type: literal
           value: Aladaisian Wineheart
       - type: image
@@ -339,6 +339,7 @@ roleplay:
             - type: reference
               value: strength
         value:
+          name: strength
           type: literal
           value: 11
       - type: number

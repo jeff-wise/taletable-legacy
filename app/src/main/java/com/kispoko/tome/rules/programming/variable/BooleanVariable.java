@@ -4,22 +4,24 @@ package com.kispoko.tome.rules.programming.variable;
 
 import com.kispoko.tome.rules.programming.program.ProgramInvocation;
 import com.kispoko.tome.rules.refinement.RefinementId;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-import static com.kispoko.tome.rules.programming.variable.VariableType.PROGRAM;
+import static com.kispoko.tome.rules.programming.variable.VariableKind.PROGRAM;
 
 
 
 /**
  * Boolean Variable
  */
-public class BooleanVariable implements Model
+public class BooleanVariable implements Model, Variable, Serializable
 {
 
     // PROPERTIES
@@ -27,10 +29,13 @@ public class BooleanVariable implements Model
 
     private UUID id;
 
+    private PrimitiveValue<String>        name;
+
+
     private PrimitiveValue<Boolean>       booleanValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableType>  type;
+    private PrimitiveValue<VariableKind>  type;
 
     private ModelValue<RefinementId>      refinementId;
 
@@ -42,10 +47,13 @@ public class BooleanVariable implements Model
     {
         this.id                     = null;
 
+        this.name                   = new PrimitiveValue<>(null, String.class);
+
+        this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
         this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(null, VariableType.class);
+        this.type                   = new PrimitiveValue<>(null, VariableKind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
     }
@@ -58,14 +66,20 @@ public class BooleanVariable implements Model
      * @param value The Variable value.
      * @param type The Variable type.
      */
-    private BooleanVariable(UUID id, Object value, VariableType type, RefinementId refinementId)
+    private BooleanVariable(UUID id,
+                            String name,
+                            Object value,
+                            VariableKind type,
+                            RefinementId refinementId)
     {
         this.id                     = id;
+
+        this.name                   = new PrimitiveValue<>(name, String.class);
 
         this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(type, VariableType.class);
+        this.type                   = new PrimitiveValue<>(type, VariableKind.class);
 
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
 
@@ -79,6 +93,9 @@ public class BooleanVariable implements Model
                 this.programInvocationValue.setValue((ProgramInvocation) value);
                 break;
         }
+
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
     }
 
 
@@ -89,10 +106,11 @@ public class BooleanVariable implements Model
      * @return A new "boolean" variable.
      */
     public static BooleanVariable asBoolean(UUID id,
+                                            String name,
                                             Boolean booleanValue,
                                             RefinementId refinementId)
     {
-        return new BooleanVariable(id, booleanValue, VariableType.LITERAL, refinementId);
+        return new BooleanVariable(id, name, booleanValue, VariableKind.LITERAL, refinementId);
     }
 
 
@@ -103,10 +121,11 @@ public class BooleanVariable implements Model
      * @return A new "program" variable.
      */
     public static BooleanVariable asProgram(UUID id,
+                                            String name,
                                             ProgramInvocation programInvocation,
                                             RefinementId refinementId)
     {
-        return new BooleanVariable(id, programInvocation, PROGRAM, refinementId);
+        return new BooleanVariable(id, name, programInvocation, PROGRAM, refinementId);
     }
 
 
@@ -123,20 +142,21 @@ public class BooleanVariable implements Model
             return null;
 
         UUID         id           = UUID.randomUUID();
-        VariableType type         = VariableType.fromYaml(yaml.atKey("type"));
+        String       name         = yaml.atMaybeKey("name").getString();
+        VariableKind type         = VariableKind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
 
         switch (type)
         {
             case LITERAL:
                 Boolean booleanValue  = yaml.atKey("value").getBoolean();
-                return BooleanVariable.asBoolean(id, booleanValue, refinementId);
+                return BooleanVariable.asBoolean(id, name, booleanValue, refinementId);
             case PROGRAM:
                 ProgramInvocation invocation = ProgramInvocation.fromYaml(yaml.atKey("value"));
-                return BooleanVariable.asProgram(id, invocation, refinementId);
+                return BooleanVariable.asProgram(id, name, invocation, refinementId);
         }
 
-        // CANNOT REACH HERE. If VariableType is null, an InvalidEnum exception would be thrown.
+        // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
         return null;
     }
 
@@ -170,10 +190,23 @@ public class BooleanVariable implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    public void onLoad()
+    {
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
+    }
+
+
+    // > Variable
+    // ------------------------------------------------------------------------------------------
+
+    public String getName()
+    {
+        return this.name.getValue();
+    }
 
 
     // > State
@@ -182,7 +215,7 @@ public class BooleanVariable implements Model
     // ** Type
     // ------------------------------------------------------------------------------------------
 
-    public VariableType getType()
+    public VariableKind getType()
     {
         return this.type.getValue();
     }

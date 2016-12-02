@@ -90,10 +90,13 @@ public class BooleanCell implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Boolean Cell is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State

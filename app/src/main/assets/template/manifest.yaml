@@ -12,7 +12,7 @@ games:
 - name: pathfinder
   label: 'Pathfinder'
   description: >
-    Pathfinder takes the best rules from Dungeons and Dragons 3.5, fixing many defects while
+    Pathfinder takes the best rulesEngine from Dungeons and Dragons 3.5, fixing many defects while
     providing a captivating setting boosted by well-designed game mechanics.
 templates:
 - game: dungeons_and_dragons_4

@@ -97,10 +97,13 @@ public class Row implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Table Widget is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State

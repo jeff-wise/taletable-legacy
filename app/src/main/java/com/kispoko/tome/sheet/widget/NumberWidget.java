@@ -10,9 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.rules.programming.variable.NumberVariable;
 import com.kispoko.tome.rules.programming.variable.TextVariable;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
@@ -74,6 +75,8 @@ public class NumberWidget extends Widget implements Serializable
         this.value      = ModelValue.full(value, NumberVariable.class);
         this.prefix     = ModelValue.full(prefix, TextVariable.class);
         this.postfix    = ModelValue.full(postfix, TextVariable.class);
+
+
     }
 
 
@@ -112,10 +115,13 @@ public class NumberWidget extends Widget implements Serializable
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Number Widget is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > Widget
@@ -149,7 +155,7 @@ public class NumberWidget extends Widget implements Serializable
     // ** Run Action
     // ------------------------------------------------------------------------------------------
 
-    public void runAction(String actionName, Context context, Rules rules) { }
+    public void runAction(String actionName, Context context, RulesEngine rulesEngine) { }
 
 
     // > State
@@ -183,9 +189,12 @@ public class NumberWidget extends Widget implements Serializable
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    public View getDisplayView(Context context, Rules rules)
+    public View view()
     {
-        LinearLayout integerLayout = WidgetUI.linearLayout(this, context, rules);
+        Context context = SheetManager.currentSheetContext();
+        RulesEngine rulesEngine = SheetManager.currentSheet().getRules();
+
+        LinearLayout integerLayout = WidgetUI.linearLayout(this, context, rulesEngine);
 
         LinearLayout contentLayout = new LinearLayout(context);
         contentLayout.setLayoutParams(Util.linearLayoutParamsMatch());
@@ -214,7 +223,7 @@ public class NumberWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, Rules rules)
+    public View getEditorView(Context context, RulesEngine rulesEngine)
     {
         return new LinearLayout(context);
     }

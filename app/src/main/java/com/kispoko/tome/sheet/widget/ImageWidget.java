@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.SerialBitmap;
@@ -135,10 +135,13 @@ public class ImageWidget extends Widget implements Serializable
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Image Widget is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > Widget
@@ -153,7 +156,7 @@ public class ImageWidget extends Widget implements Serializable
     }
 
 
-    public void runAction(String actionName, Context context, Rules rules) { }
+    public void runAction(String actionName, Context context, RulesEngine rulesEngine) { }
 
 
     // > Image
@@ -186,10 +189,10 @@ public class ImageWidget extends Widget implements Serializable
      * @param context
      * @return
      */
-    public View getDisplayView(final Context context, Rules rules)
+    public View getDisplayView(final Context context, RulesEngine rulesEngine)
     {
         // Layout
-        final LinearLayout imageLayout = WidgetUI.linearLayout(this, context, rules);
+        final LinearLayout imageLayout = WidgetUI.linearLayout(this, context, rulesEngine);
         imageLayout.setGravity(Gravity.CENTER);
         //imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
 
@@ -251,7 +254,7 @@ public class ImageWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, Rules rules)
+    public View getEditorView(Context context, RulesEngine rulesEngine)
     {
         return new LinearLayout(context);
     }

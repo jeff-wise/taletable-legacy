@@ -7,9 +7,8 @@ import android.text.TextUtils;
 
 import com.kispoko.tome.rules.programming.program.ProgramInvocationParameterType;
 import com.kispoko.tome.rules.programming.program.ProgramValueType;
-import com.kispoko.tome.rules.programming.program.statement.Parameter;
 import com.kispoko.tome.rules.programming.program.statement.ParameterType;
-import com.kispoko.tome.rules.programming.variable.VariableType;
+import com.kispoko.tome.rules.programming.variable.VariableKind;
 import com.kispoko.tome.rules.refinement.RefinementType;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
@@ -26,8 +25,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static android.R.attr.bitmap;
 
 
 /**
@@ -179,7 +176,7 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(VariableType.class))
+        else if (valueClass.isAssignableFrom(VariableKind.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -302,9 +299,9 @@ public class PrimitiveValue<A> extends Value<A>
             String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof VariableType)
+        else if (this.getValue() instanceof VariableKind)
         {
-            String enumString = ((VariableType) this.getValue()).name().toLowerCase();
+            String enumString = ((VariableKind) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof ProgramInvocationParameterType)
@@ -423,10 +420,10 @@ public class PrimitiveValue<A> extends Value<A>
             CellAlignment cellAlignment = CellAlignment.fromSQLValue(sqlValue);
             this.setValue((A) cellAlignment);
         }
-        else if (this.valueClass.isAssignableFrom(VariableType.class))
+        else if (this.valueClass.isAssignableFrom(VariableKind.class))
         {
-            VariableType variableType = VariableType.fromSQLValue(sqlValue);
-            this.setValue((A) variableType);
+            VariableKind variableKind = VariableKind.fromSQLValue(sqlValue);
+            this.setValue((A) variableKind);
         }
         else if (this.valueClass.isAssignableFrom(ProgramInvocationParameterType.class))
         {

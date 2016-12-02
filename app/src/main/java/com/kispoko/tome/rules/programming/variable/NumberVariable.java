@@ -4,19 +4,22 @@ package com.kispoko.tome.rules.programming.variable;
 
 import com.kispoko.tome.rules.programming.program.ProgramInvocation;
 import com.kispoko.tome.rules.refinement.RefinementId;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.UUID;
+
 
 
 /**
  * Number Variable
  */
-public class NumberVariable implements Model
+public class NumberVariable implements Model, Variable, Serializable
 {
 
     // PROPERTIES
@@ -24,10 +27,12 @@ public class NumberVariable implements Model
 
     private UUID id;
 
+    private PrimitiveValue<String>        name;
+
     private PrimitiveValue<Integer>       integerValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableType>  type;
+    private PrimitiveValue<VariableKind>  type;
 
     private ModelValue<RefinementId>      refinementId;
 
@@ -39,10 +44,12 @@ public class NumberVariable implements Model
     {
         this.id                     = null;
 
+        this.name                   = new PrimitiveValue<>(null, String.class);
+
         this.integerValue           = new PrimitiveValue<>(null, Integer.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(null, VariableType.class);
+        this.type                   = new PrimitiveValue<>(null, VariableKind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
     }
@@ -55,14 +62,20 @@ public class NumberVariable implements Model
      * @param value The Variable value.
      * @param type The Variable type.
      */
-    private NumberVariable(UUID id, Object value, VariableType type, RefinementId refinementId)
+    private NumberVariable(UUID id,
+                           String name,
+                           Object value,
+                           VariableKind type,
+                           RefinementId refinementId)
     {
         this.id                     = id;
+
+        this.name                   = new PrimitiveValue<>(name, String.class);
 
         this.integerValue           = new PrimitiveValue<>(null, Integer.class);
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(type, VariableType.class);
+        this.type                   = new PrimitiveValue<>(type, VariableKind.class);
 
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
 
@@ -76,6 +89,10 @@ public class NumberVariable implements Model
                 this.programInvocationValue.setValue((ProgramInvocation) value);
                 break;
         }
+
+        // Register variable with RulesEngine
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
     }
 
 
@@ -85,9 +102,12 @@ public class NumberVariable implements Model
      * @param integerValue The Integer value.
      * @return A new "literal" Integer Variable.
      */
-    public static NumberVariable asInteger(UUID id, Integer integerValue, RefinementId refinementId)
+    public static NumberVariable asInteger(UUID id,
+                                           String name,
+                                           Integer integerValue,
+                                           RefinementId refinementId)
     {
-        return new NumberVariable(id, integerValue, VariableType.LITERAL, refinementId);
+        return new NumberVariable(id, name, integerValue, VariableKind.LITERAL, refinementId);
     }
 
 
@@ -98,10 +118,11 @@ public class NumberVariable implements Model
      * @return A new "program" variable.
      */
     public static NumberVariable asProgram(UUID id,
+                                           String name,
                                            ProgramInvocation programInvocation,
                                            RefinementId refinementId)
     {
-        return new NumberVariable(id, programInvocation, VariableType.PROGRAM, refinementId);
+        return new NumberVariable(id, name, programInvocation, VariableKind.PROGRAM, refinementId);
     }
 
 
@@ -118,20 +139,21 @@ public class NumberVariable implements Model
             return null;
 
         UUID         id           = UUID.randomUUID();
-        VariableType type         = VariableType.fromYaml(yaml.atKey("type"));
+        String       name         = yaml.atMaybeKey("name").getString();
+        VariableKind type         = VariableKind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
 
         switch (type)
         {
             case LITERAL:
                 Integer integerValue  = yaml.atKey("value").getInteger();
-                return NumberVariable.asInteger(id, integerValue, refinementId);
+                return NumberVariable.asInteger(id, name, integerValue, refinementId);
             case PROGRAM:
                 ProgramInvocation invocation = ProgramInvocation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asProgram(id, invocation, refinementId);
+                return NumberVariable.asProgram(id, name, invocation, refinementId);
         }
 
-        // CANNOT REACH HERE. If VariableType is null, an InvalidEnum exception would be thrown.
+        // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
         return null;
     }
 
@@ -165,10 +187,23 @@ public class NumberVariable implements Model
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    public void onLoad()
+    {
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
+    }
+
+
+    // > Variable
+    // ------------------------------------------------------------------------------------------
+
+    public String getName()
+    {
+        return this.name.getValue();
+    }
 
 
     // > State
@@ -177,7 +212,7 @@ public class NumberVariable implements Model
     // ** Type
     // ------------------------------------------------------------------------------------------
 
-    public VariableType getType()
+    public VariableKind getType()
     {
         return this.type.getValue();
     }
@@ -253,6 +288,5 @@ public class NumberVariable implements Model
     {
         return this.refinementId.getValue();
     }
-
 
 }

@@ -3,7 +3,6 @@ package com.kispoko.tome.rules.programming.program;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.rules.programming.variable.VariableType;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -18,7 +17,8 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 public enum ProgramValueType
 {
     INTEGER,
-    STRING;
+    STRING,
+    BOOLEAN;
 
 
     public static ProgramValueType fromString(String typeString)

@@ -101,10 +101,13 @@ public class NumberColumn implements Model, Column
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Number Column is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State

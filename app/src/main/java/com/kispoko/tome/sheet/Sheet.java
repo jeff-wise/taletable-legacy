@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.game.Game;
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
@@ -42,7 +42,7 @@ public class Sheet implements Model
 
     private ModelValue<Game>     game;
     private ModelValue<Roleplay> roleplay;
-    private ModelValue<Rules>    rules;
+    private ModelValue<RulesEngine>    rules;
 
 
     // > Internal
@@ -63,14 +63,14 @@ public class Sheet implements Model
 
         this.game      = ModelValue.empty(Game.class);
         this.roleplay  = ModelValue.empty(Roleplay.class);
-        this.rules     = ModelValue.empty(Rules.class);
+        this.rules     = ModelValue.empty(RulesEngine.class);
     }
 
 
     public Sheet(UUID id,
                  Game game,
                  Roleplay roleplay,
-                 Rules rules)
+                 RulesEngine rulesEngine)
     {
         this.id        = id;
 
@@ -79,7 +79,7 @@ public class Sheet implements Model
 
         this.game      = ModelValue.full(game, Game.class);
         this.roleplay  = ModelValue.full(roleplay, Roleplay.class);
-        this.rules     = ModelValue.full(rules, Rules.class);
+        this.rules     = ModelValue.full(rulesEngine, RulesEngine.class);
 
         indexComponents();
 
@@ -92,9 +92,9 @@ public class Sheet implements Model
         UUID id = UUID.randomUUID();
         Game game = Game.fromYaml(yaml.atKey("game"));
         Roleplay roleplay = Roleplay.fromYaml(yaml.atKey("roleplay"));
-        Rules rules = Rules.fromYaml(yaml.atKey("rules"));
+        RulesEngine rulesEngine = RulesEngine.fromYaml(yaml.atKey("rulesEngine"));
 
-        return new Sheet(id, game, roleplay, rules);
+        return new Sheet(id, game, roleplay, rulesEngine);
     }
 
 
@@ -119,6 +119,15 @@ public class Sheet implements Model
     }
 
 
+    // ** On Load
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * This method is called when the Sheet is completely loaded for the first time.
+     */
+    public void onLoad() { }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -141,7 +150,7 @@ public class Sheet implements Model
     }
 
 
-    public Rules getRules()
+    public RulesEngine getRules()
     {
         return this.rules.getValue();
     }

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.ActionDialogFragment;
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.Util;
 
@@ -30,7 +30,7 @@ public class WidgetUI
      * @param context Context object.
      * @return A LinearLayout that represents the outer-most container of a component view.
      */
-    public static LinearLayout linearLayout(final Widget widget, Context context, final Rules rules)
+    public static LinearLayout linearLayout(final Widget widget, Context context, final RulesEngine rulesEngine)
     {
         LinearLayout layout = new LinearLayout(context);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -50,7 +50,7 @@ public class WidgetUI
             @Override
             public void onClick(View v) {
                 ActionDialogFragment actionDialogFragment =
-                        ActionDialogFragment.newInstance(widget, rules);
+                        ActionDialogFragment.newInstance(widget, rulesEngine);
                 actionDialogFragment.show(thisActivity.getSupportFragmentManager(),
                         actionDialogFragment.getTag());
             }

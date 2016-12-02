@@ -11,7 +11,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.Row;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
@@ -148,10 +148,13 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Table Widget is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > Widget
@@ -176,7 +179,7 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    public void runAction(String actionName, Context context, Rules rules) { }
+    public void runAction(String actionName, Context context, RulesEngine rulesEngine) { }
 
 
     // > State
@@ -268,9 +271,9 @@ public class TableWidget extends Widget implements Serializable
      * @param context
      * @return
      */
-    public View getDisplayView(Context context, Rules rules)
+    public View getDisplayView(Context context, RulesEngine rulesEngine)
     {
-        LinearLayout layout = WidgetUI.linearLayout(this, context, rules);
+        LinearLayout layout = WidgetUI.linearLayout(this, context, rulesEngine);
 
         layout.setPadding(0, 0, 0, 0);
 
@@ -323,7 +326,7 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, Rules rules)
+    public View getEditorView(Context context, RulesEngine rulesEngine)
     {
         return new LinearLayout(context);
     }

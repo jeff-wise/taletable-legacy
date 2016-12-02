@@ -129,6 +129,15 @@ public class Group implements Model, Serializable
     }
 
 
+    // ** On Load
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * This method is called when the Roleplay is completely loaded for the first time.
+     */
+    public void onLoad() { }
+
+
     // ** Updates
     // ------------------------------------------------------------------------------------------
 

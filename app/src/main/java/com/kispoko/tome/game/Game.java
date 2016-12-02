@@ -86,10 +86,13 @@ public class Game implements Model
     }
 
 
-    // ** On Update
+    // ** On load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Game is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State

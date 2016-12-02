@@ -18,7 +18,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.EditActivity;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.rules.Rules;
+import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.rules.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
@@ -118,10 +118,13 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Text Widget is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > Widget
@@ -138,14 +141,14 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
-    public void runAction(String actionName, Context context, Rules rules)
+    public void runAction(String actionName, Context context, RulesEngine rulesEngine)
     {
         switch (actionName)
         {
             case "edit":
                 Intent intent = new Intent(context, EditActivity.class);
                 intent.putExtra("COMPONENT", this);
-                intent.putExtra("RULES", rules);
+                intent.putExtra("RULES", rulesEngine);
                 ((Activity) context).startActivityForResult(intent, SheetActivity.COMPONENT_EDIT);
                 break;
         }
@@ -185,9 +188,9 @@ public class TextWidget extends Widget implements Serializable
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    public View getDisplayView(final Context context, Rules rules)
+    public View getDisplayView(final Context context, RulesEngine rulesEngine)
     {
-        LinearLayout textLayout = WidgetUI.linearLayout(this, context, rules);
+        LinearLayout textLayout = WidgetUI.linearLayout(this, context, rulesEngine);
 
 
         TextView textView = new TextView(context);
@@ -209,17 +212,17 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, Rules rules)
+    public View getEditorView(Context context, RulesEngine rulesEngine)
     {
         if (this.getValue().hasRefinement())
-            return this.getTypeEditorView(context, rules);
+            return this.getTypeEditorView(context, rulesEngine);
         // No type is set, so allow free form edit
         else
             return this.getFreeEditorView(context);
     }
 
 
-    public View getTypeEditorView(Context context, Rules rules)
+    public View getTypeEditorView(Context context, RulesEngine rulesEngine)
     {
         // Lookup the recyclerview in activity layout
         RecyclerView textEditorView = new RecyclerView(context);
@@ -227,7 +230,7 @@ public class TextWidget extends Widget implements Serializable
         textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
 
         // Create adapter passing in the sample user data
-        MemberOf memberOf = rules.getRefinementIndex()
+        MemberOf memberOf = rulesEngine.getRefinementIndex()
                                  .memberOfWithName(this.getValue().getRefinementId().getName());
         TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
         textEditorView.setAdapter(adapter);

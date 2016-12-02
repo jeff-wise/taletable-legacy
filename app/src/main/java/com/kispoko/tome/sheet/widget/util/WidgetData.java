@@ -84,10 +84,13 @@ public class WidgetData implements Model, Serializable
         this.id = id;
     }
 
-    // ** On Update
+    // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onValueUpdate(String valueName) { }
+    /**
+     * This method is called when the Widget Data is completely loaded for the first time.
+     */
+    public void onLoad() { }
 
 
     // > State
