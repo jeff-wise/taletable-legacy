@@ -11,4 +11,4 @@ Problem 2: Schema Information
 Code and database have same knowledge of schema. 
 
 Problem 3: The operations
-The operations over the database done in the program are type safe over the schema. That is only valid queries are generated, and in a way which is easy for programmers to understand and make them correct.
+The operations over the database done in the program are kind safe over the schema. That is only valid queries are generated, and in a way which is easy for programmers to understand and make them correct.

@@ -20,6 +20,7 @@ import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.SerialBitmap;
@@ -186,11 +187,17 @@ public class ImageWidget extends Widget implements Serializable
      * Get the view for the image component. Depending on the mode, it will either display an
      * image or a button that allows the user to choose an image.
      * Use setMode to change the view dynamically.
-     * @param context
      * @return
      */
-    public View getDisplayView(final Context context, RulesEngine rulesEngine)
+    public View view()
     {
+        // [1] Get dependencies
+        // --------------------------------------------------------------------------------------
+
+        final Context context = SheetManager.currentSheetContext();
+        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
+
+
         // Layout
         final LinearLayout imageLayout = WidgetUI.linearLayout(this, context, rulesEngine);
         imageLayout.setGravity(Gravity.CENTER);

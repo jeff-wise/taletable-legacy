@@ -1,41 +1,41 @@
 
-package com.kispoko.tome.rules.programming.evaluation.error;
+package com.kispoko.tome.rules.programming.interpreter.error;
 
 
 
 /**
- * Evaluation Error: Undefined Program
+ * Evaluation Error: Undefined Variable
  */
-public class UndefinedProgramError
+public class UndefinedVariableError
 {
 
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private String programName;
+    private String variableName;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public UndefinedProgramError(String programName)
+    public UndefinedVariableError(String variableName)
     {
-        this.programName = programName;
+        this.variableName = variableName;
     }
 
 
     // API
     // --------------------------------------------------------------------------------------
 
-    public String getProgramName()
+    public String getVariableName()
     {
-        return this.programName;
+        return this.variableName;
     }
 
 
     public String errorMessage()
     {
-        return "Undefined Program : " + this.programName;
+        return "Undefined Variable: " + this.variableName;
     }
 
 }

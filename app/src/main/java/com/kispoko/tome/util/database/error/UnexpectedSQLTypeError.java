@@ -5,7 +5,7 @@ package com.kispoko.tome.util.database.error;
 import com.kispoko.tome.util.database.sql.SQLValue;
 
 /**
- * Database Error: Unexpected SQL Type
+ * Database Error: Unexpected SQL ErrorType
  */
 public class UnexpectedSQLTypeError
 {
@@ -44,9 +44,9 @@ public class UnexpectedSQLTypeError
 
     public String errorMessage()
     {
-        return "Unexpected SQL Type:\n" +
-               "    Expected Type: " + this.expectedType.toString() + "\n" +
-               "    Actual Type: " + this.actualType.toString();
+        return "Unexpected SQL ErrorType:\n" +
+               "    Expected ErrorType: " + this.expectedType.toString() + "\n" +
+               "    Actual ErrorType: " + this.actualType.toString();
     }
 
 }

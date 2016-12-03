@@ -6,7 +6,7 @@ game:
   label: 'Dungeons & Dragons 5th Edition'
 refinementIndex:
 - name: class
-  kind: memberOf
+  type: memberOf
   label: Classes
   values:
   - Barbarian
@@ -66,7 +66,7 @@ sections:
           data:
             value: Wizard
             type:
-              kind: memberOf
+              type: memberOf
               name: class
         - type: text
           format:

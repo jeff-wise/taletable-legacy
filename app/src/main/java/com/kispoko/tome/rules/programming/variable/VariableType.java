@@ -4,7 +4,7 @@ package com.kispoko.tome.rules.programming.variable;
 
 
 /**
- * Variable Type
+ * Variable ErrorType
  */
 public enum VariableType
 {

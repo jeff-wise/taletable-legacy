@@ -13,7 +13,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Parameter Type
+ * Parameter ErrorType
  */
 public enum ParameterType
 {

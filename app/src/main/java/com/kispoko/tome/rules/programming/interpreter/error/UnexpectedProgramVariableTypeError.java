@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.rules.programming.evaluation.error;
+package com.kispoko.tome.rules.programming.interpreter.error;
 
 
 import com.kispoko.tome.rules.programming.program.ProgramValueType;
@@ -38,10 +38,10 @@ public class UnexpectedProgramVariableTypeError
 
     public String errorMessage()
     {
-        return "Unexpected Program Variable Type:\n" +
+        return "Unexpected Program Variable ErrorType:\n" +
                "    Variable Name: " + this.variableName + "\n" +
-               "    Actual Variable Type: " + this.actualVariableType.toString() + "\n" +
-               "    Expected Variable Type: " + this.expectedVariableType.toString();
+               "    Actual Variable ErrorType: " + this.actualVariableType.toString() + "\n" +
+               "    Expected Variable ErrorType: " + this.expectedVariableType.toString();
     }
 
 }

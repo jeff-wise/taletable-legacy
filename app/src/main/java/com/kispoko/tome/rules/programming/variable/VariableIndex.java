@@ -47,13 +47,13 @@ public class VariableIndex implements Serializable
         VariableUnion variableUnion = null;
 
         if (variable instanceof TextVariable) {
-            VariableUnion.asText((TextVariable) variable);
+            variableUnion = VariableUnion.asText((TextVariable) variable);
         }
         else if (variable instanceof NumberVariable) {
-            VariableUnion.asNumber((NumberVariable) variable);
+            variableUnion = VariableUnion.asNumber((NumberVariable) variable);
         }
         else if (variable instanceof BooleanVariable) {
-            VariableUnion.asBoolean((BooleanVariable) variable);
+            variableUnion = VariableUnion.asBoolean((BooleanVariable) variable);
         }
         else {
             ApplicationFailure.union(

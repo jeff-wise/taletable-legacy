@@ -209,7 +209,7 @@ public class NumberVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Type
+    // ** ErrorType
     // ------------------------------------------------------------------------------------------
 
     public VariableKind getType()

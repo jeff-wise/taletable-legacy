@@ -212,7 +212,7 @@ public class BooleanVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Type
+    // ** ErrorType
     // ------------------------------------------------------------------------------------------
 
     public VariableKind getType()

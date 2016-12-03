@@ -24,7 +24,7 @@ public abstract class Widget implements Model, Serializable
 {
 
 
-    abstract public View getDisplayView(Context context, RulesEngine rulesEngine);
+    abstract public View view();
     abstract public View getEditorView(Context context, RulesEngine rulesEngine);
 
     abstract public void runAction(String actionName, Context context, RulesEngine rulesEngine);
@@ -51,7 +51,7 @@ public abstract class Widget implements Model, Serializable
                 return TableWidget.fromYaml(yaml);
         }
 
-        // SHOULD NOT REACH HERE. If Widget.Type is null, then an InvalidDataException
+        // SHOULD NOT REACH HERE. If Widget.ErrorType is null, then an InvalidDataException
         // should be thrown.
         return null;
     }

@@ -23,8 +23,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.value;
-
 
 /**
  * Sheet Manager
@@ -204,7 +202,7 @@ public class SheetManager
     {
         // Add all of the variables
         for (Variable variable : variableQueue) {
-            sheet.getRules().getVariableIndex().addVariable(variable);
+            sheet.getRulesEngine().getVariableIndex().addVariable(variable);
         }
         variableQueue = new ArrayList<>();
     }

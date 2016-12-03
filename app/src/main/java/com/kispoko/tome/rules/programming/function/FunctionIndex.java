@@ -136,10 +136,8 @@ public class FunctionIndex implements Model
      */
     public void addFunction(Function function)
     {
-        if (this.functionByName.containsKey(function.getName())) {
-            this.functionByName.put(function.getName(), function);
-            this.functions.getValue().add(function);
-        }
+        this.functionByName.put(function.getName(), function);
+        this.functions.getValue().add(function);
     }
 
 

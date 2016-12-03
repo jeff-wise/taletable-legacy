@@ -8,9 +8,9 @@ handling all errors possible
 
 
 writing an ORM, worth it
-reflection is nice. type system has limits, but still fairly powerful generics
+reflection is nice. kind system has limits, but still fairly powerful generics
 still, hard after getting used to Haskell. though contraints are sometimes good
-becuase you have to stop somewhere. forces a reasonable boundary on type safety
+becuase you have to stop somewhere. forces a reasonable boundary on kind safety
 
 the model abstraction. how to use abstraction in java. what is abstraction.
 abstracting getting/setting values as well as serialization. and connecting them.
@@ -36,7 +36,7 @@ you will be able to know exactyl what caused it mos tof the time. this makes pro
 mentally because you don't ahve to feel stressed, can just have fun.
 
 
-more types is better. dry is not always the best method. type safety and a clean data model are.
+more types is better. dry is not always the best method. kind safety and a clean data model are.
 just because something is in common does not make it unelegant. quite the opposite sometimes. 
 depends on the inteface.
 

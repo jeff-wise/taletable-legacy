@@ -20,6 +20,7 @@ import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.rules.programming.variable.TextVariable;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
@@ -46,13 +47,16 @@ public class TextWidget extends Widget implements Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    // ** Model Values
+    // > Functors
+    // ------------------------------------------------------------------------------------------
     private UUID                              id;
     private ModelValue<WidgetData>            widgetData;
     private PrimitiveValue<WidgetFormat.Size> size;
     private ModelValue<TextVariable>          value;
 
-    // ** Internal
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
     private int                               displayTextViewId;
 
 
@@ -173,12 +177,12 @@ public class TextWidget extends Widget implements Serializable
 
     public void setValue(String stringValue, Context context)
     {
-        this.getValue().setString(stringValue);
+        this.getValue().setValue(stringValue);
 
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
                                     .findViewById(this.displayTextViewId);
-            textView.setText(this.getValue().getString());
+            textView.setText(this.getValue().getValue());
         }
 
         this.value.save();
@@ -188,8 +192,13 @@ public class TextWidget extends Widget implements Serializable
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    public View getDisplayView(final Context context, RulesEngine rulesEngine)
+    public View view()
     {
+        // [1] Get dependencies
+        // --------------------------------------------------------------------------------------
+
+        final Context context = SheetManager.currentSheetContext();
+        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
         LinearLayout textLayout = WidgetUI.linearLayout(this, context, rulesEngine);
 
 
@@ -204,7 +213,7 @@ public class TextWidget extends Widget implements Serializable
         textView.setTypeface(Util.serifFontBold(context));
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-        textView.setText(this.getValue().getString());
+        textView.setText(this.getValue().getValue());
 
         textLayout.addView(textView);
 
@@ -315,7 +324,7 @@ public class TextWidget extends Widget implements Serializable
         float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
         editView.setTextSize(valueTextSize);
 
-        editView.setText(this.getValue().getString());
+        editView.setText(this.getValue().getValue());
 
         // Define layout structure
         layout.addView(editView);

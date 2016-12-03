@@ -7,7 +7,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 
 
 /**
- * Yaml Error: Unexpected Type
+ * Yaml Error: Unexpected ErrorType
  */
 public class UnexpectedTypeError
 {
@@ -38,7 +38,7 @@ public class UnexpectedTypeError
 
     public String errorMessage()
     {
-        return "Unexpected Type Error:\n Expected: " + this.expectedType.toString();
+        return "Unexpected ErrorType Error:\n Expected: " + this.expectedType.toString();
     }
 
 }

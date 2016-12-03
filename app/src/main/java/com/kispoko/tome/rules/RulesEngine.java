@@ -2,7 +2,8 @@
 package com.kispoko.tome.rules;
 
 
-import com.kispoko.tome.rules.programming.evaluation.Evaluator;
+import com.kispoko.tome.rules.programming.builtin.BuiltInFunction;
+import com.kispoko.tome.rules.programming.interpreter.Interpreter;
 import com.kispoko.tome.rules.programming.function.FunctionIndex;
 import com.kispoko.tome.rules.programming.program.ProgramIndex;
 import com.kispoko.tome.rules.programming.variable.VariableIndex;
@@ -34,7 +35,7 @@ public class RulesEngine implements Model, Serializable
 
     private VariableIndex               variableIndex;
 
-    private Evaluator                   evaluator;
+    private Interpreter interpreter;
 
 
     // CONSTRUCTORS
@@ -42,7 +43,7 @@ public class RulesEngine implements Model, Serializable
 
     public RulesEngine()
     {
-        this.id = null;
+        this.id              = null;
 
         this.refinementIndex = ModelValue.empty(RefinementIndex.class);
         this.functionIndex   = ModelValue.empty(FunctionIndex.class);
@@ -50,7 +51,9 @@ public class RulesEngine implements Model, Serializable
 
         this.variableIndex   = new VariableIndex();
 
-        this.evaluator       = null;
+        this.interpreter     = null;
+
+        BuiltInFunction.initialize();
     }
 
 
@@ -67,9 +70,11 @@ public class RulesEngine implements Model, Serializable
 
         this.variableIndex   = new VariableIndex();
 
-        this.evaluator       = new Evaluator(this.programIndex.getValue(),
+        this.interpreter = new Interpreter(this.programIndex.getValue(),
                                              this.functionIndex.getValue(),
                                              this.variableIndex);
+
+        BuiltInFunction.initialize();
     }
 
 
@@ -123,7 +128,7 @@ public class RulesEngine implements Model, Serializable
      */
     public void onLoad()
     {
-        this.evaluator = new Evaluator(this.getProgramIndex(),
+        this.interpreter = new Interpreter(this.getProgramIndex(),
                                        this.getFunctionIndex(),
                                        this.getVariableIndex());
     }
@@ -170,5 +175,14 @@ public class RulesEngine implements Model, Serializable
         return this.functionIndex.getValue();
     }
 
+
+    /**
+     * Get the interpreter.
+     * @return The Interpreter.
+     */
+    public Interpreter getInterpreter()
+    {
+        return this.interpreter;
+    }
 
 }

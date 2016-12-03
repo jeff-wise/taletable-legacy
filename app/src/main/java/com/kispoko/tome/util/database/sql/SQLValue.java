@@ -39,7 +39,7 @@ public class SQLValue
                   throws DatabaseException
     {
 //        if (sqlInteger == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.INTEGER, Type.NULL),
+//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.INTEGER, ErrorType.NULL),
 //                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
 //        }
 
@@ -51,7 +51,7 @@ public class SQLValue
                   throws DatabaseException
     {
 //        if (sqlReal == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.REAL, Type.NULL),
+//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.REAL, ErrorType.NULL),
 //                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
 //        }
 
@@ -63,7 +63,7 @@ public class SQLValue
                   throws DatabaseException
     {
 //        if (sqlText == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.TEXT, Type.NULL),
+//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.TEXT, ErrorType.NULL),
 //                    DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
 //        }
 
@@ -75,7 +75,7 @@ public class SQLValue
                   throws DatabaseException
     {
 //        if (sqlBlob == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.BLOB, Type.NULL),
+//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.BLOB, ErrorType.NULL),
 //                    DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
 //        }
 
@@ -102,7 +102,7 @@ public class SQLValue
            throws DatabaseException
     {
 //        if (this.value == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.INTEGER, Type.NULL),
+//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.INTEGER, ErrorType.NULL),
 //                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
 //        }
 
@@ -119,7 +119,7 @@ public class SQLValue
            throws DatabaseException
     {
 //        if (this.value == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.REAL, Type.NULL),
+//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.REAL, ErrorType.NULL),
 //                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
 //        }
 
@@ -136,7 +136,7 @@ public class SQLValue
            throws DatabaseException
     {
 //        if (this.value == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.TEXT, Type.NULL),
+//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.TEXT, ErrorType.NULL),
 //                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
 //        }
 
@@ -148,7 +148,7 @@ public class SQLValue
            throws DatabaseException
     {
 //        if (this.value == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(Type.BLOB, Type.NULL),
+//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.BLOB, ErrorType.NULL),
 //                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
 //        }
 

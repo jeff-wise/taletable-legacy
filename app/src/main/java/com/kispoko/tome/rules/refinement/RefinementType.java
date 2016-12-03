@@ -12,7 +12,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
-* Refinement Type
+* Refinement ErrorType
 */
 public enum RefinementType
 {

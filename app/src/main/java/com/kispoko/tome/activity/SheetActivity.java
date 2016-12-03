@@ -175,10 +175,10 @@ public class SheetActivity
         // Set the title to the character's name, if available
         String characterName = "Sheet";
 
-        TextVariable nameVariable = (TextVariable) sheet.getRules().getVariableIndex()
-                                                        .variableWithName("name");
-        if (!nameVariable.isNull() && nameVariable.getType() == VariableKind.LITERAL) {
-            characterName = nameVariable.getString();
+        TextVariable nameVariable = sheet.getRulesEngine().getVariableIndex()
+                                         .variableWithName("name").getText();
+        if (!nameVariable.isNull() && nameVariable.getKind() == VariableKind.LITERAL) {
+            characterName = nameVariable.getValue();
         }
 
         TextView titleView = (TextView) findViewById(R.id.page_title);

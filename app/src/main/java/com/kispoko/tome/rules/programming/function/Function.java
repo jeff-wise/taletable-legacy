@@ -2,14 +2,19 @@
 package com.kispoko.tome.rules.programming.function;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.rules.programming.program.ProgramValue;
 import com.kispoko.tome.rules.programming.program.ProgramValueType;
 import com.kispoko.tome.rules.programming.function.error.InvalidTupleLengthError;
+import com.kispoko.tome.rules.programming.program.statement.Parameter;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
+
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +43,7 @@ public class Function implements Model
 
 
     // > Internal
-    private Map<List<ProgramValue>,ProgramValue> functionMap;
+    private Map<Parameters,ProgramValue> functionMap;
 
 
     // CONSTRUCTORS
@@ -75,7 +80,7 @@ public class Function implements Model
                                                     new ProgramValueType[parameterTypes.size()]);
         this.parameterTypes = new PrimitiveValue<>(parameterTypeArray, ProgramValueType[].class);
 
-        // ** Result Type
+        // ** Result ErrorType
         this.resultType     = new PrimitiveValue<>(resultType, ProgramValueType.class);
 
         // ** Tuples
@@ -87,10 +92,7 @@ public class Function implements Model
         this.validate();
 
         // > Index the tuples
-        this.functionMap = new HashMap<>();
-        for (Tuple tuple : tuples) {
-            this.functionMap.put(tuple.getParameters(), tuple.getResult());
-        }
+        indexTuples();
     }
 
 
@@ -112,7 +114,7 @@ public class Function implements Model
             }
         });
 
-        // ** Result Type
+        // ** Result ErrorType
         final ProgramValueType resultType = ProgramValueType.fromYaml(yaml.atKey("result_type"));
 
         // ** Tuples
@@ -162,7 +164,10 @@ public class Function implements Model
     /**
      * This method is called when the Function is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        indexTuples();
+    }
 
 
     // > State
@@ -194,7 +199,7 @@ public class Function implements Model
     }
 
 
-    // ** Result Type
+    // ** Result ErrorType
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -218,8 +223,35 @@ public class Function implements Model
      */
     public ProgramValue execute(List<ProgramValue> parameters)
     {
-        return this.functionMap.get(parameters);
+        ProgramValue result = this.functionMap.get(new Parameters(parameters));
+
+        ProgramValue testValue1 = ProgramValue.asInteger(5);
+        List<ProgramValue> paramsList1 = new ArrayList<>();
+        paramsList1.add(testValue1);
+        Parameters params1 = new Parameters(paramsList1);
+
+        ProgramValue testValue2 = ProgramValue.asInteger(5);
+        List<ProgramValue> paramsList2 = new ArrayList<>();
+        paramsList2.add(testValue2);
+        Parameters params2 = new Parameters(paramsList2);
+
+        Log.d("***FUNCTION", "hashcode1: " + Integer.toString(params1.hashCode()));
+        Log.d("***FUNCTION", "hashcode2: " + Integer.toString(params2.hashCode()));
+
+        if (params1.equals(params2))
+            Log.d("***FUNCTION", "parameters are equal");
+        else
+            Log.d("***FUNCTION", "parameters are NOT equal");
+
+
+        if (result == null)
+            Log.d("***FUNCTION", "result is null");
+        else
+            Log.d("***FUNCTION", "result is NOT null");
+
+        return result;
     }
+
 
 
     // INTERNAL
@@ -242,5 +274,136 @@ public class Function implements Model
                         InvalidFunctionException.ErrorType.INVALID_TUPLE_LENGTH);
         }
     }
+
+
+    // > Index tuples
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Index the function's tuples for quick lookup when execute is called.
+     */
+    private void indexTuples()
+    {
+        this.functionMap = new HashMap<>();
+        for (Tuple tuple : this.tuples.getValue()) {
+            this.functionMap.put(new Parameters(tuple.getParameters()), tuple.getResult());
+        }
+    }
+
+
+    // > Log Function
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Print the function to the debug log.
+     */
+    public void logFunction()
+    {
+        for (Map.Entry<Parameters,ProgramValue> e : this.functionMap.entrySet())
+        {
+            Parameters params = e.getKey();
+            ProgramValue res = e.getValue();
+
+            StringBuilder row = new StringBuilder();
+            for (ProgramValue param : params.getValues()) {
+                row.append(param.toString());
+                row.append("   ");
+            }
+
+            row.append(res.toString());
+
+            Log.d("***FUNCTION", "tuple: " + row.toString());
+        }
+    }
+
+
+    // PARAMETERS CLASS
+    // ------------------------------------------------------------------------------------------
+
+    private static class Parameters
+    {
+
+        // PROPERTIES
+        // ------------------------------------------------------------------------------------------
+
+        private List<ProgramValue> values;
+
+
+        // CONSTRUCTORS
+        // ------------------------------------------------------------------------------------------
+
+        public Parameters(List<ProgramValue> parameterValues)
+        {
+            values = parameterValues;
+        }
+
+
+        // API
+        // ------------------------------------------------------------------------------------------
+
+        // > Values
+        // ------------------------------------------------------------------------------------------
+
+        public List<ProgramValue> getValues()
+        {
+            return this.values;
+        }
+
+
+        // > Size
+        // ------------------------------------------------------------------------------------------
+
+        public int size()
+        {
+            return this.values.size();
+        }
+
+
+        // > HashCode / Equals
+        // ------------------------------------------------------------------------------------------
+
+        @Override
+        public boolean equals(Object o)
+        {
+
+            if (o == this) return true;
+
+            if (!(o instanceof Function.Parameters)) {
+                return false;
+            }
+
+            Parameters otherParameters = (Parameters) o;
+
+            if (otherParameters.size() != this.size())
+                return false;
+
+            for (int i = 0; i < this.size(); i++)
+            {
+                if (!this.values.get(i).equals(otherParameters.values.get(i)))
+                    return false;
+            }
+
+            return true;
+        }
+
+
+        @Override
+        public int hashCode()
+        {
+            HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(17, 37);
+
+            for (ProgramValue value : this.values)
+            {
+                hashCodeBuilder.append(value.getString());
+                hashCodeBuilder.append(value.getInteger());
+                hashCodeBuilder.append(value.getBoolean());
+                hashCodeBuilder.append(value.getType());
+            }
+
+            return hashCodeBuilder.toHashCode();
+        }
+
+    }
+
 
 }

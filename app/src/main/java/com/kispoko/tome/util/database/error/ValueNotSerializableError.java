@@ -3,7 +3,7 @@ package com.kispoko.tome.util.database.error;
 
 
 /**
- * Value Not Serializable to Database Type Error
+ * Value Not Serializable to Database ErrorType Error
  */
 public class ValueNotSerializableError
 {
@@ -44,7 +44,7 @@ public class ValueNotSerializableError
     {
         return "Value Not Serializable:\n" +
                "    Problem: " + this.type.toString() + "\n" +
-               "    Java Type: " + this.getJavaTypeName();
+               "    Java ErrorType: " + this.getJavaTypeName();
 
     }
 

@@ -2,7 +2,7 @@
 label: dnd_ed_5
 refinementIndex:
 - label: class
-  type: memberOf
+  kind: memberOf
   label: Classes
   values:
   - Barbarian
@@ -24,37 +24,37 @@ sections:
       groups:
       - label: Name
         widgetDatas:
-        - type: text
+        - kind: text
           size: large
           label: Name
           data:
             value: Hildebrand
       - label: Picture
         widgetDatas:
-        - type: imageWidget
+        - kind: imageWidget
           label: Picture
       - label: Features
         widgetDatas:
-        - type: integer
+        - kind: integer
           label: Level
           size: medium
           label: Level
           data:
             value: 17
-        - type: text
+        - kind: text
           label: Class
           size: medium
           label: Class
           data:
             value: Wizard
-            type: class
-        - type: text
+            kind: class
+        - kind: text
           label: Race
           size: medium
           label: Race
           data:
             value: Human
-        - type: text
+        - kind: text
           label: Alignment
           size: medium
           label: Alignment
@@ -74,37 +74,37 @@ sections:
               width: 0.5
       - label: Appearance
         widgetDatas:
-        - type: integer
+        - kind: integer
           label: Age
           size: medium
           label: Age
           data:
             value: 41
-        - type: text
+        - kind: text
           label: Height
           size: medium
           label: Height
           data:
             value: 5'11"
-        - type: integer
+        - kind: integer
           label: Weight
           size: medium
           label: Weight
           data:
             value: 167
-        - type: text
+        - kind: text
           label: Eyes
           size: medium
           label: Eyes
           data:
             value: Blue
-        - type: text
+        - kind: text
           label: Skin
           size: medium
           label: Skin
           data:
             value: Light
-        - type: text
+        - kind: text
           label: Hair
           size: medium
           label: Hair
@@ -128,66 +128,66 @@ sections:
               width: 0.33
       - label: Characteristics
         widgetDatas:
-        - type: tableWidget
+        - kind: tableWidget
           label: Personality Traits
           columns:
           - Personality Traits
           data:
             rows:
             - cells:
-              - type: text
+              - kind: text
                 data:
                   value: >
                     Hildebrand is very confident.
             - cells:
-              - type: text
+              - kind: text
                 data:
                   value: >
                     Hildebrand is incredibly handsome.
-        - type: tableWidget
+        - kind: tableWidget
           label: Ideals
           columns:
           - Ideals
           data:
             rows:
             - cells:
-              - type: text
+              - kind: text
                 data:
                   value: >
                     Hildebrand believes that the greater good is an infinitely large
                     composition of miniscule good actions that form a lattice of integrity
                     that intertwines every creature of the land.
             - cells:
-              - type: text
+              - kind: text
                 data:
                   value: >
                     Hildebrand thinks that every person deserves a second chance.
             - cells:
-              - type: text
+              - kind: text
                 data:
                   value: >
                     He believes that the purpose of life is understanding the mysteries
                     of the universe, and mastering of magic in order to further understanding.
-        - type: tableWidget
+        - kind: tableWidget
           label: Bonds
           columns:
           - Bonds
           data:
             rows:
             - cells:
-              - type: text
+              - kind: text
                 data:
                   value: >
                     Hildebrand has a special bond with Jade and often accompanies her on
                     missions in order to pursue great research opportunities.
-        - type: tableWidget
+        - kind: tableWidget
           label: Flaws
           columns:
           - Flaws
           data:
             rows:
             - cells:
-              - type: text
+              - kind: text
                 data:
                   value: >
                     Hildebrand is occasionally possessed by a familiar demon that causes him to
@@ -196,37 +196,37 @@ sections:
       groups:
       - label: Ability Scores
         widgetDatas:
-        - type: integer
+        - kind: integer
           label: Strength
           size: medium
           label: Strength
           data:
             value: 11
-        - type: integer
+        - kind: integer
           label: Dexterity
           size: medium
           label: Dexterity
           data:
             value: 19
-        - type: integer
+        - kind: integer
           label: Constitution
           size: medium
           label: Constitution
           data:
             value: 15
-        - type: integer
+        - kind: integer
           label: Intelligence
           size: medium
           label: Intelligence
           data:
             value: 22
-        - type: integer
+        - kind: integer
           label: Wisdom
           size: medium
           label: Wisdom
           data:
             value: 14
-        - type: integer
+        - kind: integer
           label: Charisma
           size: medium
           label: Charisma
@@ -250,14 +250,14 @@ sections:
               width: 0.33
       - label: General
         widgetDatas:
-        - type: integer
+        - kind: integer
           label: proficiency_bonus
           size: medium
           prefix: '+'
           label: Proficiency Bonus
           data:
             value: 6
-        - type: integer
+        - kind: integer
           label: inspiration
           size: medium
           label: Inspiration
@@ -272,20 +272,20 @@ sections:
               width: 0.5
       - label: Combat
         widgetDatas:
-        - type: integer
+        - kind: integer
           label: armor_class
           size: medium
           label: Armor Class
           data:
             value: 24
-        - type: integer
+        - kind: integer
           label: initiative
           size: medium
           prefix: '+'
           label: Initiative
           data:
             value: 7
-        - type: integer
+        - kind: integer
           label: speed
           size: medium
           label: Speed
@@ -302,41 +302,41 @@ sections:
               width: 0.33
       - label: Saving Throws
         widgetDatas:
-        - type: integer
+        - kind: integer
           label: strength
           size: medium
           label: Strength
           data:
             value: 0
-        - type: integer
+        - kind: integer
           label: dexterity
           size: medium
           prefix: '+'
           label: Dexterity
           data:
             value: 4
-        - type: integer
+        - kind: integer
           label: constitution
           size: medium
           prefix: '+'
           label: Constitution
           data:
             value: 2
-        - type: integer
+        - kind: integer
           label: intelligence
           size: medium
           prefix: '+'
           label: Intelligence
           data:
             value: 12
-        - type: integer
+        - kind: integer
           label: wisdom
           size: medium
           prefix: '+'
           label: Wisdom
           data:
             value: 8
-        - type: integer
+        - kind: integer
           label: charisma
           size: medium
           prefix: '+'

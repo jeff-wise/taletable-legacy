@@ -150,7 +150,11 @@ public class Sheet implements Model
     }
 
 
-    public RulesEngine getRules()
+    /**
+     * Get the rules engine for this sheet.
+     * @return The Rules Engine.
+     */
+    public RulesEngine getRulesEngine()
     {
         return this.rules.getValue();
     }

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.rules.RulesEngine;
 import com.kispoko.tome.rules.programming.variable.BooleanVariable;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.value.ModelValue;
@@ -160,8 +161,10 @@ public class BooleanWidget extends Widget implements Serializable
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    public View getDisplayView(Context context, RulesEngine rulesEngine)
+    public View view()
     {
+        Context context = SheetManager.currentSheetContext();
+
         TextView view = new TextView(context);
 
         view.setText(this.value.getValue().getBoolean().toString());

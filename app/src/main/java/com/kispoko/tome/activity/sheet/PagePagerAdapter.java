@@ -65,7 +65,7 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
     public Fragment getItem(int position)
     {
         return PageFragment.newInstance(this.pages.get(position),
-                                        SheetManager.currentSheet().getRules());
+                                        SheetManager.currentSheet().getRulesEngine());
     }
 
 

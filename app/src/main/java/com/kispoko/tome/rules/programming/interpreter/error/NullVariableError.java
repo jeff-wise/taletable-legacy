@@ -1,12 +1,12 @@
 
-package com.kispoko.tome.rules.programming.evaluation.error;
+package com.kispoko.tome.rules.programming.interpreter.error;
 
 
 
 /**
- * Evaluation Error: Undefined Variable
+ * Evaluation Error: Undefined Program
  */
-public class UndefinedVariableError
+public class NullVariableError
 {
 
     // PROPERTIES
@@ -18,7 +18,7 @@ public class UndefinedVariableError
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public UndefinedVariableError(String variableName)
+    public NullVariableError(String variableName)
     {
         this.variableName = variableName;
     }
@@ -35,7 +35,7 @@ public class UndefinedVariableError
 
     public String errorMessage()
     {
-        return "Undefined Variable: " + this.variableName;
+        return "Null Variable : " + this.variableName;
     }
 
 }

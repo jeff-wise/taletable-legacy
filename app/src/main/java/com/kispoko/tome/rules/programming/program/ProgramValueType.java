@@ -12,7 +12,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Program Value Type
+ * Program Value ErrorType
  */
 public enum ProgramValueType
 {

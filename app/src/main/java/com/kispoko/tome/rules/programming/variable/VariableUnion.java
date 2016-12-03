@@ -5,7 +5,8 @@ package com.kispoko.tome.rules.programming.variable;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.rules.programming.program.Program;
+
+
 
 /**
  * Variable Union
@@ -79,12 +80,12 @@ public class VariableUnion
     }
 
 
-    // ** Type
+    // ** ErrorType
     // ------------------------------------------------------------------------------------------
 
     /**
      * Get the variant type of the variable union.
-     * @return The Variable Type.
+     * @return The Variable ErrorType.
      */
     public VariableType getType()
     {
@@ -92,10 +93,8 @@ public class VariableUnion
     }
 
 
-    // ** Text Variable
+    // ** Variables
     // ------------------------------------------------------------------------------------------
-
-    // TODO invalid case exception
 
     /**
      * Get the text case of the union.
@@ -141,5 +140,13 @@ public class VariableUnion
         return (BooleanVariable) variable;
     }
 
+
+    // ** Is Null
+    // ------------------------------------------------------------------------------------------
+
+    public boolean isNull()
+    {
+        return this.variable == null;
+    }
 
 }

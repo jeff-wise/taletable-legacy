@@ -135,12 +135,12 @@ public class ProgramInvocationParameter implements Model
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Parameter Type
+    // ** Parameter ErrorType
     // ------------------------------------------------------------------------------------------
 
     /**
      * Get the type of program invocation parameter.
-     * @return The Program Invocation Parameter Type.
+     * @return The Program Invocation Parameter ErrorType.
      */
     public ProgramInvocationParameterType getType()
     {

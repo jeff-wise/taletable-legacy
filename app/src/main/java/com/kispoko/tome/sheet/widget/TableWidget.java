@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.Row;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
@@ -268,11 +269,16 @@ public class TableWidget extends Widget implements Serializable
 
     /**
      * Create the tableWidget view.
-     * @param context
      * @return
      */
-    public View getDisplayView(Context context, RulesEngine rulesEngine)
+    public View view()
     {
+        // [1] Get dependencies
+        // --------------------------------------------------------------------------------------
+
+        Context context = SheetManager.currentSheetContext();
+        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
+
         LinearLayout layout = WidgetUI.linearLayout(this, context, rulesEngine);
 
         layout.setPadding(0, 0, 0, 0);

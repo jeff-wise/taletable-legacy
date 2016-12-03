@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -75,8 +76,6 @@ public class NumberWidget extends Widget implements Serializable
         this.value      = ModelValue.full(value, NumberVariable.class);
         this.prefix     = ModelValue.full(prefix, TextVariable.class);
         this.postfix    = ModelValue.full(postfix, TextVariable.class);
-
-
     }
 
 
@@ -172,7 +171,8 @@ public class NumberWidget extends Widget implements Serializable
     // ** Prefix
     // ------------------------------------------------------------------------------------------
 
-    public TextVariable getPrefix() {
+    public TextVariable getPrefix()
+    {
         return this.prefix.getValue();
     }
 
@@ -180,8 +180,14 @@ public class NumberWidget extends Widget implements Serializable
     // ** Postfix
     // ------------------------------------------------------------------------------------------
 
-    public TextVariable getPostfix() {
-        return this.prefix.getValue();
+    /**
+     * Get the postfix Text Variable. The postfix contains any text that comes after
+     * the main value.
+     * @return The postfix Text Variable.
+     */
+    public TextVariable getPostfix()
+    {
+        return this.postfix.getValue();
     }
 
 
@@ -191,8 +197,12 @@ public class NumberWidget extends Widget implements Serializable
 
     public View view()
     {
+
+        // [1] Get dependencies
+        // --------------------------------------------------------------------------------------
+
         Context context = SheetManager.currentSheetContext();
-        RulesEngine rulesEngine = SheetManager.currentSheet().getRules();
+        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
 
         LinearLayout integerLayout = WidgetUI.linearLayout(this, context, rulesEngine);
 
@@ -216,6 +226,19 @@ public class NumberWidget extends Widget implements Serializable
             textView.setText("");
 
         contentLayout.addView(textView);
+
+        if (this.getPostfix() != null)
+        {
+            TextView postfixView = new TextView(context);
+            postfixView.setTextSize(this.size.getValue().toSP(context));
+            postfixView.setTypeface(Util.serifFontBold(context));
+            postfixView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+
+            String postfixValue = this.getPostfix().getValue();
+            postfixView.setText(postfixValue);
+
+            contentLayout.addView(postfixView);
+        }
 
         integerLayout.addView(contentLayout);
 

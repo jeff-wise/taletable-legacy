@@ -13,7 +13,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * ColumnUnion Type
+ * ColumnUnion ErrorType
  */
 public enum ColumnType
 {

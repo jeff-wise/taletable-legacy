@@ -14,6 +14,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static com.kispoko.tome.rules.programming.variable.VariableKind.PROGRAM;
 
 
 /**
@@ -27,14 +28,23 @@ public class TextVariable implements Model, Variable, Serializable
 
     private UUID id;
 
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
     private PrimitiveValue<String>        name;
 
     private PrimitiveValue<String>        stringValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableKind>  type;
+    private PrimitiveValue<VariableKind> kind;
 
     private ModelValue<RefinementId>      refinementId;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private ReactiveValue<String>         reactiveValue;
 
 
     // CONSTRUCTORS
@@ -49,38 +59,45 @@ public class TextVariable implements Model, Variable, Serializable
         this.stringValue            = new PrimitiveValue<>(null, String.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(null, VariableKind.class);
+        this.kind = new PrimitiveValue<>(null, VariableKind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
+
+        this.reactiveValue          = null;
     }
 
 
     /**
      * Create a Variable. This constructor is private to enforce use of the case specific
-     * constructors, so only valid value/type associations can be used.
+     * constructors, so only valid value/kind associations can be used.
      * @param id The Model id.
      * @param value The Variable value.
-     * @param type The Variable type.
+     * @param kind The Variable kind.
      */
     private TextVariable(UUID id,
                          String name,
                          Object value,
-                         VariableKind type,
+                         VariableKind kind,
                          RefinementId refinementId)
     {
+        // ** Id
         this.id                     = id;
 
+        // ** Name
         this.name                   = new PrimitiveValue<>(name, String.class);
 
+        // ** Value Variants
         this.stringValue            = new PrimitiveValue<>(null, String.class);
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(type, VariableKind.class);
+        // ** Kind (Literal or Program)
+        this.kind = new PrimitiveValue<>(kind, VariableKind.class);
 
+        // ** Refinement Id (if any)
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
 
-        // Set value according to variable type
-        switch (type)
+        // > Set the value according to variable kind
+        switch (kind)
         {
             case LITERAL:
                 this.stringValue.setValue((String) value);
@@ -90,13 +107,23 @@ public class TextVariable implements Model, Variable, Serializable
                 break;
         }
 
+        // ** Reaction Value (if program variable)
+        if (kind == VariableKind.PROGRAM) {
+            this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
+                                                     VariableType.TEXT);
+        }
+        else {
+            this.reactiveValue = null;
+        }
+
+        // > Register variable with rules engine
         if (!this.name.isNull())
             SheetManager.registerVariable(this);
     }
 
 
     /**
-     * Create a "literal" text variable, that contains a value of type String.
+     * Create a "literal" text variable, that contains a value of kind String.
      * @param id The Model id.
      * @param stringValue The String value.
      * @return A new "literal" Text Variable.
@@ -121,7 +148,7 @@ public class TextVariable implements Model, Variable, Serializable
                                          ProgramInvocation programInvocation,
                                          RefinementId refinementId)
     {
-        return new TextVariable(id, name, programInvocation, VariableKind.PROGRAM, refinementId);
+        return new TextVariable(id, name, programInvocation, PROGRAM, refinementId);
     }
 
 
@@ -193,10 +220,22 @@ public class TextVariable implements Model, Variable, Serializable
     {
         if (!this.name.isNull())
             SheetManager.registerVariable(this);
+
+        // ** Reaction Value (if program variable)
+        if (this.getKind() == VariableKind.PROGRAM) {
+            this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
+                                                     VariableType.TEXT);
+        }
+        else {
+            this.reactiveValue = null;
+        }
     }
 
 
-    // > State
+    // > Variable
+    // ------------------------------------------------------------------------------------------
+
+    // ** Name
     // ------------------------------------------------------------------------------------------
 
     public String getName()
@@ -208,63 +247,44 @@ public class TextVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Type
+    // ** ErrorType
     // ------------------------------------------------------------------------------------------
 
-    public VariableKind getType()
+    public VariableKind getKind()
     {
-        return this.type.getValue();
+        return this.kind.getValue();
     }
 
 
-    // ** String Value
+    // ** Value
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * Get the string value.
-     * @return The variable's String value. Throws an InvalidCase exception if the variable
-     *         is not a String.
-     */
-    public String getString()
+    public void setValue(String newValue)
     {
-        return this.stringValue.getValue();
+        switch (this.getKind())
+        {
+            case LITERAL:
+                this.stringValue.setValue(newValue);
+                break;
+            case PROGRAM:
+                this.reactiveValue.setValue(newValue);
+                break;
+        }
     }
 
 
-    /**
-     * Set the string value. Throws an InvalidCase exception if the variable is not a String.
-     * @param stringValue The Boolean value.
-     */
-    public void setString(String stringValue)
+    public String getValue()
     {
-        this.stringValue.setValue(stringValue);
+        switch (this.getKind())
+        {
+            case LITERAL:
+                return this.stringValue.getValue();
+            case PROGRAM:
+                return this.reactiveValue.getValue();
+        }
+
+        return null;
     }
-
-
-    // ** Program Invocation Value
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the Program Invocation value.
-     * @return The variable's program invocation value. Throws an InvalidCase exception if the
-     *         variable is not a ProgramInvocation.
-     */
-    public ProgramInvocation getProgramInvocation()
-    {
-        return this.programInvocationValue.getValue();
-    }
-
-
-    /**
-     * Set the Program Invocation value. Throws an InvalidCase exception if the variable is not
-     * a ProgramInvocation.
-     * @param programInvocationValue The ProgramInvocation value.
-     */
-    public void setProgramInvocation(ProgramInvocation programInvocationValue)
-    {
-        this.programInvocationValue.setValue(programInvocationValue);
-    }
-
 
     // ** Refinement
     // ------------------------------------------------------------------------------------------
@@ -294,7 +314,7 @@ public class TextVariable implements Model, Variable, Serializable
 
     public boolean isNull()
     {
-        switch (getType())
+        switch (getKind())
         {
             case LITERAL:
                 return this.stringValue == null;

@@ -1,12 +1,16 @@
 
-package com.kispoko.tome.rules.programming.evaluation;
+package com.kispoko.tome.rules.programming.interpreter;
 
+
+import android.util.Log;
 
 import com.kispoko.tome.rules.programming.builtin.BuiltInFunction;
 import com.kispoko.tome.rules.programming.builtin.BuiltInFunctionException;
-import com.kispoko.tome.rules.programming.evaluation.error.UndefinedProgramError;
-import com.kispoko.tome.rules.programming.evaluation.error.UndefinedProgramVariableError;
-import com.kispoko.tome.rules.programming.evaluation.error.UndefinedVariableError;
+import com.kispoko.tome.rules.programming.interpreter.error.FunctionNotFoundError;
+import com.kispoko.tome.rules.programming.interpreter.error.NullVariableError;
+import com.kispoko.tome.rules.programming.interpreter.error.UndefinedProgramError;
+import com.kispoko.tome.rules.programming.interpreter.error.UndefinedProgramVariableError;
+import com.kispoko.tome.rules.programming.interpreter.error.UndefinedVariableError;
 import com.kispoko.tome.rules.programming.function.FunctionIndex;
 import com.kispoko.tome.rules.programming.program.Program;
 import com.kispoko.tome.rules.programming.program.ProgramIndex;
@@ -26,9 +30,9 @@ import java.util.Map;
 
 
 /**
- * Evaluator - Runs programs.
+ * Interpreter - Runs programs.
  */
-public class Evaluator
+public class Interpreter
 {
 
     // PROPERTIES
@@ -42,9 +46,9 @@ public class Evaluator
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Evaluator(ProgramIndex programIndex,
-                     FunctionIndex functionIndex,
-                     VariableIndex variableIndex)
+    public Interpreter(ProgramIndex programIndex,
+                       FunctionIndex functionIndex,
+                       VariableIndex variableIndex)
     {
         this.programIndex    = programIndex;
         this.functionIndex   = functionIndex;
@@ -56,7 +60,7 @@ public class Evaluator
     // ------------------------------------------------------------------------------------------
 
     public ProgramValue evaluate(ProgramInvocation programInvocation)
-           throws EvaluationException
+           throws InterpreterException
     {
         Tuple2<Program, List<ProgramValue>> evaluationParameters =
                                                 evaluateProgramInvocation(programInvocation);
@@ -73,7 +77,7 @@ public class Evaluator
 
     private Tuple2<Program, List<ProgramValue>>
                     evaluateProgramInvocation(ProgramInvocation programInvocation)
-            throws EvaluationException
+            throws InterpreterException
     {
         // > Lookup Program
         // ----------------------------------------------------------------------------------
@@ -82,7 +86,7 @@ public class Evaluator
 
         // If the program doesn't exist, throw Evaluation Exception
         if (program == null) {
-            throw EvaluationException.undefinedProgram(new UndefinedProgramError(programName));
+            throw InterpreterException.undefinedProgram(new UndefinedProgramError(programName));
         }
 
         // > Evaluate Parameters
@@ -100,8 +104,13 @@ public class Evaluator
                     String variableName = invocationParameter.getReference();
                     VariableUnion variableUnion = this.variableIndex.variableWithName(variableName);
                     if (variableUnion == null) {
-                        throw EvaluationException.undefinedVariable(
+                        throw InterpreterException.undefinedVariable(
                                 new UndefinedVariableError(variableName));
+                    }
+
+                    if (variableUnion.isNull()) {
+                        throw InterpreterException.nullVariable(
+                                new NullVariableError(variableName));
                     }
 
                     // Assign parameter from variable value
@@ -109,15 +118,15 @@ public class Evaluator
                     switch (variableUnion.getType())
                     {
                         case TEXT:
-                            programValue = ProgramValue.asStringTemp(
-                                                    variableUnion.getText().getString());
+                            programValue = ProgramValue.asString(
+                                                    variableUnion.getText().getValue());
                             break;
                         case NUMBER:
-                            programValue = ProgramValue.asIntegerTemp(
+                            programValue = ProgramValue.asInteger(
                                                     variableUnion.getNumber().getInteger());
                             break;
                         case BOOLEAN:
-                            programValue = ProgramValue.asBooleanTemp(
+                            programValue = ProgramValue.asBoolean(
                                                     variableUnion.getBoolean().getBoolean());
                             break;
                     }
@@ -133,91 +142,107 @@ public class Evaluator
     }
 
     private ProgramValue evaluateProgram(Program program, List<ProgramValue> parameters)
-            throws EvaluationException
+            throws InterpreterException
     {
-        Map<String,ProgramValue> variables = new HashMap<>();
+        Map<String,ProgramValue> context = new HashMap<>();
 
         // Evaluate Statements
         for (Statement statement : program.getStatements())
         {
             String variableName = statement.getVariableName();
-            ProgramValue statementValue = evaluateStatement(statement, parameters, variables);
-            variables.put(variableName, statementValue);
+            ProgramValue statementValue = evaluateStatement(statement, parameters, context);
+            Log.d("***INTERPRETER", "variable name: " + variableName);
+
+            if (statementValue == null)
+                Log.d("***INTERPRETER", "statement value is null");
+            else
+                Log.d("***INTERPRETER", "statement value is NOT null");
+
+            context.put(variableName, statementValue);
         }
 
         ProgramValue resultValue = evaluateStatement(program.getResultStatement(),
                                                      parameters,
-                                                     variables);
+                                                     context);
         return resultValue;
     }
 
 
     private ProgramValue evaluateStatement(Statement statement,
                                            List<ProgramValue> programParameters,
-                                           Map<String,ProgramValue> variables)
-                          throws EvaluationException
+                                           Map<String,ProgramValue> context)
+                          throws InterpreterException
     {
         String functionName = statement.getFunctionName();
 
         List<ProgramValue> parameters = new ArrayList<>();
-        int i = 0;
         for (Parameter parameter : statement.getParameters())
         {
-            parameters.add(evaluateParameter(parameter, programParameters, variables, i));
-            i++;
+            parameters.add(evaluateParameter(parameter, programParameters, context));
         }
 
-        return evaluateFunction(functionName, parameters, variables);
+        return evaluateFunction(functionName, parameters, context);
     }
 
 
     private ProgramValue evaluateParameter(Parameter parameter,
                                            List<ProgramValue> programParameters,
-                                           Map<String,ProgramValue> variables, Integer index)
-                          throws EvaluationException
+                                           Map<String,ProgramValue> context)
+                          throws InterpreterException
     {
         switch (parameter.getType())
         {
             case PARAMETER:
                 int parameterIndex = parameter.getParameter();
-                return programParameters.get(parameterIndex);
+                return programParameters.get(parameterIndex - 1);
             case VARIABLE:
                 String variableName = parameter.getVariable();
-                if (variables.containsKey(variableName)) {
-                    return variables.get(variableName);
+                if (context.containsKey(variableName)) {
+                    return context.get(variableName);
                 }
                 else {
-                    throw EvaluationException.undefinedProgramVariable(
+                    throw InterpreterException.undefinedProgramVariable(
                             new UndefinedProgramVariableError(variableName));
                 }
             case LITERAL_STRING:
                 String stringLiteral = parameter.getStringLiteral();
-                return ProgramValue.asStringTemp(stringLiteral);
+                return ProgramValue.asString(stringLiteral);
         }
 
         return null;
     }
 
 
-    private ProgramValue evaluateFunction(String functionName, List<ProgramValue> parameters,
+    private ProgramValue evaluateFunction(String functionName,
+                                          List<ProgramValue> parameters,
                                           Map<String,ProgramValue> context)
-                          throws EvaluationException
+                          throws InterpreterException
     {
-        // Check built-ins first
-        if (BuiltInFunction.exists(functionName)) {
+        // [1] Check built-in function first
+        // --------------------------------------------------------------------------------------
+
+        if (BuiltInFunction.exists(functionName))
+        {
             try {
                 return BuiltInFunction.execute(functionName, parameters, context);
             }
             catch (BuiltInFunctionException exception) {
-                throw EvaluationException.builtInFunction(exception);
+                throw InterpreterException.builtInFunction(exception);
             }
         }
-        // Then custom functions
-        else if (this.functionIndex.hasFunction(functionName)) {
+
+        // [2] Lookup function in custom functions
+        // --------------------------------------------------------------------------------------
+
+        if (this.functionIndex.hasFunction(functionName))
+        {
             return this.functionIndex.functionWithName(functionName).execute(parameters);
         }
 
-        return null;
+        // [3] Throw function not found exception
+        // --------------------------------------------------------------------------------------
+
+        throw InterpreterException.functionNotFound(new FunctionNotFoundError(functionName));
     }
 
 

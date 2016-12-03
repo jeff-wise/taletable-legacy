@@ -13,7 +13,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Program Invocation Parameter Type
+ * Program Invocation Parameter ErrorType
  */
 public enum ProgramInvocationParameterType
 {

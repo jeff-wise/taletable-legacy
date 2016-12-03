@@ -49,7 +49,7 @@ public class Program implements Model
         // ** Parameter Types
         this.parameterTypes  = new PrimitiveValue<>(null, ProgramValueType[].class);
 
-        // ** Result Type
+        // ** Result ErrorType
         this.resultType      = new PrimitiveValue<>(null, ProgramValueType.class);
 
         // **  Statements
@@ -79,7 +79,7 @@ public class Program implements Model
                                                     new ProgramValueType[parameterTypes.size()]);
         this.parameterTypes  = new PrimitiveValue<>(parameterTypeArray, ProgramValueType[].class);
 
-        // ** Result Type
+        // ** Result ErrorType
         this.resultType      = new PrimitiveValue<>(resultType, ProgramValueType.class);
 
         // **  Statements
@@ -115,7 +115,7 @@ public class Program implements Model
             }
         });
 
-        // ** Result Type
+        // ** Result ErrorType
         ProgramValueType resultType = ProgramValueType.fromYaml(yaml.atKey("result_type"));
 
         // ** Statements
@@ -210,7 +210,7 @@ public class Program implements Model
     }
 
 
-    // ** Result Type
+    // ** Result ErrorType
     // ------------------------------------------------------------------------------------------
 
     /**

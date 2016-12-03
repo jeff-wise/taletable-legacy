@@ -7,7 +7,7 @@ import com.kispoko.tome.rules.programming.program.ProgramValueType;
 
 
 /**
- * Built-In Funtion Error: Invalid Parameter Type
+ * Built-In Funtion Error: Invalid Parameter ErrorType
  */
 public class InvalidParameterTypeError
 {
@@ -38,10 +38,10 @@ public class InvalidParameterTypeError
 
     public String errorMessage()
     {
-        return "Invalid Parameter Type:\n" +
+        return "Invalid Parameter ErrorType:\n" +
                "    Parameter Index: " + Integer.toString(this.parameterIndex) + "\n" +
-               "    Actual Parameter Type: " + this.actualParameterType.toString() + "\n" +
-               "    Expected Parameter Type: " + this.expectedParameterType.toString();
+               "    Actual Parameter ErrorType: " + this.actualParameterType.toString() + "\n" +
+               "    Expected Parameter ErrorType: " + this.expectedParameterType.toString();
     }
 
 }

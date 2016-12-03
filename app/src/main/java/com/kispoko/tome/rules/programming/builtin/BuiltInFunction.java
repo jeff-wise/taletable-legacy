@@ -2,11 +2,13 @@
 package com.kispoko.tome.rules.programming.builtin;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.rules.programming.builtin.error.InvalidParameterTypeError;
 import com.kispoko.tome.rules.programming.builtin.error.WrongNumberOfParametersError;
-import com.kispoko.tome.rules.programming.evaluation.EvaluationException;
-import com.kispoko.tome.rules.programming.evaluation.error.UndefinedProgramVariableError;
-import com.kispoko.tome.rules.programming.evaluation.error.UnexpectedProgramVariableTypeError;
+import com.kispoko.tome.rules.programming.interpreter.InterpreterException;
+import com.kispoko.tome.rules.programming.interpreter.error.UndefinedProgramVariableError;
+import com.kispoko.tome.rules.programming.interpreter.error.UnexpectedProgramVariableTypeError;
 import com.kispoko.tome.rules.programming.program.ProgramValue;
 import com.kispoko.tome.rules.programming.program.ProgramValueType;
 
@@ -41,6 +43,7 @@ public class BuiltInFunction
     {
         functionNames = new HashSet<>();
         functionNames.add("string_template");
+        functionNames.add("modifier_string");
     }
 
 
@@ -56,7 +59,7 @@ public class BuiltInFunction
     public static ProgramValue execute(String functionName, List<ProgramValue> parameters,
                                        Map<String,ProgramValue> context)
                                 throws BuiltInFunctionException,
-                                       EvaluationException
+            InterpreterException
     {
         switch (functionName)
         {
@@ -94,7 +97,7 @@ public class BuiltInFunction
         int modifier = modifierFunctionValue.getInteger();
 
         // Convert the modifier integer into a string representation
-        String modifierString = null;
+        String modifierString;
 
         if (modifier < 0)
             modifierString = "-" + Integer.toString(Math.abs(modifier));
@@ -103,17 +106,19 @@ public class BuiltInFunction
         else
             modifierString = "+" + Integer.toString(modifier);
 
-        return ProgramValue.asStringTemp(modifierString);
+        return ProgramValue.asString(modifierString);
     }
 
 
     private static ProgramValue stringTemplate(List<ProgramValue> parameters,
                                                Map<String,ProgramValue> context)
                                  throws BuiltInFunctionException,
-                                        EvaluationException
+            InterpreterException
     {
+
         // [1] Sanity check parameters and extract integer value
         // --------------------------------------------------------------------------------------
+
         if (parameters.size() != 1) {
             throw BuiltInFunctionException.wrongNumberOfParameters(
                     new WrongNumberOfParametersError(parameters.size(), 1));
@@ -131,6 +136,7 @@ public class BuiltInFunction
 
         // [2] Replace all variables in template
         // --------------------------------------------------------------------------------------
+
         String templateString = templateFunctionValue.getString();
 
         Pattern templatePattern = Pattern.compile("\\{\\{(.*?)\\}\\}");
@@ -138,19 +144,22 @@ public class BuiltInFunction
 
         List<String> templateVariableNames = new ArrayList<>();
         while (matcher.find()) {
-            templateVariableNames.add(matcher.group());
+            templateVariableNames.add(matcher.group(1));
         }
 
 
         // [3] Replace all variables with their value, assuming it is a string
         // --------------------------------------------------------------------------------------
+
         for (String templateVariableName : templateVariableNames)
         {
             String variableValue;
-            if (context.containsKey(templateVariableName)) {
+            if (context.containsKey(templateVariableName))
+            {
+                Log.d("***BuiltInFunction", "template variable name: " + templateVariableName);
                 ProgramValue variableFunctionValue = context.get(templateVariableName);
                 if (variableFunctionValue.getType() != ProgramValueType.STRING) {
-                    throw EvaluationException.unexpectedProgramVariableType(
+                    throw InterpreterException.unexpectedProgramVariableType(
                             new UnexpectedProgramVariableTypeError(templateVariableName,
                                                                    variableFunctionValue.getType(),
                                                                    ProgramValueType.STRING));
@@ -158,8 +167,10 @@ public class BuiltInFunction
                 else {
                     variableValue = variableFunctionValue.getString();
                 }
-            } else {
-                throw EvaluationException.undefinedProgramVariable(
+            }
+            else
+            {
+                throw InterpreterException.undefinedProgramVariable(
                         new UndefinedProgramVariableError(templateVariableName));
             }
 
@@ -169,7 +180,7 @@ public class BuiltInFunction
             templateString = variableMatcher.replaceFirst(variableValue);
         }
 
-        return ProgramValue.asStringTemp(templateString);
+        return ProgramValue.asString(templateString);
     }
 
 

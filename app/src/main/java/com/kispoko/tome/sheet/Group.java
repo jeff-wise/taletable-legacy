@@ -273,8 +273,7 @@ public class Group implements Model, Serializable
                 frameLayout.setLayoutParams(frameLayoutParams);
 
                 // Add WidgetData View
-                View componentView = widget.getDisplayView(context,
-                        SheetManager.currentSheet().getRules());
+                View componentView = widget.view();
                 frameLayout.addView(componentView);
 
                 rowLayout.addView(frameLayout);

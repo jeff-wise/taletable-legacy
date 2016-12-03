@@ -91,7 +91,7 @@ public class ProgramValue implements Model
     }
 
 
-    public static ProgramValue asIntegerTemp(Integer integerValue)
+    public static ProgramValue asInteger(Integer integerValue)
     {
         return new ProgramValue(null, integerValue, ProgramValueType.INTEGER);
     }
@@ -108,7 +108,7 @@ public class ProgramValue implements Model
     }
 
 
-    public static ProgramValue asStringTemp(String stringValue)
+    public static ProgramValue asString(String stringValue)
     {
         return new ProgramValue(null, stringValue, ProgramValueType.STRING);
     }
@@ -125,7 +125,7 @@ public class ProgramValue implements Model
     }
 
 
-    public static ProgramValue asBooleanTemp(Boolean booleanValue)
+    public static ProgramValue asBoolean(Boolean booleanValue)
     {
         return new ProgramValue(null, booleanValue, ProgramValueType.BOOLEAN);
     }
@@ -229,6 +229,26 @@ public class ProgramValue implements Model
     public Boolean getBoolean()
     {
         return this.booleanValue.getValue();
+    }
+
+
+    // > To String
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString()
+    {
+        switch (this.getType())
+        {
+            case STRING:
+                return this.getString();
+            case INTEGER:
+                return this.getInteger().toString();
+            case BOOLEAN:
+                return this.getBoolean().toString();
+        }
+
+        return "";
     }
 
 
