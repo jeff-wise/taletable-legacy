@@ -6,12 +6,14 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
 
+import java.io.Serializable;
+
 
 
 /**
  * Variable Union
  */
-public class VariableUnion
+public class VariableUnion implements Serializable
 {
 
     // PROPERTIES

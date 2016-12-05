@@ -5,12 +5,12 @@ package com.kispoko.tome.rules.programming.program.statement;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.rules.programming.variable.VariableType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -18,7 +18,7 @@ import java.util.UUID;
 /**
  * Statement Parameter
  */
-public class Parameter implements Model
+public class Parameter implements Model, Serializable
 {
 
     // PROPERTIES

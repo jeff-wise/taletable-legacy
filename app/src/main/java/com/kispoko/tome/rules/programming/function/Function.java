@@ -7,7 +7,6 @@ import android.util.Log;
 import com.kispoko.tome.rules.programming.program.ProgramValue;
 import com.kispoko.tome.rules.programming.program.ProgramValueType;
 import com.kispoko.tome.rules.programming.function.error.InvalidTupleLengthError;
-import com.kispoko.tome.rules.programming.program.statement.Parameter;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -16,6 +15,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  * Function
  */
-public class Function implements Model
+public class Function implements Model, Serializable
 {
 
     // PROPERTIES
@@ -224,34 +224,8 @@ public class Function implements Model
     public ProgramValue execute(List<ProgramValue> parameters)
     {
         ProgramValue result = this.functionMap.get(new Parameters(parameters));
-
-        ProgramValue testValue1 = ProgramValue.asInteger(5);
-        List<ProgramValue> paramsList1 = new ArrayList<>();
-        paramsList1.add(testValue1);
-        Parameters params1 = new Parameters(paramsList1);
-
-        ProgramValue testValue2 = ProgramValue.asInteger(5);
-        List<ProgramValue> paramsList2 = new ArrayList<>();
-        paramsList2.add(testValue2);
-        Parameters params2 = new Parameters(paramsList2);
-
-        Log.d("***FUNCTION", "hashcode1: " + Integer.toString(params1.hashCode()));
-        Log.d("***FUNCTION", "hashcode2: " + Integer.toString(params2.hashCode()));
-
-        if (params1.equals(params2))
-            Log.d("***FUNCTION", "parameters are equal");
-        else
-            Log.d("***FUNCTION", "parameters are NOT equal");
-
-
-        if (result == null)
-            Log.d("***FUNCTION", "result is null");
-        else
-            Log.d("***FUNCTION", "result is NOT null");
-
         return result;
     }
-
 
 
     // INTERNAL
@@ -306,13 +280,16 @@ public class Function implements Model
 
             StringBuilder row = new StringBuilder();
             for (ProgramValue param : params.getValues()) {
+                row.append(param.getType().toString());
+                row.append("  ");
                 row.append(param.toString());
-                row.append("   ");
+                row.append("    ");
             }
 
+            row.append("result: ");
             row.append(res.toString());
 
-            Log.d("***FUNCTION", "tuple: " + row.toString());
+            Log.d("***FUNCTION", row.toString());
         }
     }
 
@@ -320,7 +297,7 @@ public class Function implements Model
     // PARAMETERS CLASS
     // ------------------------------------------------------------------------------------------
 
-    private static class Parameters
+    private static class Parameters implements Serializable
     {
 
         // PROPERTIES
@@ -394,10 +371,18 @@ public class Function implements Model
 
             for (ProgramValue value : this.values)
             {
-                hashCodeBuilder.append(value.getString());
-                hashCodeBuilder.append(value.getInteger());
-                hashCodeBuilder.append(value.getBoolean());
-                hashCodeBuilder.append(value.getType());
+                switch (value.getType())
+                {
+                    case STRING:
+                        hashCodeBuilder.append(value.getString());
+                        break;
+                    case INTEGER:
+                        hashCodeBuilder.append(value.getInteger());
+                        break;
+                    case BOOLEAN:
+                        hashCodeBuilder.append(value.getBoolean());
+                        break;
+                }
             }
 
             return hashCodeBuilder.toHashCode();

@@ -4,38 +4,38 @@ package com.kispoko.tome.rules.programming.interpreter.error;
 
 
 /**
- * Evaluation Error: Undefined Program
+ * Interpreter Error: Null Result
  */
-public class UndefinedProgramError
+public class NullResultError
 {
 
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private String programName;
+    private String functionName;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public UndefinedProgramError(String programName)
+    public NullResultError(String functionName)
     {
-        this.programName = programName;
+        this.functionName = functionName;
     }
 
 
     // API
     // --------------------------------------------------------------------------------------
 
-    public String getProgramName()
+    public String getFunctionName()
     {
-        return this.programName;
+        return this.functionName;
     }
 
 
     public String errorMessage()
     {
-        return "Undefined Program: " + this.programName;
+        return "Null Function Result: " + this.functionName;
     }
 
 }

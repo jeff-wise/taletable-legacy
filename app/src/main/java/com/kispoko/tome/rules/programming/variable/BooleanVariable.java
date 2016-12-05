@@ -35,9 +35,11 @@ public class BooleanVariable implements Model, Variable, Serializable
     private PrimitiveValue<Boolean>       booleanValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableKind>  type;
+    private PrimitiveValue<VariableKind>  kind;
 
     private ModelValue<RefinementId>      refinementId;
+
+    private ReactiveValue<Boolean>        reactiveValue;
 
 
     // CONSTRUCTORS
@@ -53,9 +55,11 @@ public class BooleanVariable implements Model, Variable, Serializable
         this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(null, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(null, VariableKind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
+
+        this.reactiveValue          = null;
     }
 
 
@@ -79,7 +83,7 @@ public class BooleanVariable implements Model, Variable, Serializable
         this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(type, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(type, VariableKind.class);
 
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
 
@@ -94,8 +98,7 @@ public class BooleanVariable implements Model, Variable, Serializable
                 break;
         }
 
-        if (!this.name.isNull())
-            SheetManager.registerVariable(this);
+        initialize();
     }
 
 
@@ -195,8 +198,7 @@ public class BooleanVariable implements Model, Variable, Serializable
 
     public void onLoad()
     {
-        if (!this.name.isNull())
-            SheetManager.registerVariable(this);
+        initialize();
     }
 
 
@@ -212,61 +214,51 @@ public class BooleanVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** ErrorType
+    // ** Kind
     // ------------------------------------------------------------------------------------------
 
-    public VariableKind getType()
+    public VariableKind getKind()
     {
-        return this.type.getValue();
+        return this.kind.getValue();
     }
 
 
-    // ** Boolean Value
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the boolean value.
-     * @return The variable's boolean value. Throws an InvalidCase exception if the variable
-     *         is not a Boolean.
-     */
-    public Boolean getBoolean()
-    {
-        return this.booleanValue.getValue();
-    }
-
-
-    /**
-     * Set the boolean value. Throws an InvalidCase exception if the variable is not a Boolean.
-     * @param booleanValue The Boolean value.
-     */
-    public void setBoolean(Boolean booleanValue)
-    {
-        this.booleanValue.setValue(booleanValue);
-    }
-
-
-    // ** Program Invocation Value
+    // ** Value
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the Program Invocation value.
-     * @return The variable's program invocation value. Throws an InvalidCase exception if the
-     *         variable is not a ProgramInvocation.
+     * Set the boolean variable integer. value
+     * @param newValue The boolean value.
      */
-    public ProgramInvocation getProgramInvocation()
+    public void setValue(Boolean newValue)
     {
-        return this.programInvocationValue.getValue();
+        switch (this.getKind())
+        {
+            case LITERAL:
+                this.booleanValue.setValue(newValue);
+                break;
+            case PROGRAM:
+                this.reactiveValue.setValue(newValue);
+                break;
+        }
     }
 
 
     /**
-     * Set the Program Invocation value. Throws an InvalidCase exception if the variable is not
-     * a ProgramInvocation.
-     * @param programInvocationValue The ProgramInvocation value.
+     * Get the boolean variable's integer value.
+     * @return The boolean value.
      */
-    public void setProgramInvocation(ProgramInvocation programInvocationValue)
+    public Boolean getValue()
     {
-        this.programInvocationValue.setValue(programInvocationValue);
+        switch (this.getKind())
+        {
+            case LITERAL:
+                return this.booleanValue.getValue();
+            case PROGRAM:
+                return this.reactiveValue.getValue();
+        }
+
+        return null;
     }
 
 
@@ -291,6 +283,25 @@ public class BooleanVariable implements Model, Variable, Serializable
     public RefinementId getRefinementId()
     {
         return this.refinementId.getValue();
+    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initialize()
+    {
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
+
+        // ** Reaction Value (if program variable)
+        if (this.getKind() == VariableKind.PROGRAM) {
+            this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
+                                                     VariableType.NUMBER);
+        }
+        else {
+            this.reactiveValue = null;
+        }
     }
 
 

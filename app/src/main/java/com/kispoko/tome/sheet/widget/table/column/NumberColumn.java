@@ -27,7 +27,8 @@ public class NumberColumn implements Model, Column
 
     private PrimitiveValue<String>        name;
     private PrimitiveValue<Integer>       defaultValue;
-    private PrimitiveValue<CellAlignment> defaultAlignment;
+    private PrimitiveValue<CellAlignment> alignment;
+    private PrimitiveValue<Integer>       width;
 
 
     // CONSTRUCTORS
@@ -35,21 +36,27 @@ public class NumberColumn implements Model, Column
 
     public NumberColumn()
     {
-        this.id               = null;
+        this.id           = null;
 
-        this.name             = new PrimitiveValue<>(null, String.class);
-        this.defaultValue     = new PrimitiveValue<>(null, Integer.class);
-        this.defaultAlignment = new PrimitiveValue<>(null, CellAlignment.class);
+        this.name         = new PrimitiveValue<>(null, String.class);
+        this.defaultValue = new PrimitiveValue<>(null, Integer.class);
+        this.alignment    = new PrimitiveValue<>(null, CellAlignment.class);
+        this.width        = new PrimitiveValue<>(null, Integer.class);
     }
 
 
-    public NumberColumn(UUID id, String name, Integer defaultValue, CellAlignment defaultAlignment)
+    public NumberColumn(UUID id,
+                        String name,
+                        Integer defaultValue,
+                        CellAlignment alignment,
+                        Integer width)
     {
-        this.id               = id;
+        this.id           = id;
 
-        this.name             = new PrimitiveValue<>(name, String.class);
-        this.defaultValue     = new PrimitiveValue<>(defaultValue, Integer.class);
-        this.defaultAlignment = new PrimitiveValue<>(defaultAlignment, CellAlignment.class);
+        this.name         = new PrimitiveValue<>(name, String.class);
+        this.defaultValue = new PrimitiveValue<>(defaultValue, Integer.class);
+        this.alignment    = new PrimitiveValue<>(alignment, CellAlignment.class);
+        this.width        = new PrimitiveValue<>(width, Integer.class);
     }
 
 
@@ -62,13 +69,14 @@ public class NumberColumn implements Model, Column
     public static NumberColumn fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID          id               = UUID.randomUUID();
+        UUID          id           = UUID.randomUUID();
 
-        String        name             = yaml.atKey("name").getString();
-        Integer       defaultValue     = yaml.atKey("default_value").getInteger();
-        CellAlignment defaultAlignment = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+        String        name         = yaml.atKey("name").getString();
+        Integer       defaultValue = yaml.atKey("default_value").getInteger();
+        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+        Integer       width        = yaml.atKey("width").getInteger();
 
-        return new NumberColumn(id, name, defaultValue, defaultAlignment);
+        return new NumberColumn(id, name, defaultValue, alignment, width);
     }
 
 
@@ -110,7 +118,7 @@ public class NumberColumn implements Model, Column
     public void onLoad() { }
 
 
-    // > State
+    // > Column
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -121,5 +129,41 @@ public class NumberColumn implements Model, Column
     {
         return this.name.getValue();
     }
+
+
+    /**
+     * Get the alignment of this cell.
+     * @return The cell Alignment.
+     */
+    public CellAlignment getAlignment()
+    {
+        return this.alignment.getValue();
+    }
+
+
+    /**
+     * Get the column width. All cells in the column should have the same width.
+     * @return The column width.
+     */
+    public Integer getWidth()
+    {
+        return this.width.getValue();
+    }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the default column value. Cells with null values are given this value (if this value
+     * is not null).
+     * @return The default value.
+     */
+    public Integer getDefaultValue()
+    {
+        return this.defaultValue.getValue();
+    }
+
+
 
 }

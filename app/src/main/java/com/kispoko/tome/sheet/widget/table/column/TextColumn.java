@@ -27,7 +27,8 @@ public class TextColumn implements Model, Column
 
     private PrimitiveValue<String>        name;
     private PrimitiveValue<String>        defaultValue;
-    private PrimitiveValue<CellAlignment> defaultAlignment;
+    private PrimitiveValue<CellAlignment> alignment;
+    private PrimitiveValue<Integer>       width;
 
 
     // CONSTRUCTORS
@@ -35,21 +36,27 @@ public class TextColumn implements Model, Column
 
     public TextColumn()
     {
-        this.id               = null;
+        this.id            = null;
 
-        this.name             = new PrimitiveValue<>(null, String.class);
-        this.defaultValue     = new PrimitiveValue<>(null, String.class);
-        this.defaultAlignment = new PrimitiveValue<>(null, CellAlignment.class);
+        this.name          = new PrimitiveValue<>(null, String.class);
+        this.defaultValue  = new PrimitiveValue<>(null, String.class);
+        this.alignment     = new PrimitiveValue<>(null, CellAlignment.class);
+        this.width         = new PrimitiveValue<>(null, Integer.class);
     }
 
 
-    public TextColumn(UUID id, String name, String defaultValue, CellAlignment defaultAlignment)
+    public TextColumn(UUID id,
+                      String name,
+                      String defaultValue,
+                      CellAlignment alignment,
+                      Integer width)
     {
-        this.id               = id;
+        this.id            = id;
 
-        this.name             = new PrimitiveValue<>(name, String.class);
-        this.defaultValue     = new PrimitiveValue<>(defaultValue, String.class);
-        this.defaultAlignment = new PrimitiveValue<>(defaultAlignment, CellAlignment.class);
+        this.name          = new PrimitiveValue<>(name, String.class);
+        this.defaultValue  = new PrimitiveValue<>(defaultValue, String.class);
+        this.alignment     = new PrimitiveValue<>(alignment, CellAlignment.class);
+        this.width         = new PrimitiveValue<>(width, Integer.class);
     }
 
 
@@ -62,13 +69,14 @@ public class TextColumn implements Model, Column
     public static TextColumn fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID          id               = UUID.randomUUID();
+        UUID          id           = UUID.randomUUID();
 
-        String        name             = yaml.atKey("name").getString();
-        String        defaultValue     = yaml.atKey("default_value").getString();
-        CellAlignment defaultAlignment = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+        String        name         = yaml.atKey("name").getString();
+        String        defaultValue = yaml.atKey("default_value").getString();
+        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+        Integer       width        = yaml.atKey("width").getInteger();
 
-        return new TextColumn(id, name, defaultValue, defaultAlignment);
+        return new TextColumn(id, name, defaultValue, alignment, width);
     }
 
 
@@ -110,9 +118,8 @@ public class TextColumn implements Model, Column
     public void onLoad() { }
 
 
-    // > State
+    // > Column
     // ------------------------------------------------------------------------------------------
-
 
     /**
      * Get the column name.
@@ -123,5 +130,38 @@ public class TextColumn implements Model, Column
         return this.name.getValue();
     }
 
+
+    /**
+     * Get the alignment of this column. All cells in the column should have the same alignment.
+     * @return The column alignment.
+     */
+    public CellAlignment getAlignment()
+    {
+        return this.alignment.getValue();
+    }
+
+
+    /**
+     * Get the column width. All cells in the column should have the same width.
+     * @return The column width.
+     */
+    public Integer getWidth()
+    {
+        return this.width.getValue();
+    }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the default column value. Cells with null values are given this value (if this value
+     * is not null).
+     * @return The default value.
+     */
+    public String getDefaultValue()
+    {
+        return this.defaultValue.getValue();
+    }
 
 }

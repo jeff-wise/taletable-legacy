@@ -4,6 +4,10 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 import android.util.Log;
 
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.rules.programming.variable.VariableType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -176,6 +180,9 @@ public class ColumnUnion implements Model
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Column Type
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Get the type of column in the union.
      * @return The column type.
@@ -186,32 +193,68 @@ public class ColumnUnion implements Model
     }
 
 
+    // ** Column
+    // ------------------------------------------------------------------------------------------
+
     public Column getColumn()
     {
         switch (this.getType())
         {
             case TEXT:
-                Log.d("***COLUMN", "return text column");
-                if (this.textColumn.getValue() == null)
-                    Log.d("***COLUMN", "returned text column is null");
                 return this.textColumn.getValue();
             case NUMBER:
-                Log.d("***COLUMN", "return number column");
                 return this.numberColumn.getValue();
             case BOOLEAN:
-                Log.d("***COLUMN", "return number column");
                 return this.booleanColumn.getValue();
         }
-
-        Log.d("***COLUMN", "did not match type");
-
-        if (this.getType() == null)
-            Log.d("***COLUMN", "type is null");
 
         // CANNOT REACH HERE. No constructor allows null column type.
         return null;
     }
 
 
+    /**
+     * Get the text column case.
+     * @return The Text Column.
+     */
+    public TextColumn getTextColumn()
+    {
+        if (this.getType() != ColumnType.TEXT) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("text", this.type.toString())));
+        }
+        return this.textColumn.getValue();
+    }
+
+
+    /**
+     * Get the number column case.
+     * @return The Number Column.
+     */
+    public NumberColumn getNumberColumn()
+    {
+        if (this.getType() != ColumnType.NUMBER) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("number", this.type.toString())));
+        }
+        return this.numberColumn.getValue();
+    }
+
+
+    /**
+     * Get the boolean column case.
+     * @return The Boolean Column.
+     */
+    public BooleanColumn getBooleanColumn()
+    {
+        if (this.getType() != ColumnType.BOOLEAN) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("boolean", this.type.toString())));
+        }
+        return this.booleanColumn.getValue();
+    }
 
 }

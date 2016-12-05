@@ -162,11 +162,14 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
             @Override
             public void onLoad(List<A> loadedValues)
             {
-                Log.d("***ON LOAD COLL", modelClasses.get(0).getName());
-
                 setValue(loadedValues);
 
                 setIsLoaded(true);
+
+                for (Model loadedModel : loadedValues)
+                {
+                    loadedModel.onLoad();
+                }
 
                 if (staticOnLoadListener != null)
                     staticOnLoadListener.onLoad(loadedValues);

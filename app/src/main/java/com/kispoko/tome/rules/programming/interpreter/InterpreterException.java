@@ -4,6 +4,7 @@ package com.kispoko.tome.rules.programming.interpreter;
 
 import com.kispoko.tome.rules.programming.builtin.BuiltInFunctionException;
 import com.kispoko.tome.rules.programming.interpreter.error.FunctionNotFoundError;
+import com.kispoko.tome.rules.programming.interpreter.error.NullResultError;
 import com.kispoko.tome.rules.programming.interpreter.error.NullVariableError;
 import com.kispoko.tome.rules.programming.interpreter.error.UndefinedProgramError;
 import com.kispoko.tome.rules.programming.interpreter.error.UndefinedProgramVariableError;
@@ -50,6 +51,12 @@ public class InterpreterException extends Exception
     public static InterpreterException nullVariable(NullVariableError error)
     {
         return new InterpreterException(error, ErrorType.NULL_VARIABLE);
+    }
+
+
+    public static InterpreterException nullResult(NullResultError error)
+    {
+        return new InterpreterException(error, ErrorType.NULL_RESULT);
     }
 
 
@@ -111,8 +118,15 @@ public class InterpreterException extends Exception
                 errorBuilder.append(
                         ((UnexpectedProgramVariableTypeError) this.error).errorMessage());
                 break;
+            case FUNCTION_NOT_FOUND:
+                errorBuilder.append(
+                        ((FunctionNotFoundError) this.error).errorMessage());
+                break;
             case BUILT_IN_FUNCTION:
                 errorBuilder.append(((BuiltInFunctionException) this.error).errorMessage());
+                break;
+            case NULL_RESULT:
+                errorBuilder.append(((NullResultError) this.error).errorMessage());
                 break;
         }
 
@@ -128,6 +142,7 @@ public class InterpreterException extends Exception
         UNDEFINED_PROGRAM,
         UNDEFINED_VARIABLE,
         NULL_VARIABLE,
+        NULL_RESULT,
         UNDEFINED_PROGRAM_VARIABLE,
         UNEXPECTED_PROGRAM_VARIABLE_TYPE,
         FUNCTION_NOT_FOUND,

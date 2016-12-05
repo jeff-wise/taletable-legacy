@@ -9,6 +9,7 @@ import com.kispoko.tome.rules.programming.program.ProgramInvocation;
 import com.kispoko.tome.rules.programming.program.ProgramValue;
 import com.kispoko.tome.sheet.SheetManager;
 
+import java.io.Serializable;
 
 
 /**
@@ -17,7 +18,7 @@ import com.kispoko.tome.sheet.SheetManager;
  * A reactive value is created as the result of a program. It is reactive because if a variable
  * that it depends on changes, it will update itself in response.
  */
-public class ReactiveValue<A>
+public class ReactiveValue<A> implements Serializable
 {
 
     // PROPERTIES

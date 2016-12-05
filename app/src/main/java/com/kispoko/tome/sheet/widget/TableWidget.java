@@ -12,10 +12,14 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.rules.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.Row;
+import com.kispoko.tome.sheet.widget.table.cell.TextCell;
+import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
+import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.Util;
@@ -40,11 +44,21 @@ public class TableWidget extends Widget implements Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                         id;
 
-    private ModelValue<WidgetData>  widgetData;
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
+    private ModelValue<WidgetData>       widgetData;
     private CollectionValue<ColumnUnion> columns;
-    private CollectionValue<Row>    rows;
+    private CollectionValue<Row>         rows;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private Row                           headerRow;
 
 
     // CONSTRUCTORS
@@ -82,6 +96,10 @@ public class TableWidget extends Widget implements Serializable
         List<Class<? extends Row>> rowClassList = new ArrayList<>();
         rowClassList.add(Row.class);
         this.rows        = CollectionValue.full(rows, rowClassList);
+
+        initialize();
+
+        // TODO validate that column types and cell types match
     }
 
 
@@ -155,7 +173,10 @@ public class TableWidget extends Widget implements Serializable
     /**
      * This method is called when the Table Widget is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        initialize();
+    }
 
 
     // > Widget
@@ -294,13 +315,14 @@ public class TableWidget extends Widget implements Serializable
         tableLayout.setPadding(tableLayoutPadding, tableLayoutPadding,
                                tableLayoutPadding, tableLayoutPadding);
 
-        tableLayout.setDividerDrawable(ContextCompat.getDrawable(context, R.drawable.table_row_divider));
+        tableLayout.setDividerDrawable(
+                ContextCompat.getDrawable(context, R.drawable.table_row_divider));
         tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 
 //        tableLayout.setStretchAllColumns(true);
         tableLayout.setShrinkAllColumns(true);
 
-        tableLayout.addView(this.headerRow(context));
+        tableLayout.addView(this.headerTableRow());
 
         for (Row row : this.rows.getValue())
         {
@@ -317,10 +339,12 @@ public class TableWidget extends Widget implements Serializable
             tableRow.setPadding(tableRowPaddingHorz, tableRowPaddingVert,
                                 tableRowPaddingHorz, tableRowPaddingVert);
 
+            int columnIndex = 0;
             for (CellUnion cell : row.getCells())
             {
-//                View cellView = cell.getView(context);
-//                tableRow.addView(cellView);
+                View cellView = cell.view(this.getColumns().get(columnIndex));
+                tableRow.addView(cellView);
+                columnIndex++;
             }
 
             tableLayout.addView(tableRow);
@@ -341,6 +365,31 @@ public class TableWidget extends Widget implements Serializable
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
+    private void initialize()
+    {
+        // The header row is derived from the column information, so create it each time the
+        // table widget is instantiated
+        // --------------------------------------------------------------------------------------
+
+        List<CellUnion> headerCells = new ArrayList<>();
+
+        for (ColumnUnion columnUnion : this.getColumns())
+        {
+            TextVariable headerCellValue = TextVariable.asText(UUID.randomUUID(),
+                                                               null,
+                                                               columnUnion.getColumn().getName(),
+                                                               null);
+            TextCell headerCell = new TextCell(UUID.randomUUID(),
+                                               headerCellValue,
+                                               columnUnion.getColumn().getAlignment(),
+                                               null);
+            CellUnion headerCellUnion = CellUnion.asText(null, headerCell);
+            headerCells.add(headerCellUnion);
+        }
+
+        this.headerRow = new Row(null, headerCells);
+    }
+
 
     private TableRow tableRow(Context context)
     {
@@ -350,61 +399,36 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    private TableRow headerRow(Context context)
+    private TableRow headerTableRow()
     {
+        Context context = SheetManager.currentSheetContext();
+
         TableRow headerRow = new TableRow(context);
 
         int paddingVert = (int) Util.getDim(context, R.dimen.comp_table_header_padding_vert);
         int paddingHorz = (int) Util.getDim(context, R.dimen.comp_table_row_padding_horz);
         headerRow.setPadding(paddingHorz, paddingVert, paddingHorz, paddingVert);
 
-
-        List<String> columnNames = this.columnNames();
-
-        for (String columnName : columnNames)
+        int columnIndex = 0;
+        for (CellUnion cellUnion : this.headerRow.getCells())
         {
-            TextView headerText = new TextView(context);
+            // Header is special, so create text column so that view gets created correctly.
+            Column column = this.getColumns().get(columnIndex).getColumn();
+            TextColumn textColumn = new TextColumn(null, null, null,
+                                                    column.getAlignment(), column.getWidth());
+            ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
 
-            TableRow.LayoutParams layoutParams =
-                    new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                              TableRow.LayoutParams.WRAP_CONTENT);
-
-//            CellUnion template = this.getRowTemplate().cellAtIndex(i);
-//            WidgetFormat.Alignment alignment = template.getWidget().data()
-//                    .getFormat().getAlignment();
-//            if (alignment != null) {
-//                switch (alignment) {
-//                    case LEFT:
-//                        headerText.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-//                        break;
-//                    case CENTER:
-//                        headerText.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
-//                        break;
-//                    case RIGHT:
-//                        headerText.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-//                        break;
-//                }
-//            }
-
-//            Integer templateWidth = template.getWidget().data().getFormat().getWidth();
-//            if (templateWidth != null) {
-//                layoutParams.width = 0;
-//                layoutParams.weight = 1;
-//            }
-
-            headerText.setLayoutParams(layoutParams);
+            TextView headerCellView = (TextView) cellUnion.view(columnUnion);
 
             float headerTextSize = (int) context.getResources()
                                                 .getDimension(R.dimen.comp_table_header_text_size);
-            headerText.setTextSize(headerTextSize);
+            headerCellView.setTextSize(headerTextSize);
+            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.text_light));
+            headerCellView.setTypeface(Util.sansSerifFontRegular(context));
 
-            headerText.setTextColor(ContextCompat.getColor(context, R.color.text_light));
+            headerRow.addView(headerCellView);
 
-            headerText.setTypeface(Util.sansSerifFontRegular(context));
-
-            //headerText.setText(getColumnNames()[i].toUpperCase());
-
-            headerRow.addView(headerText);
+            columnIndex++;
         }
 
         return headerRow;

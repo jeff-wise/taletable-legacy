@@ -5,7 +5,6 @@ package com.kispoko.tome.util.model;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;

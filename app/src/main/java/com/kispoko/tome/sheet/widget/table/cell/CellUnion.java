@@ -2,7 +2,23 @@
 package com.kispoko.tome.sheet.widget.table.cell;
 
 
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.TableRow;
+import android.widget.TextView;
+
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.R;
+import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
+import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
+import com.kispoko.tome.sheet.widget.table.column.TextColumn;
+import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -123,13 +139,14 @@ public class CellUnion implements Model
         switch (columnUnion.getType())
         {
             case TEXT:
-                TextCell textCell = TextCell.fromYaml(yaml);
+                TextCell textCell = TextCell.fromYaml(yaml, columnUnion.getTextColumn());
                 return CellUnion.asText(id, textCell);
             case NUMBER:
-                NumberCell numberCell = NumberCell.fromYaml(yaml);
+                NumberCell numberCell = NumberCell.fromYaml(yaml, columnUnion.getNumberColumn());
                 return CellUnion.asNumber(id, numberCell);
             case BOOLEAN:
-                BooleanCell booleanCell = BooleanCell.fromYaml(yaml);
+                BooleanCell booleanCell = BooleanCell.fromYaml(yaml,
+                                                               columnUnion.getBooleanColumn());
                 return CellUnion.asBoolean(id, booleanCell);
         }
 
@@ -177,134 +194,136 @@ public class CellUnion implements Model
     public void onLoad() { }
 
 
-    // > Views
+    // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Type
+    // ------------------------------------------------------------------------------------------
 
-    /*
-    public View getView(Context context)
+    /**
+     * Get the cell type.
+     * @return The Cell Type.
+     */
+    public CellType getType()
     {
-        View view = new TextView(context);
+        return this.type.getValue();
+    }
 
-        Widget widget = this.widget.getValue();
-        if (widget instanceof TextWidget || widget instanceof NumberWidget) {
-            view = this.textView(context);
-        } else if (widget instanceof BooleanWidget) {
-            view = this.boolView(context);
+
+    // ** Cells
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the text column case.
+     * @return The Text Column.
+     */
+    public TextCell getTextCell()
+    {
+        if (this.getType() != CellType.TEXT) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("text", this.type.toString())));
+        }
+        return this.textCell.getValue();
+    }
+
+
+    /**
+     * Get the text column case.
+     * @return The Text Column.
+     */
+    public NumberCell getNumberCell()
+    {
+        if (this.getType() != CellType.NUMBER) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("number", this.type.toString())));
+        }
+        return this.numberCell.getValue();
+    }
+
+
+    /**
+     * Get the text column case.
+     * @return The Text Column.
+     */
+    public BooleanCell getBooleanCell()
+    {
+        if (this.getType() != CellType.BOOLEAN) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("boolean", this.type.toString())));
+        }
+        return this.booleanCell.getValue();
+    }
+
+
+    // > View
+    // ------------------------------------------------------------------------------------------
+
+    public View view(ColumnUnion columnUnion)
+    {
+        View cellView = null;
+
+        switch (this.type.getValue())
+        {
+            case TEXT:
+                cellView = this.getTextCell().view(columnUnion.getTextColumn());
+                break;
+            case NUMBER:
+                cellView = this.getNumberCell().view(columnUnion.getNumberColumn());
+                break;
+            case BOOLEAN:
+                cellView = this.getBooleanCell().view(columnUnion.getBooleanColumn());
+                break;
         }
 
-        TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) view.getLayoutParams();
+        setCellViewAlignment(cellView, columnUnion);
+        setCellViewWidth(cellView, columnUnion);
 
-        // Configure alignment
-        WidgetFormat.Alignment alignment = this.getWidget().data().getFormat().getAlignment();
-        if (alignment != null) {
-            switch (alignment) {
-                case LEFT:
-                    layoutParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
-                    break;
-                case CENTER:
-                    Log.d("***CELL", "setting center alignment");
-                    layoutParams.gravity = Gravity.CENTER | Gravity.CENTER_VERTICAL;
-                    break;
-                case RIGHT:
-                    layoutParams.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
-                    break;
-            }
+        return cellView;
+    }
+
+
+    private void setCellViewAlignment(View cellView, ColumnUnion columnUnion)
+    {
+        TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) cellView.getLayoutParams();
+
+        CellAlignment cellAlignment = columnUnion.getColumn().getAlignment();
+
+        switch (cellAlignment)
+        {
+            case LEFT:
+                layoutParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
+                if (cellView instanceof TextView)
+                    ((TextView) cellView).setGravity(Gravity.LEFT);
+                break;
+            case CENTER:
+                layoutParams.gravity = Gravity.CENTER | Gravity.CENTER_VERTICAL;
+                if (cellView instanceof TextView)
+                    ((TextView) cellView).setGravity(Gravity.CENTER);
+                break;
+            case RIGHT:
+                layoutParams.gravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
+                if (cellView instanceof TextView)
+                    ((TextView) cellView).setGravity(Gravity.RIGHT);
+                break;
         }
 
-        // Configure column width
-        Integer width = this.getWidget().data().getFormat().getWidth();
+    }
+
+
+    private void setCellViewWidth(View cellView, ColumnUnion columnUnion)
+    {
+        TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) cellView.getLayoutParams();
+
+        Integer width = columnUnion.getColumn().getWidth();
         if (width != null) {
             layoutParams.width = 0;
-            layoutParams.weight = 1;
+            layoutParams.weight = width;
+            Log.d("***CELLUNION", "width set to: " + Integer.toString(width));
         }
-
-        return view;
     }
-
-
-    private View textView(Context context)
-    {
-        TextView view = new TextView(context);
-
-        TableRow.LayoutParams layoutParams =
-                new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                          TableRow.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 0, 0, 0);
-        view.setLayoutParams(layoutParams);
-
-        WidgetFormat.Alignment alignment = this.getWidget().data().getFormat().getAlignment();
-        if (alignment != null) {
-            switch (alignment) {
-                case LEFT:
-                    view.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
-                    break;
-                case CENTER:
-                    view.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
-                    break;
-                case RIGHT:
-                    view.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
-                    break;
-            }
-        }
-
-        view.setPadding(0, 0, 0, 0);
-
-        String widgetValue = ((TextWidget) this.getWidget()).getValue().getString();
-        view.setText(widgetValue);
-
-        view.setTextColor(ContextCompat.getColor(context, R.color.text_medium_light));
-        view.setTypeface(Util.serifFontBold(context));
-
-        float textSize = Util.getDim(context, R.dimen.comp_table_cell_text_size);
-        view.setTextSize(textSize);
-
-        return view;
-    }
-
-
-    private View boolView(final Context context)
-    {
-        final ImageView view = new ImageView(context);
-
-        final BooleanWidget booleanWidget = ((BooleanWidget) this.widget.getValue());
-        final Boolean widgetValue = booleanWidget.getValue().getBoolean();
-
-        if (booleanWidget.getValue() != null) {
-            if (widgetValue) {
-                view.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
-            } else {
-                view.setImageDrawable(
-                        ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
-            }
-        }
-
-        TableRow.LayoutParams layoutParams =
-                new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                          TableRow.LayoutParams.WRAP_CONTENT);
-        view.setLayoutParams(layoutParams);
-
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (widgetValue) {
-                    booleanWidget.getValue().setBoolean(false);
-                    view.setImageDrawable(
-                            ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
-                } else {
-                    booleanWidget.getValue().setBoolean(true);
-                    view.setImageDrawable(
-                            ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
-                }
-            }
-        });
-
-        return view;
-    }
-
-*/
 
 
 }

@@ -10,6 +10,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -17,7 +18,7 @@ import java.util.UUID;
 /**
  * Function Value
  */
-public class ProgramValue implements Model
+public class ProgramValue implements Model, Serializable
 {
 
     // PROPERTIES

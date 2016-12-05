@@ -7,6 +7,7 @@ import android.util.Log;
 import com.kispoko.tome.rules.programming.builtin.BuiltInFunction;
 import com.kispoko.tome.rules.programming.builtin.BuiltInFunctionException;
 import com.kispoko.tome.rules.programming.interpreter.error.FunctionNotFoundError;
+import com.kispoko.tome.rules.programming.interpreter.error.NullResultError;
 import com.kispoko.tome.rules.programming.interpreter.error.NullVariableError;
 import com.kispoko.tome.rules.programming.interpreter.error.UndefinedProgramError;
 import com.kispoko.tome.rules.programming.interpreter.error.UndefinedProgramVariableError;
@@ -23,16 +24,18 @@ import com.kispoko.tome.rules.programming.variable.VariableIndex;
 import com.kispoko.tome.rules.programming.variable.VariableUnion;
 import com.kispoko.tome.util.tuple.Tuple2;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
+
 /**
  * Interpreter - Runs programs.
  */
-public class Interpreter
+public class Interpreter implements Serializable
 {
 
     // PROPERTIES
@@ -123,11 +126,11 @@ public class Interpreter
                             break;
                         case NUMBER:
                             programValue = ProgramValue.asInteger(
-                                                    variableUnion.getNumber().getInteger());
+                                                    variableUnion.getNumber().getValue());
                             break;
                         case BOOLEAN:
                             programValue = ProgramValue.asBoolean(
-                                                    variableUnion.getBoolean().getBoolean());
+                                                    variableUnion.getBoolean().getValue());
                             break;
                     }
 
@@ -151,12 +154,6 @@ public class Interpreter
         {
             String variableName = statement.getVariableName();
             ProgramValue statementValue = evaluateStatement(statement, parameters, context);
-            Log.d("***INTERPRETER", "variable name: " + variableName);
-
-            if (statementValue == null)
-                Log.d("***INTERPRETER", "statement value is null");
-            else
-                Log.d("***INTERPRETER", "statement value is NOT null");
 
             context.put(variableName, statementValue);
         }
@@ -218,13 +215,15 @@ public class Interpreter
                                           Map<String,ProgramValue> context)
                           throws InterpreterException
     {
+        ProgramValue result;
+
         // [1] Check built-in function first
         // --------------------------------------------------------------------------------------
 
         if (BuiltInFunction.exists(functionName))
         {
             try {
-                return BuiltInFunction.execute(functionName, parameters, context);
+                result = BuiltInFunction.execute(functionName, parameters, context);
             }
             catch (BuiltInFunctionException exception) {
                 throw InterpreterException.builtInFunction(exception);
@@ -234,15 +233,31 @@ public class Interpreter
         // [2] Lookup function in custom functions
         // --------------------------------------------------------------------------------------
 
-        if (this.functionIndex.hasFunction(functionName))
+        else if (this.functionIndex.hasFunction(functionName))
         {
-            return this.functionIndex.functionWithName(functionName).execute(parameters);
+            result = this.functionIndex.functionWithName(functionName).execute(parameters);
         }
 
         // [3] Throw function not found exception
         // --------------------------------------------------------------------------------------
 
-        throw InterpreterException.functionNotFound(new FunctionNotFoundError(functionName));
+        else
+        {
+            throw InterpreterException.functionNotFound(new FunctionNotFoundError(functionName));
+        }
+
+
+        // [4] If result is NULL, throw exception because succeeding computations will fail.
+        // --------------------------------------------------------------------------------------
+
+        if (result == null)
+            throw InterpreterException.nullResult(new NullResultError(functionName));
+
+
+        // [5] Return function result
+        // --------------------------------------------------------------------------------------
+
+        return result;
     }
 
 

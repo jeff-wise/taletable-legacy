@@ -156,7 +156,6 @@ public class BuiltInFunction
             String variableValue;
             if (context.containsKey(templateVariableName))
             {
-                Log.d("***BuiltInFunction", "template variable name: " + templateVariableName);
                 ProgramValue variableFunctionValue = context.get(templateVariableName);
                 if (variableFunctionValue.getType() != ProgramValueType.STRING) {
                     throw InterpreterException.unexpectedProgramVariableType(

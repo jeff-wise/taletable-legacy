@@ -27,7 +27,8 @@ public class BooleanColumn implements Model, Column
 
     private PrimitiveValue<String>        name;
     private PrimitiveValue<Boolean>       defaultValue;
-    private PrimitiveValue<CellAlignment> defaultAlignment;
+    private PrimitiveValue<CellAlignment> alignment;
+    private PrimitiveValue<Integer>       width;
 
 
     // CONSTRUCTORS
@@ -35,21 +36,27 @@ public class BooleanColumn implements Model, Column
 
     public BooleanColumn()
     {
-        this.id               = null;
+        this.id           = null;
 
-        this.name             = new PrimitiveValue<>(null, String.class);
-        this.defaultValue     = new PrimitiveValue<>(null, Boolean.class);
-        this.defaultAlignment = new PrimitiveValue<>(null, CellAlignment.class);
+        this.name         = new PrimitiveValue<>(null, String.class);
+        this.defaultValue = new PrimitiveValue<>(null, Boolean.class);
+        this.alignment    = new PrimitiveValue<>(null, CellAlignment.class);
+        this.width        = new PrimitiveValue<>(null, Integer.class);
     }
 
 
-    public BooleanColumn(UUID id, String name, Boolean defaultValue, CellAlignment defaultAlignment)
+    public BooleanColumn(UUID id,
+                         String name,
+                         Boolean defaultValue,
+                         CellAlignment alignment,
+                         Integer width)
     {
-        this.id               = id;
+        this.id           = id;
 
-        this.name             = new PrimitiveValue<>(name, String.class);
-        this.defaultValue     = new PrimitiveValue<>(defaultValue, Boolean.class);
-        this.defaultAlignment = new PrimitiveValue<>(defaultAlignment, CellAlignment.class);
+        this.name         = new PrimitiveValue<>(name, String.class);
+        this.defaultValue = new PrimitiveValue<>(defaultValue, Boolean.class);
+        this.alignment    = new PrimitiveValue<>(alignment, CellAlignment.class);
+        this.width        = new PrimitiveValue<>(width, Integer.class);
     }
 
 
@@ -62,13 +69,14 @@ public class BooleanColumn implements Model, Column
     public static BooleanColumn fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID          id               = UUID.randomUUID();
+        UUID          id           = UUID.randomUUID();
 
-        String        name             = yaml.atKey("name").getString();
-        Boolean       defaultValue     = yaml.atKey("default_value").getBoolean();
-        CellAlignment defaultAlignment = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+        String        name         = yaml.atKey("name").getString();
+        Boolean       defaultValue = yaml.atKey("default_value").getBoolean();
+        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+        Integer       width        = yaml.atKey("width").getInteger();
 
-        return new BooleanColumn(id, name, defaultValue, defaultAlignment);
+        return new BooleanColumn(id, name, defaultValue, alignment, width);
     }
 
 
@@ -110,7 +118,7 @@ public class BooleanColumn implements Model, Column
     public void onLoad() { }
 
 
-    // > State
+    // > Column
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -121,6 +129,43 @@ public class BooleanColumn implements Model, Column
     {
         return this.name.getValue();
     }
+
+
+    /**
+     * Get the alignment of this cell.
+     * @return The cell Alignment.
+     */
+    public CellAlignment getAlignment()
+    {
+        return this.alignment.getValue();
+    }
+
+
+    /**
+     * Get the column width. All cells in the column should have the same width.
+     * @return The column width.
+     */
+    public Integer getWidth()
+    {
+        return this.width.getValue();
+    }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the default column value. Cells with null values are given this value (if this value
+     * is not null).
+     * @return The default value.
+     */
+    public Boolean getDefaultValue()
+    {
+        return this.defaultValue.getValue();
+    }
+
+
+
 
 
 }

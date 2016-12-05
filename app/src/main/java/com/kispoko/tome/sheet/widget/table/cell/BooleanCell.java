@@ -2,7 +2,17 @@
 package com.kispoko.tome.sheet.widget.table.cell;
 
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TableRow;
+
+import com.kispoko.tome.R;
 import com.kispoko.tome.rules.programming.variable.BooleanVariable;
+import com.kispoko.tome.rules.programming.variable.NumberVariable;
+import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -24,7 +34,7 @@ public class BooleanCell implements Model
 
     private UUID id;
 
-    private ModelValue<BooleanVariable>    value;
+    private ModelValue<BooleanVariable>   value;
     private PrimitiveValue<CellAlignment> alignment;
 
 
@@ -40,23 +50,36 @@ public class BooleanCell implements Model
     }
 
 
-    public BooleanCell(UUID id, BooleanVariable value, CellAlignment alignment)
+    public BooleanCell(UUID id,
+                       BooleanVariable value,
+                       CellAlignment alignment,
+                       BooleanColumn column)
     {
+        // ** Id
         this.id        = id;
 
+        // ** Value
+        if (value == null) {
+            value = BooleanVariable.asBoolean(UUID.randomUUID(),
+                                              null,
+                                              column.getDefaultValue(),
+                                              null);
+        }
         this.value     = ModelValue.full(value, BooleanVariable.class);
+
+        // ** Alignment
         this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
     }
 
 
-    public static BooleanCell fromYaml(Yaml yaml)
+    public static BooleanCell fromYaml(Yaml yaml, BooleanColumn column)
                   throws YamlException
     {
         UUID            id        = UUID.randomUUID();
         BooleanVariable value     = BooleanVariable.fromYaml(yaml.atMaybeKey("value"));
         CellAlignment   alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
 
-        return new BooleanCell(id, value, alignment);
+        return new BooleanCell(id, value, alignment, column);
     }
 
 
@@ -120,5 +143,54 @@ public class BooleanCell implements Model
     {
         return this.alignment.getValue();
     }
+
+
+    // > View
+    // ------------------------------------------------------------------------------------------
+
+    public View view(BooleanColumn column)
+    {
+        final Context context = SheetManager.currentSheetContext();
+
+        final ImageView view = new ImageView(context);
+
+        Boolean value = this.getValue().getValue();
+
+        if (value == null)
+            value = column.getDefaultValue();
+
+        if (value) {
+            view.setImageDrawable(
+                    ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
+        } else {
+            view.setImageDrawable(
+                    ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
+        }
+
+        TableRow.LayoutParams layoutParams =
+                new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                                          TableRow.LayoutParams.WRAP_CONTENT);
+        view.setLayoutParams(layoutParams);
+
+
+        final Boolean finalValue = value;
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (finalValue) {
+                    getValue().setValue(false);
+                    view.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
+                } else {
+                    getValue().setValue(true);
+                    view.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
+                }
+            }
+        });
+
+        return view;
+    }
+
 
 }

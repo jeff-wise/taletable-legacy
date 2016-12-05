@@ -14,6 +14,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static com.kispoko.tome.rules.programming.variable.VariableKind.PROGRAM;
 
 
 /**
@@ -32,9 +33,15 @@ public class NumberVariable implements Model, Variable, Serializable
     private PrimitiveValue<Integer>       integerValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableKind>  type;
+    private PrimitiveValue<VariableKind>  kind;
 
     private ModelValue<RefinementId>      refinementId;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private ReactiveValue<Integer>        reactiveValue;
 
 
     // CONSTRUCTORS
@@ -49,9 +56,11 @@ public class NumberVariable implements Model, Variable, Serializable
         this.integerValue           = new PrimitiveValue<>(null, Integer.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(null, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(null, VariableKind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
+
+        this.reactiveValue          = null;
     }
 
 
@@ -75,7 +84,7 @@ public class NumberVariable implements Model, Variable, Serializable
         this.integerValue           = new PrimitiveValue<>(null, Integer.class);
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
 
-        this.type                   = new PrimitiveValue<>(type, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(type, VariableKind.class);
 
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
 
@@ -90,9 +99,7 @@ public class NumberVariable implements Model, Variable, Serializable
                 break;
         }
 
-        // Register variable with RulesEngine
-        if (!this.name.isNull())
-            SheetManager.registerVariable(this);
+        initialize();
     }
 
 
@@ -122,7 +129,7 @@ public class NumberVariable implements Model, Variable, Serializable
                                            ProgramInvocation programInvocation,
                                            RefinementId refinementId)
     {
-        return new NumberVariable(id, name, programInvocation, VariableKind.PROGRAM, refinementId);
+        return new NumberVariable(id, name, programInvocation, PROGRAM, refinementId);
     }
 
 
@@ -192,14 +199,17 @@ public class NumberVariable implements Model, Variable, Serializable
 
     public void onLoad()
     {
-        if (!this.name.isNull())
-            SheetManager.registerVariable(this);
+        initialize();
     }
 
 
     // > Variable
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * Get the variable name which is a unique identifier.
+     * @return The variable name.
+     */
     public String getName()
     {
         return this.name.getValue();
@@ -209,61 +219,51 @@ public class NumberVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** ErrorType
+    // ** Kind
     // ------------------------------------------------------------------------------------------
 
-    public VariableKind getType()
+    public VariableKind getKind()
     {
-        return this.type.getValue();
+        return this.kind.getValue();
     }
 
 
-    // ** Number Value
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the number value.
-     * @return The variable's Integer value. Throws an InvalidCase exception if the variable
-     *         is not a Number.
-     */
-    public Integer getInteger()
-    {
-        return this.integerValue.getValue();
-    }
-
-
-    /**
-     * Set the number value. Throws an InvalidCase exception if the variable is not a Number.
-     * @param integerValue The Boolean value.
-     */
-    public void setInteger(Integer integerValue)
-    {
-        this.integerValue.setValue(integerValue);
-    }
-
-
-    // ** Program Invocation Value
+    // ** Value
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the Program Invocation value.
-     * @return The variable's program invocation value. Throws an InvalidCase exception if the
-     *         variable is not a ProgramInvocation.
+     * Set the number variable integer. value
+     * @param newValue The integer value.
      */
-    public ProgramInvocation getProgramInvocation()
+    public void setValue(Integer newValue)
     {
-        return this.programInvocationValue.getValue();
+        switch (this.getKind())
+        {
+            case LITERAL:
+                this.integerValue.setValue(newValue);
+                break;
+            case PROGRAM:
+                this.reactiveValue.setValue(newValue);
+                break;
+        }
     }
 
 
     /**
-     * Set the Program Invocation value. Throws an InvalidCase exception if the variable is not
-     * a ProgramInvocation.
-     * @param programInvocationValue The ProgramInvocation value.
+     * Get the number variable's integer value.
+     * @return The integer value.
      */
-    public void setProgramInvocation(ProgramInvocation programInvocationValue)
+    public Integer getValue()
     {
-        this.programInvocationValue.setValue(programInvocationValue);
+        switch (this.getKind())
+        {
+            case LITERAL:
+                return this.integerValue.getValue();
+            case PROGRAM:
+                return this.reactiveValue.getValue();
+        }
+
+        return null;
     }
 
 
@@ -287,6 +287,25 @@ public class NumberVariable implements Model, Variable, Serializable
     public RefinementId getRefinementId()
     {
         return this.refinementId.getValue();
+    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initialize()
+    {
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
+
+        // ** Reaction Value (if program variable)
+        if (this.getKind() == VariableKind.PROGRAM) {
+            this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
+                                                     VariableType.NUMBER);
+        }
+        else {
+            this.reactiveValue = null;
+        }
     }
 
 }

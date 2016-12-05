@@ -10,6 +10,7 @@ import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +20,7 @@ import java.util.UUID;
 /**
  * Program
  */
-public class Program implements Model
+public class Program implements Model, Serializable
 {
 
     // PROPERTIES

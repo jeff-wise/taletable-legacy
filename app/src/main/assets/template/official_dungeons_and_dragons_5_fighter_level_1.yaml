@@ -352,7 +352,15 @@ roleplay:
             width: 1
             label: Dexterity
         size: medium
+        postfix:
+          type: program
+          value:
+            program: ability_modifier
+            parameters:
+            - type: reference
+              value: dexterity
         value:
+          name: dexterity
           type: literal
           value: 19
       - type: number
@@ -365,7 +373,15 @@ roleplay:
             width: 1
             label: Constitution
         size: medium
+        postfix:
+          type: program
+          value:
+            program: ability_modifier
+            parameters:
+            - type: reference
+              value: constitution
         value:
+          name: constitution
           type: literal
           value: 15
       - type: number
@@ -378,7 +394,15 @@ roleplay:
             width: 1
             label: Intelligence
         size: medium
+        postfix:
+          type: program
+          value:
+            program: ability_modifier
+            parameters:
+            - type: reference
+              value: intelligence
         value:
+          name: intelligence
           type: literal
           value: 22
       - type: number
@@ -391,7 +415,15 @@ roleplay:
             column: 2
             width: 1
         size: medium
+        postfix:
+          type: program
+          value:
+            program: ability_modifier
+            parameters:
+            - type: reference
+              value: wisdom
         value:
+          name: wisdom
           type: literal
           value: 14
       - type: number
@@ -404,7 +436,15 @@ roleplay:
             width: 1
             label: Charisma
         size: medium
+        postfix:
+          type: program
+          value:
+            program: ability_modifier
+            parameters:
+            - type: reference
+              value: charisma
         value:
+          name: charisma
           type: literal
           value: 13
     - label: General

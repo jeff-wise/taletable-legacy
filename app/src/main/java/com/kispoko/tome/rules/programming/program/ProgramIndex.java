@@ -7,6 +7,7 @@ import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.UUID;
 /**
  * Program Index
  */
-public class ProgramIndex implements Model
+public class ProgramIndex implements Model, Serializable
 {
 
     // PROPERTIES
@@ -115,7 +116,14 @@ public class ProgramIndex implements Model
     /**
      * This method is called when the Program Index is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        // The programs are loaded into the collection, but are not automatically indexed.
+        // Index all of the programs once they are all loaded.
+        for (Program program : this.programs.getValue()) {
+            this.addProgram(program);
+        }
+    }
 
 
     // > State

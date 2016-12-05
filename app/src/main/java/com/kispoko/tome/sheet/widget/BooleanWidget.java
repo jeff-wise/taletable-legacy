@@ -167,7 +167,7 @@ public class BooleanWidget extends Widget implements Serializable
 
         TextView view = new TextView(context);
 
-        view.setText(this.value.getValue().getBoolean().toString());
+        view.setText(this.getValue().getValue().toString());
 
         return view;
     }

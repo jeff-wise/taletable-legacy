@@ -14,7 +14,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static com.kispoko.tome.rules.programming.variable.VariableKind.PROGRAM;
 
 
 /**
@@ -28,6 +27,7 @@ public class TextVariable implements Model, Variable, Serializable
 
     private UUID id;
 
+
     // > Functors
     // ------------------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ public class TextVariable implements Model, Variable, Serializable
     private PrimitiveValue<String>        stringValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableKind> kind;
+    private PrimitiveValue<VariableKind>  kind;
 
     private ModelValue<RefinementId>      refinementId;
 
@@ -107,18 +107,7 @@ public class TextVariable implements Model, Variable, Serializable
                 break;
         }
 
-        // ** Reaction Value (if program variable)
-        if (kind == VariableKind.PROGRAM) {
-            this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
-                                                     VariableType.TEXT);
-        }
-        else {
-            this.reactiveValue = null;
-        }
-
-        // > Register variable with rules engine
-        if (!this.name.isNull())
-            SheetManager.registerVariable(this);
+        initialize();
     }
 
 
@@ -148,7 +137,7 @@ public class TextVariable implements Model, Variable, Serializable
                                          ProgramInvocation programInvocation,
                                          RefinementId refinementId)
     {
-        return new TextVariable(id, name, programInvocation, PROGRAM, refinementId);
+        return new TextVariable(id, name, programInvocation, VariableKind.PROGRAM, refinementId);
     }
 
 
@@ -218,17 +207,7 @@ public class TextVariable implements Model, Variable, Serializable
 
     public void onLoad()
     {
-        if (!this.name.isNull())
-            SheetManager.registerVariable(this);
-
-        // ** Reaction Value (if program variable)
-        if (this.getKind() == VariableKind.PROGRAM) {
-            this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
-                                                     VariableType.TEXT);
-        }
-        else {
-            this.reactiveValue = null;
-        }
+        initialize();
     }
 
 
@@ -247,7 +226,7 @@ public class TextVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** ErrorType
+    // ** Kind
     // ------------------------------------------------------------------------------------------
 
     public VariableKind getKind()
@@ -325,5 +304,23 @@ public class TextVariable implements Model, Variable, Serializable
         return true;
     }
 
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initialize()
+    {
+        if (!this.name.isNull())
+            SheetManager.registerVariable(this);
+
+        // ** Reaction Value (if program variable)
+        if (this.getKind() == VariableKind.PROGRAM) {
+            this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
+                                                     VariableType.TEXT);
+        }
+        else {
+            this.reactiveValue = null;
+        }
+    }
 
 }

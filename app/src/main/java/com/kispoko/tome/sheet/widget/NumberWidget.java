@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -219,7 +218,7 @@ public class NumberWidget extends Widget implements Serializable
         textView.setTypeface(Util.serifFontBold(context));
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-        Integer integerValue = this.getValue().getInteger();
+        Integer integerValue = this.getValue().getValue();
         if (integerValue != null)
             textView.setText(Integer.toString(integerValue));
         else
