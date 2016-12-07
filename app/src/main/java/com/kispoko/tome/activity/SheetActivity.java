@@ -21,7 +21,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.rules.programming.variable.TextVariable;
-import com.kispoko.tome.rules.programming.variable.VariableKind;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
@@ -177,8 +176,8 @@ public class SheetActivity
 
         TextVariable nameVariable = sheet.getRulesEngine().getVariableIndex()
                                          .variableWithName("name").getText();
-        if (!nameVariable.isNull() && nameVariable.getKind() == VariableKind.LITERAL) {
-            characterName = nameVariable.getValue();
+        if (!nameVariable.isNull()) {
+            characterName = nameVariable.value();
         }
 
         TextView titleView = (TextView) findViewById(R.id.page_title);

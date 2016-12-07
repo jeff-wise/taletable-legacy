@@ -50,8 +50,7 @@ public class ResultRow
             return this.resultMap.get(columnName);
         }
         else {
-            throw new DatabaseException(new ColumnDoesNotExistError(columnName),
-                    DatabaseException.ErrorType.COLUMN_DOES_NOT_EXIST);
+            throw DatabaseException.columnDoesNotExist(new ColumnDoesNotExistError(columnName));
         }
     }
 

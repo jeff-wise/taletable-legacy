@@ -321,7 +321,6 @@ public class CellUnion implements Model
         if (width != null) {
             layoutParams.width = 0;
             layoutParams.weight = width;
-            Log.d("***CELLUNION", "width set to: " + Integer.toString(width));
         }
     }
 

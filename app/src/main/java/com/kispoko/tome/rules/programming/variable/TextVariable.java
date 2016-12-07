@@ -2,18 +2,24 @@
 package com.kispoko.tome.rules.programming.variable;
 
 
+import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.rules.programming.program.ProgramInvocation;
 import com.kispoko.tome.rules.refinement.RefinementId;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.util.EnumUtils;
+import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.type;
 
 
 /**
@@ -36,7 +42,7 @@ public class TextVariable implements Model, Variable, Serializable
     private PrimitiveValue<String>        stringValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableKind>  kind;
+    private PrimitiveValue<Kind>          kind;
 
     private ModelValue<RefinementId>      refinementId;
 
@@ -59,7 +65,7 @@ public class TextVariable implements Model, Variable, Serializable
         this.stringValue            = new PrimitiveValue<>(null, String.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
 
-        this.kind = new PrimitiveValue<>(null, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(null, Kind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
 
@@ -77,7 +83,7 @@ public class TextVariable implements Model, Variable, Serializable
     private TextVariable(UUID id,
                          String name,
                          Object value,
-                         VariableKind kind,
+                         Kind kind,
                          RefinementId refinementId)
     {
         // ** Id
@@ -91,7 +97,7 @@ public class TextVariable implements Model, Variable, Serializable
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
 
         // ** Kind (Literal or Program)
-        this.kind = new PrimitiveValue<>(kind, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(kind, Kind.class);
 
         // ** Refinement Id (if any)
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
@@ -122,7 +128,7 @@ public class TextVariable implements Model, Variable, Serializable
                                       String stringValue,
                                       RefinementId refinementId)
     {
-        return new TextVariable(id, name, stringValue, VariableKind.LITERAL, refinementId);
+        return new TextVariable(id, name, stringValue, Kind.LITERAL, refinementId);
     }
 
 
@@ -137,7 +143,7 @@ public class TextVariable implements Model, Variable, Serializable
                                          ProgramInvocation programInvocation,
                                          RefinementId refinementId)
     {
-        return new TextVariable(id, name, programInvocation, VariableKind.PROGRAM, refinementId);
+        return new TextVariable(id, name, programInvocation, Kind.PROGRAM, refinementId);
     }
 
 
@@ -155,10 +161,10 @@ public class TextVariable implements Model, Variable, Serializable
 
         UUID         id           = UUID.randomUUID();
         String       name         = yaml.atMaybeKey("name").getString();
-        VariableKind type         = VariableKind.fromYaml(yaml.atKey("type"));
+        Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
 
-        switch (type)
+        switch (kind)
         {
             case LITERAL:
                 String stringValue  = yaml.atKey("value").getString();
@@ -226,40 +232,31 @@ public class TextVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Kind
-    // ------------------------------------------------------------------------------------------
-
-    public VariableKind getKind()
-    {
-        return this.kind.getValue();
-    }
-
-
     // ** Value
     // ------------------------------------------------------------------------------------------
 
     public void setValue(String newValue)
     {
-        switch (this.getKind())
+        switch (this.kind.getValue())
         {
             case LITERAL:
                 this.stringValue.setValue(newValue);
                 break;
             case PROGRAM:
-                this.reactiveValue.setValue(newValue);
+                //this.reactiveValue.setValue(newValue);
                 break;
         }
     }
 
 
-    public String getValue()
+    public String value()
     {
-        switch (this.getKind())
+        switch (this.kind.getValue())
         {
             case LITERAL:
                 return this.stringValue.getValue();
             case PROGRAM:
-                return this.reactiveValue.getValue();
+                return this.reactiveValue.value();
         }
 
         return null;
@@ -293,7 +290,7 @@ public class TextVariable implements Model, Variable, Serializable
 
     public boolean isNull()
     {
-        switch (getKind())
+        switch (this.kind.getValue())
         {
             case LITERAL:
                 return this.stringValue == null;
@@ -314,7 +311,7 @@ public class TextVariable implements Model, Variable, Serializable
             SheetManager.registerVariable(this);
 
         // ** Reaction Value (if program variable)
-        if (this.getKind() == VariableKind.PROGRAM) {
+        if (this.kind.getValue() == Kind.PROGRAM) {
             this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
                                                      VariableType.TEXT);
         }
@@ -322,5 +319,51 @@ public class TextVariable implements Model, Variable, Serializable
             this.reactiveValue = null;
         }
     }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    public enum Kind
+    {
+        LITERAL,
+        PROGRAM;
+
+
+        public static Kind fromString(String kindString)
+                      throws InvalidDataException
+        {
+            return EnumUtils.fromString(Kind.class, kindString);
+        }
+
+
+        public static Kind fromYaml(Yaml yaml)
+                      throws YamlException
+        {
+            String kindString = yaml.getString();
+            try {
+                return Kind.fromString(kindString);
+            } catch (InvalidDataException e) {
+                throw YamlException.invalidEnum(new InvalidEnumError(kindString));
+            }
+        }
+
+
+        public static Kind fromSQLValue(SQLValue sqlValue)
+                      throws DatabaseException
+        {
+            String enumString = "";
+            try {
+                enumString = sqlValue.getText();
+                Kind kind = Kind.fromString(enumString);
+                return kind;
+            } catch (InvalidDataException e) {
+                throw DatabaseException.invalidEnum(
+                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
+            }
+        }
+
+    }
+
 
 }

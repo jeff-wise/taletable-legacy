@@ -10,7 +10,6 @@ import android.widget.TableRow;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.programming.variable.BooleanVariable;
-import com.kispoko.tome.rules.programming.variable.NumberVariable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.util.model.Model;
@@ -154,7 +153,7 @@ public class BooleanCell implements Model
 
         final ImageView view = new ImageView(context);
 
-        Boolean value = this.getValue().getValue();
+        Boolean value = this.getValue().value();
 
         if (value == null)
             value = column.getDefaultValue();
@@ -173,11 +172,10 @@ public class BooleanCell implements Model
         view.setLayoutParams(layoutParams);
 
 
-        final Boolean finalValue = value;
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (finalValue) {
+                if (getValue().value()) {
                     getValue().setValue(false);
                     view.setImageDrawable(
                             ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));

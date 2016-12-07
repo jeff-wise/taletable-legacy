@@ -2,20 +2,24 @@
 package com.kispoko.tome.rules.programming.variable;
 
 
+import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.rules.programming.program.ProgramInvocation;
 import com.kispoko.tome.rules.refinement.RefinementId;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.util.EnumUtils;
+import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-import static com.kispoko.tome.rules.programming.variable.VariableKind.PROGRAM;
-
+import static android.R.attr.type;
 
 
 /**
@@ -35,7 +39,7 @@ public class BooleanVariable implements Model, Variable, Serializable
     private PrimitiveValue<Boolean>       booleanValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
 
-    private PrimitiveValue<VariableKind>  kind;
+    private PrimitiveValue<Kind>  kind;
 
     private ModelValue<RefinementId>      refinementId;
 
@@ -55,7 +59,7 @@ public class BooleanVariable implements Model, Variable, Serializable
         this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
 
-        this.kind                   = new PrimitiveValue<>(null, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(null, Kind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
 
@@ -68,12 +72,12 @@ public class BooleanVariable implements Model, Variable, Serializable
      * constructors, so only valid value/type associations can be used.
      * @param id The Model id.
      * @param value The Variable value.
-     * @param type The Variable type.
+     * @param kind The Variable kind.
      */
     private BooleanVariable(UUID id,
                             String name,
                             Object value,
-                            VariableKind type,
+                            Kind kind,
                             RefinementId refinementId)
     {
         this.id                     = id;
@@ -83,12 +87,12 @@ public class BooleanVariable implements Model, Variable, Serializable
         this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
 
-        this.kind                   = new PrimitiveValue<>(type, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(kind, Kind.class);
 
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
 
         // Set value according to variable type
-        switch (type)
+        switch (kind)
         {
             case LITERAL:
                 this.booleanValue.setValue((Boolean) value);
@@ -113,7 +117,7 @@ public class BooleanVariable implements Model, Variable, Serializable
                                             Boolean booleanValue,
                                             RefinementId refinementId)
     {
-        return new BooleanVariable(id, name, booleanValue, VariableKind.LITERAL, refinementId);
+        return new BooleanVariable(id, name, booleanValue, Kind.LITERAL, refinementId);
     }
 
 
@@ -128,7 +132,7 @@ public class BooleanVariable implements Model, Variable, Serializable
                                             ProgramInvocation programInvocation,
                                             RefinementId refinementId)
     {
-        return new BooleanVariable(id, name, programInvocation, PROGRAM, refinementId);
+        return new BooleanVariable(id, name, programInvocation, Kind.PROGRAM, refinementId);
     }
 
 
@@ -146,10 +150,10 @@ public class BooleanVariable implements Model, Variable, Serializable
 
         UUID         id           = UUID.randomUUID();
         String       name         = yaml.atMaybeKey("name").getString();
-        VariableKind type         = VariableKind.fromYaml(yaml.atKey("type"));
+        Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
 
-        switch (type)
+        switch (kind)
         {
             case LITERAL:
                 Boolean booleanValue  = yaml.atKey("value").getBoolean();
@@ -214,15 +218,6 @@ public class BooleanVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Kind
-    // ------------------------------------------------------------------------------------------
-
-    public VariableKind getKind()
-    {
-        return this.kind.getValue();
-    }
-
-
     // ** Value
     // ------------------------------------------------------------------------------------------
 
@@ -232,13 +227,12 @@ public class BooleanVariable implements Model, Variable, Serializable
      */
     public void setValue(Boolean newValue)
     {
-        switch (this.getKind())
+        switch (this.kind.getValue())
         {
             case LITERAL:
                 this.booleanValue.setValue(newValue);
                 break;
             case PROGRAM:
-                this.reactiveValue.setValue(newValue);
                 break;
         }
     }
@@ -248,14 +242,14 @@ public class BooleanVariable implements Model, Variable, Serializable
      * Get the boolean variable's integer value.
      * @return The boolean value.
      */
-    public Boolean getValue()
+    public Boolean value()
     {
-        switch (this.getKind())
+        switch (this.kind.getValue())
         {
             case LITERAL:
                 return this.booleanValue.getValue();
             case PROGRAM:
-                return this.reactiveValue.getValue();
+                return this.reactiveValue.value();
         }
 
         return null;
@@ -295,7 +289,7 @@ public class BooleanVariable implements Model, Variable, Serializable
             SheetManager.registerVariable(this);
 
         // ** Reaction Value (if program variable)
-        if (this.getKind() == VariableKind.PROGRAM) {
+        if (this.kind.getValue() == Kind.PROGRAM) {
             this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
                                                      VariableType.NUMBER);
         }
@@ -304,5 +298,49 @@ public class BooleanVariable implements Model, Variable, Serializable
         }
     }
 
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    public enum Kind
+    {
+        LITERAL,
+        PROGRAM;
+
+
+        public static Kind fromString(String kindString)
+                      throws InvalidDataException
+        {
+            return EnumUtils.fromString(Kind.class, kindString);
+        }
+
+
+        public static Kind fromYaml(Yaml yaml)
+                      throws YamlException
+        {
+            String kindString = yaml.getString();
+            try {
+                return Kind.fromString(kindString);
+            } catch (InvalidDataException e) {
+                throw YamlException.invalidEnum(new InvalidEnumError(kindString));
+            }
+        }
+
+
+        public static Kind fromSQLValue(SQLValue sqlValue)
+                      throws DatabaseException
+        {
+            String enumString = "";
+            try {
+                enumString = sqlValue.getText();
+                Kind kind = Kind.fromString(enumString);
+                return kind;
+            } catch (InvalidDataException e) {
+                throw DatabaseException.invalidEnum(
+                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
+            }
+        }
+
+    }
 
 }

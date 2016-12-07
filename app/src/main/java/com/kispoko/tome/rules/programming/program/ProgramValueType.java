@@ -49,9 +49,8 @@ public enum ProgramValueType
             ProgramValueType programValueType = ProgramValueType.fromString(enumString);
             return programValueType;
         } catch (InvalidDataException e) {
-            throw new DatabaseException(
-                    new com.kispoko.tome.util.database.error.InvalidEnumError(enumString),
-                    DatabaseException.ErrorType.INVALID_ENUM);
+            throw DatabaseException.invalidEnum(
+                    new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
         }
     }
 

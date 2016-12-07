@@ -127,23 +127,84 @@ rulesEngine:
     parameter_types:
     - integer
     result_type: integer
-    statements:
-    - let: modifier
+    result_statement:
+      let: modifier
       function: ability_modifier
       parameters:
       - type: parameter
         value: 1
+  - name: ability_modifier_string
+    parameter_types:
+    - integer
+    result_type: string
+    statements:
     - let: modifier_string
       function: modifier_string
       parameters:
-      - type: variable
-        value: 'modifier'
+      - type: parameter
+        value: 1
     result_statement:
       let: result
       function: string_template
       parameters:
       - type: literal_string
         value: '({{modifier_string}})'
+  variables:
+  - type: number
+    value:
+      name: strength_modifier
+      type: program
+      value:
+        program: ability_modifier
+        parameters:
+        - type: reference
+          value: strength
+    name: dexterity_modifier
+  - type: number
+    value:
+      name: dexterity_modifier
+      type: program
+      value:
+        program: ability_modifier
+        parameters:
+        - type: reference
+          value: dexterity
+  - type: number
+    value:
+      name: constitution_modifier
+      type: program
+      value:
+        program: ability_modifier
+        parameters:
+        - type: reference
+          value: constitution
+  - type: number
+    value:
+      name: intelligence_modifier
+      type: program
+      value:
+        program: ability_modifier
+        parameters:
+        - type: reference
+          value: intelligence
+  - type: number
+    value:
+      name: wisdom_modifier
+      type: program
+      value:
+        program: ability_modifier
+        parameters:
+        - type: reference
+          value: wisdom
+  - type: number
+    value:
+      name: charisma_modifier
+      type: program
+      value:
+        program: ability_modifier
+        parameters:
+        - type: reference
+          value: charisma
 roleplay:
   pages:
   - label: Profile
@@ -334,10 +395,10 @@ roleplay:
         postfix:
           type: program
           value:
-            program: ability_modifier
+            program: ability_modifier_string
             parameters:
             - type: reference
-              value: strength
+              value: strength_modifier
         value:
           name: strength
           type: literal
@@ -355,10 +416,10 @@ roleplay:
         postfix:
           type: program
           value:
-            program: ability_modifier
+            program: ability_modifier_string
             parameters:
             - type: reference
-              value: dexterity
+              value: dexterity_modifier
         value:
           name: dexterity
           type: literal
@@ -376,10 +437,10 @@ roleplay:
         postfix:
           type: program
           value:
-            program: ability_modifier
+            program: ability_modifier_string
             parameters:
             - type: reference
-              value: constitution
+              value: constitution_modifier
         value:
           name: constitution
           type: literal
@@ -397,10 +458,10 @@ roleplay:
         postfix:
           type: program
           value:
-            program: ability_modifier
+            program: ability_modifier_string
             parameters:
             - type: reference
-              value: intelligence
+              value: intelligence_modifier
         value:
           name: intelligence
           type: literal
@@ -418,10 +479,10 @@ roleplay:
         postfix:
           type: program
           value:
-            program: ability_modifier
+            program: ability_modifier_string
             parameters:
             - type: reference
-              value: wisdom
+              value: wisdom_modifier
         value:
           name: wisdom
           type: literal
@@ -439,10 +500,10 @@ roleplay:
         postfix:
           type: program
           value:
-            program: ability_modifier
+            program: ability_modifier_string
             parameters:
             - type: reference
-              value: charisma
+              value: charisma_modifier
         value:
           name: charisma
           type: literal
@@ -461,6 +522,7 @@ roleplay:
             label: Proficiency Bonus
         size: medium
         value:
+          name: proficiency_bonus
           type: literal
           value: 6
       - type: number
@@ -638,16 +700,52 @@ roleplay:
           - value:
               type: literal
               value: Acrobatics
-          - null
           - value:
+              type: summation
+              value:
+                terms:
+                - type: literal
+                  value:
+                    type: variable
+                    variable: dexterity_modifier
+                - type: conditional
+                  conditional:
+                    type: variable
+                    variable: acrobatics_is_proficient
+                  when_true:
+                    type: variable
+                    variable: proficiency_bonus
+                  when_false:
+                    type: literal
+                    value: 0
+          - value:
+              name: acrobatics_is_proficient
               type: literal
               value: true
         - cells:
           - value:
               type: literal
               value: Animal Handling
-          - null
           - value:
+              type: summation
+              value:
+                terms:
+                - type: literal
+                  value:
+                    type: variable
+                    variable: wisdom_modifier
+                - type: conditional
+                  conditional:
+                    type: variable
+                    variable: animal_handling_is_proficient
+                  when_true:
+                    type: variable
+                    variable: proficiency_bonus
+                  when_false:
+                    type: literal
+                    value: 0
+          - value:
+              name: animal_handling_is_proficient
               type: literal
               value: false
         - cells:

@@ -107,9 +107,8 @@ public class ModelQuery
                         columnValue = SQLValue.newNull();
                         break;
                     default:
-                        throw new DatabaseException(
-                                new NullColumnTypeError(this.tableName, this.columnNames.get(i)),
-                                DatabaseException.ErrorType.NULL_COLUMN_TYPE);
+                        throw DatabaseException.nullColumnType(
+                                new NullColumnTypeError(this.tableName, this.columnNames.get(i)));
                 }
                 resultRow.putSQLValue(columnNames.get(i), columnValue);
             }
@@ -119,8 +118,7 @@ public class ModelQuery
             throw e;
         }
         catch (Exception e) {
-            throw new DatabaseException(new QueryError(this.queryString),
-                                        DatabaseException.ErrorType.QUERY);
+            throw DatabaseException.query(new QueryError(this.queryString));
         }
         // Ensure cursor is closed
         finally {

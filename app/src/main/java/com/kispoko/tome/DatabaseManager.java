@@ -12,6 +12,11 @@ import com.kispoko.tome.rules.programming.program.ProgramIndex;
 import com.kispoko.tome.rules.programming.program.ProgramInvocationParameter;
 import com.kispoko.tome.rules.programming.program.ProgramValue;
 import com.kispoko.tome.rules.programming.program.statement.Parameter;
+import com.kispoko.tome.rules.programming.summation.Summation;
+import com.kispoko.tome.rules.programming.summation.term.BooleanTermValue;
+import com.kispoko.tome.rules.programming.summation.term.ConditionalTerm;
+import com.kispoko.tome.rules.programming.summation.term.IntegerTermValue;
+import com.kispoko.tome.rules.programming.summation.term.LiteralTerm;
 import com.kispoko.tome.rules.programming.variable.BooleanVariable;
 import com.kispoko.tome.rules.programming.variable.NumberVariable;
 import com.kispoko.tome.rules.programming.variable.TextVariable;
@@ -123,6 +128,13 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(Function.class);
             modelClasses.add(FunctionIndex.class);
             modelClasses.add(Tuple.class);
+
+            // ** Summation
+            modelClasses.add(Summation.class);
+            modelClasses.add(LiteralTerm.class);
+            modelClasses.add(ConditionalTerm.class);
+            modelClasses.add(IntegerTermValue.class);
+            modelClasses.add(BooleanTermValue.class);
 
             // ** Variable
             modelClasses.add(TextVariable.class);

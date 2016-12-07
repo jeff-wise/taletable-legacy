@@ -182,7 +182,7 @@ public class TextWidget extends Widget implements Serializable
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
                                     .findViewById(this.displayTextViewId);
-            textView.setText(this.getValue().getValue());
+            textView.setText(this.getValue().value());
         }
 
         this.value.save();
@@ -213,7 +213,7 @@ public class TextWidget extends Widget implements Serializable
         textView.setTypeface(Util.serifFontBold(context));
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-        textView.setText(this.getValue().getValue());
+        textView.setText(this.getValue().value());
 
         textLayout.addView(textView);
 
@@ -324,7 +324,7 @@ public class TextWidget extends Widget implements Serializable
         float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
         editView.setTextSize(valueTextSize);
 
-        editView.setText(this.getValue().getValue());
+        editView.setText(this.getValue().value());
 
         // Define layout structure
         layout.addView(editView);

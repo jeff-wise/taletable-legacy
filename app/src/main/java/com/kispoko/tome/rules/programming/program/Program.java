@@ -121,12 +121,12 @@ public class Program implements Model, Serializable
 
         // ** Statements
         List<Statement>  statements =
-                yaml.atKey("statements").forEach(new Yaml.ForEach<Statement>() {
+                yaml.atMaybeKey("statements").forEach(new Yaml.ForEach<Statement>() {
             @Override
             public Statement forEach(Yaml yaml, int index) throws YamlException {
                 return Statement.fromYaml(yaml);
             }
-        });
+        }, true);
 
         // ** Result Statement
         Statement resultStatement = Statement.fromYaml(yaml.atKey("result_statement"));

@@ -50,9 +50,8 @@ public enum ProgramInvocationParameterType
                     ProgramInvocationParameterType.fromString(enumString);
             return programInvocationParameterType;
         } catch (InvalidDataException e) {
-            throw new DatabaseException(
-                    new com.kispoko.tome.util.database.error.InvalidEnumError(enumString),
-                    DatabaseException.ErrorType.INVALID_ENUM);
+            throw DatabaseException.invalidEnum(
+                    new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
         }
     }
 

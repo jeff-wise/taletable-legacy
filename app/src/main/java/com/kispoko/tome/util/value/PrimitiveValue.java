@@ -8,7 +8,12 @@ import android.text.TextUtils;
 import com.kispoko.tome.rules.programming.program.ProgramInvocationParameterType;
 import com.kispoko.tome.rules.programming.program.ProgramValueType;
 import com.kispoko.tome.rules.programming.program.statement.ParameterType;
-import com.kispoko.tome.rules.programming.variable.VariableKind;
+import com.kispoko.tome.rules.programming.summation.term.BooleanTermValue;
+import com.kispoko.tome.rules.programming.summation.term.IntegerTermValue;
+import com.kispoko.tome.rules.programming.variable.BooleanVariable;
+import com.kispoko.tome.rules.programming.variable.NumberVariable;
+import com.kispoko.tome.rules.programming.variable.TextVariable;
+import com.kispoko.tome.rules.programming.variable.Variable;
 import com.kispoko.tome.rules.refinement.RefinementType;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
@@ -176,7 +181,15 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(VariableKind.class))
+        else if (valueClass.isAssignableFrom(TextVariable.Kind.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(NumberVariable.Kind.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(BooleanVariable.Kind.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -184,14 +197,21 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(IntegerTermValue.Kind.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(BooleanTermValue.Kind.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else
         {
             // value not serializable to
-            throw new DatabaseException(
+            throw DatabaseException.valueNotSerializable(
                     new ValueNotSerializableError(
                             ValueNotSerializableError.Type.UNKNOWN_SQL_REPRESENTATION,
-                            this.valueClass.getName()),
-                    DatabaseException.ErrorType.VALUE_NOT_SERIALIZABLE);
+                            this.valueClass.getName()));
         }
     }
 
@@ -299,9 +319,29 @@ public class PrimitiveValue<A> extends Value<A>
             String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof VariableKind)
+        else if (this.getValue() instanceof TextVariable.Kind)
         {
-            String enumString = ((VariableKind) this.getValue()).name().toLowerCase();
+            String enumString = ((TextVariable.Kind) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof NumberVariable.Kind)
+        {
+            String enumString = ((NumberVariable.Kind) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof BooleanVariable.Kind)
+        {
+            String enumString = ((BooleanVariable.Kind) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof IntegerTermValue.Kind)
+        {
+            String enumString = ((IntegerTermValue.Kind) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof BooleanTermValue.Kind)
+        {
+            String enumString = ((BooleanTermValue.Kind) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof ProgramInvocationParameterType)
@@ -312,11 +352,9 @@ public class PrimitiveValue<A> extends Value<A>
         }
         else
         {
-            // value not serializable to
-            throw new DatabaseException(
+            throw DatabaseException.valueNotSerializable(
                     new ValueNotSerializableError(ValueNotSerializableError.Type.TO,
-                                                  this.getValue().getClass().getName()),
-                    DatabaseException.ErrorType.VALUE_NOT_SERIALIZABLE);
+                                                  this.getValue().getClass().getName()));
         }
     }
 
@@ -420,10 +458,30 @@ public class PrimitiveValue<A> extends Value<A>
             CellAlignment cellAlignment = CellAlignment.fromSQLValue(sqlValue);
             this.setValue((A) cellAlignment);
         }
-        else if (this.valueClass.isAssignableFrom(VariableKind.class))
+        else if (this.valueClass.isAssignableFrom(TextVariable.Kind.class))
         {
-            VariableKind variableKind = VariableKind.fromSQLValue(sqlValue);
-            this.setValue((A) variableKind);
+            TextVariable.Kind kind = TextVariable.Kind.fromSQLValue(sqlValue);
+            this.setValue((A) kind);
+        }
+        else if (this.valueClass.isAssignableFrom(NumberVariable.Kind.class))
+        {
+            NumberVariable.Kind kind = NumberVariable.Kind.fromSQLValue(sqlValue);
+            this.setValue((A) kind);
+        }
+        else if (this.valueClass.isAssignableFrom(BooleanVariable.Kind.class))
+        {
+            BooleanVariable.Kind kind = BooleanVariable.Kind.fromSQLValue(sqlValue);
+            this.setValue((A) kind);
+        }
+        else if (this.valueClass.isAssignableFrom(IntegerTermValue.Kind.class))
+        {
+            IntegerTermValue.Kind kind = IntegerTermValue.Kind.fromSQLValue(sqlValue);
+            this.setValue((A) kind);
+        }
+        else if (this.valueClass.isAssignableFrom(BooleanTermValue.Kind.class))
+        {
+            BooleanTermValue.Kind kind = BooleanTermValue.Kind.fromSQLValue(sqlValue);
+            this.setValue((A) kind);
         }
         else if (this.valueClass.isAssignableFrom(ProgramInvocationParameterType.class))
         {
@@ -448,10 +506,9 @@ public class PrimitiveValue<A> extends Value<A>
         }
         else
         {
-            throw new DatabaseException(
+            throw DatabaseException.valueNotSerializable(
                     new ValueNotSerializableError(ValueNotSerializableError.Type.FROM,
-                                                  valueClass.getName()),
-                    DatabaseException.ErrorType.VALUE_NOT_SERIALIZABLE);
+                                                  valueClass.getName()));
         }
     }
 

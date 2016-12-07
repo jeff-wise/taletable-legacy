@@ -5,9 +5,13 @@ package com.kispoko.tome.rules.programming.variable;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -30,6 +34,25 @@ public class VariableIndex implements Serializable
     public VariableIndex()
     {
         this.variableByName = new HashMap<>();
+    }
+
+
+    /**
+     * Parse the free variables, which add themselves to the index along with the variables from
+     * the other application components.
+     * @param yaml The yaml parser
+     * @throws YamlException
+     */
+    public static void fromYaml(Yaml yaml)
+                  throws YamlException
+    {
+        yaml.forEach(new Yaml.ForEach<Void>() {
+            @Override
+            public Void forEach(Yaml yaml, int index) throws YamlException {
+                VariableUnion.fromYaml(yaml);
+                return null;
+            }
+        }, true);
     }
 
 
@@ -68,6 +91,12 @@ public class VariableIndex implements Serializable
     public VariableUnion variableWithName(String name)
     {
         return this.variableByName.get(name);
+    }
+
+
+    public boolean hasVariable(String variableName)
+    {
+        return this.variableByName.containsKey(variableName);
     }
 
 }

@@ -38,11 +38,6 @@ public class SQLValue
     public static SQLValue newInteger(Long sqlInteger)
                   throws DatabaseException
     {
-//        if (sqlInteger == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.INTEGER, ErrorType.NULL),
-//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-//        }
-
         return new SQLValue(sqlInteger, Type.INTEGER);
     }
 
@@ -50,11 +45,6 @@ public class SQLValue
     public static SQLValue newReal(Double sqlReal)
                   throws DatabaseException
     {
-//        if (sqlReal == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.REAL, ErrorType.NULL),
-//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-//        }
-
         return new SQLValue(sqlReal, Type.REAL);
     }
 
@@ -62,11 +52,6 @@ public class SQLValue
     public static SQLValue newText(String sqlText)
                   throws DatabaseException
     {
-//        if (sqlText == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.TEXT, ErrorType.NULL),
-//                    DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-//        }
-
         return new SQLValue(sqlText, Type.TEXT);
     }
 
@@ -74,11 +59,6 @@ public class SQLValue
     public static SQLValue newBlob(byte[] sqlBlob)
                   throws DatabaseException
     {
-//        if (sqlBlob == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.BLOB, ErrorType.NULL),
-//                    DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-//        }
-
         return new SQLValue(sqlBlob, Type.BLOB);
     }
 
@@ -101,16 +81,11 @@ public class SQLValue
     public Long getInteger()
            throws DatabaseException
     {
-//        if (this.value == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.INTEGER, ErrorType.NULL),
-//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-//        }
-
         try {
             return (Long) this.value;
         } catch (ClassCastException e ) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.INTEGER, this.type),
-                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+            throw DatabaseException.unexpectedSQLType(
+                    new UnexpectedSQLTypeError(Type.INTEGER, this.type));
         }
     }
 
@@ -118,16 +93,11 @@ public class SQLValue
     public Double getReal()
            throws DatabaseException
     {
-//        if (this.value == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.REAL, ErrorType.NULL),
-//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-//        }
-
         try {
             return (Double) this.value;
         } catch (ClassCastException e ) {
-            throw new DatabaseException(new UnexpectedSQLTypeError(Type.REAL, this.type),
-                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
+            throw DatabaseException.unexpectedSQLType(
+                    new UnexpectedSQLTypeError(Type.REAL, this.type));
         }
     }
 
@@ -135,11 +105,6 @@ public class SQLValue
     public String getText()
            throws DatabaseException
     {
-//        if (this.value == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.TEXT, ErrorType.NULL),
-//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-//        }
-
         return (String) this.value;
     }
 
@@ -147,11 +112,6 @@ public class SQLValue
     public byte[] getBlob()
            throws DatabaseException
     {
-//        if (this.value == null) {
-//            throw new DatabaseException(new UnexpectedSQLTypeError(ErrorType.BLOB, ErrorType.NULL),
-//                                        DatabaseException.ErrorType.UNEXPECTED_SQL_TYPE);
-//        }
-
         return (byte[]) this.value;
     }
 

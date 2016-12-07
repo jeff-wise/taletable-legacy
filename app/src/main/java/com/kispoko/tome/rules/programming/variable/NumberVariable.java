@@ -2,19 +2,27 @@
 package com.kispoko.tome.rules.programming.variable;
 
 
+import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.rules.programming.program.ProgramInvocation;
+import com.kispoko.tome.rules.programming.program.ProgramValueType;
+import com.kispoko.tome.rules.programming.summation.Summation;
+import com.kispoko.tome.rules.programming.summation.SummationException;
 import com.kispoko.tome.rules.refinement.RefinementId;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.util.EnumUtils;
+import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-import static com.kispoko.tome.rules.programming.variable.VariableKind.PROGRAM;
+import static android.R.attr.type;
 
 
 /**
@@ -22,7 +30,6 @@ import static com.kispoko.tome.rules.programming.variable.VariableKind.PROGRAM;
  */
 public class NumberVariable implements Model, Variable, Serializable
 {
-
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
@@ -32,8 +39,9 @@ public class NumberVariable implements Model, Variable, Serializable
 
     private PrimitiveValue<Integer>       integerValue;
     private ModelValue<ProgramInvocation> programInvocationValue;
+    private ModelValue<Summation>         summation;
 
-    private PrimitiveValue<VariableKind>  kind;
+    private PrimitiveValue<Kind>          kind;
 
     private ModelValue<RefinementId>      refinementId;
 
@@ -55,8 +63,9 @@ public class NumberVariable implements Model, Variable, Serializable
 
         this.integerValue           = new PrimitiveValue<>(null, Integer.class);
         this.programInvocationValue = ModelValue.empty(ProgramInvocation.class);
+        this.summation              = ModelValue.empty(Summation.class);
 
-        this.kind                   = new PrimitiveValue<>(null, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(null, Kind.class);
 
         this.refinementId           = ModelValue.empty(RefinementId.class);
 
@@ -69,12 +78,12 @@ public class NumberVariable implements Model, Variable, Serializable
      * constructors, so only valid value/type associations can be used.
      * @param id The Model id.
      * @param value The Variable value.
-     * @param type The Variable type.
+     * @param kind The Number Variable kind.
      */
     private NumberVariable(UUID id,
                            String name,
                            Object value,
-                           VariableKind type,
+                           Kind kind,
                            RefinementId refinementId)
     {
         this.id                     = id;
@@ -83,19 +92,23 @@ public class NumberVariable implements Model, Variable, Serializable
 
         this.integerValue           = new PrimitiveValue<>(null, Integer.class);
         this.programInvocationValue = ModelValue.full(null, ProgramInvocation.class);
+        this.summation              = ModelValue.full(null, Summation.class);
 
-        this.kind                   = new PrimitiveValue<>(type, VariableKind.class);
+        this.kind                   = new PrimitiveValue<>(kind, Kind.class);
 
         this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
 
         // Set value according to variable type
-        switch (type)
+        switch (kind)
         {
             case LITERAL:
                 this.integerValue.setValue((Integer) value);
                 break;
             case PROGRAM:
                 this.programInvocationValue.setValue((ProgramInvocation) value);
+                break;
+            case SUMMATION:
+                this.summation.setValue((Summation) value);
                 break;
         }
 
@@ -114,7 +127,7 @@ public class NumberVariable implements Model, Variable, Serializable
                                            Integer integerValue,
                                            RefinementId refinementId)
     {
-        return new NumberVariable(id, name, integerValue, VariableKind.LITERAL, refinementId);
+        return new NumberVariable(id, name, integerValue, Kind.LITERAL, refinementId);
     }
 
 
@@ -129,7 +142,22 @@ public class NumberVariable implements Model, Variable, Serializable
                                            ProgramInvocation programInvocation,
                                            RefinementId refinementId)
     {
-        return new NumberVariable(id, name, programInvocation, PROGRAM, refinementId);
+        return new NumberVariable(id, name, programInvocation, Kind.PROGRAM, refinementId);
+    }
+
+
+    /**
+     * Create the "summation" case.
+     * @param id The Model id.
+     * @param summation The summation.
+     * @return The new number variable as a summation.
+     */
+    public static NumberVariable asSummation(UUID id,
+                                             String name,
+                                             Summation summation,
+                                             RefinementId refinementId)
+    {
+        return new NumberVariable(id, name, summation, Kind.SUMMATION, refinementId);
     }
 
 
@@ -147,10 +175,10 @@ public class NumberVariable implements Model, Variable, Serializable
 
         UUID         id           = UUID.randomUUID();
         String       name         = yaml.atMaybeKey("name").getString();
-        VariableKind type         = VariableKind.fromYaml(yaml.atKey("type"));
+        Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
 
-        switch (type)
+        switch (kind)
         {
             case LITERAL:
                 Integer integerValue  = yaml.atKey("value").getInteger();
@@ -158,6 +186,9 @@ public class NumberVariable implements Model, Variable, Serializable
             case PROGRAM:
                 ProgramInvocation invocation = ProgramInvocation.fromYaml(yaml.atKey("value"));
                 return NumberVariable.asProgram(id, name, invocation, refinementId);
+            case SUMMATION:
+                Summation summation = Summation.fromYaml(yaml.atKey("value"));
+                return NumberVariable.asSummation(id, name, summation, refinementId);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
@@ -219,15 +250,6 @@ public class NumberVariable implements Model, Variable, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Kind
-    // ------------------------------------------------------------------------------------------
-
-    public VariableKind getKind()
-    {
-        return this.kind.getValue();
-    }
-
-
     // ** Value
     // ------------------------------------------------------------------------------------------
 
@@ -237,13 +259,17 @@ public class NumberVariable implements Model, Variable, Serializable
      */
     public void setValue(Integer newValue)
     {
-        switch (this.getKind())
+        switch (this.kind.getValue())
         {
             case LITERAL:
                 this.integerValue.setValue(newValue);
                 break;
             case PROGRAM:
-                this.reactiveValue.setValue(newValue);
+                // Do Nothing?
+                //this.reactiveValue.setValue(newValue);
+                break;
+            case SUMMATION:
+                // Do Nothing?
                 break;
         }
     }
@@ -253,14 +279,17 @@ public class NumberVariable implements Model, Variable, Serializable
      * Get the number variable's integer value.
      * @return The integer value.
      */
-    public Integer getValue()
+    public Integer value()
+           throws SummationException
     {
-        switch (this.getKind())
+        switch (this.kind.getValue())
         {
             case LITERAL:
                 return this.integerValue.getValue();
             case PROGRAM:
-                return this.reactiveValue.getValue();
+                return this.reactiveValue.value();
+            case SUMMATION:
+                return this.summation.getValue().value();
         }
 
         return null;
@@ -299,7 +328,7 @@ public class NumberVariable implements Model, Variable, Serializable
             SheetManager.registerVariable(this);
 
         // ** Reaction Value (if program variable)
-        if (this.getKind() == VariableKind.PROGRAM) {
+        if (this.kind.getValue() == Kind.PROGRAM) {
             this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
                                                      VariableType.NUMBER);
         }
@@ -307,5 +336,53 @@ public class NumberVariable implements Model, Variable, Serializable
             this.reactiveValue = null;
         }
     }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    public enum Kind
+    {
+        LITERAL,
+        PROGRAM,
+        SUMMATION;
+
+
+        public static Kind fromString(String kindString)
+                      throws InvalidDataException
+        {
+            return EnumUtils.fromString(Kind.class, kindString);
+        }
+
+
+        public static Kind fromYaml(Yaml yaml)
+                      throws YamlException
+        {
+            String kindString = yaml.getString();
+            try {
+                return Kind.fromString(kindString);
+            } catch (InvalidDataException e) {
+                throw YamlException.invalidEnum(new InvalidEnumError(kindString));
+            }
+        }
+
+
+        public static Kind fromSQLValue(SQLValue sqlValue)
+                      throws DatabaseException
+        {
+            String enumString = "";
+            try {
+                enumString = sqlValue.getText();
+                Kind kind = Kind.fromString(enumString);
+                return kind;
+            } catch (InvalidDataException e) {
+                throw DatabaseException.invalidEnum(
+                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
+            }
+        }
+
+    }
+
+
 
 }

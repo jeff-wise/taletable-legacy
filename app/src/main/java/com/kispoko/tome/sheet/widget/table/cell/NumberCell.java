@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.rules.programming.summation.SummationException;
 import com.kispoko.tome.rules.programming.variable.NumberVariable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
@@ -157,7 +159,13 @@ public class NumberCell implements Model
 
         // > Set value
         // --------------------------------------------------------------------------------------
-        Integer value = this.value.getValue().getValue();
+        Integer value = null;
+        try {
+            value = this.value.getValue().value();
+        } catch (SummationException exception) {
+            ApplicationFailure.summation(exception);
+        }
+
         if (value != null)
             view.setText(Integer.toString(value));
         else

@@ -3,11 +3,14 @@ package com.kispoko.tome.util.database;
 
 
 import com.kispoko.tome.util.database.error.ColumnDoesNotExistError;
+import com.kispoko.tome.util.database.error.InvalidEnumError;
 import com.kispoko.tome.util.database.error.NullColumnTypeError;
+import com.kispoko.tome.util.database.error.NullFunctorError;
 import com.kispoko.tome.util.database.error.QueryError;
+import com.kispoko.tome.util.database.error.SerializationError;
 import com.kispoko.tome.util.database.error.UnexpectedSQLTypeError;
 import com.kispoko.tome.util.database.error.ValueNotSerializableError;
-import com.kispoko.tome.util.yaml.error.InvalidEnumError;
+
 
 
 /**
@@ -26,13 +29,58 @@ public class DatabaseException extends Exception
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public DatabaseException() { }
-
-
-    public DatabaseException(Object error, ErrorType errorType)
+    private DatabaseException(Object error, ErrorType errorType)
     {
         this.error     = error;
         this.errorType = errorType;
+    }
+
+
+    public static DatabaseException valueNotSerializable(ValueNotSerializableError error)
+    {
+        return new DatabaseException(error, ErrorType.VALUE_NOT_SERIALIZABLE);
+    }
+
+
+    public static DatabaseException unexpectedSQLType(UnexpectedSQLTypeError error)
+    {
+        return new DatabaseException(error, ErrorType.UNEXPECTED_SQL_TYPE);
+    }
+
+
+    public static DatabaseException columnDoesNotExist(ColumnDoesNotExistError error)
+    {
+        return new DatabaseException(error, ErrorType.COLUMN_DOES_NOT_EXIST);
+    }
+
+
+    public static DatabaseException nullColumnType(NullColumnTypeError error)
+    {
+        return new DatabaseException(error, ErrorType.NULL_COLUMN_TYPE);
+    }
+
+
+    public static DatabaseException nullFunctor(NullFunctorError error)
+    {
+        return new DatabaseException(error, ErrorType.NULL_FUNCTOR);
+    }
+
+
+    public static DatabaseException invalidEnum(InvalidEnumError error)
+    {
+        return new DatabaseException(error, ErrorType.INVALID_ENUM);
+    }
+
+
+    public static DatabaseException serialization(SerializationError error)
+    {
+        return new DatabaseException(error, ErrorType.SERIALIZATION);
+    }
+
+
+    public static DatabaseException query(QueryError error)
+    {
+        return new DatabaseException(error, ErrorType.QUERY);
     }
 
 
@@ -42,40 +90,6 @@ public class DatabaseException extends Exception
     // > Errors
     // -----------------------------------------------------------------------------------------
 
-    public ValueNotSerializableError getValueNotSerializableError()
-    {
-        return (ValueNotSerializableError) this.error;
-    }
-
-
-    public UnexpectedSQLTypeError getUnexpectedSQLTypeError()
-    {
-        return (UnexpectedSQLTypeError) this.error;
-    }
-
-
-    public ColumnDoesNotExistError getColumnDoesNotExistError()
-    {
-        return (ColumnDoesNotExistError) this.error;
-    }
-
-
-    public NullColumnTypeError getNullColumnTypeError()
-    {
-        return (NullColumnTypeError) this.error;
-    }
-
-
-    public InvalidEnumError getInvalidEnumError()
-    {
-        return (InvalidEnumError) this.error;
-    }
-
-
-    public QueryError getQueryError()
-    {
-        return (QueryError) this.error;
-    }
 
 
     // > Error Message
@@ -90,22 +104,28 @@ public class DatabaseException extends Exception
         switch (this.errorType)
         {
             case VALUE_NOT_SERIALIZABLE:
-                errorBuilder.append(this.getValueNotSerializableError().errorMessage());
+                errorBuilder.append(((ValueNotSerializableError) this.error).errorMessage());
                 break;
             case UNEXPECTED_SQL_TYPE:
-                errorBuilder.append(this.getUnexpectedSQLTypeError().errorMessage());
+                errorBuilder.append(((UnexpectedSQLTypeError) this.error).errorMessage());
                 break;
             case COLUMN_DOES_NOT_EXIST:
-                errorBuilder.append(this.getColumnDoesNotExistError().errorMessage());
+                errorBuilder.append(((ColumnDoesNotExistError) this.error).errorMessage());
                 break;
             case NULL_COLUMN_TYPE:
-                errorBuilder.append(this.getNullColumnTypeError().errorMessage());
+                errorBuilder.append(((NullColumnTypeError) this.error).errorMessage());
+                break;
+            case NULL_FUNCTOR:
+                errorBuilder.append(((NullFunctorError) this.error).errorMessage());
                 break;
             case INVALID_ENUM:
-                errorBuilder.append(this.getInvalidEnumError().errorMessage());
+                errorBuilder.append(((InvalidEnumError) this.error).errorMessage());
+                break;
+            case SERIALIZATION:
+                errorBuilder.append(((SerializationError) this.error).errorMessage());
                 break;
             case QUERY:
-                errorBuilder.append(this.getQueryError().errorMessage());
+                errorBuilder.append(((QueryError) this.error).errorMessage());
                 break;
         }
 
@@ -122,7 +142,9 @@ public class DatabaseException extends Exception
         UNEXPECTED_SQL_TYPE,
         COLUMN_DOES_NOT_EXIST,
         NULL_COLUMN_TYPE,
+        NULL_FUNCTOR,
         INVALID_ENUM,
+        SERIALIZATION,
         QUERY
     }
 

@@ -5,6 +5,9 @@ package com.kispoko.tome.rules.programming.variable;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.rules.programming.summation.term.BooleanTermValue;
+import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 
@@ -63,6 +66,28 @@ public class VariableUnion implements Serializable
     public static VariableUnion asBoolean(BooleanVariable booleanVariable)
     {
         return new VariableUnion(booleanVariable, VariableType.BOOLEAN);
+    }
+
+
+    public static VariableUnion fromYaml(Yaml yaml)
+                  throws YamlException
+    {
+        VariableType type = VariableType.fromYaml(yaml.atKey("type"));
+
+        switch (type)
+        {
+            case TEXT:
+                TextVariable textVariable = TextVariable.fromYaml(yaml.atKey("value"));
+                return VariableUnion.asText(textVariable);
+            case NUMBER:
+                NumberVariable numberVariable = NumberVariable.fromYaml(yaml.atKey("value"));
+                return VariableUnion.asNumber(numberVariable);
+            case BOOLEAN:
+                BooleanVariable booleanVariable = BooleanVariable.fromYaml(yaml.atKey("value"));
+                return VariableUnion.asBoolean(booleanVariable);
+        }
+
+        return null;
     }
 
 

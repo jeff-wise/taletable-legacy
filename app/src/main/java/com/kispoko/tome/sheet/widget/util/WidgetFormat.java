@@ -337,9 +337,8 @@ public class WidgetFormat implements Model, Serializable
                 Alignment alignment = Alignment.fromString(enumString);
                 return alignment;
             } catch (InvalidDataException e) {
-                throw new DatabaseException(
-                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString),
-                        DatabaseException.ErrorType.INVALID_ENUM);
+                throw DatabaseException.invalidEnum(
+                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
             }
         }
 
@@ -390,9 +389,8 @@ public class WidgetFormat implements Model, Serializable
                 Size size = Size.fromString(enumString);
                 return size;
             } catch (InvalidDataException e) {
-                throw new DatabaseException(
-                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString),
-                        DatabaseException.ErrorType.INVALID_ENUM);
+                throw DatabaseException.invalidEnum(
+                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
             }
         }
 

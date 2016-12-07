@@ -161,7 +161,7 @@ public class TextCell implements Model
 
         // > Set value
         // --------------------------------------------------------------------------------------
-        String value = this.value.getValue().getValue();
+        String value = this.value.getValue().value();
         if (value != null)
             view.setText(value);
         else

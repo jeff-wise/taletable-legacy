@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
+import com.kispoko.tome.util.database.error.NullFunctorError;
+import com.kispoko.tome.util.database.error.SerializationError;
 import com.kispoko.tome.util.database.query.CollectionQuery;
 import com.kispoko.tome.util.database.query.ModelQuery;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
@@ -675,6 +677,12 @@ public class ModelLib
                 }
                 else if (ModelValue.class.isAssignableFrom(field.getType())) {
                     ModelValue<? extends Model> modelValue = (ModelValue<? extends Model>) value;
+
+                    if (modelValue == null) {
+                        throw DatabaseException.nullFunctor(
+                                new NullFunctorError(model.getClass().getName(), field.getName()));
+                    }
+
                     modelValue.setField(field);
                     modelValues.add(modelValue);
                 }
@@ -688,7 +696,8 @@ public class ModelLib
         }
         catch (IllegalAccessException e)
         {
-            throw new DatabaseException();
+            throw DatabaseException.serialization(
+                    new SerializationError(model.getClass().getName()));
         }
 
         return new Tuple3<>(primitiveValues, modelValues, collectionValues);
@@ -750,7 +759,8 @@ public class ModelLib
             model = classObject.newInstance();
         }
         catch (Exception e) {
-            throw new DatabaseException();
+            throw DatabaseException.serialization(
+                    new SerializationError(classObject.getName()));
         }
         return model;
     }

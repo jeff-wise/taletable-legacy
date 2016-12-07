@@ -9,8 +9,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.rules.programming.summation.SummationException;
 import com.kispoko.tome.rules.programming.variable.NumberVariable;
 import com.kispoko.tome.rules.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.SheetManager;
@@ -218,7 +220,13 @@ public class NumberWidget extends Widget implements Serializable
         textView.setTypeface(Util.serifFontBold(context));
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-        Integer integerValue = this.getValue().getValue();
+        Integer integerValue = null;
+        try {
+            integerValue = this.getValue().value();
+        } catch (SummationException exception) {
+            ApplicationFailure.summation(exception);
+        }
+
         if (integerValue != null)
             textView.setText(Integer.toString(integerValue));
         else
@@ -233,7 +241,7 @@ public class NumberWidget extends Widget implements Serializable
             postfixView.setTypeface(Util.serifFontBold(context));
             postfixView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-            String postfixValue = this.getPostfix().getValue();
+            String postfixValue = this.getPostfix().value();
             postfixView.setText(postfixValue);
 
             contentLayout.addView(postfixView);

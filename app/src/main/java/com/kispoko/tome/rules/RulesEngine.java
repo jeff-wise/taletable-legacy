@@ -19,7 +19,7 @@ import java.util.UUID;
 
 
 /**
- * RulesEngine Engine
+ * Rules Engine
  */
 public class RulesEngine implements Model, Serializable
 {
@@ -86,6 +86,8 @@ public class RulesEngine implements Model, Serializable
         RefinementIndex refinementIndex = RefinementIndex.fromYaml(yaml.atKey("refinements"));
         ProgramIndex    programIndex    = ProgramIndex.fromYaml(yaml.atKey("programs"));
         FunctionIndex   functionIndex   = FunctionIndex.fromYaml(yaml.atKey("functions"));
+
+        VariableIndex.fromYaml(yaml.atKey("variables"));
 
         return new RulesEngine(id, refinementIndex, programIndex, functionIndex);
     }

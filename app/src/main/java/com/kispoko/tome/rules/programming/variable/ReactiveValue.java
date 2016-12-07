@@ -12,6 +12,7 @@ import com.kispoko.tome.sheet.SheetManager;
 import java.io.Serializable;
 
 
+
 /**
  * Reactive Value
  *
@@ -51,7 +52,7 @@ public class ReactiveValue<A> implements Serializable
     // ------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public A getValue()
+    public A value()
     {
         if (this.currentValue == null) {
             Interpreter interpreter = SheetManager.currentSheet().getRulesEngine().getInterpreter();

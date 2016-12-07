@@ -2,8 +2,8 @@
 package com.kispoko.tome.rules.programming.interpreter;
 
 
-import android.util.Log;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.rules.programming.builtin.BuiltInFunction;
 import com.kispoko.tome.rules.programming.builtin.BuiltInFunctionException;
 import com.kispoko.tome.rules.programming.interpreter.error.FunctionNotFoundError;
@@ -20,6 +20,7 @@ import com.kispoko.tome.rules.programming.program.ProgramInvocationParameter;
 import com.kispoko.tome.rules.programming.program.ProgramValue;
 import com.kispoko.tome.rules.programming.program.statement.Parameter;
 import com.kispoko.tome.rules.programming.program.statement.Statement;
+import com.kispoko.tome.rules.programming.summation.SummationException;
 import com.kispoko.tome.rules.programming.variable.VariableIndex;
 import com.kispoko.tome.rules.programming.variable.VariableUnion;
 import com.kispoko.tome.util.tuple.Tuple2;
@@ -122,15 +123,19 @@ public class Interpreter implements Serializable
                     {
                         case TEXT:
                             programValue = ProgramValue.asString(
-                                                    variableUnion.getText().getValue());
+                                                    variableUnion.getText().value());
                             break;
                         case NUMBER:
-                            programValue = ProgramValue.asInteger(
-                                                    variableUnion.getNumber().getValue());
+                            try {
+                                programValue = ProgramValue.asInteger(
+                                                    variableUnion.getNumber().value());
+                            } catch (SummationException exception) {
+                                ApplicationFailure.summation(exception);
+                            }
                             break;
                         case BOOLEAN:
                             programValue = ProgramValue.asBoolean(
-                                                    variableUnion.getBoolean().getValue());
+                                                    variableUnion.getBoolean().value());
                             break;
                     }
 
@@ -139,10 +144,9 @@ public class Interpreter implements Serializable
             }
         }
 
-
         return new Tuple2<>(program, parameters);
-
     }
+
 
     private ProgramValue evaluateProgram(Program program, List<ProgramValue> parameters)
             throws InterpreterException

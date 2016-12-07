@@ -58,9 +58,8 @@ public enum CellAlignment
             CellAlignment cellAlignment = CellAlignment.fromString(enumString);
             return cellAlignment;
         } catch (InvalidDataException e) {
-            throw new DatabaseException(
-                    new com.kispoko.tome.util.database.error.InvalidEnumError(enumString),
-                    DatabaseException.ErrorType.INVALID_ENUM);
+            throw DatabaseException.invalidEnum(
+                    new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
         }
     }
 
