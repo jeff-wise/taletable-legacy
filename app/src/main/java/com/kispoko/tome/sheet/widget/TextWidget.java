@@ -18,14 +18,15 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.EditActivity;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.rules.RulesEngine;
-import com.kispoko.tome.rules.programming.variable.TextVariable;
+import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.engine.programming.variable.TextVariable;
+import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;
-import com.kispoko.tome.rules.refinement.MemberOf;
+import com.kispoko.tome.engine.refinement.MemberOf;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.ModelValue;
@@ -57,7 +58,7 @@ public class TextWidget extends Widget implements Serializable
 
     // > Internal
     // ------------------------------------------------------------------------------------------
-    private int                               displayTextViewId;
+    private Integer                           displayTextViewId;
 
 
     // CONSTRUCTORS
@@ -80,6 +81,8 @@ public class TextWidget extends Widget implements Serializable
         this.widgetData = ModelValue.full(widgetData, WidgetData.class);
         this.value      = ModelValue.full(value, TextVariable.class);
         this.size       = new PrimitiveValue<>(size, WidgetFormat.Size.class);
+
+        initialize();
     }
 
 
@@ -128,7 +131,10 @@ public class TextWidget extends Widget implements Serializable
     /**
      * This method is called when the Text Widget is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        initialize();
+    }
 
 
     // > Widget
@@ -169,7 +175,7 @@ public class TextWidget extends Widget implements Serializable
      * Get the TextWidget's value variable.
      * @return The Variable for the TextWidget value.
      */
-    public TextVariable getValue()
+    public TextVariable value()
     {
         return this.value.getValue();
     }
@@ -177,12 +183,12 @@ public class TextWidget extends Widget implements Serializable
 
     public void setValue(String stringValue, Context context)
     {
-        this.getValue().setValue(stringValue);
+        this.value().setValue(stringValue);
 
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
                                     .findViewById(this.displayTextViewId);
-            textView.setText(this.getValue().value());
+            textView.setText(this.value().value());
         }
 
         this.value.save();
@@ -213,7 +219,7 @@ public class TextWidget extends Widget implements Serializable
         textView.setTypeface(Util.serifFontBold(context));
         textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
 
-        textView.setText(this.getValue().value());
+        textView.setText(this.value().value());
 
         textLayout.addView(textView);
 
@@ -223,7 +229,7 @@ public class TextWidget extends Widget implements Serializable
 
     public View getEditorView(Context context, RulesEngine rulesEngine)
     {
-        if (this.getValue().hasRefinement())
+        if (this.value().hasRefinement())
             return this.getTypeEditorView(context, rulesEngine);
         // No type is set, so allow free form edit
         else
@@ -240,7 +246,7 @@ public class TextWidget extends Widget implements Serializable
 
         // Create adapter passing in the sample user data
         MemberOf memberOf = rulesEngine.getRefinementIndex()
-                                 .memberOfWithName(this.getValue().getRefinementId().getName());
+                                 .memberOfWithName(this.value().getRefinementId().getName());
         TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
         textEditorView.setAdapter(adapter);
         // Set layout manager to position the items
@@ -324,7 +330,7 @@ public class TextWidget extends Widget implements Serializable
         float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
         editView.setTextSize(valueTextSize);
 
-        editView.setText(this.getValue().value());
+        editView.setText(this.value().value());
 
         // Define layout structure
         layout.addView(editView);
@@ -334,5 +340,43 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the text widget state.
+     */
+    private void initialize()
+    {
+        this.displayTextViewId = null;
+
+        if (!this.value().isNull())
+        {
+            this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onValueUpdate();
+                }
+            });
+        }
+    }
+
+
+    /**
+     * When the text widget's value is updated.
+     */
+    private void onValueUpdate()
+    {
+        if (this.displayTextViewId != null && !this.value.isNull())
+        {
+            Activity activity = (Activity) SheetManager.currentSheetContext();
+            TextView textView = (TextView) activity.findViewById(this.displayTextViewId);
+
+            String value = this.value().value();
+
+            if (value != null)
+                textView.setText(value);
+        }
+    }
 
 }

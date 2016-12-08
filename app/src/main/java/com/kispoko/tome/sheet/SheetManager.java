@@ -9,7 +9,6 @@ import android.util.Log;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.exception.TemplateFileException;
-import com.kispoko.tome.rules.programming.variable.Variable;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.sql.Function;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -37,10 +37,6 @@ public class SheetManager
     private static ModelValue<Sheet> currentSheet;
 
     private static Context           currentSheetContext;
-
-
-    // > Data Queues
-    private static List<Variable>    variableQueue;
 
 
     // API
@@ -106,7 +102,6 @@ public class SheetManager
                     Sheet templateSheet = (Sheet) maybeSheet;
 
                     currentSheet = ModelValue.full(templateSheet, Sheet.class);
-                    addVariablesToSheet(currentSheet.getValue());
                     currentSheetContext = context;
 
                     currentSheet.save(new ModelValue.OnSaveListener()
@@ -140,7 +135,6 @@ public class SheetManager
             {
                 Log.d("***SHEET MANAGER", "on load sheet");
 
-                addVariablesToSheet(value);
                 listener.onSheet(value);
             }
 
@@ -175,35 +169,4 @@ public class SheetManager
         currentSheet.load(queryParameters, null);
     }
 
-
-    /**
-     * This method is used to track variables when a sheet is loaded asynchronously. As variables
-     * are loaded, they register themselves here. When everything is completely loaded, we can
-     * synchronously add all of the variables to the Variable Index.
-     * @param variable The variable to register.
-     */
-    public static void registerVariable(Variable variable)
-    {
-        variableQueue.add(variable);
-    }
-
-
-    /**
-     * Prepare the Sheet Manager for use.
-     */
-    public static void initialize()
-    {
-        variableQueue = new ArrayList<>();
-    }
-
-
-
-    private static void addVariablesToSheet(Sheet sheet)
-    {
-        // Add all of the variables
-        for (Variable variable : variableQueue) {
-            sheet.getRulesEngine().getVariableIndex().addVariable(variable);
-        }
-        variableQueue = new ArrayList<>();
-    }
 }

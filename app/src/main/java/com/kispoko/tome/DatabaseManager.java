@@ -6,28 +6,28 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.kispoko.tome.rules.RulesEngine;
-import com.kispoko.tome.rules.programming.function.FunctionIndex;
-import com.kispoko.tome.rules.programming.program.ProgramIndex;
-import com.kispoko.tome.rules.programming.program.ProgramInvocationParameter;
-import com.kispoko.tome.rules.programming.program.ProgramValue;
-import com.kispoko.tome.rules.programming.program.statement.Parameter;
-import com.kispoko.tome.rules.programming.summation.Summation;
-import com.kispoko.tome.rules.programming.summation.term.BooleanTermValue;
-import com.kispoko.tome.rules.programming.summation.term.ConditionalTerm;
-import com.kispoko.tome.rules.programming.summation.term.IntegerTermValue;
-import com.kispoko.tome.rules.programming.summation.term.LiteralTerm;
-import com.kispoko.tome.rules.programming.variable.BooleanVariable;
-import com.kispoko.tome.rules.programming.variable.NumberVariable;
-import com.kispoko.tome.rules.programming.variable.TextVariable;
-import com.kispoko.tome.rules.programming.function.Function;
-import com.kispoko.tome.rules.programming.function.Tuple;
-import com.kispoko.tome.rules.programming.program.Program;
-import com.kispoko.tome.rules.programming.program.ProgramInvocation;
-import com.kispoko.tome.rules.programming.program.statement.Statement;
+import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.engine.programming.function.FunctionIndex;
+import com.kispoko.tome.engine.programming.program.invocation.Invocation;
+import com.kispoko.tome.engine.programming.program.ProgramIndex;
+import com.kispoko.tome.engine.programming.program.invocation.InvocationParameterUnion;
+import com.kispoko.tome.engine.programming.program.ProgramValueUnion;
+import com.kispoko.tome.engine.programming.program.statement.Parameter;
+import com.kispoko.tome.engine.programming.summation.Summation;
+import com.kispoko.tome.engine.programming.summation.term.BooleanTermValue;
+import com.kispoko.tome.engine.programming.summation.term.ConditionalTerm;
+import com.kispoko.tome.engine.programming.summation.term.IntegerTermValue;
+import com.kispoko.tome.engine.programming.summation.term.LiteralTerm;
+import com.kispoko.tome.engine.programming.variable.BooleanVariable;
+import com.kispoko.tome.engine.programming.variable.NumberVariable;
+import com.kispoko.tome.engine.programming.variable.TextVariable;
+import com.kispoko.tome.engine.programming.function.Function;
+import com.kispoko.tome.engine.programming.function.Tuple;
+import com.kispoko.tome.engine.programming.program.Program;
+import com.kispoko.tome.engine.programming.program.statement.Statement;
 import com.kispoko.tome.game.Game;
-import com.kispoko.tome.rules.refinement.RefinementId;
-import com.kispoko.tome.rules.refinement.RefinementIndex;
+import com.kispoko.tome.engine.refinement.RefinementId;
+import com.kispoko.tome.engine.refinement.RefinementIndex;
 import com.kispoko.tome.sheet.Group;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.Roleplay;
@@ -48,13 +48,14 @@ import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
-import com.kispoko.tome.rules.refinement.MemberOf;
+import com.kispoko.tome.engine.refinement.MemberOf;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.model.ModelLib;
 import com.kispoko.tome.util.database.DatabaseException;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -120,9 +121,9 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(ProgramIndex.class);
             modelClasses.add(Statement.class);
             modelClasses.add(Parameter.class);
-            modelClasses.add(ProgramInvocation.class);
-            modelClasses.add(ProgramInvocationParameter.class);
-            modelClasses.add(ProgramValue.class);
+            modelClasses.add(Invocation.class);
+            modelClasses.add(InvocationParameterUnion.class);
+            modelClasses.add(ProgramValueUnion.class);
 
             // ** Function
             modelClasses.add(Function.class);

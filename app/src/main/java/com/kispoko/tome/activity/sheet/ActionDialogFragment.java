@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.Util;

@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.UI;
@@ -112,7 +112,7 @@ public class EditActivity extends AppCompatActivity
         TextWidget textWidget = (TextWidget) this.widget;
 
         String widgetLabel = this.widget.data().getFormat().getLabel();
-        if (textWidget.getValue().hasRefinement())
+        if (textWidget.value().hasRefinement())
             editActionView.setText("Select a " + widgetLabel);
         else
             editActionView.setText(widgetLabel);

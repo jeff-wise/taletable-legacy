@@ -701,6 +701,7 @@ roleplay:
               type: literal
               value: Acrobatics
           - value:
+              name: acrobatics_bonus
               type: summation
               value:
                 terms:
@@ -727,6 +728,8 @@ roleplay:
               type: literal
               value: Animal Handling
           - value:
+              name: animal_handling_bonus
+              type: summation
               type: summation
               value:
                 terms:

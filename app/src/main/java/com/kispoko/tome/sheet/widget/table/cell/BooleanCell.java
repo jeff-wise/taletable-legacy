@@ -2,14 +2,17 @@
 package com.kispoko.tome.sheet.widget.table.cell;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.programming.variable.BooleanVariable;
+import com.kispoko.tome.engine.programming.variable.BooleanVariable;
+import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.util.model.Model;
@@ -31,10 +34,23 @@ public class BooleanCell implements Model
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
 
     private ModelValue<BooleanVariable>   value;
     private PrimitiveValue<CellAlignment> alignment;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private Integer                       valueViewId;
 
 
     // CONSTRUCTORS
@@ -68,6 +84,8 @@ public class BooleanCell implements Model
 
         // ** Alignment
         this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
+
+        initialize();
     }
 
 
@@ -118,7 +136,10 @@ public class BooleanCell implements Model
     /**
      * This method is called when the Boolean Cell is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        initialize();
+    }
 
 
     // > State
@@ -128,7 +149,7 @@ public class BooleanCell implements Model
      * Get the boolean variable that contains the value of the boolean cell.
      * @return The Number Variable value.
      */
-    public BooleanVariable getValue()
+    public BooleanVariable value()
     {
         return this.value.getValue();
     }
@@ -153,7 +174,7 @@ public class BooleanCell implements Model
 
         final ImageView view = new ImageView(context);
 
-        Boolean value = this.getValue().value();
+        Boolean value = this.value().value();
 
         if (value == null)
             value = column.getDefaultValue();
@@ -175,12 +196,12 @@ public class BooleanCell implements Model
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getValue().value()) {
-                    getValue().setValue(false);
+                if (value().value()) {
+                    value().setValue(false);
                     view.setImageDrawable(
                             ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
                 } else {
-                    getValue().setValue(true);
+                    value().setValue(true);
                     view.setImageDrawable(
                             ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
                 }
@@ -189,6 +210,53 @@ public class BooleanCell implements Model
 
         return view;
     }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the text cell state.
+     */
+    private void initialize()
+    {
+        // [1] Initialize variables with listeners to update the number widget views when the
+        //     values of the variables change
+        // --------------------------------------------------------------------------------------
+
+        this.valueViewId   = null;
+
+        if (!this.value.isNull())
+        {
+            this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onValueUpdate();
+                }
+            });
+        }
+
+    }
+
+
+    /**
+     * When the text widget's value is updated.
+     */
+    private void onValueUpdate()
+    {
+        if (this.valueViewId != null && !this.value.isNull())
+        {
+            Activity activity = (Activity) SheetManager.currentSheetContext();
+            TextView textView = (TextView) activity.findViewById(this.valueViewId);
+
+            Boolean value = this.value().value();
+
+            // TODO can value be null
+            if (value != null)
+                textView.setText(Boolean.toString(value));
+        }
+    }
+
 
 
 }

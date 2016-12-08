@@ -5,16 +5,15 @@ package com.kispoko.tome.util.value;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import com.kispoko.tome.rules.programming.program.ProgramInvocationParameterType;
-import com.kispoko.tome.rules.programming.program.ProgramValueType;
-import com.kispoko.tome.rules.programming.program.statement.ParameterType;
-import com.kispoko.tome.rules.programming.summation.term.BooleanTermValue;
-import com.kispoko.tome.rules.programming.summation.term.IntegerTermValue;
-import com.kispoko.tome.rules.programming.variable.BooleanVariable;
-import com.kispoko.tome.rules.programming.variable.NumberVariable;
-import com.kispoko.tome.rules.programming.variable.TextVariable;
-import com.kispoko.tome.rules.programming.variable.Variable;
-import com.kispoko.tome.rules.refinement.RefinementType;
+import com.kispoko.tome.engine.programming.program.invocation.InvocationParameterType;
+import com.kispoko.tome.engine.programming.program.ProgramValueType;
+import com.kispoko.tome.engine.programming.program.statement.ParameterType;
+import com.kispoko.tome.engine.programming.summation.term.BooleanTermValue;
+import com.kispoko.tome.engine.programming.summation.term.IntegerTermValue;
+import com.kispoko.tome.engine.programming.variable.BooleanVariable;
+import com.kispoko.tome.engine.programming.variable.NumberVariable;
+import com.kispoko.tome.engine.programming.variable.TextVariable;
+import com.kispoko.tome.engine.refinement.RefinementType;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
@@ -193,7 +192,7 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(ProgramInvocationParameterType.class))
+        else if (valueClass.isAssignableFrom(InvocationParameterType.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -344,9 +343,9 @@ public class PrimitiveValue<A> extends Value<A>
             String enumString = ((BooleanTermValue.Kind) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof ProgramInvocationParameterType)
+        else if (this.getValue() instanceof InvocationParameterType)
         {
-            String enumString = ((ProgramInvocationParameterType)
+            String enumString = ((InvocationParameterType)
                                             this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
@@ -483,11 +482,11 @@ public class PrimitiveValue<A> extends Value<A>
             BooleanTermValue.Kind kind = BooleanTermValue.Kind.fromSQLValue(sqlValue);
             this.setValue((A) kind);
         }
-        else if (this.valueClass.isAssignableFrom(ProgramInvocationParameterType.class))
+        else if (this.valueClass.isAssignableFrom(InvocationParameterType.class))
         {
-            ProgramInvocationParameterType programInvocationParameterType =
-                    ProgramInvocationParameterType.fromSQLValue(sqlValue);
-            this.setValue((A) programInvocationParameterType);
+            InvocationParameterType invocationParameterType =
+                    InvocationParameterType.fromSQLValue(sqlValue);
+            this.setValue((A) invocationParameterType);
         }
         else if (this.valueClass.isAssignableFrom(WidgetFormat.Alignment.class))
         {

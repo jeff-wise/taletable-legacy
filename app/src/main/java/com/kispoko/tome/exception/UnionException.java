@@ -51,12 +51,6 @@ public class UnionException extends Exception
     }
 
 
-    public Type getErrorType()
-    {
-        return this.errorType;
-    }
-
-
     public String errorMessage()
     {
         StringBuilder errorBuilder = new StringBuilder();

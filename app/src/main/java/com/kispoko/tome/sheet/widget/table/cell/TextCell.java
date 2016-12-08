@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.table.cell;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -9,7 +10,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.programming.variable.TextVariable;
+import com.kispoko.tome.engine.programming.variable.TextVariable;
+import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.util.Util;
@@ -32,10 +34,23 @@ public class TextCell implements Model
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID                          id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
 
     private ModelValue<TextVariable>      value;
     private PrimitiveValue<CellAlignment> alignment;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private Integer                       valueViewId;
 
 
     // CONSTRUCTORS
@@ -66,6 +81,9 @@ public class TextCell implements Model
 
         // ** Alignment
         this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
+
+        // > Initialize state
+        initialize();
     }
 
 
@@ -115,7 +133,10 @@ public class TextCell implements Model
     /**
      * This method is called when the Text Cell is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        initialize();
+    }
 
 
     // > State
@@ -125,7 +146,7 @@ public class TextCell implements Model
      * Get the value of this text cell which is a text variable.
      * @return The Text Variable value.
      */
-    public TextVariable getValue()
+    public TextVariable value()
     {
         return this.value.getValue();
     }
@@ -149,6 +170,9 @@ public class TextCell implements Model
         Context context = SheetManager.currentSheetContext();
 
         TextView view = new TextView(context);
+
+        this.valueViewId = Util.generateViewId();
+        view.setId(this.valueViewId);
 
         TableRow.LayoutParams layoutParams =
                 new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
@@ -175,5 +199,52 @@ public class TextCell implements Model
 
         return view;
     }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the text cell state.
+     */
+    private void initialize()
+    {
+        // [1] Initialize variables with listeners to update the number widget views when the
+        //     values of the variables change
+        // --------------------------------------------------------------------------------------
+
+        this.valueViewId   = null;
+
+        if (!this.value.isNull())
+        {
+            this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onValueUpdate();
+                }
+            });
+        }
+
+    }
+
+
+    /**
+     * When the text widget's value is updated.
+     */
+    private void onValueUpdate()
+    {
+        if (this.valueViewId != null && !this.value.isNull())
+        {
+            Activity activity = (Activity) SheetManager.currentSheetContext();
+            TextView textView = (TextView) activity.findViewById(this.valueViewId);
+
+            String value = this.value().value();
+
+            // TODO can value be null
+            if (value != null)
+                textView.setText(value);
+        }
+    }
+
 
 }

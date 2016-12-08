@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.game.Game;
-import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;

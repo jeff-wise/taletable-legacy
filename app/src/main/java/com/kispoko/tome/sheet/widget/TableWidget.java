@@ -11,8 +11,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.RulesEngine;
-import com.kispoko.tome.rules.programming.variable.TextVariable;
+import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.Row;

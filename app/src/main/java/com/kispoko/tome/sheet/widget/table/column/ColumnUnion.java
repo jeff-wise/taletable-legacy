@@ -2,12 +2,9 @@
 package com.kispoko.tome.sheet.widget.table.column;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.rules.programming.variable.VariableType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;

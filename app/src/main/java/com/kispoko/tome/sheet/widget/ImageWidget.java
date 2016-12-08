@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
-import com.kispoko.tome.rules.RulesEngine;
+import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetUI;

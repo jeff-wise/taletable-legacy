@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.rules.refinement.MemberOf;
+import com.kispoko.tome.engine.refinement.MemberOf;
 
 
 
@@ -59,7 +59,7 @@ public class TextEditRecyclerViewAdapter
         TextView textView = (TextView) itemView.findViewById(R.id.type_list_item_name);
         textView.setText(this.memberOf.getValues().get(position));
 
-        if (this.memberOf.getValues().get(position).equals(this.textWidget.getValue())) {
+        if (this.memberOf.getValues().get(position).equals(this.textWidget.value())) {
             ImageView iconView = (ImageView) itemView.findViewById(R.id.type_list_item_icon);
             iconView.setImageDrawable(
                 ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_list_item_selected));

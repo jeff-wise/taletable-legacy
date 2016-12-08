@@ -6,11 +6,13 @@ package com.kispoko.tome.error;
 /**
  * Error: Unknown Variant
  *
- * This error occurs when we are creating a union value, but none of the previously known cases
- * matches the value. For example, the code creates a union value that contains either a type A, B,
- * or C, but if we add a type D without modifying the code which places the values in the union,
- * it's possible it will fall through all of the known cases and produce an error. This
- * exception exists for thta case.
+ *
+ * Occurs when a switch statement falls through.
+ *
+ * Reasons this could happen:
+ *    * Add a new case in the enum, but forget to add it to a switch statement.
+ *    * Enum value is null.
+ *
  */
 public class UnknownVariantError
 {
@@ -18,30 +20,30 @@ public class UnknownVariantError
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private String unionClassName;
+    private String variantName;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public UnknownVariantError(String unionClassName)
+    public UnknownVariantError(String variantName)
     {
-        this.unionClassName = unionClassName;
+        this.variantName = variantName;
     }
 
 
     // API
     // --------------------------------------------------------------------------------------
 
-    public String getUnionClassName()
+    public String getVariantName()
     {
-        return this.unionClassName;
+        return this.variantName;
     }
 
 
     public String errorMessage()
     {
-        return "Unknown Variant: Of type: " + unionClassName;
+        return "Unknown Variant: Of type: " + variantName;
     }
 
 

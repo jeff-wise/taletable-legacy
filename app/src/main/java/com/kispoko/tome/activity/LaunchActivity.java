@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.DatabaseManager;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.sheet.Sheet;
@@ -69,7 +70,7 @@ public class LaunchActivity extends AppCompatActivity
 
     public void onCountError(DatabaseException exception)
     {
-        // TODO handle properly
+        ApplicationFailure.database(exception);
     }
 
 
