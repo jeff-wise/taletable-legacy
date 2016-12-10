@@ -21,7 +21,6 @@ import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.ModelValue;
@@ -300,7 +299,7 @@ public class TableWidget extends Widget implements Serializable
         Context context = SheetManager.currentSheetContext();
         RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
 
-        LinearLayout layout = WidgetUI.linearLayout(this, context, rulesEngine);
+        LinearLayout layout = this.linearLayout();
 
         layout.setPadding(0, 0, 0, 0);
 

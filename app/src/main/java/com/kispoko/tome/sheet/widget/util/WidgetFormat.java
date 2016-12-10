@@ -409,6 +409,23 @@ public class WidgetFormat implements Model, Serializable
             return 0;
         }
 
+
+        public int resourceId()
+        {
+            switch (this)
+            {
+                case SMALL:
+                    return R.dimen.text_size_small;
+                case MEDIUM:
+                    return R.dimen.text_size_medium;
+                case LARGE:
+                    return R.dimen.text_size_large;
+            }
+
+            return 0;
+        }
+
+
     }
 
 

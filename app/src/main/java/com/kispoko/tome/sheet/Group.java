@@ -17,6 +17,9 @@ import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -208,11 +211,11 @@ public class Group implements Model, Serializable
     {
         LinearLayout groupLayout = new LinearLayout(context);
         LinearLayout.LayoutParams mainLayoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+               new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                               LinearLayout.LayoutParams.MATCH_PARENT);
         int groupHorzMargins = (int) Util.getDim(context, R.dimen.group_horz_margins);
         int groupMarginBottom = (int) Util.getDim(context, R.dimen.group_margin_bottom);
-        groupLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.sheet_medium));
+        groupLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_grey_7));
         mainLayoutParams.setMargins(groupHorzMargins, 0,
                                     groupHorzMargins, groupMarginBottom);
         groupLayout.setOrientation(LinearLayout.VERTICAL);
@@ -294,31 +297,33 @@ public class Group implements Model, Serializable
 
     private LinearLayout labelView(Context context)
     {
-        LinearLayout layout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = Util.linearLayoutParamsMatchWrap();
-        layout.setLayoutParams(layoutParams);
+        // [1] Layout
+        // --------------------------------------------------------------------------------------
 
-        int paddingLeft = (int) Util.getDim(context, R.dimen.group_label_padding_left);
-        int paddingBottom = (int) Util.getDim(context, R.dimen.group_label_padding_bottom);
-        layout.setPadding(paddingLeft, 0, 0, paddingBottom);
+        LinearLayoutBuilder labelLayout = new LinearLayoutBuilder();
 
+        labelLayout.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        labelLayout.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        labelLayout.padding.left   = R.dimen.group_label_padding_left;
+        labelLayout.padding.bottom = R.dimen.group_label_padding_bottom;
 
-        TextView textView = new TextView(context);
-        textView.setId(R.id.component_label);
+        // [2] Text
+        // --------------------------------------------------------------------------------------
 
-        float labelTextSize = (int) Util.getDim(context, R.dimen.group_label_text_size);
-        textView.setTextSize(labelTextSize);
+        TextViewBuilder labelView = new TextViewBuilder();
 
-        textView.setTextColor(ContextCompat.getColor(context, R.color.text_light));
+        labelView.id    = R.id.widget_label;
+        labelView.size  = R.dimen.group_label_text_size;
+        labelView.color = R.color.dark_grey_1;
+        labelView.font  = Font.sansSerifFontRegular(context);
+        labelView.text  = this.getLabel().toUpperCase();
 
-        textView.setTypeface(Util.sansSerifFontRegular(context));
+        // [3] Define structure
+        // --------------------------------------------------------------------------------------
 
-        //textView.setText(this.label.toUpperCase());
-        textView.setText(this.getLabel());
+        labelLayout.child(labelView.textView(context));
 
-        layout.addView(textView);
-
-        return layout;
+        return labelLayout.linearLayout(context);
     }
 
 }

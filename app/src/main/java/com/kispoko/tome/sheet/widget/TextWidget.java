@@ -25,10 +25,11 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
-import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.engine.refinement.MemberOf;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -37,6 +38,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -175,20 +177,30 @@ public class TextWidget extends Widget implements Serializable
      * Get the TextWidget's value variable.
      * @return The Variable for the TextWidget value.
      */
-    public TextVariable value()
+    public TextVariable valueVariable()
     {
         return this.value.getValue();
     }
 
 
+    /**
+     * Get the text widget's value (from its value variable).
+     * @return The value.
+     */
+    public String value()
+    {
+        return this.valueVariable().value();
+    }
+
+
     public void setValue(String stringValue, Context context)
     {
-        this.value().setValue(stringValue);
+        this.valueVariable().setValue(stringValue);
 
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
                                     .findViewById(this.displayTextViewId);
-            textView.setText(this.value().value());
+            textView.setText(this.valueVariable().value());
         }
 
         this.value.save();
@@ -200,28 +212,29 @@ public class TextWidget extends Widget implements Serializable
 
     public View view()
     {
-        // [1] Get dependencies
+        // [1] Setup / Declarations
         // --------------------------------------------------------------------------------------
 
         final Context context = SheetManager.currentSheetContext();
-        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
-        LinearLayout textLayout = WidgetUI.linearLayout(this, context, rulesEngine);
-
-
-        TextView textView = new TextView(context);
-        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        LinearLayout textLayout = this.linearLayout();
+        LinearLayout contentLayout =
+                (LinearLayout) textLayout.findViewById(R.id.widget_content_layout);
 
         this.displayTextViewId = Util.generateViewId();
-        textView.setId(this.displayTextViewId);
 
-        textView.setTextSize(this.size.getValue().toSP(context));
+        // [2] Text View
+        // --------------------------------------------------------------------------------------
 
-        textView.setTypeface(Util.serifFontBold(context));
-        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+        TextViewBuilder textView = new TextViewBuilder();
 
-        textView.setText(this.value().value());
+        textView.gravity = Gravity.CENTER_HORIZONTAL;
+        textView.id      = this.displayTextViewId;
+        textView.size    = this.size.getValue().resourceId();
+        textView.font    = Font.serifFontBold(context);
+        textView.color   = R.color.light_grey_5;
+        textView.text    = this.value();
 
-        textLayout.addView(textView);
+        contentLayout.addView(textView.textView(context));
 
         return textLayout;
     }
@@ -229,7 +242,7 @@ public class TextWidget extends Widget implements Serializable
 
     public View getEditorView(Context context, RulesEngine rulesEngine)
     {
-        if (this.value().hasRefinement())
+        if (this.valueVariable().hasRefinement())
             return this.getTypeEditorView(context, rulesEngine);
         // No type is set, so allow free form edit
         else
@@ -246,7 +259,7 @@ public class TextWidget extends Widget implements Serializable
 
         // Create adapter passing in the sample user data
         MemberOf memberOf = rulesEngine.getRefinementIndex()
-                                 .memberOfWithName(this.value().getRefinementId().getName());
+                                 .memberOfWithName(this.valueVariable().getRefinementId().getName());
         TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
         textEditorView.setAdapter(adapter);
         // Set layout manager to position the items
@@ -330,7 +343,7 @@ public class TextWidget extends Widget implements Serializable
         float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
         editView.setTextSize(valueTextSize);
 
-        editView.setText(this.value().value());
+        editView.setText(this.value());
 
         // Define layout structure
         layout.addView(editView);
@@ -350,9 +363,9 @@ public class TextWidget extends Widget implements Serializable
     {
         this.displayTextViewId = null;
 
-        if (!this.value().isNull())
+        if (!this.valueVariable().isNull())
         {
-            this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.valueVariable().addOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onValueUpdate();
@@ -372,7 +385,7 @@ public class TextWidget extends Widget implements Serializable
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.displayTextViewId);
 
-            String value = this.value().value();
+            String value = this.value();
 
             if (value != null)
                 textView.setText(value);

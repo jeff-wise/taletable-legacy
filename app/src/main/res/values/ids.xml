@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="component_label" type="id"/>
+    <item name="widget_label" type="id"/>
 
     <!-- COMPONENTS -->
     <item name="text_component_edit_text" type="id"/>
@@ -14,5 +14,9 @@
 
     <item name="type_list_item_name" type="id"/>
     <item name="type_list_item_icon" type="id"/>
+
+
+    <item name="widget_content_layout" type="id"/>
+
 
 </resources>

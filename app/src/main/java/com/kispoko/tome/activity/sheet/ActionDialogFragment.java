@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.Util;
@@ -26,15 +27,13 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
 {
 
     private Widget widget;
-    private RulesEngine rulesEngine;
 
 
-    public static final ActionDialogFragment newInstance(Widget widget, RulesEngine rulesEngine)
+    public static final ActionDialogFragment newInstance(Widget widget)
     {
         ActionDialogFragment actionDialogFragment = new ActionDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("COMPONENT", widget);
-        bundle.putSerializable("RULES", rulesEngine);
         actionDialogFragment.setArguments(bundle);
         return actionDialogFragment;
     }
@@ -45,7 +44,6 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
     {
         super.onCreate(savedInstanceState);
         this.widget = (Widget) getArguments().getSerializable("COMPONENT");
-        this.rulesEngine = (RulesEngine) getArguments().getSerializable("RULES");
     }
 
 
@@ -77,6 +75,8 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
             actionRowLayout.setLayoutParams(actionRowLayoutParams);
             actionRowLayout.setOrientation(LinearLayout.HORIZONTAL);
             actionRowLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            final RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
 
             actionRowLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

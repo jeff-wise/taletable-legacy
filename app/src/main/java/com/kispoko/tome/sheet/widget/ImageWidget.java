@@ -22,7 +22,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.ModelValue;
@@ -160,6 +159,19 @@ public class ImageWidget extends Widget implements Serializable
     public void runAction(String actionName, Context context, RulesEngine rulesEngine) { }
 
 
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    public Bitmap bitmap()
+    {
+        if (!this.bitmap.isNull())
+            return this.bitmap.getValue().getBitmap();
+        else
+            return null;
+    }
+
+
+
     // > Image
     // ------------------------------------------------------------------------------------------
 
@@ -195,13 +207,14 @@ public class ImageWidget extends Widget implements Serializable
         // --------------------------------------------------------------------------------------
 
         final Context context = SheetManager.currentSheetContext();
-        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
 
+        final ImageWidget thisImageWidget = this;
 
-        // Layout
-        final LinearLayout imageLayout = WidgetUI.linearLayout(this, context, rulesEngine);
+        final LinearLayout imageLayout = this.linearLayout();
         imageLayout.setGravity(Gravity.CENTER);
-        //imageLayout.setLayoutParams(com.kispoko.tome.util.Util.linearLayoutParamsMatch());
+
+        LinearLayout contentLayout = (LinearLayout) imageLayout.findViewById(
+                                                                    R.id.widget_content_layout);
 
         // Views
         final ImageView imageView = this.imageView(context);
@@ -212,12 +225,12 @@ public class ImageWidget extends Widget implements Serializable
         this.chooseImageButtonId = Util.generateViewId();
         chooseImageButton.setId(this.chooseImageButtonId);
 
-        final ImageWidget thisImageWidget = this;
 
-        chooseImageButton.setOnClickListener(new View.OnClickListener() {
-
+        chooseImageButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 SheetActivity sheetActivity = (SheetActivity) context;
 
                 Intent intent;
@@ -240,11 +253,11 @@ public class ImageWidget extends Widget implements Serializable
 
 
         // Add views to layout
-        imageLayout.addView(imageView);
-        imageLayout.addView(chooseImageButton);
+        contentLayout.addView(imageView);
+        contentLayout.addView(chooseImageButton);
 
         // Have a picture, show it
-        if (this.bitmap.getValue() != null)
+        if (this.bitmap() != null)
         {
             chooseImageButton.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);

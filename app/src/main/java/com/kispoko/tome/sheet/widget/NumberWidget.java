@@ -4,8 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,8 +18,9 @@ import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
-import com.kispoko.tome.sheet.widget.util.WidgetUI;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -190,9 +189,41 @@ public class NumberWidget extends Widget implements Serializable
      * Get the number widget's value variable.
      * @return The number variable.
      */
-    public NumberVariable value()
+    public NumberVariable valueVariable()
     {
         return this.value.getValue();
+    }
+
+
+    /**
+     * Get the number widget's value (from its value variable).
+     * @return The integer value.
+     */
+    public Integer value()
+    {
+        Integer integerValue = null;
+
+        try {
+            integerValue = this.valueVariable().value();
+        } catch (SummationException exception) {
+            ApplicationFailure.summation(exception);
+        }
+
+        return integerValue;
+    }
+
+
+    /**
+     * Get the number widget's value as a string.
+     * @return The value string.
+     */
+    public String valueString()
+    {
+        Integer value = this.value();
+        if (value != null)
+            return Integer.toString(value);
+        else
+            return null;
     }
 
 
@@ -203,9 +234,22 @@ public class NumberWidget extends Widget implements Serializable
      * Get the number widget's prefix variable.
      * @return The text variable.
      */
-    public TextVariable prefix()
+    public TextVariable prefixVariable()
     {
         return this.prefix.getValue();
+    }
+
+
+    /**
+     * Get the number widget's prefix value (from its prefix variable).
+     * @return The prefix (may be null).
+     */
+    public String prefix()
+    {
+        if (this.prefixVariable() != null)
+            return this.prefixVariable().value();
+        else
+            return null;
     }
 
 
@@ -217,11 +261,23 @@ public class NumberWidget extends Widget implements Serializable
      * the main value.
      * @return The postfix Text Variable.
      */
-    public TextVariable postfix()
+    public TextVariable postfixVariable()
     {
         return this.postfix.getValue();
     }
 
+
+    /**
+     * Get the number widget's postfix value (from its postfix variablbe).
+     * @return The postfix (may be null).
+     */
+    public String postfix()
+    {
+        if (this.postfixVariable() != null)
+            return this.postfixVariable().value();
+        else
+            return null;
+    }
 
 
     // > Views
@@ -229,65 +285,64 @@ public class NumberWidget extends Widget implements Serializable
 
     public View view()
     {
-
-        // [1] Get dependencies
+        // [1] Setup / Declarations
         // --------------------------------------------------------------------------------------
 
-        Context context = SheetManager.currentSheetContext();
-        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
-
-        LinearLayout integerLayout = WidgetUI.linearLayout(this, context, rulesEngine);
-
-        LinearLayout contentLayout = new LinearLayout(context);
-        contentLayout.setLayoutParams(Util.linearLayoutParamsMatch());
-        contentLayout.setOrientation(LinearLayout.HORIZONTAL);
-        contentLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        // Add text view
-        TextView textView = new TextView(context);
+        Context context            = SheetManager.currentSheetContext();
+        LinearLayout integerLayout = this.linearLayout();
+        LinearLayout contentLayout = (LinearLayout) integerLayout.findViewById(
+                                                                    R.id.widget_content_layout);
 
         this.valueViewId = Util.generateViewId();
-        textView.setId(this.valueViewId);
 
-        textView.setTextSize(this.size.getValue().toSP(context));
+        // [2] Number View
+        // --------------------------------------------------------------------------------------
 
-        textView.setTypeface(Util.serifFontBold(context));
-        textView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+        TextViewBuilder numberView = new TextViewBuilder();
 
-        Integer integerValue = null;
-        try {
-            integerValue = this.value().value();
-        } catch (SummationException exception) {
-            ApplicationFailure.summation(exception);
-        }
+        numberView.id    = this.valueViewId;
+        numberView.size  = this.size.getValue().resourceId();
+        numberView.font  = Font.serifFontBold(context);
+        numberView.color = R.color.light_grey_5;
+        numberView.text  = this.valueString();
 
-        if (integerValue != null)
-            textView.setText(Integer.toString(integerValue));
-        else
-            textView.setText("");
+        contentLayout.addView(numberView.textView(context));
 
-        contentLayout.addView(textView);
+        // [3] Postfix View
+        // --------------------------------------------------------------------------------------
 
-        if (this.postfix() != null)
-        {
-            TextView postfixView = new TextView(context);
+        this.addPostfixView(contentLayout, context);
 
-            this.postfixViewId = Util.generateViewId();
-            postfixView.setId(this.postfixViewId);
-
-            postfixView.setTextSize(this.size.getValue().toSP(context));
-            postfixView.setTypeface(Util.serifFontBold(context));
-            postfixView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
-
-            String postfixValue = this.postfix().value();
-            postfixView.setText(postfixValue);
-
-            contentLayout.addView(postfixView);
-        }
-
-        integerLayout.addView(contentLayout);
 
         return integerLayout;
+    }
+
+
+    private void addPostfixView(LinearLayout contentLayout, Context context)
+    {
+        // [0] Postfix variable may be null. Display nothing.
+        // --------------------------------------------------------------------------------------
+
+        if (this.postfix.isNull())
+            return;
+
+        // [1] Setup / Declarations
+        // --------------------------------------------------------------------------------------
+
+        this.postfixViewId = Util.generateViewId();
+
+        // [2] Postfix View
+        // --------------------------------------------------------------------------------------
+
+        TextViewBuilder postfixView = new TextViewBuilder();
+
+        postfixView.id    = this.postfixViewId;
+        postfixView.size  = this.size.getValue().resourceId();
+        postfixView.font  = Font.serifFontBold(context);
+        postfixView.color = R.color.text_medium;
+        postfixView.text  = this.postfix();
+
+        contentLayout.addView(postfixView.textView(context));
     }
 
 
@@ -315,7 +370,7 @@ public class NumberWidget extends Widget implements Serializable
 
         if (!this.value.isNull())
         {
-            this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.valueVariable().addOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onValueUpdate();
@@ -325,7 +380,7 @@ public class NumberWidget extends Widget implements Serializable
 
         if (!this.prefix.isNull())
         {
-            this.prefix().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.prefixVariable().addOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onPrefixUpdate();
@@ -336,7 +391,7 @@ public class NumberWidget extends Widget implements Serializable
 
         if (!this.postfix.isNull())
         {
-            this.postfix().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.postfixVariable().addOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onPostfixUpdate();
@@ -356,18 +411,11 @@ public class NumberWidget extends Widget implements Serializable
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
-            try
-            {
-                Integer value = this.value().value();
+            Integer value = this.value();
 
-                // TODO can value be null
-                if (value != null)
-                    textView.setText(Integer.toString(value));
-            }
-            catch (SummationException exception)
-            {
-                ApplicationFailure.summation(exception);
-            }
+            // TODO can value be null
+            if (value != null)
+                textView.setText(this.valueString());
         }
     }
 
@@ -382,7 +430,7 @@ public class NumberWidget extends Widget implements Serializable
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.prefixViewId);
 
-            String prefixValue = this.prefix().value();
+            String prefixValue = this.prefix();
 
             if (prefixValue != null)
                 textView.setText(prefixValue);
@@ -400,7 +448,7 @@ public class NumberWidget extends Widget implements Serializable
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.postfixViewId);
 
-            String postfixValue = this.postfix().value();
+            String postfixValue = this.postfix();
 
             if (postfixValue != null)
                 textView.setText(postfixValue);

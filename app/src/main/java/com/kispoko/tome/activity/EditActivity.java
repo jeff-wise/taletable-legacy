@@ -112,7 +112,7 @@ public class EditActivity extends AppCompatActivity
         TextWidget textWidget = (TextWidget) this.widget;
 
         String widgetLabel = this.widget.data().getFormat().getLabel();
-        if (textWidget.value().hasRefinement())
+        if (textWidget.valueVariable().hasRefinement())
             editActionView.setText("Select a " + widgetLabel);
         else
             editActionView.setText(widgetLabel);

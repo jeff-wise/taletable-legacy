@@ -29,25 +29,27 @@
 
 
     <!-- GROUP -->
-    <dimen name="row_padding_bottom">18dp</dimen>
+    <dimen name="row_padding_bottom">4dp</dimen>
 
     <dimen name="group_horz_margins">0dp</dimen>
-    <dimen name="group_margin_bottom">0dp</dimen>
+    <dimen name="group_margin_bottom">7dp</dimen>
 
     <dimen name="group_padding_top">0dp</dimen>
-    <dimen name="group_padding_horz">3.5dp</dimen>
+    <dimen name="group_padding_horz">2dp</dimen>
     <dimen name="group_label_padding_left">8dp</dimen>
-    <dimen name="group_label_padding_bottom">10dp</dimen>
-    <dimen name="group_label_text_size">4.5sp</dimen>
+    <dimen name="group_label_padding_bottom">9dp</dimen>
+    <dimen name="group_label_text_size">3.2sp</dimen>
 
 
-    <!-- COMPONENT LAYOUT -->
-    <dimen name="comp_layout_margins_horz">6dp</dimen>
-    <dimen name="comp_label_padding_bottom">9dp</dimen>
-    <dimen name="comp_label_text_size">2.4sp</dimen>
+    <!-- WIDGET LAYOUT -->
+    <dimen name="widget_layout_margins_horz">2dp</dimen>
+    <dimen name="widget_content_padding_vert">25dp</dimen>
+    <dimen name="widget_label_padding_vert">4dp</dimen>
+    <dimen name="widget_label_text_size">2.4sp</dimen>
 
 
     <!-- COMPONENT: TEXT -->
+    <dimen name="text_size_extra_large">7.5dp</dimen>
     <dimen name="text_size_large">6.5dp</dimen>
     <dimen name="text_size_medium">5dp</dimen>
     <dimen name="text_size_small">4dp</dimen>
@@ -58,7 +60,7 @@
 
 
     <!-- COMPONENT: IMAGE -->
-    <dimen name="comp_image_button_vert_margins">30dp</dimen>
+    <dimen name="comp_image_button_vert_margins">0dp</dimen>
     <dimen name="comp_image_button_icon_padding">10dp</dimen>
     <dimen name="comp_image_button_padding">15dp</dimen>
     <dimen name="comp_image_button_text_size">3dp</dimen>

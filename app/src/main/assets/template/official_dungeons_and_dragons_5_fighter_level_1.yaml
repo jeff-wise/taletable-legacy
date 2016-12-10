@@ -219,6 +219,7 @@ roleplay:
           - generate
           format:
             label: Name
+            show_label: false
             row: 1
             column: 1
             width: 1
@@ -233,6 +234,7 @@ roleplay:
           - choose
           - share
           format:
+            show_label: false
             row: 2
             column: 1
             width: 1
@@ -729,7 +731,6 @@ roleplay:
               value: Animal Handling
           - value:
               name: animal_handling_bonus
-              type: summation
               type: summation
               value:
                 terms:

@@ -22,6 +22,10 @@
     <string name="nav_rules">Rules</string>
     <string name="nav_characters">Characters</string>
 
+    <!-- BOTTOM NAVIGATION -->
+    <string name="bottom_nav_profile">Profile</string>
+    <string name="bottom_nav_encounter">Encounter</string>
+    <string name="bottom_nav_campaign">Campaign</string>
 
     <!-- TABS -->
     <string name="profile_tab">Profile</string>
