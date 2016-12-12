@@ -12,7 +12,6 @@ import com.kispoko.tome.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -29,7 +28,7 @@ public class LinearLayoutBuilder
     // > Layout State
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayoutOrientation orientation;
+    public Integer                 orientation;
 
     public Integer                 id;
 
@@ -108,17 +107,7 @@ public class LinearLayoutBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.orientation != null)
-        {
-            switch (this.orientation)
-            {
-            case HORIZONTAL:
-                linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-                break;
-            case VERTICAL:
-                linearLayout.setOrientation(LinearLayout.VERTICAL);
-                break;
-            }
-        }
+            linearLayout.setOrientation(this.orientation);
 
         // > Padding
         // --------------------------------------------------------------------------------------
@@ -164,17 +153,27 @@ public class LinearLayoutBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.height != null)
-            linearLayoutParams.height = this.height;
-        else
-            linearLayoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
+        {
+            if (isLayoutConstant(this.height)) {
+                linearLayoutParams.height = this.height;
+            }
+            else {
+                linearLayoutParams.height = (int) context.getResources().getDimension(this.height);
+            }
+        }
 
         // > Width
         // --------------------------------------------------------------------------------------
 
         if (this.width != null)
-            linearLayoutParams.width = this.width;
-        else
-            linearLayoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
+        {
+            if (isLayoutConstant(this.width)) {
+                linearLayoutParams.width = this.width;
+            }
+            else {
+                linearLayoutParams.width = (int) context.getResources().getDimension(this.width);
+            }
+        }
 
         // > Gravity
         // --------------------------------------------------------------------------------------
@@ -202,4 +201,17 @@ public class LinearLayoutBuilder
     }
 
 
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private boolean isLayoutConstant(Integer constant)
+    {
+        if (constant == LinearLayout.LayoutParams.MATCH_PARENT ||
+            constant == LinearLayout.LayoutParams.WRAP_CONTENT) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

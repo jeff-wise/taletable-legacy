@@ -16,6 +16,7 @@ import com.kispoko.tome.engine.programming.variable.NumberVariable;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.Util;
@@ -176,7 +177,7 @@ public class NumberWidget extends Widget implements Serializable
     // ** Run Action
     // ------------------------------------------------------------------------------------------
 
-    public void runAction(String actionName, Context context, RulesEngine rulesEngine) { }
+    public void runAction(Action action) { }
 
 
     // > State

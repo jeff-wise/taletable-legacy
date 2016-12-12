@@ -16,12 +16,12 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.LinearLayoutOrientation;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -29,7 +29,6 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 
-import static android.R.attr.label;
 
 
 /**
@@ -42,9 +41,9 @@ public abstract class Widget implements Model, Serializable
     // ------------------------------------------------------------------------------------------
 
     abstract public View view();
-    abstract public View getEditorView(Context context, RulesEngine rulesEngine);
+    abstract public View getEditorView();
 
-    abstract public void runAction(String actionName, Context context, RulesEngine rulesEngine);
+    abstract public void runAction(Action action);
     abstract public String name();
 
     abstract public WidgetData data();
@@ -107,7 +106,7 @@ public abstract class Widget implements Model, Serializable
 
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation         = LinearLayoutOrientation.VERTICAL;
+        layout.orientation         = LinearLayout.VERTICAL;
         layout.backgroundResource  = R.drawable.bg_widget;
         layout.margin.left         = R.dimen.widget_layout_margins_horz;
         layout.margin.right        = R.dimen.widget_layout_margins_horz;
@@ -132,7 +131,7 @@ public abstract class Widget implements Model, Serializable
         LinearLayoutBuilder contentLayout = new LinearLayoutBuilder();
 
         contentLayout.width               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        contentLayout.orientation         = LinearLayoutOrientation.VERTICAL;
+        contentLayout.orientation         = LinearLayout.VERTICAL;
         contentLayout.id                  = R.id.widget_content_layout;
         contentLayout.layoutGravity       = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
         contentLayout.padding.top         = R.dimen.widget_content_padding_vert;

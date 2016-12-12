@@ -14,6 +14,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.Row;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
@@ -200,7 +201,7 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    public void runAction(String actionName, Context context, RulesEngine rulesEngine) { }
+    public void runAction(Action action) { }
 
 
     // > State

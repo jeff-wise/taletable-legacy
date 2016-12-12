@@ -8,20 +8,15 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
-    <!-- ACTION SHEET -->
-    <dimen name="action_sheet_label_text_size">4dp</dimen>
-    <dimen name="action_sheet_label_padding_bottom">10dp</dimen>
-    <dimen name="action_sheet_label_padding_top">6dp</dimen>
-    <dimen name="action_sheet_padding_vert">18dp</dimen>
-    <dimen name="action_sheet_action_text_size">3.2dp</dimen>
-    <dimen name="action_sheet_row_margins_vert">6dp</dimen>
-    <dimen name="action_sheet_row_padding_vert">15dp</dimen>
-    <dimen name="action_sheet_row_height">52dp</dimen>
-    <dimen name="action_sheet_action_text_width">220dp</dimen>
-    <dimen name="action_sheet_action_text_padding_left">20dp</dimen>
-    <dimen name="action_sheet_row_padding_horz">20dp</dimen>
-    <dimen name="action_sheet_action_icon_padding_horz">17dp</dimen>
-    <dimen name="action_sheet_action_icon_margin_right">1.5dp</dimen>
+    <!-- ACTION DIALOG -->
+    <dimen name="action_dialog_width">300dp</dimen>
+    <dimen name="action_dialog_padding_vert">10dp</dimen>
+    <dimen name="action_height">52dp</dimen>
+    <dimen name="action_text_size">5dp</dimen>
+    <dimen name="action_icon_width">30dp</dimen>
+    <dimen name="action_icon_margin_right">10dp</dimen>
+    <dimen name="action_padding_left">20dp</dimen>
+    <dimen name="action_padding_vert">5dp</dimen>
 
 
     <!-- PAGE -->

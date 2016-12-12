@@ -2,28 +2,26 @@
 package com.kispoko.tome.activity.sheet;
 
 
-import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
+import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.action.Action;
-import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
 
 
 /**
  * Bottom Sheet Fragment for Action Dialog
  */
-public class ActionDialogFragment extends BottomSheetDialogFragment
+public class ActionDialogFragment extends DialogFragment
 {
 
     private Widget widget;
@@ -43,89 +41,84 @@ public class ActionDialogFragment extends BottomSheetDialogFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         this.widget = (Widget) getArguments().getSerializable("COMPONENT");
     }
 
 
     @Override
-    public void setupDialog(final Dialog dialog, int style)
+    public View onCreateView(LayoutInflater layoutInflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState)
     {
-        super.setupDialog(dialog, style);
+        // [1] Setup / Declarations
+        // --------------------------------------------------------------------------------------
 
-        // Layout
-        LinearLayout layout = new LinearLayout(getContext());
-        layout.setLayoutParams(Util.linearLayoutParamsMatchWrap());
-        layout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.sheet_medium));
-        layout.setOrientation(LinearLayout.VERTICAL);
+        Context context = SheetManager.currentSheetContext();
 
-        int layoutPaddingVert = (int) Util.getDim(getContext(), R.dimen.action_sheet_padding_vert);
-        layout.setPadding(0, layoutPaddingVert, 0, layoutPaddingVert);
+        // [2] Layout
+        // --------------------------------------------------------------------------------------
 
-        for (final String actionName : this.widget.data().getActions())
+        LinearLayout layout = this.dialogLayout(context);
+
+        for (final Action action : this.widget.data().getActions())
         {
-            // Row Layout
-            LinearLayout actionRowLayout = new LinearLayout(getContext());
-            LinearLayout.LayoutParams actionRowLayoutParams =
-                    Util.linearLayoutParamsMatchWrap();
-            int actionRowMarginsVert = (int) Util.getDim(getContext(),
-                    R.dimen.action_sheet_row_margins_vert);
-            actionRowLayoutParams.setMargins(0, actionRowMarginsVert,
-                    0, actionRowMarginsVert);
-            actionRowLayoutParams.gravity = Gravity.CENTER;
-            actionRowLayout.setLayoutParams(actionRowLayoutParams);
-            actionRowLayout.setOrientation(LinearLayout.HORIZONTAL);
-            actionRowLayout.setGravity(Gravity.CENTER_HORIZONTAL);
-
-            final RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
-
-            actionRowLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    widget.runAction(actionName, getContext(), rulesEngine);
-                    dialog.dismiss();
-                }
-            });
-
-            // Icon
-            actionRowLayout.addView(Action.iconView(getContext(), actionName));
-
-            // Action TextWidget
-            TextView actionView = new TextView(getContext());
-            LinearLayout.LayoutParams actionViewLayoutParams =
-                    Util.linearLayoutParamsWrap();
-            int actionViewWidth = (int) Util.getDim(getContext(),
-                    R.dimen.action_sheet_action_text_width);
-            int actionRowHeight = (int) Util.getDim(getContext(),
-                    R.dimen.action_sheet_row_height);
-            actionViewLayoutParams.height = actionRowHeight;
-            actionViewLayoutParams.width = actionViewWidth;
-            actionView.setGravity(Gravity.CENTER_VERTICAL);
-            actionView.setLayoutParams(actionViewLayoutParams);
-            actionView.setText(Action.label(actionName));
-            actionView.setTextColor(ContextCompat.getColor(getContext(), R.color.blue_hard));
-            actionView.setTypeface(Util.sansSerifFontBold(getContext()));
-            actionView.setBackgroundResource(R.drawable.bg_action_button_text);
-
-
-//                    int actionViewPaddingVert = (int) Util.getDim(thisActivity,
-//                                                            R.dimen.action_sheet_action_text_padding_vert);
-            int actionViewPaddingLeft = (int) Util.getDim(getContext(),
-                    R.dimen.action_sheet_action_text_padding_left);
-            actionView.setPadding(actionViewPaddingLeft, 0,
-                    actionViewPaddingLeft, 0);
-
-            float actionViewTextSize = Util.getDim(getContext(),
-                    R.dimen.action_sheet_action_text_size);
-            actionView.setTextSize(actionViewTextSize);
-
-            //actionTextLayout.addView(actionView);
-
-            actionRowLayout.addView(actionView);
-
-            layout.addView(actionRowLayout);
+            View actionView = Action.view(action, this.widget, this);
+            layout.addView(actionView);
         }
 
-        dialog.setContentView(layout);
+
+        return layout;
     }
+
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        Context context = SheetManager.currentSheetContext();
+
+        int width = (int) context.getResources().getDimension(R.dimen.action_dialog_width);
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setLayout(width, height);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
+    }
+
+//
+//    @Override
+//    public void setupDialog(final Dialog dialog, int style)
+//    {
+//        super.setupDialog(dialog, style);
+//
+//
+//    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    // > Views
+    // ------------------------------------------------------------------------------------------
+
+    private LinearLayout dialogLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.height          = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.width           = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.orientation     = LinearLayout.VERTICAL;
+        layout.backgroundColor = R.color.dark_grey_8;
+        layout.padding.top     = R.dimen.action_dialog_padding_vert;
+        layout.padding.bottom  = R.dimen.action_dialog_padding_vert;
+
+        return layout.linearLayout(context);
+    }
+
 
 }

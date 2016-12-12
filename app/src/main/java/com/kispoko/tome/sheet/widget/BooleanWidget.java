@@ -7,12 +7,11 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.RulesEngine;
-import com.kispoko.tome.engine.programming.summation.SummationException;
 import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.Util;
@@ -24,7 +23,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -153,7 +151,7 @@ public class BooleanWidget extends Widget implements Serializable
     // ** Run Action
     // ------------------------------------------------------------------------------------------
 
-    public void runAction(String actionName, Context context, RulesEngine rulesEngine) { }
+    public void runAction(Action action) { }
 
 
     // > State

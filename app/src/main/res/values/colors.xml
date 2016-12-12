@@ -20,7 +20,7 @@
 
     <!-- NEW -->
     <!-- GENERAL -->
-    <color name="primary">#2C2C2C</color>
+    <color name="primary">#2A2A2A</color>
     <color name="paper">#eceff1</color>
     <color name="paper_dark">#EAEAEA</color>
     <color name="sheet_light">#EDEDED</color>
@@ -67,7 +67,13 @@
     <color name="grey_900">#313131</color>
 
     <color name="light_grey_5">#DEDEDE</color>
+    <color name="light_grey_6">#D6D6D6</color>
+    <color name="light_grey_7">#CDCDCD</color>
+    <color name="light_grey_8">#C7C7C7</color>
 
+    <color name="grey_5">#8E8E8E</color>
+    <color name="grey_6">#868686</color>
+    <color name="grey_7">#7D7D7D</color>
     <color name="grey_8">#777777</color>
 
     <color name="dark_grey_1">#626262</color>
@@ -78,7 +84,7 @@
     <color name="dark_grey_6">#424242</color>
     <color name="dark_grey_7">#3B3B3B</color>
     <color name="dark_grey_8">#333333</color>
-    <color name="dark_grey_9">#2C2C2C</color>
+    <color name="dark_grey_9">#2A2A2A</color>
 
     <color name="red_soft">#D29494</color>
     <color name="red_medium">#8A6161</color>

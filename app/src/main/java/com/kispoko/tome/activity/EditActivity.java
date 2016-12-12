@@ -17,6 +17,7 @@ import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.UI;
 
 
+
 /**
  * Edit Activity
  */
@@ -27,7 +28,6 @@ public class EditActivity extends AppCompatActivity
     // -------------------------------------------------------------------------------------------
 
     private Widget widget;
-    private RulesEngine rulesEngine;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -41,8 +41,7 @@ public class EditActivity extends AppCompatActivity
         // Read parameters passed from previous activity
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            this.widget = (Widget) extras.getSerializable("COMPONENT");
-            this.rulesEngine = (RulesEngine) extras.getSerializable("RULES");
+            this.widget = (Widget) extras.getSerializable("WIDGET");
         }
 
         setContentView(R.layout.activity_edit);
@@ -126,7 +125,8 @@ public class EditActivity extends AppCompatActivity
     {
         LinearLayout layout = (LinearLayout) findViewById(R.id.edit_content);
 
-        layout.addView(this.widget.getEditorView(this, this.rulesEngine));
+
+        layout.addView(this.widget.getEditorView(this));
 
     }
 

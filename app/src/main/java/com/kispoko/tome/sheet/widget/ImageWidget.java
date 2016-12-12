@@ -21,6 +21,7 @@ import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
@@ -156,7 +157,7 @@ public class ImageWidget extends Widget implements Serializable
     }
 
 
-    public void runAction(String actionName, Context context, RulesEngine rulesEngine) { }
+    public void runAction(Action action) { }
 
 
     // > State

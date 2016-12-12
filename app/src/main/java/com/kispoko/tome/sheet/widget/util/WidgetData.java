@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -13,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-
 /**
  * Widget Data
  */
@@ -23,9 +23,9 @@ public class WidgetData implements Model, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                      id;
-    private ModelValue<WidgetFormat>  format;
-    private PrimitiveValue<String[]>  actions;
+    private UUID                         id;
+    private ModelValue<WidgetFormat>     format;
+    private PrimitiveValue<Action[]> actions;
 
 
     // CONSTRUCTORS
@@ -36,18 +36,21 @@ public class WidgetData implements Model, Serializable
         this.id      = null;
 
         this.format  = ModelValue.empty(WidgetFormat.class);
-        this.actions = new PrimitiveValue<>(null, String[].class);
+        this.actions = new PrimitiveValue<>(null, Action[].class);
     }
 
 
     public WidgetData(UUID id,
                       WidgetFormat widgetFormat,
-                      String[] actions)
+                      List<Action> actions)
     {
         this.id      = id;
 
         this.format  = ModelValue.full(widgetFormat, WidgetFormat.class);
-        this.actions = new PrimitiveValue<>(actions, String[].class);
+
+        Action[] actionArray = new Action[actions.size()];
+        actions.toArray(actionArray); // fill the array
+        this.actions = new PrimitiveValue<>(actionArray, Action[].class);
     }
 
 
@@ -57,8 +60,12 @@ public class WidgetData implements Model, Serializable
         UUID id                   = UUID.randomUUID();
         WidgetFormat widgetFormat = WidgetFormat.fromYaml(yaml.atKey("format"));
 
-        List<String> actionList   = yaml.atKey("actions").getStringList();
-        String[]     actions      = actionList.toArray(new String[actionList.size()]);
+        List<Action> actions   = yaml.atKey("actions").forEach(new Yaml.ForEach<Action>() {
+            @Override
+            public Action forEach(Yaml yaml, int index) throws YamlException {
+                return Action.fromYaml(yaml);
+            }
+        });
 
         return new WidgetData(id, widgetFormat, actions);
     }
@@ -108,7 +115,7 @@ public class WidgetData implements Model, Serializable
     // ** Actions
     // ------------------------------------------------------------------------------------------
 
-    public String[] getActions() {
+    public Action[] getActions() {
         return this.actions.getValue();
     }
 

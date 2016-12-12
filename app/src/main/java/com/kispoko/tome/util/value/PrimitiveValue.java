@@ -14,6 +14,7 @@ import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.NumberVariable;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.engine.refinement.RefinementType;
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
@@ -29,6 +30,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 
 /**
@@ -176,6 +178,10 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(Action[].class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(ParameterType.class))
         {
             return SQLValue.Type.TEXT;
@@ -201,6 +207,10 @@ public class PrimitiveValue<A> extends Value<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(BooleanTermValue.Kind.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(Action.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -313,6 +323,16 @@ public class PrimitiveValue<A> extends Value<A>
             String arrayString = TextUtils.join("***", programValueTypeStrings);
             return SQLValue.newText(arrayString);
         }
+        else if (this.getValue() instanceof Action[])
+        {
+            Action[] actionArray = (Action[]) this.getValue();
+            List<String> actionStrings = new ArrayList<>();
+            for (int i = 0; i < actionArray.length; i++) {
+                actionStrings.add(actionArray[i].name().toLowerCase());
+            }
+            String arrayString = TextUtils.join("***", actionStrings);
+            return SQLValue.newText(arrayString);
+        }
         else if (this.getValue() instanceof ParameterType)
         {
             String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
@@ -347,6 +367,11 @@ public class PrimitiveValue<A> extends Value<A>
         {
             String enumString = ((InvocationParameterType)
                                             this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof Action)
+        {
+            String enumString = ((Action) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else
@@ -441,6 +466,21 @@ public class PrimitiveValue<A> extends Value<A>
                 this.setValue(null);
             }
         }
+        else if (this.valueClass.isAssignableFrom(Action[].class))
+        {
+            String arrayString = sqlValue.getText();
+            if (arrayString != null) {
+                String[] stringArray = TextUtils.split(arrayString, "\\*\\*\\*");
+                Action[] actions = new Action[stringArray.length];
+                for (int i = 0; i < stringArray.length; i++) {
+                    actions[i] = Action.fromSQLValue(SQLValue.newText(stringArray[i]));
+                }
+                this.setValue((A) actions);
+            }
+            else {
+                this.setValue(null);
+            }
+        }
         else if (this.valueClass.isAssignableFrom(SerialBitmap.class))
         {
             byte[] bitmapBlob = sqlValue.getBlob();
@@ -502,6 +542,11 @@ public class PrimitiveValue<A> extends Value<A>
         {
             ParameterType parameterType = ParameterType.fromSQLValue(sqlValue);
             this.setValue((A) parameterType);
+        }
+        else if (this.valueClass.isAssignableFrom(Action.class))
+        {
+            Action action = Action.fromSQLValue(sqlValue);
+            this.setValue((A) action);
         }
         else
         {

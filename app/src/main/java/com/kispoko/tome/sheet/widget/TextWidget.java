@@ -22,6 +22,7 @@ import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
@@ -38,7 +39,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -153,14 +153,14 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
-    public void runAction(String actionName, Context context, RulesEngine rulesEngine)
+    public void runAction(Action action)
     {
-        switch (actionName)
+        switch (action)
         {
-            case "edit":
+            case EDIT:
+                Context context = SheetManager.currentSheetContext();
                 Intent intent = new Intent(context, EditActivity.class);
-                intent.putExtra("COMPONENT", this);
-                intent.putExtra("RULES", rulesEngine);
+                intent.putExtra("WIDGET", this);
                 ((Activity) context).startActivityForResult(intent, SheetActivity.COMPONENT_EDIT);
                 break;
         }
@@ -240,17 +240,19 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, RulesEngine rulesEngine)
+    public View getEditorView()
     {
+        Context context = SheetManager.currentSheetContext();
+
         if (this.valueVariable().hasRefinement())
-            return this.getTypeEditorView(context, rulesEngine);
+            return this.getTypeEditorView(context);
         // No type is set, so allow free form edit
         else
             return this.getFreeEditorView(context);
     }
 
 
-    public View getTypeEditorView(Context context, RulesEngine rulesEngine)
+    public View getTypeEditorView(Context context)
     {
         // Lookup the recyclerview in activity layout
         RecyclerView textEditorView = new RecyclerView(context);
