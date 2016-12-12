@@ -77,7 +77,9 @@
     <dimen name="comp_table_cell_text_size">4.1dp</dimen>
 
 
-    <!-- TEXT EDITOR -->
+    <!-- WIDGET: TEXT: EDITOR -->
+    <dimen name="comp_text_editor_value_min_height">150dp</dimen>
+
     <dimen name="comp_text_editor_title_text_size">3.1dp</dimen>
     <dimen name="comp_text_editor_value_text_size">6.5dp</dimen>
     <dimen name="comp_text_editor_type_title_text_size">3.1dp</dimen>
@@ -94,7 +96,7 @@
     <dimen name="comp_text_editor_free_layout_margins">6dp</dimen>
     <dimen name="comp_text_editor_free_layout_padding_vert">20dp</dimen>
     <dimen name="comp_text_editor_free_layout_padding_horz">10dp</dimen>
-    <dimen name="comp_text_editor_free_save_button_text_size">4.2dp</dimen>
+    <dimen name="comp_text_editor_free_save_button_text_size">3.3sp</dimen>
 
 
     <!-- LIST TYPE -->

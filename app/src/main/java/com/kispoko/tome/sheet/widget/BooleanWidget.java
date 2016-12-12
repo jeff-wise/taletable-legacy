@@ -170,7 +170,7 @@ public class BooleanWidget extends Widget implements Serializable
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    public View view()
+    public View tileView()
     {
         Context context = SheetManager.currentSheetContext();
 
@@ -185,7 +185,8 @@ public class BooleanWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, RulesEngine rulesEngine) {
+    public View editorView(Context context)
+    {
         return new TextView(context);
     }
 

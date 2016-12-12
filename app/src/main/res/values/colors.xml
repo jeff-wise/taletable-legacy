@@ -66,17 +66,24 @@
     <color name="grey_850">#3B3B3B</color>
     <color name="grey_900">#313131</color>
 
+
+
+    <!-- APP COLOR SCHEME -->
+
+    <color name="light_grey_3">#ECECEC</color>
+    <color name="light_grey_4">#E6E6E6</color>
     <color name="light_grey_5">#DEDEDE</color>
     <color name="light_grey_6">#D6D6D6</color>
     <color name="light_grey_7">#CDCDCD</color>
     <color name="light_grey_8">#C7C7C7</color>
+    <color name="light_grey_9">#BFBFBF</color>
 
     <color name="grey_5">#8E8E8E</color>
     <color name="grey_6">#868686</color>
     <color name="grey_7">#7D7D7D</color>
     <color name="grey_8">#777777</color>
 
-    <color name="dark_grey_1">#626262</color>
+    <color name="dark_grey_1">#656565</color>
     <color name="dark_grey_2">#5C5C5C</color>
     <color name="dark_grey_3">#555555</color>
     <color name="dark_grey_4">#4C4C4C</color>
@@ -85,6 +92,14 @@
     <color name="dark_grey_7">#3B3B3B</color>
     <color name="dark_grey_8">#333333</color>
     <color name="dark_grey_9">#2A2A2A</color>
+
+    <!-- 58A151 -->
+    <color name="green_5000">#638753</color>
+    <color name="green_5">#4D7F45</color>
+
+
+
+
 
     <color name="red_soft">#D29494</color>
     <color name="red_medium">#8A6161</color>

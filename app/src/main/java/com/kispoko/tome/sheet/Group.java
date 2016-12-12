@@ -6,7 +6,6 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
@@ -276,7 +275,7 @@ public class Group implements Model, Serializable
                 frameLayout.setLayoutParams(frameLayoutParams);
 
                 // Add WidgetData View
-                View componentView = widget.view();
+                View componentView = widget.tileView();
                 frameLayout.addView(componentView);
 
                 rowLayout.addView(frameLayout);

@@ -672,7 +672,7 @@ public class ModelLib
                 // Sort values by database value type
                 if (PrimitiveValue.class.isAssignableFrom(field.getType())) {
                     PrimitiveValue primitiveValue = (PrimitiveValue) value;
-                    primitiveValue.setField(field);
+                    primitiveValue.setName(field.getName());
                     primitiveValues.add(primitiveValue);
                 }
                 else if (ModelValue.class.isAssignableFrom(field.getType())) {
@@ -683,13 +683,13 @@ public class ModelLib
                                 new NullFunctorError(model.getClass().getName(), field.getName()));
                     }
 
-                    modelValue.setField(field);
+                    modelValue.setName(field.getName());
                     modelValues.add(modelValue);
                 }
                 else if (CollectionValue.class.isAssignableFrom(field.getType())) {
                     CollectionValue<? extends Model> collectionValue =
                                                      (CollectionValue<? extends Model>) value;
-                    collectionValue.setField(field);
+                    collectionValue.setName(field.getName());
                     collectionValues.add(collectionValue);
                 }
             }

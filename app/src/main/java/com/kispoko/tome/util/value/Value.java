@@ -2,15 +2,14 @@
 package com.kispoko.tome.util.value;
 
 
-
-import java.lang.reflect.Field;
+import java.io.Serializable;
 
 
 
 /**
  * Value
  */
-public abstract class Value<A>
+public abstract class Value<A> implements Serializable
 {
 
     // PROPERTIES
@@ -18,7 +17,7 @@ public abstract class Value<A>
 
     protected A                value;
 
-    private   Field            field;
+    private   String           name;
 
     private   OnUpdateListener onUpdateListener;
 
@@ -59,21 +58,6 @@ public abstract class Value<A>
     }
 
 
-    // ** Field
-    // --------------------------------------------------------------------------------------
-
-    public Field getField()
-    {
-        return this.field;
-    }
-
-
-    public void setField(Field field)
-    {
-        this.field = field;
-    }
-
-
     // ** Value
     // --------------------------------------------------------------------------------------
 
@@ -104,14 +88,20 @@ public abstract class Value<A>
 
     public String name()
     {
-        return this.field.getName().toLowerCase();
+        return this.name;
+    }
+
+
+    public void setName(String name)
+    {
+        this.name = name.toLowerCase();
     }
 
 
     // LISTENERS
     // ------------------------------------------------------------------------------------------
 
-    public interface OnUpdateListener {
+    public interface OnUpdateListener extends Serializable {
         void onUpdate();
     }
 

@@ -157,7 +157,7 @@ public class SQL
         keywords.add("update");
         keywords.add("vacuum");
         keywords.add("values");
-        keywords.add("view");
+        keywords.add("tileView");
         keywords.add("when");
         keywords.add("where");
         keywords.add("with");

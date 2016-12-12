@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -39,6 +40,8 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static android.os.FileObserver.ACCESS;
 
 
 /**
@@ -49,6 +52,9 @@ public class TextWidget extends Widget implements Serializable
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
+
+    public static final long serialVersionUID = 88L;
+
 
     // > Functors
     // ------------------------------------------------------------------------------------------
@@ -167,6 +173,54 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
+    /**
+     * The text widget's tile view.
+     * @return The tile view.
+     */
+    public View tileView()
+    {
+        // [1] Setup / Declarations
+        // --------------------------------------------------------------------------------------
+
+        final Context context = SheetManager.currentSheetContext();
+        LinearLayout textLayout = this.linearLayout();
+        LinearLayout contentLayout =
+                (LinearLayout) textLayout.findViewById(R.id.widget_content_layout);
+
+        this.displayTextViewId = Util.generateViewId();
+
+        // [2] Text View
+        // --------------------------------------------------------------------------------------
+
+        TextViewBuilder textView = new TextViewBuilder();
+
+        textView.gravity = Gravity.CENTER_HORIZONTAL;
+        textView.id      = this.displayTextViewId;
+        textView.size    = this.size.getValue().resourceId();
+        textView.font    = Font.serifFontBold(context);
+        textView.color   = R.color.light_grey_5;
+        textView.text    = this.value();
+
+        contentLayout.addView(textView.textView(context));
+
+        return textLayout;
+    }
+
+
+    /**
+     * The text widget's editor view.
+     * @return The editor view.
+     */
+    public View editorView(Context context)
+    {
+        if (this.valueVariable().hasRefinement())
+            return this.getTypeEditorView(context);
+        // No type is set, so allow free form edit
+        else
+            return this.getFreeEditorView(context);
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -207,153 +261,6 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
-    // > Views
-    // ------------------------------------------------------------------------------------------
-
-    public View view()
-    {
-        // [1] Setup / Declarations
-        // --------------------------------------------------------------------------------------
-
-        final Context context = SheetManager.currentSheetContext();
-        LinearLayout textLayout = this.linearLayout();
-        LinearLayout contentLayout =
-                (LinearLayout) textLayout.findViewById(R.id.widget_content_layout);
-
-        this.displayTextViewId = Util.generateViewId();
-
-        // [2] Text View
-        // --------------------------------------------------------------------------------------
-
-        TextViewBuilder textView = new TextViewBuilder();
-
-        textView.gravity = Gravity.CENTER_HORIZONTAL;
-        textView.id      = this.displayTextViewId;
-        textView.size    = this.size.getValue().resourceId();
-        textView.font    = Font.serifFontBold(context);
-        textView.color   = R.color.light_grey_5;
-        textView.text    = this.value();
-
-        contentLayout.addView(textView.textView(context));
-
-        return textLayout;
-    }
-
-
-    public View getEditorView()
-    {
-        Context context = SheetManager.currentSheetContext();
-
-        if (this.valueVariable().hasRefinement())
-            return this.getTypeEditorView(context);
-        // No type is set, so allow free form edit
-        else
-            return this.getFreeEditorView(context);
-    }
-
-
-    public View getTypeEditorView(Context context)
-    {
-        // Lookup the recyclerview in activity layout
-        RecyclerView textEditorView = new RecyclerView(context);
-        textEditorView.setLayoutParams(Util.linearLayoutParamsMatch());
-        textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
-
-        // Create adapter passing in the sample user data
-        MemberOf memberOf = rulesEngine.getRefinementIndex()
-                                 .memberOfWithName(this.valueVariable().getRefinementId().getName());
-        TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
-        textEditorView.setAdapter(adapter);
-        // Set layout manager to position the items
-        textEditorView.setLayoutManager(new LinearLayoutManager(context));
-
-        return textEditorView;
-    }
-
-
-    public View getFreeEditorView(final Context context)
-    {
-        // Layout
-        LinearLayout layout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = Util.linearLayoutParamsMatch();
-
-        int layoutParamsMargins = (int) Util.getDim(context,
-                                                R.dimen.comp_text_editor_free_layout_margins);
-        layoutParams.setMargins(layoutParamsMargins, layoutParamsMargins,
-                                layoutParamsMargins, layoutParamsMargins);
-        layout.setLayoutParams(layoutParams);
-        layout.setBackgroundColor(ContextCompat.getColor(context, R.color.sheet_medium));
-        layout.setGravity(Gravity.CENTER_HORIZONTAL);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        int layoutPaddingHorz = (int) Util.getDim(context,
-                                              R.dimen.comp_text_editor_free_layout_padding_horz);
-        int layoutPaddingVert = (int) Util.getDim(context,
-                                              R.dimen.comp_text_editor_free_layout_padding_vert);
-        layout.setPadding(layoutPaddingHorz, layoutPaddingVert,
-                          layoutPaddingHorz, layoutPaddingVert);
-
-
-        // Edit TextWidget
-        EditText editView = new EditText(context);
-        editView.setId(R.id.comp_text_editor_value);
-
-        editView.setTextSize(this.size.getValue().toSP(context));
-
-        editView.setTypeface(Util.serifFontBold(context));
-        editView.setTextColor(ContextCompat.getColor(context, R.color.text_medium_dark));
-        editView.setGravity(Gravity.CENTER_HORIZONTAL);
-
-        LinearLayout.LayoutParams editViewLayoutParams = Util.linearLayoutParamsMatchWrap();
-        editViewLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        editView.setLayoutParams(editViewLayoutParams);
-        editView.setBackgroundResource(R.drawable.bg_text_component_editor);
-
-
-        // Save Button
-        TextView saveButton = new TextView(context);
-        LinearLayout.LayoutParams saveButtonLayoutParams = Util.linearLayoutParamsMatchWrap();
-        saveButtonLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        saveButtonLayoutParams.topMargin = (int) Util.getDim(context, R.dimen.two_dp);
-        saveButton.setGravity(Gravity.CENTER_HORIZONTAL);
-        saveButton.setLayoutParams(saveButtonLayoutParams);
-        saveButton.setBackgroundResource(R.drawable.bg_text_component_editor_save_button);
-        saveButton.setText("SAVE");
-        saveButton.setTypeface(Util.sansSerifFontBold(context));
-        saveButton.setTextColor(ContextCompat.getColor(context, R.color.green_medium));
-        float saveButtonTextSize = Util.getDim(context,
-                                           R.dimen.comp_text_editor_free_save_button_text_size);
-        saveButton.setTextSize(saveButtonTextSize);
-
-        final TextWidget thisTextWidget = this;
-        final EditText thisEditView = editView;
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Activity editActivity = (Activity) context;
-                String newValue = thisEditView.getText().toString();
-                EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
-                                                       thisTextWidget.getId(), newValue);
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("RESULT", editResult);
-                editActivity.setResult(Activity.RESULT_OK, resultIntent);
-                editActivity.finish();
-            }
-        });
-
-
-        float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
-        editView.setTextSize(valueTextSize);
-
-        editView.setText(this.value());
-
-        // Define layout structure
-        layout.addView(editView);
-        layout.addView(saveButton);
-
-        return layout;
-    }
-
 
     // INTERNAL
     // ------------------------------------------------------------------------------------------
@@ -393,5 +300,115 @@ public class TextWidget extends Widget implements Serializable
                 textView.setText(value);
         }
     }
+
+
+    public View getTypeEditorView(Context context)
+    {
+        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
+
+        // Lookup the recyclerview in activity layout
+        RecyclerView textEditorView = new RecyclerView(context);
+        textEditorView.setLayoutParams(Util.linearLayoutParamsMatch());
+        textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
+
+        // Create adapter passing in the sample user data
+        MemberOf memberOf = rulesEngine.getRefinementIndex()
+                                 .memberOfWithName(this.valueVariable().getRefinementId().getName());
+        TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
+        textEditorView.setAdapter(adapter);
+        // Set layout manager to position the items
+        textEditorView.setLayoutManager(new LinearLayoutManager(context));
+
+        return textEditorView;
+    }
+
+
+    public View getFreeEditorView(final Context context)
+    {
+        // Layout
+        LinearLayout layout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = Util.linearLayoutParamsMatch();
+
+        int layoutParamsMargins = (int) Util.getDim(context,
+                                                R.dimen.comp_text_editor_free_layout_margins);
+//        layoutParams.setMargins(layoutParamsMargins, layoutParamsMargins,
+//                                layoutParamsMargins, layoutParamsMargins);
+        layout.setLayoutParams(layoutParams);
+        layout.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_grey_7));
+        layout.setGravity(Gravity.CENTER_HORIZONTAL);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        int layoutPaddingHorz = (int) Util.getDim(context,
+                                              R.dimen.comp_text_editor_free_layout_padding_horz);
+        int layoutPaddingVert = (int) Util.getDim(context,
+                                              R.dimen.comp_text_editor_free_layout_padding_vert);
+        layout.setPadding(layoutPaddingHorz, layoutPaddingVert,
+                          layoutPaddingHorz, layoutPaddingVert);
+
+
+        // Edit TextWidget
+        EditText editView = new EditText(context);
+        editView.setId(R.id.comp_text_editor_value);
+        editView.setGravity(Gravity.TOP);
+
+        editView.setTextSize(this.size.getValue().toSP(context));
+
+        editView.setTypeface(Util.serifFontBold(context));
+        editView.setTextColor(ContextCompat.getColor(context, R.color.light_grey_5));
+        //editView.setGravity(Gravity.CENTER_HORIZONTAL);
+        editView.setMinHeight((int) Util.getDim(context, R.dimen.comp_text_editor_value_min_height));
+
+
+        LinearLayout.LayoutParams editViewLayoutParams = Util.linearLayoutParamsMatchWrap();
+        //editViewLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        editView.setLayoutParams(editViewLayoutParams);
+        editView.setBackgroundResource(R.drawable.bg_text_component_editor);
+
+
+        // Save Button
+        TextView saveButton = new TextView(context);
+        LinearLayout.LayoutParams saveButtonLayoutParams = Util.linearLayoutParamsMatchWrap();
+        saveButtonLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+//        saveButtonLayoutParams.topMargin = (int) Util.getDim(context, R.dimen.two_dp);
+        saveButton.setGravity(Gravity.CENTER_HORIZONTAL);
+        saveButton.setLayoutParams(saveButtonLayoutParams);
+        saveButton.setBackgroundResource(R.drawable.bg_text_component_editor_save_button);
+        saveButton.setText("DONE");
+        saveButton.setTypeface(Util.sansSerifFontBold(context));
+        saveButton.setTextColor(ContextCompat.getColor(context, R.color.green_5));
+        float saveButtonTextSize = Util.getDim(context,
+                                           R.dimen.comp_text_editor_free_save_button_text_size);
+        saveButton.setTextSize(saveButtonTextSize);
+
+        final TextWidget thisTextWidget = this;
+        final EditText thisEditView = editView;
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("***TEXTWIDGET", "on click");
+                Activity editActivity = (Activity) context;
+                String newValue = thisEditView.getText().toString();
+                EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
+                                                       thisTextWidget.getId(), newValue);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("RESULT", editResult);
+                editActivity.setResult(Activity.RESULT_OK, resultIntent);
+                editActivity.finish();
+            }
+        });
+
+
+        float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
+        editView.setTextSize(valueTextSize);
+
+        editView.setText(this.value());
+
+        // Define layout structure
+        layout.addView(editView);
+        layout.addView(saveButton);
+
+        return layout;
+    }
+
 
 }

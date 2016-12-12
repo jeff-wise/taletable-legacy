@@ -281,7 +281,7 @@ public class TextVariable extends Variable implements Model, Serializable
      */
     public boolean hasRefinement()
     {
-        return this.refinementId != null;
+        return !this.refinementId.isNull();
     }
 
 

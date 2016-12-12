@@ -284,7 +284,7 @@ public class NumberWidget extends Widget implements Serializable
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    public View view()
+    public View tileView()
     {
         // [1] Setup / Declarations
         // --------------------------------------------------------------------------------------
@@ -347,7 +347,7 @@ public class NumberWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, RulesEngine rulesEngine)
+    public View editorView(Context context)
     {
         return new LinearLayout(context);
     }

@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.programming.program;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -58,6 +60,7 @@ public class ProgramIndex implements Model, Serializable
         this.programs = CollectionValue.full(new ArrayList<Program>(), programClasses);
 
         this.programByName = new HashMap<>();
+
     }
 
 
@@ -121,7 +124,7 @@ public class ProgramIndex implements Model, Serializable
         // The programs are loaded into the collection, but are not automatically indexed.
         // Index all of the programs once they are all loaded.
         for (Program program : this.programs.getValue()) {
-            this.addProgram(program);
+            this.programByName.put(program.getName(), program);
         }
     }
 

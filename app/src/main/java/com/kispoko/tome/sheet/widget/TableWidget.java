@@ -292,13 +292,12 @@ public class TableWidget extends Widget implements Serializable
      * Create the tableWidget view.
      * @return
      */
-    public View view()
+    public View tileView()
     {
         // [1] Get dependencies
         // --------------------------------------------------------------------------------------
 
         Context context = SheetManager.currentSheetContext();
-        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
 
         LinearLayout layout = this.linearLayout();
 
@@ -356,7 +355,7 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, RulesEngine rulesEngine)
+    public View editorView(Context context)
     {
         return new LinearLayout(context);
     }

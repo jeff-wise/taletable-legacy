@@ -247,13 +247,13 @@ public class ModelValue<A extends Model> extends Value<A>
     // LISTENERS
     // --------------------------------------------------------------------------------------
 
-    public interface OnSaveListener {
+    public interface OnSaveListener extends Serializable {
         void onSave();
         void onSaveError(DatabaseException exception);
     }
 
 
-    public interface OnLoadListener<A> {
+    public interface OnLoadListener<A> extends Serializable {
         void onLoad(A value);
         void onLoadDBError(DatabaseException exception);
         void onLoadError(Exception exception);

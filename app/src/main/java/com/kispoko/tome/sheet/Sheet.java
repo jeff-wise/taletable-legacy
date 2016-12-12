@@ -82,7 +82,6 @@ public class Sheet implements Model
         this.rules     = ModelValue.full(rulesEngine, RulesEngine.class);
 
         indexComponents();
-
     }
 
 
@@ -125,7 +124,10 @@ public class Sheet implements Model
     /**
      * This method is called when the Sheet is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        indexComponents();
+    }
 
 
     // > State

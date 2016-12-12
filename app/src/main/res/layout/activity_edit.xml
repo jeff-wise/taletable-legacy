@@ -16,22 +16,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/sheet_dark">
+            android:background="@color/dark_grey_7">
 
             <android.support.v7.widget.Toolbar
-                android:name="@+name/toolbar"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:elevation="7dp"
-                android:background="@color/grey_900"
+                android:background="@color/dark_grey_9"
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <TextView
-                    android:name="@+name/page_title"
+                    android:id="@+id/page_title"
                     android:layout_gravity="center"
                     android:textSize="21sp"
                     android:text="@string/activity_characters_title"
-                    android:textColor="@color/grey_300"
+                    android:textColor="@color/light_grey_3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -42,8 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:elevation="7dp"
-                android:background="@color/grey_900">
+                android:background="@color/dark_grey_9">
 
                 <TextView
                     android:id="@+id/edit_action_label"
@@ -51,8 +49,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:paddingBottom="15dp"
-                    android:textSize="21sp"
-                    android:textColor="@color/grey_450" />
+                    android:textSize="18sp"
+                    android:textColor="@color/grey_8" />
 
             </LinearLayout>
 

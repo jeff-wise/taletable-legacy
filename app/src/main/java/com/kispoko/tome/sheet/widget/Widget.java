@@ -13,7 +13,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ActionDialogFragment;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
@@ -40,8 +39,8 @@ public abstract class Widget implements Model, Serializable
     // INTERFACE
     // ------------------------------------------------------------------------------------------
 
-    abstract public View view();
-    abstract public View getEditorView();
+    abstract public View tileView();
+    abstract public View editorView(Context context);
 
     abstract public void runAction(Action action);
     abstract public String name();

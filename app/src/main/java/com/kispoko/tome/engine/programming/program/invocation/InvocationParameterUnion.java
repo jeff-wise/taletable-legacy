@@ -7,6 +7,7 @@ import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 /**
  * Program Invocation Parameter
  */
-public class InvocationParameterUnion implements Model
+public class InvocationParameterUnion implements Model, Serializable
 {
 
     // PROPERTIES

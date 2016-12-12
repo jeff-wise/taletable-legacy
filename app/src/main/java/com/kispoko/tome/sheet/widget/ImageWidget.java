@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
@@ -73,8 +72,13 @@ public class ImageWidget extends Widget implements Serializable
 
         this.widgetData = ModelValue.full(widgetData, WidgetData.class);
 
-        SerialBitmap serialBitmap = new SerialBitmap(bitmap);
-        this.bitmap     = new PrimitiveValue<>(serialBitmap, SerialBitmap.class);
+        if (this.bitmap != null) {
+            SerialBitmap serialBitmap = new SerialBitmap(bitmap);
+            this.bitmap     = new PrimitiveValue<>(serialBitmap, SerialBitmap.class);
+        }
+        else {
+            this.bitmap     = new PrimitiveValue<>(null, SerialBitmap.class);
+        }
     }
 
 
@@ -202,7 +206,7 @@ public class ImageWidget extends Widget implements Serializable
      * Use setMode to change the view dynamically.
      * @return
      */
-    public View view()
+    public View tileView()
     {
         // [1] Get dependencies
         // --------------------------------------------------------------------------------------
@@ -275,7 +279,7 @@ public class ImageWidget extends Widget implements Serializable
     }
 
 
-    public View getEditorView(Context context, RulesEngine rulesEngine)
+    public View editorView(Context context)
     {
         return new LinearLayout(context);
     }

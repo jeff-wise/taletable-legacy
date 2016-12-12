@@ -2,8 +2,6 @@
 package com.kispoko.tome.util.value;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.OneToManyRelation;
 import com.kispoko.tome.util.model.Model;
@@ -242,13 +240,13 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     // LISTENERS
     // --------------------------------------------------------------------------------------
 
-    public interface OnSaveListener {
+    public interface OnSaveListener extends Serializable {
         void onSave();
         void onSaveError(DatabaseException exception);
     }
 
 
-    public interface OnLoadListener<A> {
+    public interface OnLoadListener<A> extends Serializable {
         void onLoad(List<A> value);
         void onLoadDBError(DatabaseException exception);
         void onLoadError(Exception exception);

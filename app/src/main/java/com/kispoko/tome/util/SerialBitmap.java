@@ -19,24 +19,30 @@ public class SerialBitmap implements Serializable
 
     private Bitmap bitmap;
 
-    public SerialBitmap(Bitmap bitmap) {
+    public SerialBitmap(Bitmap bitmap)
+    {
         this.bitmap = bitmap;
     }
 
-    public Bitmap getBitmap() {
+    public Bitmap getBitmap()
+    {
         return this.bitmap;
     }
 
     // Converts the Bitmap into a byte array for serialization
-    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+    private void writeObject(java.io.ObjectOutputStream out)
+            throws IOException
+    {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteStream);
+        this.bitmap.compress(Bitmap.CompressFormat.PNG, 0, byteStream);
         byte bitmapBytes[] = byteStream.toByteArray();
         out.write(bitmapBytes, 0, bitmapBytes.length);
     }
 
     // Deserializes a byte array representing the Bitmap and decodes it
-    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException
+    {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         int b;
         while((b = in.read()) != -1)
