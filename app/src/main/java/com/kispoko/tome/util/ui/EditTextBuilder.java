@@ -5,57 +5,54 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.util.Util;
 
 
 
 /**
- * Text View Builder
+ * Edit View Builder
  */
-public class TextViewBuilder
+public class EditTextBuilder
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    public Integer              id;
+    public Integer  id;
 
-    public Integer              height;
-    public Integer              width;
+    public Integer  height;
+    public Integer  width;
+    public Integer  minHeight;
 
-    public Integer              gravity;
-    public Integer              layoutGravity;
+    public Integer  gravity;
 
-    public String               text;
+    public String   text;
 
-    public Padding              padding;
+    public Padding  padding;
 
-    public Integer              size;
-    public Integer              color;
-    public Typeface             font;
+    public Integer  size;
+    public Integer  color;
+    public Typeface font;
 
-    public Integer              backgroundColor;
-    public Integer              backgroundResource;
-
-    public View.OnClickListener onClick;
+    public Integer  backgroundColor;
+    public Integer  backgroundResource;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TextViewBuilder()
+    public EditTextBuilder()
     {
         this.id                 = null;
 
         this.height             = null;
         this.width              = null;
+        this.minHeight          = null;
 
         this.gravity            = null;
-        this.layoutGravity      = null;
 
         this.text               = null;
 
@@ -67,17 +64,15 @@ public class TextViewBuilder
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
-
-        this.onClick            = null;
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
 
-    public TextView textView(Context context)
+    public EditText editText(Context context)
     {
-        TextView textView = new TextView(context);
+        EditText editText = new EditText(context);
 
         // [1] Text View
         // --------------------------------------------------------------------------------------
@@ -86,75 +81,70 @@ public class TextViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.id != null)
-            textView.setId(this.id);
+            editText.setId(this.id);
 
         // > Gravity
         // --------------------------------------------------------------------------------------
 
         if (this.gravity != null)
-            textView.setGravity(this.gravity);
+            editText.setGravity(this.gravity);
+
+        // > Min Height
+        // --------------------------------------------------------------------------------------
+
+        if (this.minHeight != null)
+            editText.setMinHeight((int) context.getResources().getDimension(this.minHeight));
+
 
         // > Padding
         // --------------------------------------------------------------------------------------
 
-        textView.setPadding(this.padding.left(context),
+        editText.setPadding(this.padding.left(context),
                             this.padding.top(context),
                             this.padding.right(context),
                             this.padding.bottom(context));
-
-        // > On Click Listener
-        // --------------------------------------------------------------------------------------
-
-        if (this.onClick != null)
-            textView.setOnClickListener(this.onClick);
 
         // > Size
         // --------------------------------------------------------------------------------------
 
         if (this.size != null)
-            textView.setTextSize(context.getResources().getDimension(this.size));
+            editText.setTextSize(context.getResources().getDimension(this.size));
 
         // > Color
         // --------------------------------------------------------------------------------------
 
         if (this.color != null)
-            textView.setTextColor(ContextCompat.getColor(context, this.color));
-
-        // > Font
-        // --------------------------------------------------------------------------------------
-
-        if (this.font != null)
-            textView.setTypeface(this.font);
-
-        // > Background Color
-        // --------------------------------------------------------------------------------------
-
-        if (this.backgroundColor != null)
-            textView.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            editText.setTextColor(ContextCompat.getColor(context, this.color));
 
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundResource != null)
-            textView.setBackgroundResource(this.backgroundResource);
+            editText.setBackgroundResource(this.backgroundResource);
+
+        // > Font
+        // --------------------------------------------------------------------------------------
+
+        if (this.font != null)
+            editText.setTypeface(this.font);
+
+        // > Background Color
+        // --------------------------------------------------------------------------------------
+
+        if (this.backgroundColor != null)
+            editText.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
 
         // > Text
         // --------------------------------------------------------------------------------------
 
         if (this.text != null)
-            textView.setText(this.text);
+            editText.setText(this.text);
 
         // [2] Layout
         // --------------------------------------------------------------------------------------
 
-        LinearLayout.LayoutParams textViewLayoutParams = Util.linearLayoutParamsMatch();
-        textView.setLayoutParams(textViewLayoutParams);
-
-        // > Gravity
-        // --------------------------------------------------------------------------------------
-
-        if (this.layoutGravity != null)
-            textViewLayoutParams.gravity = this.layoutGravity;
+        LinearLayout.LayoutParams editTextLayoutParams = Util.linearLayoutParamsMatch();
+        editText.setLayoutParams(editTextLayoutParams);
 
         // > Height
         // --------------------------------------------------------------------------------------
@@ -162,10 +152,10 @@ public class TextViewBuilder
         if (this.height != null)
         {
             if (isLayoutConstant(this.height)) {
-                textViewLayoutParams.height = this.height;
+                editTextLayoutParams.height = this.height;
             }
             else {
-                textViewLayoutParams.height = (int) context.getResources()
+                editTextLayoutParams.height = (int) context.getResources()
                                                            .getDimension(this.height);
             }
         }
@@ -176,15 +166,15 @@ public class TextViewBuilder
         if (this.width != null)
         {
             if (isLayoutConstant(this.width)) {
-                textViewLayoutParams.width = this.width;
+                editTextLayoutParams.width = this.width;
             }
             else {
-                textViewLayoutParams.width = (int) context.getResources()
+                editTextLayoutParams.width = (int) context.getResources()
                                                           .getDimension(this.width);
             }
         }
 
-        return textView;
+        return editText;
     }
 
 

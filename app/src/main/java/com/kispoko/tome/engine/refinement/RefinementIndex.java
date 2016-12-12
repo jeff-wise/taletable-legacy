@@ -25,12 +25,22 @@ public class RefinementIndex implements Model, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID id;
 
-    private CollectionValue<MemberOf> memberOfs;
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
+    private CollectionValue<RefinementUnion> refinements;
+
 
     // > Internal
-    private Map<String,MemberOf> memberOfIndex;
+    // ------------------------------------------------------------------------------------------
+
+    private Map<String,MemberOf>             memberOfIndex;
 
 
     // CONSTRUCTORS
@@ -40,46 +50,45 @@ public class RefinementIndex implements Model, Serializable
     {
         this.id        = null;
 
-        List<Class<? extends MemberOf>> memberOfClasses = new ArrayList<>();
-        memberOfClasses.add(MemberOf.class);
-        this.memberOfs = CollectionValue.empty(memberOfClasses);
+        List<Class<? extends RefinementUnion>> refinementUnionClasses = new ArrayList<>();
+        refinementUnionClasses.add(RefinementUnion.class);
+        this.refinements = CollectionValue.empty(refinementUnionClasses);
+
+        // > Initialize indexes
+        this.memberOfIndex = new HashMap<>();
     }
 
 
-    public RefinementIndex(UUID id)
+    public RefinementIndex(UUID id, List<RefinementUnion> refinementUnions)
     {
         this.id        = id;
 
-        List<Class<? extends MemberOf>> memberOfClasses = new ArrayList<>();
-        memberOfClasses.add(MemberOf.class);
-        this.memberOfs = CollectionValue.full(new ArrayList<MemberOf>(), memberOfClasses);
+        List<Class<? extends RefinementUnion>> refinementUnionClasses = new ArrayList<>();
+        refinementUnionClasses.add(RefinementUnion.class);
+        this.refinements = CollectionValue.full(refinementUnions, refinementUnionClasses);
 
         // > Initialize indexes
         memberOfIndex = new HashMap<>();
+
+        this.indexRefinements();
     }
 
 
     public static RefinementIndex fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID id = UUID.randomUUID();
-        final RefinementIndex refinementIndex = new RefinementIndex(id);
+        UUID                  id          = UUID.randomUUID();
 
-        yaml.forEach(new Yaml.ForEach<Void>() {
+        List<RefinementUnion> refinements = yaml.forEach(new Yaml.ForEach<RefinementUnion>()
+        {
             @Override
-            public Void forEach(Yaml yaml, int index) throws YamlException {
-                String type = yaml.atKey("type").getString();
-                switch (type)
-                {
-                    case "member_of":
-                        refinementIndex.addMemberOf(MemberOf.fromYaml(yaml));
-                        break;
-                }
-                return null;
+            public RefinementUnion forEach(Yaml yaml, int index) throws YamlException
+            {
+                return RefinementUnion.fromYaml(yaml);
             }
         });
 
-        return refinementIndex;
+        return new RefinementIndex(id, refinements);
     }
 
 
@@ -118,19 +127,26 @@ public class RefinementIndex implements Model, Serializable
     /**
      * This method is called when the Refinement Index is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.indexRefinements();
+    }
 
 
     /**
-     * Add a new MemberOf refinement to the refinement index.
-     * @param memberOf The MemberOf refinement to add to the index.
+     * Add a new refinement to the index. If a refinement of the same type and name already exists,
+     * then the old refinement is replaced with the new one being added.
+     * @param refinementUnion The new refinement to add.
      */
-    public void addMemberOf(MemberOf memberOf)
+    public void addRefinement(RefinementUnion refinementUnion)
     {
-        if (!this.memberOfIndex.containsKey(memberOf.getName()))
+        switch (refinementUnion.type())
         {
-            this.memberOfIndex.put(memberOf.getName(), memberOf);
-            this.memberOfs.getValue().add(memberOf);
+            case MEMBER_OF:
+                this.refinements.getValue().add(refinementUnion);
+                MemberOf memberOf = refinementUnion.memberOf();
+                this.memberOfIndex.put(memberOf.getName(), memberOf);
+                break;
         }
     }
 
@@ -143,6 +159,24 @@ public class RefinementIndex implements Model, Serializable
     public MemberOf memberOfWithName(String memberOfName)
     {
         return this.memberOfIndex.get(memberOfName);
+    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void indexRefinements()
+    {
+        for (RefinementUnion refinementUnion : this.refinements.getValue())
+        {
+            switch (refinementUnion.type())
+            {
+                case MEMBER_OF:
+                    MemberOf memberOf = refinementUnion.memberOf();
+                    this.memberOfIndex.put(memberOf.getName(), memberOf);
+                    break;
+            }
+        }
     }
 
 }

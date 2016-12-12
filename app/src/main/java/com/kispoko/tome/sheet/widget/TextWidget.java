@@ -30,7 +30,9 @@ import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.engine.refinement.MemberOf;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.EditTextBuilder;
 import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
@@ -217,7 +219,7 @@ public class TextWidget extends Widget implements Serializable
             return this.getTypeEditorView(context);
         // No type is set, so allow free form edit
         else
-            return this.getFreeEditorView(context);
+            return this.freeEditorView(context);
     }
 
 
@@ -323,71 +325,79 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
-    public View getFreeEditorView(final Context context)
+    public View freeEditorView(final Context context)
     {
-        // Layout
-        LinearLayout layout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = Util.linearLayoutParamsMatch();
+        LinearLayout layout = this.freeEditorLayout(context);
 
-        int layoutParamsMargins = (int) Util.getDim(context,
-                                                R.dimen.comp_text_editor_free_layout_margins);
-//        layoutParams.setMargins(layoutParamsMargins, layoutParamsMargins,
-//                                layoutParamsMargins, layoutParamsMargins);
-        layout.setLayoutParams(layoutParams);
-        layout.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_grey_7));
-        layout.setGravity(Gravity.CENTER_HORIZONTAL);
-        layout.setOrientation(LinearLayout.VERTICAL);
+        EditText editView   = this.freeEditView(context);
+        TextView saveButton = this.saveButtonView(context, editView);
 
-        int layoutPaddingHorz = (int) Util.getDim(context,
-                                              R.dimen.comp_text_editor_free_layout_padding_horz);
-        int layoutPaddingVert = (int) Util.getDim(context,
-                                              R.dimen.comp_text_editor_free_layout_padding_vert);
-        layout.setPadding(layoutPaddingHorz, layoutPaddingVert,
-                          layoutPaddingHorz, layoutPaddingVert);
+        layout.addView(editView);
+        layout.addView(saveButton);
+
+        return layout;
+    }
 
 
-        // Edit TextWidget
-        EditText editView = new EditText(context);
-        editView.setId(R.id.comp_text_editor_value);
-        editView.setGravity(Gravity.TOP);
+    private LinearLayout freeEditorLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        editView.setTextSize(this.size.getValue().toSP(context));
+        layout.backgroundColor = R.color.dark_grey_7;
+        layout.gravity         = Gravity.CENTER_HORIZONTAL;
+        layout.orientation     = LinearLayout.VERTICAL;
+        layout.padding.left    = R.dimen.widget_text_editor_free_layout_padding_horz;
+        layout.padding.right   = R.dimen.widget_text_editor_free_layout_padding_horz;
+        layout.padding.top     = R.dimen.widget_text_editor_free_layout_padding_vert;
+        layout.padding.bottom  = R.dimen.widget_text_editor_free_layout_padding_vert;
 
-        editView.setTypeface(Util.serifFontBold(context));
-        editView.setTextColor(ContextCompat.getColor(context, R.color.light_grey_5));
-        //editView.setGravity(Gravity.CENTER_HORIZONTAL);
-        editView.setMinHeight((int) Util.getDim(context, R.dimen.comp_text_editor_value_min_height));
-
-
-        LinearLayout.LayoutParams editViewLayoutParams = Util.linearLayoutParamsMatchWrap();
-        //editViewLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        editView.setLayoutParams(editViewLayoutParams);
-        editView.setBackgroundResource(R.drawable.bg_text_component_editor);
+        return layout.linearLayout(context);
+    }
 
 
-        // Save Button
-        TextView saveButton = new TextView(context);
-        LinearLayout.LayoutParams saveButtonLayoutParams = Util.linearLayoutParamsMatchWrap();
-        saveButtonLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-//        saveButtonLayoutParams.topMargin = (int) Util.getDim(context, R.dimen.two_dp);
-        saveButton.setGravity(Gravity.CENTER_HORIZONTAL);
-        saveButton.setLayoutParams(saveButtonLayoutParams);
-        saveButton.setBackgroundResource(R.drawable.bg_text_component_editor_save_button);
-        saveButton.setText("DONE");
-        saveButton.setTypeface(Util.sansSerifFontBold(context));
-        saveButton.setTextColor(ContextCompat.getColor(context, R.color.green_5));
-        float saveButtonTextSize = Util.getDim(context,
-                                           R.dimen.comp_text_editor_free_save_button_text_size);
-        saveButton.setTextSize(saveButtonTextSize);
+    private EditText freeEditView(Context context)
+    {
+        EditTextBuilder editText    = new EditTextBuilder();
+
+        editText.id                 = R.id.comp_text_editor_value;
+        editText.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        editText.width              = LinearLayout.LayoutParams.MATCH_PARENT;
+        editText.gravity            = Gravity.TOP;
+        editText.size               = R.dimen.widget_text_editor_free_value_text_size;
+        editText.font               = Font.serifFontBold(context);
+        editText.color              = R.color.light_grey_5;
+        editText.minHeight          = R.dimen.widget_text_editor_free_value_min_height;
+        editText.backgroundResource = R.drawable.bg_text_component_editor;
+        editText.text               = this.value();
+
+        return editText.editText(context);
+    }
+
+
+    private TextView saveButtonView(final Context context, final EditText editText)
+    {
+        TextViewBuilder saveButton = new TextViewBuilder();
 
         final TextWidget thisTextWidget = this;
-        final EditText thisEditView = editView;
-        saveButton.setOnClickListener(new View.OnClickListener() {
+
+        saveButton.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        saveButton.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        saveButton.layoutGravity        = Gravity.CENTER_HORIZONTAL;
+        saveButton.gravity              = Gravity.CENTER_HORIZONTAL;
+        saveButton.backgroundResource   = R.drawable.bg_text_component_editor_save_button;
+        saveButton.text                 = "DONE";
+        saveButton.font                 = Font.sansSerifFontBold(context);
+        saveButton.color                = R.color.green_5;
+        saveButton.size                 = R.dimen.widget_text_editor_free_button_text_size;
+
+        saveButton.onClick              = new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Log.d("***TEXTWIDGET", "on click");
                 Activity editActivity = (Activity) context;
-                String newValue = thisEditView.getText().toString();
+                String newValue = editText.getText().toString();
                 EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
                                                        thisTextWidget.getId(), newValue);
                 Intent resultIntent = new Intent();
@@ -395,20 +405,11 @@ public class TextWidget extends Widget implements Serializable
                 editActivity.setResult(Activity.RESULT_OK, resultIntent);
                 editActivity.finish();
             }
-        });
+        };
 
-
-        float valueTextSize = Util.getDim(context, R.dimen.comp_text_editor_value_text_size);
-        editView.setTextSize(valueTextSize);
-
-        editView.setText(this.value());
-
-        // Define layout structure
-        layout.addView(editView);
-        layout.addView(saveButton);
-
-        return layout;
+        return saveButton.textView(context);
     }
+
 
 
 }

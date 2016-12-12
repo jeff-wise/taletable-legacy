@@ -11,6 +11,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
+
 /**
 * Refinement ErrorType
 */

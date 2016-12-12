@@ -136,7 +136,7 @@ public class LinearLayoutBuilder
         if (this.backgroundColor != null)
             linearLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
 
-        // > Background Color
+        // > Background Resource
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundResource != null)

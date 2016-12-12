@@ -2,23 +2,15 @@
 package com.kispoko.tome.sheet.widget.table.cell;
 
 
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.R;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
-import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
-import com.kispoko.tome.sheet.widget.table.column.TextColumn;
-import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;

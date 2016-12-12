@@ -25,6 +25,7 @@ import com.kispoko.tome.engine.programming.function.Function;
 import com.kispoko.tome.engine.programming.function.Tuple;
 import com.kispoko.tome.engine.programming.program.Program;
 import com.kispoko.tome.engine.programming.program.statement.Statement;
+import com.kispoko.tome.engine.refinement.RefinementUnion;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.engine.refinement.RefinementIndex;
@@ -112,6 +113,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(TextColumn.class);
 
             // ** Refinements
+            modelClasses.add(RefinementUnion.class);
             modelClasses.add(RefinementId.class);
             modelClasses.add(RefinementIndex.class);
             modelClasses.add(MemberOf.class);
