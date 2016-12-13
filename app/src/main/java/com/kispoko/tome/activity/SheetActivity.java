@@ -13,8 +13,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
@@ -28,8 +31,12 @@ import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.activity.sheet.PageFragment;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 
 import java.util.ArrayList;
+
 
 
 /**
@@ -55,7 +62,7 @@ public class SheetActivity
 
     private ChooseImageAction chooseImageAction;
 
-    private static String characterName;
+    private String characterName;
 
     private PagePagerAdapter pagePagerAdapter;
 
@@ -173,22 +180,28 @@ public class SheetActivity
         sheet.render(this.pagePagerAdapter);
 
         // Set the title to the character's name, if available
-        String characterName = "Sheet";
+        this.characterName = "Sheet";
 
         TextVariable nameVariable = State.variableWithName("name").getText();
         if (!nameVariable.isNull()) {
-            characterName = nameVariable.value();
+            this.characterName = nameVariable.value();
         }
 
         TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(characterName);
+        titleView.setText(this.characterName);
+
+        TextView navHeaderDesc = (TextView) findViewById(R.id.nav_view_header_sheet_desc);
+        if (navHeaderDesc != null) {
+            navHeaderDesc.setText(this.characterName);
+            navHeaderDesc.setVisibility(View.VISIBLE);
+        }
     }
 
 
-    // > INTERNAL
+    // INTERNAL
     // -------------------------------------------------------------------------------------------
 
-    // >> User Interface
+    // > Initialization Methods
     // -------------------------------------------------------------------------------------------
 
     /**
@@ -226,37 +239,8 @@ public class SheetActivity
     {
         //Initializing NavigationView
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setItemIconTintList(null);
 
-        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener()
-        {
-
-            // This method will trigger on item Click of navigation menu
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem)
-            {
-                //Checking if the item is in checked state or not, if not make it in checked state
-//                if(menuItem.isChecked()) menuItem.setChecked(false);
-//                else menuItem.setChecked(true);
-
-                //Closing drawer on item click
-                drawerLayout.closeDrawers();
-
-                //Check to see which item was being clicked and perform appropriate action
-                switch (menuItem.getItemId())
-                {
-                    //Replacing the sheet content with ContentFragment Which is our Inbox View;
-                    case R.id.nav_characters:
-                        Intent intent = new Intent(SheetActivity.this, ManageSheetsActivity.class);
-                        startActivity(intent);
-                        return true;
-                }
-
-                return true;
-            }
-        });
+        navigationView.addView(this.navigationView());
     }
 
 
@@ -278,7 +262,7 @@ public class SheetActivity
         tabLayout.setupWithViewPager(viewPager);
 
         TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(SheetActivity.characterName);
+        titleView.setText(this.characterName);
     }
 
 
@@ -303,5 +287,111 @@ public class SheetActivity
             SheetManager.goToMostRecent(this, this);
 
     }
+
+
+    // > Views
+    // -------------------------------------------------------------------------------------------
+
+    private LinearLayout navigationView()
+    {
+        LinearLayout layout = this.navigationLayout();
+
+        layout.addView(this.navigationItemHeaderView("SHEET",
+                                                     this.characterName,
+                                                     R.id.nav_view_header_sheet_desc));
+        layout.addView(this.navigationItemView("ITEMS"));
+        layout.addView(this.navigationItemView("OPTIONS"));
+        layout.addView(this.navigationItemView("FUNCTIONS"));
+        layout.addView(this.navigationItemView("PROGRAMS"));
+        layout.addView(this.navigationItemHeaderView("SHEETS", null, null));
+        layout.addView(this.navigationItemView("MANAGE"));
+
+        return layout;
+    }
+
+
+    private LinearLayout navigationLayout()
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation  = LinearLayout.VERTICAL;
+        layout.padding.top  = R.dimen.nav_view_padding_top;
+
+        return layout.linearLayout(this);
+    }
+
+
+    private LinearLayout navigationItemHeaderView(String headerName, String description, Integer id)
+    {
+        // [1] Views
+        // --------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout     = new LinearLayoutBuilder();
+        TextViewBuilder     headerView = new TextViewBuilder();
+        TextViewBuilder     descView   = new TextViewBuilder();
+
+
+        // [2 A] Layout
+        // --------------------------------------------------------------------------------------
+
+        layout.orientation        = LinearLayout.VERTICAL;
+        layout.width              = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.padding.top        = R.dimen.nav_view_header_padding_vert;
+        layout.padding.bottom     = R.dimen.nav_view_header_padding_vert;
+        layout.backgroundColor    = R.color.dark_blue_8;
+
+        layout.child(headerView)
+              .child(descView);
+
+        // [2 B] Header Text
+        // --------------------------------------------------------------------------------------
+
+        headerView.width              = LinearLayout.LayoutParams.MATCH_PARENT;
+        headerView.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        headerView.text               = headerName;
+        headerView.font               = Font.sansSerifFontBold(this);
+
+        headerView.padding.left       = R.dimen.nav_view_header_padding_left;
+        headerView.size               = R.dimen.nav_view_header_text_size;
+        headerView.color              = R.color.light_grey_9;
+
+        // [2 C] Description
+        // --------------------------------------------------------------------------------------
+
+        descView.id                 = id;
+        descView.width              = LinearLayout.LayoutParams.MATCH_PARENT;
+        descView.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        descView.padding.left       = R.dimen.nav_view_header_padding_left;
+        descView.padding.top        = R.dimen.nav_view_header_desc_padding_top;
+        descView.font               = Font.sansSerifFontBold(this);
+        descView.size               = R.dimen.nav_view_header_desc_text_size;
+        descView.color              = R.color.gold_5;
+        descView.text               = description;
+        descView.visibility         = ViewPager.GONE;
+
+        return layout.linearLayout(this);
+    }
+
+
+    private TextView navigationItemView(String itemName)
+    {
+        TextViewBuilder itemView = new TextViewBuilder();
+
+        itemView.width              = LinearLayout.LayoutParams.MATCH_PARENT;
+        itemView.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        itemView.text               = itemName;
+        itemView.font               = Font.sansSerifFontBold(this);
+        itemView.padding.top        = R.dimen.nav_view_item_padding_vert;
+        itemView.padding.bottom     = R.dimen.nav_view_item_padding_vert;
+
+        itemView.backgroundColor    = R.color.dark_blue_6;
+        itemView.padding.left       = R.dimen.nav_view_item_padding_left;
+        itemView.size               = R.dimen.nav_view_item_text_size;
+        itemView.color              = R.color.grey_4;
+
+        return itemView.textView(this);
+    }
+
 
 }

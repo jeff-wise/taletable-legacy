@@ -18,7 +18,7 @@ import java.util.List;
  *
  * Convenience class for creating Linear Layouts
  */
-public class LinearLayoutBuilder
+public class LinearLayoutBuilder implements ViewBuilder
 {
 
     // PROPERTIES
@@ -53,7 +53,7 @@ public class LinearLayoutBuilder
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private List<View>             children;
+    private List<ViewBuilder>      children;
 
 
     // CONSTRUCTORS
@@ -90,12 +90,12 @@ public class LinearLayoutBuilder
     // API
     // ------------------------------------------------------------------------------------------
 
-    // > Methods
+    // > Attributes
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayoutBuilder child(View childView)
+    public LinearLayoutBuilder child(ViewBuilder childViewBuilder)
     {
-        this.children.add(childView);
+        this.children.add(childViewBuilder);
         return this;
     }
 
@@ -104,6 +104,15 @@ public class LinearLayoutBuilder
     {
         this.rules.add(verb);
         return this;
+    }
+
+
+    // > View Builder
+    // ------------------------------------------------------------------------------------------
+
+    public View view(Context context)
+    {
+        return this.linearLayout(context);
     }
 
 
@@ -209,9 +218,9 @@ public class LinearLayoutBuilder
         // [3] Children
         // --------------------------------------------------------------------------------------
 
-        for (View childView : this.children)
+        for (ViewBuilder childViewBuilder : this.children)
         {
-            linearLayout.addView(childView);
+            linearLayout.addView(childViewBuilder.view(context));
         }
 
         switch (this.layoutType)

@@ -18,5 +18,7 @@
 
     <item name="widget_content_layout" type="id"/>
 
+    <item name="nav_view_header_sheet_desc" type="id"/>
+
 
 </resources>

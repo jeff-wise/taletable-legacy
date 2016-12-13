@@ -158,10 +158,10 @@ public abstract class Widget implements Model, Serializable
         // [5] Structure layout
         // --------------------------------------------------------------------------------------
 
-        layout.child(contentLayout.linearLayout(context));
+        layout.child(contentLayout);
 
         if (showLabel)
-            layout.child(labelView.textView(context));
+            layout.child(labelView);
 
 
         return layout.linearLayout(context);

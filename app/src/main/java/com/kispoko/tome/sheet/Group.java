@@ -296,20 +296,24 @@ public class Group implements Model, Serializable
 
     private LinearLayout labelView(Context context)
     {
-        // [1] Layout
+        // [1] Views
         // --------------------------------------------------------------------------------------
 
         LinearLayoutBuilder labelLayout = new LinearLayoutBuilder();
+        TextViewBuilder labelView = new TextViewBuilder();
+
+        // [2 A] Layout
+        // --------------------------------------------------------------------------------------
 
         labelLayout.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
         labelLayout.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
         labelLayout.padding.left   = R.dimen.group_label_padding_left;
         labelLayout.padding.bottom = R.dimen.group_label_padding_bottom;
 
-        // [2] Text
-        // --------------------------------------------------------------------------------------
+        labelLayout.child(labelView);
 
-        TextViewBuilder labelView = new TextViewBuilder();
+        // [2 B] Text
+        // --------------------------------------------------------------------------------------
 
         labelView.id    = R.id.widget_label;
         labelView.size  = R.dimen.group_label_text_size;
@@ -317,10 +321,6 @@ public class Group implements Model, Serializable
         labelView.font  = Font.sansSerifFontRegular(context);
         labelView.text  = this.getLabel().toUpperCase();
 
-        // [3] Define structure
-        // --------------------------------------------------------------------------------------
-
-        labelLayout.child(labelView.textView(context));
 
         return labelLayout.linearLayout(context);
     }

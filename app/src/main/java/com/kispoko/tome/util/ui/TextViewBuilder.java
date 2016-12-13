@@ -9,14 +9,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kispoko.tome.util.Util;
-
 
 
 /**
  * Text View Builder
  */
-public class TextViewBuilder
+public class TextViewBuilder implements ViewBuilder
 {
 
     // PROPERTIES
@@ -24,15 +22,19 @@ public class TextViewBuilder
 
     public Integer              id;
 
+    public LayoutType           layoutType;
+
     public Integer              height;
     public Integer              width;
 
     public Integer              gravity;
     public Integer              layoutGravity;
+    public Integer              visibility;
 
     public String               text;
 
     public Padding              padding;
+    public Margins              margin;
 
     public Integer              size;
     public Integer              color;
@@ -51,15 +53,19 @@ public class TextViewBuilder
     {
         this.id                 = null;
 
+        this.layoutType         = LayoutType.NONE;
+
         this.height             = null;
         this.width              = null;
 
         this.gravity            = null;
         this.layoutGravity      = null;
+        this.visibility         = null;
 
         this.text               = null;
 
         this.padding            = new Padding();
+        this.margin             = new Margins();
 
         this.size               = null;
         this.color              = null;
@@ -73,6 +79,18 @@ public class TextViewBuilder
 
 
     // API
+    // ------------------------------------------------------------------------------------------
+
+    // > View Builder
+    // ------------------------------------------------------------------------------------------
+
+    public View view(Context context)
+    {
+        return this.textView(context);
+    }
+
+
+    // > Text View
     // ------------------------------------------------------------------------------------------
 
     public TextView textView(Context context)
@@ -93,6 +111,12 @@ public class TextViewBuilder
 
         if (this.gravity != null)
             textView.setGravity(this.gravity);
+
+        // > Visibility
+        // --------------------------------------------------------------------------------------
+
+        if (this.visibility != null)
+            textView.setVisibility(this.visibility);
 
         // > Padding
         // --------------------------------------------------------------------------------------
@@ -147,41 +171,47 @@ public class TextViewBuilder
         // [2] Layout
         // --------------------------------------------------------------------------------------
 
-        LinearLayout.LayoutParams textViewLayoutParams = Util.linearLayoutParamsMatch();
-        textView.setLayoutParams(textViewLayoutParams);
+        LayoutParamsBuilder layoutParamsBuilder;
 
-        // > Gravity
-        // --------------------------------------------------------------------------------------
-
-        if (this.layoutGravity != null)
-            textViewLayoutParams.gravity = this.layoutGravity;
-
-        // > Height
-        // --------------------------------------------------------------------------------------
-
-        if (this.height != null)
-        {
-            if (isLayoutConstant(this.height)) {
-                textViewLayoutParams.height = this.height;
-            }
-            else {
-                textViewLayoutParams.height = (int) context.getResources()
-                                                           .getDimension(this.height);
-            }
-        }
+        if (this.layoutType != LayoutType.NONE)
+            layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
+        else
+            layoutParamsBuilder = new LayoutParamsBuilder(LayoutType.LINEAR, context);
 
         // > Width
         // --------------------------------------------------------------------------------------
 
         if (this.width != null)
+            layoutParamsBuilder.setWidth(this.width);
+
+        // > Height
+        // --------------------------------------------------------------------------------------
+
+        if (this.height != null)
+            layoutParamsBuilder.setHeight(this.height);
+
+        // > Gravity
+        // --------------------------------------------------------------------------------------
+
+        if (this.layoutGravity != null)
+            layoutParamsBuilder.setGravity(this.layoutGravity);
+
+        // > Margins
+        // --------------------------------------------------------------------------------------
+
+        layoutParamsBuilder.setMargins(this.margin);
+
+
+        switch (this.layoutType)
         {
-            if (isLayoutConstant(this.width)) {
-                textViewLayoutParams.width = this.width;
-            }
-            else {
-                textViewLayoutParams.width = (int) context.getResources()
-                                                          .getDimension(this.width);
-            }
+            case LINEAR:
+                textView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+                break;
+            case RELATIVE:
+                textView.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
+                break;
+            case NONE:
+                textView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
         }
 
         return textView;
