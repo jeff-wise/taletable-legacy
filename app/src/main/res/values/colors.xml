@@ -93,9 +93,10 @@
     <color name="dark_grey_8">#333333</color>
     <color name="dark_grey_9">#2A2A2A</color>
 
-    <!-- 58A151 -->
     <color name="green_5000">#638753</color>
     <color name="green_5">#4D7F45</color>
+
+    <color name="red_5">#A14746</color>
 
 
 

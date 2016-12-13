@@ -311,7 +311,7 @@ public class TextWidget extends Widget implements Serializable
         // Lookup the recyclerview in activity layout
         RecyclerView textEditorView = new RecyclerView(context);
         textEditorView.setLayoutParams(Util.linearLayoutParamsMatch());
-        textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
+        //textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
 
         // Create adapter passing in the sample user data
         MemberOf memberOf = rulesEngine.getRefinementIndex()

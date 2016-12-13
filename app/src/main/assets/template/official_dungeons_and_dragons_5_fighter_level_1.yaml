@@ -268,7 +268,7 @@ roleplay:
         size: medium
         value:
           type: literal
-          value: Wizard
+          value: Fighter
           refinement:
             name: class
             type: member_of

@@ -6,7 +6,7 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
-
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +14,9 @@ import java.util.List;
 
 
 /**
- * Linear Layout Builder
- *
- * Convenience class for creating Linear Layouts
+ * Relative Layout Builder
  */
-public class LinearLayoutBuilder
+public class RelativeLayoutBuilder
 {
 
     // PROPERTIES
@@ -59,7 +57,7 @@ public class LinearLayoutBuilder
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayoutBuilder()
+    public RelativeLayoutBuilder()
     {
         this.id                 = null;
 
@@ -93,14 +91,14 @@ public class LinearLayoutBuilder
     // > Methods
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayoutBuilder child(View childView)
+    public RelativeLayoutBuilder child(View childView)
     {
         this.children.add(childView);
         return this;
     }
 
 
-    public LinearLayoutBuilder addRule(int verb)
+    public RelativeLayoutBuilder addRule(int verb)
     {
         this.rules.add(verb);
         return this;
@@ -110,9 +108,9 @@ public class LinearLayoutBuilder
     // > Layout
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayout linearLayout(Context context)
+    public RelativeLayout relativeLayout(Context context)
     {
-        LinearLayout linearLayout = new LinearLayout(context);
+        RelativeLayout relativeLayout = new RelativeLayout(context);
 
         // [1] Layout
         // --------------------------------------------------------------------------------------
@@ -121,46 +119,40 @@ public class LinearLayoutBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.id != null)
-            linearLayout.setId(this.id);
-
-        // > Orientation
-        // --------------------------------------------------------------------------------------
-
-        if (this.orientation != null)
-            linearLayout.setOrientation(this.orientation);
+            relativeLayout.setId(this.id);
 
         // > Padding
         // --------------------------------------------------------------------------------------
 
-        linearLayout.setPadding(this.padding.left(context),
-                                this.padding.top(context),
-                                this.padding.right(context),
-                                this.padding.bottom(context));
+        relativeLayout.setPadding(this.padding.left(context),
+                                  this.padding.top(context),
+                                  this.padding.right(context),
+                                  this.padding.bottom(context));
 
         // > Gravity
         // --------------------------------------------------------------------------------------
 
         if (this.gravity != null)
-            linearLayout.setGravity(this.gravity);
+            relativeLayout.setGravity(this.gravity);
 
 
         // > On Click Listener
         // --------------------------------------------------------------------------------------
 
         if (this.onClick != null)
-            linearLayout.setOnClickListener(this.onClick);
+            relativeLayout.setOnClickListener(this.onClick);
 
         // > Background Color
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            linearLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            relativeLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
 
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundResource != null)
-            linearLayout.setBackgroundResource(this.backgroundResource);
+            relativeLayout.setBackgroundResource(this.backgroundResource);
 
 
         // [2] Layout Parameters
@@ -211,26 +203,23 @@ public class LinearLayoutBuilder
 
         for (View childView : this.children)
         {
-            linearLayout.addView(childView);
+            relativeLayout.addView(childView);
         }
 
         switch (this.layoutType)
         {
             case LINEAR:
-                linearLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+                relativeLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
                 break;
             case RELATIVE:
-                linearLayout.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
+                relativeLayout.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
                 break;
             case NONE:
-                linearLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+                relativeLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
         }
 
-        return linearLayout;
+        return relativeLayout;
     }
 
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
 
 }

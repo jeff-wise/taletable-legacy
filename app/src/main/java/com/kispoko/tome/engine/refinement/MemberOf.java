@@ -14,6 +14,12 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.ImageViewBuilder;
+import com.kispoko.tome.util.ui.LayoutType;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.RelativeLayoutBuilder;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -144,87 +150,119 @@ public class MemberOf implements Model, Serializable
 
 
     // > Views
-    // -------------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 
 
-    public View getItemView(Context context)
+    public View selectableItemView(Context context)
     {
-        RelativeLayout layout = new RelativeLayout(context);
+        // [1] Views
+        // --------------------------------------------------------------------------------------
 
+        RelativeLayout  mainLayout    = this.selectableItemLayout(context);
 
+        LinearLayout    innerLayout   = this.selectableItemInnerLayout(context);
 
-        // Layout
-        LinearLayout itemLayout = new LinearLayout(context);
-        itemLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.sheet_medium));
+        ImageView       statusIcon    = this.selectableItemStatusIcon(context);
+        TextView        itemNameView  = this.selectableItemNameView(context);
+        ImageView       infoButton    = this.selectableItemInfoButton(context);
 
-        RelativeLayout.LayoutParams itemLayoutParams =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        itemLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        itemLayout.setLayoutParams(itemLayoutParams);
+        // [2] Structure
+        // --------------------------------------------------------------------------------------
 
-        int itemLayoutVertPadding = (int) Util.getDim(context, R.dimen.type_list_item_vert_padding);
-        int itemLayoutHorzPadding = (int) Util.getDim(context, R.dimen.type_list_item_padding_horz);
-        itemLayout.setPadding(0, itemLayoutVertPadding,
-                              0, itemLayoutVertPadding);
+        innerLayout.addView(statusIcon);
+        innerLayout.addView(itemNameView);
 
-        // Status Icon
-        ImageView statusIcon = new ImageView(context);
-        LinearLayout.LayoutParams statusIconLayoutParams = Util.linearLayoutParamsWrap();
-        int statusIconWidth = (int) Util.getDim(context,
-                                        R.dimen.type_list_item_select_icon_width);
-        //selectIconLayoutParams.setMargins(0, 0, selectIconMarginRight, 0);
-        statusIconLayoutParams.width = statusIconWidth;
-        statusIconLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        statusIcon.setLayoutParams(statusIconLayoutParams);
-        int selectIconPaddingTop = (int) Util.getDim(context,
-                                             R.dimen.type_list_item_select_icon_padding_top);
-        statusIcon.setPadding(0, selectIconPaddingTop, 0, 0);
-        statusIcon.setId(R.id.type_list_item_icon);
-//        statusIcon.setImageDrawable(
-//                ContextCompat.getDrawable(context, R.drawable.ic_list_item_selected));
+        mainLayout.addView(innerLayout);
+        mainLayout.addView(infoButton);
 
-
-
-        // Item Name
-        TextView itemNameView = new TextView(context);
-        itemNameView.setId(R.id.type_list_item_name);
-
-        LinearLayout.LayoutParams itemNameLayoutParams = Util.linearLayoutParamsWrap();
-        itemNameView.setLayoutParams(itemNameLayoutParams);
-
-        itemNameView.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
-
-        float itemNameTextSize = Util.getDim(context, R.dimen.type_list_item_name_text_size);
-        itemNameView.setTextSize(itemNameTextSize);
-
-        itemNameView.setTypeface(Util.serifFontBold(context));
-
-
-        // Info Button
-        ImageView infoButton = new ImageView(context);
-        RelativeLayout.LayoutParams infoButtonLayoutParams =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                                                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        int infoButtonMarginRight = (int) Util.getDim(context,
-                                            R.dimen.type_list_item_info_button_margin_right);
-        infoButtonLayoutParams.rightMargin = infoButtonMarginRight;
-        infoButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        infoButtonLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-        infoButton.setLayoutParams(infoButtonLayoutParams);
-        infoButton.setImageDrawable(
-                ContextCompat.getDrawable(context, R.drawable.ic_list_item_info));
-
-
-        // Define structure
-        itemLayout.addView(statusIcon);
-        itemLayout.addView(itemNameView);
-
-        layout.addView(itemLayout);
-        layout.addView(infoButton);
-
-        return layout;
+        return mainLayout;
     }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private RelativeLayout selectableItemLayout(Context context)
+    {
+        RelativeLayoutBuilder layout = new RelativeLayoutBuilder();
+
+        layout.width     = RelativeLayout.LayoutParams.MATCH_PARENT;
+        layout.height    = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.backgroundColor = R.color.dark_grey_7;
+
+        return layout.relativeLayout(context);
+    }
+
+
+    private LinearLayout selectableItemInnerLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.layoutType       = LayoutType.RELATIVE;
+        layout.backgroundColor  = R.color.dark_grey_5;
+        layout.width            = RelativeLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.padding.top      = R.dimen.ref_member_of_sel_item_padding_vert;
+        layout.padding.bottom   = R.dimen.ref_member_of_sel_item_padding_vert;
+
+        layout.margin.left      = R.dimen.ref_member_of_sel_item_layout_margin_horz;
+        layout.margin.right     = R.dimen.ref_member_of_sel_item_layout_margin_horz;
+        layout.margin.top       = R.dimen.ref_member_of_sel_item_layout_margin_vert;
+        layout.margin.bottom    = R.dimen.ref_member_of_sel_item_layout_margin_vert;
+
+        layout.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+        return layout.linearLayout(context);
+    }
+
+
+    private ImageView selectableItemStatusIcon(Context context)
+    {
+        ImageViewBuilder statusIcon = new ImageViewBuilder();
+
+        statusIcon.id               = R.id.type_list_item_icon;
+        statusIcon.width            = R.dimen.ref_member_of_sel_item_sel_icon_width;
+        statusIcon.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        statusIcon.layoutGravity    = Gravity.CENTER_HORIZONTAL;
+        statusIcon.padding.top      = R.dimen.ref_member_of_sel_item_sel_icon_padding_top;
+
+        return statusIcon.imageView(context);
+    }
+
+
+    private TextView selectableItemNameView(Context context)
+    {
+        TextViewBuilder nameView = new TextViewBuilder();
+
+        nameView.id             = R.id.type_list_item_name;
+        nameView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        nameView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        nameView.color          = R.color.light_grey_5;
+        nameView.size           = R.dimen.ref_member_of_sel_item_name_text_size;
+        nameView.font           = Font.serifFontBold(context);
+
+        return nameView.textView(context);
+    }
+
+
+    private ImageView selectableItemInfoButton(Context context)
+    {
+        ImageViewBuilder infoButton = new ImageViewBuilder();
+
+        infoButton.layoutType   = LayoutType.RELATIVE;
+        infoButton.width        = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        infoButton.height       = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        infoButton.image        = R.drawable.ic_list_item_info;
+        infoButton.margin.right = R.dimen.ref_member_of_sel_item_info_button_margin_right;
+
+        infoButton.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+                  .addRule(RelativeLayout.CENTER_VERTICAL);
+
+        return infoButton.imageView(context);
+    }
+
 
 
 }

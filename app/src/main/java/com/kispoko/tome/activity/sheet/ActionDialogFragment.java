@@ -2,13 +2,18 @@
 package com.kispoko.tome.activity.sheet;
 
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.SheetManager;
@@ -16,6 +21,7 @@ import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
+import static android.R.attr.width;
 
 
 /**
@@ -71,17 +77,29 @@ public class ActionDialogFragment extends DialogFragment
         return layout;
     }
 
-
     @Override
-    public void onResume()
+    public Dialog onCreateDialog(final Bundle savedInstanceState)
     {
-        super.onResume();
+        RelativeLayout root = new RelativeLayout(getActivity());
+        root.setLayoutParams(
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                           ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        final Dialog dialog = new Dialog(getActivity());
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        dialog.setContentView(root);
 
         Context context = SheetManager.currentSheetContext();
 
         int width = (int) context.getResources().getDimension(R.dimen.action_dialog_width);
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        getDialog().getWindow().setLayout(width, height);
+
+        dialog.getWindow().setLayout(width, height);
+
+        return dialog;
     }
 
 

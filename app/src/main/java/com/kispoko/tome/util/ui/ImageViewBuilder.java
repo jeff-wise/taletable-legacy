@@ -7,8 +7,8 @@ import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.R;
-import com.kispoko.tome.util.Util;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -21,16 +21,21 @@ public class ImageViewBuilder
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    public Integer id;
+    public Integer          id;
 
-    public Integer height;
-    public Integer width;
+    public LayoutType       layoutType;
 
-    public Padding padding;
-    public Margins margin;
+    public Integer          height;
+    public Integer          width;
 
-    public Integer image;
+    public Integer          layoutGravity;
 
+    public Padding          padding;
+    public Margins          margin;
+
+    public Integer          image;
+
+    private List<Integer>   rules;
 
 
     // CONSTRUCTORS
@@ -38,19 +43,36 @@ public class ImageViewBuilder
 
     public ImageViewBuilder()
     {
-        this.id      = null;
+        this.id         = null;
 
-        this.height  = null;
-        this.width   = null;
+        this.layoutType = LayoutType.NONE;
 
-        this.padding = new Padding();
-        this.margin  = new Margins();
+        this.height     = null;
+        this.width      = null;
 
-        this.image   = null;
+        this.padding    = new Padding();
+        this.margin     = new Margins();
+
+        this.image      = null;
+
+        this.rules      = new ArrayList<>();
     }
 
 
     // API
+    // ------------------------------------------------------------------------------------------
+
+    // > Methods
+    // ------------------------------------------------------------------------------------------
+
+    public ImageViewBuilder addRule(int verb)
+    {
+        this.rules.add(verb);
+        return this;
+    }
+
+
+    // > Image View
     // ------------------------------------------------------------------------------------------
 
     public ImageView imageView(Context context)
@@ -83,40 +105,52 @@ public class ImageViewBuilder
         // [2] Layout
         // --------------------------------------------------------------------------------------
 
-        LinearLayout.LayoutParams imageViewLayoutParams = Util.linearLayoutParamsMatch();
-        imageView.setLayoutParams(imageViewLayoutParams);
+        LayoutParamsBuilder layoutParamsBuilder;
 
-        // > Height
-        // --------------------------------------------------------------------------------------
-
-        if (this.height != null) {
-            if (isLayoutConstant(this.height)) {
-                imageViewLayoutParams.height = this.height;
-            } else {
-                imageViewLayoutParams.height = (int) context.getResources()
-                                                            .getDimension(this.height);
-            }
-        }
+        if (this.layoutType != LayoutType.NONE)
+            layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
+        else
+            layoutParamsBuilder = new LayoutParamsBuilder(LayoutType.LINEAR, context);
 
         // > Width
         // --------------------------------------------------------------------------------------
 
-        if (this.width != null) {
-            if (isLayoutConstant(this.width)) {
-                imageViewLayoutParams.width = this.width;
-            } else {
-                imageViewLayoutParams.width = (int) context.getResources()
-                        .getDimension(this.width);
-            }
-        }
+        if (this.width != null)
+            layoutParamsBuilder.setWidth(this.width);
+
+        // > Height
+        // --------------------------------------------------------------------------------------
+
+        if (this.height != null)
+            layoutParamsBuilder.setHeight(this.height);
+
+        // > Gravity
+        // --------------------------------------------------------------------------------------
+
+        if (this.layoutGravity != null)
+            layoutParamsBuilder.setGravity(this.layoutGravity);
 
         // > Margins
         // --------------------------------------------------------------------------------------
 
-        imageViewLayoutParams.setMargins(this.margin.left(context),
-                                         this.margin.top(context),
-                                         this.margin.right(context),
-                                         this.margin.bottom(context));
+        layoutParamsBuilder.setMargins(this.margin);
+
+        // > Rules
+        // --------------------------------------------------------------------------------------
+
+        layoutParamsBuilder.setRules(this.rules);
+
+        switch (this.layoutType)
+        {
+            case LINEAR:
+                imageView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+                break;
+            case RELATIVE:
+                imageView.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
+                break;
+            case NONE:
+                imageView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+        }
 
         return imageView;
     }

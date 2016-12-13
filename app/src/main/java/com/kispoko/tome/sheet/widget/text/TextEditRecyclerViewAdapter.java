@@ -45,7 +45,7 @@ public class TextEditRecyclerViewAdapter
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = this.memberOf.getItemView(parent.getContext());
+        View itemView = this.memberOf.selectableItemView(parent.getContext());
         return new ViewHolder(itemView, this.memberOf, this.textWidget);
     }
 
@@ -65,7 +65,7 @@ public class TextEditRecyclerViewAdapter
                 ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_list_item_selected));
 
 
-            int selectedColor = ContextCompat.getColor(itemView.getContext(), R.color.red_medium);
+            int selectedColor = ContextCompat.getColor(itemView.getContext(), R.color.red_5);
             iconView.setColorFilter(selectedColor);
             textView.setTextColor(selectedColor);
 

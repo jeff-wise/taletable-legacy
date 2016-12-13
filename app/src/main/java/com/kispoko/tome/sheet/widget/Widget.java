@@ -6,6 +6,7 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.ApplicationFailure;
