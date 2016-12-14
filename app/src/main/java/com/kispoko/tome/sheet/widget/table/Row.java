@@ -9,6 +9,7 @@ import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +19,7 @@ import java.util.UUID;
 /**
  * Table Widget Row
  */
-public class Row implements Model
+public class Row implements Model, Serializable
 {
 
     // PROPERTIES
@@ -109,9 +110,34 @@ public class Row implements Model
     // > State
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * Get the cells in the row in order.
+     * @return The list of cells.
+     */
     public List<CellUnion> getCells()
     {
         return this.cells.getValue();
+    }
+
+
+    /**
+     * Get the cell at the specified column index.
+     * @param index The column index.
+     * @return The Cell Union.
+     */
+    public CellUnion cellAtIndex(int index)
+    {
+        return this.getCells().get(index);
+    }
+
+
+    /**
+     * Get the number of cells in the row.
+     * @return The row width.
+     */
+    public int width()
+    {
+        return this.getCells().size();
     }
 
 

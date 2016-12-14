@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.programming.summation.SummationException;
 import com.kispoko.tome.engine.programming.variable.NumberVariable;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
@@ -290,7 +289,7 @@ public class NumberWidget extends Widget implements Serializable
         // --------------------------------------------------------------------------------------
 
         Context context            = SheetManager.currentSheetContext();
-        LinearLayout integerLayout = this.linearLayout();
+        LinearLayout integerLayout = this.widgetLayout();
         LinearLayout contentLayout = (LinearLayout) integerLayout.findViewById(
                                                                     R.id.widget_content_layout);
 

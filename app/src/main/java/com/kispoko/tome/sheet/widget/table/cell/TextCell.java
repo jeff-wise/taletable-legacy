@@ -16,19 +16,26 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.LayoutType;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import org.w3c.dom.Text;
+
+import java.io.Serializable;
 import java.util.UUID;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 
 /**
  * Text CellUnion
  */
-public class TextCell implements Model
+public class TextCell implements Model, Serializable
 {
 
     // PROPERTIES
@@ -142,13 +149,24 @@ public class TextCell implements Model
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Value
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Get the value of this text cell which is a text variable.
      * @return The Text Variable value.
      */
-    public TextVariable value()
+    public TextVariable valueVariable()
     {
         return this.value.getValue();
+    }
+
+
+    public String value()
+    {
+        if (valueVariable() != null)
+            return this.valueVariable().value();
+        return null;
     }
 
 
@@ -167,37 +185,34 @@ public class TextCell implements Model
 
     public View view(TextColumn column)
     {
+        // [1] Declarations
+        // ------------------------------------------------------------------------------------------
+
         Context context = SheetManager.currentSheetContext();
 
-        TextView view = new TextView(context);
-
+        TextViewBuilder cellView = new TextViewBuilder();
         this.valueViewId = Util.generateViewId();
-        view.setId(this.valueViewId);
 
-        TableRow.LayoutParams layoutParams =
-                new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                          TableRow.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 0, 0, 0);
-        view.setLayoutParams(layoutParams);
+        // [2] Cell View
+        // ------------------------------------------------------------------------------------------
 
-        view.setPadding(0, 0, 0, 0);
+        cellView.id         = this.valueViewId;
+        cellView.layoutType = LayoutType.TABLE_ROW;
+        cellView.width      = TableRow.LayoutParams.WRAP_CONTENT;
+        cellView.height     = TableRow.LayoutParams.WRAP_CONTENT;
+        cellView.color      = R.color.light_grey_9;
+        cellView.font       = Font.serifFontRegular(context);
+        cellView.size       = R.dimen.widget_table_cell_text_size;
 
-
-        // > Set value
-        // --------------------------------------------------------------------------------------
-        String value = this.value.getValue().value();
-        if (value != null)
-            view.setText(value);
+        if (this.value() != null)
+            cellView.text = this.value();
         else
-            view.setText(column.getDefaultValue());
+            cellView.text = column.getDefaultValue();
 
-        view.setTextColor(ContextCompat.getColor(context, R.color.text_medium_light));
-        view.setTypeface(Util.serifFontBold(context));
+        //layoutParams.setMargins(0, 0, 0, 0);
+        //view.setPadding(0, 0, 0, 0);
 
-        float textSize = Util.getDim(context, R.dimen.comp_table_cell_text_size);
-        view.setTextSize(textSize);
-
-        return view;
+        return cellView.textView(context);
     }
 
 
@@ -217,7 +232,7 @@ public class TextCell implements Model
 
         if (!this.value.isNull())
         {
-            this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.valueVariable().addOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onValueUpdate();
@@ -238,11 +253,8 @@ public class TextCell implements Model
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
-            String value = this.value().value();
-
-            // TODO can value be null
-            if (value != null)
-                textView.setText(value);
+            if (this.value() != null)
+                textView.setText(this.value());
         }
     }
 

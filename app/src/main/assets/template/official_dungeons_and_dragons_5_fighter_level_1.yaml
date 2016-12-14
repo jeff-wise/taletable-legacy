@@ -665,7 +665,7 @@ roleplay:
           value: 1
   - label: Abilities
     groups:
-    - label: Skills
+    - label:
       number_of_rows: 1
       widgets:
       - type: table
@@ -681,19 +681,19 @@ roleplay:
         columns:
         - type: text
           column:
-            name: Skill Name
+            name: NAME
             default_value: skill
             width: 3
             default_alignment: left
         - type: number
           column:
-            name: Modifier
+            name: MODIFIER
             default_value: 0
             width: 2
             default_alignment: center
         - type: boolean
           column:
-            name: Proficient?
+            name: PROFICIENT?
             default_value: false
             width: 2
             default_alignment: center
@@ -880,7 +880,7 @@ roleplay:
           - value:
               type: literal
               value: false
-  - label: Backpack
+  - label: Inventory
     groups:
   - label: Spellbook
     groups:

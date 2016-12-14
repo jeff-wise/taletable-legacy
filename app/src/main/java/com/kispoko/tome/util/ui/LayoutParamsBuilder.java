@@ -5,8 +5,11 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import java.util.List;
+
 
 
 /**
@@ -22,6 +25,8 @@ public class LayoutParamsBuilder
 
     private LinearLayout.LayoutParams   linearLayoutParams;
     private RelativeLayout.LayoutParams relativeLayoutParams;
+    private TableLayout.LayoutParams    tableLayoutParams;
+    private TableRow.LayoutParams       tableRowLayoutParams;
 
     private Context                     context;
 
@@ -35,6 +40,8 @@ public class LayoutParamsBuilder
 
         this.linearLayoutParams   = null;
         this.relativeLayoutParams = null;
+        this.tableLayoutParams    = null;
+        this.tableRowLayoutParams = null;
 
         this.context              = context;
 
@@ -49,6 +56,14 @@ public class LayoutParamsBuilder
                 this.relativeLayoutParams = new RelativeLayout.LayoutParams(
                                                 RelativeLayout.LayoutParams.MATCH_PARENT,
                                                 RelativeLayout.LayoutParams.MATCH_PARENT);
+            case TABLE:
+                this.tableLayoutParams = new TableLayout.LayoutParams(
+                                                TableLayout.LayoutParams.MATCH_PARENT,
+                                                TableLayout.LayoutParams.MATCH_PARENT);
+            case TABLE_ROW:
+                this.tableRowLayoutParams = new TableRow.LayoutParams(
+                                                TableRow.LayoutParams.MATCH_PARENT,
+                                                TableRow.LayoutParams.MATCH_PARENT);
                 break;
         }
     }
@@ -69,6 +84,18 @@ public class LayoutParamsBuilder
     public RelativeLayout.LayoutParams relativeLayoutParams()
     {
         return this.relativeLayoutParams;
+    }
+
+
+    public TableLayout.LayoutParams tableLayoutParams()
+    {
+        return this.tableLayoutParams;
+    }
+
+
+    public TableRow.LayoutParams tableRowLayoutParams()
+    {
+        return this.tableRowLayoutParams;
     }
 
 
@@ -94,6 +121,12 @@ public class LayoutParamsBuilder
             case RELATIVE:
                 this.relativeLayoutParams.width = widthValue;
                 break;
+            case TABLE:
+                this.tableLayoutParams.width = widthValue;
+                break;
+            case TABLE_ROW:
+                this.tableRowLayoutParams.width = widthValue;
+                break;
         }
     }
 
@@ -117,6 +150,12 @@ public class LayoutParamsBuilder
             case RELATIVE:
                 this.relativeLayoutParams.height = heightValue;
                 break;
+            case TABLE:
+                this.tableLayoutParams.height = heightValue;
+                break;
+            case TABLE_ROW:
+                this.tableRowLayoutParams.height = heightValue;
+                break;
         }
     }
 
@@ -137,16 +176,28 @@ public class LayoutParamsBuilder
         switch (this.layoutType)
         {
             case LINEAR:
-                linearLayoutParams.setMargins(margins.left(context),
-                                              margins.top(context),
-                                              margins.right(context),
-                                              margins.bottom(context));
+                this.linearLayoutParams.setMargins(margins.left(context),
+                                                   margins.top(context),
+                                                   margins.right(context),
+                                                   margins.bottom(context));
                 break;
             case RELATIVE:
-                relativeLayoutParams.setMargins(margins.left(context),
-                                                margins.top(context),
-                                                margins.right(context),
-                                                margins.bottom(context));
+                this.relativeLayoutParams.setMargins(margins.left(context),
+                                                     margins.top(context),
+                                                     margins.right(context),
+                                                     margins.bottom(context));
+                break;
+            case TABLE:
+                this.tableLayoutParams.setMargins(margins.left(context),
+                                                  margins.top(context),
+                                                  margins.right(context),
+                                                  margins.bottom(context));
+                break;
+            case TABLE_ROW:
+                this.tableRowLayoutParams.setMargins(margins.left(context),
+                                                     margins.top(context),
+                                                     margins.right(context),
+                                                     margins.bottom(context));
                 break;
         }
     }

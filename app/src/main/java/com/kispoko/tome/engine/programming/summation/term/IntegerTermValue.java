@@ -9,7 +9,6 @@ import com.kispoko.tome.engine.programming.summation.error.UndefinedVariableErro
 import com.kispoko.tome.engine.programming.summation.error.VariableNotNumberError;
 import com.kispoko.tome.engine.programming.variable.VariableType;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
-import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -19,6 +18,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -26,7 +26,7 @@ import java.util.UUID;
 /**
  * Term Value: Integer
  */
-public class IntegerTermValue implements Model
+public class IntegerTermValue implements Model, Serializable
 {
 
     // PROPERTIES

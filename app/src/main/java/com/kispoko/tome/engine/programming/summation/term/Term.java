@@ -13,6 +13,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 import java.util.List;
 
 
+
 /**
  * Term
  */

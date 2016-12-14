@@ -93,18 +93,26 @@ public abstract class Widget implements Model, Serializable
      *
      * @return A LinearLayout that represents the outer-most container of a component view.
      */
-    public LinearLayout linearLayout()
+    public LinearLayout widgetLayout()
     {
-        // [1] Variables
+        // [1 A] Declarations
         // --------------------------------------------------------------------------------------
 
         final Context context = SheetManager.currentSheetContext();
         final Widget  widget  = this;
 
-        // [2] Layout
+        String  label     = widget.data().getFormat().getLabel().toUpperCase();
+        Boolean showLabel = widget.data().getFormat().getShowLabel();
+
+        // [1 B] Views
         // --------------------------------------------------------------------------------------
 
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        LinearLayoutBuilder contentLayout = new LinearLayoutBuilder();
+        TextViewBuilder labelView = new TextViewBuilder();
+
+        // [2 A] Layout
+        // --------------------------------------------------------------------------------------
 
         layout.orientation         = LinearLayout.VERTICAL;
         layout.backgroundResource  = R.drawable.bg_widget;
@@ -124,11 +132,13 @@ public abstract class Widget implements Model, Serializable
             }
         };
 
+        layout.child(contentLayout);
 
-        // [3] Content
+        if (showLabel)
+            layout.child(labelView);
+
+        // [2 B] Content
         // --------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder contentLayout = new LinearLayoutBuilder();
 
         contentLayout.width               = LinearLayout.LayoutParams.WRAP_CONTENT;
         contentLayout.orientation         = LinearLayout.VERTICAL;
@@ -137,14 +147,9 @@ public abstract class Widget implements Model, Serializable
         contentLayout.padding.top         = R.dimen.widget_content_padding_vert;
         contentLayout.padding.bottom      = R.dimen.widget_content_padding_vert;
 
-
-        // [4] Label
+        // [2 C] Label
         // --------------------------------------------------------------------------------------
 
-        String  label     = widget.data().getFormat().getLabel().toUpperCase();
-        Boolean showLabel = widget.data().getFormat().getShowLabel();
-
-        TextViewBuilder labelView = new TextViewBuilder();
         labelView.gravity         = Gravity.CENTER_HORIZONTAL;
         labelView.text            = label;
         labelView.size            = R.dimen.widget_label_text_size;
@@ -153,16 +158,6 @@ public abstract class Widget implements Model, Serializable
         labelView.backgroundColor = R.color.dark_grey_6;
         labelView.padding.bottom  = R.dimen.widget_label_padding_vert;
         labelView.padding.top     = R.dimen.widget_label_padding_vert;
-
-
-        // [5] Structure layout
-        // --------------------------------------------------------------------------------------
-
-        layout.child(contentLayout);
-
-        if (showLabel)
-            layout.child(labelView);
-
 
         return layout.linearLayout(context);
     }

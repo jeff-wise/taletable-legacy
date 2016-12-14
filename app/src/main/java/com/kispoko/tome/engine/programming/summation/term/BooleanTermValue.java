@@ -2,8 +2,6 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.summation.SummationException;
@@ -20,6 +18,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -27,7 +26,7 @@ import java.util.UUID;
 /**
  * Term Value: Boolean
  */
-public class BooleanTermValue implements Model
+public class BooleanTermValue implements Model, Serializable
 {
 
     // PROPERTIES

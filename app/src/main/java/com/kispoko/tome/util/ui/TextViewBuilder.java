@@ -53,7 +53,7 @@ public class TextViewBuilder implements ViewBuilder
     {
         this.id                 = null;
 
-        this.layoutType         = LayoutType.NONE;
+        this.layoutType         = LayoutType.LINEAR;
 
         this.height             = null;
         this.width              = null;
@@ -172,11 +172,7 @@ public class TextViewBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         LayoutParamsBuilder layoutParamsBuilder;
-
-        if (this.layoutType != LayoutType.NONE)
-            layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
-        else
-            layoutParamsBuilder = new LayoutParamsBuilder(LayoutType.LINEAR, context);
+        layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
 
         // > Width
         // --------------------------------------------------------------------------------------
@@ -210,8 +206,12 @@ public class TextViewBuilder implements ViewBuilder
             case RELATIVE:
                 textView.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
                 break;
-            case NONE:
-                textView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+            case TABLE:
+                textView.setLayoutParams(layoutParamsBuilder.tableLayoutParams());
+                break;
+            case TABLE_ROW:
+                textView.setLayoutParams(layoutParamsBuilder.tableRowLayoutParams());
+                break;
         }
 
         return textView;

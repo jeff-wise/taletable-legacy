@@ -215,7 +215,7 @@ public class ImageWidget extends Widget implements Serializable
 
         final ImageWidget thisImageWidget = this;
 
-        final LinearLayout imageLayout = this.linearLayout();
+        final LinearLayout imageLayout = this.widgetLayout();
         imageLayout.setGravity(Gravity.CENTER);
 
         LinearLayout contentLayout = (LinearLayout) imageLayout.findViewById(

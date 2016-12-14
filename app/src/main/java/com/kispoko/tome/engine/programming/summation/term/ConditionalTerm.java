@@ -2,13 +2,12 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.engine.programming.summation.SummationException;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +17,7 @@ import java.util.UUID;
 /**
  * Summation Term: Conditional
  */
-public class ConditionalTerm extends Term
+public class ConditionalTerm extends Term implements Serializable
 {
 
     // PROPERTIES

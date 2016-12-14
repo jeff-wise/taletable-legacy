@@ -2,8 +2,6 @@
 package com.kispoko.tome.engine.programming.summation;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.engine.programming.summation.term.ConditionalTerm;
 import com.kispoko.tome.engine.programming.summation.term.LiteralTerm;
 import com.kispoko.tome.engine.programming.summation.term.Term;
@@ -12,6 +10,7 @@ import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +20,7 @@ import java.util.UUID;
 /**
  * Summation
  */
-public class Summation implements Model
+public class Summation implements Model, Serializable
 {
 
     // PROPERTIES

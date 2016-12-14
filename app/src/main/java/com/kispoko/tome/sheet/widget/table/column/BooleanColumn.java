@@ -8,6 +8,7 @@ import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -17,7 +18,7 @@ import java.util.UUID;
  *
  * Contains metadata about the cells in a table's boolean column.
  */
-public class BooleanColumn implements Model, Column
+public class BooleanColumn implements Model, Column, Serializable
 {
 
     // PROPERTIES

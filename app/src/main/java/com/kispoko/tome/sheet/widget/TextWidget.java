@@ -5,7 +5,6 @@ package com.kispoko.tome.sheet.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,7 +27,6 @@ import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.engine.refinement.MemberOf;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.EditTextBuilder;
 import com.kispoko.tome.util.ui.Font;
@@ -41,9 +39,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.UUID;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static android.os.FileObserver.ACCESS;
 
 
 /**
@@ -185,7 +180,7 @@ public class TextWidget extends Widget implements Serializable
         // --------------------------------------------------------------------------------------
 
         final Context context = SheetManager.currentSheetContext();
-        LinearLayout textLayout = this.linearLayout();
+        LinearLayout textLayout = this.widgetLayout();
         LinearLayout contentLayout =
                 (LinearLayout) textLayout.findViewById(R.id.widget_content_layout);
 

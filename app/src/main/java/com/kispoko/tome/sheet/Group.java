@@ -94,7 +94,7 @@ public class Group implements Model, Serializable
                   throws YamlException
     {
         UUID    id           = UUID.randomUUID();
-        String  label        = yaml.atKey("label").getString();
+        String  label        = yaml.atMaybeKey("label").getString();
         Integer index        = groupIndex;
         Integer numberOfRows = yaml.atKey("number_of_rows").getInteger();
 
@@ -254,7 +254,8 @@ public class Group implements Model, Serializable
             });
         }
 
-        groupLayout.addView(this.labelView(context));
+        if (!this.label.isNull())
+            groupLayout.addView(this.labelView(context));
 
         for (List<Widget> row : rows)
         {
@@ -317,7 +318,7 @@ public class Group implements Model, Serializable
 
         labelView.id    = R.id.widget_label;
         labelView.size  = R.dimen.group_label_text_size;
-        labelView.color = R.color.dark_grey_1;
+        labelView.color = R.color.grey_8;
         labelView.font  = Font.sansSerifFontRegular(context);
         labelView.text  = this.getLabel().toUpperCase();
 

@@ -19,19 +19,24 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.LayoutType;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 
 /**
  * Number CellUnion
  */
-public class NumberCell implements Model
+public class NumberCell implements Model, Serializable
 {
 
     // PROPERTIES
@@ -141,12 +146,48 @@ public class NumberCell implements Model
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the value of this number cell which is a number variable.
-     * @return The Number Variable value.
+     * Get the cell's value variable.
+     * @return The NumberVariable.
      */
-    public NumberVariable value()
+    public NumberVariable valueVariable()
     {
         return this.value.getValue();
+    }
+
+
+    /**
+     * Get the cell's integer value.
+     * @return The cell value.
+     */
+    public Integer value()
+    {
+        try
+        {
+            if (this.valueVariable() != null)
+                return this.valueVariable().value();
+            return null;
+        }
+        catch (SummationException exception)
+        {
+            ApplicationFailure.summation(exception);
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Get the cell's integer value as a string.
+     * @return The cell's value as a string.
+     */
+    public String valueString()
+    {
+        Integer integerValue = this.value();
+
+        if (integerValue != null)
+            return integerValue.toString();
+
+        return "";
     }
 
 
@@ -165,42 +206,33 @@ public class NumberCell implements Model
 
     public View view(NumberColumn column)
     {
+        // [1] Declarations
+        // ------------------------------------------------------------------------------------------
+
         Context context = SheetManager.currentSheetContext();
 
-        TextView view = new TextView(context);
-
+        TextViewBuilder cellView = new TextViewBuilder();
         this.valueViewId = Util.generateViewId();
-        view.setId(this.valueViewId);
 
-        TableRow.LayoutParams layoutParams =
-                new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                          TableRow.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 0, 0, 0);
-        view.setLayoutParams(layoutParams);
+        // [2] Cell View
+        // ------------------------------------------------------------------------------------------
 
-        view.setPadding(0, 0, 0, 0);
+        cellView.id         = this.valueViewId;
+        cellView.layoutType = LayoutType.TABLE_ROW;
+        cellView.width      = TableRow.LayoutParams.WRAP_CONTENT;
+        cellView.height     = TableRow.LayoutParams.WRAP_CONTENT;
+        cellView.color      = R.color.light_grey_9;
+        cellView.font       = Font.serifFontRegular(context);
+        cellView.size       = R.dimen.widget_table_cell_text_size;
 
-        // > Set value
-        // --------------------------------------------------------------------------------------
-        Integer value = null;
-        try {
-            value = this.value.getValue().value();
-        } catch (SummationException exception) {
-            ApplicationFailure.summation(exception);
-        }
-
-        if (value != null)
-            view.setText(Integer.toString(value));
+        String valueString = this.valueString();
+        if (valueString != null)
+            cellView.text = valueString;
         else
-            view.setText(Integer.toString(column.getDefaultValue()));
+            cellView.text = Integer.toString(column.getDefaultValue());
 
-        view.setTextColor(ContextCompat.getColor(context, R.color.text_medium_light));
-        view.setTypeface(Util.serifFontBold(context));
 
-        float textSize = Util.getDim(context, R.dimen.comp_table_cell_text_size);
-        view.setTextSize(textSize);
-
-        return view;
+        return cellView.textView(context);
     }
 
 
@@ -220,7 +252,7 @@ public class NumberCell implements Model
 
         if (!this.value.isNull())
         {
-            this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.valueVariable().addOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onValueUpdate();
@@ -242,18 +274,8 @@ public class NumberCell implements Model
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
-            try
-            {
-                Integer value = this.value().value();
-
-                // TODO can value be null
-                if (value != null)
-                    textView.setText(Integer.toString(value));
-            }
-            catch (SummationException exception)
-            {
-                ApplicationFailure.summation(exception);
-            }
+            if (this.value() != null)
+                textView.setText(this.valueString());
         }
     }
 

@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -11,7 +12,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
@@ -22,7 +22,14 @@ import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.LayoutType;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.TableLayoutBuilder;
+import com.kispoko.tome.util.ui.TableRowBuilder;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -33,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.x;
 
 
 /**
@@ -214,7 +222,8 @@ public class TableWidget extends Widget implements Serializable
      * Get the table width (number of columns).
      * @return The table width.
      */
-    public Integer getWidth() {
+    public int width()
+    {
         return this.getColumns().size();
     }
 
@@ -225,13 +234,26 @@ public class TableWidget extends Widget implements Serializable
      * Get the table height (number of rows, not counting header).
      * @return The table height.
      */
-    public Integer getHeight() {
+    public int height()
+    {
         return this.rows.getValue().size();
     }
 
 
     // ** Columns
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the column for the specified index.
+     * @param index The column index.
+     * @return The ColumnUnion.
+     */
+    public ColumnUnion columnAtIndex(int index)
+    {
+        return this.getColumns().get(index);
+
+    }
+
 
     /**
      * Get the table columns.
@@ -294,64 +316,35 @@ public class TableWidget extends Widget implements Serializable
      */
     public View tileView()
     {
-        // [1] Get dependencies
+        // [1] Declarations
         // --------------------------------------------------------------------------------------
 
         Context context = SheetManager.currentSheetContext();
 
-        LinearLayout layout = this.linearLayout();
+        LinearLayout tileLayout  = this.tileLayout(context);
+        TableLayout  tableLayout = this.tileTableLayout(context);
 
-        layout.setPadding(0, 0, 0, 0);
+        // [2] Structure
+        // --------------------------------------------------------------------------------------
 
-        TableLayout tableLayout = new TableLayout(context);
+        tileLayout.addView(this.tableTitleView(this.data().getFormat().getLabel(), context));
+        tileLayout.addView(tableLayout);
 
-        TableLayout.LayoutParams tableLayoutParams =
-                new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
-                                             TableLayout.LayoutParams.MATCH_PARENT);
-        tableLayout.setLayoutParams(tableLayoutParams);
+        // > Header
+        // --------------------------------------------------------------------------------------
 
-        int tableLayoutPadding = (int) Util.getDim(context, R.dimen.one_dp);
-        tableLayout.setPadding(tableLayoutPadding, tableLayoutPadding,
-                               tableLayoutPadding, tableLayoutPadding);
+        tableLayout.addView(this.headerTableRow(context));
 
-        tableLayout.setDividerDrawable(
-                ContextCompat.getDrawable(context, R.drawable.table_row_divider));
-        tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-
-//        tableLayout.setStretchAllColumns(true);
-        tableLayout.setShrinkAllColumns(true);
-
-        tableLayout.addView(this.headerTableRow());
+        // > Rows
+        // --------------------------------------------------------------------------------------
 
         for (Row row : this.rows.getValue())
         {
-            TableRow tableRow = this.tableRow(context);
-
-            TableRow.LayoutParams tableRowLayoutParams =
-                    new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-                                              TableRow.LayoutParams.WRAP_CONTENT);
-            tableRow.setLayoutParams(tableRowLayoutParams);
-
-            int tableRowPaddingHorz = (int) Util.getDim(context, R.dimen.comp_table_row_padding_horz);
-            int tableRowPaddingVert = (int) Util.getDim(context,
-                                                        R.dimen.comp_table_row_padding_vert);
-            tableRow.setPadding(tableRowPaddingHorz, tableRowPaddingVert,
-                                tableRowPaddingHorz, tableRowPaddingVert);
-
-            int columnIndex = 0;
-            for (CellUnion cell : row.getCells())
-            {
-                View cellView = cell.view(this.getColumns().get(columnIndex));
-                tableRow.addView(cellView);
-                columnIndex++;
-            }
-
+            TableRow tableRow = this.tableRow(row, context);
             tableLayout.addView(tableRow);
         }
 
-        layout.addView(tableLayout);
-
-        return layout;
+        return tileLayout;
     }
 
 
@@ -390,47 +383,121 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    private TableRow tableRow(Context context)
+    private TextView tableTitleView(String title, Context context)
     {
-        TableRow tableRow = new TableRow(context);
+        TextViewBuilder tableTitle = new TextViewBuilder();
 
-        return tableRow;
+        tableTitle.layoutType       = LayoutType.LINEAR;
+        tableTitle.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        tableTitle.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        tableTitle.text             = title.toUpperCase();
+        tableTitle.padding.top      = R.dimen.widget_table_title_padding_top;
+        tableTitle.padding.left     = R.dimen.widget_table_title_paddin_left;
+        tableTitle.size             = R.dimen.widget_table_title_text_size;
+        tableTitle.color            = R.color.gold_8;
+        tableTitle.font             = Font.sansSerifFontBold(context);
+
+        return tableTitle.textView(context);
     }
 
 
-    private TableRow headerTableRow()
+    private TableRow tableRow(Row row, Context context)
     {
-        Context context = SheetManager.currentSheetContext();
+        TableRowBuilder tableRow = new TableRowBuilder();
 
-        TableRow headerRow = new TableRow(context);
+        tableRow.width          = TableRow.LayoutParams.MATCH_PARENT;
+        tableRow.height         = TableRow.LayoutParams.WRAP_CONTENT;
+        tableRow.padding.left   = R.dimen.widget_table_row_padding_horz;
+        tableRow.padding.right  = R.dimen.widget_table_row_padding_horz;
+        tableRow.padding.top    = R.dimen.widget_table_row_padding_vert;
+        tableRow.padding.bottom = R.dimen.widget_table_row_padding_vert;
 
-        int paddingVert = (int) Util.getDim(context, R.dimen.comp_table_header_padding_vert);
-        int paddingHorz = (int) Util.getDim(context, R.dimen.comp_table_row_padding_horz);
-        headerRow.setPadding(paddingHorz, paddingVert, paddingHorz, paddingVert);
+        TableRow tableRowView = tableRow.tableRow(context);
 
-        int columnIndex = 0;
-        for (CellUnion cellUnion : this.headerRow.getCells())
+        for (int i = 0; i < row.width(); i++)
         {
-            // Header is special, so create text column so that view gets created correctly.
-            Column column = this.getColumns().get(columnIndex).getColumn();
-            TextColumn textColumn = new TextColumn(null, null, null,
-                                                    column.getAlignment(), column.getWidth());
-            ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
-
-            TextView headerCellView = (TextView) cellUnion.view(columnUnion);
-
-            float headerTextSize = (int) context.getResources()
-                                                .getDimension(R.dimen.comp_table_header_text_size);
-            headerCellView.setTextSize(headerTextSize);
-            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.text_light));
-            headerCellView.setTypeface(Util.sansSerifFontRegular(context));
-
-            headerRow.addView(headerCellView);
-
-            columnIndex++;
+            CellUnion cell = row.cellAtIndex(i);
+            View cellView = cell.view(this.columnAtIndex(i));
+            tableRowView.addView(cellView);
         }
 
-        return headerRow;
+        return tableRowView;
     }
+
+
+    private LinearLayout tileLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation         = LinearLayout.VERTICAL;
+        layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.margin.left         = R.dimen.widget_layout_margins_horz;
+        layout.margin.right        = R.dimen.widget_layout_margins_horz;
+        layout.backgroundResource  = R.drawable.bg_widget;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private TableLayout tileTableLayout(Context context)
+    {
+        TableLayoutBuilder layout = new TableLayoutBuilder();
+
+        layout.layoutType          = LayoutType.LINEAR;
+        layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.shrinkAllColumns    = true;
+
+        TableLayout tableLayout = layout.tableLayout(context);
+
+        tableLayout.setDividerDrawable(
+                ContextCompat.getDrawable(context, R.drawable.table_row_divider));
+        tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+
+        return tableLayout;
+    }
+
+
+    private TableRow headerTableRow(Context context)
+    {
+
+        TableRowBuilder headerRow = new TableRowBuilder();
+
+        headerRow.width          = TableRow.LayoutParams.MATCH_PARENT;
+        headerRow.height         = TableRow.LayoutParams.WRAP_CONTENT;
+        headerRow.padding.top    = R.dimen.widget_table_header_padding_vert;
+        headerRow.padding.bottom = R.dimen.widget_table_header_padding_vert;
+        headerRow.padding.left   = R.dimen.widget_table_row_padding_horz;
+        headerRow.padding.right  = R.dimen.widget_table_row_padding_horz;
+
+        TableRow headerRowView = headerRow.tableRow(context);
+
+
+        for (int i = 0; i < this.width(); i++)
+        {
+            CellUnion headerCell = this.headerRow.cellAtIndex(i);
+
+            Column column = this.columnAtIndex(i).getColumn();
+            TextColumn textColumn = new TextColumn(null, null, null,
+                                                   column.getAlignment(),
+                                                   column.getWidth());
+            ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
+
+            TextView headerCellView = (TextView) headerCell.view(columnUnion);
+
+            float headerTextSize = (int) context.getResources()
+                                                .getDimension(R.dimen.widget_table_header_text_size);
+            headerCellView.setTextSize(headerTextSize);
+            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.light_grey_5));
+            headerCellView.setTypeface(Util.sansSerifFontBold(context));
+
+            headerRowView.addView(headerCellView);
+        }
+
+        return headerRowView;
+    }
+
+
 
 }
