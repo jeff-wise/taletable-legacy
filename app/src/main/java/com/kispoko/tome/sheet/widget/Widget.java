@@ -4,9 +4,9 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.ApplicationFailure;
@@ -29,6 +29,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 
+import static android.R.attr.label;
 
 
 /**
@@ -101,8 +102,11 @@ public abstract class Widget implements Model, Serializable
         final Context context = SheetManager.currentSheetContext();
         final Widget  widget  = this;
 
-        String  label     = widget.data().getFormat().getLabel().toUpperCase();
-        Boolean showLabel = widget.data().getFormat().getShowLabel();
+        String label = widget.data().getFormat().getLabel();
+        if (label != null)
+            label = label.toUpperCase();
+        else
+            Log.d("***WIDGET", "labe is null");
 
         // [1 B] Views
         // --------------------------------------------------------------------------------------
@@ -134,7 +138,7 @@ public abstract class Widget implements Model, Serializable
 
         layout.child(contentLayout);
 
-        if (showLabel)
+        if (label != null)
             layout.child(labelView);
 
         // [2 B] Content

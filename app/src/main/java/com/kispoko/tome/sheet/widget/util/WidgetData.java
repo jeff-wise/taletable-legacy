@@ -23,8 +23,8 @@ public class WidgetData implements Model, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                         id;
-    private ModelValue<WidgetFormat>     format;
+    private UUID                     id;
+    private ModelValue<WidgetFormat> format;
     private PrimitiveValue<Action[]> actions;
 
 
@@ -57,17 +57,18 @@ public class WidgetData implements Model, Serializable
     public static WidgetData fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID id                   = UUID.randomUUID();
-        WidgetFormat widgetFormat = WidgetFormat.fromYaml(yaml.atKey("format"));
+        UUID         id      = UUID.randomUUID();
 
-        List<Action> actions   = yaml.atKey("actions").forEach(new Yaml.ForEach<Action>() {
+        WidgetFormat format  = WidgetFormat.fromYaml(yaml.atMaybeKey("format"));
+
+        List<Action> actions = yaml.atKey("actions").forEach(new Yaml.ForEach<Action>() {
             @Override
             public Action forEach(Yaml yaml, int index) throws YamlException {
                 return Action.fromYaml(yaml);
             }
         });
 
-        return new WidgetData(id, widgetFormat, actions);
+        return new WidgetData(id, format, actions);
     }
 
 

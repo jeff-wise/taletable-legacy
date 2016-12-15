@@ -16,6 +16,7 @@ import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
+import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.Util;
@@ -50,7 +51,7 @@ public class NumberWidget extends Widget implements Serializable
     // ------------------------------------------------------------------------------------------
 
     private ModelValue<WidgetData>            widgetData;
-    private PrimitiveValue<WidgetFormat.Size> size;
+    private PrimitiveValue<WidgetContentSize> size;
     private ModelValue<NumberVariable>        value;
     private ModelValue<TextVariable>          prefix;
     private ModelValue<TextVariable>          postfix;
@@ -72,7 +73,7 @@ public class NumberWidget extends Widget implements Serializable
         this.id         = null;
 
         this.widgetData = ModelValue.empty(WidgetData.class);
-        this.size       = new PrimitiveValue<>(null, WidgetFormat.Size.class);
+        this.size       = new PrimitiveValue<>(null, WidgetContentSize.class);
         this.value      = ModelValue.empty(NumberVariable.class);
         this.prefix     = ModelValue.empty(TextVariable.class);
         this.postfix    = ModelValue.empty(TextVariable.class);
@@ -81,7 +82,7 @@ public class NumberWidget extends Widget implements Serializable
 
     public NumberWidget(UUID id,
                         WidgetData widgetData,
-                        WidgetFormat.Size size,
+                        WidgetContentSize size,
                         NumberVariable value,
                         TextVariable prefix,
                         TextVariable postfix)
@@ -89,7 +90,7 @@ public class NumberWidget extends Widget implements Serializable
         this.id   = id;
 
         this.widgetData = ModelValue.full(widgetData, WidgetData.class);
-        this.size       = new PrimitiveValue<>(size, WidgetFormat.Size.class);
+        this.size       = new PrimitiveValue<>(size, WidgetContentSize.class);
         this.value      = ModelValue.full(value, NumberVariable.class);
         this.prefix     = ModelValue.full(prefix, TextVariable.class);
         this.postfix    = ModelValue.full(postfix, TextVariable.class);
@@ -103,7 +104,7 @@ public class NumberWidget extends Widget implements Serializable
     {
         UUID              id         = UUID.randomUUID();
         WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
-        WidgetFormat.Size size       = WidgetFormat.Size.fromYaml(yaml.atKey("size"));
+        WidgetContentSize size       = WidgetContentSize.fromYaml(yaml.atKey("size"));
         NumberVariable    value      = NumberVariable.fromYaml(yaml.atKey("value"));
         TextVariable      prefix     = TextVariable.fromYaml(yaml.atMaybeKey("prefix"));
         TextVariable      postfix    = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));

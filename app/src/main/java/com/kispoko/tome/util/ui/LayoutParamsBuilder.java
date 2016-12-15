@@ -160,6 +160,23 @@ public class LayoutParamsBuilder
     }
 
 
+    public void setWeight(int weight)
+    {
+        switch (this.layoutType)
+        {
+            case LINEAR:
+                this.linearLayoutParams.weight = weight;
+                break;
+            case TABLE:
+                this.tableLayoutParams.weight = weight;
+                break;
+            case TABLE_ROW:
+                this.tableRowLayoutParams.weight = weight;
+                break;
+        }
+    }
+
+
     public void setGravity(int gravity)
     {
         switch (this.layoutType)
@@ -220,7 +237,8 @@ public class LayoutParamsBuilder
     private boolean isLayoutConstant(Integer constant)
     {
         if (constant == LinearLayout.LayoutParams.MATCH_PARENT ||
-            constant == LinearLayout.LayoutParams.WRAP_CONTENT) {
+            constant == LinearLayout.LayoutParams.WRAP_CONTENT ||
+            constant == 0) {
             return true;
         }
         else {

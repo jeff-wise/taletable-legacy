@@ -12,6 +12,7 @@ import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
+import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.Util;
@@ -44,7 +45,7 @@ public class BooleanWidget extends Widget implements Serializable
     // ------------------------------------------------------------------------------------------
 
     private ModelValue<WidgetData>            widgetData;
-    private PrimitiveValue<WidgetFormat.Size> size;
+    private PrimitiveValue<WidgetContentSize> size;
     private ModelValue<BooleanVariable>       value;
 
 
@@ -62,20 +63,20 @@ public class BooleanWidget extends Widget implements Serializable
         this.id         = null;
 
         this.widgetData = ModelValue.empty(WidgetData.class);
-        this.size       = new PrimitiveValue<>(null, WidgetFormat.Size.class);
+        this.size       = new PrimitiveValue<>(null, WidgetContentSize.class);
         this.value      = ModelValue.empty(BooleanVariable.class);
     }
 
 
     public BooleanWidget(UUID id,
                          WidgetData widgetData,
-                         WidgetFormat.Size size,
+                         WidgetContentSize size,
                          BooleanVariable value)
     {
         this.id = id;
 
         this.widgetData = ModelValue.full(widgetData, WidgetData.class);
-        this.size       = new PrimitiveValue<>(size, WidgetFormat.Size.class);
+        this.size       = new PrimitiveValue<>(size, WidgetContentSize.class);
         this.value      = ModelValue.full(value, BooleanVariable.class);
 
         initialize();
@@ -87,7 +88,7 @@ public class BooleanWidget extends Widget implements Serializable
     {
         UUID              id         = UUID.randomUUID();
         WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
-        WidgetFormat.Size size       = WidgetFormat.Size.fromYaml(yaml.atKey("size"));
+        WidgetContentSize size       = WidgetContentSize.fromYaml(yaml.atKey("size"));
         BooleanVariable   value      = BooleanVariable.fromYaml(yaml.atKey("value"));
 
         return new BooleanWidget(id, widgetData, size, value);

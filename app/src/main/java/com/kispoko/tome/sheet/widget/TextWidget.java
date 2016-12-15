@@ -24,6 +24,7 @@ import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
+import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.engine.refinement.MemberOf;
@@ -57,7 +58,7 @@ public class TextWidget extends Widget implements Serializable
     // ------------------------------------------------------------------------------------------
     private UUID                              id;
     private ModelValue<WidgetData>            widgetData;
-    private PrimitiveValue<WidgetFormat.Size> size;
+    private PrimitiveValue<WidgetContentSize> size;
     private ModelValue<TextVariable>          value;
 
 
@@ -75,17 +76,17 @@ public class TextWidget extends Widget implements Serializable
 
         this.widgetData = ModelValue.empty(WidgetData.class);
         this.value      = ModelValue.empty(TextVariable.class);
-        this.size       = new PrimitiveValue<>(null, WidgetFormat.Size.class);
+        this.size       = new PrimitiveValue<>(null, WidgetContentSize.class);
     }
 
 
-    public TextWidget(UUID id, WidgetData widgetData, WidgetFormat.Size size, TextVariable value)
+    public TextWidget(UUID id, WidgetData widgetData, WidgetContentSize size, TextVariable value)
     {
         this.id         = id;
 
         this.widgetData = ModelValue.full(widgetData, WidgetData.class);
         this.value      = ModelValue.full(value, TextVariable.class);
-        this.size       = new PrimitiveValue<>(size, WidgetFormat.Size.class);
+        this.size       = new PrimitiveValue<>(size, WidgetContentSize.class);
 
         initialize();
     }
@@ -102,7 +103,7 @@ public class TextWidget extends Widget implements Serializable
     {
         UUID              id         = UUID.randomUUID();
         WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
-        WidgetFormat.Size size       = WidgetFormat.Size.fromYaml(yaml.atMaybeKey("size"));
+        WidgetContentSize size       = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
         TextVariable      value      = TextVariable.fromYaml(yaml.atKey("value"));
 
         return new TextWidget(id, widgetData, size, value);

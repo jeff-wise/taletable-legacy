@@ -36,16 +36,16 @@
 
 
     <!-- GROUP -->
-    <dimen name="row_padding_bottom">4dp</dimen>
-
-    <dimen name="group_horz_margins">0dp</dimen>
     <dimen name="group_margin_bottom">7dp</dimen>
-
-    <dimen name="group_padding_top">0dp</dimen>
     <dimen name="group_padding_horz">2dp</dimen>
+
     <dimen name="group_label_padding_left">8dp</dimen>
     <dimen name="group_label_padding_bottom">9dp</dimen>
     <dimen name="group_label_text_size">3.2sp</dimen>
+
+    <!-- GROUP: ROW -->
+    <dimen name="group_row_padding_bottom">4dp</dimen>
+
 
 
     <!-- WIDGET LAYOUT -->

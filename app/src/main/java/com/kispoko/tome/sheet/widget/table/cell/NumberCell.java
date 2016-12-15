@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TableRow;
@@ -30,7 +29,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 
 /**
@@ -52,6 +50,7 @@ public class NumberCell implements Model, Serializable
 
     private ModelValue<NumberVariable>    value;
     private PrimitiveValue<CellAlignment> alignment;
+    private PrimitiveValue<String>        prefix;
 
 
     // > Internal
@@ -69,10 +68,15 @@ public class NumberCell implements Model, Serializable
 
         this.value     = ModelValue.empty(NumberVariable.class);
         this.alignment = new PrimitiveValue<>(null, CellAlignment.class);
+        this.prefix    = new PrimitiveValue<>(null, String.class);
     }
 
 
-    public NumberCell(UUID id, NumberVariable value, CellAlignment alignment, NumberColumn column)
+    public NumberCell(UUID id,
+                      NumberVariable value,
+                      CellAlignment alignment,
+                      NumberColumn column,
+                      String prefix)
     {
         this.id        = id;
 
@@ -85,6 +89,7 @@ public class NumberCell implements Model, Serializable
         this.value     = ModelValue.full(value, NumberVariable.class);
 
         this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
+        this.prefix    = new PrimitiveValue<>(prefix, String.class);
 
         initialize();
     }
@@ -93,11 +98,12 @@ public class NumberCell implements Model, Serializable
     public static NumberCell fromYaml(Yaml yaml, NumberColumn column)
                   throws YamlException
     {
-        UUID          id        = UUID.randomUUID();
-        NumberVariable value    = NumberVariable.fromYaml(yaml.atMaybeKey("value"));
-        CellAlignment alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        UUID           id        = UUID.randomUUID();
+        NumberVariable value     = NumberVariable.fromYaml(yaml.atMaybeKey("value"));
+        CellAlignment  alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        String         prefix    = yaml.atMaybeKey("prefix").getString();
 
-        return new NumberCell(id, value, alignment, column);
+        return new NumberCell(id, value, alignment, column, prefix);
     }
 
 
@@ -145,6 +151,9 @@ public class NumberCell implements Model, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Value
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Get the cell's value variable.
      * @return The NumberVariable.
@@ -185,19 +194,38 @@ public class NumberCell implements Model, Serializable
         Integer integerValue = this.value();
 
         if (integerValue != null)
-            return integerValue.toString();
+        {
+            String integerString = integerValue.toString();
+
+            if (!this.prefix.isNull())
+                integerString = this.prefix() + " " + integerString;
+
+            return integerString;
+        }
 
         return "";
     }
 
 
+    // ** Alignment
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Get the alignment of this cell.
      * @return The cell Alignment.
      */
-   public CellAlignment alignment()
+    public CellAlignment alignment()
     {
         return this.alignment.getValue();
+    }
+
+
+    // ** Prefix
+    // ------------------------------------------------------------------------------------------
+
+    public String prefix()
+    {
+        return this.prefix.getValue();
     }
 
 
@@ -268,7 +296,6 @@ public class NumberCell implements Model, Serializable
      */
     private void onValueUpdate()
     {
-        Log.d("***NUMBERCELL", "on value update called");
         if (this.valueViewId != null && !this.value.isNull())
         {
             Activity activity = (Activity) SheetManager.currentSheetContext();

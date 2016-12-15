@@ -210,677 +210,1226 @@ roleplay:
   - label: Profile
     groups:
     - label: General
-      number_of_rows: 2
-      widgets:
-      - type: text
-        data:
-          actions:
-          - edit
-          - generate
-          format:
-            label: Name
-            show_label: false
-            row: 1
-            column: 1
-            width: 1
-        size: large
-        value:
-          name: name
-          type: literal
-          value: Aladaisian Wineheart
-      - type: image
-        data:
-          actions:
-          - choose
-          - share
-          format:
-            show_label: false
-            row: 2
-            column: 1
-            width: 1
-            label: Picture
+      rows:
+      - widgets:
+        - type: text
+          data:
+            actions:
+            - edit
+            - generate
+            format:
+              width: 1
+          size: large
+          value:
+            name: name
+            type: literal
+            value: Aladaisian Wineheart
+      - widgets:
+        - type: image
+          data:
+            actions:
+            - choose
+            - share
+            format:
+              show_label: false
+              row: 2
+              column: 1
+              width: 1
+              label: Picture
     - label: Features
-      number_of_rows: 2
-      widgets:
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Level
-            row: 1
-            column: 1
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 17
-      - type: text
-        name: class
-        data:
-          actions:
-          - edit
-          format:
-            label: Class
-            row: 1
-            column: 2
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: Fighter
-          refinement:
-            name: class
-            type: member_of
-      - type: text
-        data:
-          actions:
-          - edit
-          format:
-            label: Race
-            row: 2
-            column: 1
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: Human
-      - type: text
-        data:
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 2
-            width: 1
-            label: Alignment
-        size: medium
-        value:
-          type: literal
-          value: Lawful Good
+      rows:
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Level
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 17
+        - type: text
+          name: class
+          data:
+            actions:
+            - edit
+            format:
+              label: Class
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: Fighter
+            refinement:
+              name: class
+              type: member_of
+      - widgets:
+        - type: text
+          data:
+            actions:
+            - edit
+            format:
+              label: Race
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: Human
+        - type: text
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Alignment
+          size: medium
+          value:
+            type: literal
+            value: Lawful Good
     - label: Appearance
-      number_of_rows: 2
-      widgets:
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 1
-            width: 1
-            label: Age
-        size: medium
-        value:
-          type: literal
-          value: 41
-      - type: text
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            label: Height
-        size: medium
-        value:
-          type: literal
-          value: 5'11"
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 3
-            width: 1
-            label: Weight
-        size: medium
-        value:
-          type: literal
-          value: 167
-      - type: text
-        data:
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 1
-            width: 1
-            label: Eyes
-        size: medium
-        value:
-          type: literal
-          value: Blue
-      - type: text
-        data:
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 2
-            width: 1
-            label: Skin
-        size: medium
-        value:
-          type: literal
-          value: Light
-      - type: text
-        data:
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 3
-            width: 1
-            label: Hair
-        size: medium
-        value:
-          type: literal
-          value: Brown
+      rows:
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Age
+          size: medium
+          value:
+            type: literal
+            value: 41
+        - type: text
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Height
+          size: medium
+          value:
+            type: literal
+            value: 5'11"
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Weight
+          size: medium
+          value:
+            type: literal
+            value: 167
+      - widgets:
+        - type: text
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Eyes
+          size: medium
+          value:
+            type: literal
+            value: Blue
+        - type: text
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Skin
+          size: medium
+          value:
+            type: literal
+            value: Light
+        - type: text
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Hair
+          size: medium
+          value:
+            type: literal
+            value: Brown
   - label: Stats
     groups:
     - label: Ability Scores
-      number_of_rows: 2
-      widgets:
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 1
-            width: 1
-            label: Strength
-        size: medium
-        postfix:
-          type: program
+      rows:
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Strength
+          size: medium
+          postfix:
+            type: program
+            value:
+              program: ability_modifier_string
+              parameters:
+              - type: reference
+                value: strength_modifier
           value:
-            program: ability_modifier_string
-            parameters:
-            - type: reference
-              value: strength_modifier
-        value:
-          name: strength
-          type: literal
-          value: 11
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            label: Dexterity
-        size: medium
-        postfix:
-          type: program
+            name: strength
+            type: literal
+            value: 11
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Dexterity
+          size: medium
+          postfix:
+            type: program
+            value:
+              program: ability_modifier_string
+              parameters:
+              - type: reference
+                value: dexterity_modifier
           value:
-            program: ability_modifier_string
-            parameters:
-            - type: reference
-              value: dexterity_modifier
-        value:
-          name: dexterity
-          type: literal
-          value: 19
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 3
-            width: 1
-            label: Constitution
-        size: medium
-        postfix:
-          type: program
+            name: dexterity
+            type: literal
+            value: 19
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Constitution
+          size: medium
+          postfix:
+            type: program
+            value:
+              program: ability_modifier_string
+              parameters:
+              - type: reference
+                value: constitution_modifier
           value:
-            program: ability_modifier_string
-            parameters:
-            - type: reference
-              value: constitution_modifier
-        value:
-          name: constitution
-          type: literal
-          value: 15
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 1
-            width: 1
-            label: Intelligence
-        size: medium
-        postfix:
-          type: program
+            name: constitution
+            type: literal
+            value: 15
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Intelligence
+          size: medium
+          postfix:
+            type: program
+            value:
+              program: ability_modifier_string
+              parameters:
+              - type: reference
+                value: intelligence_modifier
           value:
-            program: ability_modifier_string
-            parameters:
-            - type: reference
-              value: intelligence_modifier
-        value:
-          name: intelligence
-          type: literal
-          value: 22
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Wisdom
-            row: 2
-            column: 2
-            width: 1
-        size: medium
-        postfix:
-          type: program
+            name: intelligence
+            type: literal
+            value: 22
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Wisdom
+              width: 1
+          size: medium
+          postfix:
+            type: program
+            value:
+              program: ability_modifier_string
+              parameters:
+              - type: reference
+                value: wisdom_modifier
           value:
-            program: ability_modifier_string
-            parameters:
-            - type: reference
-              value: wisdom_modifier
-        value:
-          name: wisdom
-          type: literal
-          value: 14
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 2
-            column: 3
-            width: 1
-            label: Charisma
-        size: medium
-        postfix:
-          type: program
+            name: wisdom
+            type: literal
+            value: 14
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Charisma
+          size: medium
+          postfix:
+            type: program
+            value:
+              program: ability_modifier_string
+              parameters:
+              - type: reference
+                value: charisma_modifier
           value:
-            program: ability_modifier_string
-            parameters:
-            - type: reference
-              value: charisma_modifier
-        value:
-          name: charisma
-          type: literal
-          value: 13
+            name: charisma
+            type: literal
+            value: 13
     - label: General
-      number_of_rows: 1
-      widgets:
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            label: Proficiency Bonus
-        size: medium
-        value:
-          name: proficiency_bonus
-          type: literal
-          value: 6
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 2
-            width: 1
-            label: Inspiration
-        size: medium
-        value:
-          type: literal
-          value: 4
+      rows:
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Proficiency Bonus
+          size: medium
+          value:
+            name: proficiency_bonus
+            type: literal
+            value: 6
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Inspiration
+          size: medium
+          value:
+            type: literal
+            value: 4
     - label: Combat
-      number_of_rows: 1
-      widgets:
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            row: 1
-            column: 1
-            width: 1
-            label: Armor Class
-        size: medium
-        value:
-          type: literal
-          value: 24
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Initiative
-            row: 1
-            column: 2
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 7
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Speed
-            row: 1
-            column: 3
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 30
+      rows:
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Armor Class
+          size: medium
+          value:
+            type: literal
+            value: 24
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Initiative
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 7
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Speed
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 30
     - label: Saving Throws
-      number_of_rows: 2
-      widgets:
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Strength
-            row: 1
-            column: 1
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 0
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Dexterity
-            row: 1
-            column: 2
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 4
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Constitution
-            row: 1
-            column: 3
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 2
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Intelligence
-            row: 2
-            column: 1
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 12
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Wisdom
-            row: 2
-            column: 2
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 8
-      - type: number
-        data:
-          actions:
-          - edit
-          format:
-            label: Charisma
-            row: 2
-            column: 3
-            width: 1
-        size: medium
-        value:
-          type: literal
-          value: 1
+      rows:
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Strength
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 0
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Dexterity
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 4
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Constitution
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 2
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Intelligence
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 12
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Wisdom
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 8
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Charisma
+              width: 1
+          size: medium
+          value:
+            type: literal
+            value: 1
   - label: Abilities
     groups:
     - label:
-      number_of_rows: 1
-      widgets:
-      - type: table
-        data:
-          actions:
-          - edit
-          format:
-            label: Skills
-            show_label: false
-            row: 1
-            column: 1
-            width: 1
-        columns:
-        - type: text
-          column:
-            name: NAME
-            default_value: skill
-            width: 3
-            default_alignment: left
-        - type: number
-          column:
-            name: MODIFIER
-            default_value: 0
-            width: 2
-            default_alignment: center
-        - type: boolean
-          column:
-            name: PROFICIENT?
-            default_value: false
-            width: 2
-            default_alignment: center
-        rows:
-        - cells:
-          - value:
-              type: literal
-              value: Acrobatics
-          - value:
-              name: acrobatics_bonus
-              type: summation
+      rows:
+      - widgets:
+        - type: table
+          data:
+            actions:
+            - edit
+            format:
+              label: Skills
+          columns:
+          - type: text
+            column:
+              name: NAME
+              default_value: skill
+              width: 3
+              default_alignment: left
+          - type: number
+            column:
+              name: MODIFIER
+              default_value: 0
+              width: 2
+              default_alignment: center
+          - type: boolean
+            column:
+              name: PROFICIENT?
+              default_value: false
+              width: 2
+              default_alignment: center
+          rows:
+          - cells:
+            - value:
+                type: literal
+                value: Acrobatics
+            - prefix: '+'
               value:
-                terms:
-                - type: literal
-                  value:
-                    type: variable
-                    variable: dexterity_modifier
-                - type: conditional
-                  conditional:
-                    type: variable
-                    variable: acrobatics_is_proficient
-                  when_true:
-                    type: variable
-                    variable: proficiency_bonus
-                  when_false:
-                    type: literal
-                    value: 0
-          - value:
-              name: acrobatics_is_proficient
-              type: literal
-              value: true
-        - cells:
-          - value:
-              type: literal
-              value: Animal Handling
-          - value:
-              name: animal_handling_bonus
-              type: summation
+                name: acrobatics_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: dexterity_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: acrobatics_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: acrobatics_is_proficient
+                type: literal
+                value: true
+          - cells:
+            - value:
+                type: literal
+                value: Animal Handling
+            - prefix: '+'
               value:
-                terms:
-                - type: literal
-                  value:
-                    type: variable
-                    variable: wisdom_modifier
-                - type: conditional
-                  conditional:
-                    type: variable
-                    variable: animal_handling_is_proficient
-                  when_true:
-                    type: variable
-                    variable: proficiency_bonus
-                  when_false:
-                    type: literal
-                    value: 0
-          - value:
-              name: animal_handling_is_proficient
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Arcana
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Athletics
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Deception
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: History
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Insight
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Intimidation
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Investigation
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Medicine
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Nature
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Perception
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Performance
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Persuasion
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Religion
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Sleight of Hand
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Stealth
-          - null
-          - value:
-              type: literal
-              value: false
-        - cells:
-          - value:
-              type: literal
-              value: Survival
-          - null
-          - value:
-              type: literal
-              value: false
+                name: animal_handling_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: wisdom_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: animal_handling_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: animal_handling_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Arcana
+            - prefix: '+'
+              value:
+                name: arcana_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: intelligence_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: arcana_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: arcana_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Athletics
+            - prefix: '+'
+              value:
+                name: athletics_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: strength_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: athletics_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: athletics_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Deception
+            - prefix: '+'
+              value:
+                name: deception_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: charisma_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: deception_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: deception_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: History
+            - prefix: '+'
+              value:
+                name: history_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: intelligence_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: history_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: history_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Insight
+            - prefix: '+'
+              value:
+                name: insight_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: wisdom_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: insight_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: insight_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Intimidation
+            - prefix: '+'
+              value:
+                name: intimidation_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: charisma_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: intimidation_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: intimidation_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Investigation
+            - prefix: '+'
+              value:
+                name: investigation_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: intelligence_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: investigation_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: investigation_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Medicine
+            - prefix: '+'
+              value:
+                name: medicine_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: wisdom_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: medicine_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: medicine_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Nature
+            - prefix: '+'
+              value:
+                name: nature_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: intelligence_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: nature_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: nature_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Perception
+            - prefix: '+'
+              value:
+                name: perception_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: wisdom_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: perception_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: perception_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Performance
+            - prefix: '+'
+              value:
+                name: performance_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: charisma_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: performance_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: performance_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Persuasion
+            - prefix: '+'
+              value:
+                name: persuasion_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: charisma_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: persuasion_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: persuasion_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Religion
+            - prefix: '+'
+              value:
+                name: religion_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: intelligence_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: religion_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: religion_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Sleight of Hand
+            - prefix: '+'
+              value:
+                name: sleight_of_hand_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: dexterity_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: sleight_of_hand_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: sleight_of_hand_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Stealth
+            - prefix: '+'
+              value:
+                name: stealth_bonsu
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: dexterity_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: stealth_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: stealth_is_proficient
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Survival
+            - prefix: '+'
+              value:
+                name: survival_bonus
+                type: summation
+                value:
+                  terms:
+                  - type: literal
+                    value:
+                      type: variable
+                      variable: wisdom_modifier
+                  - type: conditional
+                    conditional:
+                      type: variable
+                      variable: survival_is_proficient
+                    when_true:
+                      type: variable
+                      variable: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
+            - value:
+                name: survival_is_proficient
+                type: literal
+                value: false
   - label: Inventory
     groups:
-  - label: Spellbook
-    groups:
+    - label:
+      rows:
+      - widgets:
+        - type: table
+          data:
+            actions:
+            - edit
+            format:
+              label: Weapons
+          columns:
+          - type: text
+            column:
+              name: NAME
+              default_value: weapon
+              width: 3
+              default_alignment: left
+          - type: number
+            column:
+              name: QUANTITY
+              default_value: 1
+              width: 2
+              default_alignment: center
+          - type: boolean
+            column:
+              name: EQUIPPED?
+              default_value: false
+              width: 2
+              default_alignment: center
+          rows:
+          - cells:
+            - value:
+                type: literal
+                value: Longsword
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+            - value:
+                name: equipped
+                type: literal
+                value: true
+          - cells:
+            - value:
+                type: literal
+                value: Heavy Crossbow
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+            - value:
+                name: equipped
+                type: literal
+                value: false
+          - cells:
+            - value:
+                type: literal
+                value: Dagger
+            - value:
+                name: quantity
+                type: literal
+                value: 2
+            - value:
+                name: equipped
+                type: literal
+                value: false
+    - label: ""
+      rows:
+      - widgets:
+        - type: table
+          data:
+            actions:
+            - edit
+            format:
+              label: Armor / Shields
+          columns:
+          - type: text
+            column:
+              name: NAME
+              default_value: armor
+              width: 3
+              default_alignment: left
+          - type: number
+            column:
+              name: QUANTITY
+              default_value: 1
+              width: 2
+              default_alignment: center
+          - type: boolean
+            column:
+              name: EQUIPPED?
+              default_value: false
+              width: 2
+              default_alignment: center
+          rows:
+          - cells:
+            - value:
+                type: literal
+                value: Scalemail
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+            - value:
+                name: equipped
+                type: literal
+                value: true
+          - cells:
+            - value:
+                type: literal
+                value: Shield
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+            - value:
+                name: equipped
+                type: literal
+                value: true
+    - label: Wealth
+      rows:
+      - widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Gold
+          size: medium
+          value:
+            name: wealth_gold
+            type: literal
+            value: 11
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Silver
+          size: medium
+          value:
+            name: wealth_silver
+            type: literal
+            value: 28
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Copper
+          size: medium
+          value:
+            name: wealth_copper
+            type: literal
+            value: 17
+      - width: 70
+        widgets:
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              label: Platinum
+          size: medium
+          value:
+            name: wealth_platinum
+            type: literal
+            value: 0
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
+              label: Electrum
+          size: medium
+          value:
+            name: wealth_electrum
+            type: literal
+            value: 0
+    - label: ""
+      rows:
+      - widgets:
+        - type: table
+          data:
+            actions:
+            - edit
+            format:
+              label: Gear
+          columns:
+          - type: text
+            column:
+              name: NAME
+              default_value: armor
+              width: 1
+              default_alignment: left
+          - type: number
+            column:
+              name: QUANTITY
+              default_value: 1
+              width: 1
+              default_alignment: center
+          rows:
+          - cells:
+            - value:
+                type: literal
+                value: Crossbow Bolt
+            - value:
+                name: quantity
+                type: literal
+                value: 20
+          - cells:
+            - value:
+                type: literal
+                value: Torch
+            - value:
+                name: quantity
+                type: literal
+                value: 3
+          - cells:
+            - value:
+                type: literal
+                value: Caltrops (Bag of 20)
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+          - cells:
+            - value:
+                type: literal
+                value: Hemp Rope (50 feet)
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+          - cells:
+            - value:
+                type: literal
+                value: Grappling Hook
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+          - cells:
+            - value:
+                type: literal
+                value: Crowbar
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+          - cells:
+            - value:
+                type: literal
+                value: Waterskin
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+          - cells:
+            - value:
+                type: literal
+                value: Vial
+            - value:
+                name: quantity
+                type: literal
+                value: 2
+          - cells:
+            - value:
+                type: literal
+                value: Manacles
+            - value:
+                name: quantity
+                type: literal
+                value: 1
+          - cells:
+            - value:
+                type: literal
+                value: Bedroll
+            - value:
+                name: quantity
+                type: literal
+                value: 1

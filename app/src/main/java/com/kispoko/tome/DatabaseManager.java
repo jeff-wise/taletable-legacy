@@ -29,7 +29,7 @@ import com.kispoko.tome.engine.refinement.RefinementUnion;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.engine.refinement.RefinementIndex;
-import com.kispoko.tome.sheet.Group;
+import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.Roleplay;
 import com.kispoko.tome.sheet.Sheet;

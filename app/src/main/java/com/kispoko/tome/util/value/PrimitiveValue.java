@@ -18,6 +18,8 @@ import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
+import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
+import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
@@ -139,7 +141,7 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.BLOB;
         }
-        else if (valueClass.isAssignableFrom(WidgetFormat.Size.class))
+        else if (valueClass.isAssignableFrom(WidgetContentSize.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -151,7 +153,7 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(WidgetFormat.Alignment.class)) {
+        else if (valueClass.isAssignableFrom(WidgetContentAlignment.class)) {
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(CellType.class))
@@ -263,9 +265,9 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.newBlob((byte[]) this.getValue());
         }
-        else if (this.getValue() instanceof WidgetFormat.Size)
+        else if (this.getValue() instanceof WidgetContentSize)
         {
-            String enumString = ((WidgetFormat.Size) this.getValue()).name().toLowerCase();
+            String enumString = ((WidgetContentSize) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof SerialBitmap)
@@ -283,9 +285,9 @@ public class PrimitiveValue<A> extends Value<A>
             String arrayString = TextUtils.join("***", ((String[]) this.getValue()));
             return SQLValue.newText(arrayString);
         }
-        else if (this.getValue() instanceof WidgetFormat.Alignment)
+        else if (this.getValue() instanceof WidgetContentAlignment)
         {
-            String enumString = ((WidgetFormat.Alignment) this.getValue()).name().toLowerCase();
+            String enumString = ((WidgetContentAlignment) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof CellType)
@@ -440,9 +442,9 @@ public class PrimitiveValue<A> extends Value<A>
                 this.setValue(null);
             }
         }
-        else if (this.valueClass.isAssignableFrom(WidgetFormat.Size.class))
+        else if (this.valueClass.isAssignableFrom(WidgetContentSize.class))
         {
-            WidgetFormat.Size size = WidgetFormat.Size.fromSQLValue(sqlValue);
+            WidgetContentSize size = WidgetContentSize.fromSQLValue(sqlValue);
             this.setValue((A) size);
         }
         else if (this.valueClass.isAssignableFrom(ProgramValueType.class))
@@ -528,9 +530,9 @@ public class PrimitiveValue<A> extends Value<A>
                     InvocationParameterType.fromSQLValue(sqlValue);
             this.setValue((A) invocationParameterType);
         }
-        else if (this.valueClass.isAssignableFrom(WidgetFormat.Alignment.class))
+        else if (this.valueClass.isAssignableFrom(WidgetContentAlignment.class))
         {
-            WidgetFormat.Alignment alignment = WidgetFormat.Alignment.fromSQLValue(sqlValue);
+            WidgetContentAlignment alignment = WidgetContentAlignment.fromSQLValue(sqlValue);
             this.setValue((A) alignment);
         }
         else if (this.valueClass.isAssignableFrom(RefinementType.class))

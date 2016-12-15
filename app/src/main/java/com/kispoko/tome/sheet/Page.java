@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionValue;
@@ -212,7 +213,7 @@ public class Page implements Model, Serializable
         // --------------------------------------------------------------------------------------
         if (!this.groups.isNull()) {
             for (Group group : this.groups.getValue()) {
-                pageLayout.addView(group.view(context));
+                pageLayout.addView(group.view());
             }
         }
     }
