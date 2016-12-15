@@ -72,16 +72,25 @@ public class SheetManager
             protected Object doInBackground(Void... args)
             {
                 Sheet sheet;
-                try {
+                try
+                {
                     InputStream yamlIS = context.getAssets().open(templateFileName);
                     Yaml yaml = Yaml.fromFile(yamlIS);
                     sheet = Sheet.fromYaml(yaml);
-                } catch (IOException e) {
+                }
+                catch (IOException exception)
+                {
                     return new TemplateFileException(
                                 new TemplateFileReadError(templateFileName),
                             TemplateFileException.ErrorType.TEMPLATE_FILE_READ);
-                } catch (YamlException e) {
-                    return e;
+                }
+                catch (YamlException exception)
+                {
+                    return exception;
+                }
+                catch (Exception exception)
+                {
+                    return exception;
                 }
 
                 return sheet;
@@ -96,6 +105,10 @@ public class SheetManager
                 else if (maybeSheet instanceof YamlException)
                 {
                     ApplicationFailure.yaml((YamlException) maybeSheet);
+                }
+                else if (maybeSheet instanceof Exception)
+                {
+                    ((Exception) maybeSheet).printStackTrace();
                 }
                 else if (maybeSheet instanceof Sheet)
                 {
@@ -112,9 +125,13 @@ public class SheetManager
                         }
 
                         @Override
-                        public void onSaveError(DatabaseException exception) {
-                            Log.d("***SHEET MANAGER", "save error");
+                        public void onSaveDBError(DatabaseException exception) {
                             ApplicationFailure.database(exception);
+                        }
+
+                        @Override
+                        public void onSaveError(Exception exception) {
+                            Log.d("***SHEET MANAGER", "other exception", exception);
                         }
                     });
 

@@ -8,7 +8,7 @@ import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.group.Group;
-import com.kispoko.tome.sheet.group.Row;
+import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelValue;
@@ -192,8 +192,8 @@ public class Sheet implements Model
 
         for (Page page : this.roleplay.getValue().getPages()) {
             for (Group group : page.getGroups()) {
-                for (Row row : group.rows()) {
-                    for (Widget widget : row.widgets()) {
+                for (GroupRow groupRow : group.rows()) {
+                    for (Widget widget : groupRow.widgets()) {
                         componentById.put(widget.getId(), widget);
                     }
                 }

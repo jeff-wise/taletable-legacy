@@ -281,6 +281,10 @@ public class ModelLib
                 {
                     return exception;
                 }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
             }
 
             @Override
@@ -289,11 +293,17 @@ public class ModelLib
                 if (result instanceof DatabaseException)
                 {
                     DatabaseException databaseException = (DatabaseException) result;
-                    onSaveListener.onSaveError(databaseException);
+                    onSaveListener.onSaveDBError(databaseException);
+                }
+                else if (result instanceof Exception)
+                {
+                    Exception exception = (Exception) result;
+                    onSaveListener.onSaveError(exception);
                 }
                 else
                 {
-                    OnModelSaveListener onModelSaveListener = new OnModelSaveListener() {
+                    OnModelSaveListener onModelSaveListener = new OnModelSaveListener()
+                    {
                         @Override
                         public void onModelSave() {
                             if (onSaveListener != null)
@@ -301,7 +311,13 @@ public class ModelLib
                         }
 
                         @Override
-                        public void onModelSaveError(DatabaseException exception) {
+                        public void onModelSaveDBError(DatabaseException exception) {
+                            if (onSaveListener != null)
+                                onSaveListener.onSaveDBError(exception);
+                        }
+
+                        @Override
+                        public void onModelSaveError(Exception exception) {
                             if (onSaveListener != null)
                                 onSaveListener.onSaveError(exception);
                         }
@@ -342,6 +358,10 @@ public class ModelLib
                 {
                     return exception;
                 }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
             }
 
             @Override
@@ -350,7 +370,12 @@ public class ModelLib
                 if (result instanceof DatabaseException)
                 {
                     DatabaseException databaseException = (DatabaseException) result;
-                    onSaveListener.onSaveError(databaseException);
+                    onSaveListener.onSaveDBError(databaseException);
+                }
+                else if (result instanceof Exception)
+                {
+                    Exception exception = (Exception) result;
+                    onSaveListener.onSaveError(exception);
                 }
                 else
                 {
@@ -358,7 +383,6 @@ public class ModelLib
 
                     OnModelSaveListener onModelSaveListener = new OnModelSaveListener()
                     {
-
                         @Override
                         public void onModelSave()
                         {
@@ -369,7 +393,15 @@ public class ModelLib
                         }
 
                         @Override
-                        public void onModelSaveError(DatabaseException exception) {
+                        public void onModelSaveDBError(DatabaseException exception)
+                        {
+                            if (onSaveListener != null)
+                                onSaveListener.onSaveDBError(exception);
+                        }
+
+                        @Override
+                        public void onModelSaveError(Exception exception)
+                        {
                             if (onSaveListener != null)
                                 onSaveListener.onSaveError(exception);
                         }
@@ -424,7 +456,14 @@ public class ModelLib
                     }
 
                     @Override
-                    public void onSaveError(DatabaseException exception)
+                    public void onSaveDBError(DatabaseException exception)
+                    {
+                        if (onModelSaveListener != null)
+                            onModelSaveListener.onModelSaveError(exception);
+                    }
+
+                    @Override
+                    public void onSaveError(Exception exception)
                     {
                         if (onModelSaveListener != null)
                             onModelSaveListener.onModelSaveError(exception);
@@ -444,16 +483,26 @@ public class ModelLib
                 CollectionValue.OnSaveListener onSaveListener = new CollectionValue.OnSaveListener()
                 {
                     @Override
-                    public void onSave() {
+                    public void onSave()
+                    {
                         collectionValue.setIsSaved(true);
-                        if (ModelLib.valuesAreSaved(modelValues, collectionValues)) {
+
+                        if (ModelLib.valuesAreSaved(modelValues, collectionValues))
+                        {
                             if (onModelSaveListener!= null)
                                 onModelSaveListener.onModelSave();
                         }
                     }
 
                     @Override
-                    public void onSaveError(DatabaseException exception) {
+                    public void onSaveDBError(DatabaseException exception)
+                    {
+                        if (onModelSaveListener != null)
+                            onModelSaveListener.onModelSaveDBError(exception);
+                    }
+
+                    @Override
+                    public void onSaveError(Exception exception) {
                         if (onModelSaveListener != null)
                             onModelSaveListener.onModelSaveError(exception);
                     }
@@ -1078,7 +1127,8 @@ public class ModelLib
 
     private interface OnModelSaveListener {
         void onModelSave();
-        void onModelSaveError(DatabaseException exception);
+        void onModelSaveDBError(DatabaseException exception);
+        void onModelSaveError(Exception exception);
     }
 
 

@@ -381,7 +381,7 @@ roleplay:
           value:
             name: strength
             type: literal
-            value: 11
+            value: 16
         - type: number
           data:
             actions:
@@ -400,7 +400,7 @@ roleplay:
           value:
             name: dexterity
             type: literal
-            value: 19
+            value: 14
       - widgets:
         - type: number
           data:
@@ -420,7 +420,7 @@ roleplay:
           value:
             name: constitution
             type: literal
-            value: 15
+            value: 14
         - type: number
           data:
             actions:
@@ -439,7 +439,7 @@ roleplay:
           value:
             name: intelligence
             type: literal
-            value: 22
+            value: 11
       - widgets:
         - type: number
           data:
@@ -459,7 +459,7 @@ roleplay:
           value:
             name: wisdom
             type: literal
-            value: 14
+            value: 11
         - type: number
           data:
             actions:
@@ -1305,7 +1305,7 @@ roleplay:
             name: wealth_copper
             type: literal
             value: 17
-      - width: 70
+      - width: three_quarters
         widgets:
         - type: number
           data:

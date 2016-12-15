@@ -3,15 +3,12 @@ package com.kispoko.tome.sheet.group;
 
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
@@ -22,8 +19,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +44,7 @@ public class Group implements Model, Serializable
 
     private PrimitiveValue<String>  label;
     private PrimitiveValue<Integer> index;
-    private CollectionValue<Row>    rows;
+    private CollectionValue<GroupRow>    rows;
 
 
     // CONSTRUCTORS
@@ -62,22 +57,22 @@ public class Group implements Model, Serializable
         this.label        = new PrimitiveValue<>(null, String.class);
         this.index        = new PrimitiveValue<>(null, Integer.class);
 
-        List<Class<? extends Row>> rowClasses = new ArrayList<>();
-        rowClasses.add(Row.class);
+        List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
+        rowClasses.add(GroupRow.class);
         this.rows         = CollectionValue.empty(rowClasses);
     }
 
 
-    public Group(UUID id, String label, Integer index, List<Row> rows)
+    public Group(UUID id, String label, Integer index, List<GroupRow> groupRows)
     {
         this.id           = id;
 
         this.label        = new PrimitiveValue<>(label, String.class);
         this.index        = new PrimitiveValue<>(index, Integer.class);
 
-        List<Class<? extends Row>> rowClasses = new ArrayList<>();
-        rowClasses.add(Row.class);
-        this.rows         = CollectionValue.full(rows, rowClasses);
+        List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
+        rowClasses.add(GroupRow.class);
+        this.rows         = CollectionValue.full(groupRows, rowClasses);
     }
 
 
@@ -89,14 +84,14 @@ public class Group implements Model, Serializable
         String    label = yaml.atMaybeKey("label").getString();
         Integer   index = groupIndex;
 
-        List<Row> rows  = yaml.atKey("rows").forEach(new Yaml.ForEach<Row>() {
+        List<GroupRow> groupRows = yaml.atKey("rows").forEach(new Yaml.ForEach<GroupRow>() {
             @Override
-            public Row forEach(Yaml yaml, int index) throws YamlException {
-                return Row.fromYaml(yaml);
+            public GroupRow forEach(Yaml yaml, int index) throws YamlException {
+                return GroupRow.fromYaml(yaml);
             }
         });
 
-        return new Group(id, label, index, rows);
+        return new Group(id, label, index, groupRows);
     }
 
 
@@ -172,7 +167,7 @@ public class Group implements Model, Serializable
      * Get the group's rows.
      * @return A list of rows.
      */
-    public List<Row> rows()
+    public List<GroupRow> rows()
     {
         return this.rows.getValue();
     }
@@ -196,8 +191,8 @@ public class Group implements Model, Serializable
         if (!this.label.isNull())
             layout.addView(this.labelView(context));
 
-        for (Row row : this.rows()) {
-            layout.addView(row.view());
+        for (GroupRow groupRow : this.rows()) {
+            layout.addView(groupRow.view());
         }
 
         return layout;

@@ -222,8 +222,18 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
             }
 
             @Override
+            public void onSaveDBError(DatabaseException exception)
+            {
 
-            public void onSaveError(DatabaseException exception)
+                if (staticOnSaveListener != null)
+                    staticOnSaveListener.onSaveDBError(exception);
+
+                if (dynamicOnSaveListener != null)
+                    dynamicOnSaveListener.onSaveDBError(exception);
+            }
+
+            @Override
+            public void onSaveError(Exception exception)
             {
 
                 if (staticOnSaveListener != null)
@@ -242,7 +252,8 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
 
     public interface OnSaveListener extends Serializable {
         void onSave();
-        void onSaveError(DatabaseException exception);
+        void onSaveDBError(DatabaseException exception);
+        void onSaveError(Exception exception);
     }
 
 

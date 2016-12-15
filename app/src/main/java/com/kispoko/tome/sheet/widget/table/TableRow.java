@@ -19,7 +19,7 @@ import java.util.UUID;
 /**
  * Table Widget Row
  */
-public class Row implements Model, Serializable
+public class TableRow implements Model, Serializable
 {
 
     // PROPERTIES
@@ -33,7 +33,7 @@ public class Row implements Model, Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Row()
+    public TableRow()
     {
         this.id    = null;
 
@@ -43,7 +43,7 @@ public class Row implements Model, Serializable
     }
 
 
-    public Row(UUID id, List<CellUnion> cells)
+    public TableRow(UUID id, List<CellUnion> cells)
     {
         this.id = id;
 
@@ -53,7 +53,7 @@ public class Row implements Model, Serializable
     }
 
 
-    public static Row fromYaml(Yaml yaml, final List<ColumnUnion> columns)
+    public static TableRow fromYaml(Yaml yaml, final List<ColumnUnion> columns)
                   throws YamlException
     {
         UUID id = UUID.randomUUID();
@@ -65,7 +65,7 @@ public class Row implements Model, Serializable
             }
         });
 
-        return new Row(id, cells);
+        return new TableRow(id, cells);
     }
 
 

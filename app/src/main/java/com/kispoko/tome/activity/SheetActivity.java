@@ -299,10 +299,10 @@ public class SheetActivity
         layout.addView(this.navigationItemHeaderView("SHEET",
                                                      this.characterName,
                                                      R.id.nav_view_header_sheet_desc));
-        layout.addView(this.navigationItemView("ITEMS"));
-        layout.addView(this.navigationItemView("OPTIONS"));
+        layout.addView(this.navigationItemView("VALUES"));
         layout.addView(this.navigationItemView("FUNCTIONS"));
         layout.addView(this.navigationItemView("PROGRAMS"));
+        layout.addView(this.navigationItemView("MECHANICS"));
         layout.addView(this.navigationItemHeaderView("SHEETS", null, null));
         layout.addView(this.navigationItemView("MANAGE"));
 

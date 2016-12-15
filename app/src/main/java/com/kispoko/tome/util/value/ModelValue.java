@@ -224,6 +224,8 @@ public class ModelValue<A extends Model> extends Value<A>
             {
                 setIsSaved(true);
 
+                // getValue().onSave();
+
                 if (staticOnSaveListener != null)
                     staticOnSaveListener.onSave();
 
@@ -232,13 +234,23 @@ public class ModelValue<A extends Model> extends Value<A>
             }
 
             @Override
-            public void onSaveError(DatabaseException exception)
+            public void onSaveDBError(DatabaseException exception)
             {
                 if (staticOnSaveListener != null)
-                    staticOnSaveListener.onSave();
+                    staticOnSaveListener.onSaveDBError(exception);
 
                 if (dynamicOnSaveListener != null)
-                    dynamicOnSaveListener.onSave();
+                    dynamicOnSaveListener.onSaveDBError(exception);
+            }
+
+            @Override
+            public void onSaveError(Exception exception)
+            {
+                if (staticOnSaveListener != null)
+                    staticOnSaveListener.onSaveError(exception);
+
+                if (dynamicOnSaveListener != null)
+                    dynamicOnSaveListener.onSaveError(exception);
             }
         };
     }
@@ -249,7 +261,8 @@ public class ModelValue<A extends Model> extends Value<A>
 
     public interface OnSaveListener extends Serializable {
         void onSave();
-        void onSaveError(DatabaseException exception);
+        void onSaveDBError(DatabaseException exception);
+        void onSaveError(Exception exception);
     }
 
 

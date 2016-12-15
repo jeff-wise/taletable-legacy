@@ -45,6 +45,8 @@
 
     <!-- GROUP: ROW -->
     <dimen name="group_row_padding_bottom">4dp</dimen>
+    <dimen name="group_row_three_quarters_padding">40dp</dimen>
+    <dimen name="group_row_half_padding">70dp</dimen>
 
 
 

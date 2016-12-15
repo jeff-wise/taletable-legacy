@@ -15,4 +15,5 @@ public interface Model
     void setId(UUID id);
 
     void onLoad();
+    // void onSave();
 }

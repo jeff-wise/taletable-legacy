@@ -160,7 +160,7 @@ public class LayoutParamsBuilder
     }
 
 
-    public void setWeight(int weight)
+    public void setWeight(Float weight)
     {
         switch (this.layoutType)
         {

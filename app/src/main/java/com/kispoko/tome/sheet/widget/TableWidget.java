@@ -4,25 +4,22 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
+import com.kispoko.tome.sheet.widget.table.TableRow;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
-import com.kispoko.tome.sheet.widget.table.Row;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
 import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LayoutType;
@@ -39,8 +36,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static android.R.attr.x;
 
 
 /**
@@ -60,13 +55,13 @@ public class TableWidget extends Widget implements Serializable
 
     private ModelValue<WidgetData>       widgetData;
     private CollectionValue<ColumnUnion> columns;
-    private CollectionValue<Row>         rows;
+    private CollectionValue<TableRow>    rows;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Row                           headerRow;
+    private TableRow headerRow;
 
 
     // CONSTRUCTORS
@@ -82,8 +77,8 @@ public class TableWidget extends Widget implements Serializable
         columnClassList.add(ColumnUnion.class);
         this.columns    = CollectionValue.empty(columnClassList);
 
-        List<Class<? extends Row>> rowClassList = new ArrayList<>();
-        rowClassList.add(Row.class);
+        List<Class<? extends TableRow>> rowClassList = new ArrayList<>();
+        rowClassList.add(TableRow.class);
         this.rows       = CollectionValue.empty(rowClassList);
     }
 
@@ -91,7 +86,7 @@ public class TableWidget extends Widget implements Serializable
     public TableWidget(UUID id,
                        WidgetData widgetData,
                        List<ColumnUnion> columns,
-                       List<Row> rows)
+                       List<TableRow> rows)
     {
         this.id = id;
 
@@ -101,8 +96,8 @@ public class TableWidget extends Widget implements Serializable
         columnClassList.add(ColumnUnion.class);
         this.columns    = CollectionValue.full(columns, columnClassList);
 
-        List<Class<? extends Row>> rowClassList = new ArrayList<>();
-        rowClassList.add(Row.class);
+        List<Class<? extends TableRow>> rowClassList = new ArrayList<>();
+        rowClassList.add(TableRow.class);
         this.rows        = CollectionValue.full(rows, rowClassList);
 
         initialize();
@@ -135,10 +130,10 @@ public class TableWidget extends Widget implements Serializable
         });
 
         // ** Rows
-        List<Row>    rows           = yaml.atKey("rows").forEach(new Yaml.ForEach<Row>() {
+        List<TableRow> rows = yaml.atKey("rows").forEach(new Yaml.ForEach<TableRow>() {
             @Override
-            public Row forEach(Yaml yaml, int index) throws YamlException {
-                return Row.fromYaml(yaml, columns);
+            public TableRow forEach(Yaml yaml, int index) throws YamlException {
+                return TableRow.fromYaml(yaml, columns);
             }
         });
 
@@ -272,7 +267,7 @@ public class TableWidget extends Widget implements Serializable
      * @param index The row index (starting at 0).
      * @return The table row at the specified index.
      */
-    public Row getRow(Integer index) {
+    public TableRow getRow(Integer index) {
         return this.rows.getValue().get(index);
     }
 
@@ -281,7 +276,7 @@ public class TableWidget extends Widget implements Serializable
      * Get all of the table rows.
      * @return The table row list (excluding header).
      */
-    public List<Row> getRows() {
+    public List<TableRow> getRows() {
         return this.rows.getValue();
     }
 
@@ -338,9 +333,9 @@ public class TableWidget extends Widget implements Serializable
         // > Rows
         // --------------------------------------------------------------------------------------
 
-        for (Row row : this.rows.getValue())
+        for (TableRow row : this.rows.getValue())
         {
-            TableRow tableRow = this.tableRow(row, context);
+            android.widget.TableRow tableRow = this.tableRow(row, context);
             tableLayout.addView(tableRow);
         }
 
@@ -379,7 +374,7 @@ public class TableWidget extends Widget implements Serializable
             headerCells.add(headerCellUnion);
         }
 
-        this.headerRow = new Row(null, headerCells);
+        this.headerRow = new TableRow(null, headerCells);
     }
 
 
@@ -401,18 +396,18 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    private TableRow tableRow(Row row, Context context)
+    private android.widget.TableRow tableRow(TableRow row, Context context)
     {
         TableRowBuilder tableRow = new TableRowBuilder();
 
-        tableRow.width          = TableRow.LayoutParams.MATCH_PARENT;
-        tableRow.height         = TableRow.LayoutParams.WRAP_CONTENT;
+        tableRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
+        tableRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
         tableRow.padding.left   = R.dimen.widget_table_row_padding_horz;
         tableRow.padding.right  = R.dimen.widget_table_row_padding_horz;
         tableRow.padding.top    = R.dimen.widget_table_row_padding_vert;
         tableRow.padding.bottom = R.dimen.widget_table_row_padding_vert;
 
-        TableRow tableRowView = tableRow.tableRow(context);
+        android.widget.TableRow tableRowView = tableRow.tableRow(context);
 
         for (int i = 0; i < row.width(); i++)
         {
@@ -459,19 +454,19 @@ public class TableWidget extends Widget implements Serializable
     }
 
 
-    private TableRow headerTableRow(Context context)
+    private android.widget.TableRow headerTableRow(Context context)
     {
 
         TableRowBuilder headerRow = new TableRowBuilder();
 
-        headerRow.width          = TableRow.LayoutParams.MATCH_PARENT;
-        headerRow.height         = TableRow.LayoutParams.WRAP_CONTENT;
+        headerRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
+        headerRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
         headerRow.padding.top    = R.dimen.widget_table_header_padding_vert;
         headerRow.padding.bottom = R.dimen.widget_table_header_padding_vert;
         headerRow.padding.left   = R.dimen.widget_table_row_padding_horz;
         headerRow.padding.right  = R.dimen.widget_table_row_padding_horz;
 
-        TableRow headerRowView = headerRow.tableRow(context);
+        android.widget.TableRow headerRowView = headerRow.tableRow(context);
 
 
         for (int i = 0; i < this.width(); i++)

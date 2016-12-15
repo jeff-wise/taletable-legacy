@@ -33,7 +33,7 @@ public class LinearLayoutBuilder implements ViewBuilder
 
     public Integer                 height;
     public Integer                 width;
-    public Integer                 weight;
+    public Float                   weight;
 
     public LayoutType              layoutType;
 

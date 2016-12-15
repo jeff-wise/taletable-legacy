@@ -14,13 +14,14 @@ import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.NumberVariable;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.engine.refinement.RefinementType;
+import com.kispoko.tome.sheet.group.RowAlignment;
+import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
-import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -168,6 +169,14 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(RowAlignment.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(RowWidth.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(RefinementType.class))
         {
             return SQLValue.Type.TEXT;
@@ -303,6 +312,16 @@ public class PrimitiveValue<A> extends Value<A>
         else if (this.getValue() instanceof CellAlignment)
         {
             String enumString = ((CellAlignment) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof RowAlignment)
+        {
+            String enumString = ((RowAlignment) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof RowWidth)
+        {
+            String enumString = ((RowWidth) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof RefinementType)
@@ -498,6 +517,16 @@ public class PrimitiveValue<A> extends Value<A>
         {
             CellAlignment cellAlignment = CellAlignment.fromSQLValue(sqlValue);
             this.setValue((A) cellAlignment);
+        }
+        else if (this.valueClass.isAssignableFrom(RowAlignment.class))
+        {
+            RowAlignment alignment = RowAlignment.fromSQLValue(sqlValue);
+            this.setValue((A) alignment);
+        }
+        else if (this.valueClass.isAssignableFrom(RowWidth.class))
+        {
+            RowWidth width = RowWidth.fromSQLValue(sqlValue);
+            this.setValue((A) width);
         }
         else if (this.valueClass.isAssignableFrom(TextVariable.Kind.class))
         {
