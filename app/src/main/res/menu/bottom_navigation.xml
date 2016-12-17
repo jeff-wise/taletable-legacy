@@ -5,21 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_favorites"
+        android:id="@+id/button_section_profile"
         android:enabled="true"
         android:icon="@drawable/ic_bottom_nav_profile"
         android:title="@string/bottom_nav_profile"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_schedules"
+        android:id="@+id/button_section_encounter"
         android:enabled="true"
         android:icon="@drawable/ic_bottom_nav_encounter"
         android:title="@string/bottom_nav_encounter"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_music"
+        android:id="@+id/button_section_campaign"
         android:enabled="true"
         android:icon="@drawable/ic_bottom_nav_campaign"
         android:title="@string/bottom_nav_campaign"

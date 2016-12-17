@@ -243,8 +243,8 @@ public class Group implements Model, Serializable
 
         labelView.id    = R.id.widget_label;
         labelView.size  = R.dimen.group_label_text_size;
-        labelView.color = R.color.grey_8;
-        labelView.font  = Font.sansSerifFontRegular(context);
+        labelView.color = R.color.gold_6;
+        labelView.font  = Font.sansSerifFontBold(context);
         labelView.text  = this.getLabel().toUpperCase();
 
 

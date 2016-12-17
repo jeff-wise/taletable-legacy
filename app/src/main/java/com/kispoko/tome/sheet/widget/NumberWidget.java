@@ -290,7 +290,7 @@ public class NumberWidget extends Widget implements Serializable
         // --------------------------------------------------------------------------------------
 
         Context context            = SheetManager.currentSheetContext();
-        LinearLayout integerLayout = this.widgetLayout();
+        LinearLayout integerLayout = this.widgetLayout(true);
         LinearLayout contentLayout = (LinearLayout) integerLayout.findViewById(
                                                                     R.id.widget_content_layout);
 

@@ -34,23 +34,28 @@ public class Sheet implements Model
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                 id;
-
-
-    // > Values
+    // > Model
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<Long> last_used;
+    private UUID                    id;
 
-    private ModelValue<Game>     game;
-    private ModelValue<Roleplay> roleplay;
-    private ModelValue<RulesEngine>    rules;
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
+    private PrimitiveValue<Long>    last_used;
+
+    private ModelValue<Game>        game;
+    private ModelValue<Section>     profile;
+    private ModelValue<Section>     encounter;
+    private ModelValue<Section>     campaign;
+    private ModelValue<RulesEngine> rules;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Map<UUID,Widget>     componentById;
+    private Map<UUID,Widget>        componentById;
 
 
     // CONSTRUCTORS
@@ -64,14 +69,18 @@ public class Sheet implements Model
         this.last_used = new PrimitiveValue<>(currentTimeMS, Long.class);
 
         this.game      = ModelValue.empty(Game.class);
-        this.roleplay  = ModelValue.empty(Roleplay.class);
+        this.profile   = ModelValue.empty(Section.class);
+        this.encounter = ModelValue.empty(Section.class);
+        this.campaign  = ModelValue.empty(Section.class);
         this.rules     = ModelValue.empty(RulesEngine.class);
     }
 
 
     public Sheet(UUID id,
                  Game game,
-                 Roleplay roleplay,
+                 Section profile,
+                 Section encounter,
+                 Section campaign,
                  RulesEngine rulesEngine)
     {
         this.id        = id;
@@ -80,7 +89,11 @@ public class Sheet implements Model
         this.last_used = new PrimitiveValue<>(currentTimeMS, Long.class);
 
         this.game      = ModelValue.full(game, Game.class);
-        this.roleplay  = ModelValue.full(roleplay, Roleplay.class);
+
+        this.profile   = ModelValue.full(profile, Section.class);
+        this.encounter = ModelValue.full(encounter, Section.class);
+        this.campaign  = ModelValue.full(null, Section.class);
+
         this.rules     = ModelValue.full(rulesEngine, RulesEngine.class);
 
         indexComponents();
@@ -90,12 +103,16 @@ public class Sheet implements Model
     public static Sheet fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID id = UUID.randomUUID();
-        Game game = Game.fromYaml(yaml.atKey("game"));
-        Roleplay roleplay = Roleplay.fromYaml(yaml.atKey("roleplay"));
+        UUID        id          = UUID.randomUUID();
+
+        Game        game        = Game.fromYaml(yaml.atKey("game"));
+
+        Section     profile     = Section.fromYaml(yaml.atKey("profile"));
+        Section     encounter   = Section.fromYaml(yaml.atKey("encounter"));
+
         RulesEngine rulesEngine = RulesEngine.fromYaml(yaml.atKey("rulesEngine"));
 
-        return new Sheet(id, game, roleplay, rulesEngine);
+        return new Sheet(id, game, profile, encounter, null, rulesEngine);
     }
 
 
@@ -142,9 +159,26 @@ public class Sheet implements Model
     }
 
 
-    public Roleplay getRoleplay()
+    // ** Sections
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the profile section.
+     * @return The profile section.
+     */
+    public Section profileSection()
     {
-        return this.roleplay.getValue();
+        return this.profile.getValue();
+    }
+
+
+    /**
+     * Get the encounter section.
+     * @return The encounter section.
+     */
+    public Section encounterSection()
+    {
+        return this.encounter.getValue();
     }
 
 
@@ -175,8 +209,7 @@ public class Sheet implements Model
      */
     public void render(PagePagerAdapter pagePagerAdapter)
     {
-        Log.d("***SHEET", "render sheet");
-        this.getRoleplay().render(pagePagerAdapter);
+        this.profileSection().render(pagePagerAdapter);
     }
 
 
@@ -190,7 +223,7 @@ public class Sheet implements Model
     {
         componentById = new HashMap<>();
 
-        for (Page page : this.roleplay.getValue().getPages()) {
+        for (Page page : this.profile.getValue().getPages()) {
             for (Group group : page.getGroups()) {
                 for (GroupRow groupRow : group.rows()) {
                     for (Widget widget : groupRow.widgets()) {

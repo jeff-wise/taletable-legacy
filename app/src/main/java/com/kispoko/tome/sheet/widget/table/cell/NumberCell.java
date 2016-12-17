@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;

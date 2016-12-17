@@ -10,6 +10,7 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
 import com.kispoko.tome.sheet.widget.ImageWidget;
 import com.kispoko.tome.sheet.widget.NumberWidget;
+import com.kispoko.tome.sheet.widget.ActionWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
@@ -68,6 +69,7 @@ public class GroupRow implements Model, Serializable
         widgetClasses.add(BooleanWidget.class);
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
+        widgetClasses.add(ActionWidget.class);
         this.widgets      = CollectionValue.empty(widgetClasses);
     }
 
@@ -85,6 +87,7 @@ public class GroupRow implements Model, Serializable
         widgetClasses.add(BooleanWidget.class);
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
+        widgetClasses.add(ActionWidget.class);
         this.widgets      = CollectionValue.full(widgets, widgetClasses);
     }
 

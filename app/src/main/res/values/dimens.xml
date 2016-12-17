@@ -36,12 +36,12 @@
 
 
     <!-- GROUP -->
-    <dimen name="group_margin_bottom">7dp</dimen>
+    <dimen name="group_margin_bottom">15dp</dimen>
     <dimen name="group_padding_horz">2dp</dimen>
 
     <dimen name="group_label_padding_left">8dp</dimen>
     <dimen name="group_label_padding_bottom">9dp</dimen>
-    <dimen name="group_label_text_size">3.2sp</dimen>
+    <dimen name="group_label_text_size">3sp</dimen>
 
     <!-- GROUP: ROW -->
     <dimen name="group_row_padding_bottom">4dp</dimen>
@@ -49,15 +49,15 @@
     <dimen name="group_row_half_padding">70dp</dimen>
 
 
-
     <!-- WIDGET LAYOUT -->
     <dimen name="widget_layout_margins_horz">2dp</dimen>
-    <dimen name="widget_content_padding_vert">25dp</dimen>
+    <dimen name="widget_content_read_padding_vert">25dp</dimen>
+    <dimen name="widget_content_active_padding_vert">7dp</dimen>
     <dimen name="widget_label_padding_vert">4dp</dimen>
     <dimen name="widget_label_text_size">2.4sp</dimen>
 
 
-    <!-- COMPONENT: TEXT -->
+    <!-- WIDGET: TEXT -->
     <dimen name="text_size_extra_large">7.5dp</dimen>
     <dimen name="text_size_large">6.5dp</dimen>
     <dimen name="text_size_medium">5dp</dimen>
@@ -76,12 +76,21 @@
 
     <dimen name="comp_image_image_height">250dp</dimen>
 
+    <!-- WIDGET: ROLL  -->
+    <dimen name="widget_roll_padding_horz">7dp</dimen>
+    <dimen name="widget_roll_icon_padding_right">6dp</dimen>
+    <dimen name="widget_roll_header_layout_margin_left">1dp</dimen>
+    <dimen name="widget_roll_name_text_size">4.4sp</dimen>
+    <dimen name="widget_roll_modifier_layout_margin_top">7dp</dimen>
+    <dimen name="widget_roll_modifier_layout_padding">5dp</dimen>
+    <dimen name="widget_roll_modifier_text_size">6.2sp</dimen>
+    <dimen name="widget_roll_header_layout_padding">10dp</dimen>
 
     <!-- WIDGET: TABLE -->
     <dimen name="comp_table_cell_padding">5dp</dimen>
     <dimen name="widget_table_header_text_size">3.2sp</dimen>
     <dimen name="widget_table_title_padding_top">18dp</dimen>
-    <dimen name="widget_table_title_text_size">3.2sp</dimen>
+    <dimen name="widget_table_title_text_size">3sp</dimen>
     <dimen name="widget_table_title_paddin_left">14dp</dimen>
     <dimen name="widget_table_row_padding_vert">22dp</dimen>
     <dimen name="widget_table_row_padding_horz">15dp</dimen>
@@ -168,5 +177,6 @@
     <!-- GENERAL -->
     <dimen name="one_dp">1dp</dimen>
     <dimen name="two_dp">2dp</dimen>
+
 
 </resources>

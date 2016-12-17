@@ -14,6 +14,7 @@ import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.NumberVariable;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.engine.refinement.RefinementType;
+import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.group.RowAlignment;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.action.Action;
@@ -141,6 +142,10 @@ public class PrimitiveValue<A> extends Value<A>
         else if (valueClass.isAssignableFrom(byte[].class))
         {
             return SQLValue.Type.BLOB;
+        }
+        else if (valueClass.isAssignableFrom(DiceType.class))
+        {
+            return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(WidgetContentSize.class))
         {
@@ -294,6 +299,11 @@ public class PrimitiveValue<A> extends Value<A>
             String arrayString = TextUtils.join("***", ((String[]) this.getValue()));
             return SQLValue.newText(arrayString);
         }
+        else if (this.getValue() instanceof DiceType)
+        {
+            String enumString = ((DiceType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
         else if (this.getValue() instanceof WidgetContentAlignment)
         {
             String enumString = ((WidgetContentAlignment) this.getValue()).name().toLowerCase();
@@ -439,6 +449,11 @@ public class PrimitiveValue<A> extends Value<A>
         else if (this.valueClass.isAssignableFrom(byte[].class))
         {
             this.setValue((A) sqlValue.getBlob());
+        }
+        else if (this.valueClass.isAssignableFrom(DiceType.class))
+        {
+            DiceType diceType = DiceType.fromSQLValue(sqlValue);
+            this.setValue((A) diceType);
         }
         else if (this.valueClass.isAssignableFrom(CellType.class))
         {

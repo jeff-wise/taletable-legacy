@@ -2,8 +2,6 @@
 package com.kispoko.tome.engine.programming.variable;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.error.UnknownVariantError;
@@ -35,10 +33,18 @@ import java.util.UUID;
  */
 public class NumberVariable extends Variable implements Model, Serializable
 {
+
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
 
     private PrimitiveValue<String>   name;
 

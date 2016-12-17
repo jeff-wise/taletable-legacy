@@ -61,10 +61,9 @@
                 android:paddingTop="6dp"
                 android:background="@color/dark_grey_9"
                 app:itemBackground="@color/dark_grey_9"
-                app:itemIconTint="@color/grey_8"
-                app:itemTextColor="@color/grey_8"
+                app:itemIconTint="@drawable/bottom_nav_colors"
+                app:itemTextColor="@drawable/bottom_nav_colors"
                 app:menu="@menu/bottom_navigation" />
-
 
         </LinearLayout>
 

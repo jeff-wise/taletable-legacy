@@ -26,7 +26,6 @@ import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.engine.refinement.MemberOf;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.EditTextBuilder;
@@ -42,6 +41,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 
+
 /**
  * TextWidget
  */
@@ -51,12 +51,15 @@ public class TextWidget extends Widget implements Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    public static final long serialVersionUID = 88L;
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    private UUID                              id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
-    private UUID                              id;
+
     private ModelValue<WidgetData>            widgetData;
     private PrimitiveValue<WidgetContentSize> size;
     private ModelValue<TextVariable>          value;
@@ -64,7 +67,14 @@ public class TextWidget extends Widget implements Serializable
 
     // > Internal
     // ------------------------------------------------------------------------------------------
+
     private Integer                           displayTextViewId;
+
+
+    // > Misc
+    // ------------------------------------------------------------------------------------------
+
+    public static final long serialVersionUID = 88L;
 
 
     // CONSTRUCTORS
@@ -181,7 +191,7 @@ public class TextWidget extends Widget implements Serializable
         // --------------------------------------------------------------------------------------
 
         final Context context = SheetManager.currentSheetContext();
-        LinearLayout textLayout = this.widgetLayout();
+        LinearLayout textLayout = this.widgetLayout(true);
         LinearLayout contentLayout =
                 (LinearLayout) textLayout.findViewById(R.id.widget_content_layout);
 

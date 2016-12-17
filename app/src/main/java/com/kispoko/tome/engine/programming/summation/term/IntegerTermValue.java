@@ -220,12 +220,12 @@ public class IntegerTermValue implements Model, Serializable
         VariableUnion variableUnion = State.variableWithName(variableName);
 
         // > If variable is not a number, throw exception
-        if (!variableUnion.getType().equals(VariableType.NUMBER)) {
+        if (!variableUnion.type().equals(VariableType.NUMBER)) {
             throw SummationException.variableNotNumber(
                     new VariableNotNumberError(variableName));
         }
 
-        Integer variableValue = variableUnion.getNumber().value();
+        Integer variableValue = variableUnion.numberVariable().value();
 
         return variableValue;
     }

@@ -102,6 +102,15 @@
     <color name="green_5">#4D7F45</color>
 
     <!--<color name="dark_blue_5">#35414A</color>-->
+
+    <!--<color name="blue_5">#2E8899</color>-->
+    <!--<color name="blue_5">#268B9C</color>-->
+    <!--<color name="blue_5">#127891</color>-->
+    <color name="blue_5">#057C8F</color>
+    <color name="blue_6">#386078</color>
+    <color name="blue_7">#386078</color>
+    <color name="blue_8">#305469</color>
+
     <color name="dark_blue_5">#292E36</color>
     <color name="dark_blue_6">#272C33</color>
     <color name="dark_blue_8">#21252B</color>

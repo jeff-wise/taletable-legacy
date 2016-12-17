@@ -29,14 +29,17 @@ import com.kispoko.tome.engine.refinement.RefinementUnion;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.engine.refinement.RefinementIndex;
+import com.kispoko.tome.mechanic.dice.DiceRoll;
+import com.kispoko.tome.sheet.Section;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.Page;
-import com.kispoko.tome.sheet.Roleplay;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
+import com.kispoko.tome.sheet.widget.DiceWidget;
 import com.kispoko.tome.sheet.widget.ImageWidget;
 import com.kispoko.tome.sheet.widget.NumberWidget;
+import com.kispoko.tome.sheet.widget.ActionWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.table.TableRow;
@@ -86,10 +89,13 @@ public class DatabaseManager extends SQLiteOpenHelper
             // ** Sheet
             modelClasses.add(Sheet.class);
             modelClasses.add(RulesEngine.class);
-            modelClasses.add(Roleplay.class);
+            modelClasses.add(Section.class);
             modelClasses.add(Page.class);
             modelClasses.add(Group.class);
             modelClasses.add(GroupRow.class);
+
+            // ** Mechanic
+            modelClasses.add(DiceRoll.class);
 
             // ** Widget
             modelClasses.add(TextWidget.class);
@@ -97,6 +103,8 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(BooleanWidget.class);
             modelClasses.add(ImageWidget.class);
             modelClasses.add(TableWidget.class);
+            modelClasses.add(ActionWidget.class);
+            modelClasses.add(DiceWidget.class);
 
             modelClasses.add(TableRow.class);
             modelClasses.add(WidgetData.class);

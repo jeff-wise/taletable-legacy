@@ -149,6 +149,24 @@ rulesEngine:
       parameters:
       - type: literal_string
         value: '({{modifier_string}})'
+  mechanics:
+  - type: weapon
+    active: true
+    variables:
+    - type: dice
+      value:
+        name: weapon_longsword_damage
+        dice:
+          type: d8
+          quantity: 1
+          modifier: 0
+    - type: dice
+      value:
+        name: weapon_longsword_two_handed_damage
+        dice:
+          type: d10
+          quantity: 1
+          modifier: 0
   variables:
   - type: number
     value:
@@ -205,7 +223,7 @@ rulesEngine:
         parameters:
         - type: reference
           value: charisma
-roleplay:
+profile:
   pages:
   - label: Profile
     groups:
@@ -249,7 +267,7 @@ roleplay:
           size: medium
           value:
             type: literal
-            value: 17
+            value: 1
         - type: text
           name: class
           data:
@@ -287,7 +305,7 @@ roleplay:
           size: medium
           value:
             type: literal
-            value: Lawful Good
+            value: Chaotic Good
     - label: Appearance
       rows:
       - widgets:
@@ -493,7 +511,7 @@ roleplay:
           value:
             name: proficiency_bonus
             type: literal
-            value: 6
+            value: 2
         - type: number
           data:
             actions:
@@ -1213,7 +1231,7 @@ roleplay:
                 name: equipped
                 type: literal
                 value: false
-    - label: ""
+    - label:
       rows:
       - widgets:
         - type: table
@@ -1330,7 +1348,7 @@ roleplay:
             name: wealth_electrum
             type: literal
             value: 0
-    - label: ""
+    - label:
       rows:
       - widgets:
         - type: table
@@ -1433,3 +1451,108 @@ roleplay:
                 name: quantity
                 type: literal
                 value: 1
+encounter:
+  pages:
+  - label: Attacks
+    groups:
+    - label: Longsword
+      rows:
+      - widgets:
+        - type: roll
+          name: Attack
+          data:
+            actions:
+            format:
+              width: 1
+          icon: melee_weapon_attack
+          modifier:
+            name: longsword_attack_bonus
+            type: summation
+            value:
+              terms:
+              - type: literal
+                value:
+                  type: variable
+                  variable: strength_modifier
+              - type: literal
+                value:
+                  type: variable
+                  variable: proficiency_bonus
+        - type: roll
+          name: Damage
+          data:
+            actions:
+            format:
+              width: 1
+          icon: melee_weapon_attack
+          modifier:
+            name: longsword_attack_damage
+            type: literal
+            value: 6
+    - label: Heavy Crossbow
+      rows:
+      - widgets:
+        - type: roll
+          name: Attack
+          data:
+            actions:
+            format:
+              width: 1
+          modifier:
+            name: heavy_crossbow_attack_bonus
+            type: summation
+            value:
+              terms:
+              - type: literal
+                value:
+                  type: variable
+                  variable: dexterity_modifier
+              - type: literal
+                value:
+                  type: variable
+                  variable: proficiency_bonus
+        - type: roll
+          name: Damage
+          data:
+            actions:
+            format:
+              width: 1
+          icon: melee_weapon_attack
+          modifier:
+            name: heavy_crossbow_attack_damage
+            type: literal
+            value: 5
+    - label: Dagger (Melee)
+      rows:
+      - widgets:
+        - type: roll
+          name: Attack
+          data:
+            actions:
+            format:
+              width: 1
+          modifier:
+            name: dagger_attack_bonus
+            type: summation
+            value:
+              terms:
+              - type: literal
+                value:
+                  type: variable
+                  variable: strength_modifier
+              - type: literal
+                value:
+                  type: variable
+                  variable: proficiency_bonus
+        - type: roll
+          name: Damage
+          data:
+            actions:
+            format:
+              width: 1
+          icon: melee_weapon_attack
+          modifier:
+            name: dagger_attack_damage
+            type: literal
+            value: 5
+

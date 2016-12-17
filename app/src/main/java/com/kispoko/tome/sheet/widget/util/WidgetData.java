@@ -66,7 +66,7 @@ public class WidgetData implements Model, Serializable
             public Action forEach(Yaml yaml, int index) throws YamlException {
                 return Action.fromYaml(yaml);
             }
-        });
+        }, true);
 
         return new WidgetData(id, format, actions);
     }

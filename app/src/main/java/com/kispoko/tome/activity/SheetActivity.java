@@ -5,6 +5,8 @@ package com.kispoko.tome.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -13,7 +15,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -82,6 +83,7 @@ public class SheetActivity
         initializeDrawer();
         initializeToolbar();
         initializeNavigation();
+        initializeBottomNavigation();
         prepareSheetViews();
     }
 
@@ -182,7 +184,7 @@ public class SheetActivity
         // Set the title to the character's name, if available
         this.characterName = "Sheet";
 
-        TextVariable nameVariable = State.variableWithName("name").getText();
+        TextVariable nameVariable = State.variableWithName("name").textVariable();
         if (!nameVariable.isNull()) {
             this.characterName = nameVariable.value();
         }
@@ -241,6 +243,39 @@ public class SheetActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
         navigationView.addView(this.navigationView());
+    }
+
+
+    /**
+     * Initialize the bottom navigation menu.
+     */
+    private void initializeBottomNavigation()
+    {
+        BottomNavigationView bottomNavigationView =
+                (BottomNavigationView) findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                // TODO make sure sheet is loaded
+                switch (item.getItemId())
+                {
+                    case R.id.button_section_profile:
+                        SheetManager.currentSheet().profileSection().render(pagePagerAdapter);
+                        break;
+                    case R.id.button_section_encounter:
+                        SheetManager.currentSheet().encounterSection().render(pagePagerAdapter);
+                        break;
+                    case R.id.button_section_campaign:
+                        // Switch to page three
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
 

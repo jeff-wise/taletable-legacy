@@ -389,7 +389,7 @@ public class TableWidget extends Widget implements Serializable
         tableTitle.padding.top      = R.dimen.widget_table_title_padding_top;
         tableTitle.padding.left     = R.dimen.widget_table_title_paddin_left;
         tableTitle.size             = R.dimen.widget_table_title_text_size;
-        tableTitle.color            = R.color.gold_8;
+        tableTitle.color            = R.color.gold_6;
         tableTitle.font             = Font.sansSerifFontBold(context);
 
         return tableTitle.textView(context);

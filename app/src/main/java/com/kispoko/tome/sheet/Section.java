@@ -20,12 +20,12 @@ import java.util.UUID;
 
 
 /**
- * Roleplay Section
+ * Section
  *
- * The roleplay section of the character sheet contains all of the static information and stats
- * for a character.
+ * A section is a collection of pages. It represents a certain aspect to a sheet, such as static
+ * content, dynamic content, campaign information, etc...
  */
-public class Roleplay implements Model
+public class Section implements Model
 {
 
     // PROPERTIES
@@ -40,11 +40,10 @@ public class Roleplay implements Model
     private CollectionValue<Page> pages;
 
 
-
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Roleplay()
+    public Section()
     {
         this.id = null;
 
@@ -58,7 +57,7 @@ public class Roleplay implements Model
     }
 
 
-    public Roleplay(UUID id, List<Page> pages)
+    public Section(UUID id, List<Page> pages)
     {
         this.id = id;
 
@@ -72,18 +71,20 @@ public class Roleplay implements Model
     }
 
 
-    public static Roleplay fromYaml(Yaml yaml)
+    public static Section fromYaml(Yaml yaml)
                   throws YamlException
     {
         UUID id = UUID.randomUUID();
+
+        // TODO make this not true and catch exceptions when it's empty
         List<Page> pages = yaml.atKey("pages").forEach(new Yaml.ForEach<Page>() {
             @Override
             public Page forEach(Yaml yaml, int index) throws YamlException {
                 return Page.fromYaml(yaml, index);
             }
-        });
+        }, true);
 
-        return new Roleplay(id, pages);
+        return new Section(id, pages);
     }
 
 
@@ -143,7 +144,6 @@ public class Roleplay implements Model
      */
     public void render(PagePagerAdapter pagePagerAdapter)
     {
-        Log.d("***ROLEPLAY", "pages: " + Integer.toString(this.getPages().size()));
         pagePagerAdapter.setPages(this.getPages());
         pagePagerAdapter.notifyDataSetChanged();
     }

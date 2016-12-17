@@ -4,6 +4,7 @@ package com.kispoko.tome.util.ui;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Image View Builder
  */
-public class ImageViewBuilder
+public class ImageViewBuilder implements ViewBuilder
 {
 
     // PROPERTIES
@@ -69,6 +70,15 @@ public class ImageViewBuilder
     {
         this.rules.add(verb);
         return this;
+    }
+
+
+    // > View Builder
+    // ------------------------------------------------------------------------------------------
+
+    public View view(Context context)
+    {
+        return this.imageView(context);
     }
 
 

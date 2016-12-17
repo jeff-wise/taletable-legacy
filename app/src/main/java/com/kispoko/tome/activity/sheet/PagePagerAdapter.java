@@ -5,6 +5,7 @@ package com.kispoko.tome.activity.sheet;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.View;
 
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
@@ -77,6 +78,16 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
             return pageLabel;
         else
             return "";
+    }
+
+
+    @Override
+    public int getItemPosition(Object object) {
+        if (this.pages.contains(object)) {
+            return this.pages.indexOf(object);
+        } else {
+            return POSITION_NONE;
+        }
     }
 
 }

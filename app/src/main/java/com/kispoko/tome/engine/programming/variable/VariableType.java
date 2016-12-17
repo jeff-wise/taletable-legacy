@@ -17,7 +17,8 @@ public enum VariableType
 
     TEXT,
     NUMBER,
-    BOOLEAN;
+    BOOLEAN,
+    DICE;
 
 
     public static VariableType fromString(String typeString)

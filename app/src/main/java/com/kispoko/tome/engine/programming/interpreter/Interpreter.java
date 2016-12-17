@@ -118,23 +118,23 @@ public class Interpreter implements Serializable
 
                     // Assign parameter from variable value
                     ProgramValueUnion programValueUnion = null;
-                    switch (variableUnion.getType())
+                    switch (variableUnion.type())
                     {
                         case TEXT:
                             programValueUnion = ProgramValueUnion.asString(
-                                                    variableUnion.getText().value());
+                                                    variableUnion.textVariable().value());
                             break;
                         case NUMBER:
                             try {
                                 programValueUnion = ProgramValueUnion.asInteger(
-                                                    variableUnion.getNumber().value());
+                                                    variableUnion.numberVariable().value());
                             } catch (SummationException exception) {
                                 ApplicationFailure.summation(exception);
                             }
                             break;
                         case BOOLEAN:
                             programValueUnion = ProgramValueUnion.asBoolean(
-                                                    variableUnion.getBoolean().value());
+                                                    variableUnion.booleanVariable().value());
                             break;
                     }
 

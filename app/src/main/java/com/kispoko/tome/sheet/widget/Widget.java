@@ -29,7 +29,6 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 
-import static android.R.attr.label;
 
 
 /**
@@ -59,7 +58,8 @@ public abstract class Widget implements Model, Serializable
         NUMBER,
         BOOLEAN,
         IMAGE,
-        TABLE;
+        TABLE,
+        ROLL;
 
 
         public static Type fromString(String typeString)
@@ -94,7 +94,7 @@ public abstract class Widget implements Model, Serializable
      *
      * @return A LinearLayout that represents the outer-most container of a component view.
      */
-    public LinearLayout widgetLayout()
+    public LinearLayout widgetLayout(boolean readStyle)
     {
         // [1 A] Declarations
         // --------------------------------------------------------------------------------------
@@ -144,12 +144,22 @@ public abstract class Widget implements Model, Serializable
         // [2 B] Content
         // --------------------------------------------------------------------------------------
 
-        contentLayout.width               = LinearLayout.LayoutParams.WRAP_CONTENT;
         contentLayout.orientation         = LinearLayout.VERTICAL;
         contentLayout.id                  = R.id.widget_content_layout;
-        contentLayout.layoutGravity       = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
-        contentLayout.padding.top         = R.dimen.widget_content_padding_vert;
-        contentLayout.padding.bottom      = R.dimen.widget_content_padding_vert;
+
+        if (readStyle)
+        {
+            contentLayout.layoutGravity       = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
+            contentLayout.padding.top         = R.dimen.widget_content_read_padding_vert;
+            contentLayout.padding.bottom      = R.dimen.widget_content_read_padding_vert;
+            contentLayout.width               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        }
+        else
+        {
+            contentLayout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
+            contentLayout.padding.top         = R.dimen.widget_content_active_padding_vert;
+            contentLayout.padding.bottom      = R.dimen.widget_content_active_padding_vert;
+        }
 
         // [2 C] Label
         // --------------------------------------------------------------------------------------
@@ -186,6 +196,8 @@ public abstract class Widget implements Model, Serializable
                 return ImageWidget.fromYaml(yaml);
             case TABLE:
                 return TableWidget.fromYaml(yaml);
+            case ROLL:
+                return ActionWidget.fromYaml(yaml);
             default:
                 ApplicationFailure.union(
                         UnionException.unknownVariant(

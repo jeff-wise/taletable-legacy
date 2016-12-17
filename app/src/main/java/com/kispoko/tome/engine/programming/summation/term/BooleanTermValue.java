@@ -222,12 +222,12 @@ public class BooleanTermValue implements Model, Serializable
         VariableUnion variableUnion = State.variableWithName(variableName);
 
         // > If variable is not a number, throw exception
-        if (!variableUnion.getType().equals(VariableType.BOOLEAN)) {
+        if (!variableUnion.type().equals(VariableType.BOOLEAN)) {
             throw SummationException.variableNotNumber(
                     new VariableNotNumberError(variableName));
         }
 
-        Boolean variableValue = variableUnion.getBoolean().value();
+        Boolean variableValue = variableUnion.booleanVariable().value();
 
         return variableValue;
     }

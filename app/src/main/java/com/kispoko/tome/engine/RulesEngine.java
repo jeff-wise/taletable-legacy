@@ -5,6 +5,7 @@ package com.kispoko.tome.engine;
 import com.kispoko.tome.engine.programming.builtin.BuiltInFunction;
 import com.kispoko.tome.engine.programming.interpreter.Interpreter;
 import com.kispoko.tome.engine.programming.function.FunctionIndex;
+import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.programming.program.ProgramIndex;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
 import com.kispoko.tome.engine.refinement.RefinementIndex;
@@ -32,6 +33,7 @@ public class RulesEngine implements Model, Serializable
     private ModelValue<RefinementIndex> refinementIndex;
     private ModelValue<FunctionIndex>   functionIndex;
     private ModelValue<ProgramIndex>    programIndex;
+    private ModelValue<MechanicIndex>   mechanicIndex;
 
     private Interpreter interpreter;
 
@@ -46,6 +48,7 @@ public class RulesEngine implements Model, Serializable
         this.refinementIndex = ModelValue.empty(RefinementIndex.class);
         this.functionIndex   = ModelValue.empty(FunctionIndex.class);
         this.programIndex    = ModelValue.empty(ProgramIndex.class);
+        this.mechanicIndex   = ModelValue.empty(MechanicIndex.class);
 
         this.interpreter     = null;
 
@@ -55,14 +58,16 @@ public class RulesEngine implements Model, Serializable
 
     public RulesEngine(UUID id,
                        RefinementIndex refinementIndex,
+                       FunctionIndex functionIndex,
                        ProgramIndex programIndex,
-                       FunctionIndex functionIndex)
+                       MechanicIndex mechanicIndex)
     {
         this.id = id;
 
         this.refinementIndex = ModelValue.full(refinementIndex, RefinementIndex.class);
         this.functionIndex   = ModelValue.full(functionIndex, FunctionIndex.class);
         this.programIndex    = ModelValue.full(programIndex, ProgramIndex.class);
+        this.mechanicIndex   = ModelValue.full(mechanicIndex, MechanicIndex.class);
 
         this.interpreter = new Interpreter(this.programIndex.getValue(),
                                            this.functionIndex.getValue());
@@ -79,6 +84,7 @@ public class RulesEngine implements Model, Serializable
         RefinementIndex refinementIndex = RefinementIndex.fromYaml(yaml.atKey("refinements"));
         ProgramIndex    programIndex    = ProgramIndex.fromYaml(yaml.atKey("programs"));
         FunctionIndex   functionIndex   = FunctionIndex.fromYaml(yaml.atKey("functions"));
+        MechanicIndex   mechanicIndex   = MechanicIndex.fromYaml(yaml.atKey("mechanics"));
 
         // Read the variables. They add themselves to the state.
         yaml.atKey("variables").forEach(new Yaml.ForEach<Void>() {
@@ -89,7 +95,7 @@ public class RulesEngine implements Model, Serializable
             }
         }, true);
 
-        return new RulesEngine(id, refinementIndex, programIndex, functionIndex);
+        return new RulesEngine(id, refinementIndex, functionIndex, programIndex, mechanicIndex);
     }
 
 
