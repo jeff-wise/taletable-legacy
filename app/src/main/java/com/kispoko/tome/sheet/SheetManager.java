@@ -117,23 +117,29 @@ public class SheetManager
                     currentSheet = ModelValue.full(templateSheet, Sheet.class);
                     currentSheetContext = context;
 
-                    currentSheet.save(new ModelValue.OnSaveListener()
+                    ModelValue.OnSaveListener onSaveListener = new ModelValue.OnSaveListener()
                     {
                         @Override
-                        public void onSave() {
+                        public void onSave()
+                        {
 
                         }
 
                         @Override
-                        public void onSaveDBError(DatabaseException exception) {
+                        public void onSaveDBError(DatabaseException exception)
+                        {
                             ApplicationFailure.database(exception);
                         }
 
                         @Override
-                        public void onSaveError(Exception exception) {
+                        public void onSaveError(Exception exception)
+                        {
                             Log.d("***SHEET MANAGER", "other exception", exception);
                         }
-                    });
+                    };
+
+                    currentSheet.setOnSaveListener(onSaveListener);
+                    currentSheet.save();
 
                     sheetListener.onSheet(templateSheet);
                 }

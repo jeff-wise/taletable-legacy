@@ -23,10 +23,13 @@ public class DiceVariable extends Variable implements Model, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
-
-
     // > Model
+    // ------------------------------------------------------------------------------------------
+
+    private UUID                   id;
+
+
+    // > Functors
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveValue<String> name;
@@ -122,6 +125,29 @@ public class DiceVariable extends Variable implements Model, Serializable
     public String getName()
     {
         return this.name.getValue();
+    }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    // ** Dice Roll
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the dice roll.
+     * @return The dice roll.
+     */
+    public DiceRoll diceRoll()
+    {
+        return this.diceRoll.getValue();
+    }
+
+
+    public Integer rollValue()
+    {
+        return this.diceRoll().roll();
+
     }
 
 }

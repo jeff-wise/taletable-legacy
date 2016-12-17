@@ -8,6 +8,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.Random;
 import java.util.UUID;
 
 
@@ -35,6 +36,12 @@ public class DiceRoll implements Model, Serializable
     private PrimitiveValue<Integer>  modifier;
 
 
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    Random randomGen;
+
+
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
@@ -45,6 +52,8 @@ public class DiceRoll implements Model, Serializable
         this.diceType = new PrimitiveValue<>(null, DiceType.class);
         this.quantity = new PrimitiveValue<>(null, Integer.class);
         this.modifier = new PrimitiveValue<>(null, Integer.class);
+
+        randomGen = new Random();
     }
 
 
@@ -58,6 +67,8 @@ public class DiceRoll implements Model, Serializable
 
         this.setQuantity(quantity);
         this.setModifier(modifier);
+
+        randomGen = new Random();
     }
 
 
@@ -121,6 +132,15 @@ public class DiceRoll implements Model, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * Get the type of dice used in the roll.
+     * @return The dice type.
+     */
+    public DiceType diceType()
+    {
+        return this.diceType.getValue();
+    }
+
 
     /**
      * Set the quantity of dice to be rolled. If quantity is null, then the default quantity of
@@ -137,6 +157,16 @@ public class DiceRoll implements Model, Serializable
 
 
     /**
+     * Get the number of times the dice is to be rolled.
+     * @return The roll quantity.
+     */
+    public Integer quantity()
+    {
+        return this.quantity.getValue();
+    }
+
+
+    /**
      * Set the modifier of the dice roll. If the modifier is null, then the default modifier of
      * zero is used.
      * @param modifier The modifier.
@@ -147,6 +177,78 @@ public class DiceRoll implements Model, Serializable
             this.modifier.setValue(modifier);
         else
             this.modifier.setValue(0);
+    }
+
+
+    /**
+     * Get the modifier that is added to the dice roll.
+     * @return The roll modifier.
+     */
+    public Integer modifier()
+    {
+        return this.modifier.getValue();
+    }
+
+
+    // > Roll
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Roll the dice.
+     * @return The result of rolling the dice.
+     */
+    public Integer roll()
+    {
+        int total = 0;
+
+        // [1] Roll the dice <quantity> times
+        for (int i = 0; i < this.quantity(); i++) {
+            total += dieRoll(this.diceType());
+        }
+
+        // [2] Add the modifier
+        total += this.modifier();
+
+        return total;
+    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Roll one die.
+     * @return
+     */
+    private int dieRoll(DiceType diceType)
+    {
+        switch (diceType)
+        {
+            case D3:
+                return this.randRange(1, 3);
+            case D4:
+                return this.randRange(1, 4);
+            case D6:
+                return this.randRange(1, 6);
+            case D8:
+                return this.randRange(1, 8);
+            case D10:
+                return this.randRange(1, 10);
+            case D12:
+                return this.randRange(1, 12);
+            case D20:
+                return this.randRange(1, 20);
+            case D100:
+                return this.randRange(1, 100);
+            default:
+                return 0;
+        }
+    }
+
+
+    private int randRange(int min, int max)
+    {
+        return randomGen.nextInt((max - min) + 1) + min;
     }
 
 }

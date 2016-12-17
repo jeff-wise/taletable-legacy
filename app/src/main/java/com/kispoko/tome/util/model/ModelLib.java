@@ -277,10 +277,6 @@ public class ModelLib
                     runSaveQuery(model, new ArrayList<OneToManyRelation>());
                     return null;
                 }
-                catch (DatabaseException exception)
-                {
-                    return exception;
-                }
                 catch (Exception exception)
                 {
                     return exception;
@@ -353,10 +349,6 @@ public class ModelLib
                         runSaveQuery(model, parentRelations);
                     }
                     return null;
-                }
-                catch (DatabaseException exception)
-                {
-                    return exception;
                 }
                 catch (Exception exception)
                 {
@@ -459,7 +451,7 @@ public class ModelLib
                     public void onSaveDBError(DatabaseException exception)
                     {
                         if (onModelSaveListener != null)
-                            onModelSaveListener.onModelSaveError(exception);
+                            onModelSaveListener.onModelSaveDBError(exception);
                     }
 
                     @Override
@@ -1061,7 +1053,8 @@ public class ModelLib
         row.put("_id", model.getId().toString());
 
         // ** Save all of the primitive values
-        for (PrimitiveValue primitiveValue : primitiveValues) {
+        for (PrimitiveValue primitiveValue : primitiveValues)
+        {
             SQLValue sqlValue = primitiveValue.toSQLValue();
             String columnName = primitiveValue.sqlColumnName();
 

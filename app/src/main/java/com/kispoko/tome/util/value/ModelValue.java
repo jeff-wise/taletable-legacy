@@ -2,6 +2,8 @@
 package com.kispoko.tome.util.value;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.model.Model;

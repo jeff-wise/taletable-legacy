@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget.table.column;
+package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
@@ -13,49 +13,50 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * ColumnUnion ErrorType
+ * Term Type
  */
-public enum ColumnType
+public enum TermType
 {
 
-    TEXT,
-    NUMBER,
-    BOOLEAN;
+
+    LITERAL,
+    DICE_ROLL,
+    CONDITIONAL;
 
 
-    public static ColumnType fromString(String alignmentString)
+    public static TermType fromString(String typeString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(ColumnType.class, alignmentString);
+        return EnumUtils.fromString(TermType.class, typeString);
     }
 
 
     /**
      * Create a ColumnType from its Yaml representation.
      * @param yaml The Yaml parser.
-     * @return The parsed Alignment, or CENTER as default.
+     * @return The parsed TermType.
      * @throws YamlException
      */
-    public static ColumnType fromYaml(Yaml yaml)
+    public static TermType fromYaml(Yaml yaml)
                   throws YamlException
     {
-        String alignmentString = yaml.getString();
+        String typeString = yaml.getString();
         try {
-            return ColumnType.fromString(alignmentString);
+            return TermType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(alignmentString));
+            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 
 
-    public static ColumnType fromSQLValue(SQLValue sqlValue)
+    public static TermType fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            ColumnType columnType = ColumnType.fromString(enumString);
-            return columnType;
+            TermType termType = TermType.fromString(enumString);
+            return termType;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));

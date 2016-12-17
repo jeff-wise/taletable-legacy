@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.programming.function.FunctionIndex;
+import com.kispoko.tome.engine.programming.mechanic.Mechanic;
+import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.programming.program.invocation.Invocation;
 import com.kispoko.tome.engine.programming.program.ProgramIndex;
 import com.kispoko.tome.engine.programming.program.invocation.InvocationParameterUnion;
@@ -16,15 +18,20 @@ import com.kispoko.tome.engine.programming.program.statement.Parameter;
 import com.kispoko.tome.engine.programming.summation.Summation;
 import com.kispoko.tome.engine.programming.summation.term.BooleanTermValue;
 import com.kispoko.tome.engine.programming.summation.term.ConditionalTerm;
+import com.kispoko.tome.engine.programming.summation.term.DiceRollTerm;
+import com.kispoko.tome.engine.programming.summation.term.DiceRollTermValue;
 import com.kispoko.tome.engine.programming.summation.term.IntegerTermValue;
 import com.kispoko.tome.engine.programming.summation.term.LiteralTerm;
+import com.kispoko.tome.engine.programming.summation.term.TermUnion;
 import com.kispoko.tome.engine.programming.variable.BooleanVariable;
+import com.kispoko.tome.engine.programming.variable.DiceVariable;
 import com.kispoko.tome.engine.programming.variable.NumberVariable;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.engine.programming.function.Function;
 import com.kispoko.tome.engine.programming.function.Tuple;
 import com.kispoko.tome.engine.programming.program.Program;
 import com.kispoko.tome.engine.programming.program.statement.Statement;
+import com.kispoko.tome.engine.programming.variable.VariableUnion;
 import com.kispoko.tome.engine.refinement.RefinementUnion;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.refinement.RefinementId;
@@ -94,7 +101,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(Group.class);
             modelClasses.add(GroupRow.class);
 
-            // ** Mechanic
+            // ** Game Mechanic
             modelClasses.add(DiceRoll.class);
 
             // ** Widget
@@ -128,6 +135,10 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(RefinementIndex.class);
             modelClasses.add(MemberOf.class);
 
+            // ** Mechanics
+            modelClasses.add(Mechanic.class);
+            modelClasses.add(MechanicIndex.class);
+
             // ** Program
             modelClasses.add(Program.class);
             modelClasses.add(ProgramIndex.class);
@@ -144,14 +155,19 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             // ** Summation
             modelClasses.add(Summation.class);
+            modelClasses.add(TermUnion.class);
             modelClasses.add(LiteralTerm.class);
+            modelClasses.add(DiceRollTerm.class);
             modelClasses.add(ConditionalTerm.class);
+            modelClasses.add(DiceRollTermValue.class);
             modelClasses.add(IntegerTermValue.class);
             modelClasses.add(BooleanTermValue.class);
 
             // ** Variable
+            modelClasses.add(VariableUnion.class);
             modelClasses.add(TextVariable.class);
             modelClasses.add(NumberVariable.class);
+            modelClasses.add(DiceVariable.class);
             modelClasses.add(BooleanVariable.class);
 
             ModelLib.createSchema(modelClasses, database);

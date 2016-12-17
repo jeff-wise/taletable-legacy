@@ -15,9 +15,9 @@ import java.util.UUID;
 
 
 /**
- * Summation Term: Literal
+ * Dice Roll Term
  */
-public class LiteralTerm extends Term implements Serializable
+public class DiceRollTerm extends Term implements Serializable
 {
 
     // PROPERTIES
@@ -26,42 +26,48 @@ public class LiteralTerm extends Term implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                         id;
+    private UUID                          id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<IntegerTermValue> termValue;
+    private ModelValue<DiceRollTermValue> termValue;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public LiteralTerm()
+    public DiceRollTerm()
     {
-        this.id        = null;
+        this.id           = null;
 
-        this.termValue = ModelValue.empty(IntegerTermValue.class);
+        this.termValue    = ModelValue.empty(DiceRollTermValue.class);
     }
 
 
-    public LiteralTerm(UUID id, IntegerTermValue termValue)
+    public DiceRollTerm(UUID id, DiceRollTermValue diceRollTermValue)
     {
-        this.id        = id;
+        this.id           = null;
 
-        this.termValue = ModelValue.full(termValue, IntegerTermValue.class);
+        this.termValue    = ModelValue.full(diceRollTermValue, DiceRollTermValue.class);
     }
 
 
-    public static LiteralTerm fromYaml(Yaml yaml)
+    /**
+     * Create a Dice Roll Term from its Yaml representation.
+     * @param yaml The yaml parser.
+     * @return The parsed Dice Roll Term.
+     * @throws YamlException
+     */
+    public static DiceRollTerm fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID             id        = UUID.randomUUID();
+        UUID              id        = UUID.randomUUID();
 
-        IntegerTermValue termValue = IntegerTermValue.fromYaml(yaml.atKey("value"));
+        DiceRollTermValue termValue = DiceRollTermValue.fromYaml(yaml.atKey("value"));
 
-        return new LiteralTerm(id, termValue);
+        return new DiceRollTerm(id, termValue);
     }
 
 
@@ -132,5 +138,7 @@ public class LiteralTerm extends Term implements Serializable
 
         return variableNames;
     }
+
+
 
 }

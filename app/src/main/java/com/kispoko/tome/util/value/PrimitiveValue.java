@@ -9,10 +9,13 @@ import com.kispoko.tome.engine.programming.program.invocation.InvocationParamete
 import com.kispoko.tome.engine.programming.program.ProgramValueType;
 import com.kispoko.tome.engine.programming.program.statement.ParameterType;
 import com.kispoko.tome.engine.programming.summation.term.BooleanTermValue;
+import com.kispoko.tome.engine.programming.summation.term.DiceRollTermValue;
 import com.kispoko.tome.engine.programming.summation.term.IntegerTermValue;
+import com.kispoko.tome.engine.programming.summation.term.TermType;
 import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.NumberVariable;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
+import com.kispoko.tome.engine.programming.variable.VariableType;
 import com.kispoko.tome.engine.refinement.RefinementType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.group.RowAlignment;
@@ -202,6 +205,10 @@ public class PrimitiveValue<A> extends Value<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(VariableType.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(TextVariable.Kind.class))
         {
             return SQLValue.Type.TEXT;
@@ -223,6 +230,14 @@ public class PrimitiveValue<A> extends Value<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(BooleanTermValue.Kind.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(DiceRollTermValue.Kind.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(TermType.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -369,6 +384,11 @@ public class PrimitiveValue<A> extends Value<A>
             String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
+        else if (this.getValue() instanceof VariableType)
+        {
+            String enumString = ((VariableType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
         else if (this.getValue() instanceof TextVariable.Kind)
         {
             String enumString = ((TextVariable.Kind) this.getValue()).name().toLowerCase();
@@ -387,6 +407,16 @@ public class PrimitiveValue<A> extends Value<A>
         else if (this.getValue() instanceof IntegerTermValue.Kind)
         {
             String enumString = ((IntegerTermValue.Kind) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof DiceRollTermValue.Kind)
+        {
+            String enumString = ((DiceRollTermValue.Kind) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof TermType)
+        {
+            String enumString = ((TermType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof BooleanTermValue.Kind)
@@ -567,6 +597,16 @@ public class PrimitiveValue<A> extends Value<A>
         {
             BooleanTermValue.Kind kind = BooleanTermValue.Kind.fromSQLValue(sqlValue);
             this.setValue((A) kind);
+        }
+        else if (this.valueClass.isAssignableFrom(DiceRollTermValue.Kind.class))
+        {
+            DiceRollTermValue.Kind kind = DiceRollTermValue.Kind.fromSQLValue(sqlValue);
+            this.setValue((A) kind);
+        }
+        else if (this.valueClass.isAssignableFrom(TermType.class))
+        {
+            TermType termType = TermType.fromSQLValue(sqlValue);
+            this.setValue((A) termType);
         }
         else if (this.valueClass.isAssignableFrom(InvocationParameterType.class))
         {

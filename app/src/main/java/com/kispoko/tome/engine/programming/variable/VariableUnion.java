@@ -2,15 +2,11 @@
 package com.kispoko.tome.engine.programming.variable;
 
 
-import android.graphics.PorterDuff;
-
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.value.PrimitiveValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -19,7 +15,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.os.Build.ID;
 
 
 /**

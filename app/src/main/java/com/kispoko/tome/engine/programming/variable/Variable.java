@@ -88,14 +88,11 @@ public abstract class Variable
      */
     public void onUpdate()
     {
-        Log.d("***VARIABLE", "on update called");
-
         // [1] Notify all on update listeners
         // --------------------------------------------------------------------------------------
 
         for (OnUpdateListener onUpdateListener : this.onUpdateListeners)
         {
-            Log.d("***VARIABLE", "calling on update listener");
             onUpdateListener.onUpdate();
         }
 
@@ -104,7 +101,6 @@ public abstract class Variable
 
         for (String variableName : this.variableListeners)
         {
-            Log.d("***VARIABLE", "notifying variable listener");
             VariableUnion variableUnion = State.variableWithName(variableName);
             variableUnion.variable().onUpdate();
         }
@@ -122,7 +118,6 @@ public abstract class Variable
 
     public void addVariableListener(String variableName)
     {
-        Log.d("***VARIABLE", "adding variable listener " + variableName);
         this.variableListeners.add(variableName);
     }
 
