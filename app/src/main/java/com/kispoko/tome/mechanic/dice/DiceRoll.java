@@ -8,6 +8,7 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Random;
 import java.util.UUID;
 
@@ -190,6 +191,26 @@ public class DiceRoll implements Model, Serializable
     }
 
 
+    // > To String
+    // ------------------------------------------------------------------------------------------
+
+    public String toString(boolean withModifier)
+    {
+        StringBuilder diceRoll = new StringBuilder();
+
+        diceRoll.append(this.quantity().toString());
+
+        diceRoll.append(this.diceType().name().toLowerCase());
+
+        diceRoll.append(" +");
+
+        if (this.modifier() > 0 && withModifier)
+            diceRoll.append(this.modifier().toString());
+
+        return diceRoll.toString();
+    }
+
+
     // > Roll
     // ------------------------------------------------------------------------------------------
 
@@ -212,6 +233,21 @@ public class DiceRoll implements Model, Serializable
         return total;
     }
 
+
+    // COMPARATOR
+    // ------------------------------------------------------------------------------------------
+
+    public static class DiceRollComparator implements Comparator<DiceRoll>
+    {
+        @Override
+        public int compare(DiceRoll diceRoll1, DiceRoll diceRoll2)
+        {
+            Integer diceRoll1Value = sides(diceRoll1.diceType());
+            Integer diceRoll2Value = sides(diceRoll2.diceType());
+
+            return diceRoll1Value.compareTo(diceRoll2Value);
+        }
+    }
 
     // INTERNAL
     // ------------------------------------------------------------------------------------------
@@ -250,5 +286,32 @@ public class DiceRoll implements Model, Serializable
     {
         return randomGen.nextInt((max - min) + 1) + min;
     }
+
+
+    private static int sides(DiceType diceType)
+    {
+        switch (diceType)
+        {
+            case D3:
+                return 3;
+            case D4:
+                return 4;
+            case D6:
+                return 6;
+            case D8:
+                return 8;
+            case D10:
+                return 10;
+            case D12:
+                return 12;
+            case D20:
+                return 20;
+            case D100:
+                return 100;
+            default:
+                return 0;
+        }
+    }
+
 
 }

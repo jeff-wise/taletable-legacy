@@ -2,13 +2,17 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.programming.summation.SummationException;
 import com.kispoko.tome.engine.programming.summation.error.UndefinedVariableError;
 import com.kispoko.tome.engine.programming.summation.error.VariableNotNumberError;
 import com.kispoko.tome.engine.programming.variable.VariableType;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
+import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -176,13 +180,38 @@ public class DiceRollTermValue implements Model, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Kind
+    // ------------------------------------------------------------------------------------------
+
     /**
-     * Get the dice roll.
-     * @return The Dice Roll.
+     * The term value kind.
+     * @return The term value kind.
      */
-    public DiceRoll diceRoll()
+    private Kind kind()
     {
-        return this.diceRoll.getValue();
+        return this.kind.getValue();
+    }
+
+
+    // ** Variable Name
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the name of the integer variable of the term. If the term is not a variable, then
+     * null is returned.
+     * @return The variable name, or null.
+     */
+    public String variableName()
+    {
+        switch (this.kind())
+        {
+            case LITERAL:
+                return null;
+            case VARIABLE:
+                return this.variableName.getValue();
+        }
+
+        return null;
     }
 
 
@@ -198,12 +227,16 @@ public class DiceRollTermValue implements Model, Serializable
     public Integer value()
            throws SummationException
     {
-        switch (this.kind.getValue())
+        switch (this.kind())
         {
             case LITERAL:
                 return this.diceRoll().roll();
             case VARIABLE:
-                return this.variableValue(this.variableName.getValue());
+                return this.variableValue(this.variableName.getValue()).roll();
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(DiceRollTermValue.Kind.class.getName())));
         }
 
         return null;
@@ -211,28 +244,33 @@ public class DiceRollTermValue implements Model, Serializable
 
 
     /**
-     * Get the name of the integer variable of the term. If the term is not a variable, then
-     * null is returned.
-     * @return The variable name, or null.
+     * Get the dice roll.
+     * @return The Dice Roll.
      */
-    public String variableName()
+    public DiceRoll diceRoll()
+           throws SummationException
     {
-        switch (this.kind.getValue())
+        switch (this.kind())
         {
             case LITERAL:
-                return null;
+                return this.diceRoll.getValue();
             case VARIABLE:
-                return this.variableName.getValue();
+                return this.variableValue(this.variableName.getValue());
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(DiceRollTermValue.Kind.class.getName())));
         }
 
         return null;
     }
 
 
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private Integer variableValue(String variableName)
+    private DiceRoll variableValue(String variableName)
             throws SummationException
     {
         // > If variable does not exist, throw exception
@@ -250,7 +288,7 @@ public class DiceRollTermValue implements Model, Serializable
                     new VariableNotNumberError(variableName));
         }
 
-        Integer variableValue = variableUnion.diceVariable().rollValue();
+        DiceRoll variableValue = variableUnion.diceVariable().diceRoll();
 
         return variableValue;
     }

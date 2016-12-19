@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -267,7 +268,13 @@ public class ActionWidget extends Widget implements Serializable
      */
     public String modifierString()
     {
-        return this.modifer().toString();
+        try {
+            return this.modifierVariable().valueString();
+        }
+        catch (SummationException exception) {
+            ApplicationFailure.summation(exception);
+            return "";
+        }
     }
 
 
@@ -284,8 +291,6 @@ public class ActionWidget extends Widget implements Serializable
         layout.orientation      = LinearLayout.VERTICAL;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.padding.left     = R.dimen.widget_roll_padding_horz;
-        layout.padding.right    = R.dimen.widget_roll_padding_horz;
 
         return layout.linearLayout(context);
     }
@@ -297,7 +302,6 @@ public class ActionWidget extends Widget implements Serializable
         // --------------------------------------------------------------------------------------
 
         LinearLayoutBuilder layout    = new LinearLayoutBuilder();
-        ImageViewBuilder    iconView  = new ImageViewBuilder();
         TextViewBuilder     titleView = new TextViewBuilder();
 
         // > Layout
@@ -306,29 +310,22 @@ public class ActionWidget extends Widget implements Serializable
         layout.orientation      = LinearLayout.HORIZONTAL;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity          = Gravity.CENTER_VERTICAL;
-        layout.margin.left      = R.dimen.widget_roll_header_layout_margin_left;
+        layout.gravity          = Gravity.CENTER;
+        layout.backgroundColor  = R.color.dark_grey_6;
+        layout.padding.top      = R.dimen.widget_roll_header_layout_padding_vert;
+        layout.padding.bottom   = R.dimen.widget_roll_header_layout_padding_vert;
 
-        layout.child(iconView)
-              .child(titleView);
-
-        // > Icon View
-        // --------------------------------------------------------------------------------------
-
-        iconView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        iconView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-        iconView.image          = R.drawable.ic_roll_widget;
-        iconView.padding.right  = R.dimen.widget_roll_icon_padding_right;
+        layout.child(titleView);
 
         // > Title View
         // --------------------------------------------------------------------------------------
 
         titleView.width     = LinearLayout.LayoutParams.WRAP_CONTENT;
         titleView.height    = LinearLayout.LayoutParams.WRAP_CONTENT;
-        titleView.text      = this.rollName();
+        titleView.text      = this.rollName().toUpperCase();
         titleView.size      = R.dimen.widget_roll_name_text_size;
-        titleView.color     = R.color.grey_5;
-        titleView.font      = Font.serifFontBold(context);
+        titleView.color     = R.color.grey_6;
+        titleView.font      = Font.sansSerifFontRegular(context);
 
 
         return layout.linearLayout(context);
@@ -379,15 +376,16 @@ public class ActionWidget extends Widget implements Serializable
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.backgroundResource   = R.drawable.bg_roll_widget_modifier;
-        layout.margin.top           = R.dimen.widget_roll_modifier_layout_margin_top;
+        layout.margin.top           = R.dimen.widget_roll_modifier_layout_margin_vert;
+        layout.margin.bottom        = R.dimen.widget_roll_modifier_layout_margin_vert;
         layout.padding.left         = R.dimen.widget_roll_modifier_layout_padding;
         layout.padding.right        = R.dimen.widget_roll_modifier_layout_padding;
         layout.padding.top          = R.dimen.widget_roll_modifier_layout_padding;
         layout.padding.bottom       = R.dimen.widget_roll_modifier_layout_padding;
         layout.gravity              = Gravity.CENTER;
 
-//        layout.child(iconView)
-        layout.child(modifierView);
+        layout.child(iconView)
+         .child(modifierView);
 
         // > Icon View
         // --------------------------------------------------------------------------------------
@@ -400,12 +398,13 @@ public class ActionWidget extends Widget implements Serializable
         // > Modifier Text
         // --------------------------------------------------------------------------------------
 
-        modifierView.width  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        modifierView.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        modifierView.text   = "+" + this.modifierString();
-        modifierView.font   = Font.serifFontBold(context);
-        modifierView.size   = R.dimen.widget_roll_modifier_text_size;
-        modifierView.color  = R.color.light_grey_8;
+        modifierView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        modifierView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        modifierView.text           = this.modifierString();
+        modifierView.font           = Font.serifFontBold(context);
+        modifierView.size           = R.dimen.widget_roll_modifier_text_size;
+        modifierView.color          = R.color.light_grey_8;
+        modifierView.padding.bottom = R.dimen.widget_roll_modifier_text_padding_bottom;
 
         return layout.linearLayout(context);
 

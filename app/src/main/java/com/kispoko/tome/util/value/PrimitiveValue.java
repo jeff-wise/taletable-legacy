@@ -573,6 +573,11 @@ public class PrimitiveValue<A> extends Value<A>
             RowWidth width = RowWidth.fromSQLValue(sqlValue);
             this.setValue((A) width);
         }
+        else if (this.valueClass.isAssignableFrom(VariableType.class))
+        {
+            VariableType variableType = VariableType.fromSQLValue(sqlValue);
+            this.setValue((A) variableType);
+        }
         else if (this.valueClass.isAssignableFrom(TextVariable.Kind.class))
         {
             TextVariable.Kind kind = TextVariable.Kind.fromSQLValue(sqlValue);

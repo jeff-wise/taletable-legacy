@@ -265,6 +265,20 @@ public class NumberVariable extends Variable implements Model, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Kind
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the kind of number variable.
+     * @return The number variable kind.
+     */
+    private Kind kind()
+    {
+        return this.kind.getValue();
+    }
+
+
+
     // ** Value
     // ------------------------------------------------------------------------------------------
 
@@ -309,6 +323,33 @@ public class NumberVariable extends Variable implements Model, Serializable
         }
 
         return null;
+    }
+
+
+    /**
+     * Get the value string representation. If the value contains any dice rolls, then it appears
+     * as a formula, otherwise it is just an integer string.
+     * @return The value string.
+     * @throws SummationException
+     */
+    public String valueString()
+           throws SummationException
+    {
+        switch (this.kind())
+        {
+            case LITERAL:
+                return this.value().toString();
+            case PROGRAM:
+                return this.value().toString();
+            case SUMMATION:
+                return this.summation.getValue().valueString();
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(Kind.class.getName())));
+        }
+
+        return "";
     }
 
 
@@ -383,7 +424,7 @@ public class NumberVariable extends Variable implements Model, Serializable
     }
 
 
-    // INTERNAL
+    // KIND
     // ------------------------------------------------------------------------------------------
 
     public enum Kind

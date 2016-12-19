@@ -7,6 +7,7 @@ import com.kispoko.tome.engine.programming.summation.term.LiteralTerm;
 import com.kispoko.tome.engine.programming.summation.term.Term;
 import com.kispoko.tome.engine.programming.summation.term.TermType;
 import com.kispoko.tome.engine.programming.summation.term.TermUnion;
+import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionValue;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -14,6 +15,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -138,9 +140,41 @@ public class Summation implements Model, Serializable {
      * @throws SummationException
      */
     public Integer value()
-            throws SummationException
+           throws SummationException
     {
         return sum();
+    }
+
+
+    /**
+     * Get the summation value as a string (formula).
+     * @return The value string.
+     */
+    public String valueString()
+           throws SummationException
+    {
+        if (this.hasDiceRoll())
+        {
+            List<DiceRoll> diceRolls = new ArrayList<>();
+            Integer        modifier  = 0;
+
+            for (TermUnion termUnion : this.terms())
+            {
+                if (termUnion.type() == TermType.DICE_ROLL) {
+                    diceRolls.add(termUnion.diceRollTerm().diceRoll());
+
+                } else {
+                    modifier += termUnion.term().value();
+                }
+            }
+
+            return formulaString(diceRolls, modifier);
+        }
+        // Otherwise, just one number
+        else
+        {
+            return "+" + Integer.toString(this.value());
+        }
     }
 
 
@@ -206,6 +240,26 @@ public class Summation implements Model, Serializable {
     // ------------------------------------------------------------------------------------------
 
     /**
+     * Initialize the summation.
+     */
+    private void initialize()
+    {
+        // Check for a dice roll term
+        // --------------------------------------------------------------------------------------
+
+        this.hasDiceRoll = false;
+
+        for (TermUnion termUnion : this.terms())
+        {
+            if (termUnion.type() == TermType.DICE_ROLL) {
+                this.hasDiceRoll = true;
+                break;
+            }
+        }
+    }
+
+
+    /**
      * Evaluate the sum of this summation.
      */
     private Integer sum()
@@ -223,20 +277,29 @@ public class Summation implements Model, Serializable {
     }
 
 
-    private void initialize()
+    /**
+     * Create a formula string for a summation that includes dice rolls.
+     * @return
+     */
+    private String formulaString(List<DiceRoll> diceRolls, Integer modifier)
     {
-        // Check for a dice roll term
-        // --------------------------------------------------------------------------------------
+        StringBuilder formula = new StringBuilder();
 
-        this.hasDiceRoll = false;
+        // Sort the dice rolls
+        Collections.sort(diceRolls, new DiceRoll.DiceRollComparator());
 
-        for (TermUnion termUnion : this.terms())
+        for (DiceRoll diceRoll : diceRolls)
         {
-            if (termUnion.type() == TermType.DICE_ROLL) {
-                this.hasDiceRoll = true;
-                break;
-            }
+            modifier += diceRoll.modifier();
+
+            formula.append(diceRoll.toString(false));
+            formula.append(" ");
         }
+
+        formula.append(modifier.toString());
+
+        return formula.toString();
     }
+
 
 }

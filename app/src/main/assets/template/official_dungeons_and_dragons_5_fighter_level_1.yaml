@@ -167,6 +167,26 @@ rulesEngine:
           type: d10
           quantity: 1
           modifier: 0
+  - type: weapon
+    active: true
+    variables:
+    - type: dice
+      value:
+        name: weapon_heavy_crossbow_damage
+        dice:
+          type: d10
+          quantity: 1
+          modifier: 0
+  - type: weapon
+    active: true
+    variables:
+    - type: dice
+      value:
+        name: weapon_dagger_damage
+        dice:
+          type: d4
+          quantity: 1
+          modifier: 0
   variables:
   - type: number
     value:
@@ -1470,6 +1490,13 @@ encounter:
             type: summation
             value:
               terms:
+              - type: dice_roll
+                value:
+                  type: literal
+                  value:
+                    type: d20
+                    quantity: 1
+                    modifier: 0
               - type: literal
                 value:
                   type: variable
@@ -1487,8 +1514,17 @@ encounter:
           icon: melee_weapon_attack
           modifier:
             name: longsword_attack_damage
-            type: literal
-            value: 6
+            type: summation
+            value:
+              terms:
+              - type: dice_roll
+                value:
+                  type: variable
+                  variable: weapon_longsword_damage
+              - type: literal
+                value:
+                  type: variable
+                  variable: strength_modifier
     - label: Heavy Crossbow
       rows:
       - widgets:
@@ -1503,6 +1539,13 @@ encounter:
             type: summation
             value:
               terms:
+              - type: dice_roll
+                value:
+                  type: literal
+                  value:
+                    type: d20
+                    quantity: 1
+                    modifier: 0
               - type: literal
                 value:
                   type: variable
@@ -1517,11 +1560,19 @@ encounter:
             actions:
             format:
               width: 1
-          icon: melee_weapon_attack
           modifier:
             name: heavy_crossbow_attack_damage
-            type: literal
-            value: 5
+            type: summation
+            value:
+              terms:
+              - type: dice_roll
+                value:
+                  type: variable
+                  variable: weapon_heavy_crossbow_damage
+              - type: literal
+                value:
+                  type: variable
+                  variable: dexterity_modifier
     - label: Dagger (Melee)
       rows:
       - widgets:
@@ -1536,6 +1587,13 @@ encounter:
             type: summation
             value:
               terms:
+              - type: dice_roll
+                value:
+                  type: literal
+                  value:
+                    type: d20
+                    quantity: 1
+                    modifier: 0
               - type: literal
                 value:
                   type: variable
@@ -1553,6 +1611,15 @@ encounter:
           icon: melee_weapon_attack
           modifier:
             name: dagger_attack_damage
-            type: literal
-            value: 5
+            type: summation
+            value:
+              terms:
+              - type: dice_roll
+                value:
+                  type: variable
+                  variable: weapon_dagger_damage
+              - type: literal
+                value:
+                  type: variable
+                  variable: strength_modifier
 

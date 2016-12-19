@@ -52,7 +52,7 @@
     <!-- WIDGET LAYOUT -->
     <dimen name="widget_layout_margins_horz">2dp</dimen>
     <dimen name="widget_content_read_padding_vert">25dp</dimen>
-    <dimen name="widget_content_active_padding_vert">7dp</dimen>
+    <dimen name="widget_content_active_padding_vert">5dp</dimen>
     <dimen name="widget_label_padding_vert">4dp</dimen>
     <dimen name="widget_label_text_size">2.4sp</dimen>
 
@@ -77,14 +77,13 @@
     <dimen name="comp_image_image_height">250dp</dimen>
 
     <!-- WIDGET: ROLL  -->
-    <dimen name="widget_roll_padding_horz">7dp</dimen>
     <dimen name="widget_roll_icon_padding_right">6dp</dimen>
-    <dimen name="widget_roll_header_layout_margin_left">1dp</dimen>
-    <dimen name="widget_roll_name_text_size">4.4sp</dimen>
-    <dimen name="widget_roll_modifier_layout_margin_top">7dp</dimen>
-    <dimen name="widget_roll_modifier_layout_padding">5dp</dimen>
-    <dimen name="widget_roll_modifier_text_size">6.2sp</dimen>
-    <dimen name="widget_roll_header_layout_padding">10dp</dimen>
+    <dimen name="widget_roll_name_text_size">3sp</dimen>
+    <dimen name="widget_roll_modifier_layout_margin_vert">11dp</dimen>
+    <dimen name="widget_roll_modifier_layout_padding">7dp</dimen>
+    <dimen name="widget_roll_modifier_text_size">5.3sp</dimen>
+    <dimen name="widget_roll_modifier_text_padding_bottom">1dp</dimen>
+    <dimen name="widget_roll_header_layout_padding_vert">4dp</dimen>
 
     <!-- WIDGET: TABLE -->
     <dimen name="comp_table_cell_padding">5dp</dimen>

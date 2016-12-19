@@ -157,8 +157,8 @@ public abstract class Widget implements Model, Serializable
         else
         {
             contentLayout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
-            contentLayout.padding.top         = R.dimen.widget_content_active_padding_vert;
-            contentLayout.padding.bottom      = R.dimen.widget_content_active_padding_vert;
+//            contentLayout.padding.top         = R.dimen.widget_content_active_padding_vert;
+//            contentLayout.padding.bottom      = R.dimen.widget_content_active_padding_vert;
         }
 
         // [2 C] Label

@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.engine.programming.summation.SummationException;
+import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.value.ModelValue;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -48,7 +49,7 @@ public class DiceRollTerm extends Term implements Serializable
 
     public DiceRollTerm(UUID id, DiceRollTermValue diceRollTermValue)
     {
-        this.id           = null;
+        this.id           = id;
 
         this.termValue    = ModelValue.full(diceRollTermValue, DiceRollTermValue.class);
     }
@@ -140,5 +141,27 @@ public class DiceRollTerm extends Term implements Serializable
     }
 
 
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Dice Roll Term Value.
+     * @return The Dice Roll Term Value.
+     */
+    public DiceRollTermValue termValue()
+    {
+        return this.termValue.getValue();
+    }
+
+
+    /**
+     * Get the Dice Roll value.
+     * @return The Dice Roll.
+     */
+    public DiceRoll diceRoll()
+           throws SummationException
+    {
+        return this.termValue().diceRoll();
+    }
 
 }
