@@ -2,17 +2,18 @@
 package com.kispoko.tome.engine.programming.mechanic;
 
 
-import com.kispoko.tome.engine.programming.interpreter.Interpreter;
-import com.kispoko.tome.engine.programming.program.Program;
-import com.kispoko.tome.engine.programming.program.ProgramIndex;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -35,7 +36,13 @@ public class MechanicIndex implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private CollectionValue<Mechanic> mechanics;
+    private CollectionFunctor<Mechanic> mechanics;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private Map<String,Set<Mechanic>>   variableToListeners;
 
 
     // CONSTRUCTORS
@@ -47,7 +54,7 @@ public class MechanicIndex implements Model, Serializable
 
         List<Class<? extends Mechanic>> mechanicClasses = new ArrayList<>();
         mechanicClasses.add(Mechanic.class);
-        this.mechanics     = CollectionValue.empty(mechanicClasses);
+        this.mechanics     = CollectionFunctor.empty(mechanicClasses);
     }
 
 
@@ -57,9 +64,9 @@ public class MechanicIndex implements Model, Serializable
 
         List<Class<? extends Mechanic>> mechanicClasses = new ArrayList<>();
         mechanicClasses.add(Mechanic.class);
-        this.mechanics     = CollectionValue.full(mechanics, mechanicClasses);
+        this.mechanics     = CollectionFunctor.full(mechanics, mechanicClasses);
 
-        this.addMechanicsToState();
+        this.initialize();
     }
 
 
@@ -122,7 +129,7 @@ public class MechanicIndex implements Model, Serializable
      */
     public void onLoad()
     {
-        this.addMechanicsToState();
+        this.initialize();
     }
 
 
@@ -139,14 +146,37 @@ public class MechanicIndex implements Model, Serializable
     }
 
 
+    public void onVariableUpdate(String variableName)
+    {
+        if (this.variableToListeners.containsKey(variableName))
+        {
+            for (Mechanic mechanic : this.variableToListeners.get(variableName)) {
+                mechanic.onRequirementUpdate();
+            }
+        }
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private void addMechanicsToState()
+    private void initialize()
     {
+        // Index mechanic requirements
+        // --------------------------------------------------------------------------------------
+
+        this.variableToListeners = new HashMap<>();
+
         for (Mechanic mechanic : this.mechanics())
         {
-            mechanic.addToState();
+            for (String requirement : mechanic.requirements())
+            {
+                if (!this.variableToListeners.containsKey(requirement))
+                    this.variableToListeners.put(requirement, new HashSet<Mechanic>());
+
+                Set<Mechanic> listeners = this.variableToListeners.get(requirement);
+                listeners.add(mechanic);
+            }
         }
 
     }

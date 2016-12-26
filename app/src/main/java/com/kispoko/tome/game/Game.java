@@ -3,7 +3,7 @@ package com.kispoko.tome.game;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -24,9 +24,9 @@ public class Game implements Model
 
     private UUID                   id;
 
-    private PrimitiveValue<String> name;
-    private PrimitiveValue<String> label;
-    private PrimitiveValue<String> description;
+    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<String> label;
+    private PrimitiveFunctor<String> description;
 
 
     // CONSTRUCTORS
@@ -36,9 +36,9 @@ public class Game implements Model
     {
         this.id          = null;
 
-        this.name        = new PrimitiveValue<>(null, String.class);
-        this.label       = new PrimitiveValue<>(null, String.class);
-        this.description = new PrimitiveValue<>(null, String.class);
+        this.name        = new PrimitiveFunctor<>(null, String.class);
+        this.label       = new PrimitiveFunctor<>(null, String.class);
+        this.description = new PrimitiveFunctor<>(null, String.class);
     }
 
 
@@ -46,9 +46,9 @@ public class Game implements Model
     {
         this.id = id;
 
-        this.name        = new PrimitiveValue<>(name, String.class);
-        this.label       = new PrimitiveValue<>(label, String.class);
-        this.description = new PrimitiveValue<>(description, String.class);
+        this.name        = new PrimitiveFunctor<>(name, String.class);
+        this.label       = new PrimitiveFunctor<>(label, String.class);
+        this.description = new PrimitiveFunctor<>(description, String.class);
     }
 
 

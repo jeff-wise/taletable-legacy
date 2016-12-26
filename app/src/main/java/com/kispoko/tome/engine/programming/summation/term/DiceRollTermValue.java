@@ -9,7 +9,6 @@ import com.kispoko.tome.engine.programming.summation.error.UndefinedVariableErro
 import com.kispoko.tome.engine.programming.summation.error.VariableNotNumberError;
 import com.kispoko.tome.engine.programming.variable.VariableType;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
-import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.exception.UnionException;
@@ -18,8 +17,8 @@ import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
@@ -47,10 +46,10 @@ public class DiceRollTermValue implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<DiceRoll>   diceRoll;
-    private PrimitiveValue<String> variableName;
+    private ModelFunctor<DiceRoll> diceRoll;
+    private PrimitiveFunctor<String> variableName;
 
-    private PrimitiveValue<Kind>   kind;
+    private PrimitiveFunctor<Kind> kind;
 
 
     // CONSTRUCTORS
@@ -60,10 +59,10 @@ public class DiceRollTermValue implements Model, Serializable
     {
         this.id           = null;
 
-        this.diceRoll     = ModelValue.empty(DiceRoll.class);
-        this.variableName = new PrimitiveValue<>(null, String.class);
+        this.diceRoll     = ModelFunctor.empty(DiceRoll.class);
+        this.variableName = new PrimitiveFunctor<>(null, String.class);
 
-        this.kind         = new PrimitiveValue<>(null, Kind.class);
+        this.kind         = new PrimitiveFunctor<>(null, Kind.class);
     }
 
 
@@ -71,10 +70,10 @@ public class DiceRollTermValue implements Model, Serializable
     {
         this.id           = id;
 
-        this.diceRoll     = ModelValue.full(null, DiceRoll.class);
-        this.variableName = new PrimitiveValue<>(null, String.class);
+        this.diceRoll     = ModelFunctor.full(null, DiceRoll.class);
+        this.variableName = new PrimitiveFunctor<>(null, String.class);
 
-        this.kind         = new PrimitiveValue<>(kind, Kind.class);
+        this.kind         = new PrimitiveFunctor<>(kind, Kind.class);
 
         switch (kind)
         {

@@ -5,7 +5,7 @@ package com.kispoko.tome.sheet.widget.table;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -27,7 +27,7 @@ public class TableRow implements Model, Serializable
 
     private UUID                  id;
 
-    private CollectionValue<CellUnion> cells;
+    private CollectionFunctor<CellUnion> cells;
 
 
     // CONSTRUCTORS
@@ -39,7 +39,7 @@ public class TableRow implements Model, Serializable
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells = CollectionValue.empty(cellClassList);
+        this.cells = CollectionFunctor.empty(cellClassList);
     }
 
 
@@ -49,7 +49,7 @@ public class TableRow implements Model, Serializable
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells = CollectionValue.full(cells, cellClassList);
+        this.cells = CollectionFunctor.full(cells, cellClassList);
     }
 
 

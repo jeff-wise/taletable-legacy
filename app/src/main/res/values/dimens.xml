@@ -64,24 +64,27 @@
     <dimen name="text_size_small">4dp</dimen>
 
 
+    <!-- WIDGET: NUMBER -->
+    <dimen name="widget_number_value_margin_right">6dp</dimen>
+
+
     <!-- COMPONENT: DOCUMENT -->
     <dimen name="document_component_text_size">5dp</dimen>
 
 
     <!-- COMPONENT: IMAGE -->
-    <dimen name="comp_image_button_vert_margins">0dp</dimen>
-    <dimen name="comp_image_button_icon_padding">10dp</dimen>
-    <dimen name="comp_image_button_padding">15dp</dimen>
-    <dimen name="comp_image_button_text_size">3dp</dimen>
+    <dimen name="widget_image_choose_text_size">3.3sp</dimen>
+    <dimen name="widget_image_view_height">250dp</dimen>
+    <dimen name="widget_image_choose_layout_padding_vert">12dp</dimen>
+    <dimen name="widget_image_choose_icon_margin_right">7dp</dimen>
 
-    <dimen name="comp_image_image_height">250dp</dimen>
 
     <!-- WIDGET: ROLL  -->
     <dimen name="widget_roll_icon_padding_right">6dp</dimen>
     <dimen name="widget_roll_name_text_size">3sp</dimen>
-    <dimen name="widget_roll_modifier_layout_margin_vert">11dp</dimen>
+    <dimen name="widget_roll_modifier_layout_margin_vert">18dp</dimen>
     <dimen name="widget_roll_modifier_layout_padding">7dp</dimen>
-    <dimen name="widget_roll_modifier_text_size">5.3sp</dimen>
+    <dimen name="widget_roll_modifier_text_size">5sp</dimen>
     <dimen name="widget_roll_modifier_text_padding_bottom">1dp</dimen>
     <dimen name="widget_roll_header_layout_padding_vert">4dp</dimen>
 
@@ -108,21 +111,6 @@
     <dimen name="widget_text_editor_free_layout_padding_horz">10dp</dimen>
     <dimen name="widget_text_editor_free_layout_padding_vert">20dp</dimen>
     <dimen name="widget_text_editor_free_button_text_size">3.3sp</dimen>
-
-
-    <!--<dimen name="comp_text_editor_title_text_size">3.1dp</dimen>-->
-    <!--<dimen name="comp_text_editor_value_text_size">6.5dp</dimen>-->
-    <!--<dimen name="comp_text_editor_type_title_text_size">3.1dp</dimen>-->
-    <!--<dimen name="comp_text_editor_type_title_top_padding">32dp</dimen>-->
-    <!--<dimen name="comp_text_editor_type_title_left_padding">1.5dp</dimen>-->
-    <!--<dimen name="comp_text_editor_type_title_bottom_padding">7dp</dimen>-->
-    <!--<dimen name="comp_text_editor_margins_vert">50dp</dimen>-->
-    <!--<dimen name="comp_text_editor_padding_horz">5dp</dimen>-->
-    <!--<dimen name="comp_text_editor_padding_vert">7dp</dimen>-->
-
-    <!--<dimen name="list_label_text_size">10dp</dimen>-->
-
-    <!-- TEXT EDITOR (FREE) -->
 
 
     <!-- REFINEMENT: MEMBER_OF: SELECTABLE ITEM -->

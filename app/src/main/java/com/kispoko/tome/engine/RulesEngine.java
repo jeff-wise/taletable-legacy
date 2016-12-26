@@ -10,7 +10,7 @@ import com.kispoko.tome.engine.programming.program.ProgramIndex;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
 import com.kispoko.tome.engine.refinement.RefinementIndex;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -30,10 +30,10 @@ public class RulesEngine implements Model, Serializable
 
     private UUID id;
 
-    private ModelValue<RefinementIndex> refinementIndex;
-    private ModelValue<FunctionIndex>   functionIndex;
-    private ModelValue<ProgramIndex>    programIndex;
-    private ModelValue<MechanicIndex>   mechanicIndex;
+    private ModelFunctor<RefinementIndex> refinementIndex;
+    private ModelFunctor<FunctionIndex> functionIndex;
+    private ModelFunctor<ProgramIndex> programIndex;
+    private ModelFunctor<MechanicIndex> mechanicIndex;
 
     private Interpreter interpreter;
 
@@ -45,10 +45,10 @@ public class RulesEngine implements Model, Serializable
     {
         this.id              = null;
 
-        this.refinementIndex = ModelValue.empty(RefinementIndex.class);
-        this.functionIndex   = ModelValue.empty(FunctionIndex.class);
-        this.programIndex    = ModelValue.empty(ProgramIndex.class);
-        this.mechanicIndex   = ModelValue.empty(MechanicIndex.class);
+        this.refinementIndex = ModelFunctor.empty(RefinementIndex.class);
+        this.functionIndex   = ModelFunctor.empty(FunctionIndex.class);
+        this.programIndex    = ModelFunctor.empty(ProgramIndex.class);
+        this.mechanicIndex   = ModelFunctor.empty(MechanicIndex.class);
 
         this.interpreter     = null;
 
@@ -64,10 +64,10 @@ public class RulesEngine implements Model, Serializable
     {
         this.id = id;
 
-        this.refinementIndex = ModelValue.full(refinementIndex, RefinementIndex.class);
-        this.functionIndex   = ModelValue.full(functionIndex, FunctionIndex.class);
-        this.programIndex    = ModelValue.full(programIndex, ProgramIndex.class);
-        this.mechanicIndex   = ModelValue.full(mechanicIndex, MechanicIndex.class);
+        this.refinementIndex = ModelFunctor.full(refinementIndex, RefinementIndex.class);
+        this.functionIndex   = ModelFunctor.full(functionIndex, FunctionIndex.class);
+        this.programIndex    = ModelFunctor.full(programIndex, ProgramIndex.class);
+        this.mechanicIndex   = ModelFunctor.full(mechanicIndex, MechanicIndex.class);
 
         this.interpreter = new Interpreter(this.programIndex.getValue(),
                                            this.functionIndex.getValue());

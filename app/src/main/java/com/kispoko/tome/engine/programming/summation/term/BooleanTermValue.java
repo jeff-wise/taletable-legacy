@@ -13,7 +13,7 @@ import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
@@ -41,10 +41,10 @@ public class BooleanTermValue implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<Boolean> booleanValue;
-    private PrimitiveValue<String>  variableName;
+    private PrimitiveFunctor<Boolean> booleanValue;
+    private PrimitiveFunctor<String> variableName;
 
-    private PrimitiveValue<Kind>    kind;
+    private PrimitiveFunctor<Kind> kind;
 
 
     // CONSTRUCTORS
@@ -54,10 +54,10 @@ public class BooleanTermValue implements Model, Serializable
     {
         this.id           = null;
 
-        this.booleanValue = new PrimitiveValue<>(null, Boolean.class);
-        this.variableName = new PrimitiveValue<>(null, String.class);
+        this.booleanValue = new PrimitiveFunctor<>(null, Boolean.class);
+        this.variableName = new PrimitiveFunctor<>(null, String.class);
 
-        this.kind         = new PrimitiveValue<>(null, Kind.class);
+        this.kind         = new PrimitiveFunctor<>(null, Kind.class);
     }
 
 
@@ -65,10 +65,10 @@ public class BooleanTermValue implements Model, Serializable
     {
         this.id           = id;
 
-        this.booleanValue = new PrimitiveValue<>(null, Boolean.class);
-        this.variableName = new PrimitiveValue<>(null, String.class);
+        this.booleanValue = new PrimitiveFunctor<>(null, Boolean.class);
+        this.variableName = new PrimitiveFunctor<>(null, String.class);
 
-        this.kind         = new PrimitiveValue<>(kind, Kind.class);
+        this.kind         = new PrimitiveFunctor<>(kind, Kind.class);
 
         // > Set the value depending on the case
         switch (kind)

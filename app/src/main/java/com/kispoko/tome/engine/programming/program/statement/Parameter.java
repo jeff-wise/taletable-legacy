@@ -6,7 +6,7 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -26,11 +26,11 @@ public class Parameter implements Model, Serializable
 
     private UUID                          id;
 
-    private PrimitiveValue<Integer>       programParameter;
-    private PrimitiveValue<String>        variableName;
-    private PrimitiveValue<String>        literalString;
+    private PrimitiveFunctor<Integer> programParameter;
+    private PrimitiveFunctor<String> variableName;
+    private PrimitiveFunctor<String> literalString;
 
-    private PrimitiveValue<ParameterType> type;
+    private PrimitiveFunctor<ParameterType> type;
 
 
     // CONSTRUCTORS
@@ -40,11 +40,11 @@ public class Parameter implements Model, Serializable
     {
         this.id               = null;
 
-        this.type             = new PrimitiveValue<>(null, ParameterType.class);
+        this.type             = new PrimitiveFunctor<>(null, ParameterType.class);
 
-        this.programParameter = new PrimitiveValue<>(null, Integer.class);
-        this.variableName     = new PrimitiveValue<>(null, String.class);
-        this.literalString    = new PrimitiveValue<>(null, String.class);
+        this.programParameter = new PrimitiveFunctor<>(null, Integer.class);
+        this.variableName     = new PrimitiveFunctor<>(null, String.class);
+        this.literalString    = new PrimitiveFunctor<>(null, String.class);
     }
 
 
@@ -58,11 +58,11 @@ public class Parameter implements Model, Serializable
     {
         this.id               = id;
 
-        this.type             = new PrimitiveValue<>(parameterType, ParameterType.class);
+        this.type             = new PrimitiveFunctor<>(parameterType, ParameterType.class);
 
-        this.programParameter = new PrimitiveValue<>(null, Integer.class);
-        this.variableName     = new PrimitiveValue<>(null, String.class);
-        this.literalString    = new PrimitiveValue<>(null, String.class);
+        this.programParameter = new PrimitiveFunctor<>(null, Integer.class);
+        this.variableName     = new PrimitiveFunctor<>(null, String.class);
+        this.literalString    = new PrimitiveFunctor<>(null, String.class);
 
         switch (parameterType)
         {

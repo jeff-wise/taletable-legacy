@@ -27,8 +27,8 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TableLayoutBuilder;
 import com.kispoko.tome.util.ui.TableRowBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -36,6 +36,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 
 /**
@@ -53,9 +54,9 @@ public class TableWidget extends Widget implements Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<WidgetData>       widgetData;
-    private CollectionValue<ColumnUnion> columns;
-    private CollectionValue<TableRow>    rows;
+    private ModelFunctor<WidgetData> widgetData;
+    private CollectionFunctor<ColumnUnion> columns;
+    private CollectionFunctor<TableRow> rows;
 
 
     // > Internal
@@ -71,15 +72,15 @@ public class TableWidget extends Widget implements Serializable
     {
         this.id         = null;
 
-        this.widgetData = ModelValue.empty(WidgetData.class);
+        this.widgetData = ModelFunctor.empty(WidgetData.class);
 
         List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
         columnClassList.add(ColumnUnion.class);
-        this.columns    = CollectionValue.empty(columnClassList);
+        this.columns    = CollectionFunctor.empty(columnClassList);
 
         List<Class<? extends TableRow>> rowClassList = new ArrayList<>();
         rowClassList.add(TableRow.class);
-        this.rows       = CollectionValue.empty(rowClassList);
+        this.rows       = CollectionFunctor.empty(rowClassList);
     }
 
 
@@ -90,15 +91,15 @@ public class TableWidget extends Widget implements Serializable
     {
         this.id = id;
 
-        this.widgetData = ModelValue.full(widgetData, WidgetData.class);
+        this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
 
         List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
         columnClassList.add(ColumnUnion.class);
-        this.columns    = CollectionValue.full(columns, columnClassList);
+        this.columns    = CollectionFunctor.full(columns, columnClassList);
 
         List<Class<? extends TableRow>> rowClassList = new ArrayList<>();
         rowClassList.add(TableRow.class);
-        this.rows        = CollectionValue.full(rows, rowClassList);
+        this.rows        = CollectionFunctor.full(rows, rowClassList);
 
         initialize();
 
@@ -484,7 +485,7 @@ public class TableWidget extends Widget implements Serializable
             float headerTextSize = (int) context.getResources()
                                                 .getDimension(R.dimen.widget_table_header_text_size);
             headerCellView.setTextSize(headerTextSize);
-            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.light_grey_5));
+            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hlx_8));
             headerCellView.setTypeface(Util.sansSerifFontBold(context));
 
             headerRowView.addView(headerCellView);

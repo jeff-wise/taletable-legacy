@@ -124,7 +124,7 @@ public class ManageSheetsActivity extends AppCompatActivity
             LinearLayout summaryLayout = summaryLayout();
 
             LinearLayout sheetInformationLayout = sheetInformationLayout();
-            sheetInformationLayout.addView( characterNameView(summaryInfo.getName()) );
+            sheetInformationLayout.addView( characterNameView(summaryInfo.name()) );
             sheetInformationLayout.addView( lastUsedView(summaryInfo.getLastUsed()) );
             sheetInformationLayout.addView( campaignNameView(index) );
 

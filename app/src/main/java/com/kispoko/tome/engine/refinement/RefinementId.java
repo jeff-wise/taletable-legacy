@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.refinement;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -22,8 +22,8 @@ public class RefinementId implements Model, Serializable
     // --------------------------------------------------------------------------------------
 
     private UUID id;
-    private PrimitiveValue<String> name;
-    private PrimitiveValue<RefinementType>   type;
+    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<RefinementType> type;
 
 
     // CONSTRUCTORS
@@ -33,8 +33,8 @@ public class RefinementId implements Model, Serializable
     {
         this.id   = null;
 
-        this.name = new PrimitiveValue<>(null, String.class);
-        this.type = new PrimitiveValue<>(null, RefinementType.class);
+        this.name = new PrimitiveFunctor<>(null, String.class);
+        this.type = new PrimitiveFunctor<>(null, RefinementType.class);
 
     }
 
@@ -43,8 +43,8 @@ public class RefinementId implements Model, Serializable
     {
         this.id   = id;
 
-        this.name = new PrimitiveValue<>(name, String.class);
-        this.type = new PrimitiveValue<>(type, RefinementType.class);
+        this.name = new PrimitiveFunctor<>(name, String.class);
+        this.type = new PrimitiveFunctor<>(type, RefinementType.class);
     }
 
 

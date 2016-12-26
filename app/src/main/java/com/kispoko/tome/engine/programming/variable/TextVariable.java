@@ -2,7 +2,6 @@
 package com.kispoko.tome.engine.programming.variable;
 
 
-import com.kispoko.tome.engine.State;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.program.invocation.Invocation;
 import com.kispoko.tome.engine.refinement.RefinementId;
@@ -10,13 +9,14 @@ import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,14 +40,14 @@ public class TextVariable extends Variable implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<String>   name;
+    private PrimitiveFunctor<String> name;
 
-    private PrimitiveValue<String>   stringValue;
-    private ModelValue<Invocation>   programInvocationValue;
+    private PrimitiveFunctor<String> stringValue;
+    private ModelFunctor<Invocation> programInvocationValue;
 
-    private PrimitiveValue<Kind>     kind;
+    private PrimitiveFunctor<Kind> kind;
 
-    private ModelValue<RefinementId> refinementId;
+    private ModelFunctor<RefinementId> refinementId;
 
 
     // > Internal
@@ -65,14 +65,14 @@ public class TextVariable extends Variable implements Model, Serializable
 
         this.id                     = null;
 
-        this.name                   = new PrimitiveValue<>(null, String.class);
+        this.name                   = new PrimitiveFunctor<>(null, String.class);
 
-        this.stringValue            = new PrimitiveValue<>(null, String.class);
-        this.programInvocationValue = ModelValue.empty(Invocation.class);
+        this.stringValue            = new PrimitiveFunctor<>(null, String.class);
+        this.programInvocationValue = ModelFunctor.empty(Invocation.class);
 
-        this.kind                   = new PrimitiveValue<>(null, Kind.class);
+        this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
 
-        this.refinementId           = ModelValue.empty(RefinementId.class);
+        this.refinementId           = ModelFunctor.empty(RefinementId.class);
 
         this.reactiveValue          = null;
     }
@@ -98,17 +98,17 @@ public class TextVariable extends Variable implements Model, Serializable
         this.id                     = id;
 
         // ** Name
-        this.name                   = new PrimitiveValue<>(name, String.class);
+        this.name                   = new PrimitiveFunctor<>(name, String.class);
 
         // ** Value Variants
-        this.stringValue            = new PrimitiveValue<>(null, String.class);
-        this.programInvocationValue = ModelValue.full(null, Invocation.class);
+        this.stringValue            = new PrimitiveFunctor<>(null, String.class);
+        this.programInvocationValue = ModelFunctor.full(null, Invocation.class);
 
         // ** Kind (Literal or Program)
-        this.kind                   = new PrimitiveValue<>(kind, Kind.class);
+        this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
 
         // ** Refinement Id (if any)
-        this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
+        this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
 
         // > Set the value according to variable kind
         switch (kind)
@@ -228,13 +228,23 @@ public class TextVariable extends Variable implements Model, Serializable
     // > Variable
     // ------------------------------------------------------------------------------------------
 
-    // ** Name
-    // ------------------------------------------------------------------------------------------
-
     @Override
-    public String getName()
+    public String name()
     {
         return this.name.getValue();
+    }
+
+
+    @Override
+    public List<String> dependencies()
+    {
+        List<String> variableDependencies = new ArrayList<>();
+
+        if (this.kind.getValue() == Kind.PROGRAM) {
+            variableDependencies = this.programInvocationValue.getValue().variableDependencies();
+        }
+
+        return variableDependencies;
     }
 
 
@@ -327,23 +337,6 @@ public class TextVariable extends Variable implements Model, Serializable
         else {
             this.reactiveValue = null;
         }
-
-        // [2] Track variable dependencies (if program variable)
-        // --------------------------------------------------------------------------------------
-
-        if (this.kind.getValue() == Kind.PROGRAM)
-        {
-            List<String> variableDependencies = this.programInvocationValue.getValue()
-                                                    .variableDependencies();
-
-            this.setVariableDependencies(variableDependencies);
-        }
-
-        // [3] Add variable to state
-        // --------------------------------------------------------------------------------------
-
-        if (!this.name.isNull())
-            State.addVariable(VariableUnion.asText(this));
     }
 
 

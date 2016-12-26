@@ -4,7 +4,7 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -26,10 +26,10 @@ public class BooleanColumn implements Model, Column, Serializable
 
     private UUID                          id;
 
-    private PrimitiveValue<String>        name;
-    private PrimitiveValue<Boolean>       defaultValue;
-    private PrimitiveValue<CellAlignment> alignment;
-    private PrimitiveValue<Integer>       width;
+    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<Boolean> defaultValue;
+    private PrimitiveFunctor<CellAlignment> alignment;
+    private PrimitiveFunctor<Integer> width;
 
 
     // CONSTRUCTORS
@@ -39,10 +39,10 @@ public class BooleanColumn implements Model, Column, Serializable
     {
         this.id           = null;
 
-        this.name         = new PrimitiveValue<>(null, String.class);
-        this.defaultValue = new PrimitiveValue<>(null, Boolean.class);
-        this.alignment    = new PrimitiveValue<>(null, CellAlignment.class);
-        this.width        = new PrimitiveValue<>(null, Integer.class);
+        this.name         = new PrimitiveFunctor<>(null, String.class);
+        this.defaultValue = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment    = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.width        = new PrimitiveFunctor<>(null, Integer.class);
     }
 
 
@@ -54,10 +54,10 @@ public class BooleanColumn implements Model, Column, Serializable
     {
         this.id           = id;
 
-        this.name         = new PrimitiveValue<>(name, String.class);
-        this.defaultValue = new PrimitiveValue<>(defaultValue, Boolean.class);
-        this.alignment    = new PrimitiveValue<>(alignment, CellAlignment.class);
-        this.width        = new PrimitiveValue<>(width, Integer.class);
+        this.name         = new PrimitiveFunctor<>(name, String.class);
+        this.defaultValue = new PrimitiveFunctor<>(defaultValue, Boolean.class);
+        this.alignment    = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.width        = new PrimitiveFunctor<>(width, Integer.class);
     }
 
 

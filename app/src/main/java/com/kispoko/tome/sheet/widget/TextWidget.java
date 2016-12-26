@@ -19,8 +19,10 @@ import com.kispoko.tome.activity.EditActivity;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.programming.variable.TextVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
+import com.kispoko.tome.engine.programming.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
@@ -32,12 +34,15 @@ import com.kispoko.tome.util.ui.EditTextBuilder;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -54,21 +59,22 @@ public class TextWidget extends Widget implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                              id;
+    private UUID                                id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<WidgetData>            widgetData;
-    private PrimitiveValue<WidgetContentSize> size;
-    private ModelValue<TextVariable>          value;
+    private ModelFunctor<WidgetData>            widgetData;
+    private PrimitiveFunctor<WidgetContentSize> size;
+    private ModelFunctor<TextVariable>          value;
+    private CollectionFunctor<VariableUnion>    variables;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer                           displayTextViewId;
+    private Integer                             displayTextViewId;
 
 
     // > Misc
@@ -84,19 +90,31 @@ public class TextWidget extends Widget implements Serializable
     {
         this.id         = null;
 
-        this.widgetData = ModelValue.empty(WidgetData.class);
-        this.value      = ModelValue.empty(TextVariable.class);
-        this.size       = new PrimitiveValue<>(null, WidgetContentSize.class);
+        this.widgetData = ModelFunctor.empty(WidgetData.class);
+        this.value      = ModelFunctor.empty(TextVariable.class);
+        this.size       = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+
+        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
+        variableClasses.add(VariableUnion.class);
+        this.variables  = CollectionFunctor.empty(variableClasses);
     }
 
 
-    public TextWidget(UUID id, WidgetData widgetData, WidgetContentSize size, TextVariable value)
+    public TextWidget(UUID id,
+                      WidgetData widgetData,
+                      WidgetContentSize size,
+                      TextVariable value,
+                      List<VariableUnion> variables)
     {
         this.id         = id;
 
-        this.widgetData = ModelValue.full(widgetData, WidgetData.class);
-        this.value      = ModelValue.full(value, TextVariable.class);
-        this.size       = new PrimitiveValue<>(size, WidgetContentSize.class);
+        this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
+        this.value      = ModelFunctor.full(value, TextVariable.class);
+        this.size       = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+
+        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
+        variableClasses.add(VariableUnion.class);
+        this.variables  = CollectionFunctor.full(variables, variableClasses);
 
         initialize();
     }
@@ -111,12 +129,22 @@ public class TextWidget extends Widget implements Serializable
     public static TextWidget fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID              id         = UUID.randomUUID();
-        WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
-        WidgetContentSize size       = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
-        TextVariable      value      = TextVariable.fromYaml(yaml.atKey("value"));
+        UUID                id         = UUID.randomUUID();
 
-        return new TextWidget(id, widgetData, size, value);
+        WidgetData          widgetData = WidgetData.fromYaml(yaml.atKey("data"));
+        WidgetContentSize   size       = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
+        TextVariable        value      = TextVariable.fromYaml(yaml.atKey("value"));
+
+        List<VariableUnion> variables  = yaml.atMaybeKey("variables").forEach(
+                                                new Yaml.ForEach<VariableUnion>()
+        {
+            @Override
+            public VariableUnion forEach(Yaml yaml, int index) throws YamlException {
+                return VariableUnion.fromYaml(yaml);
+            }
+        }, true);
+
+        return new TextWidget(id, widgetData, size, value, variables);
     }
 
 
@@ -156,7 +184,8 @@ public class TextWidget extends Widget implements Serializable
     // > Widget
     // ------------------------------------------------------------------------------------------
 
-    public String name() {
+    public String name()
+    {
         return "text";
     }
 
@@ -179,6 +208,7 @@ public class TextWidget extends Widget implements Serializable
                 break;
         }
     }
+
 
 
     /**
@@ -206,7 +236,8 @@ public class TextWidget extends Widget implements Serializable
         textView.id      = this.displayTextViewId;
         textView.size    = this.size.getValue().resourceId();
         textView.font    = Font.serifFontBold(context);
-        textView.color   = R.color.light_grey_5;
+        textView.color   = R.color.dark_blue_hlx_6;
+        //textView.color   = R.color.light_grey_6;
         textView.text    = this.value();
 
         contentLayout.addView(textView.textView(context));
@@ -269,6 +300,18 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
+    // ** Variables
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the text widget's helper variables.
+     * @return The list of variables.
+     */
+    public List<VariableUnion> variables()
+    {
+        return this.variables.getValue();
+    }
+
 
     // INTERNAL
     // ------------------------------------------------------------------------------------------
@@ -278,17 +321,35 @@ public class TextWidget extends Widget implements Serializable
      */
     private void initialize()
     {
+        // [1] The text widget's value view ID. It is null until the view is created.
+        // --------------------------------------------------------------------------------------
+
         this.displayTextViewId = null;
 
+        // [2] Initialize the value variable
+        // --------------------------------------------------------------------------------------
+
+        // > Add the on update listener
         if (!this.valueVariable().isNull())
         {
-            this.valueVariable().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onValueUpdate();
                 }
             });
+
+            // > Add to the state
+            State.addVariable(this.valueVariable());
         }
+
+        // [3] Initialize the helper variables
+        // --------------------------------------------------------------------------------------
+
+        for (VariableUnion variableUnion : this.variables()) {
+            State.addVariable(variableUnion);
+        }
+
     }
 
 

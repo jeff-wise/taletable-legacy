@@ -2,13 +2,9 @@
 package com.kispoko.tome.engine.programming.variable;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.engine.State;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 
 
@@ -21,21 +17,14 @@ public abstract class Variable
     // ABSTRACT METHODS
     // ------------------------------------------------------------------------------------------
 
-    public abstract String getName();
+    public abstract String name();
+    public abstract List<String> dependencies();
 
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    // Variables that this variable's value is dependent on. This variable is a listener to each
-    // of these variables
-    private Set<String>           variableDependencies;
-
-    // Variables which are listening for changes on this variable
-    private Set<String>           variableListeners;
-
-    // Listeners that are not variables, but which want to be notified when this variable changes.
-    private Set<OnUpdateListener> onUpdateListeners;
+    private OnUpdateListener onUpdateListener;
 
 
     // CONSTRUCTORS
@@ -43,43 +32,12 @@ public abstract class Variable
 
     public Variable()
     {
-        this.variableDependencies = new HashSet<>();
-        this.variableListeners    = new HashSet<>();
-        this.onUpdateListeners    = new HashSet<>();
+        this.onUpdateListener = null;
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
-
-    protected void setVariableDependencies(Collection<String> variableDependencies)
-    {
-        // [1] Remove this variable from all current dependencies
-        // --------------------------------------------------------------------------------------
-
-        for (String variableName : this.variableDependencies)
-        {
-            VariableUnion variableUnion = State.variableWithName(variableName);
-            variableUnion.variable().removeVariableListener(this.getName());
-        }
-
-        // [2] Set the new variable dependencies
-        // --------------------------------------------------------------------------------------
-
-        this.variableDependencies = new HashSet<>(variableDependencies);
-
-        // [3] Subscribe this variable to all of the new dependencies
-        // --------------------------------------------------------------------------------------
-
-        for (VariableUnion variableUnion : State.variables())
-        {
-            Variable variable = variableUnion.variable();
-            if (variableDependencies.contains(variable.getName())) {
-                variable.addVariableListener(this.getName());
-            }
-        }
-    }
-
 
     /**
      * This method should be called when the variable's value changes. This could happen directly
@@ -88,49 +46,23 @@ public abstract class Variable
      */
     public void onUpdate()
     {
-        // [1] Notify all on update listeners
+        // [1] Call the variable's update listener
         // --------------------------------------------------------------------------------------
 
-        for (OnUpdateListener onUpdateListener : this.onUpdateListeners)
-        {
-            onUpdateListener.onUpdate();
+        if (this.onUpdateListener != null) {
+            this.onUpdateListener.onUpdate();
         }
 
-        // [2] Notify all variable listeners
+        // [2] Update any variables that depend on this variable
         // --------------------------------------------------------------------------------------
 
-        for (String variableName : this.variableListeners)
-        {
-            VariableUnion variableUnion = State.variableWithName(variableName);
-            variableUnion.variable().onUpdate();
-        }
+        State.updateVariableDependencies(this);
     }
 
 
-    public void onNewVariable(Variable newVariable)
+    public void setOnUpdateListener(OnUpdateListener onUpdateListener)
     {
-        if (variableDependencies.contains(newVariable.getName()))
-        {
-            newVariable.addVariableListener(this.getName());
-        }
-    }
-
-
-    public void addVariableListener(String variableName)
-    {
-        this.variableListeners.add(variableName);
-    }
-
-
-    public void removeVariableListener(String variableName)
-    {
-        this.variableListeners.remove(variableName);
-    }
-
-
-    public void addOnUpdateListener(OnUpdateListener onUpdateListener)
-    {
-        this.onUpdateListeners.add(onUpdateListener);
+        this.onUpdateListener = onUpdateListener;
     }
 
 

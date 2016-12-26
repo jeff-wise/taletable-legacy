@@ -11,13 +11,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -44,8 +45,8 @@ public class BooleanCell implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<BooleanVariable>   value;
-    private PrimitiveValue<CellAlignment> alignment;
+    private ModelFunctor<BooleanVariable> value;
+    private PrimitiveFunctor<CellAlignment> alignment;
 
 
     // > Internal
@@ -61,8 +62,8 @@ public class BooleanCell implements Model, Serializable
     {
         this.id        = null;
 
-        this.value     = ModelValue.empty(BooleanVariable.class);
-        this.alignment = new PrimitiveValue<>(null, CellAlignment.class);
+        this.value     = ModelFunctor.empty(BooleanVariable.class);
+        this.alignment = new PrimitiveFunctor<>(null, CellAlignment.class);
     }
 
 
@@ -81,10 +82,10 @@ public class BooleanCell implements Model, Serializable
                                               column.getDefaultValue(),
                                               null);
         }
-        this.value     = ModelValue.full(value, BooleanVariable.class);
+        this.value     = ModelFunctor.full(value, BooleanVariable.class);
 
         // ** Alignment
-        this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
+        this.alignment = new PrimitiveFunctor<>(alignment, CellAlignment.class);
 
         initialize();
     }
@@ -150,9 +151,17 @@ public class BooleanCell implements Model, Serializable
      * Get the boolean variable that contains the value of the boolean cell.
      * @return The Number Variable value.
      */
-    public BooleanVariable value()
+    public BooleanVariable valueVariable()
     {
         return this.value.getValue();
+    }
+
+
+    public Boolean value()
+    {
+        if (!this.value.isNull())
+            return this.valueVariable().value();
+        return null;
     }
 
 
@@ -175,7 +184,7 @@ public class BooleanCell implements Model, Serializable
 
         final ImageView view = new ImageView(context);
 
-        Boolean value = this.value().value();
+        Boolean value = this.value();
 
         if (value == null)
             value = column.getDefaultValue();
@@ -197,12 +206,12 @@ public class BooleanCell implements Model, Serializable
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (value().value()) {
-                    value().setValue(false);
+                if (value()) {
+                    valueVariable().setValue(false);
                     view.setImageDrawable(
                             ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
                 } else {
-                    value().setValue(true);
+                    valueVariable().setValue(true);
                     view.setImageDrawable(
                             ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
                 }
@@ -221,20 +230,24 @@ public class BooleanCell implements Model, Serializable
      */
     private void initialize()
     {
-        // [1] Initialize variables with listeners to update the number widget views when the
-        //     values of the variables change
+        // [1] The boolean cell's value view ID. It is null until the view is created.
         // --------------------------------------------------------------------------------------
 
         this.valueViewId   = null;
 
+        // [2] Initialize the value variable
+        // --------------------------------------------------------------------------------------
+
         if (!this.value.isNull())
         {
-            this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onValueUpdate();
                 }
             });
+
+            State.addVariable(this.valueVariable());
         }
 
     }
@@ -250,7 +263,7 @@ public class BooleanCell implements Model, Serializable
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
-            Boolean value = this.value().value();
+            Boolean value = this.value();
 
             // TODO can value be null
             if (value != null)

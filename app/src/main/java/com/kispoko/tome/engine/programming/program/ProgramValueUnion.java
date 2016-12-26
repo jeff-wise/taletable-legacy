@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.programming.program;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -26,11 +26,11 @@ public class ProgramValueUnion implements Model, Serializable
 
     private UUID                             id;
 
-    private PrimitiveValue<Integer>          integerValue;
-    private PrimitiveValue<String>           stringValue;
-    private PrimitiveValue<Boolean>          booleanValue;
+    private PrimitiveFunctor<Integer> integerValue;
+    private PrimitiveFunctor<String> stringValue;
+    private PrimitiveFunctor<Boolean> booleanValue;
 
-    private PrimitiveValue<ProgramValueType> valueType;
+    private PrimitiveFunctor<ProgramValueType> valueType;
 
 
     // CONSTRUCTORS
@@ -40,11 +40,11 @@ public class ProgramValueUnion implements Model, Serializable
     {
         this.id           = null;
 
-        this.integerValue = new PrimitiveValue<>(null, Integer.class);
-        this.stringValue  = new PrimitiveValue<>(null, String.class);
-        this.booleanValue = new PrimitiveValue<>(null, Boolean.class);
+        this.integerValue = new PrimitiveFunctor<>(null, Integer.class);
+        this.stringValue  = new PrimitiveFunctor<>(null, String.class);
+        this.booleanValue = new PrimitiveFunctor<>(null, Boolean.class);
 
-        this.valueType    = new PrimitiveValue<>(null, ProgramValueType.class);
+        this.valueType    = new PrimitiveFunctor<>(null, ProgramValueType.class);
     }
 
 
@@ -59,11 +59,11 @@ public class ProgramValueUnion implements Model, Serializable
     {
         this.id           = id;
 
-        this.integerValue = new PrimitiveValue<>(null, Integer.class);
-        this.stringValue  = new PrimitiveValue<>(null, String.class);
-        this.booleanValue = new PrimitiveValue<>(null, Boolean.class);
+        this.integerValue = new PrimitiveFunctor<>(null, Integer.class);
+        this.stringValue  = new PrimitiveFunctor<>(null, String.class);
+        this.booleanValue = new PrimitiveFunctor<>(null, Boolean.class);
 
-        this.valueType    = new PrimitiveValue<>(valueType, ProgramValueType.class);
+        this.valueType    = new PrimitiveFunctor<>(valueType, ProgramValueType.class);
 
         // Set the value
         switch (valueType)

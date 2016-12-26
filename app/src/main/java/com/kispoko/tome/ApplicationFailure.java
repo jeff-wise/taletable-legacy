@@ -4,6 +4,7 @@ package com.kispoko.tome;
 
 import android.util.Log;
 
+import com.kispoko.tome.engine.programming.mechanic.MechanicException;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.engine.programming.interpreter.InterpreterException;
@@ -25,6 +26,7 @@ public class ApplicationFailure
     {
 
     }
+
 
 
     public static void templateFile(TemplateFileException exception)
@@ -53,6 +55,12 @@ public class ApplicationFailure
 
 
     public static void summation(SummationException exception)
+    {
+        Log.d("***APP", exception.errorMessage(), exception);
+    }
+
+
+    public static void mechanic(MechanicException exception)
     {
         Log.d("***APP", exception.errorMessage(), exception);
     }

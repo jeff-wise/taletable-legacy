@@ -35,6 +35,7 @@ public enum Action
 
     EDIT,
     CHOOSE,
+    CHOOSE_IMAGE,
     SHARE,
     GENERATE;
 
@@ -55,6 +56,9 @@ public enum Action
     public static Action fromYaml(Yaml yaml)
                   throws YamlException
     {
+        if (yaml.isNull())
+            return null;
+
         String typeString = yaml.getString();
         try {
             return Action.fromString(typeString);

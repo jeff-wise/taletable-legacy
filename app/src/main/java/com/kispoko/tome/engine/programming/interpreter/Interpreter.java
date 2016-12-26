@@ -31,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.kispoko.tome.engine.State.variableWithName;
-import static com.kispoko.tome.engine.programming.program.invocation.InvocationParameterType.REFERENCE;
 
 
 /**
@@ -262,10 +260,5 @@ public class Interpreter implements Serializable
 
         return result;
     }
-
-
-    // NESTED CLASSES
-    // ------------------------------------------------------------------------------------------
-
 
 }

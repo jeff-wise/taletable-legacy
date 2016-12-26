@@ -4,7 +4,7 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 import com.kispoko.tome.engine.programming.summation.SummationException;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
-import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -33,7 +33,7 @@ public class DiceRollTerm extends Term implements Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<DiceRollTermValue> termValue;
+    private ModelFunctor<DiceRollTermValue> termValue;
 
 
     // CONSTRUCTORS
@@ -43,7 +43,7 @@ public class DiceRollTerm extends Term implements Serializable
     {
         this.id           = null;
 
-        this.termValue    = ModelValue.empty(DiceRollTermValue.class);
+        this.termValue    = ModelFunctor.empty(DiceRollTermValue.class);
     }
 
 
@@ -51,7 +51,7 @@ public class DiceRollTerm extends Term implements Serializable
     {
         this.id           = id;
 
-        this.termValue    = ModelValue.full(diceRollTermValue, DiceRollTermValue.class);
+        this.termValue    = ModelFunctor.full(diceRollTermValue, DiceRollTermValue.class);
     }
 
 

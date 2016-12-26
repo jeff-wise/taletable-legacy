@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.refinement;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -34,7 +34,7 @@ public class RefinementIndex implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private CollectionValue<RefinementUnion> refinements;
+    private CollectionFunctor<RefinementUnion> refinements;
 
 
     // > Internal
@@ -52,7 +52,7 @@ public class RefinementIndex implements Model, Serializable
 
         List<Class<? extends RefinementUnion>> refinementUnionClasses = new ArrayList<>();
         refinementUnionClasses.add(RefinementUnion.class);
-        this.refinements = CollectionValue.empty(refinementUnionClasses);
+        this.refinements = CollectionFunctor.empty(refinementUnionClasses);
 
         // > Initialize indexes
         this.memberOfIndex = new HashMap<>();
@@ -65,7 +65,7 @@ public class RefinementIndex implements Model, Serializable
 
         List<Class<? extends RefinementUnion>> refinementUnionClasses = new ArrayList<>();
         refinementUnionClasses.add(RefinementUnion.class);
-        this.refinements = CollectionValue.full(refinementUnions, refinementUnionClasses);
+        this.refinements = CollectionFunctor.full(refinementUnions, refinementUnionClasses);
 
         // > Initialize indexes
         memberOfIndex = new HashMap<>();

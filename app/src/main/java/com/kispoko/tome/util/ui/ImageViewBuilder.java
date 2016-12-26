@@ -22,21 +22,24 @@ public class ImageViewBuilder implements ViewBuilder
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    public Integer          id;
+    public Integer              id;
 
-    public LayoutType       layoutType;
+    public LayoutType           layoutType;
 
-    public Integer          height;
-    public Integer          width;
+    public Integer              height;
+    public Integer              width;
 
-    public Integer          layoutGravity;
+    public Integer              layoutGravity;
 
-    public Padding          padding;
-    public Margins          margin;
+    public Padding              padding;
+    public Margins              margin;
 
-    public Integer          image;
+    public Integer              image;
 
-    private List<Integer>   rules;
+    public ImageView.ScaleType  scaleType;
+    public Boolean              adjustViewBounds;
+
+    private List<Integer>       rules;
 
 
     // CONSTRUCTORS
@@ -44,19 +47,22 @@ public class ImageViewBuilder implements ViewBuilder
 
     public ImageViewBuilder()
     {
-        this.id         = null;
+        this.id                 = null;
 
-        this.layoutType = LayoutType.NONE;
+        this.layoutType         = LayoutType.NONE;
 
-        this.height     = null;
-        this.width      = null;
+        this.height             = null;
+        this.width              = null;
 
-        this.padding    = new Padding();
-        this.margin     = new Margins();
+        this.padding            = new Padding();
+        this.margin             = new Margins();
 
-        this.image      = null;
+        this.image              = null;
 
-        this.rules      = new ArrayList<>();
+        this.scaleType          = null;
+        this.adjustViewBounds   = null;
+
+        this.rules              = new ArrayList<>();
     }
 
 
@@ -111,6 +117,20 @@ public class ImageViewBuilder implements ViewBuilder
 
         if (this.image != null)
             imageView.setImageDrawable(ContextCompat.getDrawable(context, this.image));
+
+        // > Scale Type
+        // --------------------------------------------------------------------------------------
+
+        if (this.scaleType != null)
+            imageView.setScaleType(this.scaleType);
+
+
+        // > Adjust View Bounds
+        // --------------------------------------------------------------------------------------
+
+        if (this.adjustViewBounds != null)
+            imageView.setAdjustViewBounds(this.adjustViewBounds);
+
 
         // [2] Layout
         // --------------------------------------------------------------------------------------

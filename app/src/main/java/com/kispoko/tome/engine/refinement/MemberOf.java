@@ -3,7 +3,6 @@ package com.kispoko.tome.engine.refinement;
 
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
@@ -20,7 +18,7 @@ import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -42,9 +40,9 @@ public class MemberOf implements Model, Serializable
 
     private UUID id;
 
-    private PrimitiveValue<String>   name;
-    private PrimitiveValue<String>   label;
-    private PrimitiveValue<String[]> values;
+    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<String> label;
+    private PrimitiveFunctor<String[]> values;
 
 
     // CONSTRUCTORS
@@ -54,10 +52,10 @@ public class MemberOf implements Model, Serializable
     {
         this.id     = null;
 
-        this.name   = new PrimitiveValue<>(null, String.class);
-        this.label  = new PrimitiveValue<>(null, String.class);
+        this.name   = new PrimitiveFunctor<>(null, String.class);
+        this.label  = new PrimitiveFunctor<>(null, String.class);
 
-        this.values = new PrimitiveValue<>(null, String[].class);
+        this.values = new PrimitiveFunctor<>(null, String[].class);
 
     }
 
@@ -66,11 +64,11 @@ public class MemberOf implements Model, Serializable
     {
         this.id     = id;
 
-        this.name   = new PrimitiveValue<>(name, String.class);
-        this.label  = new PrimitiveValue<>(label, String.class);
+        this.name   = new PrimitiveFunctor<>(name, String.class);
+        this.label  = new PrimitiveFunctor<>(label, String.class);
 
         String[] valueArray = values.toArray(new String[values.size()]);
-        this.values = new PrimitiveValue<>(valueArray, String[].class);
+        this.values = new PrimitiveFunctor<>(valueArray, String[].class);
     }
 
 

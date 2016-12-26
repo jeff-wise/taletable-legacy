@@ -3,8 +3,8 @@ package com.kispoko.tome.engine.programming.program.statement;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -26,9 +26,9 @@ public class Statement implements Model, Serializable
 
     private UUID                       id;
 
-    private PrimitiveValue<String>     variableName;
-    private PrimitiveValue<String>     functionName;
-    private CollectionValue<Parameter> parameters;
+    private PrimitiveFunctor<String> variableName;
+    private PrimitiveFunctor<String> functionName;
+    private CollectionFunctor<Parameter> parameters;
 
 
     // CONSTRUCTORS
@@ -38,12 +38,12 @@ public class Statement implements Model, Serializable
     {
         this.id           = null;
 
-        this.variableName = new PrimitiveValue<>(null, String.class);
-        this.functionName = new PrimitiveValue<>(null, String.class);
+        this.variableName = new PrimitiveFunctor<>(null, String.class);
+        this.functionName = new PrimitiveFunctor<>(null, String.class);
 
         List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
         parameterClasses.add(Parameter.class);
-        this.parameters   = CollectionValue.empty(parameterClasses);
+        this.parameters   = CollectionFunctor.empty(parameterClasses);
     }
 
 
@@ -51,12 +51,12 @@ public class Statement implements Model, Serializable
     {
         this.id           = id;
 
-        this.variableName = new PrimitiveValue<>(variableName, String.class);
-        this.functionName = new PrimitiveValue<>(functionName, String.class);
+        this.variableName = new PrimitiveFunctor<>(variableName, String.class);
+        this.functionName = new PrimitiveFunctor<>(functionName, String.class);
 
         List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
         parameterClasses.add(Parameter.class);
-        this.parameters   = CollectionValue.full(parameters, parameterClasses);
+        this.parameters   = CollectionFunctor.full(parameters, parameterClasses);
     }
 
 

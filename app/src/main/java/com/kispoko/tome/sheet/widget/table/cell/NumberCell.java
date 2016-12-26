@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.programming.summation.SummationException;
 import com.kispoko.tome.engine.programming.variable.NumberVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
@@ -20,8 +21,8 @@ import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -47,9 +48,9 @@ public class NumberCell implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<NumberVariable>    value;
-    private PrimitiveValue<CellAlignment> alignment;
-    private PrimitiveValue<String>        prefix;
+    private ModelFunctor<NumberVariable> value;
+    private PrimitiveFunctor<CellAlignment> alignment;
+    private PrimitiveFunctor<String> prefix;
 
 
     // > Internal
@@ -65,9 +66,9 @@ public class NumberCell implements Model, Serializable
     {
         this.id        = null;
 
-        this.value     = ModelValue.empty(NumberVariable.class);
-        this.alignment = new PrimitiveValue<>(null, CellAlignment.class);
-        this.prefix    = new PrimitiveValue<>(null, String.class);
+        this.value     = ModelFunctor.empty(NumberVariable.class);
+        this.alignment = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.prefix    = new PrimitiveFunctor<>(null, String.class);
     }
 
 
@@ -85,10 +86,10 @@ public class NumberCell implements Model, Serializable
                                              column.getDefaultValue(),
                                              null);
         }
-        this.value     = ModelValue.full(value, NumberVariable.class);
+        this.value     = ModelFunctor.full(value, NumberVariable.class);
 
-        this.alignment = new PrimitiveValue<>(alignment, CellAlignment.class);
-        this.prefix    = new PrimitiveValue<>(prefix, String.class);
+        this.alignment = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.prefix    = new PrimitiveFunctor<>(prefix, String.class);
 
         initialize();
     }
@@ -248,7 +249,7 @@ public class NumberCell implements Model, Serializable
         cellView.layoutType = LayoutType.TABLE_ROW;
         cellView.width      = TableRow.LayoutParams.WRAP_CONTENT;
         cellView.height     = TableRow.LayoutParams.WRAP_CONTENT;
-        cellView.color      = R.color.light_grey_9;
+        cellView.color      = R.color.dark_blue_hl_3;
         cellView.font       = Font.serifFontRegular(context);
         cellView.size       = R.dimen.widget_table_cell_text_size;
 
@@ -271,20 +272,24 @@ public class NumberCell implements Model, Serializable
      */
     private void initialize()
     {
-        // [1] Initialize variables with listeners to update the number widget views when the
-        //     values of the variables change
+        // [1] The boolean cell's value view ID. It is null until the view is created.
         // --------------------------------------------------------------------------------------
 
         this.valueViewId = null;
 
+        // [2] Initialize the value variable
+        // --------------------------------------------------------------------------------------
+
         if (!this.value.isNull())
         {
-            this.valueVariable().addOnUpdateListener(new Variable.OnUpdateListener() {
+            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
                     onValueUpdate();
                 }
             });
+
+            State.addVariable(this.valueVariable());
         }
 
     }

@@ -2,8 +2,6 @@
 package com.kispoko.tome.sheet;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.RulesEngine;
@@ -11,8 +9,8 @@ import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -43,13 +41,13 @@ public class Sheet implements Model
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<Long>    last_used;
+    private PrimitiveFunctor<Long> last_used;
 
-    private ModelValue<Game>        game;
-    private ModelValue<Section>     profile;
-    private ModelValue<Section>     encounter;
-    private ModelValue<Section>     campaign;
-    private ModelValue<RulesEngine> rules;
+    private ModelFunctor<Game> game;
+    private ModelFunctor<Section> profile;
+    private ModelFunctor<Section> encounter;
+    private ModelFunctor<Section> campaign;
+    private ModelFunctor<RulesEngine> rules;
 
 
     // > Internal
@@ -66,13 +64,13 @@ public class Sheet implements Model
         this.id        = null;
 
         Long currentTimeMS = System.currentTimeMillis();
-        this.last_used = new PrimitiveValue<>(currentTimeMS, Long.class);
+        this.last_used = new PrimitiveFunctor<>(currentTimeMS, Long.class);
 
-        this.game      = ModelValue.empty(Game.class);
-        this.profile   = ModelValue.empty(Section.class);
-        this.encounter = ModelValue.empty(Section.class);
-        this.campaign  = ModelValue.empty(Section.class);
-        this.rules     = ModelValue.empty(RulesEngine.class);
+        this.game      = ModelFunctor.empty(Game.class);
+        this.profile   = ModelFunctor.empty(Section.class);
+        this.encounter = ModelFunctor.empty(Section.class);
+        this.campaign  = ModelFunctor.empty(Section.class);
+        this.rules     = ModelFunctor.empty(RulesEngine.class);
     }
 
 
@@ -86,15 +84,15 @@ public class Sheet implements Model
         this.id        = id;
 
         Long currentTimeMS = System.currentTimeMillis();
-        this.last_used = new PrimitiveValue<>(currentTimeMS, Long.class);
+        this.last_used = new PrimitiveFunctor<>(currentTimeMS, Long.class);
 
-        this.game      = ModelValue.full(game, Game.class);
+        this.game      = ModelFunctor.full(game, Game.class);
 
-        this.profile   = ModelValue.full(profile, Section.class);
-        this.encounter = ModelValue.full(encounter, Section.class);
-        this.campaign  = ModelValue.full(null, Section.class);
+        this.profile   = ModelFunctor.full(profile, Section.class);
+        this.encounter = ModelFunctor.full(encounter, Section.class);
+        this.campaign  = ModelFunctor.full(null, Section.class);
 
-        this.rules     = ModelValue.full(rulesEngine, RulesEngine.class);
+        this.rules     = ModelFunctor.full(rulesEngine, RulesEngine.class);
 
         indexComponents();
     }

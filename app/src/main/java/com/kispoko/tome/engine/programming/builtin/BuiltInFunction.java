@@ -99,8 +99,6 @@ public class BuiltInFunction
 
         if (modifier < 0)
             modifierString = "-" + Integer.toString(Math.abs(modifier));
-        else if (modifier == 0)
-            modifierString = Integer.toString(modifier);
         else
             modifierString = "+" + Integer.toString(modifier);
 

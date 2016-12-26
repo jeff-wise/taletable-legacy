@@ -20,7 +20,8 @@
 
     <!-- NEW -->
     <!-- GENERAL -->
-    <color name="primary">#2A2A2A</color>
+    <!--<color name="primary">#2A2A2A</color>-->
+    <color name="primary">#21252B</color>
     <color name="paper">#eceff1</color>
     <color name="paper_dark">#EAEAEA</color>
     <color name="sheet_light">#EDEDED</color>
@@ -99,7 +100,6 @@
     <color name="dark_grey_9">#2A2A2A</color>
 
     <color name="green_5000">#638753</color>
-    <color name="green_5">#4D7F45</color>
 
     <!--<color name="dark_blue_5">#35414A</color>-->
 
@@ -111,18 +111,44 @@
     <color name="blue_7">#386078</color>
     <color name="blue_8">#305469</color>
 
+    <color name="dark_blue_hlx_2">#C2D9FF</color>
+    <color name="dark_blue_hlx_3">#BAD1F5</color>
+    <color name="dark_blue_hlx_4">#B6CCF0</color>
+    <color name="dark_blue_hlx_5">#AEC3E5</color>
+    <color name="dark_blue_hlx_6">#A8BDDE</color>
+    <color name="dark_blue_hlx_7">#A1B4D4</color>
+    <color name="dark_blue_hlx_8">#99ACC9</color>
+    <color name="dark_blue_hlx_9">#91A3BF</color>
+
+    <color name="dark_blue_hl_1">#8B9CB8</color>
+    <color name="dark_blue_hl_2">#7E8DA6</color>
+    <color name="dark_blue_hl_3">#748299</color>
+    <color name="dark_blue_hl_4">#6C7A8F</color>
+    <color name="dark_blue_hl_5">#657185</color>
+    <color name="dark_blue_hl_6">#5F6A7D</color>
+    <color name="dark_blue_hl_7">#556070</color>
+    <color name="dark_blue_hl_8">#515B6B</color>
+    <color name="dark_blue_hl_9">#4A5361</color>
+
+    <color name="dark_blue_1">#3E4652</color>
+    <color name="dark_blue_2">#383F4A</color>
+    <color name="dark_blue_3">#343B45</color>
+    <color name="dark_blue_4">#303640</color>
     <color name="dark_blue_5">#292E36</color>
     <color name="dark_blue_6">#272C33</color>
-    <color name="dark_blue_8">#21252B</color>
+    <color name="dark_blue_7">#272C33</color>
+    <color name="dark_blue_8">#252930</color>
+    <color name="dark_blue_9">#21252B</color>
 
     <color name="gold_4">#948A3E</color>
     <color name="gold_5">#9E9342</color>
-    <color name="gold_6">#A69A45</color>
+    <color name="gold_6">#CCC878</color>
     <color name="gold_8">#BAAD4E</color>
 
     <color name="red_5">#A14746</color>
 
 
+    <color name="green_5">#90A88D</color>
 
 
 

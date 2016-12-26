@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -86,6 +85,13 @@ public abstract class Widget implements Model, Serializable
     // METHODS
     // ------------------------------------------------------------------------------------------
 
+    public void runPrimaryAction()
+    {
+        Action primaryAction = this.data().primaryAction();
+        this.runAction(primaryAction);
+    }
+
+
     // > Views
     // ------------------------------------------------------------------------------------------
 
@@ -105,8 +111,6 @@ public abstract class Widget implements Model, Serializable
         String label = widget.data().getFormat().getLabel();
         if (label != null)
             label = label.toUpperCase();
-        else
-            Log.d("***WIDGET", "labe is null");
 
         // [1 B] Views
         // --------------------------------------------------------------------------------------
@@ -123,16 +127,24 @@ public abstract class Widget implements Model, Serializable
         layout.margin.left         = R.dimen.widget_layout_margins_horz;
         layout.margin.right        = R.dimen.widget_layout_margins_horz;
 
-        layout.onClick             = new View.OnClickListener()
+        layout.onClick             = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                widget.runPrimaryAction();
+            }
+        };
+
+        layout.onLongClick         = new View.OnLongClickListener()
         {
             @Override
-            public void onClick(View v)
+            public boolean onLongClick(View v)
             {
                 AppCompatActivity activity = (AppCompatActivity) context;
                 ActionDialogFragment actionDialogFragment =
                         ActionDialogFragment.newInstance(widget);
                 actionDialogFragment.show(activity.getSupportFragmentManager(),
                         actionDialogFragment.getTag());
+                return true;
             }
         };
 
@@ -167,9 +179,10 @@ public abstract class Widget implements Model, Serializable
         labelView.gravity         = Gravity.CENTER_HORIZONTAL;
         labelView.text            = label;
         labelView.size            = R.dimen.widget_label_text_size;
-        labelView.color           = R.color.dark_grey_1;
+        labelView.color           = R.color.dark_blue_hl_9;
+        //labelView.color           = R.color.grey_4;
         labelView.font            = Font.sansSerifFontRegular(context);
-        labelView.backgroundColor = R.color.dark_grey_6;
+        labelView.backgroundColor = R.color.dark_blue_4;
         labelView.padding.bottom  = R.dimen.widget_label_padding_vert;
         labelView.padding.top     = R.dimen.widget_label_padding_vert;
 

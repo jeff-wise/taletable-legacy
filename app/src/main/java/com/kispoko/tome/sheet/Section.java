@@ -2,12 +2,10 @@
 package com.kispoko.tome.sheet;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.Value;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.Functor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -37,7 +35,7 @@ public class Section implements Model
     // > Values
     // ------------------------------------------------------------------------------------------
 
-    private CollectionValue<Page> pages;
+    private CollectionFunctor<Page> pages;
 
 
     // CONSTRUCTORS
@@ -51,7 +49,7 @@ public class Section implements Model
         List<Class<? extends Page>> pageClasses = new ArrayList<>();
         pageClasses.add(Page.class);
 
-        this.pages = CollectionValue.empty(pageClasses);
+        this.pages = CollectionFunctor.empty(pageClasses);
 
         this.initialize();
     }
@@ -65,7 +63,7 @@ public class Section implements Model
         List<Class<? extends Page>> pageClasses = new ArrayList<>();
         pageClasses.add(Page.class);
 
-        this.pages = CollectionValue.full(pages, pageClasses);
+        this.pages = CollectionFunctor.full(pages, pageClasses);
 
         this.initialize();
     }
@@ -156,7 +154,7 @@ public class Section implements Model
     {
         sortPages();
 
-        this.pages.setOnUpdateListener(new Value.OnUpdateListener() {
+        this.pages.setOnUpdateListener(new Functor.OnUpdateListener() {
             @Override
             public void onUpdate() {
                 sortPages();

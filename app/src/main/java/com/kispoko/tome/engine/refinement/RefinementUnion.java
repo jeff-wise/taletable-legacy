@@ -6,8 +6,8 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -34,9 +34,9 @@ public class RefinementUnion implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<MemberOf>           memberOf;
+    private ModelFunctor<MemberOf> memberOf;
 
-    private PrimitiveValue<RefinementType> type;
+    private PrimitiveFunctor<RefinementType> type;
 
 
     // CONSTRUCTORS
@@ -46,9 +46,9 @@ public class RefinementUnion implements Model, Serializable
     {
         this.id        = null;
 
-        this.memberOf  = ModelValue.empty(MemberOf.class);
+        this.memberOf  = ModelFunctor.empty(MemberOf.class);
 
-        this.type      = new PrimitiveValue<>(null, RefinementType.class);
+        this.type      = new PrimitiveFunctor<>(null, RefinementType.class);
     }
 
 
@@ -57,9 +57,9 @@ public class RefinementUnion implements Model, Serializable
         this.id          = id;
 
 
-        this.memberOf    = ModelValue.full(null, MemberOf.class);
+        this.memberOf    = ModelFunctor.full(null, MemberOf.class);
 
-        this.type        = new PrimitiveValue<>(type, RefinementType.class);
+        this.type        = new PrimitiveFunctor<>(type, RefinementType.class);
 
         switch (type)
         {

@@ -6,18 +6,18 @@ import com.kispoko.tome.engine.State;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.program.invocation.Invocation;
 import com.kispoko.tome.engine.refinement.RefinementId;
-import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,14 +41,14 @@ public class BooleanVariable extends Variable implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<String>    name;
+    private PrimitiveFunctor<String> name;
 
-    private PrimitiveValue<Boolean>   booleanValue;
-    private ModelValue<Invocation>    invocationValue;
+    private PrimitiveFunctor<Boolean> booleanValue;
+    private ModelFunctor<Invocation> invocationValue;
 
-    private PrimitiveValue<Kind>      kind;
+    private PrimitiveFunctor<Kind> kind;
 
-    private ModelValue<RefinementId>  refinementId;
+    private ModelFunctor<RefinementId> refinementId;
 
     private ReactiveValue<Boolean>    reactiveValue;
 
@@ -62,15 +62,15 @@ public class BooleanVariable extends Variable implements Model, Serializable
 
         this.id                     = null;
 
-        this.name                   = new PrimitiveValue<>(null, String.class);
+        this.name                   = new PrimitiveFunctor<>(null, String.class);
 
-        this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
-        this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
-        this.invocationValue = ModelValue.empty(Invocation.class);
+        this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
+        this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
+        this.invocationValue = ModelFunctor.empty(Invocation.class);
 
-        this.kind                   = new PrimitiveValue<>(null, Kind.class);
+        this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
 
-        this.refinementId           = ModelValue.empty(RefinementId.class);
+        this.refinementId           = ModelFunctor.empty(RefinementId.class);
 
         this.reactiveValue          = null;
     }
@@ -93,14 +93,14 @@ public class BooleanVariable extends Variable implements Model, Serializable
 
         this.id                     = id;
 
-        this.name                   = new PrimitiveValue<>(name, String.class);
+        this.name                   = new PrimitiveFunctor<>(name, String.class);
 
-        this.booleanValue           = new PrimitiveValue<>(null, Boolean.class);
-        this.invocationValue = ModelValue.full(null, Invocation.class);
+        this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
+        this.invocationValue = ModelFunctor.full(null, Invocation.class);
 
-        this.kind                   = new PrimitiveValue<>(kind, Kind.class);
+        this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
 
-        this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
+        this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
 
         // Set value according to variable type
         switch (kind)
@@ -220,9 +220,21 @@ public class BooleanVariable extends Variable implements Model, Serializable
     // > Variable
     // ------------------------------------------------------------------------------------------
 
-    public String getName()
+    public String name()
     {
         return this.name.getValue();
+    }
+
+
+    public List<String> dependencies()
+    {
+        List<String> variableDependencies = new ArrayList<>();
+
+        if (this.kind.getValue() == Kind.PROGRAM) {
+            variableDependencies = this.invocationValue.getValue().variableDependencies();
+        }
+
+        return variableDependencies;
     }
 
 
@@ -307,22 +319,6 @@ public class BooleanVariable extends Variable implements Model, Serializable
         else {
             this.reactiveValue = null;
         }
-
-        // [2] Track variable dependencies (if program variable)
-        // --------------------------------------------------------------------------------------
-
-        if (this.kind.getValue() == Kind.PROGRAM)
-        {
-            List<String> variableDependencies = this.invocationValue.getValue()
-                                                                    .variableDependencies();
-            this.setVariableDependencies(variableDependencies);
-        }
-
-        // [3] Add variable to state
-        // --------------------------------------------------------------------------------------
-
-        if (!this.name.isNull())
-            State.addVariable(VariableUnion.asBoolean(this));
     }
 
 

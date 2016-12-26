@@ -5,8 +5,8 @@ package com.kispoko.tome.engine.programming.function;
 import com.kispoko.tome.engine.programming.program.ProgramValueUnion;
 import com.kispoko.tome.engine.programming.program.ProgramValueType;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -28,8 +28,8 @@ public class Tuple implements Model, Serializable
 
     private UUID                          id;
 
-    private CollectionValue<ProgramValueUnion> parameters;
-    private ModelValue<ProgramValueUnion>      result;
+    private CollectionFunctor<ProgramValueUnion> parameters;
+    private ModelFunctor<ProgramValueUnion> result;
 
 
     // CONSTRUCTORS
@@ -41,9 +41,9 @@ public class Tuple implements Model, Serializable
 
         List<Class<? extends ProgramValueUnion>> programValueClasses = new ArrayList<>();
         programValueClasses.add(ProgramValueUnion.class);
-        this.parameters = CollectionValue.empty(programValueClasses);
+        this.parameters = CollectionFunctor.empty(programValueClasses);
 
-        this.result     = ModelValue.empty(ProgramValueUnion.class);
+        this.result     = ModelFunctor.empty(ProgramValueUnion.class);
     }
 
 
@@ -53,9 +53,9 @@ public class Tuple implements Model, Serializable
 
         List<Class<? extends ProgramValueUnion>> programValueClasses = new ArrayList<>();
         programValueClasses.add(ProgramValueUnion.class);
-        this.parameters = CollectionValue.full(parameters, programValueClasses);
+        this.parameters = CollectionFunctor.full(parameters, programValueClasses);
 
-        this.result     = ModelValue.full(result, ProgramValueUnion.class);
+        this.result     = ModelFunctor.full(result, ProgramValueUnion.class);
 
     }
 

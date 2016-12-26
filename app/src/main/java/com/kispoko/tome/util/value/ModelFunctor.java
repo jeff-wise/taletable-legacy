@@ -2,67 +2,60 @@
 package com.kispoko.tome.util.value;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.database.sql.OneToManyRelation;
+import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.model.ModelLib;
 
 import java.io.Serializable;
-import java.util.List;
 
 
 
 /**
- * Collection Value
+ * ModelLib Value
  */
-public class CollectionValue<A extends Model> extends Value<List<A>>
-                                              implements Serializable
+public class ModelFunctor<A extends Model> extends Functor<A>
+                                         implements Serializable
 {
 
     // PROPERTIES
     // -------------------------------------------------------------------------------------
 
-    private List<Class<? extends A>> modelClasses;
+    private Class<A>       modelClass;
 
-    private OnSaveListener           staticOnSaveListener;
-    private OnLoadListener<A>        staticOnLoadListener;
+    private OnSaveListener staticOnSaveListener;
+    private OnLoadListener staticOnLoadListener;
 
-    private boolean                  isLoaded;
-    private boolean                  isSaved;
+    private boolean        isLoaded;
+    private boolean        isSaved;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    private CollectionValue(List<A> value,
-                           List<Class<? extends A>> modelClasses,
-                           boolean isSaved,
-                           boolean isLoaded)
+    private ModelFunctor(A value, Class<A> modelClass, boolean isSaved, boolean isLoaded)
     {
         super(value);
 
-        this.modelClasses         = modelClasses;
+        this.modelClass           = modelClass;
+
+        this.isLoaded             = isLoaded;
+        this.isSaved              = isSaved;
 
         this.staticOnSaveListener = null;
         this.staticOnLoadListener = null;
-
-        this.isSaved              = isSaved;
-        this.isLoaded             = isLoaded;
     }
 
 
-    public static <A extends Model> CollectionValue<A> full(List<A> value,
-                                                            List<Class<? extends A>> modelClasses)
+    public static <A extends Model> ModelFunctor<A> full(A value, Class<A> modelClass)
     {
-        return new CollectionValue<>(value, modelClasses, false, true);
+        return new ModelFunctor<>(value, modelClass, false, true);
     }
 
 
-    public static <A extends Model> CollectionValue<A> empty(List<Class<? extends A>> modelClasses)
+    public static <A extends Model> ModelFunctor<A> empty(Class<A> modelClass)
     {
-        return new CollectionValue<>(null, modelClasses, true, false);
+        return new ModelFunctor<>(null, modelClass, true, false);
     }
 
 
@@ -71,6 +64,15 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
 
     // > State
     // --------------------------------------------------------------------------------------
+
+    // ** Model Class
+    // ------------------------------------------------------------------------------------------
+
+    public Class<A> getModelClass()
+    {
+        return this.modelClass;
+    }
+
 
     // ** Listeners
     // ------------------------------------------------------------------------------------------
@@ -117,38 +119,48 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     }
 
 
-    public List<Class<? extends A>> getModelClasses()
+    // > SQL Column Name
+    // ------------------------------------------------------------------------------------------
+
+    public String sqlColumnName()
     {
-        return this.modelClasses;
+        return this.name() + "_" + ModelLib.name(modelClass) + "_id";
     }
 
 
     // > Asynchronous Operations
-    // --------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
-    public void load(final Model ownerModel,
-                     final OnLoadListener dynamicOnLoadListener)
+    public void load(final ModelQueryParameters queryParameters,
+                     final OnLoadListener<A> dynamicOnLoadListener)
     {
-        OneToManyRelation oneToManyRelation =
-                                new OneToManyRelation(ModelLib.name(ownerModel),
-                                                      this.name(),
-                                                      ownerModel.getId());
-        ModelLib.<A>modelCollectionFromDatabase(oneToManyRelation,
-                                                modelClasses,
-                                                this.onLoadListener(dynamicOnLoadListener));
+        ModelLib.modelFromDatabase(getModelClass(),
+                                   queryParameters,
+                                   this.onLoadListener(dynamicOnLoadListener));
     }
 
 
-    @SuppressWarnings("unchecked")
-    public void save(List<OneToManyRelation> parentRelations,
-                     OnSaveListener dynamicOnSaveListener)
+    public void save(final OnSaveListener dynamicOnSaveListener)
     {
-        ModelLib.modelCollectionToDatabase((List<Model>) this.getValue(),
-                                           parentRelations,
-                                           this.onSaveListener(dynamicOnSaveListener));
+        if (this.getValue() != null) {
+            ModelLib.modelToDatabase(this.getValue(),
+                                     this.onSaveListener(dynamicOnSaveListener));
+        }
     }
 
+
+    public void save()
+    {
+        this.save(null);
+    }
+
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    // > Listeners
+    // ------------------------------------------------------------------------------------------
 
     /**
      * Wrap the dynamic and static listeners into one listener. This also sets the model value
@@ -160,22 +172,19 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
         return new OnLoadListener<A>()
         {
             @Override
-            public void onLoad(List<A> loadedValues)
+            public void onLoad(A loadedValue)
             {
-                setValue(loadedValues);
+                setValue(loadedValue);
 
                 setIsLoaded(true);
 
-                for (Model loadedModel : loadedValues)
-                {
-                    loadedModel.onLoad();
-                }
+                loadedValue.onLoad();
 
                 if (staticOnLoadListener != null)
-                    staticOnLoadListener.onLoad(loadedValues);
+                    staticOnLoadListener.onLoad(loadedValue);
 
                 if (dynamicOnLoadListener != null)
-                    dynamicOnLoadListener.onLoad(loadedValues);
+                    dynamicOnLoadListener.onLoad(loadedValue);
             }
 
             @Override
@@ -198,7 +207,6 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
                     dynamicOnLoadListener.onLoadError(exception);
             }
         };
-
     }
 
 
@@ -215,6 +223,8 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
             public void onSave()
             {
                 setIsSaved(true);
+
+                // getValue().onSave();
 
                 if (staticOnSaveListener != null)
                     staticOnSaveListener.onSave();
@@ -246,7 +256,6 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
     }
 
 
-
     // LISTENERS
     // --------------------------------------------------------------------------------------
 
@@ -258,9 +267,10 @@ public class CollectionValue<A extends Model> extends Value<List<A>>
 
 
     public interface OnLoadListener<A> extends Serializable {
-        void onLoad(List<A> value);
+        void onLoad(A value);
         void onLoadDBError(DatabaseException exception);
         void onLoadError(Exception exception);
     }
+
 
 }

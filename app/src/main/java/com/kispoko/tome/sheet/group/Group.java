@@ -12,8 +12,8 @@ import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -42,9 +42,9 @@ public class Group implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<String>  label;
-    private PrimitiveValue<Integer> index;
-    private CollectionValue<GroupRow>    rows;
+    private PrimitiveFunctor<String> label;
+    private PrimitiveFunctor<Integer> index;
+    private CollectionFunctor<GroupRow> rows;
 
 
     // CONSTRUCTORS
@@ -54,12 +54,12 @@ public class Group implements Model, Serializable
     {
         this.id           = null;
 
-        this.label        = new PrimitiveValue<>(null, String.class);
-        this.index        = new PrimitiveValue<>(null, Integer.class);
+        this.label        = new PrimitiveFunctor<>(null, String.class);
+        this.index        = new PrimitiveFunctor<>(null, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
         rowClasses.add(GroupRow.class);
-        this.rows         = CollectionValue.empty(rowClasses);
+        this.rows         = CollectionFunctor.empty(rowClasses);
     }
 
 
@@ -67,12 +67,12 @@ public class Group implements Model, Serializable
     {
         this.id           = id;
 
-        this.label        = new PrimitiveValue<>(label, String.class);
-        this.index        = new PrimitiveValue<>(index, Integer.class);
+        this.label        = new PrimitiveFunctor<>(label, String.class);
+        this.index        = new PrimitiveFunctor<>(index, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
         rowClasses.add(GroupRow.class);
-        this.rows         = CollectionValue.full(groupRows, rowClasses);
+        this.rows         = CollectionFunctor.full(groupRows, rowClasses);
     }
 
 

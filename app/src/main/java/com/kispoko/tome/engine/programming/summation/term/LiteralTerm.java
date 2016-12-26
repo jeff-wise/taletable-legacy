@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -32,7 +32,7 @@ public class LiteralTerm extends Term implements Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<IntegerTermValue> termValue;
+    private ModelFunctor<IntegerTermValue> termValue;
 
 
     // CONSTRUCTORS
@@ -42,7 +42,7 @@ public class LiteralTerm extends Term implements Serializable
     {
         this.id        = null;
 
-        this.termValue = ModelValue.empty(IntegerTermValue.class);
+        this.termValue = ModelFunctor.empty(IntegerTermValue.class);
     }
 
 
@@ -50,7 +50,7 @@ public class LiteralTerm extends Term implements Serializable
     {
         this.id        = id;
 
-        this.termValue = ModelValue.full(termValue, IntegerTermValue.class);
+        this.termValue = ModelFunctor.full(termValue, IntegerTermValue.class);
     }
 
 

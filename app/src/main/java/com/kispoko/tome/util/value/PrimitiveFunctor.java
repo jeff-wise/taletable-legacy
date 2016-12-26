@@ -43,7 +43,7 @@ import java.util.UUID;
 /**
  * Primitive Value
  */
-public class PrimitiveValue<A> extends Value<A>
+public class PrimitiveFunctor<A> extends Functor<A>
                                implements Serializable
 {
 
@@ -56,8 +56,8 @@ public class PrimitiveValue<A> extends Value<A>
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public PrimitiveValue(A value,
-                          Class<A> valueClass)
+    public PrimitiveFunctor(A value,
+                            Class<A> valueClass)
     {
         super(value);
         this.valueClass       = valueClass;

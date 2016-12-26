@@ -11,9 +11,9 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
-import com.kispoko.tome.util.value.Value;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.value.Functor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -41,9 +41,9 @@ public class Page implements Model, Serializable
 
     private UUID                    id;
 
-    private PrimitiveValue<String>  label;
-    private PrimitiveValue<Integer> index;
-    private CollectionValue<Group>  groups;
+    private PrimitiveFunctor<String> label;
+    private PrimitiveFunctor<Integer> index;
+    private CollectionFunctor<Group> groups;
 
 
     // > Internal
@@ -59,12 +59,12 @@ public class Page implements Model, Serializable
     {
         this.id = null;
 
-        this.label  = new PrimitiveValue<>(null, String.class);
-        this.index  = new PrimitiveValue<>(null, Integer.class);
+        this.label  = new PrimitiveFunctor<>(null, String.class);
+        this.index  = new PrimitiveFunctor<>(null, Integer.class);
 
         List<Class<? extends Group>> groupClasses = new ArrayList<>();
         groupClasses.add(Group.class);
-        this.groups = CollectionValue.empty(groupClasses);
+        this.groups = CollectionFunctor.empty(groupClasses);
 
         initialize();
     }
@@ -74,12 +74,12 @@ public class Page implements Model, Serializable
     {
         this.id = id;
 
-        this.label  = new PrimitiveValue<>(label, String.class);
-        this.index  = new PrimitiveValue<>(index, Integer.class);
+        this.label  = new PrimitiveFunctor<>(label, String.class);
+        this.index  = new PrimitiveFunctor<>(index, Integer.class);
 
         List<Class<? extends Group>> groupClasses = new ArrayList<>();
         groupClasses.add(Group.class);
-        this.groups = CollectionValue.full(groups, groupClasses);
+        this.groups = CollectionFunctor.full(groups, groupClasses);
 
         initialize();
     }
@@ -227,7 +227,7 @@ public class Page implements Model, Serializable
     {
         this.sortGroups();
 
-        this.groups.setOnUpdateListener(new Value.OnUpdateListener() {
+        this.groups.setOnUpdateListener(new Functor.OnUpdateListener() {
             @Override
             public void onUpdate() {
                 sortGroups();

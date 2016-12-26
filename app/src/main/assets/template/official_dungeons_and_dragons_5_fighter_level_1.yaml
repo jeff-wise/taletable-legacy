@@ -148,10 +148,12 @@ rulesEngine:
       function: string_template
       parameters:
       - type: literal_string
-        value: '({{modifier_string}})'
+        value: '{{modifier_string}}'
   mechanics:
-  - type: weapon
-    active: true
+  - name: weapon_longsword
+    type: weapon
+    requirements:
+    - has_weapon_longsword
     variables:
     - type: dice
       value:
@@ -167,8 +169,10 @@ rulesEngine:
           type: d10
           quantity: 1
           modifier: 0
-  - type: weapon
-    active: true
+  - name: weapon_heavy_crossbow
+    type: weapon
+    requirements:
+    - has_weapon_heavy_crossbow
     variables:
     - type: dice
       value:
@@ -177,8 +181,10 @@ rulesEngine:
           type: d10
           quantity: 1
           modifier: 0
-  - type: weapon
-    active: true
+  - name: weapon_dagger
+    type: weapon
+    requirements:
+    - has_weapon_dagger
     variables:
     - type: dice
       value:
@@ -197,16 +203,7 @@ rulesEngine:
         parameters:
         - type: reference
           value: strength
-    name: dexterity_modifier
-  - type: number
-    value:
-      name: dexterity_modifier
-      type: program
-      value:
-        program: ability_modifier
-        parameters:
-        - type: reference
-          value: dexterity
+
   - type: number
     value:
       name: constitution_modifier
@@ -439,7 +436,16 @@ profile:
             name: dexterity
             type: literal
             value: 14
-      - widgets:
+          variables:
+          - type: number
+            value:
+              name: dexterity_modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: dexterity
         - type: number
           data:
             actions:
@@ -459,6 +465,17 @@ profile:
             name: constitution
             type: literal
             value: 14
+          variables:
+          - type: number
+            value:
+              name: constitution_modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: constitution
+      - widgets:
         - type: number
           data:
             actions:
@@ -478,7 +495,16 @@ profile:
             name: intelligence
             type: literal
             value: 11
-      - widgets:
+          variables:
+          - type: number
+            value:
+              name: intelligence_modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: intelligence
         - type: number
           data:
             actions:
@@ -498,6 +524,16 @@ profile:
             name: wisdom
             type: literal
             value: 11
+          variables:
+          - type: number
+            value:
+              name: wisdom_modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: wisdom
         - type: number
           data:
             actions:
@@ -517,6 +553,16 @@ profile:
             name: charisma
             type: literal
             value: 13
+          variables:
+          - type: number
+            value:
+              name: charisma_modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: charisma
     - label: General
       rows:
       - widgets:
@@ -528,6 +574,7 @@ profile:
               width: 1
               label: Proficiency Bonus
           size: medium
+          value_prefix: '+'
           value:
             name: proficiency_bonus
             type: literal
@@ -565,6 +612,7 @@ profile:
               label: Initiative
               width: 1
           size: medium
+          value_prefix: '+'
           value:
             type: literal
             value: 7
@@ -590,9 +638,20 @@ profile:
               label: Strength
               width: 1
           size: medium
+          value_prefix: '+'
           value:
             type: literal
             value: 0
+          variables:
+          - type: number
+            value:
+              name: strength_modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: strength
         - type: number
           data:
             actions:
@@ -601,6 +660,7 @@ profile:
               label: Dexterity
               width: 1
           size: medium
+          value_prefix: '+'
           value:
             type: literal
             value: 4
@@ -612,6 +672,7 @@ profile:
               label: Constitution
               width: 1
           size: medium
+          value_prefix: '+'
           value:
             type: literal
             value: 2
@@ -624,6 +685,7 @@ profile:
               label: Intelligence
               width: 1
           size: medium
+          value_prefix: '+'
           value:
             type: literal
             value: 12
@@ -635,6 +697,7 @@ profile:
               label: Wisdom
               width: 1
           size: medium
+          value_prefix: '+'
           value:
             type: literal
             value: 8
@@ -646,6 +709,7 @@ profile:
               label: Charisma
               width: 1
           size: medium
+          value_prefix: '+'
           value:
             type: literal
             value: 1

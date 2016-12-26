@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Value
  */
-public abstract class Value<A> implements Serializable
+public abstract class Functor<A> implements Serializable
 {
 
     // PROPERTIES
@@ -25,7 +25,7 @@ public abstract class Value<A> implements Serializable
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public Value(A value)
+    public Functor(A value)
     {
         this.value            = value;
     }

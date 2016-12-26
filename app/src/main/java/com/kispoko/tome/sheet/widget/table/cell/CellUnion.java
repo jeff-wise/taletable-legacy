@@ -12,8 +12,8 @@ import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -33,11 +33,11 @@ public class CellUnion implements Model, Serializable
 
     private UUID                     id;
 
-    private ModelValue<TextCell>     textCell;
-    private ModelValue<NumberCell>   numberCell;
-    private ModelValue<BooleanCell>  booleanCell;
+    private ModelFunctor<TextCell> textCell;
+    private ModelFunctor<NumberCell> numberCell;
+    private ModelFunctor<BooleanCell> booleanCell;
 
-    private PrimitiveValue<CellType> type;
+    private PrimitiveFunctor<CellType> type;
 
 
     // CONSTRUCTORS
@@ -47,11 +47,11 @@ public class CellUnion implements Model, Serializable
     {
         this.id          = null;
 
-        this.textCell    = ModelValue.empty(TextCell.class);
-        this.numberCell  = ModelValue.empty(NumberCell.class);
-        this.booleanCell = ModelValue.empty(BooleanCell.class);
+        this.textCell    = ModelFunctor.empty(TextCell.class);
+        this.numberCell  = ModelFunctor.empty(NumberCell.class);
+        this.booleanCell = ModelFunctor.empty(BooleanCell.class);
 
-        this.type        = new PrimitiveValue<>(null, CellType.class);
+        this.type        = new PrimitiveFunctor<>(null, CellType.class);
     }
 
 
@@ -60,11 +60,11 @@ public class CellUnion implements Model, Serializable
         this.id          = id;
 
 
-        this.textCell    = ModelValue.full(null, TextCell.class);
-        this.numberCell  = ModelValue.full(null, NumberCell.class);
-        this.booleanCell = ModelValue.full(null, BooleanCell.class);
+        this.textCell    = ModelFunctor.full(null, TextCell.class);
+        this.numberCell  = ModelFunctor.full(null, NumberCell.class);
+        this.booleanCell = ModelFunctor.full(null, BooleanCell.class);
 
-        this.type        = new PrimitiveValue<>(type, CellType.class);
+        this.type        = new PrimitiveFunctor<>(type, CellType.class);
 
         switch (type)
         {

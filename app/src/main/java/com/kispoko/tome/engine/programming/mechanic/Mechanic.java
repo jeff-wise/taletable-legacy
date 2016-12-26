@@ -2,11 +2,14 @@
 package com.kispoko.tome.engine.programming.mechanic;
 
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.programming.mechanic.error.NonBooleanRequirementError;
+import com.kispoko.tome.engine.programming.variable.VariableType;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -35,36 +38,59 @@ public class Mechanic implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<String>         type;
-    private PrimitiveValue<Boolean>        active;
-    private CollectionValue<VariableUnion> variables;
+    private PrimitiveFunctor<String>         name;
+    private PrimitiveFunctor<String>         type;
+
+    /**
+     * A requirement is the name of a boolean variable. If all the requiremnet variable values are
+     * true, then the mechanic is set to active ie. added to the state.
+     */
+    private PrimitiveFunctor<String[]>       requirements;
+
+    private CollectionFunctor<VariableUnion> variables;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private boolean                          active;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
     public Mechanic()
     {
-        this.id = null;
+        this.id           = null;
 
-        this.type   = new PrimitiveValue<>(null, String.class);
-        this.active = new PrimitiveValue<>(null, Boolean.class);
+        this.name         = new PrimitiveFunctor<>(null, String.class);
+        this.type         = new PrimitiveFunctor<>(null, String.class);
+        this.requirements = new PrimitiveFunctor<>(null, String[].class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
-        this.variables = CollectionValue.empty(variableClasses);
+        this.variables    = CollectionFunctor.empty(variableClasses);
     }
 
 
-    public Mechanic(UUID id, String type, Boolean active, List<VariableUnion> variables)
+    public Mechanic(UUID id,
+                    String name,
+                    String type,
+                    List<String> requirements,
+                    List<VariableUnion> variables)
     {
-        this.id = id;
+        this.id           = id;
 
-        this.type   = new PrimitiveValue<>(type, String.class);
-        this.active = new PrimitiveValue<>(active, Boolean.class);
+        this.name         = new PrimitiveFunctor<>(name, String.class);
+        this.type         = new PrimitiveFunctor<>(type, String.class);
+
+        String[] requirementsArray = new String[requirements.size()];
+        requirements.toArray(requirementsArray);
+        this.requirements = new PrimitiveFunctor<>(requirementsArray, String[].class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
-        this.variables = CollectionValue.full(variables, variableClasses);
+        this.variables    = CollectionFunctor.full(variables, variableClasses);
     }
 
 
@@ -76,10 +102,11 @@ public class Mechanic implements Model, Serializable
     public static Mechanic fromYaml(Yaml yaml)
                   throws YamlException
     {
-        UUID                id        = UUID.randomUUID();
+        UUID                id           = UUID.randomUUID();
 
-        String              type      = yaml.atMaybeKey("type").getString();
-        Boolean             active    = yaml.atKey("active").getBoolean();
+        String              name         = yaml.atKey("name").getString();
+        String              type         = yaml.atMaybeKey("type").getString();
+        List<String>        requirements = yaml.atMaybeKey("requirements").getStringList();
 
         List<VariableUnion> variables = yaml.atKey("variables").forEach(
                                                         new Yaml.ForEach<VariableUnion>()
@@ -90,7 +117,7 @@ public class Mechanic implements Model, Serializable
             }
         });
 
-        return new Mechanic(id, type, active, variables);
+        return new Mechanic(id, name, type, requirements, variables);
     }
 
 
@@ -129,22 +156,38 @@ public class Mechanic implements Model, Serializable
     /**
      * This method is called when the RulesEngine is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initialize();
+    }
 
 
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Active
+    // ** Name
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Returns true if the mechanic is active.
-     * @return The mechanic's active state.
+     * Get the mechanic's name.
+     * @return The mechanic name.
      */
-    public boolean active()
+    public String name()
     {
-        return this.active.getValue();
+        return this.name.getValue();
+    }
+
+
+    // ** Requirements
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the mechanic's requirements. Each requirement is the name of a boolean variable.
+     * @return The requiement array.
+     */
+    public String[] requirements()
+    {
+        return this.requirements.getValue();
     }
 
 
@@ -161,20 +204,95 @@ public class Mechanic implements Model, Serializable
     }
 
 
-    // > Variables
+    // INTERNAL
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the mechanic.
+     */
+    private void initialize()
+    {
+        this.active = false;
+
+        validateRequirements();
+
+        onRequirementUpdate();
+    }
+
+
+    /**
+     * Called when there is an update to one of the mechanic's requirement variables. Checks to
+     * see if the active status of the mechanic has changed.
+     */
+    public void onRequirementUpdate()
+    {
+        boolean isActive = true;
+
+        for (String requirement : this.requirements())
+        {
+            if (State.hasVariable(requirement))
+            {
+                VariableUnion variableUnion = State.variableWithName(requirement);
+
+                if (variableUnion.type() != VariableType.BOOLEAN) {
+                    ApplicationFailure.mechanic(
+                            MechanicException.nonBooleanRequirement(
+                                    new NonBooleanRequirementError(this.name(), requirement)));
+                    // TODO add to user programming errors
+                    continue;
+                }
+
+                if (!variableUnion.booleanVariable().value()) {
+                    isActive = false;
+                    break;
+                }
+            }
+            else
+            {
+                isActive = false;
+                break;
+            }
+        }
+
+        // If was active and is now inactive
+        if (this.active && !isActive) {
+            this.removeFromState();
+        }
+        // If was not active and is now active
+        else if (!this.active && isActive) {
+            this.addToState();
+        }
+    }
+
 
     /**
      * Add every variable in the mechanic to the state (if the mechanic is active).
      */
-    public void addToState()
+    private void addToState()
     {
-        if (!this.active())
-            return;
-
         for (VariableUnion variableUnion : this.variables()) {
             State.addVariable(variableUnion);
         }
+    }
+
+
+    /**
+     * Remove the mechanic from the state. Remove each mechanic variable from the state.
+     */
+    private void removeFromState()
+    {
+        for (VariableUnion variableUnion : this.variables()) {
+            State.removeVariable(variableUnion.variable().name());
+        }
+    }
+
+
+    /**
+     * Check the requirement variables to make sure they are valid.
+     */
+    private void validateRequirements()
+    {
+        // TODO need way to analyze variable before added to state.
     }
 
 }

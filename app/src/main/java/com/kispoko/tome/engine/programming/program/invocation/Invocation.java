@@ -3,8 +3,8 @@ package com.kispoko.tome.engine.programming.program.invocation;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -26,8 +26,8 @@ public class Invocation implements Model, Serializable
 
     private UUID id;
 
-    private PrimitiveValue<String> programName;
-    private CollectionValue<InvocationParameterUnion> parameters;
+    private PrimitiveFunctor<String> programName;
+    private CollectionFunctor<InvocationParameterUnion> parameters;
 
 
     // CONSTRUCTORS
@@ -37,12 +37,12 @@ public class Invocation implements Model, Serializable
     {
         this.id = null;
 
-        this.programName = new PrimitiveValue<>(null, String.class);
+        this.programName = new PrimitiveFunctor<>(null, String.class);
 
         List<Class<? extends InvocationParameterUnion>> parameterClasses
                                                 = new ArrayList<>();
         parameterClasses.add(InvocationParameterUnion.class);
-        this.parameters  = CollectionValue.empty(parameterClasses);
+        this.parameters  = CollectionFunctor.empty(parameterClasses);
     }
 
 
@@ -52,12 +52,12 @@ public class Invocation implements Model, Serializable
     {
         this.id = id;
 
-        this.programName = new PrimitiveValue<>(programName, String.class);
+        this.programName = new PrimitiveFunctor<>(programName, String.class);
 
         List<Class<? extends InvocationParameterUnion>> parameterClasses
                                                 = new ArrayList<>();
         parameterClasses.add(InvocationParameterUnion.class);
-        this.parameters  = CollectionValue.full(parameters, parameterClasses);
+        this.parameters  = CollectionFunctor.full(parameters, parameterClasses);
     }
 
 

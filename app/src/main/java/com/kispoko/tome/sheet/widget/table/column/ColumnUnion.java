@@ -6,8 +6,8 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -29,11 +29,11 @@ public class ColumnUnion implements Model, Serializable
 
     private UUID                       id;
 
-    private ModelValue<TextColumn>     textColumn;
-    private ModelValue<NumberColumn>   numberColumn;
-    private ModelValue<BooleanColumn>  booleanColumn;
+    private ModelFunctor<TextColumn> textColumn;
+    private ModelFunctor<NumberColumn> numberColumn;
+    private ModelFunctor<BooleanColumn> booleanColumn;
 
-    private PrimitiveValue<ColumnType> type;
+    private PrimitiveFunctor<ColumnType> type;
 
 
     // CONSTRUCTORS
@@ -43,11 +43,11 @@ public class ColumnUnion implements Model, Serializable
     {
         this.id            = null;
 
-        this.textColumn    = ModelValue.empty(TextColumn.class);
-        this.numberColumn  = ModelValue.empty(NumberColumn.class);
-        this.booleanColumn = ModelValue.empty(BooleanColumn.class);
+        this.textColumn    = ModelFunctor.empty(TextColumn.class);
+        this.numberColumn  = ModelFunctor.empty(NumberColumn.class);
+        this.booleanColumn = ModelFunctor.empty(BooleanColumn.class);
 
-        this.type          = new PrimitiveValue<>(null, ColumnType.class);
+        this.type          = new PrimitiveFunctor<>(null, ColumnType.class);
     }
 
 
@@ -55,11 +55,11 @@ public class ColumnUnion implements Model, Serializable
     {
         this.id   = id;
 
-        this.textColumn    = ModelValue.full(null, TextColumn.class);
-        this.numberColumn  = ModelValue.full(null, NumberColumn.class);
-        this.booleanColumn = ModelValue.full(null, BooleanColumn.class);
+        this.textColumn    = ModelFunctor.full(null, TextColumn.class);
+        this.numberColumn  = ModelFunctor.full(null, NumberColumn.class);
+        this.booleanColumn = ModelFunctor.full(null, BooleanColumn.class);
 
-        this.type          = new PrimitiveValue<>(type, ColumnType.class);
+        this.type          = new PrimitiveFunctor<>(type, ColumnType.class);
 
         switch (type)
         {

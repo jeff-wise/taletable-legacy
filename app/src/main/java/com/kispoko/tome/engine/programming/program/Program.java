@@ -4,9 +4,9 @@ package com.kispoko.tome.engine.programming.program;
 
 import com.kispoko.tome.engine.programming.program.statement.Statement;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -28,13 +28,13 @@ public class Program implements Model, Serializable
 
     private UUID id;
 
-    private PrimitiveValue<String>              name;
+    private PrimitiveFunctor<String> name;
 
-    private PrimitiveValue<ProgramValueType[]> parameterTypes;
-    private PrimitiveValue<ProgramValueType>   resultType;
+    private PrimitiveFunctor<ProgramValueType[]> parameterTypes;
+    private PrimitiveFunctor<ProgramValueType> resultType;
 
-    private CollectionValue<Statement>          statements;
-    private ModelValue<Statement>               resultStatement;
+    private CollectionFunctor<Statement> statements;
+    private ModelFunctor<Statement> resultStatement;
 
 
     // CONSTRUCTORS
@@ -45,21 +45,21 @@ public class Program implements Model, Serializable
          this.id             = null;
 
         // ** Name
-        this.name            = new PrimitiveValue<>(null, String.class);
+        this.name            = new PrimitiveFunctor<>(null, String.class);
 
         // ** Parameter Types
-        this.parameterTypes  = new PrimitiveValue<>(null, ProgramValueType[].class);
+        this.parameterTypes  = new PrimitiveFunctor<>(null, ProgramValueType[].class);
 
         // ** Result ErrorType
-        this.resultType      = new PrimitiveValue<>(null, ProgramValueType.class);
+        this.resultType      = new PrimitiveFunctor<>(null, ProgramValueType.class);
 
         // **  Statements
         List<Class<? extends Statement>> statementClasses = new ArrayList<>();
         statementClasses.add(Statement.class);
-        this.statements      = CollectionValue.empty(statementClasses);
+        this.statements      = CollectionFunctor.empty(statementClasses);
 
         // **  Result Statement
-        this.resultStatement = ModelValue.empty(Statement.class);
+        this.resultStatement = ModelFunctor.empty(Statement.class);
     }
 
 
@@ -73,23 +73,23 @@ public class Program implements Model, Serializable
         this.id              = id;
 
         // ** Name
-        this.name            = new PrimitiveValue<>(name, String.class);
+        this.name            = new PrimitiveFunctor<>(name, String.class);
 
         // ** Parameter Types
         ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
                                                     new ProgramValueType[parameterTypes.size()]);
-        this.parameterTypes  = new PrimitiveValue<>(parameterTypeArray, ProgramValueType[].class);
+        this.parameterTypes  = new PrimitiveFunctor<>(parameterTypeArray, ProgramValueType[].class);
 
         // ** Result ErrorType
-        this.resultType      = new PrimitiveValue<>(resultType, ProgramValueType.class);
+        this.resultType      = new PrimitiveFunctor<>(resultType, ProgramValueType.class);
 
         // **  Statements
         List<Class<? extends Statement>> statementClasses = new ArrayList<>();
         statementClasses.add(Statement.class);
-        this.statements      = CollectionValue.full(statements, statementClasses);
+        this.statements      = CollectionFunctor.full(statements, statementClasses);
 
         // **  Result Statement
-        this.resultStatement = ModelValue.full(resultStatement, Statement.class);
+        this.resultStatement = ModelFunctor.full(resultStatement, Statement.class);
     }
 
 

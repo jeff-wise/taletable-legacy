@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -24,8 +23,12 @@ import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.ImageViewBuilder;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.TextViewBuilder;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -43,13 +46,22 @@ public class ImageWidget extends Widget implements Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    // ** Model Values
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID                         id;
 
-    private ModelValue<WidgetData>       widgetData;
-    private PrimitiveValue<SerialBitmap> bitmap;
 
-    // ** Internal
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
+    private ModelFunctor<WidgetData> widgetData;
+    private PrimitiveFunctor<SerialBitmap> bitmap;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
     private int imageViewId;
     private int chooseImageButtonId;
 
@@ -61,8 +73,8 @@ public class ImageWidget extends Widget implements Serializable
     {
         this.id         = null;
 
-        this.widgetData = ModelValue.empty(WidgetData.class);
-        this.bitmap     = new PrimitiveValue<>(null, SerialBitmap.class);
+        this.widgetData = ModelFunctor.empty(WidgetData.class);
+        this.bitmap     = new PrimitiveFunctor<>(null, SerialBitmap.class);
     }
 
 
@@ -70,14 +82,14 @@ public class ImageWidget extends Widget implements Serializable
     {
         this.id         = id;
 
-        this.widgetData = ModelValue.full(widgetData, WidgetData.class);
+        this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
 
         if (this.bitmap != null) {
             SerialBitmap serialBitmap = new SerialBitmap(bitmap);
-            this.bitmap     = new PrimitiveValue<>(serialBitmap, SerialBitmap.class);
+            this.bitmap     = new PrimitiveFunctor<>(serialBitmap, SerialBitmap.class);
         }
         else {
-            this.bitmap     = new PrimitiveValue<>(null, SerialBitmap.class);
+            this.bitmap     = new PrimitiveFunctor<>(null, SerialBitmap.class);
         }
     }
 
@@ -161,7 +173,11 @@ public class ImageWidget extends Widget implements Serializable
     }
 
 
-    public void runAction(Action action) { }
+    public void runAction(Action action)
+    {
+        if (this.bitmap.isNull())
+            this.chooseImageDialog();
+    }
 
 
     // > State
@@ -174,7 +190,6 @@ public class ImageWidget extends Widget implements Serializable
         else
             return null;
     }
-
 
 
     // > Image
@@ -208,70 +223,38 @@ public class ImageWidget extends Widget implements Serializable
      */
     public View tileView()
     {
-        // [1] Get dependencies
+        // [1] Declarations
         // --------------------------------------------------------------------------------------
 
         final Context context = SheetManager.currentSheetContext();
 
-        final ImageWidget thisImageWidget = this;
-
         final LinearLayout imageLayout = this.widgetLayout(true);
-        imageLayout.setGravity(Gravity.CENTER);
-
         LinearLayout contentLayout = (LinearLayout) imageLayout.findViewById(
-                                                                    R.id.widget_content_layout);
-
-        // Views
-        final ImageView imageView = this.imageView(context);
-        this.imageViewId = Util.generateViewId();
-        imageView.setId(this.imageViewId);
-
-        final Button chooseImageButton = this.chooseImageButton(context);
-        this.chooseImageButtonId = Util.generateViewId();
-        chooseImageButton.setId(this.chooseImageButtonId);
+                R.id.widget_content_layout);
 
 
-        chooseImageButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                SheetActivity sheetActivity = (SheetActivity) context;
+        // [2] Layout
+        // --------------------------------------------------------------------------------------
 
-                Intent intent;
-                if (Build.VERSION.SDK_INT < 19) {
-                    intent = new Intent();
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
-                } else {
-                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                }
-
-                sheetActivity.setChooseImageAction(new ChooseImageAction(thisImageWidget));
-
-                sheetActivity.startActivityForResult(intent, SheetActivity.CHOOSE_IMAGE_FROM_FILE);
-
-            }
-        });
-
+        LinearLayout chooseImageLayout = this.chooseImageLayout(context);
+        ImageView    imageView         = this.imageView(context);
 
         // Add views to layout
+        contentLayout.addView(chooseImageLayout);
         contentLayout.addView(imageView);
-        contentLayout.addView(chooseImageButton);
 
-        // Have a picture, show it
-        if (this.bitmap() != null)
+        // No stored picture, give user upload button
+        if (this.bitmap.isNull())
         {
-            chooseImageButton.setVisibility(View.GONE);
+            chooseImageLayout.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+        }
+        // Have a picture, show it
+        else
+        {
+            chooseImageLayout.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
             imageView.setImageBitmap(this.bitmap.getValue().getBitmap());
-        }
-        // No stored picture, give user upload button
-        else {
-            chooseImageButton.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.GONE);
         }
 
 
@@ -291,54 +274,86 @@ public class ImageWidget extends Widget implements Serializable
 
     private ImageView imageView(Context context)
     {
-        ImageView imageView = new ImageView(context);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageView.setAdjustViewBounds(true);
+        ImageViewBuilder imageView = new ImageViewBuilder();
+        this.imageViewId = Util.generateViewId();
 
-        LinearLayout.LayoutParams imageViewLayoutParams = Util.linearLayoutParamsWrap();
-        int imageViewHeight = (int) context.getResources()
-                .getDimension(R.dimen.comp_image_image_height);
-        imageViewLayoutParams.height = imageViewHeight;
-        imageView.setLayoutParams(imageViewLayoutParams);
+        imageView.id                = this.imageViewId;
+        imageView.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        imageView.height            = R.dimen.widget_image_view_height;
+        imageView.scaleType         = ImageView.ScaleType.FIT_XY;
+        imageView.adjustViewBounds  = true;
 
-        return imageView;
+        return imageView.imageView(context);
     }
 
 
-    private Button chooseImageButton(Context context)
+    private LinearLayout chooseImageLayout(Context context)
     {
-        final Button button = new Button(context);
+        LinearLayoutBuilder layout   = new LinearLayoutBuilder();
+        ImageViewBuilder    iconView = new ImageViewBuilder();
+        TextViewBuilder     textView = new TextViewBuilder();
+
+        this.chooseImageButtonId = Util.generateViewId();
+
+        // > Layout
+        // --------------------------------------------------------------------------------------
+
+        layout.id               = this.chooseImageButtonId;
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.padding.top      = R.dimen.widget_image_choose_layout_padding_vert;
+        layout.padding.bottom   = R.dimen.widget_image_choose_layout_padding_vert;
+        layout.gravity          = Gravity.CENTER_VERTICAL;
+
+        layout.child(iconView)
+              .child(textView);
+
+        // > Icon View
+        // --------------------------------------------------------------------------------------
+
+        iconView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        iconView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        iconView.image          = R.drawable.ic_choose_a_picture;
+        iconView.margin.right   = R.dimen.widget_image_choose_icon_margin_right;
+        iconView.padding.bottom = R.dimen.one_dp;
+
+        // > Text View
+        // --------------------------------------------------------------------------------------
+
+        textView.width  = LinearLayout.LayoutParams.WRAP_CONTENT;
+        textView.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        textView.text   = "CHOOSE A PICTURE";
+        textView.size   = R.dimen.widget_image_choose_text_size;
+        textView.color  = R.color.dark_blue_hl_4;
+        textView.font   = Font.sansSerifFontRegular(context);
 
 
-        // Button text appearance
-        button.setText("Choose a Picture");
-        int textSize = (int) context.getResources()
-                .getDimension(R.dimen.comp_image_button_text_size);
-        button.setTextSize(textSize);
-        button.setTextColor(ContextCompat.getColor(context, R.color.text_medium));
+        return layout.linearLayout(context);
+    }
 
-        // Set button icon
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_a_photo_17dp, 0, 0, 0);
 
-        // Configure button padding
-        int buttonPadding = (int) context.getResources()
-                .getDimension(R.dimen.comp_image_button_padding);
-        int buttonIconPadding = (int) context.getResources()
-                .getDimension(R.dimen.comp_image_button_icon_padding);
-        button.setPadding(buttonPadding, 0, buttonPadding, 0);
-        button.setCompoundDrawablePadding(buttonIconPadding);
+    private void chooseImageDialog()
+    {
+        SheetActivity sheetActivity = (SheetActivity) SheetManager.currentSheetContext();
 
-        // Configure button layout params
-        LinearLayout.LayoutParams buttonLayoutParams = Util.linearLayoutParamsWrap();
+        Intent intent;
 
-        // >> Button margins
-        int buttonVertMargins = (int) context.getResources()
-                                             .getDimension(R.dimen.comp_image_button_vert_margins);
-        buttonLayoutParams.setMargins(0, buttonVertMargins, 0, buttonVertMargins);
+        if (Build.VERSION.SDK_INT < 19)
+        {
+            intent = new Intent();
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+        }
+        else
+        {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+        }
 
-        button.setLayoutParams(buttonLayoutParams);
+        sheetActivity.setChooseImageAction(new ChooseImageAction(this));
 
-        return button;
+        sheetActivity.startActivityForResult(intent, SheetActivity.CHOOSE_IMAGE_FROM_FILE);
     }
 
 

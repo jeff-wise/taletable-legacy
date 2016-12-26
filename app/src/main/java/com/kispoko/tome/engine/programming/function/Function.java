@@ -8,8 +8,8 @@ import com.kispoko.tome.engine.programming.program.ProgramValueUnion;
 import com.kispoko.tome.engine.programming.program.ProgramValueType;
 import com.kispoko.tome.engine.programming.function.error.InvalidTupleLengthError;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -36,10 +36,10 @@ public class Function implements Model, Serializable
 
     private UUID                               id;
 
-    private PrimitiveValue<String>             name;
-    private PrimitiveValue<ProgramValueType[]> parameterTypes;
-    private PrimitiveValue<ProgramValueType>   resultType;
-    private CollectionValue<Tuple>             tuples;
+    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<ProgramValueType[]> parameterTypes;
+    private PrimitiveFunctor<ProgramValueType> resultType;
+    private CollectionFunctor<Tuple> tuples;
 
 
     // > Internal
@@ -52,13 +52,13 @@ public class Function implements Model, Serializable
     public Function()
     {
         this.id             = null;
-        this.name           = new PrimitiveValue<>(null, String.class);
-        this.parameterTypes = new PrimitiveValue<>(null, ProgramValueType[].class);
-        this.resultType     = new PrimitiveValue<>(null, ProgramValueType.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.parameterTypes = new PrimitiveFunctor<>(null, ProgramValueType[].class);
+        this.resultType     = new PrimitiveFunctor<>(null, ProgramValueType.class);
 
         List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
         tupleClasses.add(Tuple.class);
-        this.tuples         = CollectionValue.empty(tupleClasses);
+        this.tuples         = CollectionFunctor.empty(tupleClasses);
     }
 
 
@@ -73,20 +73,20 @@ public class Function implements Model, Serializable
         this.id             = id;
 
         // ** Name
-        this.name           = new PrimitiveValue<>(name, String.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
 
         // ** Parameter Types
         ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
                                                     new ProgramValueType[parameterTypes.size()]);
-        this.parameterTypes = new PrimitiveValue<>(parameterTypeArray, ProgramValueType[].class);
+        this.parameterTypes = new PrimitiveFunctor<>(parameterTypeArray, ProgramValueType[].class);
 
         // ** Result ErrorType
-        this.resultType     = new PrimitiveValue<>(resultType, ProgramValueType.class);
+        this.resultType     = new PrimitiveFunctor<>(resultType, ProgramValueType.class);
 
         // ** Tuples
         List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
         tupleClasses.add(Tuple.class);
-        this.tuples         = CollectionValue.full(tuples, tupleClasses);
+        this.tuples         = CollectionFunctor.full(tuples, tupleClasses);
 
         // > Validate the function definition
         this.validate();

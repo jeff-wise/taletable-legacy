@@ -3,7 +3,6 @@ package com.kispoko.tome.engine.programming.variable;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.State;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.program.invocation.Invocation;
@@ -15,8 +14,8 @@ import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
@@ -46,15 +45,15 @@ public class NumberVariable extends Variable implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<String>   name;
+    private PrimitiveFunctor<String> name;
 
-    private PrimitiveValue<Integer>  integerValue;
-    private ModelValue<Invocation>   invocationValue;
-    private ModelValue<Summation>    summation;
+    private PrimitiveFunctor<Integer> integerValue;
+    private ModelFunctor<Invocation> invocationValue;
+    private ModelFunctor<Summation> summation;
 
-    private PrimitiveValue<Kind>     kind;
+    private PrimitiveFunctor<Kind> kind;
 
-    private ModelValue<RefinementId> refinementId;
+    private ModelFunctor<RefinementId> refinementId;
 
 
     // > Internal
@@ -72,15 +71,15 @@ public class NumberVariable extends Variable implements Model, Serializable
 
         this.id              = null;
 
-        this.name            = new PrimitiveValue<>(null, String.class);
+        this.name            = new PrimitiveFunctor<>(null, String.class);
 
-        this.integerValue    = new PrimitiveValue<>(null, Integer.class);
-        this.invocationValue = ModelValue.empty(Invocation.class);
-        this.summation       = ModelValue.empty(Summation.class);
+        this.integerValue    = new PrimitiveFunctor<>(null, Integer.class);
+        this.invocationValue = ModelFunctor.empty(Invocation.class);
+        this.summation       = ModelFunctor.empty(Summation.class);
 
-        this.kind            = new PrimitiveValue<>(null, Kind.class);
+        this.kind            = new PrimitiveFunctor<>(null, Kind.class);
 
-        this.refinementId    = ModelValue.empty(RefinementId.class);
+        this.refinementId    = ModelFunctor.empty(RefinementId.class);
 
         this.reactiveValue   = null;
     }
@@ -103,15 +102,15 @@ public class NumberVariable extends Variable implements Model, Serializable
 
         this.id                     = id;
 
-        this.name                   = new PrimitiveValue<>(name, String.class);
+        this.name                   = new PrimitiveFunctor<>(name, String.class);
 
-        this.integerValue           = new PrimitiveValue<>(null, Integer.class);
-        this.invocationValue = ModelValue.full(null, Invocation.class);
-        this.summation              = ModelValue.full(null, Summation.class);
+        this.integerValue           = new PrimitiveFunctor<>(null, Integer.class);
+        this.invocationValue = ModelFunctor.full(null, Invocation.class);
+        this.summation              = ModelFunctor.full(null, Summation.class);
 
-        this.kind                   = new PrimitiveValue<>(kind, Kind.class);
+        this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
 
-        this.refinementId           = ModelValue.full(refinementId, RefinementId.class);
+        this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
 
         // Set value according to variable type
         switch (kind)
@@ -256,9 +255,34 @@ public class NumberVariable extends Variable implements Model, Serializable
      * Get the variable name which is a unique identifier.
      * @return The variable name.
      */
-    public String getName()
+    public String name()
     {
         return this.name.getValue();
+    }
+
+
+    public List<String> dependencies()
+    {
+        List<String> variableDependencies = new ArrayList<>();
+
+        switch (this.kind.getValue())
+        {
+            case LITERAL:
+                break;
+            case PROGRAM:
+                variableDependencies = this.invocationValue.getValue()
+                                                           .variableDependencies();
+                break;
+            case SUMMATION:
+                variableDependencies = this.summation.getValue().variableDependencies();
+                break;
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(Kind.class.getName())));
+        }
+
+        return variableDependencies;
     }
 
 
@@ -391,36 +415,6 @@ public class NumberVariable extends Variable implements Model, Serializable
         else {
             this.reactiveValue = null;
         }
-
-        // [2] Track variable dependencies (if program or summation variable)
-        // --------------------------------------------------------------------------------------
-
-        List<String> variableDependencies = new ArrayList<>();
-
-        switch (this.kind.getValue())
-        {
-            case LITERAL:
-                break;
-            case PROGRAM:
-                variableDependencies = this.invocationValue.getValue()
-                                                           .variableDependencies();
-                break;
-            case SUMMATION:
-                variableDependencies = this.summation.getValue().variableDependencies();
-                break;
-            default:
-                ApplicationFailure.union(
-                        UnionException.unknownVariant(
-                                new UnknownVariantError(Kind.class.getName())));
-        }
-
-        this.setVariableDependencies(variableDependencies);
-
-        // [3] Add variable to state
-        // --------------------------------------------------------------------------------------
-
-        if (!this.name.isNull())
-            State.addVariable(VariableUnion.asNumber(this));
     }
 
 

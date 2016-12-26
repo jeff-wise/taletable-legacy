@@ -3,10 +3,10 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
 <item
-    android:color="@color/grey_7"
+    android:color="@color/dark_blue_hl_8"
     android:state_checked="false"/>
 <item
-    android:color="@color/grey_1"
+    android:color="@color/dark_blue_hlx_8"
     android:state_checked="true"/>
 
 </selector>

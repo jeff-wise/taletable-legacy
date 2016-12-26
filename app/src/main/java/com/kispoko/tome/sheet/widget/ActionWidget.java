@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -22,8 +21,8 @@ import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -47,10 +46,10 @@ public class ActionWidget extends Widget implements Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<String>       name;
-    private PrimitiveValue<String>       description;
-    private ModelValue<NumberVariable>   modifier;
-    private ModelValue<WidgetData>       widgetData;
+    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<String> description;
+    private ModelFunctor<NumberVariable> modifier;
+    private ModelFunctor<WidgetData> widgetData;
 
 
     // CONSTRUCTORS
@@ -60,10 +59,10 @@ public class ActionWidget extends Widget implements Serializable
     {
         this.id = null;
 
-        this.name         = new PrimitiveValue<>(null, String.class);
-        this.description  = new PrimitiveValue<>(null, String.class);
-        this.modifier     = ModelValue.empty(NumberVariable.class);
-        this.widgetData   = ModelValue.empty(WidgetData.class);
+        this.name         = new PrimitiveFunctor<>(null, String.class);
+        this.description  = new PrimitiveFunctor<>(null, String.class);
+        this.modifier     = ModelFunctor.empty(NumberVariable.class);
+        this.widgetData   = ModelFunctor.empty(WidgetData.class);
     }
 
 
@@ -75,10 +74,10 @@ public class ActionWidget extends Widget implements Serializable
     {
         this.id           = id;
 
-        this.name         = new PrimitiveValue<>(name, String.class);
-        this.description  = new PrimitiveValue<>(description, String.class);
-        this.modifier     = ModelValue.full(modifier, NumberVariable.class);
-        this.widgetData   = ModelValue.full(widgetData, WidgetData.class);
+        this.name         = new PrimitiveFunctor<>(name, String.class);
+        this.description  = new PrimitiveFunctor<>(description, String.class);
+        this.modifier     = ModelFunctor.full(modifier, NumberVariable.class);
+        this.widgetData   = ModelFunctor.full(widgetData, WidgetData.class);
     }
 
 
@@ -311,7 +310,7 @@ public class ActionWidget extends Widget implements Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.gravity          = Gravity.CENTER;
-        layout.backgroundColor  = R.color.dark_grey_6;
+        layout.backgroundColor  = R.color.dark_blue_4;
         layout.padding.top      = R.dimen.widget_roll_header_layout_padding_vert;
         layout.padding.bottom   = R.dimen.widget_roll_header_layout_padding_vert;
 
@@ -324,7 +323,7 @@ public class ActionWidget extends Widget implements Serializable
         titleView.height    = LinearLayout.LayoutParams.WRAP_CONTENT;
         titleView.text      = this.rollName().toUpperCase();
         titleView.size      = R.dimen.widget_roll_name_text_size;
-        titleView.color     = R.color.grey_6;
+        titleView.color     = R.color.dark_blue_hl_4;
         titleView.font      = Font.sansSerifFontRegular(context);
 
 
@@ -375,7 +374,6 @@ public class ActionWidget extends Widget implements Serializable
         layout.orientation          = LinearLayout.HORIZONTAL;
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.backgroundResource   = R.drawable.bg_roll_widget_modifier;
         layout.margin.top           = R.dimen.widget_roll_modifier_layout_margin_vert;
         layout.margin.bottom        = R.dimen.widget_roll_modifier_layout_margin_vert;
         layout.padding.left         = R.dimen.widget_roll_modifier_layout_padding;
@@ -403,7 +401,7 @@ public class ActionWidget extends Widget implements Serializable
         modifierView.text           = this.modifierString();
         modifierView.font           = Font.serifFontBold(context);
         modifierView.size           = R.dimen.widget_roll_modifier_text_size;
-        modifierView.color          = R.color.light_grey_8;
+        modifierView.color          = R.color.dark_blue_hlx_5;
         modifierView.padding.bottom = R.dimen.widget_roll_modifier_text_padding_bottom;
 
         return layout.linearLayout(context);

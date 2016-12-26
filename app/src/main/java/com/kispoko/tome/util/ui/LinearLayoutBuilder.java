@@ -27,28 +27,29 @@ public class LinearLayoutBuilder implements ViewBuilder
     // > Layout State
     // ------------------------------------------------------------------------------------------
 
-    public Integer                 orientation;
+    public Integer                  orientation;
 
-    public Integer                 id;
+    public Integer                  id;
 
-    public Integer                 height;
-    public Integer                 width;
-    public Float                   weight;
+    public Integer                  height;
+    public Integer                  width;
+    public Float                    weight;
 
-    public LayoutType              layoutType;
+    public LayoutType               layoutType;
 
-    public Integer                 gravity;
-    public Integer                 layoutGravity;
+    public Integer                  gravity;
+    public Integer                  layoutGravity;
 
-    public Integer                 backgroundColor;
-    public Integer                 backgroundResource;
+    public Integer                  backgroundColor;
+    public Integer                  backgroundResource;
 
-    public Margins                 margin;
-    public Padding                 padding;
+    public Margins                  margin;
+    public Padding                  padding;
 
-    public View.OnClickListener    onClick;
+    public View.OnClickListener     onClick;
+    public View.OnLongClickListener onLongClick;
 
-    public List<Integer>           rules;
+    public List<Integer>            rules;
 
 
     // > Internal
@@ -82,6 +83,7 @@ public class LinearLayoutBuilder implements ViewBuilder
         this.padding            = new Padding();
 
         this.onClick            = null;
+        this.onLongClick        = null;
 
         this.children           = new ArrayList<>();
 
@@ -160,6 +162,12 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         if (this.onClick != null)
             linearLayout.setOnClickListener(this.onClick);
+
+        // > On Long Click Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onLongClick != null)
+            linearLayout.setOnLongClickListener(this.onLongClick);
 
         // > Background Color
         // --------------------------------------------------------------------------------------

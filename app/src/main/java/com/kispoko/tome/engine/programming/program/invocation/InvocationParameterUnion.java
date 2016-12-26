@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.programming.program.invocation;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -23,9 +23,9 @@ public class InvocationParameterUnion implements Model, Serializable
 
     private UUID                                           id;
 
-    private PrimitiveValue<String>                         referenceValue;
+    private PrimitiveFunctor<String> referenceValue;
 
-    private PrimitiveValue<InvocationParameterType> type;
+    private PrimitiveFunctor<InvocationParameterType> type;
 
 
     // CONSTRUCTORS
@@ -35,8 +35,8 @@ public class InvocationParameterUnion implements Model, Serializable
     {
         this.id             = null;
 
-        this.referenceValue = new PrimitiveValue<>(null, String.class);
-        this.type           = new PrimitiveValue<>(null, InvocationParameterType.class);
+        this.referenceValue = new PrimitiveFunctor<>(null, String.class);
+        this.type           = new PrimitiveFunctor<>(null, InvocationParameterType.class);
     }
 
 
@@ -44,9 +44,9 @@ public class InvocationParameterUnion implements Model, Serializable
     {
         this.id             = id;
 
-        this.referenceValue = new PrimitiveValue<>(null, String.class);
+        this.referenceValue = new PrimitiveFunctor<>(null, String.class);
 
-        this.type           = new PrimitiveValue<>(type, InvocationParameterType.class);
+        this.type           = new PrimitiveFunctor<>(type, InvocationParameterType.class);
 
         // Set the value, depending on the case
         switch (type)

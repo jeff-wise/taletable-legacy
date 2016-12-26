@@ -10,7 +10,7 @@ import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.ModelFunctor;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -35,8 +35,8 @@ public class DiceWidget extends Widget implements Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<DiceRoll>   diceRoll;
-    private ModelValue<WidgetData> widgetData;
+    private ModelFunctor<DiceRoll> diceRoll;
+    private ModelFunctor<WidgetData> widgetData;
 
 
     // CONSTRUCTORS
@@ -46,8 +46,8 @@ public class DiceWidget extends Widget implements Serializable
     {
         this.id         = null;
 
-        this.diceRoll   = ModelValue.empty(DiceRoll.class);
-        this.widgetData = ModelValue.empty(WidgetData.class);
+        this.diceRoll   = ModelFunctor.empty(DiceRoll.class);
+        this.widgetData = ModelFunctor.empty(WidgetData.class);
     }
 
 
@@ -55,8 +55,8 @@ public class DiceWidget extends Widget implements Serializable
     {
         this.id         = id;
 
-        this.diceRoll   = ModelValue.full(diceRoll, DiceRoll.class);
-        this.widgetData = ModelValue.full(widgetData, WidgetData.class);
+        this.diceRoll   = ModelFunctor.full(diceRoll, DiceRoll.class);
+        this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
     }
 
 

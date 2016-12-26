@@ -4,12 +4,14 @@ package com.kispoko.tome.engine.programming.variable;
 
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -26,14 +28,14 @@ public class DiceVariable extends Variable implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                   id;
+    private UUID                     id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<String> name;
-    private ModelValue<DiceRoll>   diceRoll;
+    private PrimitiveFunctor<String> name;
+    private ModelFunctor<DiceRoll>   diceRoll;
 
 
     // CONSTRUCTORS
@@ -43,8 +45,8 @@ public class DiceVariable extends Variable implements Model, Serializable
     {
         this.id       = null;
 
-        this.name     = new PrimitiveValue<>(null, String.class);
-        this.diceRoll = ModelValue.empty(DiceRoll.class);
+        this.name     = new PrimitiveFunctor<>(null, String.class);
+        this.diceRoll = ModelFunctor.empty(DiceRoll.class);
     }
 
 
@@ -52,8 +54,8 @@ public class DiceVariable extends Variable implements Model, Serializable
     {
         this.id       = id;
 
-        this.name     = new PrimitiveValue<>(name, String.class);
-        this.diceRoll = ModelValue.full(diceRoll, DiceRoll.class);
+        this.name     = new PrimitiveFunctor<>(name, String.class);
+        this.diceRoll = ModelFunctor.full(diceRoll, DiceRoll.class);
     }
 
 
@@ -122,9 +124,15 @@ public class DiceVariable extends Variable implements Model, Serializable
      * Get the variable name which is a unique identifier.
      * @return The variable name.
      */
-    public String getName()
+    public String name()
     {
         return this.name.getValue();
+    }
+
+
+    public List<String> dependencies()
+    {
+        return new ArrayList<>();
     }
 
 

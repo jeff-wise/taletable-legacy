@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -32,9 +32,9 @@ public class ConditionalTerm extends Term implements Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<BooleanTermValue> conditionalTermValue;
-    private ModelValue<IntegerTermValue> whenTrueTermValue;
-    private ModelValue<IntegerTermValue> whenFalseTermValue;
+    private ModelFunctor<BooleanTermValue> conditionalTermValue;
+    private ModelFunctor<IntegerTermValue> whenTrueTermValue;
+    private ModelFunctor<IntegerTermValue> whenFalseTermValue;
 
 
     // CONSTRUCTORS
@@ -44,9 +44,9 @@ public class ConditionalTerm extends Term implements Serializable
     {
         this.id                   = null;
 
-        this.conditionalTermValue = ModelValue.empty(BooleanTermValue.class);
-        this.whenTrueTermValue    = ModelValue.empty(IntegerTermValue.class);
-        this.whenFalseTermValue   = ModelValue.empty(IntegerTermValue.class);
+        this.conditionalTermValue = ModelFunctor.empty(BooleanTermValue.class);
+        this.whenTrueTermValue    = ModelFunctor.empty(IntegerTermValue.class);
+        this.whenFalseTermValue   = ModelFunctor.empty(IntegerTermValue.class);
     }
 
 
@@ -57,9 +57,9 @@ public class ConditionalTerm extends Term implements Serializable
     {
         this.id                   = id;
 
-        this.conditionalTermValue = ModelValue.full(conditionalTermValue, BooleanTermValue.class);
-        this.whenTrueTermValue    = ModelValue.full(whenTrueTermValue, IntegerTermValue.class);
-        this.whenFalseTermValue   = ModelValue.full(whenFalseTermValue, IntegerTermValue.class);
+        this.conditionalTermValue = ModelFunctor.full(conditionalTermValue, BooleanTermValue.class);
+        this.whenTrueTermValue    = ModelFunctor.full(whenTrueTermValue, IntegerTermValue.class);
+        this.whenFalseTermValue   = ModelFunctor.full(whenFalseTermValue, IntegerTermValue.class);
     }
 
 

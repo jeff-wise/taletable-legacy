@@ -19,10 +19,10 @@ import com.kispoko.tome.util.database.sql.OneToManyRelation;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.tuple.Tuple3;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
-import com.kispoko.tome.util.value.Value;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.Functor;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -73,7 +73,7 @@ public class ModelLib
     public static <A extends Model> void modelFromDatabase(
                                             final Class<A> modelClass,
                                             final ModelQueryParameters queryParameters,
-                                            final ModelValue.OnLoadListener<A> onLoadListener)
+                                            final ModelFunctor.OnLoadListener<A> onLoadListener)
     {
         new AsyncTask<Void,Void,Object> ()
         {
@@ -147,7 +147,7 @@ public class ModelLib
     public static <A extends Model> void modelCollectionFromDatabase(
                                             final OneToManyRelation oneToManyRelation,
                                             final List<Class<? extends A>> modelClasses,
-                                            final CollectionValue.OnLoadListener<A> onLoadListener)
+                                            final CollectionFunctor.OnLoadListener<A> onLoadListener)
     {
 
         new AsyncTask<Void,Void,Object> ()
@@ -264,7 +264,7 @@ public class ModelLib
      * @throws DatabaseException
      */
     public static void modelToDatabase(final Model model,
-                                       final ModelValue.OnSaveListener onSaveListener)
+                                       final ModelFunctor.OnSaveListener onSaveListener)
     {
         new AsyncTask<Void,Void,Object> ()
         {
@@ -334,7 +334,7 @@ public class ModelLib
     public static void modelCollectionToDatabase(
                                         final List<Model> models,
                                         final List<OneToManyRelation> parentRelations,
-                                        final CollectionValue.OnSaveListener onSaveListener)
+                                        final CollectionFunctor.OnSaveListener onSaveListener)
     {
 
         new AsyncTask<Void,Void,Object> ()
@@ -421,20 +421,20 @@ public class ModelLib
             // [1] Group values by type
             // --------------------------------------------------------------------------------------
 
-            Tuple3<List<PrimitiveValue<?>>,
-            List<ModelValue<?>>,
-            List<CollectionValue<?>>> modelValuesTuple = ModelLib.modelValues(model);
+            Tuple3<List<PrimitiveFunctor<?>>,
+            List<ModelFunctor<?>>,
+            List<CollectionFunctor<?>>> modelValuesTuple = ModelLib.modelValues(model);
 
-            final List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
-            final List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
+            final List<ModelFunctor<?>>      modelValues      = modelValuesTuple.getItem2();
+            final List<CollectionFunctor<?>> collectionValues = modelValuesTuple.getItem3();
 
 
             // [2] Save Shared Value Rows
             // --------------------------------------------------------------------------------------
 
-            for (final ModelValue<? extends Model> modelValue : modelValues)
+            for (final ModelFunctor<? extends Model> modelValue : modelValues)
             {
-                ModelValue.OnSaveListener onSaveListener = new ModelValue.OnSaveListener()
+                ModelFunctor.OnSaveListener onSaveListener = new ModelFunctor.OnSaveListener()
                 {
                     @Override
 
@@ -469,10 +469,10 @@ public class ModelLib
             // [B 3] Save Collection Values
             // --------------------------------------------------------------------------------------
 
-            for (final CollectionValue<? extends Model> collectionValue : collectionValues)
+            for (final CollectionFunctor<? extends Model> collectionValue : collectionValues)
             {
 
-                CollectionValue.OnSaveListener onSaveListener = new CollectionValue.OnSaveListener()
+                CollectionFunctor.OnSaveListener onSaveListener = new CollectionFunctor.OnSaveListener()
                 {
                     @Override
                     public void onSave()
@@ -543,13 +543,13 @@ public class ModelLib
             // [A 2] Get the Model's Values
             // ----------------------------------------------------------------------------------
 
-            Tuple3<List<PrimitiveValue<?>>,
-                    List<ModelValue<?>>,
-                    List<CollectionValue<?>>> modelValuesTuple = ModelLib.modelValues(model);
+            Tuple3<List<PrimitiveFunctor<?>>,
+                    List<ModelFunctor<?>>,
+                    List<CollectionFunctor<?>>> modelValuesTuple = ModelLib.modelValues(model);
 
-            List<PrimitiveValue<?>> primitiveValues = modelValuesTuple.getItem1();
-            final List<ModelValue<?>> modelValues = modelValuesTuple.getItem2();
-            final List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
+            List<PrimitiveFunctor<?>> primitiveValues = modelValuesTuple.getItem1();
+            final List<ModelFunctor<?>> modelValues = modelValuesTuple.getItem2();
+            final List<CollectionFunctor<?>> collectionValues = modelValuesTuple.getItem3();
 
 
             // [B 1] Evaluate model values
@@ -562,7 +562,7 @@ public class ModelLib
             // [B 2] Evaluate primitive model values
             // ----------------------------------------------------------------------------------
 
-            for (PrimitiveValue<?> primitiveValue : primitiveValues) {
+            for (PrimitiveFunctor<?> primitiveValue : primitiveValues) {
                 String columnName = primitiveValue.sqlColumnName();
                 primitiveValue.fromSQLValue(row.getSQLValue(columnName));
             }
@@ -571,7 +571,7 @@ public class ModelLib
             // [B 3] Evaluate model values (many-to-one values)
             // ----------------------------------------------------------------------------------
 
-            for (final ModelValue<?> modelValue : modelValues)
+            for (final ModelFunctor<?> modelValue : modelValues)
             {
                 String modelForeignKeyColumnName = modelValue.sqlColumnName();
                 SQLValue modelIdSqlValue = row.getSQLValue(modelForeignKeyColumnName);
@@ -595,7 +595,7 @@ public class ModelLib
                         new ModelQueryParameters(new ModelQueryParameters.PrimaryKey(modelValueId),
                                                  ModelQueryParameters.Type.PRIMARY_KEY);
 
-                ModelValue.OnLoadListener onLoadListener = new ModelValue.OnLoadListener<A>() {
+                ModelFunctor.OnLoadListener onLoadListener = new ModelFunctor.OnLoadListener<A>() {
                     @Override
                     public void onLoad(A loadedModel) {
                         if (ModelLib.valuesAreLoaded(modelValues, collectionValues)) {
@@ -624,10 +624,10 @@ public class ModelLib
             // [B 2] Evaluate collection values (one-to-many values)
             // ----------------------------------------------------------------------------------
 
-            for (final CollectionValue<? extends Model> collectionValue : collectionValues)
+            for (final CollectionFunctor<? extends Model> collectionValue : collectionValues)
             {
-                CollectionValue.OnLoadListener<A> onLoadListener =
-                        new CollectionValue.OnLoadListener<A>()
+                CollectionFunctor.OnLoadListener<A> onLoadListener =
+                        new CollectionFunctor.OnLoadListener<A>()
                 {
                     @Override
                     public void onLoad(List<A> loadedModels) {
@@ -681,9 +681,9 @@ public class ModelLib
      * @return The ModelLib's values, sorted.
      * @throws DatabaseException
      */
-    private static <A> Tuple3<List<PrimitiveValue<?>>,
-                              List<ModelValue<?>>,
-                              List<CollectionValue<?>>> modelValues(A model)
+    private static <A> Tuple3<List<PrimitiveFunctor<?>>,
+                              List<ModelFunctor<?>>,
+                              List<CollectionFunctor<?>>> modelValues(A model)
                        throws DatabaseException
     {
         // [1] Get all of the class's Value fields
@@ -693,31 +693,31 @@ public class ModelLib
         List<Field> allFields = FieldUtils.getAllFieldsList(model.getClass());
         for (Field field : allFields)
         {
-            if (Value.class.isAssignableFrom(field.getType()))
+            if (Functor.class.isAssignableFrom(field.getType()))
                 valueFields.add(field);
         }
 
         // [2] Store the value fields by type and map to columns
         // --------------------------------------------------------------------------------------
-        List<PrimitiveValue<?>>                primitiveValues  = new ArrayList<>();
-        List<ModelValue<? extends Model>>      modelValues      = new ArrayList<>();
-        List<CollectionValue<? extends Model>> collectionValues = new ArrayList<>();
+        List<PrimitiveFunctor<?>>                primitiveValues  = new ArrayList<>();
+        List<ModelFunctor<? extends Model>>      modelValues      = new ArrayList<>();
+        List<CollectionFunctor<? extends Model>> collectionValues = new ArrayList<>();
 
         try
         {
             for (Field field : valueFields)
             {
                 //Value<?> value = (Value<?>) field.get(model);
-                Value<?> value = (Value<?>) FieldUtils.readField(field, model, true);
+                Functor<?> functor = (Functor<?>) FieldUtils.readField(field, model, true);
 
                 // Sort values by database value type
-                if (PrimitiveValue.class.isAssignableFrom(field.getType())) {
-                    PrimitiveValue primitiveValue = (PrimitiveValue) value;
+                if (PrimitiveFunctor.class.isAssignableFrom(field.getType())) {
+                    PrimitiveFunctor primitiveValue = (PrimitiveFunctor) functor;
                     primitiveValue.setName(field.getName());
                     primitiveValues.add(primitiveValue);
                 }
-                else if (ModelValue.class.isAssignableFrom(field.getType())) {
-                    ModelValue<? extends Model> modelValue = (ModelValue<? extends Model>) value;
+                else if (ModelFunctor.class.isAssignableFrom(field.getType())) {
+                    ModelFunctor<? extends Model> modelValue = (ModelFunctor<? extends Model>) functor;
 
                     if (modelValue == null) {
                         throw DatabaseException.nullFunctor(
@@ -727,9 +727,9 @@ public class ModelLib
                     modelValue.setName(field.getName());
                     modelValues.add(modelValue);
                 }
-                else if (CollectionValue.class.isAssignableFrom(field.getType())) {
-                    CollectionValue<? extends Model> collectionValue =
-                                                     (CollectionValue<? extends Model>) value;
+                else if (CollectionFunctor.class.isAssignableFrom(field.getType())) {
+                    CollectionFunctor<? extends Model> collectionValue =
+                                                     (CollectionFunctor<? extends Model>) functor;
                     collectionValue.setName(field.getName());
                     collectionValues.add(collectionValue);
                 }
@@ -756,9 +756,9 @@ public class ModelLib
     private static List<Tuple2<String,SQLValue.Type>> sqlColumns(Model model)
                    throws DatabaseException
     {
-        Tuple3<List<PrimitiveValue<?>>,
-                   List<ModelValue<?>>,
-                   List<CollectionValue<?>>> modelValuesTuple = ModelLib.modelValues(model);
+        Tuple3<List<PrimitiveFunctor<?>>,
+                   List<ModelFunctor<?>>,
+                   List<CollectionFunctor<?>>> modelValuesTuple = ModelLib.modelValues(model);
 
         // Get all of model's database columns. Both primitive values and model values have
         // column representations
@@ -768,14 +768,14 @@ public class ModelLib
         columns.add(new Tuple2<>("_id", SQLValue.Type.TEXT));
 
         // > Add PRIMITIVE VALUE columns
-        for (PrimitiveValue<?> primitiveValue : modelValuesTuple.getItem1())
+        for (PrimitiveFunctor<?> primitiveValue : modelValuesTuple.getItem1())
         {
             columns.add(new Tuple2<>(primitiveValue.sqlColumnName(),
                                      primitiveValue.sqlType()));
         }
 
         // > Add MODEL VALUE columns
-        for (ModelValue<?> modelValue : modelValuesTuple.getItem2())
+        for (ModelFunctor<?> modelValue : modelValuesTuple.getItem2())
         {
             columns.add(new Tuple2<>(modelValue.sqlColumnName(),
                                      SQLValue.Type.TEXT));
@@ -842,15 +842,15 @@ public class ModelLib
         {
             Model dummyModel = ModelLib.newModel(modelClass);
 
-            Tuple3<List<PrimitiveValue<?>>,
-                    List<ModelValue<?>>,
-                    List<CollectionValue<?>>> modelValuesTuple = ModelLib.modelValues(dummyModel);
+            Tuple3<List<PrimitiveFunctor<?>>,
+                    List<ModelFunctor<?>>,
+                    List<CollectionFunctor<?>>> modelValuesTuple = ModelLib.modelValues(dummyModel);
 
-            List<CollectionValue<?>> collectionValues = modelValuesTuple.getItem3();
+            List<CollectionFunctor<?>> collectionValues = modelValuesTuple.getItem3();
 
             String parentName = ModelLib.name(modelClass);
 
-            for (CollectionValue<?> collectionValue : collectionValues)
+            for (CollectionFunctor<?> collectionValue : collectionValues)
             {
                 String collectionName = collectionValue.name();
 
@@ -893,12 +893,12 @@ public class ModelLib
 
         Model dummyModel = ModelLib.newModel(modelClass);
 
-        Tuple3<List<PrimitiveValue<?>>,
-                List<ModelValue<?>>,
-                List<CollectionValue<?>>> modelValuesTuple = ModelLib.modelValues(dummyModel);
+        Tuple3<List<PrimitiveFunctor<?>>,
+                List<ModelFunctor<?>>,
+                List<CollectionFunctor<?>>> modelValuesTuple = ModelLib.modelValues(dummyModel);
 
-        List<PrimitiveValue<?>> primitiveValues = modelValuesTuple.getItem1();
-        List<ModelValue<?>>     modelValues     = modelValuesTuple.getItem2();
+        List<PrimitiveFunctor<?>> primitiveValues = modelValuesTuple.getItem1();
+        List<ModelFunctor<?>>     modelValues     = modelValuesTuple.getItem2();
 
         // ** Model Id
         tableBuilder.append("_id");
@@ -907,7 +907,7 @@ public class ModelLib
         tableBuilder.append(" PRIMARY KEY");
 
         // ** Primitive Values
-        for (PrimitiveValue<?> primitiveValue : primitiveValues)
+        for (PrimitiveFunctor<?> primitiveValue : primitiveValues)
         {
             String        columnName = primitiveValue.sqlColumnName();
             SQLValue.Type columnType = primitiveValue.sqlType();
@@ -919,7 +919,7 @@ public class ModelLib
         }
 
         // ** Model Values
-        for (ModelValue<?> modelValue : modelValues)
+        for (ModelFunctor<?> modelValue : modelValues)
         {
             String columnName = modelValue.sqlColumnName();
 
@@ -954,12 +954,12 @@ public class ModelLib
 
 
 
-    private static boolean valuesAreLoaded(List<ModelValue<?>> modelValues,
-                                           List<CollectionValue<?>> collectionValues)
+    private static boolean valuesAreLoaded(List<ModelFunctor<?>> modelValues,
+                                           List<CollectionFunctor<?>> collectionValues)
     {
         boolean allLoaded = true;
 
-        for (ModelValue modelValue : modelValues)
+        for (ModelFunctor modelValue : modelValues)
         {
             if (modelValue.isNull() && !modelValue.getIsSaved())
                 continue;
@@ -973,7 +973,7 @@ public class ModelLib
 
         if (!allLoaded) return false;
 
-        for (CollectionValue collectionValue : collectionValues)
+        for (CollectionFunctor collectionValue : collectionValues)
         {
             if (!collectionValue.getIsLoaded()) {
                 allLoaded = false;
@@ -985,12 +985,12 @@ public class ModelLib
     }
 
 
-    private static boolean valuesAreSaved(List<ModelValue<?>> modelValues,
-                                          List<CollectionValue<?>> collectionValues)
+    private static boolean valuesAreSaved(List<ModelFunctor<?>> modelValues,
+                                          List<CollectionFunctor<?>> collectionValues)
     {
         boolean allSaved = true;
 
-        for (ModelValue modelValue : modelValues) {
+        for (ModelFunctor modelValue : modelValues) {
             if (!modelValue.getIsSaved()) {
                 allSaved = false;
                 break;
@@ -999,7 +999,7 @@ public class ModelLib
 
         if (!allSaved) return false;
 
-        for (CollectionValue collectionValue : collectionValues) {
+        for (CollectionFunctor collectionValue : collectionValues) {
             if (!collectionValue.getIsSaved()) {
                 allSaved = false;
                 break;
@@ -1035,12 +1035,12 @@ public class ModelLib
         // [A 1] Group values by type
         // --------------------------------------------------------------------------------------
 
-        Tuple3<List<PrimitiveValue<?>>,
-                List<ModelValue<?>>,
-                List<CollectionValue<?>>> modelValuesTuple = ModelLib.modelValues(model);
+        Tuple3<List<PrimitiveFunctor<?>>,
+                List<ModelFunctor<?>>,
+                List<CollectionFunctor<?>>> modelValuesTuple = ModelLib.modelValues(model);
 
-        final List<PrimitiveValue<?>>  primitiveValues  = modelValuesTuple.getItem1();
-        final List<ModelValue<?>>      modelValues      = modelValuesTuple.getItem2();
+        final List<PrimitiveFunctor<?>>  primitiveValues  = modelValuesTuple.getItem1();
+        final List<ModelFunctor<?>>      modelValues      = modelValuesTuple.getItem2();
 
 
         // [B 1] Save Model row
@@ -1053,7 +1053,7 @@ public class ModelLib
         row.put("_id", model.getId().toString());
 
         // ** Save all of the primitive values
-        for (PrimitiveValue primitiveValue : primitiveValues)
+        for (PrimitiveFunctor primitiveValue : primitiveValues)
         {
             SQLValue sqlValue = primitiveValue.toSQLValue();
             String columnName = primitiveValue.sqlColumnName();
@@ -1081,7 +1081,7 @@ public class ModelLib
         // [B 2] Save all child models in the row by foreign key
         // --------------------------------------------------------------------------------------
 
-        for (ModelValue<? extends Model> modelValue : modelValues)
+        for (ModelFunctor<? extends Model> modelValue : modelValues)
         {
             String columnName = modelValue.sqlColumnName();
 

@@ -7,17 +7,16 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
-import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -44,9 +43,9 @@ public class BooleanWidget extends Widget implements Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<WidgetData>            widgetData;
-    private PrimitiveValue<WidgetContentSize> size;
-    private ModelValue<BooleanVariable>       value;
+    private ModelFunctor<WidgetData> widgetData;
+    private PrimitiveFunctor<WidgetContentSize> size;
+    private ModelFunctor<BooleanVariable> value;
 
 
     // > Internal
@@ -62,9 +61,9 @@ public class BooleanWidget extends Widget implements Serializable
     {
         this.id         = null;
 
-        this.widgetData = ModelValue.empty(WidgetData.class);
-        this.size       = new PrimitiveValue<>(null, WidgetContentSize.class);
-        this.value      = ModelValue.empty(BooleanVariable.class);
+        this.widgetData = ModelFunctor.empty(WidgetData.class);
+        this.size       = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.value      = ModelFunctor.empty(BooleanVariable.class);
     }
 
 
@@ -75,9 +74,9 @@ public class BooleanWidget extends Widget implements Serializable
     {
         this.id = id;
 
-        this.widgetData = ModelValue.full(widgetData, WidgetData.class);
-        this.size       = new PrimitiveValue<>(size, WidgetContentSize.class);
-        this.value      = ModelValue.full(value, BooleanVariable.class);
+        this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
+        this.size       = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.value      = ModelFunctor.full(value, BooleanVariable.class);
 
         initialize();
     }
@@ -162,9 +161,17 @@ public class BooleanWidget extends Widget implements Serializable
      * Get the BooleanWidget's value variable (of type boolean).
      * @return The Variable for the BoolenWidget value.
      */
-    public BooleanVariable value()
+    public BooleanVariable valueVariable()
     {
         return this.value.getValue();
+    }
+
+
+    public Boolean value()
+    {
+        if (!this.value.isNull())
+            return this.valueVariable().value();
+        return null;
     }
 
 
@@ -180,7 +187,7 @@ public class BooleanWidget extends Widget implements Serializable
         this.valueViewId = Util.generateViewId();
         view.setId(this.valueViewId);
 
-        view.setText(this.value().value().toString());
+        view.setText(this.value().toString());
 
         return view;
     }
@@ -200,18 +207,25 @@ public class BooleanWidget extends Widget implements Serializable
      */
     private void initialize()
     {
-        // [1] Initialize variables with listeners to update the number widget views when the
-        //     values of the variables change
+        // [1] The text widget's value view ID. It is null until the view is created.
         // --------------------------------------------------------------------------------------
 
         this.valueViewId   = null;
 
-        this.value().addOnUpdateListener(new Variable.OnUpdateListener() {
-            @Override
-            public void onUpdate() {
-                onValueUpdate();
-            }
-        });
+        // [2] Initialize the value variable
+        // --------------------------------------------------------------------------------------
+
+        if (!this.value.isNull())
+        {
+            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onValueUpdate();
+                }
+            });
+
+            State.addVariable(this.valueVariable());
+        }
     }
 
 
@@ -225,7 +239,7 @@ public class BooleanWidget extends Widget implements Serializable
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
-            Boolean value = this.value().value();
+            Boolean value = this.value();
 
             // TODO can value be null
             if (value != null)

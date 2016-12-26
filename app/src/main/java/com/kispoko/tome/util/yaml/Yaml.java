@@ -138,7 +138,7 @@ public class Yaml
         throws YamlException
     {
         if (this.yamlObject == null)
-            return null;
+            return new ArrayList<>();
 
         List<String> stringList;
 

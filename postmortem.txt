@@ -44,3 +44,8 @@ depends on the inteface.
 "stress free programming". spending more time working on good error messages, easy to understand DSLs, 
 explicit data structures for solid debugging. then not worry so much aobut perfect code. if it breaks,
 it will be easy to fix. and almost easier to develop, because you can go iteratively.
+
+
+stupid data, smart methods.
+data should be simple, structured, explicit, compositional, well-typed, generic.
+

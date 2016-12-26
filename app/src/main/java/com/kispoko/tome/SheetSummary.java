@@ -30,7 +30,7 @@ public class SheetSummary
             this.lastUsed = lastUsed;
         }
 
-        public String getName() {
+        public String name() {
             return this.name;
         }
 

@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.programming.program;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -34,7 +34,7 @@ public class ProgramIndex implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private CollectionValue<Program> programs;
+    private CollectionFunctor<Program> programs;
 
 
     // > Internal
@@ -52,7 +52,7 @@ public class ProgramIndex implements Model, Serializable
 
         List<Class<? extends Program>> programClasses = new ArrayList<>();
         programClasses.add(Program.class);
-        this.programs      = CollectionValue.empty(programClasses);
+        this.programs      = CollectionFunctor.empty(programClasses);
 
         this.programByName = new HashMap<>();
     }
@@ -64,7 +64,7 @@ public class ProgramIndex implements Model, Serializable
 
         List<Class<? extends Program>> programClasses = new ArrayList<>();
         programClasses.add(Program.class);
-        this.programs = CollectionValue.full(programs, programClasses);
+        this.programs = CollectionFunctor.full(programs, programClasses);
 
         this.programByName = new HashMap<>();
 

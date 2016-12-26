@@ -4,7 +4,7 @@ package com.kispoko.tome.engine.programming.function;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -28,7 +28,7 @@ public class FunctionIndex implements Model, Serializable
 
     private UUID id;
 
-    private CollectionValue<Function> functions;
+    private CollectionFunctor<Function> functions;
 
 
     // > Internal
@@ -44,7 +44,7 @@ public class FunctionIndex implements Model, Serializable
 
         List<Class<? extends Function>> functionClasses = new ArrayList<>();
         functionClasses.add(Function.class);
-        this.functions = CollectionValue.empty(functionClasses);
+        this.functions = CollectionFunctor.empty(functionClasses);
 
         this.functionByName = new HashMap<>();
     }
@@ -56,7 +56,7 @@ public class FunctionIndex implements Model, Serializable
 
         List<Class<? extends Function>> functionClasses = new ArrayList<>();
         functionClasses.add(Function.class);
-        this.functions = CollectionValue.full(new ArrayList<Function>(), functionClasses);
+        this.functions = CollectionFunctor.full(new ArrayList<Function>(), functionClasses);
 
         this.functionByName = new HashMap<>();
     }

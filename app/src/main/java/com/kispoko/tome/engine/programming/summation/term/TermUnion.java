@@ -8,8 +8,8 @@ import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -36,11 +36,11 @@ public class TermUnion implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<LiteralTerm>     literalTerm;
-    private ModelValue<DiceRollTerm>    diceRollTerm;
-    private ModelValue<ConditionalTerm> conditionalTerm;
+    private ModelFunctor<LiteralTerm> literalTerm;
+    private ModelFunctor<DiceRollTerm> diceRollTerm;
+    private ModelFunctor<ConditionalTerm> conditionalTerm;
 
-    private PrimitiveValue<TermType>    type;
+    private PrimitiveFunctor<TermType> type;
 
 
     // CONSTRUCTORS
@@ -50,11 +50,11 @@ public class TermUnion implements Model, Serializable
     {
         this.id              = null;
 
-        this.literalTerm     = ModelValue.empty(LiteralTerm.class);
-        this.diceRollTerm    = ModelValue.empty(DiceRollTerm.class);
-        this.conditionalTerm = ModelValue.empty(ConditionalTerm.class);
+        this.literalTerm     = ModelFunctor.empty(LiteralTerm.class);
+        this.diceRollTerm    = ModelFunctor.empty(DiceRollTerm.class);
+        this.conditionalTerm = ModelFunctor.empty(ConditionalTerm.class);
 
-        this.type            = new PrimitiveValue<>(null, TermType.class);
+        this.type            = new PrimitiveFunctor<>(null, TermType.class);
     }
 
 
@@ -62,11 +62,11 @@ public class TermUnion implements Model, Serializable
     {
         this.id              = id;
 
-        this.literalTerm     = ModelValue.full(null, LiteralTerm.class);
-        this.diceRollTerm    = ModelValue.full(null, DiceRollTerm.class);
-        this.conditionalTerm = ModelValue.full(null, ConditionalTerm.class);
+        this.literalTerm     = ModelFunctor.full(null, LiteralTerm.class);
+        this.diceRollTerm    = ModelFunctor.full(null, DiceRollTerm.class);
+        this.conditionalTerm = ModelFunctor.full(null, ConditionalTerm.class);
 
-        this.type            = new PrimitiveValue<>(type, TermType.class);
+        this.type            = new PrimitiveFunctor<>(type, TermType.class);
 
         switch (type)
         {

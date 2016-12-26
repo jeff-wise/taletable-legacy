@@ -7,8 +7,8 @@ import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -35,12 +35,12 @@ public class VariableUnion implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelValue<BooleanVariable>  booleanVariable;
-    private ModelValue<DiceVariable>     diceVariable;
-    private ModelValue<NumberVariable>   numberVariable;
-    private ModelValue<TextVariable>     textVariable;
+    private ModelFunctor<BooleanVariable> booleanVariable;
+    private ModelFunctor<DiceVariable> diceVariable;
+    private ModelFunctor<NumberVariable> numberVariable;
+    private ModelFunctor<TextVariable> textVariable;
 
-    private PrimitiveValue<VariableType> type;
+    private PrimitiveFunctor<VariableType> type;
 
 
     // CONSTRUCTORS
@@ -50,12 +50,12 @@ public class VariableUnion implements Model, Serializable
     {
         this.id = null;
 
-        this.booleanVariable = ModelValue.empty(BooleanVariable.class);
-        this.diceVariable    = ModelValue.empty(DiceVariable.class);
-        this.numberVariable  = ModelValue.empty(NumberVariable.class);
-        this.textVariable    = ModelValue.empty(TextVariable.class);
+        this.booleanVariable = ModelFunctor.empty(BooleanVariable.class);
+        this.diceVariable    = ModelFunctor.empty(DiceVariable.class);
+        this.numberVariable  = ModelFunctor.empty(NumberVariable.class);
+        this.textVariable    = ModelFunctor.empty(TextVariable.class);
 
-        this.type            = new PrimitiveValue<>(null, VariableType.class);
+        this.type            = new PrimitiveFunctor<>(null, VariableType.class);
     }
 
 
@@ -63,12 +63,12 @@ public class VariableUnion implements Model, Serializable
     {
         this.id              = id;
 
-        this.booleanVariable = ModelValue.full(null, BooleanVariable.class);
-        this.diceVariable    = ModelValue.full(null, DiceVariable.class);
-        this.numberVariable  = ModelValue.full(null, NumberVariable.class);
-        this.textVariable    = ModelValue.full(null, TextVariable.class);
+        this.booleanVariable = ModelFunctor.full(null, BooleanVariable.class);
+        this.diceVariable    = ModelFunctor.full(null, DiceVariable.class);
+        this.numberVariable  = ModelFunctor.full(null, NumberVariable.class);
+        this.textVariable    = ModelFunctor.full(null, TextVariable.class);
 
-        this.type            = new PrimitiveValue<>(type, VariableType.class);
+        this.type            = new PrimitiveFunctor<>(type, VariableType.class);
 
         switch (type)
         {

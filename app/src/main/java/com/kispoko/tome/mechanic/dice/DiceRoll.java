@@ -3,7 +3,7 @@ package com.kispoko.tome.mechanic.dice;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -32,9 +32,9 @@ public class DiceRoll implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<DiceType> diceType;
-    private PrimitiveValue<Integer>  quantity;
-    private PrimitiveValue<Integer>  modifier;
+    private PrimitiveFunctor<DiceType> diceType;
+    private PrimitiveFunctor<Integer> quantity;
+    private PrimitiveFunctor<Integer> modifier;
 
 
     // > Internal
@@ -50,9 +50,9 @@ public class DiceRoll implements Model, Serializable
     {
         this.id = null;
 
-        this.diceType = new PrimitiveValue<>(null, DiceType.class);
-        this.quantity = new PrimitiveValue<>(null, Integer.class);
-        this.modifier = new PrimitiveValue<>(null, Integer.class);
+        this.diceType = new PrimitiveFunctor<>(null, DiceType.class);
+        this.quantity = new PrimitiveFunctor<>(null, Integer.class);
+        this.modifier = new PrimitiveFunctor<>(null, Integer.class);
 
         randomGen = new Random();
     }
@@ -62,9 +62,9 @@ public class DiceRoll implements Model, Serializable
     {
         this.id = id;
 
-        this.diceType = new PrimitiveValue<>(diceType, DiceType.class);
-        this.quantity = new PrimitiveValue<>(null, Integer.class);
-        this.modifier = new PrimitiveValue<>(null, Integer.class);
+        this.diceType = new PrimitiveFunctor<>(diceType, DiceType.class);
+        this.quantity = new PrimitiveFunctor<>(null, Integer.class);
+        this.modifier = new PrimitiveFunctor<>(null, Integer.class);
 
         this.setQuantity(quantity);
         this.setModifier(modifier);

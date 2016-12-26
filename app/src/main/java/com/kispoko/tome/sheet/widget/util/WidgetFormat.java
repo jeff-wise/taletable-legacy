@@ -3,7 +3,7 @@ package com.kispoko.tome.sheet.widget.util;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -23,9 +23,9 @@ public class WidgetFormat implements Model, Serializable
 
     private UUID                                   id;
 
-    private PrimitiveValue<String>                 label;
-    private PrimitiveValue<Integer>                width;
-    private PrimitiveValue<WidgetContentAlignment> alignment;
+    private PrimitiveFunctor<String> label;
+    private PrimitiveFunctor<Integer> width;
+    private PrimitiveFunctor<WidgetContentAlignment> alignment;
 
 
     // CONSTRUCTORS
@@ -35,9 +35,9 @@ public class WidgetFormat implements Model, Serializable
     {
         this.id        = null;
 
-        this.label     = new PrimitiveValue<>(null, String.class);
-        this.width     = new PrimitiveValue<>(null, Integer.class);
-        this.alignment = new PrimitiveValue<>(null, WidgetContentAlignment.class);
+        this.label     = new PrimitiveFunctor<>(null, String.class);
+        this.width     = new PrimitiveFunctor<>(null, Integer.class);
+        this.alignment = new PrimitiveFunctor<>(null, WidgetContentAlignment.class);
 
     }
 
@@ -49,9 +49,9 @@ public class WidgetFormat implements Model, Serializable
     {
         this.id = id;
 
-        this.label     = new PrimitiveValue<>(label, String.class);
-        this.width     = new PrimitiveValue<>(width, Integer.class);
-        this.alignment = new PrimitiveValue<>(alignment, WidgetContentAlignment.class);
+        this.label     = new PrimitiveFunctor<>(label, String.class);
+        this.width     = new PrimitiveFunctor<>(width, Integer.class);
+        this.alignment = new PrimitiveFunctor<>(alignment, WidgetContentAlignment.class);
 
         this.setLabel(label);
         this.setWidth(width);

@@ -16,8 +16,8 @@ import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.value.CollectionValue;
-import com.kispoko.tome.util.value.PrimitiveValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -48,9 +48,9 @@ public class GroupRow implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveValue<RowAlignment> alignment;
-    private PrimitiveValue<RowWidth>     width;
-    private CollectionValue<Widget>      widgets;
+    private PrimitiveFunctor<RowAlignment> alignment;
+    private PrimitiveFunctor<RowWidth> width;
+    private CollectionFunctor<Widget> widgets;
 
 
     // CONSTRUCTORS
@@ -60,8 +60,8 @@ public class GroupRow implements Model, Serializable
     {
         this.id           = null;
 
-        this.alignment    = new PrimitiveValue<>(null, RowAlignment.class);
-        this.width        = new PrimitiveValue<>(null, RowWidth.class);
+        this.alignment    = new PrimitiveFunctor<>(null, RowAlignment.class);
+        this.width        = new PrimitiveFunctor<>(null, RowWidth.class);
 
         List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
         widgetClasses.add(TextWidget.class);
@@ -70,7 +70,7 @@ public class GroupRow implements Model, Serializable
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
         widgetClasses.add(ActionWidget.class);
-        this.widgets      = CollectionValue.empty(widgetClasses);
+        this.widgets      = CollectionFunctor.empty(widgetClasses);
     }
 
 
@@ -78,8 +78,8 @@ public class GroupRow implements Model, Serializable
     {
         this.id           = id;
 
-        this.alignment    = new PrimitiveValue<>(alignment, RowAlignment.class);
-        this.width        = new PrimitiveValue<>(width, RowWidth.class);
+        this.alignment    = new PrimitiveFunctor<>(alignment, RowAlignment.class);
+        this.width        = new PrimitiveFunctor<>(width, RowWidth.class);
 
         List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
         widgetClasses.add(TextWidget.class);
@@ -88,7 +88,7 @@ public class GroupRow implements Model, Serializable
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
         widgetClasses.add(ActionWidget.class);
-        this.widgets      = CollectionValue.full(widgets, widgetClasses);
+        this.widgets      = CollectionFunctor.full(widgets, widgetClasses);
     }
 
 

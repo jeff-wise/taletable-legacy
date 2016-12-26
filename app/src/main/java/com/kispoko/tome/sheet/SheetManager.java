@@ -13,7 +13,7 @@ import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.sql.Function;
 import com.kispoko.tome.util.database.sql.OrderBy;
-import com.kispoko.tome.util.value.ModelValue;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -34,7 +34,7 @@ public class SheetManager
     // ------------------------------------------------------------------------------------------
 
     // > Sheet State
-    private static ModelValue<Sheet> currentSheet;
+    private static ModelFunctor<Sheet> currentSheet;
 
     private static Context           currentSheetContext;
 
@@ -108,16 +108,16 @@ public class SheetManager
                 }
                 else if (maybeSheet instanceof Exception)
                 {
-                    ((Exception) maybeSheet).printStackTrace();
+                    Log.d("***SHEETMANAGER", "template load exception", (Exception) maybeSheet);
                 }
                 else if (maybeSheet instanceof Sheet)
                 {
                     Sheet templateSheet = (Sheet) maybeSheet;
 
-                    currentSheet = ModelValue.full(templateSheet, Sheet.class);
+                    currentSheet = ModelFunctor.full(templateSheet, Sheet.class);
                     currentSheetContext = context;
 
-                    ModelValue.OnSaveListener onSaveListener = new ModelValue.OnSaveListener()
+                    ModelFunctor.OnSaveListener onSaveListener = new ModelFunctor.OnSaveListener()
                     {
                         @Override
                         public void onSave()
@@ -151,7 +151,7 @@ public class SheetManager
 
     public static void goToMostRecent(final Sheet.OnSheetListener listener, Context context)
     {
-        ModelValue.OnLoadListener<Sheet> onLoadListener = new ModelValue.OnLoadListener<Sheet>()
+        ModelFunctor.OnLoadListener<Sheet> onLoadListener = new ModelFunctor.OnLoadListener<Sheet>()
         {
             @Override
             public void onLoad(Sheet value)
@@ -174,7 +174,7 @@ public class SheetManager
             }
         };
 
-        currentSheet        = ModelValue.empty(Sheet.class);
+        currentSheet        = ModelFunctor.empty(Sheet.class);
         currentSheet.setOnLoadListener(onLoadListener);
         currentSheetContext = context;
 

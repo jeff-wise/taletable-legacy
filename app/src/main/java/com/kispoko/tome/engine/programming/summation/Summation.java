@@ -2,14 +2,11 @@
 package com.kispoko.tome.engine.programming.summation;
 
 
-import com.kispoko.tome.engine.programming.summation.term.ConditionalTerm;
-import com.kispoko.tome.engine.programming.summation.term.LiteralTerm;
-import com.kispoko.tome.engine.programming.summation.term.Term;
 import com.kispoko.tome.engine.programming.summation.term.TermType;
 import com.kispoko.tome.engine.programming.summation.term.TermUnion;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionValue;
+import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -35,7 +32,7 @@ public class Summation implements Model, Serializable {
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private CollectionValue<TermUnion> terms;
+    private CollectionFunctor<TermUnion> terms;
 
 
     // > Internal
@@ -55,7 +52,7 @@ public class Summation implements Model, Serializable {
 
         List<Class<? extends TermUnion>> termClasses = new ArrayList<>();
         termClasses.add(TermUnion.class);
-        this.terms = CollectionValue.empty(termClasses);
+        this.terms = CollectionFunctor.empty(termClasses);
     }
 
 
@@ -65,7 +62,7 @@ public class Summation implements Model, Serializable {
 
         List<Class<? extends TermUnion>> termClasses = new ArrayList<>();
         termClasses.add(TermUnion.class);
-        this.terms = CollectionValue.full(terms, termClasses);
+        this.terms = CollectionFunctor.full(terms, termClasses);
 
         this.initialize();
     }
