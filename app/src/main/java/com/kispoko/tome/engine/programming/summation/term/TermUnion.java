@@ -36,7 +36,7 @@ public class TermUnion implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<LiteralTerm> literalTerm;
+    private ModelFunctor<IntegerTerm> literalTerm;
     private ModelFunctor<DiceRollTerm> diceRollTerm;
     private ModelFunctor<ConditionalTerm> conditionalTerm;
 
@@ -50,7 +50,7 @@ public class TermUnion implements Model, Serializable
     {
         this.id              = null;
 
-        this.literalTerm     = ModelFunctor.empty(LiteralTerm.class);
+        this.literalTerm     = ModelFunctor.empty(IntegerTerm.class);
         this.diceRollTerm    = ModelFunctor.empty(DiceRollTerm.class);
         this.conditionalTerm = ModelFunctor.empty(ConditionalTerm.class);
 
@@ -62,7 +62,7 @@ public class TermUnion implements Model, Serializable
     {
         this.id              = id;
 
-        this.literalTerm     = ModelFunctor.full(null, LiteralTerm.class);
+        this.literalTerm     = ModelFunctor.full(null, IntegerTerm.class);
         this.diceRollTerm    = ModelFunctor.full(null, DiceRollTerm.class);
         this.conditionalTerm = ModelFunctor.full(null, ConditionalTerm.class);
 
@@ -71,7 +71,7 @@ public class TermUnion implements Model, Serializable
         switch (type)
         {
             case LITERAL:
-                this.literalTerm.setValue((LiteralTerm) term);
+                this.literalTerm.setValue((IntegerTerm) term);
                 break;
             case DICE_ROLL:
                 this.diceRollTerm.setValue((DiceRollTerm) term);
@@ -88,12 +88,12 @@ public class TermUnion implements Model, Serializable
 
     /**
      * Create the "literal term" case.
-     * @param literalTerm The literal term.
+     * @param integerTerm The literal term.
      * @return The "literal term" case Term Union.
      */
-    public static TermUnion asLiteral(UUID id, LiteralTerm literalTerm)
+    public static TermUnion asLiteral(UUID id, IntegerTerm integerTerm)
     {
-        return new TermUnion(id, literalTerm, TermType.LITERAL);
+        return new TermUnion(id, integerTerm, TermType.LITERAL);
     }
 
 
@@ -135,8 +135,8 @@ public class TermUnion implements Model, Serializable
         switch (type)
         {
             case LITERAL:
-                LiteralTerm literalTerm = LiteralTerm.fromYaml(yaml);
-                return TermUnion.asLiteral(id, literalTerm);
+                IntegerTerm integerTerm = IntegerTerm.fromYaml(yaml);
+                return TermUnion.asLiteral(id, integerTerm);
             case DICE_ROLL:
                 DiceRollTerm diceRollTerm = DiceRollTerm.fromYaml(yaml);
                 return TermUnion.asDiceRoll(id, diceRollTerm);
@@ -234,7 +234,7 @@ public class TermUnion implements Model, Serializable
      * The "literal term" case. Throws an exception if the union is not a "literal term".
      * @return The Literal Term.
      */
-    public LiteralTerm literalTerm()
+    public IntegerTerm literalTerm()
     {
         if (this.type() != TermType.LITERAL) {
             ApplicationFailure.union(

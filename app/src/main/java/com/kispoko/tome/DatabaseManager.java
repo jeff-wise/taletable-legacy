@@ -21,7 +21,7 @@ import com.kispoko.tome.engine.programming.summation.term.ConditionalTerm;
 import com.kispoko.tome.engine.programming.summation.term.DiceRollTerm;
 import com.kispoko.tome.engine.programming.summation.term.DiceRollTermValue;
 import com.kispoko.tome.engine.programming.summation.term.IntegerTermValue;
-import com.kispoko.tome.engine.programming.summation.term.LiteralTerm;
+import com.kispoko.tome.engine.programming.summation.term.IntegerTerm;
 import com.kispoko.tome.engine.programming.summation.term.TermUnion;
 import com.kispoko.tome.engine.programming.variable.BooleanVariable;
 import com.kispoko.tome.engine.programming.variable.DiceVariable;
@@ -156,7 +156,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             // ** Summation
             modelClasses.add(Summation.class);
             modelClasses.add(TermUnion.class);
-            modelClasses.add(LiteralTerm.class);
+            modelClasses.add(IntegerTerm.class);
             modelClasses.add(DiceRollTerm.class);
             modelClasses.add(ConditionalTerm.class);
             modelClasses.add(DiceRollTermValue.class);

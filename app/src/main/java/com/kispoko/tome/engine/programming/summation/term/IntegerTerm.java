@@ -2,7 +2,8 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
-import com.kispoko.tome.engine.programming.summation.SummationException;
+import com.kispoko.tome.engine.programming.variable.VariableException;
+import com.kispoko.tome.engine.programming.variable.VariableReference;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -17,7 +18,7 @@ import java.util.UUID;
 /**
  * Summation Term: Literal
  */
-public class LiteralTerm extends Term implements Serializable
+public class IntegerTerm extends Term implements Serializable
 {
 
     // PROPERTIES
@@ -26,7 +27,7 @@ public class LiteralTerm extends Term implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                         id;
+    private UUID                           id;
 
 
     // > Functors
@@ -38,7 +39,7 @@ public class LiteralTerm extends Term implements Serializable
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public LiteralTerm()
+    public IntegerTerm()
     {
         this.id        = null;
 
@@ -46,7 +47,7 @@ public class LiteralTerm extends Term implements Serializable
     }
 
 
-    public LiteralTerm(UUID id, IntegerTermValue termValue)
+    public IntegerTerm(UUID id, IntegerTermValue termValue)
     {
         this.id        = id;
 
@@ -54,14 +55,14 @@ public class LiteralTerm extends Term implements Serializable
     }
 
 
-    public static LiteralTerm fromYaml(Yaml yaml)
+    public static IntegerTerm fromYaml(Yaml yaml)
                   throws YamlException
     {
         UUID             id        = UUID.randomUUID();
 
         IntegerTermValue termValue = IntegerTermValue.fromYaml(yaml.atKey("value"));
 
-        return new LiteralTerm(id, termValue);
+        return new IntegerTerm(id, termValue);
     }
 
 
@@ -103,6 +104,19 @@ public class LiteralTerm extends Term implements Serializable
     public void onLoad() { }
 
 
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The integer term's value.
+     * @return The integer term value.
+     */
+    private IntegerTermValue termValue()
+    {
+        return this.termValue.getValue();
+    }
+
+
     // > Term
     // ------------------------------------------------------------------------------------------
 
@@ -111,7 +125,7 @@ public class LiteralTerm extends Term implements Serializable
      * @return The term value. Throws SummationException if the variable is invalid.
      */
     public Integer value()
-           throws SummationException
+           throws VariableException
     {
         return termValue.getValue().value();
     }
@@ -121,16 +135,16 @@ public class LiteralTerm extends Term implements Serializable
      * Get the variables that this term depends upon to calculate its value.
      * @return A list of variable names.
      */
-    public List<String> variableDependencies()
+    public List<VariableReference> variableDependencies()
     {
-        List<String> variableNames = new ArrayList<>();
+        List<VariableReference> variableReferences = new ArrayList<>();
 
-        String variableName = this.termValue.getValue().variableName();
+        VariableReference variableReference = this.termValue().variableDependency();
 
-        if (variableName != null)
-            variableNames.add(variableName);
+        if (variableReference != null)
+            variableReferences.add(variableReference);
 
-        return variableNames;
+        return variableReferences;
     }
 
 }

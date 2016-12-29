@@ -150,6 +150,32 @@ rulesEngine:
       - type: literal_string
         value: '{{modifier_string}}'
   mechanics:
+  - name: armor_scalemail
+    type: armor
+    requirements:
+    - has_armor_scalemail
+    - equipped_armor_scalemail
+    variables:
+    - type: number
+      value:
+        name: armor_scalemail_armor_bonus
+        type: literal
+        value: 14
+        tags:
+        - armor_bonus
+  - name: shield_scalemail
+    type: shield
+    requirements:
+    - has_shield
+    - equipped_shield
+    variables:
+    - type: number
+      value:
+        name: shield_armor_bonus
+        type: literal
+        value: 2
+        tags:
+        - armor_bonus
   - name: weapon_longsword
     type: weapon
     requirements:
@@ -193,53 +219,6 @@ rulesEngine:
           type: d4
           quantity: 1
           modifier: 0
-  variables:
-  - type: number
-    value:
-      name: strength_modifier
-      type: program
-      value:
-        program: ability_modifier
-        parameters:
-        - type: reference
-          value: strength
-
-  - type: number
-    value:
-      name: constitution_modifier
-      type: program
-      value:
-        program: ability_modifier
-        parameters:
-        - type: reference
-          value: constitution
-  - type: number
-    value:
-      name: intelligence_modifier
-      type: program
-      value:
-        program: ability_modifier
-        parameters:
-        - type: reference
-          value: intelligence
-  - type: number
-    value:
-      name: wisdom_modifier
-      type: program
-      value:
-        program: ability_modifier
-        parameters:
-        - type: reference
-          value: wisdom
-  - type: number
-    value:
-      name: charisma_modifier
-      type: program
-      value:
-        program: ability_modifier
-        parameters:
-        - type: reference
-          value: charisma
 profile:
   pages:
   - label: Profile

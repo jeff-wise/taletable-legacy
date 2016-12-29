@@ -2,23 +2,28 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
-import com.kispoko.tome.engine.State;
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.programming.variable.VariableException;
+import com.kispoko.tome.engine.programming.variable.VariableReference;
+import com.kispoko.tome.engine.programming.variable.error.UnexpectedVariableTypeError;
+import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.summation.error.UndefinedVariableError;
-import com.kispoko.tome.engine.programming.summation.error.VariableNotNumberError;
 import com.kispoko.tome.engine.programming.variable.VariableType;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -35,16 +40,16 @@ public class IntegerTermValue implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<Integer> integerValue;
-    private PrimitiveFunctor<String> variableName;
+    private PrimitiveFunctor<Integer>       integerValue;
+    private ModelFunctor<VariableReference> variableReference;
 
-    private PrimitiveFunctor<Kind> kind;
+    private PrimitiveFunctor<Kind>          kind;
 
 
     // CONSTRUCTORS
@@ -52,23 +57,23 @@ public class IntegerTermValue implements Model, Serializable
 
     public IntegerTermValue()
     {
-        this.id           = null;
+        this.id                 = null;
 
-        this.integerValue = new PrimitiveFunctor<>(null, Integer.class);
-        this.variableName = new PrimitiveFunctor<>(null, String.class);
+        this.integerValue       = new PrimitiveFunctor<>(null, Integer.class);
+        this.variableReference  = ModelFunctor.empty(VariableReference.class);
 
-        this.kind         = new PrimitiveFunctor<>(null, Kind.class);
+        this.kind               = new PrimitiveFunctor<>(null, Kind.class);
     }
 
 
     private IntegerTermValue(UUID id, Object value, Kind kind)
     {
-        this.id           = id;
+        this.id                 = id;
 
-        this.integerValue = new PrimitiveFunctor<>(null, Integer.class);
-        this.variableName = new PrimitiveFunctor<>(null, String.class);
+        this.integerValue       = new PrimitiveFunctor<>(null, Integer.class);
+        this.variableReference  = ModelFunctor.full(null, VariableReference.class);
 
-        this.kind         = new PrimitiveFunctor<>(kind, Kind.class);
+        this.kind               = new PrimitiveFunctor<>(kind, Kind.class);
 
         // > Set the value depending on the case
         switch (kind)
@@ -77,7 +82,7 @@ public class IntegerTermValue implements Model, Serializable
                 this.integerValue.setValue((Integer) value);
                 break;
             case VARIABLE:
-                this.variableName.setValue((String) value);
+                this.variableReference.setValue((VariableReference) value);
                 break;
         }
     }
@@ -89,9 +94,9 @@ public class IntegerTermValue implements Model, Serializable
     }
 
 
-    private static IntegerTermValue asVariable(UUID id, String variableName)
+    private static IntegerTermValue asVariable(UUID id, VariableReference variableReference)
     {
-        return new IntegerTermValue(id, variableName, Kind.VARIABLE);
+        return new IntegerTermValue(id, variableReference, Kind.VARIABLE);
     }
 
 
@@ -114,8 +119,8 @@ public class IntegerTermValue implements Model, Serializable
                 Integer value = yaml.atKey("value").getInteger();
                 return IntegerTermValue.asLiteral(id, value);
             case VARIABLE:
-                String variableName = yaml.atKey("variable").getString();
-                return IntegerTermValue.asVariable(id, variableName);
+                VariableReference varRef = VariableReference.fromYaml(yaml.atKey("variable"));
+                return IntegerTermValue.asVariable(id, varRef);
         }
 
         return null;
@@ -160,6 +165,38 @@ public class IntegerTermValue implements Model, Serializable
     public void onLoad() { }
 
 
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    // ** Variable Reference
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The integer term value kind.
+     * @return The kind.
+     */
+    private Kind kind()
+    {
+        return this.kind.getValue();
+    }
+
+
+    /**
+     * The variable case.
+     * @return The variable reference.
+     */
+    public VariableReference variableReference()
+    {
+        if (this.kind() != Kind.VARIABLE) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("variable", this.kind.toString())));
+        }
+
+        return this.variableReference.getValue();
+    }
+
+
     // > Value
     // ------------------------------------------------------------------------------------------
 
@@ -171,14 +208,14 @@ public class IntegerTermValue implements Model, Serializable
      * @throws SummationException
      */
     public Integer value()
-           throws SummationException
+           throws VariableException
     {
         switch (this.kind.getValue())
         {
             case LITERAL:
                 return this.integerValue.getValue();
             case VARIABLE:
-                return this.variableValue(this.variableName.getValue());
+                return this.variableValue(this.variableReference());
         }
 
         return null;
@@ -190,14 +227,14 @@ public class IntegerTermValue implements Model, Serializable
      * null is returned.
      * @return The variable name, or null.
      */
-    public String variableName()
+    public VariableReference variableDependency()
     {
         switch (this.kind.getValue())
         {
             case LITERAL:
                 return null;
             case VARIABLE:
-                return this.variableName.getValue();
+                return this.variableReference();
         }
 
         return null;
@@ -207,27 +244,30 @@ public class IntegerTermValue implements Model, Serializable
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private Integer variableValue(String variableName)
-            throws SummationException
+    private Integer variableValue(VariableReference variableReference)
+            throws VariableException
     {
-        // > If variable does not exist, throw exception
-        if (!State.hasVariable(variableName)) {
-            throw SummationException.undefinedVariable(
-                    new UndefinedVariableError(variableName));
+        Integer total = 0;
+
+        for (VariableUnion variableUnion : variableReference.variables())
+        {
+            // [1] If variable is not a number, throw exception
+            // ----------------------------------------------------------------------------------
+            if (variableUnion.type() != VariableType.NUMBER) {
+                throw VariableException.unexpectedVariableType(
+                        new UnexpectedVariableTypeError(variableUnion.variable().name(),
+                                                        VariableType.NUMBER,
+                                                        variableUnion.type()));
+            }
+
+            // [2] Add the variable's value to the sum.
+            // ----------------------------------------------------------------------------------
+
+            Integer variableValue = variableUnion.numberVariable().value();
+            total += variableValue;
         }
 
-        // [1] Get the variable
-        VariableUnion variableUnion = State.variableWithName(variableName);
-
-        // > If variable is not a number, throw exception
-        if (!variableUnion.type().equals(VariableType.NUMBER)) {
-            throw SummationException.variableNotNumber(
-                    new VariableNotNumberError(variableName));
-        }
-
-        Integer variableValue = variableUnion.numberVariable().value();
-
-        return variableValue;
+        return total;
     }
 
 

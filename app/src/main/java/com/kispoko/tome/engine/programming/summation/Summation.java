@@ -4,6 +4,8 @@ package com.kispoko.tome.engine.programming.summation;
 
 import com.kispoko.tome.engine.programming.summation.term.TermType;
 import com.kispoko.tome.engine.programming.summation.term.TermUnion;
+import com.kispoko.tome.engine.programming.variable.VariableException;
+import com.kispoko.tome.engine.programming.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
@@ -21,12 +23,13 @@ import java.util.UUID;
 /**
  * Summation
  */
-public class Summation implements Model, Serializable {
+public class Summation implements Model, Serializable
+{
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                         id;
 
 
     // > Functors
@@ -38,9 +41,9 @@ public class Summation implements Model, Serializable {
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer sum;
+    private Integer                      sum;
 
-    private Boolean hasDiceRoll;
+    private Boolean                      hasDiceRoll;
 
 
     // CONSTRUCTORS
@@ -137,7 +140,7 @@ public class Summation implements Model, Serializable {
      * @throws SummationException
      */
     public Integer value()
-           throws SummationException
+           throws VariableException
     {
         return sum();
     }
@@ -148,7 +151,7 @@ public class Summation implements Model, Serializable {
      * @return The value string.
      */
     public String valueString()
-           throws SummationException
+           throws VariableException
     {
         if (this.hasDiceRoll())
         {
@@ -199,14 +202,14 @@ public class Summation implements Model, Serializable {
      *
      * @return A list of variable names.
      */
-    public List<String> variableDependencies() {
-        List<String> variableNames = new ArrayList<>();
+    public List<VariableReference> variableDependencies() {
+        List<VariableReference> variableReferences = new ArrayList<>();
 
         for (TermUnion termUnion : this.terms.getValue()) {
-            variableNames.addAll(termUnion.term().variableDependencies());
+            variableReferences.addAll(termUnion.term().variableDependencies());
         }
 
-        return variableNames;
+        return variableReferences;
     }
 
 
@@ -260,7 +263,7 @@ public class Summation implements Model, Serializable {
      * Evaluate the sum of this summation.
      */
     private Integer sum()
-            throws SummationException
+            throws VariableException
     {
         Integer sum = 0;
 

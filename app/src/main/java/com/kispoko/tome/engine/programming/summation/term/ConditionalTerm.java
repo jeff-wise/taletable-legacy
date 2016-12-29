@@ -2,7 +2,8 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
-import com.kispoko.tome.engine.programming.summation.SummationException;
+import com.kispoko.tome.engine.programming.variable.VariableException;
+import com.kispoko.tome.engine.programming.variable.VariableReference;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -122,18 +123,52 @@ public class ConditionalTerm extends Term implements Serializable
     public void onLoad() { }
 
 
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The conditional term value. The term value that is true or false, and dictates the
+     * value (integer) of the conditional term expression
+     * @return The Boolean Term Value.
+     */
+    private BooleanTermValue conditionalTermValue()
+    {
+        return this.conditionalTermValue.getValue();
+    }
+
+
+    /**
+     * The integer term value for when the conditional term value is true.
+     * @return The integer term value.
+     */
+    private IntegerTermValue whenTrueTermValue()
+    {
+        return this.whenTrueTermValue.getValue();
+    }
+
+
+    /**
+     * The integer term value for when the conditional term value is false.
+     * @return The integer term value.
+     */
+    private IntegerTermValue whenFalseTermValue()
+    {
+        return this.whenFalseTermValue.getValue();
+    }
+
+
     // > Value
     // ------------------------------------------------------------------------------------------
 
     /**
      * Get the value of the conditional term. If the condition variable is true
      * @return
-     * @throws SummationException
+     * @throws com.kispoko.tome.engine.programming.variable.VariableException
      */
     public Integer value()
-           throws SummationException
+           throws VariableException
     {
-        Boolean cond = conditionalTermValue.getValue().value();
+        Boolean cond = conditionalTermValue().value();
 
         if (cond) {
             return whenTrueTermValue.getValue().value();
@@ -148,24 +183,24 @@ public class ConditionalTerm extends Term implements Serializable
      * Get the variables that this term depends upon to calculate its value.
      * @return A list of variable names.
      */
-    public List<String> variableDependencies()
+    public List<VariableReference> variableDependencies()
     {
-        List<String> variableNames = new ArrayList<>();
+        List<VariableReference> variableReferences = new ArrayList<>();
 
-        String conditionalVariableName = this.conditionalTermValue.getValue().variableName();
-        String whenTrueVariableName    = this.whenTrueTermValue.getValue().variableName();
-        String whenFalseVariableName   = this.whenFalseTermValue.getValue().variableName();
+        VariableReference conditionalVariableRef = this.conditionalTermValue().variableDependency();
+        VariableReference whenTrueVariableRef    = this.whenTrueTermValue().variableDependency();
+        VariableReference whenFalseVariableRef   = this.whenFalseTermValue().variableDependency();
 
-        if (conditionalVariableName != null)
-            variableNames.add(conditionalVariableName);
+        if (conditionalVariableRef != null)
+            variableReferences.add(conditionalVariableRef);
 
-        if (whenTrueVariableName != null)
-            variableNames.add(whenTrueVariableName);
+        if (whenFalseVariableRef != null)
+            variableReferences.add(whenFalseVariableRef);
 
-        if (whenFalseVariableName != null)
-            variableNames.add(whenFalseVariableName);
+        if (whenTrueVariableRef != null)
+            variableReferences.add(whenTrueVariableRef);
 
-        return variableNames;
+        return variableReferences;
     }
 
 

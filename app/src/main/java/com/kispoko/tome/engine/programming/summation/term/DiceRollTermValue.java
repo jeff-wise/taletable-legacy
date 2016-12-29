@@ -5,10 +5,12 @@ package com.kispoko.tome.engine.programming.summation.term;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.summation.error.UndefinedVariableError;
 import com.kispoko.tome.engine.programming.summation.error.VariableNotNumberError;
+import com.kispoko.tome.engine.programming.variable.VariableException;
 import com.kispoko.tome.engine.programming.variable.VariableType;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import com.kispoko.tome.engine.programming.variable.error.UndefinedVariableError;
+import com.kispoko.tome.engine.programming.variable.error.UnexpectedVariableTypeError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.exception.UnionException;
@@ -224,7 +226,7 @@ public class DiceRollTermValue implements Model, Serializable
      * @throws SummationException
      */
     public Integer value()
-           throws SummationException
+           throws VariableException
     {
         switch (this.kind())
         {
@@ -247,7 +249,7 @@ public class DiceRollTermValue implements Model, Serializable
      * @return The Dice Roll.
      */
     public DiceRoll diceRoll()
-           throws SummationException
+           throws VariableException
     {
         switch (this.kind())
         {
@@ -270,11 +272,11 @@ public class DiceRollTermValue implements Model, Serializable
     // ------------------------------------------------------------------------------------------
 
     private DiceRoll variableValue(String variableName)
-            throws SummationException
+            throws VariableException
     {
         // > If variable does not exist, throw exception
         if (!State.hasVariable(variableName)) {
-            throw SummationException.undefinedVariable(
+            throw VariableException.undefinedVariable(
                     new UndefinedVariableError(variableName));
         }
 
@@ -283,8 +285,10 @@ public class DiceRollTermValue implements Model, Serializable
 
         // > If variable is not a dice roll, throw exception
         if (!variableUnion.type().equals(VariableType.DICE)) {
-            throw SummationException.variableNotNumber(
-                    new VariableNotNumberError(variableName));
+            throw VariableException.unexpectedVariableType(
+                    new UnexpectedVariableTypeError(variableName,
+                                                    VariableType.DICE,
+                                                    variableUnion.type()));
         }
 
         DiceRoll variableValue = variableUnion.diceVariable().diceRoll();

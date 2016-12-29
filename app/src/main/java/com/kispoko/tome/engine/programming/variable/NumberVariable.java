@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.programming.variable;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.program.invocation.Invocation;
@@ -22,6 +23,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,27 +41,27 @@ public class NumberVariable extends Variable implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                        id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<String>    name;
 
-    private PrimitiveFunctor<Integer> integerValue;
-    private ModelFunctor<Invocation> invocationValue;
-    private ModelFunctor<Summation> summation;
+    private PrimitiveFunctor<Integer>   integerValue;
+    private ModelFunctor<Invocation>    invocationValue;
+    private ModelFunctor<Summation>     summation;
 
-    private PrimitiveFunctor<Kind> kind;
-
-    private ModelFunctor<RefinementId> refinementId;
+    private PrimitiveFunctor<Kind>      kind;
+    private ModelFunctor<RefinementId>  refinementId;
+    private PrimitiveFunctor<String[]>  tags;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private ReactiveValue<Integer>   reactiveValue;
+    private ReactiveValue<Integer>      reactiveValue;
 
 
     // CONSTRUCTORS
@@ -78,8 +80,8 @@ public class NumberVariable extends Variable implements Model, Serializable
         this.summation       = ModelFunctor.empty(Summation.class);
 
         this.kind            = new PrimitiveFunctor<>(null, Kind.class);
-
         this.refinementId    = ModelFunctor.empty(RefinementId.class);
+        this.tags            = new PrimitiveFunctor<>(null, String[].class);
 
         this.reactiveValue   = null;
     }
@@ -96,7 +98,8 @@ public class NumberVariable extends Variable implements Model, Serializable
                            String name,
                            Object value,
                            Kind kind,
-                           RefinementId refinementId)
+                           RefinementId refinementId,
+                           List<String> tags)
     {
         super();
 
@@ -109,8 +112,11 @@ public class NumberVariable extends Variable implements Model, Serializable
         this.summation              = ModelFunctor.full(null, Summation.class);
 
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
-
         this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
+
+        String[] tagsArray = new String[tags.size()];
+        tags.toArray(tagsArray);
+        this.tags                   = new PrimitiveFunctor<>(tagsArray, String[].class);
 
         // Set value according to variable type
         switch (kind)
@@ -139,9 +145,10 @@ public class NumberVariable extends Variable implements Model, Serializable
     public static NumberVariable asInteger(UUID id,
                                            String name,
                                            Integer integerValue,
-                                           RefinementId refinementId)
+                                           RefinementId refinementId,
+                                           List<String> tags)
     {
-        return new NumberVariable(id, name, integerValue, Kind.LITERAL, refinementId);
+        return new NumberVariable(id, name, integerValue, Kind.LITERAL, refinementId, tags);
     }
 
 
@@ -154,9 +161,10 @@ public class NumberVariable extends Variable implements Model, Serializable
     public static NumberVariable asProgram(UUID id,
                                            String name,
                                            Invocation invocation,
-                                           RefinementId refinementId)
+                                           RefinementId refinementId,
+                                           List<String> tags)
     {
-        return new NumberVariable(id, name, invocation, Kind.PROGRAM, refinementId);
+        return new NumberVariable(id, name, invocation, Kind.PROGRAM, refinementId, tags);
     }
 
 
@@ -169,9 +177,10 @@ public class NumberVariable extends Variable implements Model, Serializable
     public static NumberVariable asSummation(UUID id,
                                              String name,
                                              Summation summation,
-                                             RefinementId refinementId)
+                                             RefinementId refinementId,
+                                             List<String> tags)
     {
-        return new NumberVariable(id, name, summation, Kind.SUMMATION, refinementId);
+        return new NumberVariable(id, name, summation, Kind.SUMMATION, refinementId, tags);
     }
 
 
@@ -191,18 +200,19 @@ public class NumberVariable extends Variable implements Model, Serializable
         String       name         = yaml.atMaybeKey("name").getString();
         Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
+        List<String> tags         = yaml.atMaybeKey("tags").getStringList();
 
         switch (kind)
         {
             case LITERAL:
                 Integer integerValue  = yaml.atKey("value").getInteger();
-                return NumberVariable.asInteger(id, name, integerValue, refinementId);
+                return NumberVariable.asInteger(id, name, integerValue, refinementId, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asProgram(id, name, invocation, refinementId);
+                return NumberVariable.asProgram(id, name, invocation, refinementId, tags);
             case SUMMATION:
                 Summation summation = Summation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asSummation(id, name, summation, refinementId);
+                return NumberVariable.asSummation(id, name, summation, refinementId, tags);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
@@ -248,6 +258,41 @@ public class NumberVariable extends Variable implements Model, Serializable
     }
 
 
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The invocation case.
+     * @return The invocation.
+     */
+    public Invocation invocation()
+    {
+        if (this.kind() != Kind.PROGRAM) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("program", this.kind.name())));
+        }
+
+        return this.invocationValue.getValue();
+    }
+
+    /**
+     * The summation case.
+     * @return The summation.
+     */
+    public Summation summation()
+    {
+        if (this.kind() != Kind.SUMMATION) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("summation", this.kind.name())));
+        }
+
+        return this.summation.getValue();
+    }
+
+
+
     // > Variable
     // ------------------------------------------------------------------------------------------
 
@@ -261,20 +306,19 @@ public class NumberVariable extends Variable implements Model, Serializable
     }
 
 
-    public List<String> dependencies()
+    public List<VariableReference> dependencies()
     {
-        List<String> variableDependencies = new ArrayList<>();
+        List<VariableReference> variableDependencies = new ArrayList<>();
 
         switch (this.kind.getValue())
         {
             case LITERAL:
                 break;
             case PROGRAM:
-                variableDependencies = this.invocationValue.getValue()
-                                                           .variableDependencies();
+                variableDependencies = this.invocation().variableDependencies();
                 break;
             case SUMMATION:
-                variableDependencies = this.summation.getValue().variableDependencies();
+                variableDependencies = this.summation().variableDependencies();
                 break;
             default:
                 ApplicationFailure.union(
@@ -283,6 +327,16 @@ public class NumberVariable extends Variable implements Model, Serializable
         }
 
         return variableDependencies;
+    }
+
+
+    /**
+     * The variable's tags.
+     * @return The tag list.
+     */
+    public List<String> tags()
+    {
+        return Arrays.asList(this.tags.getValue());
     }
 
 
@@ -334,7 +388,7 @@ public class NumberVariable extends Variable implements Model, Serializable
      * @return The integer value.
      */
     public Integer value()
-           throws SummationException
+           throws VariableException
     {
         switch (this.kind.getValue())
         {
@@ -357,7 +411,7 @@ public class NumberVariable extends Variable implements Model, Serializable
      * @throws SummationException
      */
     public String valueString()
-           throws SummationException
+           throws VariableException
     {
         switch (this.kind())
         {

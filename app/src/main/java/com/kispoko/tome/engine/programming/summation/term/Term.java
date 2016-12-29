@@ -2,7 +2,8 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
-import com.kispoko.tome.engine.programming.summation.SummationException;
+import com.kispoko.tome.engine.programming.variable.VariableException;
+import com.kispoko.tome.engine.programming.variable.VariableReference;
 import com.kispoko.tome.util.model.Model;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class Term implements Model
     // INTERFACE
     // ------------------------------------------------------------------------------------------
 
-    public abstract Integer value() throws SummationException;
+    public abstract Integer value() throws VariableException;
 
-    public abstract List<String> variableDependencies();
+    public abstract List<VariableReference> variableDependencies();
 }

@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.engine.programming.summation.SummationException;
+import com.kispoko.tome.engine.programming.variable.VariableException;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -118,7 +119,7 @@ public class DiceRollTerm extends Term implements Serializable
      * @return The term value. Throws SummationException if the variable is invalid.
      */
     public Integer value()
-           throws SummationException
+           throws VariableException
     {
         return termValue.getValue().value();
     }
@@ -159,7 +160,7 @@ public class DiceRollTerm extends Term implements Serializable
      * @return The Dice Roll.
      */
     public DiceRoll diceRoll()
-           throws SummationException
+           throws VariableException
     {
         return this.termValue().diceRoll();
     }

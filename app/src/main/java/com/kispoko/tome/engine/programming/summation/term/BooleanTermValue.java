@@ -3,10 +3,12 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.programming.variable.VariableException;
+import com.kispoko.tome.engine.programming.variable.VariableReference;
+import com.kispoko.tome.engine.programming.variable.error.UndefinedVariableError;
+import com.kispoko.tome.engine.programming.variable.error.UnexpectedVariableTypeError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.summation.error.UndefinedVariableError;
-import com.kispoko.tome.engine.programming.summation.error.VariableNotNumberError;
 import com.kispoko.tome.engine.programming.variable.VariableType;
 import com.kispoko.tome.engine.programming.variable.VariableUnion;
 import com.kispoko.tome.util.EnumUtils;
@@ -35,16 +37,16 @@ public class BooleanTermValue implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                        id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<Boolean> booleanValue;
-    private PrimitiveFunctor<String> variableName;
+    private PrimitiveFunctor<Boolean>   booleanValue;
+    private PrimitiveFunctor<String>    variableName;
 
-    private PrimitiveFunctor<Kind> kind;
+    private PrimitiveFunctor<Kind>      kind;
 
 
     // CONSTRUCTORS
@@ -163,14 +165,25 @@ public class BooleanTermValue implements Model, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+
+    /**
+     * The variable name case.
+     * @return The variable name.
+     */
+    private String variableName()
+    {
+        return this.variableName.getValue();
+    }
+
+
     /**
      * Get the value of the boolean term. It may be a static boolean value, or the value of a
      * boolean variable.
      * @return The boolean value.
-     * @throws SummationException
+     * @throws VariableException
      */
     public Boolean value()
-           throws SummationException
+           throws VariableException
     {
         switch (this.kind.getValue())
         {
@@ -189,14 +202,14 @@ public class BooleanTermValue implements Model, Serializable
      * null is returned.
      * @return The variable name, or null.
      */
-    public String variableName()
+    public VariableReference variableDependency()
     {
         switch (this.kind.getValue())
         {
             case LITERAL:
                 return null;
             case VARIABLE:
-                return this.variableName.getValue();
+                return VariableReference.asByName(this.variableName());
         }
 
         return null;
@@ -210,11 +223,11 @@ public class BooleanTermValue implements Model, Serializable
      * @throws SummationException
      */
     private Boolean variableValue(String variableName)
-            throws SummationException
+            throws VariableException
     {
         // > If variable does not exist, throw exception
         if (!State.hasVariable(variableName)) {
-            throw SummationException.undefinedVariable(
+            throw VariableException.undefinedVariable(
                     new UndefinedVariableError(variableName));
         }
 
@@ -223,13 +236,13 @@ public class BooleanTermValue implements Model, Serializable
 
         // > If variable is not a number, throw exception
         if (!variableUnion.type().equals(VariableType.BOOLEAN)) {
-            throw SummationException.variableNotNumber(
-                    new VariableNotNumberError(variableName));
+            throw VariableException.unexpectedVariableType(
+                    new UnexpectedVariableTypeError(variableName,
+                                                    VariableType.BOOLEAN,
+                                                    variableUnion.type()));
         }
 
-        Boolean variableValue = variableUnion.booleanVariable().value();
-
-        return variableValue;
+        return variableUnion.booleanVariable().value();
     }
 
 

@@ -29,18 +29,18 @@ public class VariableUnion implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<BooleanVariable> booleanVariable;
-    private ModelFunctor<DiceVariable> diceVariable;
-    private ModelFunctor<NumberVariable> numberVariable;
-    private ModelFunctor<TextVariable> textVariable;
+    private ModelFunctor<BooleanVariable>   booleanVariable;
+    private ModelFunctor<DiceVariable>      diceVariable;
+    private ModelFunctor<NumberVariable>    numberVariable;
+    private ModelFunctor<TextVariable>      textVariable;
 
-    private PrimitiveFunctor<VariableType> type;
+    private PrimitiveFunctor<VariableType>  type;
 
 
     // CONSTRUCTORS

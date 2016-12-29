@@ -21,9 +21,9 @@ public class InvocationParameterUnion implements Model, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                                           id;
+    private UUID                                      id;
 
-    private PrimitiveFunctor<String> referenceValue;
+    private PrimitiveFunctor<String>                  referenceValue;
 
     private PrimitiveFunctor<InvocationParameterType> type;
 

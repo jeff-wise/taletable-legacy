@@ -17,8 +17,9 @@ public abstract class Variable
     // ABSTRACT METHODS
     // ------------------------------------------------------------------------------------------
 
-    public abstract String name();
-    public abstract List<String> dependencies();
+    public abstract String                  name();
+    public abstract List<VariableReference> dependencies();
+    public abstract List<String>            tags();
 
 
     // PROPERTIES

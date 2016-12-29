@@ -2,7 +2,6 @@
 package com.kispoko.tome.engine.programming.variable;
 
 
-import com.kispoko.tome.engine.State;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.program.invocation.Invocation;
 import com.kispoko.tome.engine.refinement.RefinementId;
@@ -41,16 +40,20 @@ public class BooleanVariable extends Variable implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<String>    name;
 
-    private PrimitiveFunctor<Boolean> booleanValue;
-    private ModelFunctor<Invocation> invocationValue;
+    private PrimitiveFunctor<Boolean>   booleanValue;
+    private ModelFunctor<Invocation>    invocationValue;
 
-    private PrimitiveFunctor<Kind> kind;
+    private PrimitiveFunctor<Kind>      kind;
+    private ModelFunctor<RefinementId>  refinementId;
+    private PrimitiveFunctor<String[]>  tags;
 
-    private ModelFunctor<RefinementId> refinementId;
 
-    private ReactiveValue<Boolean>    reactiveValue;
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private ReactiveValue<Boolean>      reactiveValue;
 
 
     // CONSTRUCTORS
@@ -66,11 +69,11 @@ public class BooleanVariable extends Variable implements Model, Serializable
 
         this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
         this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
-        this.invocationValue = ModelFunctor.empty(Invocation.class);
+        this.invocationValue        = ModelFunctor.empty(Invocation.class);
 
         this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
-
         this.refinementId           = ModelFunctor.empty(RefinementId.class);
+        this.tags                   = new PrimitiveFunctor<>(null, String[].class);
 
         this.reactiveValue          = null;
     }
@@ -87,7 +90,8 @@ public class BooleanVariable extends Variable implements Model, Serializable
                             String name,
                             Object value,
                             Kind kind,
-                            RefinementId refinementId)
+                            RefinementId refinementId,
+                            List<String> tags)
     {
         super();
 
@@ -99,8 +103,11 @@ public class BooleanVariable extends Variable implements Model, Serializable
         this.invocationValue = ModelFunctor.full(null, Invocation.class);
 
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
-
         this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
+
+        String[] tagsArray = new String[tags.size()];
+        tags.toArray(tagsArray);
+        this.tags                   = new PrimitiveFunctor<>(tagsArray, String[].class);
 
         // Set value according to variable type
         switch (kind)
@@ -126,9 +133,10 @@ public class BooleanVariable extends Variable implements Model, Serializable
     public static BooleanVariable asBoolean(UUID id,
                                             String name,
                                             Boolean booleanValue,
-                                            RefinementId refinementId)
+                                            RefinementId refinementId,
+                                            List<String> tags)
     {
-        return new BooleanVariable(id, name, booleanValue, Kind.LITERAL, refinementId);
+        return new BooleanVariable(id, name, booleanValue, Kind.LITERAL, refinementId, tags);
     }
 
 
@@ -141,9 +149,10 @@ public class BooleanVariable extends Variable implements Model, Serializable
     public static BooleanVariable asProgram(UUID id,
                                             String name,
                                             Invocation invocation,
-                                            RefinementId refinementId)
+                                            RefinementId refinementId,
+                                            List<String> tags)
     {
-        return new BooleanVariable(id, name, invocation, Kind.PROGRAM, refinementId);
+        return new BooleanVariable(id, name, invocation, Kind.PROGRAM, refinementId, tags);
     }
 
 
@@ -163,15 +172,16 @@ public class BooleanVariable extends Variable implements Model, Serializable
         String       name         = yaml.atMaybeKey("name").getString();
         Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
+        List<String> tags         = yaml.atMaybeKey("tags").getStringList();
 
         switch (kind)
         {
             case LITERAL:
                 Boolean booleanValue  = yaml.atKey("value").getBoolean();
-                return BooleanVariable.asBoolean(id, name, booleanValue, refinementId);
+                return BooleanVariable.asBoolean(id, name, booleanValue, refinementId, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return BooleanVariable.asProgram(id, name, invocation, refinementId);
+                return BooleanVariable.asProgram(id, name, invocation, refinementId, tags);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.

@@ -40,20 +40,20 @@ public class TextVariable extends Variable implements Model, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
+    private PrimitiveFunctor<String>    name;
 
-    private PrimitiveFunctor<String> stringValue;
-    private ModelFunctor<Invocation> programInvocationValue;
+    private PrimitiveFunctor<String>    stringValue;
+    private ModelFunctor<Invocation>    programInvocationValue;
 
-    private PrimitiveFunctor<Kind> kind;
-
-    private ModelFunctor<RefinementId> refinementId;
+    private PrimitiveFunctor<Kind>      kind;
+    private ModelFunctor<RefinementId>  refinementId;
+    private PrimitiveFunctor<String[]>  tags;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private ReactiveValue<String>    reactiveValue;
+    private ReactiveValue<String>       reactiveValue;
 
 
     // CONSTRUCTORS
@@ -71,8 +71,8 @@ public class TextVariable extends Variable implements Model, Serializable
         this.programInvocationValue = ModelFunctor.empty(Invocation.class);
 
         this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
-
         this.refinementId           = ModelFunctor.empty(RefinementId.class);
+        this.tags                   = new PrimitiveFunctor<>(null, String[].class);
 
         this.reactiveValue          = null;
     }
@@ -89,7 +89,8 @@ public class TextVariable extends Variable implements Model, Serializable
                          String name,
                          Object value,
                          Kind kind,
-                         RefinementId refinementId)
+                         RefinementId refinementId,
+                         List<String> tags)
     {
         // ** Variable Constructor
         super();
@@ -109,6 +110,10 @@ public class TextVariable extends Variable implements Model, Serializable
 
         // ** Refinement Id (if any)
         this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
+
+        String[] tagsArray = new String[tags.size()];
+        tags.toArray(tagsArray);
+        this.tags                   = new PrimitiveFunctor<>(tagsArray, String[].class);
 
         // > Set the value according to variable kind
         switch (kind)
@@ -134,9 +139,10 @@ public class TextVariable extends Variable implements Model, Serializable
     public static TextVariable asText(UUID id,
                                       String name,
                                       String stringValue,
-                                      RefinementId refinementId)
+                                      RefinementId refinementId,
+                                      List<String> tags)
     {
-        return new TextVariable(id, name, stringValue, Kind.LITERAL, refinementId);
+        return new TextVariable(id, name, stringValue, Kind.LITERAL, refinementId, tags);
     }
 
 
@@ -149,9 +155,10 @@ public class TextVariable extends Variable implements Model, Serializable
     public static TextVariable asProgram(UUID id,
                                          String name,
                                          Invocation invocation,
-                                         RefinementId refinementId)
+                                         RefinementId refinementId,
+                                         List<String> tags)
     {
-        return new TextVariable(id, name, invocation, Kind.PROGRAM, refinementId);
+        return new TextVariable(id, name, invocation, Kind.PROGRAM, refinementId, tags);
     }
 
 
@@ -171,15 +178,16 @@ public class TextVariable extends Variable implements Model, Serializable
         String       name         = yaml.atMaybeKey("name").getString();
         Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
+        List<String> tags         = yaml.atMaybeKey("tags").getStringList();
 
         switch (kind)
         {
             case LITERAL:
                 String stringValue  = yaml.atKey("value").getString();
-                return TextVariable.asText(id, name, stringValue, refinementId);
+                return TextVariable.asText(id, name, stringValue, refinementId, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return TextVariable.asProgram(id, name, invocation, refinementId);
+                return TextVariable.asProgram(id, name, invocation, refinementId, tags);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.

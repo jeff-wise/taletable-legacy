@@ -2,6 +2,7 @@
 package com.kispoko.tome.engine.programming.program.invocation;
 
 
+import com.kispoko.tome.engine.programming.variable.VariableReference;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
@@ -153,21 +154,21 @@ public class Invocation implements Model, Serializable
      * Get the list of variables that this program invocation depends on.
      * @return A list of variable names.
      */
-    public List<String> variableDependencies()
+    public List<VariableReference> variableDependencies()
     {
-        List<String> variableNames = new ArrayList<>();
+        List<VariableReference> variableReferences = new ArrayList<>();
 
         for (InvocationParameterUnion parameter : this.parameters())
         {
             switch (parameter.type())
             {
                 case REFERENCE:
-                    variableNames.add(parameter.reference());
+                    variableReferences.add(VariableReference.asByName(parameter.reference()));
                     break;
             }
         }
 
-        return variableNames;
+        return variableReferences;
     }
 
 }
