@@ -1,7 +1,8 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
 
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.program.invocation.Invocation;
 import com.kispoko.tome.engine.refinement.RefinementId;
@@ -17,15 +18,16 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 
 
 /**
- * Text Variable
+ * Boolean Variable
  */
-public class TextVariable extends Variable implements Model, Serializable
+public class BooleanVariable extends Variable implements Model, Serializable
 {
 
     // PROPERTIES
@@ -42,24 +44,27 @@ public class TextVariable extends Variable implements Model, Serializable
 
     private PrimitiveFunctor<String>    name;
 
-    private PrimitiveFunctor<String>    stringValue;
-    private ModelFunctor<Invocation>    programInvocationValue;
+    private PrimitiveFunctor<Boolean>   booleanValue;
+    private ModelFunctor<Invocation>    invocationValue;
 
     private PrimitiveFunctor<Kind>      kind;
     private ModelFunctor<RefinementId>  refinementId;
+
+    private PrimitiveFunctor<Boolean>   isNamespaced;
+
     private PrimitiveFunctor<String[]>  tags;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private ReactiveValue<String>       reactiveValue;
+    private ReactiveValue<Boolean>      reactiveValue;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TextVariable()
+    public BooleanVariable()
     {
         super();
 
@@ -67,11 +72,15 @@ public class TextVariable extends Variable implements Model, Serializable
 
         this.name                   = new PrimitiveFunctor<>(null, String.class);
 
-        this.stringValue            = new PrimitiveFunctor<>(null, String.class);
-        this.programInvocationValue = ModelFunctor.empty(Invocation.class);
+        this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
+        this.invocationValue        = ModelFunctor.empty(Invocation.class);
 
         this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
+
         this.refinementId           = ModelFunctor.empty(RefinementId.class);
+
+        this.isNamespaced           = new PrimitiveFunctor<>(null, Boolean.class);
+
         this.tags                   = new PrimitiveFunctor<>(null, String[].class);
 
         this.reactiveValue          = null;
@@ -80,49 +89,53 @@ public class TextVariable extends Variable implements Model, Serializable
 
     /**
      * Create a Variable. This constructor is private to enforce use of the case specific
-     * constructors, so only valid value/kind associations can be used.
+     * constructors, so only valid value/type associations can be used.
      * @param id The Model id.
      * @param value The Variable value.
      * @param kind The Variable kind.
      */
-    private TextVariable(UUID id,
-                         String name,
-                         Object value,
-                         Kind kind,
-                         RefinementId refinementId,
-                         List<String> tags)
+    private BooleanVariable(UUID id,
+                            String name,
+                            Object value,
+                            Kind kind,
+                            RefinementId refinementId,
+                            Boolean isNamespaced,
+                            List<String> tags)
     {
-        // ** Variable Constructor
         super();
 
-        // ** Id
         this.id                     = id;
 
-        // ** Name
         this.name                   = new PrimitiveFunctor<>(name, String.class);
 
-        // ** Value Variants
-        this.stringValue            = new PrimitiveFunctor<>(null, String.class);
-        this.programInvocationValue = ModelFunctor.full(null, Invocation.class);
+        this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
+        this.invocationValue        = ModelFunctor.full(null, Invocation.class);
 
-        // ** Kind (Literal or Program)
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
 
-        // ** Refinement Id (if any)
         this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
 
-        String[] tagsArray = new String[tags.size()];
-        tags.toArray(tagsArray);
-        this.tags                   = new PrimitiveFunctor<>(tagsArray, String[].class);
+        if (isNamespaced == null) isNamespaced = false;
 
-        // > Set the value according to variable kind
+        this.isNamespaced           = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
+
+        if (tags != null) {
+            String[] tagsArray = new String[tags.size()];
+            tags.toArray(tagsArray);
+            this.tags               = new PrimitiveFunctor<>(tagsArray, String[].class);
+        }
+        else {
+            this.tags               = new PrimitiveFunctor<>(new String[0], String[].class);
+        }
+
+        // Set value according to variable type
         switch (kind)
         {
             case LITERAL:
-                this.stringValue.setValue((String) value);
+                this.booleanValue.setValue((Boolean) value);
                 break;
             case PROGRAM:
-                this.programInvocationValue.setValue((Invocation) value);
+                this.invocationValue.setValue((Invocation) value);
                 break;
         }
 
@@ -131,18 +144,36 @@ public class TextVariable extends Variable implements Model, Serializable
 
 
     /**
-     * Create a "literal" text variable, that contains a value of kind String.
+     * Create a "boolean" valued variable.
      * @param id The Model id.
-     * @param stringValue The String value.
-     * @return A new "literal" Text Variable.
+     * @param name The variable name.
+     * @param booleanValue The Boolean value.
+     * @param refinementId The id of the variable's refinement.
+     * @param tags The variable's tags.
+     * @return A new "boolean" variable.
      */
-    public static TextVariable asText(UUID id,
-                                      String name,
-                                      String stringValue,
-                                      RefinementId refinementId,
-                                      List<String> tags)
+    public static BooleanVariable asBoolean(UUID id,
+                                            String name,
+                                            Boolean booleanValue,
+                                            RefinementId refinementId,
+                                            Boolean isNamespaced,
+                                            List<String> tags)
     {
-        return new TextVariable(id, name, stringValue, Kind.LITERAL, refinementId, tags);
+        return new BooleanVariable(id, name, booleanValue, Kind.LITERAL, refinementId,
+                                   isNamespaced, tags);
+    }
+
+
+    /**
+     * Create a "boolean" valued variable.
+     * @param id The Model id.
+     * @param booleanValue The Boolean value.
+     * @return A new "boolean" variable.
+     */
+    public static BooleanVariable asBoolean(UUID id,
+                                            Boolean booleanValue)
+    {
+        return new BooleanVariable(id, null, booleanValue, Kind.LITERAL, null, null, null);
     }
 
 
@@ -152,13 +183,15 @@ public class TextVariable extends Variable implements Model, Serializable
      * @param invocation The Invocation value.
      * @return A new "program" variable.
      */
-    public static TextVariable asProgram(UUID id,
-                                         String name,
-                                         Invocation invocation,
-                                         RefinementId refinementId,
-                                         List<String> tags)
+    public static BooleanVariable asProgram(UUID id,
+                                            String name,
+                                            Invocation invocation,
+                                            RefinementId refinementId,
+                                            Boolean isNamespaced,
+                                            List<String> tags)
     {
-        return new TextVariable(id, name, invocation, Kind.PROGRAM, refinementId, tags);
+        return new BooleanVariable(id, name, invocation, Kind.PROGRAM, refinementId,
+                                   isNamespaced, tags);
     }
 
 
@@ -168,26 +201,29 @@ public class TextVariable extends Variable implements Model, Serializable
      * @return The new Variable.
      * @throws YamlException
      */
-    public static TextVariable fromYaml(Yaml yaml)
+    public static BooleanVariable fromYaml(Yaml yaml)
                   throws YamlException
     {
         if (yaml.isNull())
             return null;
 
-        UUID         id           = UUID.randomUUID();
-        String       name         = yaml.atMaybeKey("name").getString();
-        Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
-        RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
-        List<String> tags         = yaml.atMaybeKey("tags").getStringList();
+        UUID         id                 = UUID.randomUUID();
+        String       name               = yaml.atMaybeKey("name").getString();
+        Kind         kind               = Kind.fromYaml(yaml.atKey("type"));
+        RefinementId refinementId       = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
+        Boolean      isNamespaced       = yaml.atMaybeKey("namespaced").getBoolean();
+        List<String> tags               = yaml.atMaybeKey("tags").getStringList();
 
         switch (kind)
         {
             case LITERAL:
-                String stringValue  = yaml.atKey("value").getString();
-                return TextVariable.asText(id, name, stringValue, refinementId, tags);
+                Boolean booleanValue  = yaml.atKey("value").getBoolean();
+                return BooleanVariable.asBoolean(id, name, booleanValue, refinementId,
+                                                 isNamespaced, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return TextVariable.asProgram(id, name, invocation, refinementId, tags);
+                return BooleanVariable.asProgram(id, name, invocation, refinementId,
+                                                 isNamespaced, tags);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
@@ -233,6 +269,8 @@ public class TextVariable extends Variable implements Model, Serializable
     }
 
 
+
+
     // > Variable
     // ------------------------------------------------------------------------------------------
 
@@ -244,45 +282,89 @@ public class TextVariable extends Variable implements Model, Serializable
 
 
     @Override
-    public List<String> dependencies()
+    public void setName(String name)
     {
-        List<String> variableDependencies = new ArrayList<>();
+        // > Set the name
+        String oldName = this.name();
+        this.name.setValue(name);
+
+        // > Reindex variable
+        State.removeVariable(oldName);
+        State.addVariable(this);
+    }
+
+
+    @Override
+    public boolean isNamespaced()
+    {
+        return this.isNamespaced.getValue();
+    }
+
+
+    @Override
+    public List<VariableReference> dependencies()
+    {
+        List<VariableReference> variableDependencies = new ArrayList<>();
 
         if (this.kind.getValue() == Kind.PROGRAM) {
-            variableDependencies = this.programInvocationValue.getValue().variableDependencies();
+            variableDependencies = this.invocation().variableDependencies();
         }
 
         return variableDependencies;
     }
 
 
+    @Override
+    public List<String> tags()
+    {
+        return Arrays.asList(this.tags.getValue());
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The program invocation case.
+     * @return The invocation.
+     */
+    private Invocation invocation()
+    {
+        return this.invocationValue.getValue();
+    }
+
 
     // ** Value
     // ------------------------------------------------------------------------------------------
 
-    public void setValue(String newValue)
+    /**
+     * Set the boolean variable integer. value
+     * @param newValue The boolean value.
+     */
+    public void setValue(Boolean newValue)
     {
         switch (this.kind.getValue())
         {
             case LITERAL:
-                this.stringValue.setValue(newValue);
+                this.booleanValue.setValue(newValue);
                 this.onUpdate();
                 break;
             case PROGRAM:
-                //this.reactiveValue.setValue(newValue);
                 break;
         }
     }
 
 
-    public String value()
+    /**
+     * Get the boolean variable's integer value.
+     * @return The boolean value.
+     */
+    public Boolean value()
     {
         switch (this.kind.getValue())
         {
             case LITERAL:
-                return this.stringValue.getValue();
+                return this.booleanValue.getValue();
             case PROGRAM:
                 return this.reactiveValue.value();
         }
@@ -290,8 +372,10 @@ public class TextVariable extends Variable implements Model, Serializable
         return null;
     }
 
+
     // ** Refinement
     // ------------------------------------------------------------------------------------------
+
 
     /**
      * Returns true if the variable has a refinement.
@@ -299,7 +383,7 @@ public class TextVariable extends Variable implements Model, Serializable
      */
     public boolean hasRefinement()
     {
-        return !this.refinementId.isNull();
+        return this.refinementId != null;
     }
 
 
@@ -313,42 +397,49 @@ public class TextVariable extends Variable implements Model, Serializable
     }
 
 
-    // > Null
+    // > Initialize
     // ------------------------------------------------------------------------------------------
 
-    public boolean isNull()
-    {
-        switch (this.kind.getValue())
-        {
-            case LITERAL:
-                return this.stringValue == null;
-            case PROGRAM:
-                return this.programInvocationValue == null;
-        }
-
-        return true;
-    }
-
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    private void initialize()
+    public void initialize()
     {
         // [1] Create reaction value (if program variable)
         // --------------------------------------------------------------------------------------
 
         if (this.kind.getValue() == Kind.PROGRAM) {
-            this.reactiveValue = new ReactiveValue<>(this.programInvocationValue.getValue(),
-                                                     VariableType.TEXT);
+            this.reactiveValue = new ReactiveValue<>(this.invocationValue.getValue(),
+                                                     VariableType.NUMBER);
         }
         else {
             this.reactiveValue = null;
         }
+
+        // [2] Add any variables associated with the value to the state
+        // --------------------------------------------------------------------------------------
+
+        this.addToState();
     }
 
 
     // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    // ** Variable State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Add any variables associated with the current value to the state.
+     */
+    private void addToState()
+    {
+    }
+
+
+    private void removeFromState()
+    {
+    }
+
+
+    // KIND
     // ------------------------------------------------------------------------------------------
 
     public enum Kind
@@ -391,6 +482,5 @@ public class TextVariable extends Variable implements Model, Serializable
         }
 
     }
-
 
 }

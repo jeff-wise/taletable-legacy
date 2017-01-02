@@ -4,11 +4,9 @@ package com.kispoko.tome.util.database.error;
 
 
 /**
- * Database Error: Null Functor
- *
- * This error occurs when a functor is null on an object that is being serialized to the database.
+ * Database Error: Uninitialized Functor
  */
-public class NullFunctorError
+public class UninitializedFunctorError
 {
 
     // PROPERTIES
@@ -21,21 +19,23 @@ public class NullFunctorError
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public NullFunctorError(String className, String fieldName)
+    public UninitializedFunctorError(String className, String fieldName)
     {
         this.className = className;
-        this.fieldName = fieldName;
+        this.fieldName  = fieldName;
     }
 
 
     // API
     // -----------------------------------------------------------------------------------------
 
+
     public String errorMessage()
     {
-        return "Null Functor Error:\n" +
+        return "Uninitialized Functor Error:\n" +
                 "    Class: " + this.className + "\n" +
                 "    Field: " + this.fieldName;
     }
+
 
 }

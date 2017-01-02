@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.programming.variable.VariableType;
+import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
@@ -70,7 +70,7 @@ public class TermUnion implements Model, Serializable
 
         switch (type)
         {
-            case LITERAL:
+            case INTEGER:
                 this.literalTerm.setValue((IntegerTerm) term);
                 break;
             case DICE_ROLL:
@@ -91,9 +91,9 @@ public class TermUnion implements Model, Serializable
      * @param integerTerm The literal term.
      * @return The "literal term" case Term Union.
      */
-    public static TermUnion asLiteral(UUID id, IntegerTerm integerTerm)
+    public static TermUnion asInteger(UUID id, IntegerTerm integerTerm)
     {
-        return new TermUnion(id, integerTerm, TermType.LITERAL);
+        return new TermUnion(id, integerTerm, TermType.INTEGER);
     }
 
 
@@ -134,9 +134,9 @@ public class TermUnion implements Model, Serializable
 
         switch (type)
         {
-            case LITERAL:
+            case INTEGER:
                 IntegerTerm integerTerm = IntegerTerm.fromYaml(yaml);
-                return TermUnion.asLiteral(id, integerTerm);
+                return TermUnion.asInteger(id, integerTerm);
             case DICE_ROLL:
                 DiceRollTerm diceRollTerm = DiceRollTerm.fromYaml(yaml);
                 return TermUnion.asDiceRoll(id, diceRollTerm);
@@ -214,7 +214,7 @@ public class TermUnion implements Model, Serializable
     {
         switch (this.type())
         {
-            case LITERAL:
+            case INTEGER:
                 return this.literalTerm();
             case DICE_ROLL:
                 return this.diceRollTerm();
@@ -236,7 +236,7 @@ public class TermUnion implements Model, Serializable
      */
     public IntegerTerm literalTerm()
     {
-        if (this.type() != TermType.LITERAL) {
+        if (this.type() != TermType.INTEGER) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("literal", this.type.toString())));

@@ -131,6 +131,21 @@ public class Group implements Model, Serializable
     public void onValueUpdate(String valueName) { }
 
 
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the group
+     */
+    public void initialize()
+    {
+        // Initialize each row
+        for (GroupRow groupRow : this.rows()) {
+            groupRow.initialize();
+        }
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 

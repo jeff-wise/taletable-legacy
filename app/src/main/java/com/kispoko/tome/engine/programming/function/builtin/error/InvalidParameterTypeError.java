@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.engine.programming.builtin.error;
+package com.kispoko.tome.engine.programming.function.builtin.error;
 
 
 import com.kispoko.tome.engine.programming.program.ProgramValueType;

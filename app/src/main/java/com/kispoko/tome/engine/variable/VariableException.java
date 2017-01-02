@@ -1,16 +1,16 @@
 
-package com.kispoko.tome.engine.programming.summation;
+package com.kispoko.tome.engine.variable;
 
 
-import com.kispoko.tome.engine.programming.summation.error.UndefinedVariableError;
-import com.kispoko.tome.engine.programming.summation.error.VariableNotNumberError;
+import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
+import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
 
 
 
 /**
- * Evaluation Excdption
+ * Variable Exception
  */
-public class SummationException extends Exception
+public class VariableException extends Exception
 {
 
     // PROPERTIES
@@ -23,22 +23,22 @@ public class SummationException extends Exception
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    private SummationException(Object error, ErrorType errorType)
+    private VariableException(Object error, ErrorType errorType)
     {
         this.error     = error;
         this.errorType = errorType;
     }
 
 
-    public static SummationException undefinedVariable(UndefinedVariableError error)
+    public static VariableException undefinedVariable(UndefinedVariableError error)
     {
-        return new SummationException(error, ErrorType.UNDEFINED_VARIABLE);
+        return new VariableException(error, ErrorType.UNDEFINED_VARIABLE);
     }
 
 
-    public static SummationException variableNotNumber(VariableNotNumberError error)
+    public static VariableException unexpectedVariableType(UnexpectedVariableTypeError error)
     {
-        return new SummationException(error, ErrorType.VARIABLE_NOT_NUMBER);
+        return new VariableException(error, ErrorType.UNEXPECTED_VARIABLE_TYPE);
     }
 
 
@@ -55,11 +55,15 @@ public class SummationException extends Exception
     {
         StringBuilder errorBuilder = new StringBuilder();
 
-        errorBuilder.append("Summation Error: ");
+        errorBuilder.append("Variable Error: ");
 
-        switch (this.errorType) {
+        switch (this.errorType)
+        {
             case UNDEFINED_VARIABLE:
                 errorBuilder.append(((UndefinedVariableError) this.error).errorMessage());
+                break;
+            case UNEXPECTED_VARIABLE_TYPE:
+                errorBuilder.append(((UnexpectedVariableTypeError) this.error).errorMessage());
                 break;
         }
 
@@ -73,8 +77,7 @@ public class SummationException extends Exception
     private enum ErrorType
     {
         UNDEFINED_VARIABLE,
-        VARIABLE_NOT_NUMBER
+        UNEXPECTED_VARIABLE_TYPE
     }
 
 }
-

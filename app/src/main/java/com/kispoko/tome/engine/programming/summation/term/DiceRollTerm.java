@@ -2,8 +2,8 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
-import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -129,16 +129,16 @@ public class DiceRollTerm extends Term implements Serializable
      * Get the variables that this term depends upon to calculate its value.
      * @return A list of variable names.
      */
-    public List<String> variableDependencies()
+    public List<VariableReference> variableDependencies()
     {
-        List<String> variableNames = new ArrayList<>();
+        List<VariableReference> variableReferences = new ArrayList<>();
 
         String variableName = this.termValue.getValue().variableName();
 
         if (variableName != null)
-            variableNames.add(variableName);
+            variableReferences.add(VariableReference.asByName(variableName));
 
-        return variableNames;
+        return variableReferences;
     }
 
 

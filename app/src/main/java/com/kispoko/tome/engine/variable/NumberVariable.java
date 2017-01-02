@@ -1,14 +1,14 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.programming.program.invocation.Invocation;
 import com.kispoko.tome.engine.programming.summation.Summation;
-import com.kispoko.tome.engine.programming.summation.SummationException;
 import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.EnumUtils;
@@ -54,7 +54,11 @@ public class NumberVariable extends Variable implements Model, Serializable
     private ModelFunctor<Summation>     summation;
 
     private PrimitiveFunctor<Kind>      kind;
+
     private ModelFunctor<RefinementId>  refinementId;
+
+    private PrimitiveFunctor<Boolean>   isNamespaced;
+
     private PrimitiveFunctor<String[]>  tags;
 
 
@@ -71,19 +75,23 @@ public class NumberVariable extends Variable implements Model, Serializable
     {
         super();
 
-        this.id              = null;
+        this.id                 = null;
 
-        this.name            = new PrimitiveFunctor<>(null, String.class);
+        this.name               = new PrimitiveFunctor<>(null, String.class);
 
-        this.integerValue    = new PrimitiveFunctor<>(null, Integer.class);
-        this.invocationValue = ModelFunctor.empty(Invocation.class);
-        this.summation       = ModelFunctor.empty(Summation.class);
+        this.integerValue       = new PrimitiveFunctor<>(null, Integer.class);
+        this.invocationValue    = ModelFunctor.empty(Invocation.class);
+        this.summation          = ModelFunctor.empty(Summation.class);
 
-        this.kind            = new PrimitiveFunctor<>(null, Kind.class);
-        this.refinementId    = ModelFunctor.empty(RefinementId.class);
-        this.tags            = new PrimitiveFunctor<>(null, String[].class);
+        this.kind               = new PrimitiveFunctor<>(null, Kind.class);
 
-        this.reactiveValue   = null;
+        this.refinementId       = ModelFunctor.empty(RefinementId.class);
+
+        this.isNamespaced       = new PrimitiveFunctor<>(null, Boolean.class);
+
+        this.tags               = new PrimitiveFunctor<>(null, String[].class);
+
+        this.reactiveValue      = null;
     }
 
 
@@ -99,6 +107,7 @@ public class NumberVariable extends Variable implements Model, Serializable
                            Object value,
                            Kind kind,
                            RefinementId refinementId,
+                           Boolean isNamespaced,
                            List<String> tags)
     {
         super();
@@ -112,11 +121,20 @@ public class NumberVariable extends Variable implements Model, Serializable
         this.summation              = ModelFunctor.full(null, Summation.class);
 
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
+
         this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
 
-        String[] tagsArray = new String[tags.size()];
-        tags.toArray(tagsArray);
-        this.tags                   = new PrimitiveFunctor<>(tagsArray, String[].class);
+        if (isNamespaced == null) isNamespaced = false;
+        this.isNamespaced           = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
+
+        if (tags != null) {
+            String[] tagsArray = new String[tags.size()];
+            tags.toArray(tagsArray);
+            this.tags               = new PrimitiveFunctor<>(tagsArray, String[].class);
+        }
+        else {
+            this.tags               = new PrimitiveFunctor<>(new String[0], String[].class);
+        }
 
         // Set value according to variable type
         switch (kind)
@@ -132,7 +150,28 @@ public class NumberVariable extends Variable implements Model, Serializable
                 break;
         }
 
-        initialize();
+        this.initializeNumberVariable();
+    }
+
+
+    /**
+     * Create a "literal" number variable that contains a value of type Integer.
+     * @param id The Model id.
+     * @param name The variable name
+     * @param integerValue The Integer value.
+     * @param refinementId The id of the variable's refinement.
+     * @param tags The variable's tags.
+     * @return A new "literal" Integer Variable.
+     */
+    public static NumberVariable asInteger(UUID id,
+                                           String name,
+                                           Integer integerValue,
+                                           RefinementId refinementId,
+                                           Boolean isNamespaced,
+                                           List<String> tags)
+    {
+        return new NumberVariable(id, name, integerValue, Kind.LITERAL, refinementId,
+                                  isNamespaced, tags);
     }
 
 
@@ -143,12 +182,9 @@ public class NumberVariable extends Variable implements Model, Serializable
      * @return A new "literal" Integer Variable.
      */
     public static NumberVariable asInteger(UUID id,
-                                           String name,
-                                           Integer integerValue,
-                                           RefinementId refinementId,
-                                           List<String> tags)
+                                           Integer integerValue)
     {
-        return new NumberVariable(id, name, integerValue, Kind.LITERAL, refinementId, tags);
+        return new NumberVariable(id, null, integerValue, Kind.LITERAL, null, null, null);
     }
 
 
@@ -162,9 +198,11 @@ public class NumberVariable extends Variable implements Model, Serializable
                                            String name,
                                            Invocation invocation,
                                            RefinementId refinementId,
+                                           Boolean isNamespaced,
                                            List<String> tags)
     {
-        return new NumberVariable(id, name, invocation, Kind.PROGRAM, refinementId, tags);
+        return new NumberVariable(id, name, invocation, Kind.PROGRAM, refinementId,
+                                  isNamespaced, tags);
     }
 
 
@@ -178,9 +216,11 @@ public class NumberVariable extends Variable implements Model, Serializable
                                              String name,
                                              Summation summation,
                                              RefinementId refinementId,
+                                             Boolean isNamespaced,
                                              List<String> tags)
     {
-        return new NumberVariable(id, name, summation, Kind.SUMMATION, refinementId, tags);
+        return new NumberVariable(id, name, summation, Kind.SUMMATION, refinementId,
+                                  isNamespaced, tags);
     }
 
 
@@ -200,19 +240,23 @@ public class NumberVariable extends Variable implements Model, Serializable
         String       name         = yaml.atMaybeKey("name").getString();
         Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
+        Boolean      isNamespaced = yaml.atMaybeKey("namespaced").getBoolean();
         List<String> tags         = yaml.atMaybeKey("tags").getStringList();
 
         switch (kind)
         {
             case LITERAL:
                 Integer integerValue  = yaml.atKey("value").getInteger();
-                return NumberVariable.asInteger(id, name, integerValue, refinementId, tags);
+                return NumberVariable.asInteger(id, name, integerValue, refinementId,
+                                                isNamespaced, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asProgram(id, name, invocation, refinementId, tags);
+                return NumberVariable.asProgram(id, name, invocation, refinementId,
+                                                isNamespaced, tags);
             case SUMMATION:
                 Summation summation = Summation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asSummation(id, name, summation, refinementId, tags);
+                return NumberVariable.asSummation(id, name, summation, refinementId,
+                                                  isNamespaced, tags);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
@@ -254,7 +298,7 @@ public class NumberVariable extends Variable implements Model, Serializable
 
     public void onLoad()
     {
-        initialize();
+        this.initializeNumberVariable();
     }
 
 
@@ -300,12 +344,34 @@ public class NumberVariable extends Variable implements Model, Serializable
      * Get the variable name which is a unique identifier.
      * @return The variable name.
      */
+    @Override
     public String name()
     {
         return this.name.getValue();
     }
 
 
+    @Override
+    public void setName(String name)
+    {
+        // > Set the name
+        String oldName = this.name();
+        this.name.setValue(name);
+
+        // > Reindex variable
+        State.removeVariable(oldName);
+        State.addVariable(this);
+    }
+
+
+    @Override
+    public boolean isNamespaced()
+    {
+        return this.isNamespaced.getValue();
+    }
+
+
+    @Override
     public List<VariableReference> dependencies()
     {
         List<VariableReference> variableDependencies = new ArrayList<>();
@@ -334,6 +400,7 @@ public class NumberVariable extends Variable implements Model, Serializable
      * The variable's tags.
      * @return The tag list.
      */
+    @Override
     public List<String> tags()
     {
         return Arrays.asList(this.tags.getValue());
@@ -408,7 +475,7 @@ public class NumberVariable extends Variable implements Model, Serializable
      * Get the value string representation. If the value contains any dice rolls, then it appears
      * as a formula, otherwise it is just an integer string.
      * @return The value string.
-     * @throws SummationException
+     * @throws VariableException
      */
     public String valueString()
            throws VariableException
@@ -454,10 +521,22 @@ public class NumberVariable extends Variable implements Model, Serializable
     }
 
 
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    public void initialize()
+    {
+        this.addToState();
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private void initialize()
+    // ** Initialize
+    // ------------------------------------------------------------------------------------------
+
+    private void initializeNumberVariable()
     {
         // [1] Create reaction value (if program variable)
         // --------------------------------------------------------------------------------------
@@ -469,6 +548,22 @@ public class NumberVariable extends Variable implements Model, Serializable
         else {
             this.reactiveValue = null;
         }
+    }
+
+
+    // ** Variable State
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Add any variables associated with the current value to the state.
+     */
+    private void addToState()
+    {
+    }
+
+
+    private void removeFromState()
+    {
     }
 
 

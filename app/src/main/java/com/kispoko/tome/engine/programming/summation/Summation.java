@@ -4,8 +4,8 @@ package com.kispoko.tome.engine.programming.summation;
 
 import com.kispoko.tome.engine.programming.summation.term.TermType;
 import com.kispoko.tome.engine.programming.summation.term.TermUnion;
-import com.kispoko.tome.engine.programming.variable.VariableException;
-import com.kispoko.tome.engine.programming.variable.VariableReference;
+import com.kispoko.tome.engine.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;

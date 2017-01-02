@@ -8,8 +8,8 @@ import android.os.AsyncTask;
 
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
-import com.kispoko.tome.util.database.error.NullFunctorError;
 import com.kispoko.tome.util.database.error.SerializationError;
+import com.kispoko.tome.util.database.error.UninitializedFunctorError;
 import com.kispoko.tome.util.database.query.CollectionQuery;
 import com.kispoko.tome.util.database.query.ModelQuery;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
@@ -707,27 +707,29 @@ public class ModelLib
         {
             for (Field field : valueFields)
             {
-                //Value<?> value = (Value<?>) field.get(model);
                 Functor<?> functor = (Functor<?>) FieldUtils.readField(field, model, true);
 
+                if (functor == null) {
+                    throw DatabaseException.uninitializedFunctor(
+                            new UninitializedFunctorError(model.getClass().getName(),
+                                                          field.getName()));
+                }
+
                 // Sort values by database value type
-                if (PrimitiveFunctor.class.isAssignableFrom(field.getType())) {
+                if (PrimitiveFunctor.class.isAssignableFrom(field.getType()))
+                {
                     PrimitiveFunctor primitiveValue = (PrimitiveFunctor) functor;
                     primitiveValue.setName(field.getName());
                     primitiveValues.add(primitiveValue);
                 }
-                else if (ModelFunctor.class.isAssignableFrom(field.getType())) {
+                else if (ModelFunctor.class.isAssignableFrom(field.getType()))
+                {
                     ModelFunctor<? extends Model> modelValue = (ModelFunctor<? extends Model>) functor;
-
-                    if (modelValue == null) {
-                        throw DatabaseException.nullFunctor(
-                                new NullFunctorError(model.getClass().getName(), field.getName()));
-                    }
-
                     modelValue.setName(field.getName());
                     modelValues.add(modelValue);
                 }
-                else if (CollectionFunctor.class.isAssignableFrom(field.getType())) {
+                else if (CollectionFunctor.class.isAssignableFrom(field.getType()))
+                {
                     CollectionFunctor<? extends Model> collectionValue =
                                                      (CollectionFunctor<? extends Model>) functor;
                     collectionValue.setName(field.getName());

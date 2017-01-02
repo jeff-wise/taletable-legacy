@@ -1,9 +1,9 @@
 
-package com.kispoko.tome.engine.programming.builtin;
+package com.kispoko.tome.engine.programming.function.builtin;
 
 
-import com.kispoko.tome.engine.programming.builtin.error.InvalidParameterTypeError;
-import com.kispoko.tome.engine.programming.builtin.error.WrongNumberOfParametersError;
+import com.kispoko.tome.engine.programming.function.builtin.error.InvalidParameterTypeError;
+import com.kispoko.tome.engine.programming.function.builtin.error.WrongNumberOfParametersError;
 
 
 /**

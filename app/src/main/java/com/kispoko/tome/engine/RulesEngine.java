@@ -2,13 +2,13 @@
 package com.kispoko.tome.engine;
 
 
-import com.kispoko.tome.engine.programming.builtin.BuiltInFunction;
+import com.kispoko.tome.engine.programming.function.builtin.BuiltInFunction;
 import com.kispoko.tome.engine.programming.interpreter.Interpreter;
 import com.kispoko.tome.engine.programming.function.FunctionIndex;
 import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.programming.program.ProgramIndex;
-import com.kispoko.tome.engine.programming.variable.VariableUnion;
 import com.kispoko.tome.engine.refinement.RefinementIndex;
+import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -28,14 +28,15 @@ public class RulesEngine implements Model, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
-    private ModelFunctor<RefinementIndex> refinementIndex;
-    private ModelFunctor<FunctionIndex> functionIndex;
-    private ModelFunctor<ProgramIndex> programIndex;
-    private ModelFunctor<MechanicIndex> mechanicIndex;
+    private ModelFunctor<RefinementIndex>   refinementIndex;
+    private ModelFunctor<FunctionIndex>     functionIndex;
+    private ModelFunctor<ProgramIndex>      programIndex;
+    private ModelFunctor<MechanicIndex>     mechanicIndex;
+    private ModelFunctor<Dictionary>        dictionary;
 
-    private Interpreter interpreter;
+    private Interpreter                     interpreter;
 
 
     // CONSTRUCTORS
@@ -49,6 +50,7 @@ public class RulesEngine implements Model, Serializable
         this.functionIndex   = ModelFunctor.empty(FunctionIndex.class);
         this.programIndex    = ModelFunctor.empty(ProgramIndex.class);
         this.mechanicIndex   = ModelFunctor.empty(MechanicIndex.class);
+        this.dictionary      = ModelFunctor.empty(Dictionary.class);
 
         this.interpreter     = null;
 
@@ -60,7 +62,8 @@ public class RulesEngine implements Model, Serializable
                        RefinementIndex refinementIndex,
                        FunctionIndex functionIndex,
                        ProgramIndex programIndex,
-                       MechanicIndex mechanicIndex)
+                       MechanicIndex mechanicIndex,
+                       Dictionary dictionary)
     {
         this.id = id;
 
@@ -68,6 +71,7 @@ public class RulesEngine implements Model, Serializable
         this.functionIndex   = ModelFunctor.full(functionIndex, FunctionIndex.class);
         this.programIndex    = ModelFunctor.full(programIndex, ProgramIndex.class);
         this.mechanicIndex   = ModelFunctor.full(mechanicIndex, MechanicIndex.class);
+        this.dictionary      = ModelFunctor.full(dictionary, Dictionary.class);
 
         this.interpreter = new Interpreter(this.programIndex.getValue(),
                                            this.functionIndex.getValue());
@@ -85,17 +89,10 @@ public class RulesEngine implements Model, Serializable
         ProgramIndex    programIndex    = ProgramIndex.fromYaml(yaml.atKey("programs"));
         FunctionIndex   functionIndex   = FunctionIndex.fromYaml(yaml.atKey("functions"));
         MechanicIndex   mechanicIndex   = MechanicIndex.fromYaml(yaml.atKey("mechanics"));
+        Dictionary      dictionary      = Dictionary.fromYaml(yaml.atKey("dictionary"));
 
-        // Read the variables. They add themselves to the state.
-        yaml.atKey("variables").forEach(new Yaml.ForEach<Void>() {
-            @Override
-            public Void forEach(Yaml yaml, int index) throws YamlException {
-                VariableUnion.fromYaml(yaml);
-                return null;
-            }
-        }, true);
-
-        return new RulesEngine(id, refinementIndex, functionIndex, programIndex, mechanicIndex);
+        return new RulesEngine(id, refinementIndex, functionIndex, programIndex,
+                               mechanicIndex, dictionary);
     }
 
 
@@ -137,7 +134,7 @@ public class RulesEngine implements Model, Serializable
     public void onLoad()
     {
         this.interpreter = new Interpreter(this.getProgramIndex(),
-                                           this.getFunctionIndex());
+                                           this.functionIndex());
     }
 
     // > State
@@ -167,9 +164,19 @@ public class RulesEngine implements Model, Serializable
      * Get the function index.
      * @return The Function Index.
      */
-    public FunctionIndex getFunctionIndex()
+    public FunctionIndex functionIndex()
     {
         return this.functionIndex.getValue();
+    }
+
+
+    /**
+     * The mechanic index.
+     * @return The Mechanic Index.
+     */
+    public MechanicIndex mechanicIndex()
+    {
+        return this.mechanicIndex.getValue();
     }
 
 
@@ -180,6 +187,16 @@ public class RulesEngine implements Model, Serializable
     public Interpreter getInterpreter()
     {
         return this.interpreter;
+    }
+
+
+    /**
+     * The value dictionary.
+     * @return the dictionary.
+     */
+    public Dictionary dictionary()
+    {
+        return this.dictionary.getValue();
     }
 
 }

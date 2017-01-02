@@ -2,13 +2,17 @@
 package com.kispoko.tome.engine;
 
 
-import com.kispoko.tome.engine.programming.variable.BooleanVariable;
-import com.kispoko.tome.engine.programming.variable.DiceVariable;
-import com.kispoko.tome.engine.programming.variable.NumberVariable;
-import com.kispoko.tome.engine.programming.variable.TextVariable;
-import com.kispoko.tome.engine.programming.variable.Variable;
-import com.kispoko.tome.engine.programming.variable.VariableReference;
-import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import android.util.Log;
+
+import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
+import com.kispoko.tome.engine.variable.BooleanVariable;
+import com.kispoko.tome.engine.variable.DiceVariable;
+import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.engine.variable.TextVariable;
+import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableReference;
+import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.sheet.SheetManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,7 +37,9 @@ public class State
     private static Map<String,Set<Variable>>      variableNameToListeners = new HashMap<>();
     private static Map<String,Set<Variable>>      variableTagToListeners  = new HashMap<>();
 
-    private static Map<String,Set<VariableUnion>> tagIndex               = new HashMap<>();
+    private static Map<String,Set<VariableUnion>> tagIndex                = new HashMap<>();
+
+    private static boolean                        mechanicIndexReady      = false;
 
 
     // API
@@ -48,10 +54,14 @@ public class State
     {
         String variableName = variableUnion.variable().name();
 
+        if (variableName != null)
+            Log.d("***STATE", variableName);
+
         // [1] Add variable to index.
         // --------------------------------------------------------------------------------------
 
-        variableByName.put(variableName, variableUnion);
+        if (variableName != null)
+            variableByName.put(variableName, variableUnion);
 
         // [2] Index the variable's dependencies
         // --------------------------------------------------------------------------------------
@@ -61,14 +71,14 @@ public class State
             switch (variableReference.type())
             {
                 // > Index variable names to listeners
-                case BY_NAME:
+                case NAME:
                     String name = variableReference.name();
                     if (!variableNameToListeners.containsKey(name))
                         variableNameToListeners.put(name, new HashSet<Variable>());
                     Set<Variable> nameListeners = variableNameToListeners.get(name);
                     nameListeners.add(variableUnion.variable());
                     break;
-                case BY_TAG:
+                case TAG:
                     String tag = variableReference.tag();
                     if (!variableTagToListeners.containsKey(tag))
                         variableTagToListeners.put(tag, new HashSet<Variable>());
@@ -90,7 +100,13 @@ public class State
             variablesWithTag.add(variableUnion);
         }
 
-        // [4] Notify all current listeners of this variable
+        // [4] Update mechanics
+        // --------------------------------------------------------------------------------------
+
+        if (mechanicIndexReady)
+            updateMechanics();
+
+        // [5] Notify all current listeners of this variable
         // --------------------------------------------------------------------------------------
 
         updateVariableDependencies(variableUnion.variable());
@@ -190,6 +206,24 @@ public class State
             return tagIndex.get(tag);
         else
             return new HashSet<>();
+    }
+
+
+    public static void initializeMechanics()
+    {
+        mechanicIndexReady = true;
+
+        updateMechanics();
+    }
+
+
+    public static void updateMechanics()
+    {
+        MechanicIndex mechanicIndex = SheetManager.currentSheet().rulesEngine().mechanicIndex();
+
+        for (VariableUnion variableUnion : variableByName.values()) {
+            mechanicIndex.onVariableUpdate(variableUnion.variable().name());
+        }
     }
 
 

@@ -5,10 +5,10 @@ package com.kispoko.tome.util.database;
 import com.kispoko.tome.util.database.error.ColumnDoesNotExistError;
 import com.kispoko.tome.util.database.error.InvalidEnumError;
 import com.kispoko.tome.util.database.error.NullColumnTypeError;
-import com.kispoko.tome.util.database.error.NullFunctorError;
 import com.kispoko.tome.util.database.error.QueryError;
 import com.kispoko.tome.util.database.error.SerializationError;
 import com.kispoko.tome.util.database.error.UnexpectedSQLTypeError;
+import com.kispoko.tome.util.database.error.UninitializedFunctorError;
 import com.kispoko.tome.util.database.error.ValueNotSerializableError;
 
 
@@ -60,9 +60,9 @@ public class DatabaseException extends Exception
     }
 
 
-    public static DatabaseException nullFunctor(NullFunctorError error)
+    public static DatabaseException uninitializedFunctor(UninitializedFunctorError error)
     {
-        return new DatabaseException(error, ErrorType.NULL_FUNCTOR);
+        return new DatabaseException(error, ErrorType.UNINITIALIZED_FUNCTOR);
     }
 
 
@@ -115,8 +115,8 @@ public class DatabaseException extends Exception
             case NULL_COLUMN_TYPE:
                 errorBuilder.append(((NullColumnTypeError) this.error).errorMessage());
                 break;
-            case NULL_FUNCTOR:
-                errorBuilder.append(((NullFunctorError) this.error).errorMessage());
+            case UNINITIALIZED_FUNCTOR:
+                errorBuilder.append(((UninitializedFunctorError) this.error).errorMessage());
                 break;
             case INVALID_ENUM:
                 errorBuilder.append(((InvalidEnumError) this.error).errorMessage());
@@ -142,7 +142,7 @@ public class DatabaseException extends Exception
         UNEXPECTED_SQL_TYPE,
         COLUMN_DOES_NOT_EXIST,
         NULL_COLUMN_TYPE,
-        NULL_FUNCTOR,
+        UNINITIALIZED_FUNCTOR,
         INVALID_ENUM,
         SERIALIZATION,
         QUERY

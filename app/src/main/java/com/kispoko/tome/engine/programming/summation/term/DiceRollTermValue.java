@@ -4,13 +4,11 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.summation.error.VariableNotNumberError;
-import com.kispoko.tome.engine.programming.variable.VariableException;
-import com.kispoko.tome.engine.programming.variable.VariableType;
-import com.kispoko.tome.engine.programming.variable.VariableUnion;
-import com.kispoko.tome.engine.programming.variable.error.UndefinedVariableError;
-import com.kispoko.tome.engine.programming.variable.error.UnexpectedVariableTypeError;
+import com.kispoko.tome.engine.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableType;
+import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
+import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.exception.UnionException;

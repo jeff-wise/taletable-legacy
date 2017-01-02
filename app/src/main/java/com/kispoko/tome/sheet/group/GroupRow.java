@@ -42,15 +42,15 @@ public class GroupRow implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                         id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<RowAlignment> alignment;
-    private PrimitiveFunctor<RowWidth> width;
-    private CollectionFunctor<Widget> widgets;
+    private PrimitiveFunctor<RowAlignment>  alignment;
+    private PrimitiveFunctor<RowWidth>      width;
+    private CollectionFunctor<Widget>       widgets;
 
 
     // CONSTRUCTORS
@@ -145,6 +145,21 @@ public class GroupRow implements Model, Serializable
      * This method is called when the Roleplay is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the group row.
+     */
+    public void initialize()
+    {
+        // Initialize each widget
+        for (Widget widget : this.widgets()) {
+            widget.initialize();
+        }
+    }
 
 
     // > State

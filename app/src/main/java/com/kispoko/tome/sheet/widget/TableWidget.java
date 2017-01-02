@@ -10,7 +10,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.programming.variable.TextVariable;
+import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.table.TableRow;
@@ -101,7 +101,7 @@ public class TableWidget extends Widget implements Serializable
         rowClassList.add(TableRow.class);
         this.rows        = CollectionFunctor.full(rows, rowClassList);
 
-        initialize();
+        initializeTable();
 
         // TODO validate that column types and cell types match
     }
@@ -179,7 +179,7 @@ public class TableWidget extends Widget implements Serializable
      */
     public void onLoad()
     {
-        initialize();
+        initializeTable();
     }
 
 
@@ -190,21 +190,28 @@ public class TableWidget extends Widget implements Serializable
      * The widget type as a string.
      * @return The widget's type as a string.
      */
+    @Override
     public String name() {
         return "text";
     }
+
+
+    @Override
+    public void initialize() { }
 
 
     /**
      * Get the widget's common data values.
      * @return The widget's WidgetData.
      */
+    @Override
     public WidgetData data()
     {
         return this.widgetData.getValue();
     }
 
 
+    @Override
     public void runAction(Action action) { }
 
 
@@ -353,10 +360,10 @@ public class TableWidget extends Widget implements Serializable
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private void initialize()
+    private void initializeTable()
     {
-        // The header row is derived from the column information, so create it each time the
-        // table widget is instantiated
+        // [1] The header row is derived from the column information, so create it each time the
+        //     table widget is instantiated
         // --------------------------------------------------------------------------------------
 
         List<CellUnion> headerCells = new ArrayList<>();
@@ -364,9 +371,7 @@ public class TableWidget extends Widget implements Serializable
         for (ColumnUnion columnUnion : this.getColumns())
         {
             TextVariable headerCellValue = TextVariable.asText(UUID.randomUUID(),
-                                                               null,
-                                                               columnUnion.getColumn().getName(),
-                                                               null);
+                                                               columnUnion.getColumn().getName());
             TextCell headerCell = new TextCell(UUID.randomUUID(),
                                                headerCellValue,
                                                columnUnion.getColumn().getAlignment(),

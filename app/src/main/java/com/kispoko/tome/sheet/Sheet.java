@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet;
 
 
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.group.Group;
@@ -35,25 +36,25 @@ public class Sheet implements Model
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                    id;
+    private UUID                        id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<Long> last_used;
+    private PrimitiveFunctor<Long>      last_used;
 
-    private ModelFunctor<Game> game;
-    private ModelFunctor<Section> profile;
-    private ModelFunctor<Section> encounter;
-    private ModelFunctor<Section> campaign;
-    private ModelFunctor<RulesEngine> rules;
+    private ModelFunctor<Game>          game;
+    private ModelFunctor<Section>       profileSection;
+    private ModelFunctor<Section>       encounterSection;
+    private ModelFunctor<Section>       campaignSection;
+    private ModelFunctor<RulesEngine>   rules;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Map<UUID,Widget>        componentById;
+    private Map<UUID,Widget>            componentById;
 
 
     // CONSTRUCTORS
@@ -61,38 +62,38 @@ public class Sheet implements Model
 
     public Sheet()
     {
-        this.id        = null;
+        this.id                 = null;
 
-        Long currentTimeMS = System.currentTimeMillis();
-        this.last_used = new PrimitiveFunctor<>(currentTimeMS, Long.class);
+        Long currentTimeMS      = System.currentTimeMillis();
+        this.last_used          = new PrimitiveFunctor<>(currentTimeMS, Long.class);
 
-        this.game      = ModelFunctor.empty(Game.class);
-        this.profile   = ModelFunctor.empty(Section.class);
-        this.encounter = ModelFunctor.empty(Section.class);
-        this.campaign  = ModelFunctor.empty(Section.class);
-        this.rules     = ModelFunctor.empty(RulesEngine.class);
+        this.game               = ModelFunctor.empty(Game.class);
+        this.profileSection     = ModelFunctor.empty(Section.class);
+        this.encounterSection   = ModelFunctor.empty(Section.class);
+        this.campaignSection    = ModelFunctor.empty(Section.class);
+        this.rules              = ModelFunctor.empty(RulesEngine.class);
     }
 
 
     public Sheet(UUID id,
                  Game game,
-                 Section profile,
-                 Section encounter,
-                 Section campaign,
+                 Section profileSection,
+                 Section encounterSection,
+                 Section campaignSection,
                  RulesEngine rulesEngine)
     {
-        this.id        = id;
+        this.id                 = id;
 
-        Long currentTimeMS = System.currentTimeMillis();
-        this.last_used = new PrimitiveFunctor<>(currentTimeMS, Long.class);
+        Long currentTimeMS      = System.currentTimeMillis();
+        this.last_used          = new PrimitiveFunctor<>(currentTimeMS, Long.class);
 
-        this.game      = ModelFunctor.full(game, Game.class);
+        this.game               = ModelFunctor.full(game, Game.class);
 
-        this.profile   = ModelFunctor.full(profile, Section.class);
-        this.encounter = ModelFunctor.full(encounter, Section.class);
-        this.campaign  = ModelFunctor.full(null, Section.class);
+        this.profileSection     = ModelFunctor.full(profileSection, Section.class);
+        this.encounterSection   = ModelFunctor.full(encounterSection, Section.class);
+        this.campaignSection    = ModelFunctor.full(null, Section.class);
 
-        this.rules     = ModelFunctor.full(rulesEngine, RulesEngine.class);
+        this.rules              = ModelFunctor.full(rulesEngine, RulesEngine.class);
 
         indexComponents();
     }
@@ -105,8 +106,8 @@ public class Sheet implements Model
 
         Game        game        = Game.fromYaml(yaml.atKey("game"));
 
-        Section     profile     = Section.fromYaml(yaml.atKey("profile"));
-        Section     encounter   = Section.fromYaml(yaml.atKey("encounter"));
+        Section     profile     = Section.fromYaml(yaml.atKey("profileSection"));
+        Section     encounter   = Section.fromYaml(yaml.atKey("encounterSection"));
 
         RulesEngine rulesEngine = RulesEngine.fromYaml(yaml.atKey("rulesEngine"));
 
@@ -147,6 +148,19 @@ public class Sheet implements Model
     }
 
 
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    public void initialize()
+    {
+        State.initializeMechanics();
+
+        this.profileSection().initialize();
+        this.encounterSection().initialize();
+        //this.campaignSection().initialize();
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -161,22 +175,22 @@ public class Sheet implements Model
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the profile section.
-     * @return The profile section.
+     * Get the profileSection section.
+     * @return The profileSection section.
      */
     public Section profileSection()
     {
-        return this.profile.getValue();
+        return this.profileSection.getValue();
     }
 
 
     /**
-     * Get the encounter section.
-     * @return The encounter section.
+     * Get the encounterSection section.
+     * @return The encounterSection section.
      */
     public Section encounterSection()
     {
-        return this.encounter.getValue();
+        return this.encounterSection.getValue();
     }
 
 
@@ -190,7 +204,7 @@ public class Sheet implements Model
      * Get the rules engine for this sheet.
      * @return The Rules Engine.
      */
-    public RulesEngine getRulesEngine()
+    public RulesEngine rulesEngine()
     {
         return this.rules.getValue();
     }
@@ -221,8 +235,8 @@ public class Sheet implements Model
     {
         componentById = new HashMap<>();
 
-        for (Page page : this.profile.getValue().getPages()) {
-            for (Group group : page.getGroups()) {
+        for (Page page : this.profileSection.getValue().pages()) {
+            for (Group group : page.groups()) {
                 for (GroupRow groupRow : group.rows()) {
                     for (Widget widget : groupRow.widgets()) {
                         componentById.put(widget.getId(), widget);

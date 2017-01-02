@@ -28,7 +28,7 @@ sections:
           size: large
           label: Name
           data:
-            value: Hildebrand
+            valueVariable: Hildebrand
       - label: Picture
         widgetDatas:
         - kind: imageWidget
@@ -40,26 +40,26 @@ sections:
           size: medium
           label: Level
           data:
-            value: 17
+            valueVariable: 17
         - kind: text
           label: Class
           size: medium
           label: Class
           data:
-            value: Wizard
+            valueVariable: Wizard
             kind: class
         - kind: text
           label: Race
           size: medium
           label: Race
           data:
-            value: Human
+            valueVariable: Human
         - kind: text
           label: Alignment
           size: medium
           label: Alignment
           data:
-            value: Lawful Good
+            valueVariable: Lawful Good
         layout:
           rows:
           - frames:
@@ -79,37 +79,37 @@ sections:
           size: medium
           label: Age
           data:
-            value: 41
+            valueVariable: 41
         - kind: text
           label: Height
           size: medium
           label: Height
           data:
-            value: 5'11"
+            valueVariable: 5'11"
         - kind: integer
           label: Weight
           size: medium
           label: Weight
           data:
-            value: 167
+            valueVariable: 167
         - kind: text
           label: Eyes
           size: medium
           label: Eyes
           data:
-            value: Blue
+            valueVariable: Blue
         - kind: text
           label: Skin
           size: medium
           label: Skin
           data:
-            value: Light
+            valueVariable: Light
         - kind: text
           label: Hair
           size: medium
           label: Hair
           data:
-            value: Brown
+            valueVariable: Brown
         layout:
           rows:
           - frames:
@@ -137,12 +137,12 @@ sections:
             - cells:
               - kind: text
                 data:
-                  value: >
+                  valueVariable: >
                     Hildebrand is very confident.
             - cells:
               - kind: text
                 data:
-                  value: >
+                  valueVariable: >
                     Hildebrand is incredibly handsome.
         - kind: tableWidget
           label: Ideals
@@ -153,19 +153,19 @@ sections:
             - cells:
               - kind: text
                 data:
-                  value: >
+                  valueVariable: >
                     Hildebrand believes that the greater good is an infinitely large
                     composition of miniscule good actions that form a lattice of integrity
                     that intertwines every creature of the land.
             - cells:
               - kind: text
                 data:
-                  value: >
+                  valueVariable: >
                     Hildebrand thinks that every person deserves a second chance.
             - cells:
               - kind: text
                 data:
-                  value: >
+                  valueVariable: >
                     He believes that the purpose of life is understanding the mysteries
                     of the universe, and mastering of magic in order to further understanding.
         - kind: tableWidget
@@ -177,7 +177,7 @@ sections:
             - cells:
               - kind: text
                 data:
-                  value: >
+                  valueVariable: >
                     Hildebrand has a special bond with Jade and often accompanies her on
                     missions in order to pursue great research opportunities.
         - kind: tableWidget
@@ -189,7 +189,7 @@ sections:
             - cells:
               - kind: text
                 data:
-                  value: >
+                  valueVariable: >
                     Hildebrand is occasionally possessed by a familiar demon that causes him to
                     behave chaotically and maliciously
     - label: Stats
@@ -201,37 +201,37 @@ sections:
           size: medium
           label: Strength
           data:
-            value: 11
+            valueVariable: 11
         - kind: integer
           label: Dexterity
           size: medium
           label: Dexterity
           data:
-            value: 19
+            valueVariable: 19
         - kind: integer
           label: Constitution
           size: medium
           label: Constitution
           data:
-            value: 15
+            valueVariable: 15
         - kind: integer
           label: Intelligence
           size: medium
           label: Intelligence
           data:
-            value: 22
+            valueVariable: 22
         - kind: integer
           label: Wisdom
           size: medium
           label: Wisdom
           data:
-            value: 14
+            valueVariable: 14
         - kind: integer
           label: Charisma
           size: medium
           label: Charisma
           data:
-            value: 13
+            valueVariable: 13
         layout:
           rows:
           - frames:
@@ -256,13 +256,13 @@ sections:
           prefix: '+'
           label: Proficiency Bonus
           data:
-            value: 6
+            valueVariable: 6
         - kind: integer
           label: inspiration
           size: medium
           label: Inspiration
           data:
-            value: 4
+            valueVariable: 4
         layout:
           rows:
           - frames:
@@ -277,20 +277,20 @@ sections:
           size: medium
           label: Armor Class
           data:
-            value: 24
+            valueVariable: 24
         - kind: integer
           label: initiative
           size: medium
           prefix: '+'
           label: Initiative
           data:
-            value: 7
+            valueVariable: 7
         - kind: integer
           label: speed
           size: medium
           label: Speed
           data:
-            value: 30
+            valueVariable: 30
         layout:
           rows:
           - frames:
@@ -307,42 +307,42 @@ sections:
           size: medium
           label: Strength
           data:
-            value: 0
+            valueVariable: 0
         - kind: integer
           label: dexterity
           size: medium
           prefix: '+'
           label: Dexterity
           data:
-            value: 4
+            valueVariable: 4
         - kind: integer
           label: constitution
           size: medium
           prefix: '+'
           label: Constitution
           data:
-            value: 2
+            valueVariable: 2
         - kind: integer
           label: intelligence
           size: medium
           prefix: '+'
           label: Intelligence
           data:
-            value: 12
+            valueVariable: 12
         - kind: integer
           label: wisdom
           size: medium
           prefix: '+'
           label: Wisdom
           data:
-            value: 8
+            valueVariable: 8
         - kind: integer
           label: charisma
           size: medium
           prefix: '+'
           label: Charisma
           data:
-            value: 1
+            valueVariable: 1
         layout:
           rows:
           - frames:

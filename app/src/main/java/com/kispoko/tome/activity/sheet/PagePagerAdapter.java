@@ -5,7 +5,6 @@ package com.kispoko.tome.activity.sheet;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.View;
 
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
@@ -66,7 +65,7 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
     public Fragment getItem(int position)
     {
         return PageFragment.newInstance(this.pages.get(position),
-                                        SheetManager.currentSheet().getRulesEngine());
+                                        SheetManager.currentSheet().rulesEngine());
     }
 
 

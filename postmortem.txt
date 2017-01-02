@@ -18,14 +18,14 @@ abstracting getting/setting values as well as serialization. and connecting them
 java sum refinementIndex
 interfaces as constraints
 
-on the value of pretty code.
+on the valueVariable of pretty code.
 
 developing alone. advantages/disadvantages. need more abstraction. can change things a lot
 
 
-the value of elegant DSLs
+the valueVariable of elegant DSLs
 
-the value of constraints and elegant program modeling
+the valueVariable of constraints and elegant program modeling
 
 
 how to properly do async functions.

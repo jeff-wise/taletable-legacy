@@ -23,15 +23,22 @@ import com.kispoko.tome.engine.programming.summation.term.DiceRollTermValue;
 import com.kispoko.tome.engine.programming.summation.term.IntegerTermValue;
 import com.kispoko.tome.engine.programming.summation.term.IntegerTerm;
 import com.kispoko.tome.engine.programming.summation.term.TermUnion;
-import com.kispoko.tome.engine.programming.variable.BooleanVariable;
-import com.kispoko.tome.engine.programming.variable.DiceVariable;
-import com.kispoko.tome.engine.programming.variable.NumberVariable;
-import com.kispoko.tome.engine.programming.variable.TextVariable;
+import com.kispoko.tome.engine.value.Dictionary;
+import com.kispoko.tome.engine.value.NumberValue;
+import com.kispoko.tome.engine.value.TextValue;
+import com.kispoko.tome.engine.value.ValueReference;
+import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.ValueUnion;
+import com.kispoko.tome.engine.variable.BooleanVariable;
+import com.kispoko.tome.engine.variable.DiceVariable;
+import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.programming.function.Function;
 import com.kispoko.tome.engine.programming.function.Tuple;
 import com.kispoko.tome.engine.programming.program.Program;
 import com.kispoko.tome.engine.programming.program.statement.Statement;
-import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import com.kispoko.tome.engine.variable.VariableReference;
+import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.engine.refinement.RefinementUnion;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.refinement.RefinementId;
@@ -163,12 +170,21 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(IntegerTermValue.class);
             modelClasses.add(BooleanTermValue.class);
 
+            // ** Value
+            modelClasses.add(Dictionary.class);
+            modelClasses.add(ValueSet.class);
+            modelClasses.add(ValueUnion.class);
+            modelClasses.add(TextValue.class);
+            modelClasses.add(NumberValue.class);
+            modelClasses.add(ValueReference.class);
+
             // ** Variable
             modelClasses.add(VariableUnion.class);
             modelClasses.add(TextVariable.class);
             modelClasses.add(NumberVariable.class);
             modelClasses.add(DiceVariable.class);
             modelClasses.add(BooleanVariable.class);
+            modelClasses.add(VariableReference.class);
 
             ModelLib.createSchema(modelClasses, database);
         }

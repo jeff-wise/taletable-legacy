@@ -105,16 +105,22 @@ public class DiceWidget extends Widget implements Serializable
      * The widget name.
      * @return The widget name.
      */
+    @Override
     public String name()
     {
         return "roll";
     }
 
 
+    @Override
+    public void initialize() { }
+
+
     /**
      * The general widget data.
      * @return The widget data.
      */
+    @Override
     public WidgetData data()
     {
         return this.widgetData.getValue();
@@ -125,6 +131,7 @@ public class DiceWidget extends Widget implements Serializable
      * Run an action on the Dice Widget.
      * @param action The widget action.
      */
+    @Override
     public void runAction(Action action) { }
 
 

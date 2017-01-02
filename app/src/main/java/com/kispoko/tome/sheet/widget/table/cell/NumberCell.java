@@ -11,11 +11,12 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.variable.NumberVariable;
-import com.kispoko.tome.engine.programming.variable.Variable;
+import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
+import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
@@ -27,6 +28,8 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -34,7 +37,7 @@ import java.util.UUID;
 /**
  * Number CellUnion
  */
-public class NumberCell implements Model, Serializable
+public class NumberCell implements Model, Cell, Serializable
 {
 
     // PROPERTIES
@@ -43,20 +46,22 @@ public class NumberCell implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<NumberVariable> value;
+    private ModelFunctor<NumberVariable>    value;
     private PrimitiveFunctor<CellAlignment> alignment;
-    private PrimitiveFunctor<String> prefix;
+    private PrimitiveFunctor<String>        prefix;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer                       valueViewId;
+    private Integer                         valueViewId;
+
+    private WidgetContainer                 widgetContainer;
 
 
     // CONSTRUCTORS
@@ -82,9 +87,7 @@ public class NumberCell implements Model, Serializable
 
         if (value == null) {
             value = NumberVariable.asInteger(UUID.randomUUID(),
-                                             null,
-                                             column.getDefaultValue(),
-                                             null);
+                                             column.getDefaultValue());
         }
         this.value     = ModelFunctor.full(value, NumberVariable.class);
 
@@ -148,6 +151,34 @@ public class NumberCell implements Model, Serializable
     }
 
 
+    // > Cell
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Set the cells widget container (which is the parent Table Row).
+     * @param widgetContainer The widget container.
+     */
+    public void setWidgetContainer(WidgetContainer widgetContainer)
+    {
+        this.widgetContainer = widgetContainer;
+    }
+
+
+    /**
+     * The cell's variables that may be in a namespace.
+     * @return The variable list.
+     */
+    public List<Variable> namespacedVariables()
+    {
+        List<Variable> variables = new ArrayList<>();
+
+        if (this.valueVariable().isNamespaced())
+            variables.add(this.valueVariable());
+
+        return variables;
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -176,9 +207,9 @@ public class NumberCell implements Model, Serializable
                 return this.valueVariable().value();
             return null;
         }
-        catch (SummationException exception)
+        catch (VariableException exception)
         {
-            ApplicationFailure.summation(exception);
+            ApplicationFailure.variable(exception);
         }
 
         return null;
@@ -292,6 +323,10 @@ public class NumberCell implements Model, Serializable
             State.addVariable(this.valueVariable());
         }
 
+        // [3] Widget Container
+        // --------------------------------------------------------------------------------------
+
+        this.widgetContainer = null;
     }
 
 

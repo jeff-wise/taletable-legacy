@@ -113,6 +113,7 @@ public class SheetManager
                 else if (maybeSheet instanceof Sheet)
                 {
                     Sheet templateSheet = (Sheet) maybeSheet;
+                    templateSheet.initialize();
 
                     currentSheet = ModelFunctor.full(templateSheet, Sheet.class);
                     currentSheetContext = context;
@@ -158,6 +159,7 @@ public class SheetManager
             {
                 Log.d("***SHEET MANAGER", "on load sheet");
 
+                value.initialize();
                 listener.onSheet(value);
             }
 

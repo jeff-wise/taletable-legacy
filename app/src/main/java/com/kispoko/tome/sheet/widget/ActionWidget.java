@@ -12,8 +12,10 @@ import java.util.UUID;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.variable.NumberVariable;
+import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
@@ -40,16 +42,16 @@ public class ActionWidget extends Widget implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
-    private PrimitiveFunctor<String> description;
-    private ModelFunctor<NumberVariable> modifier;
-    private ModelFunctor<WidgetData> widgetData;
+    private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<String>        description;
+    private ModelFunctor<NumberVariable>    modifier;
+    private ModelFunctor<WidgetData>        widgetData;
 
 
     // CONSTRUCTORS
@@ -142,18 +144,34 @@ public class ActionWidget extends Widget implements Serializable
     // > Widget
     // ------------------------------------------------------------------------------------------
 
+    @Override
     public String name()
     {
         return "roll";
     }
 
 
+    @Override
+    public void initialize()
+    {
+        // [1] Add variable to state
+        // --------------------------------------------------------------------------------------
+
+        if (!this.modifier.isNull()) {
+            State.addVariable(this.modifierVariable());
+        }
+
+    }
+
+
+    @Override
     public WidgetData data()
     {
         return this.widgetData.getValue();
     }
 
 
+    @Override
     public void runAction(Action action) { }
 
 
@@ -252,8 +270,8 @@ public class ActionWidget extends Widget implements Serializable
             try {
                 return this.modifierVariable().value();
             }
-            catch (SummationException exception) {
-                ApplicationFailure.summation(exception);
+            catch (VariableException exception) {
+                ApplicationFailure.variable(exception);
             }
         }
 
@@ -270,8 +288,8 @@ public class ActionWidget extends Widget implements Serializable
         try {
             return this.modifierVariable().valueString();
         }
-        catch (SummationException exception) {
-            ApplicationFailure.summation(exception);
+        catch (VariableException exception) {
+            ApplicationFailure.variable(exception);
             return "";
         }
     }

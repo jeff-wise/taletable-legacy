@@ -1,7 +1,8 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
 
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -28,14 +29,16 @@ public class DiceVariable extends Variable implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                     id;
+    private UUID                        id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
-    private ModelFunctor<DiceRoll>   diceRoll;
+    private PrimitiveFunctor<String>    name;
+    private ModelFunctor<DiceRoll>      diceRoll;
+
+    private PrimitiveFunctor<Boolean>   isNamespaced;
 
 
     // CONSTRUCTORS
@@ -43,19 +46,24 @@ public class DiceVariable extends Variable implements Model, Serializable
 
     public DiceVariable()
     {
-        this.id       = null;
+        this.id             = null;
 
-        this.name     = new PrimitiveFunctor<>(null, String.class);
-        this.diceRoll = ModelFunctor.empty(DiceRoll.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.diceRoll       = ModelFunctor.empty(DiceRoll.class);
+
+        this.isNamespaced   = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
 
-    public DiceVariable(UUID id, String name, DiceRoll diceRoll)
+    public DiceVariable(UUID id, String name, DiceRoll diceRoll, Boolean isNamespaced)
     {
-        this.id       = id;
+        this.id             = id;
 
-        this.name     = new PrimitiveFunctor<>(name, String.class);
-        this.diceRoll = ModelFunctor.full(diceRoll, DiceRoll.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.diceRoll       = ModelFunctor.full(diceRoll, DiceRoll.class);
+
+        if (isNamespaced == null) isNamespaced = false;
+        this.isNamespaced   = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
     }
 
 
@@ -71,11 +79,12 @@ public class DiceVariable extends Variable implements Model, Serializable
         if (yaml.isNull())
             return null;
 
-        UUID     id       = UUID.randomUUID();
-        String   name     = yaml.atMaybeKey("name").getString();
-        DiceRoll diceRoll = DiceRoll.fromYaml(yaml.atKey("dice"));
+        UUID     id             = UUID.randomUUID();
+        String   name           = yaml.atMaybeKey("name").getString();
+        DiceRoll diceRoll       = DiceRoll.fromYaml(yaml.atKey("dice"));
+        Boolean  isNamespaced   = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new DiceVariable(id, name, diceRoll);
+        return new DiceVariable(id, name, diceRoll, isNamespaced);
     }
 
 
@@ -130,9 +139,45 @@ public class DiceVariable extends Variable implements Model, Serializable
     }
 
 
-    public List<String> dependencies()
+    @Override
+    public void setName(String name)
+    {
+        // > Set the name
+        String oldName = this.name();
+        this.name.setValue(name);
+
+        // > Reindex variable
+        State.removeVariable(oldName);
+        State.addVariable(this);
+    }
+
+
+    @Override
+    public boolean isNamespaced()
+    {
+        return this.isNamespaced.getValue();
+    }
+
+
+    public List<VariableReference> dependencies()
     {
         return new ArrayList<>();
+    }
+
+
+    @Override
+    public List<String> tags()
+    {
+        return new ArrayList<>();
+    }
+
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    public void initialize()
+    {
+
     }
 
 

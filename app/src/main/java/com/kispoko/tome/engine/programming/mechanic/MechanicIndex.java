@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.programming.mechanic;
 
 
+import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;

@@ -1,8 +1,8 @@
 
-package com.kispoko.tome.engine.programming.variable.error;
+package com.kispoko.tome.engine.variable.error;
 
 
-import com.kispoko.tome.engine.programming.variable.VariableType;
+import com.kispoko.tome.engine.variable.VariableType;
 
 
 

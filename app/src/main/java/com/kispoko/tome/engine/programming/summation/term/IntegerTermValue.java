@@ -3,14 +3,13 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.programming.variable.VariableException;
-import com.kispoko.tome.engine.programming.variable.VariableReference;
-import com.kispoko.tome.engine.programming.variable.error.UnexpectedVariableTypeError;
+import com.kispoko.tome.engine.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableReference;
+import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.variable.VariableType;
-import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import com.kispoko.tome.engine.variable.VariableType;
+import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -23,7 +22,6 @@ import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 
 

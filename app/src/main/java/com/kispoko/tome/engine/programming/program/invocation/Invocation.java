@@ -2,7 +2,7 @@
 package com.kispoko.tome.engine.programming.program.invocation;
 
 
-import com.kispoko.tome.engine.programming.variable.VariableReference;
+import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;

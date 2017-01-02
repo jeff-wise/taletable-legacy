@@ -65,8 +65,6 @@ public class Page implements Model, Serializable
         List<Class<? extends Group>> groupClasses = new ArrayList<>();
         groupClasses.add(Group.class);
         this.groups = CollectionFunctor.empty(groupClasses);
-
-        initialize();
     }
 
 
@@ -81,7 +79,7 @@ public class Page implements Model, Serializable
         groupClasses.add(Group.class);
         this.groups = CollectionFunctor.full(groups, groupClasses);
 
-        initialize();
+        this.initializePage();
     }
 
 
@@ -130,7 +128,25 @@ public class Page implements Model, Serializable
     /**
      * This method is called when the Page is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializePage();
+    }
+
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the page.
+     */
+    public void initialize()
+    {
+        // Initialize each group
+        for (Group group : this.groups()) {
+            group.initialize();
+        }
+    }
 
 
     // > State
@@ -161,7 +177,7 @@ public class Page implements Model, Serializable
     // ** Groups
     // ------------------------------------------------------------------------------------------
 
-    public List<Group> getGroups()
+    public List<Group> groups()
     {
         return this.groups.getValue();
     }
@@ -223,9 +239,18 @@ public class Page implements Model, Serializable
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private void initialize()
+    /**
+     * Initialize the page state.
+     */
+    private void initializePage()
     {
+        // [1] Sort the groups
+        // --------------------------------------------------------------------------------------
+
         this.sortGroups();
+
+        // [2] Add group update listener to ensure they are always sorted
+        // --------------------------------------------------------------------------------------
 
         this.groups.setOnUpdateListener(new Functor.OnUpdateListener() {
             @Override
@@ -234,6 +259,7 @@ public class Page implements Model, Serializable
             }
         });
     }
+
 
     /**
      * Sort the pages by their index value, so they are displayed in the intended order.

@@ -47,6 +47,8 @@ public abstract class Widget implements Model, Serializable
 
     abstract public WidgetData data();
 
+    abstract public void initialize();
+
 
     // TYPE
     // ------------------------------------------------------------------------------------------

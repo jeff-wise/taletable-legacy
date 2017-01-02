@@ -5,8 +5,8 @@ package com.kispoko.tome.engine.programming.interpreter;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.builtin.BuiltInFunction;
-import com.kispoko.tome.engine.programming.builtin.BuiltInFunctionException;
+import com.kispoko.tome.engine.programming.function.builtin.BuiltInFunction;
+import com.kispoko.tome.engine.programming.function.builtin.BuiltInFunctionException;
 import com.kispoko.tome.engine.programming.interpreter.error.FunctionNotFoundError;
 import com.kispoko.tome.engine.programming.interpreter.error.NullResultError;
 import com.kispoko.tome.engine.programming.interpreter.error.NullVariableError;
@@ -21,8 +21,8 @@ import com.kispoko.tome.engine.programming.program.invocation.Invocation;
 import com.kispoko.tome.engine.programming.program.ProgramValueUnion;
 import com.kispoko.tome.engine.programming.program.statement.Parameter;
 import com.kispoko.tome.engine.programming.program.statement.Statement;
-import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import com.kispoko.tome.engine.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.tuple.Tuple2;
 
 import java.io.Serializable;
@@ -126,8 +126,9 @@ public class Interpreter implements Serializable
                             try {
                                 programValueUnion = ProgramValueUnion.asInteger(
                                                     variableUnion.numberVariable().value());
-                            } catch (SummationException exception) {
-                                ApplicationFailure.summation(exception);
+                            }
+                            catch (VariableException exception) {
+                                ApplicationFailure.variable(exception);
                             }
                             break;
                         case BOOLEAN:

@@ -31,13 +31,13 @@ public class CellUnion implements Model, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                     id;
+    private UUID                        id;
 
-    private ModelFunctor<TextCell> textCell;
-    private ModelFunctor<NumberCell> numberCell;
-    private ModelFunctor<BooleanCell> booleanCell;
+    private ModelFunctor<TextCell>      textCell;
+    private ModelFunctor<NumberCell>    numberCell;
+    private ModelFunctor<BooleanCell>   booleanCell;
 
-    private PrimitiveFunctor<CellType> type;
+    private PrimitiveFunctor<CellType>  type;
 
 
     // CONSTRUCTORS
@@ -190,6 +190,25 @@ public class CellUnion implements Model, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Cell
+    // ------------------------------------------------------------------------------------------
+
+    public Cell cell()
+    {
+        switch (this.type())
+        {
+            case TEXT:
+                return this.textCell();
+            case NUMBER:
+                return this.numberCell();
+            case BOOLEAN:
+                return this.booleanCell();
+        }
+
+        return null;
+    }
+
+
     // ** Type
     // ------------------------------------------------------------------------------------------
 
@@ -197,7 +216,7 @@ public class CellUnion implements Model, Serializable
      * Get the cell type.
      * @return The Cell Type.
      */
-    public CellType getType()
+    public CellType type()
     {
         return this.type.getValue();
     }
@@ -210,9 +229,9 @@ public class CellUnion implements Model, Serializable
      * Get the text column case.
      * @return The Text Column.
      */
-    public TextCell getTextCell()
+    public TextCell textCell()
     {
-        if (this.getType() != CellType.TEXT) {
+        if (this.type() != CellType.TEXT) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("text", this.type.toString())));
@@ -225,9 +244,9 @@ public class CellUnion implements Model, Serializable
      * Get the text column case.
      * @return The Text Column.
      */
-    public NumberCell getNumberCell()
+    public NumberCell numberCell()
     {
-        if (this.getType() != CellType.NUMBER) {
+        if (this.type() != CellType.NUMBER) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("number", this.type.toString())));
@@ -240,9 +259,9 @@ public class CellUnion implements Model, Serializable
      * Get the text column case.
      * @return The Text Column.
      */
-    public BooleanCell getBooleanCell()
+    public BooleanCell booleanCell()
     {
-        if (this.getType() != CellType.BOOLEAN) {
+        if (this.type() != CellType.BOOLEAN) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("boolean", this.type.toString())));
@@ -261,13 +280,13 @@ public class CellUnion implements Model, Serializable
         switch (this.type.getValue())
         {
             case TEXT:
-                cellView = this.getTextCell().view(columnUnion.getTextColumn());
+                cellView = this.textCell().view(columnUnion.getTextColumn());
                 break;
             case NUMBER:
-                cellView = this.getNumberCell().view(columnUnion.getNumberColumn());
+                cellView = this.numberCell().view(columnUnion.getNumberColumn());
                 break;
             case BOOLEAN:
-                cellView = this.getBooleanCell().view(columnUnion.getBooleanColumn());
+                cellView = this.booleanCell().view(columnUnion.getBooleanColumn());
                 break;
         }
 

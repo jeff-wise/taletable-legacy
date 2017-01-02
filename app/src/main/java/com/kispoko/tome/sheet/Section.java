@@ -50,8 +50,6 @@ public class Section implements Model
         pageClasses.add(Page.class);
 
         this.pages = CollectionFunctor.empty(pageClasses);
-
-        this.initialize();
     }
 
 
@@ -65,7 +63,7 @@ public class Section implements Model
 
         this.pages = CollectionFunctor.full(pages, pageClasses);
 
-        this.initialize();
+        this.initializeSection();
     }
 
 
@@ -113,7 +111,10 @@ public class Section implements Model
     /**
      * This method is called when the Roleplay is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeSection();
+    }
 
 
     // > State
@@ -126,7 +127,7 @@ public class Section implements Model
      * Returns the pages in the roleplay section.
      * @return The roleplay pages.
      */
-    public List<Page> getPages()
+    public List<Page> pages()
     {
         return this.pages.getValue();
     }
@@ -142,25 +143,50 @@ public class Section implements Model
      */
     public void render(PagePagerAdapter pagePagerAdapter)
     {
-        pagePagerAdapter.setPages(this.getPages());
+        pagePagerAdapter.setPages(this.pages());
         pagePagerAdapter.notifyDataSetChanged();
+    }
+
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the section.
+     */
+    public void initialize()
+    {
+        // Initialize the pages
+        for (Page page : this.pages()) {
+            page.initialize();
+        }
     }
 
 
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private void initialize()
+    /**
+     * Initialize the section state.
+     */
+    private void initializeSection()
     {
+        // [1] Sort the pages
+        // --------------------------------------------------------------------------------------
+
         sortPages();
 
-        this.pages.setOnUpdateListener(new Functor.OnUpdateListener() {
+        // [2] Add an update listener on pages to ensure that they are always sorted
+        // --------------------------------------------------------------------------------------
+
+         this.pages.setOnUpdateListener(new Functor.OnUpdateListener() {
             @Override
             public void onUpdate() {
                 sortPages();
             }
         });
     }
+
 
     /**
      * Sort the pages by their index value, so they are displayed in the intended order.

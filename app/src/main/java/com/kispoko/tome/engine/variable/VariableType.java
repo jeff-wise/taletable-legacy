@@ -1,9 +1,8 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;

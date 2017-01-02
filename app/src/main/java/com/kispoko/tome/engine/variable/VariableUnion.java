@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.ApplicationFailure;

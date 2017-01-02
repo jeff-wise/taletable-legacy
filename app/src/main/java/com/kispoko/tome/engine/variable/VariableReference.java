@@ -1,10 +1,12 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
+
+import android.util.Pair;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.variable.error.UndefinedVariableError;
+import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -15,8 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.kispoko.tome.engine.programming.variable.VariableReferenceType.BY_NAME;
-import static com.kispoko.tome.engine.programming.variable.VariableReferenceType.BY_TAG;
 
 
 /**
@@ -64,15 +64,15 @@ public class VariableReference implements Model, Serializable
         this.name   = new PrimitiveFunctor<>(null, String.class);
         this.tag    = new PrimitiveFunctor<>(null, String.class);
 
-        this.type   = new PrimitiveFunctor<>(null, VariableReferenceType.class);
+        this.type   = new PrimitiveFunctor<>(type, VariableReferenceType.class);
 
         // > Set the value depending on the case
         switch (type)
         {
-            case BY_NAME:
+            case NAME:
                 this.name.setValue((String) value);
                 break;
-            case BY_TAG:
+            case TAG:
                 this.tag.setValue((String) value);
                 break;
         }
@@ -90,7 +90,7 @@ public class VariableReference implements Model, Serializable
      */
     public static VariableReference asByName(UUID id, String variableName)
     {
-        return new VariableReference(id, variableName, VariableReferenceType.BY_NAME);
+        return new VariableReference(id, variableName, VariableReferenceType.NAME);
     }
 
 
@@ -101,7 +101,7 @@ public class VariableReference implements Model, Serializable
      */
     public static VariableReference asByName(String variableName)
     {
-        return new VariableReference(null, variableName, VariableReferenceType.BY_NAME);
+        return new VariableReference(null, variableName, VariableReferenceType.NAME);
     }
 
 
@@ -113,7 +113,7 @@ public class VariableReference implements Model, Serializable
      */
     public static VariableReference asByTag(UUID id, String tag)
     {
-        return new VariableReference(id, tag, VariableReferenceType.BY_TAG);
+        return new VariableReference(id, tag, VariableReferenceType.TAG);
     }
 
 
@@ -124,7 +124,7 @@ public class VariableReference implements Model, Serializable
      */
     public static VariableReference asByTag(String tag)
     {
-        return new VariableReference(null, tag, VariableReferenceType.BY_TAG);
+        return new VariableReference(null, tag, VariableReferenceType.TAG);
     }
 
 
@@ -146,10 +146,10 @@ public class VariableReference implements Model, Serializable
 
         switch (type)
         {
-            case BY_NAME:
+            case NAME:
                 String variableName = yaml.atKey("name").getString();
                 return VariableReference.asByName(id, variableName);
-            case BY_TAG:
+            case TAG:
                 String tag = yaml.atKey("tag").getString();
                 return VariableReference.asByTag(id, tag);
         }
@@ -240,11 +240,11 @@ public class VariableReference implements Model, Serializable
     {
         switch (this.type())
         {
-            case BY_NAME:
+            case NAME:
                 Set<VariableUnion> variables = new HashSet<>();
-                variables.add( variableByName(this.name()) );
+                variables.add( variableByName(this.name()));
                 return variables;
-            case BY_TAG:
+            case TAG:
                 return variablesByTag(this.tag());
         }
 

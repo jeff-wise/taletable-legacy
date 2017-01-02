@@ -25,7 +25,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.variable.TextVariable;
+import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.util.WidgetData;

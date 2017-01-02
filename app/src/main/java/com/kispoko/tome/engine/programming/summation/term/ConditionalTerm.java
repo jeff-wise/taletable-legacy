@@ -2,8 +2,8 @@
 package com.kispoko.tome.engine.programming.summation.term;
 
 
-import com.kispoko.tome.engine.programming.variable.VariableException;
-import com.kispoko.tome.engine.programming.variable.VariableReference;
+import com.kispoko.tome.engine.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -163,7 +163,7 @@ public class ConditionalTerm extends Term implements Serializable
     /**
      * Get the value of the conditional term. If the condition variable is true
      * @return
-     * @throws com.kispoko.tome.engine.programming.variable.VariableException
+     * @throws com.kispoko.tome.engine.variable.VariableException
      */
     public Integer value()
            throws VariableException

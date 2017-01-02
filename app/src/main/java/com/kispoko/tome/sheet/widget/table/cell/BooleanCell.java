@@ -12,10 +12,11 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.variable.BooleanVariable;
-import com.kispoko.tome.engine.programming.variable.Variable;
+import com.kispoko.tome.engine.variable.BooleanVariable;
+import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
+import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
@@ -23,6 +24,8 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -30,7 +33,7 @@ import java.util.UUID;
 /**
  * Boolean CellUnion
  */
-public class BooleanCell implements Model, Serializable
+public class BooleanCell implements Model, Cell, Serializable
 {
 
     // PROPERTIES
@@ -39,20 +42,22 @@ public class BooleanCell implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<BooleanVariable> value;
+    private ModelFunctor<BooleanVariable>   value;
     private PrimitiveFunctor<CellAlignment> alignment;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer                       valueViewId;
+    private Integer                         valueViewId;
+
+    private WidgetContainer                 widgetContainer;
 
 
     // CONSTRUCTORS
@@ -78,9 +83,7 @@ public class BooleanCell implements Model, Serializable
         // ** Value
         if (value == null) {
             value = BooleanVariable.asBoolean(UUID.randomUUID(),
-                                              null,
-                                              column.getDefaultValue(),
-                                              null);
+                                              column.getDefaultValue());
         }
         this.value     = ModelFunctor.full(value, BooleanVariable.class);
 
@@ -141,6 +144,34 @@ public class BooleanCell implements Model, Serializable
     public void onLoad()
     {
         initialize();
+    }
+
+
+    // > Cell
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Set the cells widget container (which is the parent Table Row).
+     * @param widgetContainer The widget container.
+     */
+    public void setWidgetContainer(WidgetContainer widgetContainer)
+    {
+        this.widgetContainer = widgetContainer;
+    }
+
+
+    /**
+     * The cell's variables that may be in a namespace.
+     * @return The variable list.
+     */
+    public List<Variable> namespacedVariables()
+    {
+        List<Variable> variables = new ArrayList<>();
+
+        if (this.valueVariable().isNamespaced())
+            variables.add(this.valueVariable());
+
+        return variables;
     }
 
 
@@ -250,6 +281,11 @@ public class BooleanCell implements Model, Serializable
             State.addVariable(this.valueVariable());
         }
 
+
+        // [3] Widget Container
+        // --------------------------------------------------------------------------------------
+
+        this.widgetContainer = null;
     }
 
 

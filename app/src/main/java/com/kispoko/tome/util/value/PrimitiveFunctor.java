@@ -12,10 +12,12 @@ import com.kispoko.tome.engine.programming.summation.term.BooleanTermValue;
 import com.kispoko.tome.engine.programming.summation.term.DiceRollTermValue;
 import com.kispoko.tome.engine.programming.summation.term.IntegerTermValue;
 import com.kispoko.tome.engine.programming.summation.term.TermType;
-import com.kispoko.tome.engine.programming.variable.BooleanVariable;
-import com.kispoko.tome.engine.programming.variable.NumberVariable;
-import com.kispoko.tome.engine.programming.variable.TextVariable;
-import com.kispoko.tome.engine.programming.variable.VariableType;
+import com.kispoko.tome.engine.value.ValueType;
+import com.kispoko.tome.engine.variable.BooleanVariable;
+import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.engine.variable.TextVariable;
+import com.kispoko.tome.engine.variable.VariableReferenceType;
+import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.refinement.RefinementType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.group.RowAlignment;
@@ -209,6 +211,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(VariableReferenceType.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(TextVariable.Kind.class))
         {
             return SQLValue.Type.TEXT;
@@ -238,6 +244,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(TermType.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(ValueType.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -389,6 +399,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((VariableType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
+        else if (this.getValue() instanceof VariableReferenceType)
+        {
+            String enumString = ((VariableReferenceType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
         else if (this.getValue() instanceof TextVariable.Kind)
         {
             String enumString = ((TextVariable.Kind) this.getValue()).name().toLowerCase();
@@ -417,6 +432,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof TermType)
         {
             String enumString = ((TermType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof ValueType)
+        {
+            String enumString = ((ValueType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof BooleanTermValue.Kind)
@@ -577,6 +597,17 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             VariableType variableType = VariableType.fromSQLValue(sqlValue);
             this.setValue((A) variableType);
+        }
+        else if (this.valueClass.isAssignableFrom(ValueType.class))
+        {
+            ValueType valueType = ValueType.fromSQLValue(sqlValue);
+            this.setValue((A) valueType);
+        }
+        else if (this.valueClass.isAssignableFrom(VariableReferenceType.class))
+        {
+            VariableReferenceType variableReferenceType =
+                    VariableReferenceType.fromSQLValue(sqlValue);
+            this.setValue((A) variableReferenceType);
         }
         else if (this.valueClass.isAssignableFrom(TextVariable.Kind.class))
         {

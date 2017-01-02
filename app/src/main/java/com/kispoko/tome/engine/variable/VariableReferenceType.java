@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
@@ -10,14 +10,15 @@ import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
+
 /**
  * Variable Reference Type
  */
 public enum VariableReferenceType
 {
 
-    BY_NAME,
-    BY_TAG;
+    NAME,
+    TAG;
 
 
     public static VariableReferenceType fromString(String typeString)

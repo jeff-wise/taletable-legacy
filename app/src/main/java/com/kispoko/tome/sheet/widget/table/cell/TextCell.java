@@ -10,10 +10,11 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.variable.TextVariable;
-import com.kispoko.tome.engine.programming.variable.Variable;
+import com.kispoko.tome.engine.variable.TextVariable;
+import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
+import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
@@ -25,6 +26,8 @@ import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -32,7 +35,7 @@ import java.util.UUID;
 /**
  * Text CellUnion
  */
-public class TextCell implements Model, Serializable
+public class TextCell implements Model, Cell, Serializable
 {
 
     // PROPERTIES
@@ -41,20 +44,22 @@ public class TextCell implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                          id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<TextVariable> value;
+    private ModelFunctor<TextVariable>      value;
     private PrimitiveFunctor<CellAlignment> alignment;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer                       valueViewId;
+    private Integer                         valueViewId;
+
+    private WidgetContainer                 widgetContainer;
 
 
     // CONSTRUCTORS
@@ -62,14 +67,17 @@ public class TextCell implements Model, Serializable
 
     public TextCell()
     {
-        this.id        = null;
+        this.id                 = null;
 
-        this.value     = ModelFunctor.empty(TextVariable.class);
-        this.alignment = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.value              = ModelFunctor.empty(TextVariable.class);
+        this.alignment          = new PrimitiveFunctor<>(null, CellAlignment.class);
     }
 
 
-    public TextCell(UUID id, TextVariable value, CellAlignment alignment, TextColumn column)
+    public TextCell(UUID id,
+                    TextVariable value,
+                    CellAlignment alignment,
+                    TextColumn column)
     {
         // ** Id
         this.id        = id;
@@ -77,14 +85,11 @@ public class TextCell implements Model, Serializable
         // ** Value
         if (value == null) {
             value = TextVariable.asText(UUID.randomUUID(),
-                                        null,
-                                        column.getDefaultValue(),
-                                        null);
+                                        column.getDefaultValue());
         }
-        this.value     = ModelFunctor.full(value, TextVariable.class);
+        this.value              = ModelFunctor.full(value, TextVariable.class);
 
-        // ** Alignment
-        this.alignment = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.alignment          = new PrimitiveFunctor<>(alignment, CellAlignment.class);
 
         // > Initialize state
         initialize();
@@ -94,9 +99,9 @@ public class TextCell implements Model, Serializable
     public static TextCell fromYaml(Yaml yaml, TextColumn column)
                   throws YamlException
     {
-        UUID          id        = UUID.randomUUID();
-        TextVariable  value     = TextVariable.fromYaml(yaml.atMaybeKey("value"));
-        CellAlignment alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        UUID          id                = UUID.randomUUID();
+        TextVariable  value             = TextVariable.fromYaml(yaml.atMaybeKey("value"));
+        CellAlignment alignment         = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
 
         return new TextCell(id, value, alignment, column);
     }
@@ -143,6 +148,35 @@ public class TextCell implements Model, Serializable
     }
 
 
+    // > Cell
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Set the cells widget container (which is the parent Table Row).
+     * @param widgetContainer The widget container.
+     */
+    public void setWidgetContainer(WidgetContainer widgetContainer)
+    {
+        this.widgetContainer = widgetContainer;
+
+    }
+
+
+    /**
+     * The cell's variables that may be in a namespace.
+     * @return The variable list.
+     */
+    public List<Variable> namespacedVariables()
+    {
+        List<Variable> variables = new ArrayList<>();
+
+        if (this.valueVariable().isNamespaced())
+            variables.add(this.valueVariable());
+
+        return variables;
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -183,7 +217,7 @@ public class TextCell implements Model, Serializable
     public View view(TextColumn column)
     {
         // [1] Declarations
-        // ------------------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------------
 
         Context context = SheetManager.currentSheetContext();
 
@@ -191,7 +225,7 @@ public class TextCell implements Model, Serializable
         this.valueViewId = Util.generateViewId();
 
         // [2] Cell View
-        // ------------------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------------
 
         cellView.id         = this.valueViewId;
         cellView.layoutType = LayoutType.TABLE_ROW;
@@ -205,9 +239,6 @@ public class TextCell implements Model, Serializable
             cellView.text = this.value();
         else
             cellView.text = column.getDefaultValue();
-
-        //layoutParams.setMargins(0, 0, 0, 0);
-        //view.setPadding(0, 0, 0, 0);
 
         return cellView.textView(context);
     }
@@ -241,6 +272,22 @@ public class TextCell implements Model, Serializable
             State.addVariable(this.valueVariable());
         }
 
+        // [3] Widget Container
+        // --------------------------------------------------------------------------------------
+
+        this.widgetContainer = null;
+    }
+
+
+    /**
+     * Configure the container's namespace. If the text cell's value is a variable that defines
+     * a namespace, then update the container namespace.
+     */
+    private void configureNamespace()
+    {
+        if (this.valueVariable().definesNamespace()) {
+            this.widgetContainer.setNamespace(this.valueVariable().identifier());
+        }
     }
 
 
@@ -256,6 +303,9 @@ public class TextCell implements Model, Serializable
 
             if (this.value() != null)
                 textView.setText(this.value());
+        }
+        else if (!this.value.isNull()) {
+            this.configureNamespace();
         }
     }
 

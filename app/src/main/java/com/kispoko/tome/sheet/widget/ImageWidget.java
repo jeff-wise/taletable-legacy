@@ -49,21 +49,21 @@ public class ImageWidget extends Widget implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                         id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<WidgetData> widgetData;
-    private PrimitiveFunctor<SerialBitmap> bitmap;
+    private ModelFunctor<WidgetData>        widgetData;
+    private PrimitiveFunctor<SerialBitmap>  bitmap;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private int imageViewId;
-    private int chooseImageButtonId;
+    private int                             imageViewId;
+    private int                             chooseImageButtonId;
 
 
     // CONSTRUCTORS
@@ -168,11 +168,17 @@ public class ImageWidget extends Widget implements Serializable
      * The widget type as a string.
      * @return The widget's type as a string.
      */
+    @Override
     public String name() {
         return "text";
     }
 
 
+    @Override
+    public void initialize() { }
+
+
+    @Override
     public void runAction(Action action)
     {
         if (this.bitmap.isNull())

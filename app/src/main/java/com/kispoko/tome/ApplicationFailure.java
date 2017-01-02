@@ -5,12 +5,12 @@ package com.kispoko.tome;
 import android.util.Log;
 
 import com.kispoko.tome.engine.programming.mechanic.MechanicException;
-import com.kispoko.tome.engine.programming.variable.VariableException;
+import com.kispoko.tome.engine.value.ValueException;
+import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.engine.programming.interpreter.InterpreterException;
 import com.kispoko.tome.engine.programming.function.InvalidFunctionException;
-import com.kispoko.tome.engine.programming.summation.SummationException;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.yaml.YamlException;
 
@@ -55,12 +55,6 @@ public class ApplicationFailure
     }
 
 
-    public static void summation(SummationException exception)
-    {
-        Log.d("***APP", exception.errorMessage(), exception);
-    }
-
-
     public static void mechanic(MechanicException exception)
     {
         Log.d("***APP", exception.errorMessage(), exception);
@@ -91,5 +85,12 @@ public class ApplicationFailure
     {
         Log.d("***APP", exception.errorMessage(), exception);
     }
+
+
+    public static void value(ValueException exception)
+    {
+        Log.d("***APP", exception.errorMessage(), exception);
+    }
+
 
 }

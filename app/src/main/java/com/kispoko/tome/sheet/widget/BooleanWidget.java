@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.variable.BooleanVariable;
-import com.kispoko.tome.engine.programming.variable.Variable;
+import com.kispoko.tome.engine.variable.BooleanVariable;
+import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
@@ -23,6 +23,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.action;
 
 
 /**
@@ -37,21 +38,21 @@ public class BooleanWidget extends Widget implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                              id;
+    private UUID                                id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<WidgetData> widgetData;
+    private ModelFunctor<WidgetData>            widgetData;
     private PrimitiveFunctor<WidgetContentSize> size;
-    private ModelFunctor<BooleanVariable> value;
+    private ModelFunctor<BooleanVariable>       valueVariable;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer                           valueViewId;
+    private Integer                             valueViewId;
 
 
     // CONSTRUCTORS
@@ -59,26 +60,28 @@ public class BooleanWidget extends Widget implements Serializable
 
     public BooleanWidget()
     {
-        this.id         = null;
+        this.id             = null;
 
-        this.widgetData = ModelFunctor.empty(WidgetData.class);
-        this.size       = new PrimitiveFunctor<>(null, WidgetContentSize.class);
-        this.value      = ModelFunctor.empty(BooleanVariable.class);
+        this.widgetData     = ModelFunctor.empty(WidgetData.class);
+        this.size           = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.valueVariable  = ModelFunctor.empty(BooleanVariable.class);
+
+        this.valueViewId    = null;
     }
 
 
     public BooleanWidget(UUID id,
                          WidgetData widgetData,
                          WidgetContentSize size,
-                         BooleanVariable value)
+                         BooleanVariable valueVariable)
     {
-        this.id = id;
+        this.id             = id;
 
-        this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
-        this.size       = new PrimitiveFunctor<>(size, WidgetContentSize.class);
-        this.value      = ModelFunctor.full(value, BooleanVariable.class);
+        this.widgetData     = ModelFunctor.full(widgetData, WidgetData.class);
+        this.size           = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.valueVariable  = ModelFunctor.full(valueVariable, BooleanVariable.class);
 
-        initialize();
+        this.valueViewId    = null;
     }
 
 
@@ -121,36 +124,54 @@ public class BooleanWidget extends Widget implements Serializable
     /**
      * This method is called when the Boolean Widget is completely loaded for the first time.
      */
-    public void onLoad()
-    {
-        initialize();
-    }
+    public void onLoad() { }
 
 
     // > Widget
     // ------------------------------------------------------------------------------------------
 
-    // ** Name
-    // ------------------------------------------------------------------------------------------
-
+    @Override
     public String name()
     {
         return "text";
     }
 
 
-    // ** Data
-    // ------------------------------------------------------------------------------------------
+    /**
+     * Initialize the text widget state.
+     */
+    @Override
+    public void initialize()
+    {
+        // > If the variable is non-null
+        if (!this.valueVariable.isNull()) {
+            this.valueVariable().initialize();
+        }
 
+        // > If the variable has a non-null value
+        if (!this.valueVariable.isNull())
+        {
+            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onValueUpdate();
+                }
+            });
+
+
+            State.addVariable(this.valueVariable());
+        }
+    }
+
+
+    @Override
     public WidgetData data()
     {
         return this.widgetData.getValue();
     }
 
 
-    // ** Run Action
-    // ------------------------------------------------------------------------------------------
-
+    @Override
     public void runAction(Action action) { }
 
 
@@ -163,13 +184,13 @@ public class BooleanWidget extends Widget implements Serializable
      */
     public BooleanVariable valueVariable()
     {
-        return this.value.getValue();
+        return this.valueVariable.getValue();
     }
 
 
     public Boolean value()
     {
-        if (!this.value.isNull())
+        if (!this.valueVariable.isNull())
             return this.valueVariable().value();
         return null;
     }
@@ -201,33 +222,6 @@ public class BooleanWidget extends Widget implements Serializable
 
     // INTERNAL
     // ------------------------------------------------------------------------------------------
-
-    /**
-     * Initialize the text widget state.
-     */
-    private void initialize()
-    {
-        // [1] The text widget's value view ID. It is null until the view is created.
-        // --------------------------------------------------------------------------------------
-
-        this.valueViewId   = null;
-
-        // [2] Initialize the value variable
-        // --------------------------------------------------------------------------------------
-
-        if (!this.value.isNull())
-        {
-            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onValueUpdate();
-                }
-            });
-
-            State.addVariable(this.valueVariable());
-        }
-    }
-
 
     /**
      * When the text widget's value is updated.

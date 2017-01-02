@@ -11,11 +11,11 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.summation.SummationException;
-import com.kispoko.tome.engine.programming.variable.NumberVariable;
-import com.kispoko.tome.engine.programming.variable.TextVariable;
-import com.kispoko.tome.engine.programming.variable.Variable;
-import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.engine.variable.TextVariable;
+import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
@@ -49,7 +49,7 @@ public class NumberWidget extends Widget implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                              id;
+    private UUID                                id;
 
 
     // > Functors
@@ -57,19 +57,19 @@ public class NumberWidget extends Widget implements Serializable
 
     private ModelFunctor<WidgetData>            widgetData;
     private PrimitiveFunctor<WidgetContentSize> size;
-    private ModelFunctor<NumberVariable>        value;
+    private ModelFunctor<NumberVariable>        valueVariable;
     private PrimitiveFunctor<String>            valuePrefix;
-    private ModelFunctor<TextVariable>          prefix;
-    private ModelFunctor<TextVariable>          postfix;
+    private ModelFunctor<TextVariable>          prefixVariable;
+    private ModelFunctor<TextVariable>          postfixVariable;
     private CollectionFunctor<VariableUnion>    variables;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer                           valueViewId;
-    private Integer                           prefixViewId;
-    private Integer                           postfixViewId;
+    private Integer                             valueViewId;
+    private Integer                             prefixViewId;
+    private Integer                             postfixViewId;
 
 
     // CONSTRUCTORS
@@ -81,40 +81,46 @@ public class NumberWidget extends Widget implements Serializable
 
         this.widgetData     = ModelFunctor.empty(WidgetData.class);
         this.size           = new PrimitiveFunctor<>(null, WidgetContentSize.class);
-        this.value          = ModelFunctor.empty(NumberVariable.class);
+        this.valueVariable = ModelFunctor.empty(NumberVariable.class);
         this.valuePrefix    = new PrimitiveFunctor<>(null, String.class);
-        this.prefix         = ModelFunctor.empty(TextVariable.class);
-        this.postfix        = ModelFunctor.empty(TextVariable.class);
+        this.prefixVariable = ModelFunctor.empty(TextVariable.class);
+        this.postfixVariable = ModelFunctor.empty(TextVariable.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
         this.variables  = CollectionFunctor.empty(variableClasses);
+
+        this.valueViewId    = null;
+        this.prefixViewId   = null;
+        this.postfixViewId  = null;
     }
 
 
     public NumberWidget(UUID id,
                         WidgetData widgetData,
                         WidgetContentSize size,
-                        NumberVariable value,
+                        NumberVariable valueVariable,
                         String valuePrefix,
-                        TextVariable prefix,
-                        TextVariable postfix,
+                        TextVariable prefixVariable,
+                        TextVariable postfixVariable,
                         List<VariableUnion> variables)
     {
         this.id             = id;
 
         this.widgetData     = ModelFunctor.full(widgetData, WidgetData.class);
         this.size           = new PrimitiveFunctor<>(size, WidgetContentSize.class);
-        this.value          = ModelFunctor.full(value, NumberVariable.class);
+        this.valueVariable = ModelFunctor.full(valueVariable, NumberVariable.class);
         this.valuePrefix    = new PrimitiveFunctor<>(valuePrefix, String.class);
-        this.prefix         = ModelFunctor.full(prefix, TextVariable.class);
-        this.postfix        = ModelFunctor.full(postfix, TextVariable.class);
+        this.prefixVariable = ModelFunctor.full(prefixVariable, TextVariable.class);
+        this.postfixVariable = ModelFunctor.full(postfixVariable, TextVariable.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
         this.variables  = CollectionFunctor.full(variables, variableClasses);
 
-        initialize();
+        this.valueViewId    = null;
+        this.prefixViewId   = null;
+        this.postfixViewId  = null;
     }
 
 
@@ -128,7 +134,7 @@ public class NumberWidget extends Widget implements Serializable
         NumberVariable    value         = NumberVariable.fromYaml(yaml.atKey("value"));
         String            valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
         TextVariable      prefix        = TextVariable.fromYaml(yaml.atMaybeKey("prefix"));
-        TextVariable      postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));
+        TextVariable      postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfixVariable"));
 
         List<VariableUnion> variables   = yaml.atMaybeKey("variables").forEach(
                                                 new Yaml.ForEach<VariableUnion>()
@@ -171,34 +177,105 @@ public class NumberWidget extends Widget implements Serializable
     /**
      * This method is called when the Number Widget is completely loaded for the first time.
      */
-    public void onLoad()
-    {
-        initialize();
-    }
+    public void onLoad() { }
 
 
     // > Widget
-    // ------------------------------------------------------------------------------------------
-
-    // ** Name
     // ------------------------------------------------------------------------------------------
 
     /**
      * Get the name of the Widget.
      * @return The widget's name as a String.
      */
+    @Override
     public String name()
     {
         return "number";
     }
 
-    // ** Data
-    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Initialize the text widget state.
+     */
+    @Override
+    public void initialize()
+    {
+        // [1] Initialize variables with listeners to update the number widget views when the
+        //     values of the variables change
+        // --------------------------------------------------------------------------------------
+
+        // ** Value
+        // --------------------------------------------------------------------------------------
+
+        if (!this.valueVariable.isNull()) {
+            this.valueVariable().initialize();
+        }
+
+        if (!this.valueVariable.isNull())
+        {
+            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onValueUpdate();
+                }
+            });
+
+            State.addVariable(this.valueVariable());
+        }
+
+        // ** Prefix
+        // --------------------------------------------------------------------------------------
+
+        if (!this.prefixVariable.isNull()) {
+            this.prefixVariable().initialize();
+        }
+
+        if (!this.prefixVariable.isNull())
+        {
+            this.prefixVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onPrefixUpdate();
+                }
+            });
+
+            State.addVariable(this.prefixVariable());
+        }
+
+        // ** Postfix
+        // --------------------------------------------------------------------------------------
+
+        if (!this.postfixVariable.isNull()) {
+            this.postfixVariable().initialize();
+        }
+
+        if (!this.postfixVariable.isNull())
+        {
+            this.postfixVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onPostfixUpdate();
+                }
+            });
+
+            State.addVariable(this.postfixVariable());
+        }
+
+        // [2] Initialize the helper variables
+        // --------------------------------------------------------------------------------------
+
+        for (VariableUnion variableUnion : this.variables()) {
+            State.addVariable(variableUnion);
+        }
+
+    }
+
 
     /**
      * Get the widget's common data values.
      * @return The widget's WidgetData.
      */
+    @Override
     public WidgetData data()
     {
         return this.widgetData.getValue();
@@ -208,6 +285,7 @@ public class NumberWidget extends Widget implements Serializable
     // ** Run Action
     // ------------------------------------------------------------------------------------------
 
+    @Override
     public void runAction(Action action) { }
 
 
@@ -223,7 +301,7 @@ public class NumberWidget extends Widget implements Serializable
      */
     public NumberVariable valueVariable()
     {
-        return this.value.getValue();
+        return this.valueVariable.getValue();
     }
 
 
@@ -237,8 +315,9 @@ public class NumberWidget extends Widget implements Serializable
 
         try {
             integerValue = this.valueVariable().value();
-        } catch (SummationException exception) {
-            ApplicationFailure.summation(exception);
+        }
+        catch (VariableException exception) {
+            ApplicationFailure.variable(exception);
         }
 
         return integerValue;
@@ -300,7 +379,7 @@ public class NumberWidget extends Widget implements Serializable
      */
     public TextVariable prefixVariable()
     {
-        return this.prefix.getValue();
+        return this.prefixVariable.getValue();
     }
 
 
@@ -321,19 +400,19 @@ public class NumberWidget extends Widget implements Serializable
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the postfix Text Variable. The postfix contains any text that comes after
+     * Get the postfixVariable Text Variable. The postfixVariable contains any text that comes after
      * the main value.
-     * @return The postfix Text Variable.
+     * @return The postfixVariable Text Variable.
      */
     public TextVariable postfixVariable()
     {
-        return this.postfix.getValue();
+        return this.postfixVariable.getValue();
     }
 
 
     /**
-     * Get the number widget's postfix value (from its postfix variablbe).
-     * @return The postfix (may be null).
+     * Get the number widget's postfixVariable value (from its postfixVariable variablbe).
+     * @return The postfixVariable (may be null).
      */
     public String postfix()
     {
@@ -382,75 +461,13 @@ public class NumberWidget extends Widget implements Serializable
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * Initialize the text widget state.
-     */
-    private void initialize()
-    {
-        // [2] The number widget view IDs. They are null until the views are created.
-        // --------------------------------------------------------------------------------------
-
-        this.valueViewId   = null;
-        this.prefixViewId  = null;
-        this.postfixViewId = null;
-
-        // [2] Initialize variables with listeners to update the number widget views when the
-        //     values of the variables change
-        // --------------------------------------------------------------------------------------
-
-        if (!this.value.isNull())
-        {
-            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onValueUpdate();
-                }
-            });
-
-            State.addVariable(this.valueVariable());
-        }
-
-        if (!this.prefix.isNull())
-        {
-            this.prefixVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onPrefixUpdate();
-                }
-            });
-
-            State.addVariable(this.prefixVariable());
-        }
-
-
-        if (!this.postfix.isNull())
-        {
-            this.postfixVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onPostfixUpdate();
-                }
-            });
-
-            State.addVariable(this.postfixVariable());
-        }
-
-        // [3] Initialize the helper variables
-        // --------------------------------------------------------------------------------------
-
-        for (VariableUnion variableUnion : this.variables()) {
-            State.addVariable(variableUnion);
-        }
-
-    }
-
 
     /**
      * When the text widget's value is updated.
      */
     private void onValueUpdate()
     {
-        if (this.valueViewId != null && !this.value.isNull())
+        if (this.valueViewId != null && !this.valueVariable.isNull())
         {
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
@@ -469,7 +486,7 @@ public class NumberWidget extends Widget implements Serializable
      */
     private void onPrefixUpdate()
     {
-        if (this.prefixViewId != null && !this.prefix.isNull())
+        if (this.prefixViewId != null && !this.prefixVariable.isNull())
         {
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.prefixViewId);
@@ -483,11 +500,11 @@ public class NumberWidget extends Widget implements Serializable
 
 
     /**
-     * When the text widget's postfix is updated.
+     * When the text widget's postfixVariable is updated.
      */
     private void onPostfixUpdate()
     {
-        if (this.postfixViewId != null && !this.postfix.isNull())
+        if (this.postfixViewId != null && !this.postfixVariable.isNull())
         {
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.postfixViewId);
@@ -522,7 +539,7 @@ public class NumberWidget extends Widget implements Serializable
 
         layout.child(valueView);
 
-        if (!this.postfix.isNull())
+        if (!this.postfixVariable.isNull())
             layout.child(postfixView);
 
         // [2 B] Value

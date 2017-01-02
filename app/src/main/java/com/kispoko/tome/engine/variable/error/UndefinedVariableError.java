@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.engine.programming.variable.error;
+package com.kispoko.tome.engine.variable.error;
 
 
 

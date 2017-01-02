@@ -2,8 +2,10 @@
 package com.kispoko.tome.sheet.widget.table;
 
 
+import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
+import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -19,15 +21,29 @@ import java.util.UUID;
 /**
  * Table Widget Row
  */
-public class TableRow implements Model, Serializable
+public class TableRow implements Model, WidgetContainer, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                  id;
+    // > Model
+    // ------------------------------------------------------------------------------------------
 
-    private CollectionFunctor<CellUnion> cells;
+    private UUID                            id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
+    private CollectionFunctor<CellUnion>    cells;
+
+
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private String                          namespace;
+    private List<Variable>                  namespacedVariables;
 
 
     // CONSTRUCTORS
@@ -35,28 +51,37 @@ public class TableRow implements Model, Serializable
 
     public TableRow()
     {
-        this.id    = null;
+        this.id         = null;
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells = CollectionFunctor.empty(cellClassList);
+        this.cells      = CollectionFunctor.empty(cellClassList);
     }
 
 
     public TableRow(UUID id, List<CellUnion> cells)
     {
-        this.id = id;
+        this.id         = id;
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells = CollectionFunctor.full(cells, cellClassList);
+        this.cells      = CollectionFunctor.full(cells, cellClassList);
+
+        initialize();
     }
 
 
+    /**
+     * Create a table row from its Yaml representation.
+     * @param yaml The yaml parser.
+     * @param columns The table columns.
+     * @return The parsed Table Row.
+     * @throws YamlException
+     */
     public static TableRow fromYaml(Yaml yaml, final List<ColumnUnion> columns)
                   throws YamlException
     {
-        UUID id = UUID.randomUUID();
+        UUID            id    = UUID.randomUUID();
 
         List<CellUnion> cells = yaml.atKey("cells").forEach(new Yaml.ForEach<CellUnion>() {
             @Override
@@ -104,7 +129,30 @@ public class TableRow implements Model, Serializable
     /**
      * This method is called when the Table Widget is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        initialize();
+    }
+
+
+    // > Widget Container
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Set the container namespace.
+     * @param namespace The namespace.
+     */
+    public void setNamespace(String namespace)
+    {
+        this.namespace = namespace;
+
+        // > Update all namespaced variables
+        for (Variable variable : this.namespacedVariables)
+        {
+            String newName = this.namespace + "." + variable.name();
+            variable.setName(newName);
+        }
+    }
 
 
     // > State
@@ -114,7 +162,7 @@ public class TableRow implements Model, Serializable
      * Get the cells in the row in order.
      * @return The list of cells.
      */
-    public List<CellUnion> getCells()
+    public List<CellUnion> cells()
     {
         return this.cells.getValue();
     }
@@ -127,7 +175,7 @@ public class TableRow implements Model, Serializable
      */
     public CellUnion cellAtIndex(int index)
     {
-        return this.getCells().get(index);
+        return this.cells().get(index);
     }
 
 
@@ -137,7 +185,7 @@ public class TableRow implements Model, Serializable
      */
     public int width()
     {
-        return this.getCells().size();
+        return this.cells().size();
     }
 
 
@@ -148,8 +196,35 @@ public class TableRow implements Model, Serializable
      */
     public CellUnion cellAtIndex(Integer index)
     {
-        return this.getCells().get(index);
+        return this.cells().get(index);
     }
 
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initialize()
+    {
+        // [1] Initialize namespace to null
+        // --------------------------------------------------------------------------------------
+
+        this.namespace = null;
+
+        // [2] Index each namespaced variable
+        // --------------------------------------------------------------------------------------
+
+        this.namespacedVariables = new ArrayList<>();
+        for (CellUnion cellUnion : this.cells()) {
+            List<Variable> variables = cellUnion.cell().namespacedVariables();
+            this.namespacedVariables.addAll(variables);
+        }
+
+        // [3] Give each child cell a reference to the row, so they can update the namespace
+        // --------------------------------------------------------------------------------------
+
+        for (CellUnion cellUnion : this.cells()) {
+            cellUnion.cell().setWidgetContainer(this);
+        }
+    }
 
 }

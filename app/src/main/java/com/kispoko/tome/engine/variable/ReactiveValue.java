@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.ApplicationFailure;
@@ -55,7 +55,7 @@ public class ReactiveValue<A> implements Serializable
     public A value()
     {
         if (this.currentValue == null) {
-            Interpreter interpreter = SheetManager.currentSheet().getRulesEngine().getInterpreter();
+            Interpreter interpreter = SheetManager.currentSheet().rulesEngine().getInterpreter();
 
             Object computedValue = null;
             try

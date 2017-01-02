@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.engine.programming.variable;
+package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.engine.State;
@@ -18,6 +18,8 @@ public abstract class Variable
     // ------------------------------------------------------------------------------------------
 
     public abstract String                  name();
+    public abstract void                    setName(String name);
+    public abstract boolean                 isNamespaced();
     public abstract List<VariableReference> dependencies();
     public abstract List<String>            tags();
 
@@ -39,6 +41,7 @@ public abstract class Variable
 
     // API
     // ------------------------------------------------------------------------------------------
+
 
     /**
      * This method should be called when the variable's value changes. This could happen directly

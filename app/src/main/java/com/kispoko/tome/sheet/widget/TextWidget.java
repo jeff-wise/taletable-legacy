@@ -20,9 +20,9 @@ import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.programming.variable.TextVariable;
-import com.kispoko.tome.engine.programming.variable.Variable;
-import com.kispoko.tome.engine.programming.variable.VariableUnion;
+import com.kispoko.tome.engine.variable.TextVariable;
+import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
@@ -67,7 +67,7 @@ public class TextWidget extends Widget implements Serializable
 
     private ModelFunctor<WidgetData>            widgetData;
     private PrimitiveFunctor<WidgetContentSize> size;
-    private ModelFunctor<TextVariable>          value;
+    private ModelFunctor<TextVariable>          valueVariable;
     private CollectionFunctor<VariableUnion>    variables;
 
 
@@ -88,35 +88,37 @@ public class TextWidget extends Widget implements Serializable
 
     public TextWidget()
     {
-        this.id         = null;
+        this.id                 = null;
 
-        this.widgetData = ModelFunctor.empty(WidgetData.class);
-        this.value      = ModelFunctor.empty(TextVariable.class);
-        this.size       = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.widgetData         = ModelFunctor.empty(WidgetData.class);
+        this.valueVariable      = ModelFunctor.empty(TextVariable.class);
+        this.size               = new PrimitiveFunctor<>(null, WidgetContentSize.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
-        this.variables  = CollectionFunctor.empty(variableClasses);
+        this.variables          = CollectionFunctor.empty(variableClasses);
+
+        this.displayTextViewId  = null;
     }
 
 
     public TextWidget(UUID id,
                       WidgetData widgetData,
                       WidgetContentSize size,
-                      TextVariable value,
+                      TextVariable valueVariable,
                       List<VariableUnion> variables)
     {
-        this.id         = id;
+        this.id                 = id;
 
-        this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
-        this.value      = ModelFunctor.full(value, TextVariable.class);
-        this.size       = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
+        this.valueVariable      = ModelFunctor.full(valueVariable, TextVariable.class);
+        this.size               = new PrimitiveFunctor<>(size, WidgetContentSize.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
-        this.variables  = CollectionFunctor.full(variables, variableClasses);
+        this.variables          = CollectionFunctor.full(variables, variableClasses);
 
-        initialize();
+        this.displayTextViewId  = null;
     }
 
 
@@ -175,10 +177,7 @@ public class TextWidget extends Widget implements Serializable
     /**
      * This method is called when the Text Widget is completely loaded for the first time.
      */
-    public void onLoad()
-    {
-        initialize();
-    }
+    public void onLoad() { }
 
 
     // > Widget
@@ -267,18 +266,18 @@ public class TextWidget extends Widget implements Serializable
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the TextWidget's value variable.
-     * @return The Variable for the TextWidget value.
+     * Get the TextWidget's valueVariable variable.
+     * @return The Variable for the TextWidget valueVariable.
      */
     public TextVariable valueVariable()
     {
-        return this.value.getValue();
+        return this.valueVariable.getValue();
     }
 
 
     /**
-     * Get the text widget's value (from its value variable).
-     * @return The value.
+     * Get the text widget's valueVariable (from its valueVariable variable).
+     * @return The valueVariable.
      */
     public String value()
     {
@@ -296,7 +295,7 @@ public class TextWidget extends Widget implements Serializable
             textView.setText(this.valueVariable().value());
         }
 
-        this.value.save();
+        this.valueVariable.save();
     }
 
 
@@ -313,23 +312,23 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
-    // INTERNAL
+    // ** Initialize
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Initialize the text widget state.
+     * Initialize the text widget.
      */
-    private void initialize()
+    public void initialize()
     {
-        // [1] The text widget's value view ID. It is null until the view is created.
+        // [1] Initialize the valueVariable variable
         // --------------------------------------------------------------------------------------
 
-        this.displayTextViewId = null;
+        // > If the variable is non-null
+        if (!this.valueVariable.isNull()) {
+            this.valueVariable().initialize();
+        }
 
-        // [2] Initialize the value variable
-        // --------------------------------------------------------------------------------------
-
-        // > Add the on update listener
+        // > If the variable has a non-null value
         if (!this.valueVariable().isNull())
         {
             this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
@@ -343,7 +342,7 @@ public class TextWidget extends Widget implements Serializable
             State.addVariable(this.valueVariable());
         }
 
-        // [3] Initialize the helper variables
+        // [2] Initialize the helper variables
         // --------------------------------------------------------------------------------------
 
         for (VariableUnion variableUnion : this.variables()) {
@@ -353,12 +352,16 @@ public class TextWidget extends Widget implements Serializable
     }
 
 
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+
     /**
-     * When the text widget's value is updated.
+     * When the text widget's valueVariable is updated.
      */
     private void onValueUpdate()
     {
-        if (this.displayTextViewId != null && !this.value.isNull())
+        if (this.displayTextViewId != null && !this.valueVariable.isNull())
         {
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.displayTextViewId);
@@ -373,7 +376,7 @@ public class TextWidget extends Widget implements Serializable
 
     public View getTypeEditorView(Context context)
     {
-        RulesEngine rulesEngine = SheetManager.currentSheet().getRulesEngine();
+        RulesEngine rulesEngine = SheetManager.currentSheet().rulesEngine();
 
         // Lookup the recyclerview in activity layout
         RecyclerView textEditorView = new RecyclerView(context);
