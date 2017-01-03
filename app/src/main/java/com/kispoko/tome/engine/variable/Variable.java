@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.variable;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.engine.State;
 
 import java.util.List;
@@ -50,6 +52,7 @@ public abstract class Variable
      */
     public void onUpdate()
     {
+        Log.d("***VARIABLE", "on update " + this.name());
         // [1] Call the variable's update listener
         // --------------------------------------------------------------------------------------
 

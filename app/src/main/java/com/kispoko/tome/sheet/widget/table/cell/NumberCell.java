@@ -51,7 +51,7 @@ public class NumberCell implements Model, Cell, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<NumberVariable>    value;
+    private ModelFunctor<NumberVariable>    valueVariable;
     private PrimitiveFunctor<CellAlignment> alignment;
     private PrimitiveFunctor<String>        prefix;
 
@@ -69,32 +69,32 @@ public class NumberCell implements Model, Cell, Serializable
 
     public NumberCell()
     {
-        this.id        = null;
+        this.id             = null;
 
-        this.value     = ModelFunctor.empty(NumberVariable.class);
-        this.alignment = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.prefix    = new PrimitiveFunctor<>(null, String.class);
+        this.valueVariable  = ModelFunctor.empty(NumberVariable.class);
+        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.prefix         = new PrimitiveFunctor<>(null, String.class);
     }
 
 
     public NumberCell(UUID id,
-                      NumberVariable value,
+                      NumberVariable valueVariable,
                       CellAlignment alignment,
                       NumberColumn column,
                       String prefix)
     {
-        this.id        = id;
+        this.id             = id;
 
-        if (value == null) {
-            value = NumberVariable.asInteger(UUID.randomUUID(),
+        if (valueVariable == null) {
+            valueVariable = NumberVariable.asInteger(UUID.randomUUID(),
                                              column.getDefaultValue());
         }
-        this.value     = ModelFunctor.full(value, NumberVariable.class);
+        this.valueVariable = ModelFunctor.full(valueVariable, NumberVariable.class);
 
-        this.alignment = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-        this.prefix    = new PrimitiveFunctor<>(prefix, String.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.prefix         = new PrimitiveFunctor<>(prefix, String.class);
 
-        initialize();
+        initializeNumberCell();
     }
 
 
@@ -147,7 +147,7 @@ public class NumberCell implements Model, Cell, Serializable
      */
     public void onLoad()
     {
-        initialize();
+        initializeNumberCell();
     }
 
 
@@ -158,9 +158,31 @@ public class NumberCell implements Model, Cell, Serializable
      * Set the cells widget container (which is the parent Table Row).
      * @param widgetContainer The widget container.
      */
-    public void setWidgetContainer(WidgetContainer widgetContainer)
+    public void initialize(WidgetContainer widgetContainer)
     {
+        // [1] Set the widget container
+        // --------------------------------------------------------------------------------------
+
         this.widgetContainer = widgetContainer;
+
+        // [2] Initialize the value variable
+        // --------------------------------------------------------------------------------------
+
+        // > If the variable is non-null
+        if (!this.valueVariable.isNull())
+        {
+            this.valueVariable().initialize();
+
+            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onValueUpdate();
+                }
+            });
+
+            State.addVariable(this.valueVariable());
+        }
+
     }
 
 
@@ -191,7 +213,7 @@ public class NumberCell implements Model, Cell, Serializable
      */
     public NumberVariable valueVariable()
     {
-        return this.value.getValue();
+        return this.valueVariable.getValue();
     }
 
 
@@ -301,32 +323,20 @@ public class NumberCell implements Model, Cell, Serializable
     /**
      * Initialize the text cell state.
      */
-    private void initialize()
+    private void initializeNumberCell()
     {
         // [1] The boolean cell's value view ID. It is null until the view is created.
         // --------------------------------------------------------------------------------------
 
         this.valueViewId = null;
+        this.widgetContainer = null;
 
         // [2] Initialize the value variable
         // --------------------------------------------------------------------------------------
 
-        if (!this.value.isNull())
-        {
-            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onValueUpdate();
-                }
-            });
-
-            State.addVariable(this.valueVariable());
-        }
-
         // [3] Widget Container
         // --------------------------------------------------------------------------------------
 
-        this.widgetContainer = null;
     }
 
 
@@ -335,7 +345,7 @@ public class NumberCell implements Model, Cell, Serializable
      */
     private void onValueUpdate()
     {
-        if (this.valueViewId != null && !this.value.isNull())
+        if (this.valueViewId != null && !this.valueVariable.isNull())
         {
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);

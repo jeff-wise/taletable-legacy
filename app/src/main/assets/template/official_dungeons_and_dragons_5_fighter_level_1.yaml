@@ -381,7 +381,7 @@ rulesEngine:
         value:
           name: wizard
           value: Wizard
-profileSection:
+profile:
   pages:
   - label: Profile
     groups:
@@ -1771,7 +1771,7 @@ profileSection:
                 name: quantity
                 type: literal
                 value: 1
-encounterSection:
+encounter:
   pages:
   - label: Attacks
     groups:

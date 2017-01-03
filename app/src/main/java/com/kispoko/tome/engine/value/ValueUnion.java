@@ -11,6 +11,7 @@ import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 /**
  * Value Union
  */
-public class ValueUnion implements Model
+public class ValueUnion implements Model, Serializable
 {
 
     // PROPERTIES

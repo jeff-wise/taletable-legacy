@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.variable;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueReference;
@@ -446,7 +448,7 @@ public class TextVariable extends Variable
             case LITERAL:
                 return this.value();
             case VALUE:
-                return this.valueReference.name();
+                return this.valueReference().valueName();
             case PROGRAM:
                 return this.value();
         }
@@ -458,27 +460,35 @@ public class TextVariable extends Variable
     // ** Value
     // ------------------------------------------------------------------------------------------
 
-    public void setValue(String newValue)
+    // ** Setters
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Set the value for the string literal case.
+     * @param newValue The string value.
+     */
+    public void setLiteralValue(String newValue)
+    {
+        this.stringLiteral.setValue(newValue);
+        this.onUpdate();
+    }
+
+
+    /**
+     * Set the value for the value case.
+     * @param valueReference The value reference.
+     */
+    public void setValueReference(ValueReference valueReference)
     {
         removeFromState();
-
-        switch (this.kind.getValue())
-        {
-            case LITERAL:
-                this.stringLiteral.setValue(newValue);
-                this.onUpdate();
-                break;
-            case VALUE:
-                //this.reactiveValue.setValue(newValue);
-                break;
-            case PROGRAM:
-                //this.reactiveValue.setValue(newValue);
-                break;
-        }
-
+        this.valueReference.setValue(valueReference);
+        this.onUpdate();
         addToState();
     }
 
+
+    // ** String
+    // ------------------------------------------------------------------------------------------
 
     public String value()
     {

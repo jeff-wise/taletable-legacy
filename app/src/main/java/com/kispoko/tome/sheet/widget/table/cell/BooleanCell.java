@@ -48,7 +48,7 @@ public class BooleanCell implements Model, Cell, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<BooleanVariable>   value;
+    private ModelFunctor<BooleanVariable>   valueVariable;
     private PrimitiveFunctor<CellAlignment> alignment;
 
 
@@ -67,13 +67,13 @@ public class BooleanCell implements Model, Cell, Serializable
     {
         this.id        = null;
 
-        this.value     = ModelFunctor.empty(BooleanVariable.class);
+        this.valueVariable = ModelFunctor.empty(BooleanVariable.class);
         this.alignment = new PrimitiveFunctor<>(null, CellAlignment.class);
     }
 
 
     public BooleanCell(UUID id,
-                       BooleanVariable value,
+                       BooleanVariable valueVariable,
                        CellAlignment alignment,
                        BooleanColumn column)
     {
@@ -81,16 +81,16 @@ public class BooleanCell implements Model, Cell, Serializable
         this.id        = id;
 
         // ** Value
-        if (value == null) {
-            value = BooleanVariable.asBoolean(UUID.randomUUID(),
+        if (valueVariable == null) {
+            valueVariable = BooleanVariable.asBoolean(UUID.randomUUID(),
                                               column.getDefaultValue());
         }
-        this.value     = ModelFunctor.full(value, BooleanVariable.class);
+        this.valueVariable = ModelFunctor.full(valueVariable, BooleanVariable.class);
 
         // ** Alignment
         this.alignment = new PrimitiveFunctor<>(alignment, CellAlignment.class);
 
-        initialize();
+        initializeBooleanCell();
     }
 
 
@@ -143,7 +143,7 @@ public class BooleanCell implements Model, Cell, Serializable
      */
     public void onLoad()
     {
-        initialize();
+        initializeBooleanCell();
     }
 
 
@@ -154,9 +154,30 @@ public class BooleanCell implements Model, Cell, Serializable
      * Set the cells widget container (which is the parent Table Row).
      * @param widgetContainer The widget container.
      */
-    public void setWidgetContainer(WidgetContainer widgetContainer)
+    public void initialize(WidgetContainer widgetContainer)
     {
+        // [1] Set the widget container
+        // --------------------------------------------------------------------------------------
+
         this.widgetContainer = widgetContainer;
+
+        // [2] Initialize the value variable
+        // --------------------------------------------------------------------------------------
+
+        // > If the variable is non-null
+        if (!this.valueVariable.isNull())
+        {
+            this.valueVariable().initialize();
+
+            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                @Override
+                public void onUpdate() {
+                    onValueUpdate();
+                }
+            });
+
+            State.addVariable(this.valueVariable());
+        }
     }
 
 
@@ -184,13 +205,13 @@ public class BooleanCell implements Model, Cell, Serializable
      */
     public BooleanVariable valueVariable()
     {
-        return this.value.getValue();
+        return this.valueVariable.getValue();
     }
 
 
     public Boolean value()
     {
-        if (!this.value.isNull())
+        if (!this.valueVariable.isNull())
             return this.valueVariable().value();
         return null;
     }
@@ -259,32 +280,9 @@ public class BooleanCell implements Model, Cell, Serializable
     /**
      * Initialize the text cell state.
      */
-    private void initialize()
+    private void initializeBooleanCell()
     {
-        // [1] The boolean cell's value view ID. It is null until the view is created.
-        // --------------------------------------------------------------------------------------
-
         this.valueViewId   = null;
-
-        // [2] Initialize the value variable
-        // --------------------------------------------------------------------------------------
-
-        if (!this.value.isNull())
-        {
-            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onValueUpdate();
-                }
-            });
-
-            State.addVariable(this.valueVariable());
-        }
-
-
-        // [3] Widget Container
-        // --------------------------------------------------------------------------------------
-
         this.widgetContainer = null;
     }
 
@@ -294,7 +292,7 @@ public class BooleanCell implements Model, Cell, Serializable
      */
     private void onValueUpdate()
     {
-        if (this.valueViewId != null && !this.value.isNull())
+        if (this.valueViewId != null && !this.valueVariable.isNull())
         {
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);

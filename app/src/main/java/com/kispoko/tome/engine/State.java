@@ -100,13 +100,7 @@ public class State
             variablesWithTag.add(variableUnion);
         }
 
-        // [4] Update mechanics
-        // --------------------------------------------------------------------------------------
-
-        if (mechanicIndexReady)
-            updateMechanics();
-
-        // [5] Notify all current listeners of this variable
+        // [4] Notify all current listeners of this variable
         // --------------------------------------------------------------------------------------
 
         updateVariableDependencies(variableUnion.variable());
@@ -144,20 +138,66 @@ public class State
     /**
      * Remove the variable with the given name from the state. Returns true if the variable was
      * removed, and false if the variable did not exist in the state.
-     * @param name The variable name.
+     * @param variableName The variable name.
      * @return True if the variable was removed, False if the variable did not exist.
      */
-    public static boolean removeVariable(String name)
+    public static boolean removeVariable(String variableName)
     {
-        if (variableByName.containsKey(name))
-        {
-            variableByName.remove(name);
-            return true;
-        }
-        else
-        {
+        if (!variableByName.containsKey(variableName))
             return false;
+
+        // [1] Remove the variable from the index
+        // --------------------------------------------------------------------------------------
+
+        VariableUnion variableUnion = variableByName.get(variableName);
+        variableByName.remove(variableName);
+
+
+        // [2] Notify all current listeners of this variable
+        // --------------------------------------------------------------------------------------
+
+        updateVariableDependencies(variableUnion.variable());
+
+        // [3] Un-Index the variable's dependencies
+        // --------------------------------------------------------------------------------------
+
+        for (VariableReference variableReference : variableUnion.variable().dependencies())
+        {
+            switch (variableReference.type())
+            {
+                // > Index variable names to listeners
+                case NAME:
+                    String name = variableReference.name();
+                    Set<Variable> nameListeners = variableNameToListeners.get(name);
+                    nameListeners.remove(variableUnion.variable());
+
+                    if (nameListeners.isEmpty())
+                        variableNameToListeners.remove(name);
+                    break;
+                case TAG:
+                    String tag = variableReference.tag();
+                    Set<Variable> tagListeners = variableTagToListeners.get(tag);
+                    tagListeners.remove(variableUnion.variable());
+
+                    if (tagListeners.isEmpty())
+                        variableTagToListeners.remove(tag);
+                    break;
+            }
         }
+
+        // [4] Un-Index the variable's tags
+        // --------------------------------------------------------------------------------------
+
+        for (String tag : variableUnion.variable().tags())
+        {
+            Set<VariableUnion> variablesWithTag = tagIndex.get(tag);
+            variablesWithTag.remove(variableUnion);
+
+            if (variablesWithTag.isEmpty())
+                tagIndex.remove(tag);
+        }
+
+        return true;
     }
 
 
@@ -174,6 +214,8 @@ public class State
 
     public static void updateVariableDependencies(Variable variable)
     {
+        Log.d("***STATE", "update variable dependencies" + variable.name());
+
         // [1] Call onVariableUpdate on all variables listening for that variable name.
         // --------------------------------------------------------------------------------------
 
@@ -191,12 +233,16 @@ public class State
         {
             if (variableTagToListeners.containsKey(tag))
             {
-                for (Variable listener : variableTagToListeners.get(variable.name())) {
+                for (Variable listener : variableTagToListeners.get(tag)) {
                     listener.onUpdate();
                 }
             }
         }
 
+        // [3] Update the mechanics
+        // --------------------------------------------------------------------------------------
+
+        updateMechanics(variable.name());
     }
 
 
@@ -213,18 +259,17 @@ public class State
     {
         mechanicIndexReady = true;
 
-        updateMechanics();
-    }
-
-
-    public static void updateMechanics()
-    {
         MechanicIndex mechanicIndex = SheetManager.currentSheet().rulesEngine().mechanicIndex();
-
         for (VariableUnion variableUnion : variableByName.values()) {
             mechanicIndex.onVariableUpdate(variableUnion.variable().name());
         }
     }
 
+
+    public static void updateMechanics(String variableName)
+    {
+        MechanicIndex mechanicIndex = SheetManager.currentSheet().rulesEngine().mechanicIndex();
+        mechanicIndex.onVariableUpdate(variableName);
+    }
 
 }

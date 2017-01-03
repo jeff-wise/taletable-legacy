@@ -287,7 +287,7 @@ public class TextWidget extends Widget implements Serializable
 
     public void setValue(String stringValue, Context context)
     {
-        this.valueVariable().setValue(stringValue);
+        this.valueVariable().setLiteralValue(stringValue);
 
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
@@ -320,17 +320,14 @@ public class TextWidget extends Widget implements Serializable
      */
     public void initialize()
     {
-        // [1] Initialize the valueVariable variable
+        // [1] Initialize the value variable
         // --------------------------------------------------------------------------------------
 
         // > If the variable is non-null
-        if (!this.valueVariable.isNull()) {
-            this.valueVariable().initialize();
-        }
-
-        // > If the variable has a non-null value
-        if (!this.valueVariable().isNull())
+        if (!this.valueVariable.isNull())
         {
+            this.valueVariable().initialize();
+
             this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {

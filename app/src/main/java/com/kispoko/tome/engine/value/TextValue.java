@@ -3,7 +3,6 @@ package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;

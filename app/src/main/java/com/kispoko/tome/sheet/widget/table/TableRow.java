@@ -51,11 +51,14 @@ public class TableRow implements Model, WidgetContainer, Serializable
 
     public TableRow()
     {
-        this.id         = null;
+        this.id                     = null;
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells      = CollectionFunctor.empty(cellClassList);
+        this.cells                  = CollectionFunctor.empty(cellClassList);
+
+        this.namespace              = null;
+        this.namespacedVariables    = new ArrayList<>();
     }
 
 
@@ -67,7 +70,7 @@ public class TableRow implements Model, WidgetContainer, Serializable
         cellClassList.add(CellUnion.class);
         this.cells      = CollectionFunctor.full(cells, cellClassList);
 
-        initialize();
+        this.initializeTableRow();
     }
 
 
@@ -131,7 +134,7 @@ public class TableRow implements Model, WidgetContainer, Serializable
      */
     public void onLoad()
     {
-        initialize();
+        initializeTableRow();
     }
 
 
@@ -151,6 +154,18 @@ public class TableRow implements Model, WidgetContainer, Serializable
         {
             String newName = this.namespace + "." + variable.name();
             variable.setName(newName);
+        }
+    }
+
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    public void initialize()
+    {
+        // Initialize each cell
+        for (CellUnion cellUnion : this.cells()) {
+            cellUnion.cell().initialize(this);
         }
     }
 
@@ -203,12 +218,12 @@ public class TableRow implements Model, WidgetContainer, Serializable
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private void initialize()
+    private void initializeTableRow()
     {
         // [1] Initialize namespace to null
         // --------------------------------------------------------------------------------------
 
-        this.namespace = null;
+        this.namespace              = null;
 
         // [2] Index each namespaced variable
         // --------------------------------------------------------------------------------------
@@ -217,13 +232,6 @@ public class TableRow implements Model, WidgetContainer, Serializable
         for (CellUnion cellUnion : this.cells()) {
             List<Variable> variables = cellUnion.cell().namespacedVariables();
             this.namespacedVariables.addAll(variables);
-        }
-
-        // [3] Give each child cell a reference to the row, so they can update the namespace
-        // --------------------------------------------------------------------------------------
-
-        for (CellUnion cellUnion : this.cells()) {
-            cellUnion.cell().setWidgetContainer(this);
         }
     }
 

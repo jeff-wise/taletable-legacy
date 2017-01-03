@@ -14,6 +14,6 @@ import java.util.List;
  */
 public interface Cell
 {
-    void setWidgetContainer(WidgetContainer widgetContainer);
+    void initialize(WidgetContainer widgetContainer);
     List<Variable> namespacedVariables();
 }

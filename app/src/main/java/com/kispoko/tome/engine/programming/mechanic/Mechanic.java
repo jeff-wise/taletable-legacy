@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.programming.mechanic;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.programming.mechanic.error.NonBooleanRequirementError;
@@ -226,10 +228,12 @@ public class Mechanic implements Model, Serializable
      */
     public void onRequirementUpdate()
     {
+        Log.d("***MECHANIC", "on req update " + this.name());
         boolean isActive = true;
 
         for (String requirement : this.requirements())
         {
+            Log.d("***MECHANIC", "requirement:" + requirement);
             if (State.hasVariable(requirement))
             {
                 VariableUnion variableUnion = State.variableWithName(requirement);
@@ -243,15 +247,19 @@ public class Mechanic implements Model, Serializable
                 }
 
                 if (!variableUnion.booleanVariable().value()) {
+                    Log.d("***MECHANIC", "is active value is false:");
                     isActive = false;
                     break;
                 }
             }
             else
             {
+                Log.d("***MECHANIC", "is active false because val doesn't exist in state");
                 isActive = false;
                 break;
             }
+
+            Log.d("***MECHANIC", "is active:" + Boolean.toString(isActive));
         }
 
         // If was active and is now inactive
@@ -270,6 +278,8 @@ public class Mechanic implements Model, Serializable
      */
     private void addToState()
     {
+        this.active = true;
+
         for (VariableUnion variableUnion : this.variables()) {
             State.addVariable(variableUnion);
         }
@@ -281,6 +291,10 @@ public class Mechanic implements Model, Serializable
      */
     private void removeFromState()
     {
+        this.active = false;
+
+        Log.d("***MECHANIC", "remove from state " + this.name());
+
         for (VariableUnion variableUnion : this.variables()) {
             State.removeVariable(variableUnion.variable().name());
         }

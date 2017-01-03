@@ -106,8 +106,8 @@ public class Sheet implements Model
 
         Game        game        = Game.fromYaml(yaml.atKey("game"));
 
-        Section     profile     = Section.fromYaml(yaml.atKey("profileSection"));
-        Section     encounter   = Section.fromYaml(yaml.atKey("encounterSection"));
+        Section     profile     = Section.fromYaml(yaml.atKey("profile"));
+        Section     encounter   = Section.fromYaml(yaml.atKey("encounter"));
 
         RulesEngine rulesEngine = RulesEngine.fromYaml(yaml.atKey("rulesEngine"));
 

@@ -7,10 +7,10 @@ import com.kispoko.tome.engine.value.error.UndefinedValueError;
 import com.kispoko.tome.engine.value.error.UnexpectedValueTypeError;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.UUID;
 /**
  * Dictionary
  */
-public class Dictionary implements Model
+public class Dictionary implements Model, Serializable
 {
 
     // PROPERTIES

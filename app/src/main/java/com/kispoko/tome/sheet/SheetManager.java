@@ -113,10 +113,11 @@ public class SheetManager
                 else if (maybeSheet instanceof Sheet)
                 {
                     Sheet templateSheet = (Sheet) maybeSheet;
-                    templateSheet.initialize();
 
                     currentSheet = ModelFunctor.full(templateSheet, Sheet.class);
                     currentSheetContext = context;
+
+                    templateSheet.initialize();
 
                     ModelFunctor.OnSaveListener onSaveListener = new ModelFunctor.OnSaveListener()
                     {

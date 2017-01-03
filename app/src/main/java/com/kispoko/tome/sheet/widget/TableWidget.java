@@ -48,21 +48,21 @@ public class TableWidget extends Widget implements Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                         id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<WidgetData> widgetData;
-    private CollectionFunctor<ColumnUnion> columns;
-    private CollectionFunctor<TableRow> rows;
+    private ModelFunctor<WidgetData>        widgetData;
+    private CollectionFunctor<ColumnUnion>  columns;
+    private CollectionFunctor<TableRow>     rows;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private TableRow headerRow;
+    private TableRow                        headerRow;
 
 
     // CONSTRUCTORS
@@ -197,7 +197,12 @@ public class TableWidget extends Widget implements Serializable
 
 
     @Override
-    public void initialize() { }
+    public void initialize()
+    {
+        for (TableRow tableRow : this.rows()) {
+            tableRow.initialize();
+        }
+    }
 
 
     /**
@@ -284,7 +289,7 @@ public class TableWidget extends Widget implements Serializable
      * Get all of the table rows.
      * @return The table row list (excluding header).
      */
-    public List<TableRow> getRows() {
+    public List<TableRow> rows() {
         return this.rows.getValue();
     }
 

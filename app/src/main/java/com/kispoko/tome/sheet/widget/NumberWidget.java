@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -436,8 +437,6 @@ public class NumberWidget extends Widget implements Serializable
         LinearLayout contentLayout = (LinearLayout) integerLayout.findViewById(
                                                                     R.id.widget_content_layout);
 
-        this.valueViewId = Util.generateViewId();
-
         // [2] Value View
         // --------------------------------------------------------------------------------------
 
@@ -447,9 +446,6 @@ public class NumberWidget extends Widget implements Serializable
 
         return integerLayout;
     }
-
-
-
 
 
     public View editorView(Context context)
@@ -467,10 +463,15 @@ public class NumberWidget extends Widget implements Serializable
      */
     private void onValueUpdate()
     {
+        Log.d("***NUMBERWIDGET", "on value update " + this.name() + " " + this.value().toString());
         if (this.valueViewId != null && !this.valueVariable.isNull())
         {
+
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
+
+            if (textView == null)
+                return;
 
             Integer value = this.value();
 
@@ -529,6 +530,7 @@ public class NumberWidget extends Widget implements Serializable
         TextViewBuilder     valueView   = new TextViewBuilder();
         TextViewBuilder     postfixView = new TextViewBuilder();
 
+        this.valueViewId   = Util.generateViewId();
         this.postfixViewId = Util.generateViewId();
 
         // [2 A] Layout

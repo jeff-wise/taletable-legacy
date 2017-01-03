@@ -2,8 +2,8 @@
 package com.kispoko.tome.engine.programming.mechanic;
 
 
-import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.variable.Variable;
+import android.util.Log;
+
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -44,7 +44,7 @@ public class MechanicIndex implements Model, Serializable
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Map<String,Set<Mechanic>>   variableToListeners;
+    private Map<String,Set<Mechanic>>   requirementToListeners;
 
 
     // CONSTRUCTORS
@@ -150,9 +150,14 @@ public class MechanicIndex implements Model, Serializable
 
     public void onVariableUpdate(String variableName)
     {
-        if (this.variableToListeners.containsKey(variableName))
+        Log.d("***MECHANICINDEX", "on variable update " + variableName);
+
+        // [1] Update any mechanics that require this variable
+        // --------------------------------------------------------------------------------------
+
+        if (this.requirementToListeners.containsKey(variableName))
         {
-            for (Mechanic mechanic : this.variableToListeners.get(variableName)) {
+            for (Mechanic mechanic : this.requirementToListeners.get(variableName)) {
                 mechanic.onRequirementUpdate();
             }
         }
@@ -167,16 +172,16 @@ public class MechanicIndex implements Model, Serializable
         // Index mechanic requirements
         // --------------------------------------------------------------------------------------
 
-        this.variableToListeners = new HashMap<>();
+        this.requirementToListeners = new HashMap<>();
 
         for (Mechanic mechanic : this.mechanics())
         {
             for (String requirement : mechanic.requirements())
             {
-                if (!this.variableToListeners.containsKey(requirement))
-                    this.variableToListeners.put(requirement, new HashSet<Mechanic>());
+                if (!this.requirementToListeners.containsKey(requirement))
+                    this.requirementToListeners.put(requirement, new HashSet<Mechanic>());
 
-                Set<Mechanic> listeners = this.variableToListeners.get(requirement);
+                Set<Mechanic> listeners = this.requirementToListeners.get(requirement);
                 listeners.add(mechanic);
             }
         }
