@@ -22,11 +22,15 @@ public class Game implements Model
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                   id;
+    private UUID                     id;
 
     private PrimitiveFunctor<String> name;
     private PrimitiveFunctor<String> label;
     private PrimitiveFunctor<String> description;
+    private PrimitiveFunctor<String> genre;
+    private PrimitiveFunctor<String> created;
+    private PrimitiveFunctor<String> creators;
+    private PrimitiveFunctor<Integer> players;
 
 
     // CONSTRUCTORS
@@ -39,16 +43,31 @@ public class Game implements Model
         this.name        = new PrimitiveFunctor<>(null, String.class);
         this.label       = new PrimitiveFunctor<>(null, String.class);
         this.description = new PrimitiveFunctor<>(null, String.class);
+        this.genre       = new PrimitiveFunctor<>(null, String.class);
+        this.created     = new PrimitiveFunctor<>(null, String.class);
+        this.creators    = new PrimitiveFunctor<>(null, String.class);
+        this.players     = new PrimitiveFunctor<>(null, Integer.class);
     }
 
 
-    public Game(UUID id, String name, String label, String description)
+    public Game(UUID id,
+                String name,
+                String label,
+                String description,
+                String genre,
+                String created,
+                String creators,
+                Integer players)
     {
-        this.id = id;
+        this.id             = id;
 
-        this.name        = new PrimitiveFunctor<>(name, String.class);
-        this.label       = new PrimitiveFunctor<>(label, String.class);
-        this.description = new PrimitiveFunctor<>(description, String.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.label          = new PrimitiveFunctor<>(label, String.class);
+        this.description    = new PrimitiveFunctor<>(description, String.class);
+        this.genre          = new PrimitiveFunctor<>(genre, String.class);
+        this.created        = new PrimitiveFunctor<>(created, String.class);
+        this.creators       = new PrimitiveFunctor<>(creators, String.class);
+        this.players        = new PrimitiveFunctor<>(players, Integer.class);
     }
 
 
@@ -60,8 +79,12 @@ public class Game implements Model
         String name        = yaml.atKey("name").getString();
         String label       = yaml.atKey("label").getString();
         String description = yaml.atKey("description").getString();
+        String genre       = yaml.atKey("genre").getString();
+        String created     = yaml.atKey("created").getString();
+        String creators    = yaml.atKey("creators").getString();
+        Integer players    = yaml.atKey("players").getInteger();
 
-        return new Game(id, name, label, description);
+        return new Game(id, name, label, description, genre, created, creators, players);
     }
 
 
@@ -98,28 +121,70 @@ public class Game implements Model
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Name
-    // ------------------------------------------------------------------------------------------
 
-    public String getName()
+    /**
+     * The game name (identifier).
+     * @return The name
+     */
+    public String name()
     {
         return this.name.getValue();
     }
 
 
-    // ** Label
-    // ------------------------------------------------------------------------------------------
-
-    public String getLabel() {
+    /**
+     * The game name (for display).
+     * @return The name.
+     */
+    public String label()
+    {
         return this.label.getValue();
     }
 
 
-    // ** Description
-    // ------------------------------------------------------------------------------------------
-
-    public String getDescription() {
+    /**
+     * The game description.
+     * @return The description.
+     */
+    public String description()
+    {
         return this.description.getValue();
+    }
+
+
+    /**
+     * The game genre e.g. Fantasy, Horror, etc.
+     * @return The genre.
+     */
+    public String genre()
+    {
+        return this.genre.getValue();
+    }
+
+
+    /**
+     * The games creation date as a string.
+     * @return The date created.
+     */
+    public String created()
+    {
+        return this.created.getValue();
+    }
+
+
+    /**
+     * The game's authors/creators/publisher.
+     * @return The creators.
+     */
+    public String creators()
+    {
+        return this.creators.getValue();
+    }
+
+
+    public Integer players()
+    {
+        return this.players.getValue();
     }
 
 }

@@ -40,14 +40,17 @@
 
     <activity
         android:name=".activity.NewCharacterActivity"
+        android:theme="@style/AppTheme.NoActionBar"
         android:label="New Character" />
 
     <activity
         android:name=".activity.ChooseTemplateActivity"
+        android:theme="@style/AppTheme.NoActionBar"
         android:label="Choose Template" />
 
     <activity
-        android:name=".activity.ChooseTemplateGameActivity"
+        android:name=".activity.GamesActivity"
+        android:theme="@style/AppTheme.NoActionBar"
         android:label="Choose Template" />
 
 

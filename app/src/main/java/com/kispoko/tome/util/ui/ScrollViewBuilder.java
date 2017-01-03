@@ -5,17 +5,15 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.RelativeLayout;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.widget.ScrollView;
 
 
 
 /**
- * Relative Layout Builder
+ * Scroll View Builder
+ *
  */
-public class RelativeLayoutBuilder
+public class ScrollViewBuilder implements ViewBuilder
 {
 
     // PROPERTIES
@@ -24,44 +22,29 @@ public class RelativeLayoutBuilder
     // > Layout State
     // ------------------------------------------------------------------------------------------
 
-    public Integer                 orientation;
+    public Integer                  id;
 
-    public Integer                 id;
+    public Integer                  height;
+    public Integer                  width;
+    public Float                    weight;
 
-    public Integer                 height;
-    public Integer                 width;
-    public Float                   weight;
+    public LayoutType               layoutType;
 
-    public LayoutType              layoutType;
+    public Integer                  layoutGravity;
 
-    public Integer                 gravity;
-    public Integer                 layoutGravity;
+    public Integer                  backgroundColor;
+    public Integer                  backgroundResource;
 
-    public Integer                 backgroundColor;
-    public Integer                 backgroundResource;
-
-    public Margins                 margin;
-    public Padding                 padding;
-
-    public View.OnClickListener    onClick;
-
-    public List<Integer>           rules;
-
-
-    // > Internal
-    // ------------------------------------------------------------------------------------------
-
-    private List<ViewBuilder>      children;
+    public Margins                  margin;
+    public Padding                  padding;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public RelativeLayoutBuilder()
+    public ScrollViewBuilder()
     {
         this.id                 = null;
-
-        this.orientation        = null;
 
         this.height             = null;
         this.width              = null;
@@ -69,7 +52,6 @@ public class RelativeLayoutBuilder
 
         this.layoutType         = LayoutType.NONE;
 
-        this.gravity            = null;
         this.layoutGravity      = null;
 
         this.backgroundColor    = null;
@@ -77,41 +59,27 @@ public class RelativeLayoutBuilder
 
         this.margin             = new Margins();
         this.padding            = new Padding();
-
-        this.onClick            = null;
-
-        this.children           = new ArrayList<>();
-
-        this.rules              = new ArrayList<>();
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
 
-    // > Methods
+    // > View Builder
     // ------------------------------------------------------------------------------------------
 
-    public RelativeLayoutBuilder child(ViewBuilder childViewBuilder)
+    public View view(Context context)
     {
-        this.children.add(childViewBuilder);
-        return this;
-    }
-
-
-    public RelativeLayoutBuilder addRule(int verb)
-    {
-        this.rules.add(verb);
-        return this;
+        return this.scrollView(context);
     }
 
 
     // > Layout
     // ------------------------------------------------------------------------------------------
 
-    public RelativeLayout relativeLayout(Context context)
+    public ScrollView scrollView(Context context)
     {
-        RelativeLayout relativeLayout = new RelativeLayout(context);
+        ScrollView scrollView = new ScrollView(context);
 
         // [1] Layout
         // --------------------------------------------------------------------------------------
@@ -120,40 +88,27 @@ public class RelativeLayoutBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.id != null)
-            relativeLayout.setId(this.id);
+            scrollView.setId(this.id);
 
         // > Padding
         // --------------------------------------------------------------------------------------
 
-        relativeLayout.setPadding(this.padding.left(context),
-                                  this.padding.top(context),
-                                  this.padding.right(context),
-                                  this.padding.bottom(context));
-
-        // > Gravity
-        // --------------------------------------------------------------------------------------
-
-        if (this.gravity != null)
-            relativeLayout.setGravity(this.gravity);
-
-
-        // > On Click Listener
-        // --------------------------------------------------------------------------------------
-
-        if (this.onClick != null)
-            relativeLayout.setOnClickListener(this.onClick);
+        scrollView.setPadding(this.padding.left(context),
+                              this.padding.top(context),
+                              this.padding.right(context),
+                              this.padding.bottom(context));
 
         // > Background Color
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            relativeLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            scrollView.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
 
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundResource != null)
-            relativeLayout.setBackgroundResource(this.backgroundResource);
+            scrollView.setBackgroundResource(this.backgroundResource);
 
 
         // [2] Layout Parameters
@@ -198,35 +153,19 @@ public class RelativeLayoutBuilder
         layoutParamsBuilder.setMargins(this.margin);
 
 
-        // > Rules (Relative Layout Only)
-        // --------------------------------------------------------------------------------------
-
-        layoutParamsBuilder.setRules(this.rules);
-
-
-
-        // [3] Children
-        // --------------------------------------------------------------------------------------
-
-        for (ViewBuilder childViewBuilder : this.children)
-        {
-            relativeLayout.addView(childViewBuilder.view(context));
-        }
-
         switch (this.layoutType)
         {
             case LINEAR:
-                relativeLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+                scrollView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
                 break;
             case RELATIVE:
-                relativeLayout.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
+                scrollView.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
                 break;
             case NONE:
-                relativeLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+                scrollView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
         }
 
-        return relativeLayout;
+        return scrollView;
     }
-
 
 }

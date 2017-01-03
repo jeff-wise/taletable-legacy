@@ -66,7 +66,7 @@ public class GameIndex
      * Get the official known games.
      * @return An immutable list of Games.
      */
-    public List<Game> getGames()
+    public List<Game> games()
     {
         return Collections.unmodifiableList(this.games);
     }

@@ -4,16 +4,49 @@ games:
   description: >
     The fifth edition of the world's most famous roleplaying game, with simplified game
     mechanics and more focus on roleplaying and storytelling.
-- name: dungeons_and_dragons_4
-  label: 'Dungeons & Dragons 4th Edition'
-  description: >
-    Dungeons and Dragons 4th Edition departed from the classic game mechanics of previous editions
-    and presented a more simplified and unique take on roleplaying adventure.
+  genre: Fantasy
+  created: '2014'
+  creators: Wizards
+  genre: Fantasy
+  players: 11577
 - name: pathfinder
   label: 'Pathfinder'
   description: >
     Pathfinder takes the best rulesEngine from Dungeons and Dragons 3.5, fixing many defects while
     providing a captivating setting boosted by well-designed game mechanics.
+  genre: Fantasy
+  created: '2009'
+  creators: Paizo
+  players: 17833
+- name: dungeon_world
+  label: 'Dungeon World'
+  description: >
+    Dungeon World is a fantasy roleplaying game with "old school style and modern rules." It as
+    a different engine and mechanics than Dungeons and Dragons and encourages a more open and
+    expressive style of play.
+  genre: Fantasy
+  created: '2012'
+  creators: LaTorra & Koebel
+  players: 4204
+- name: dungeons_and_dragons_4
+  label: 'Dungeons & Dragons 4th Edition'
+  description: >
+    Dungeons and Dragons 4th Edition departed from the classic game mechanics of previous editions
+    and presented a more simplified and unique take on roleplaying adventure.
+  genre: Fantasy
+  created: '2008'
+  creators: Wizards
+  players: 6079
+- name: fate
+  label: 'Fate'
+  description: >
+    Fate is a generic, modern role-playing system with innovative game mechanics. It was developed
+    with fund-raising from Kickstart, has a strong community, and is based on the FUDGE roleplaying
+    system.
+  genre: Generic
+  created: '2003'
+  creators: Evil Hat Productions
+  players: 5055
 templates:
 - game: dungeons_and_dragons_4
   name: monk_level_1

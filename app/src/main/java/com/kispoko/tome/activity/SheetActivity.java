@@ -76,7 +76,7 @@ public class SheetActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sheet);
 
         loadSheet();
 

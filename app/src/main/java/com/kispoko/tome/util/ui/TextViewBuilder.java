@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -32,6 +34,7 @@ public class TextViewBuilder implements ViewBuilder
     public Integer              visibility;
 
     public String               text;
+    public Integer              textId;
 
     public Padding              padding;
     public Margins              margin;
@@ -44,6 +47,8 @@ public class TextViewBuilder implements ViewBuilder
     public Integer              backgroundResource;
 
     public View.OnClickListener onClick;
+
+    public List<Integer>        rules;
 
 
     // CONSTRUCTORS
@@ -63,6 +68,7 @@ public class TextViewBuilder implements ViewBuilder
         this.visibility         = null;
 
         this.text               = null;
+        this.textId             = null;
 
         this.padding            = new Padding();
         this.margin             = new Margins();
@@ -75,11 +81,23 @@ public class TextViewBuilder implements ViewBuilder
         this.backgroundResource = null;
 
         this.onClick            = null;
+
+        this.rules              = new ArrayList<>();
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
+
+    // > Attributes
+    // ------------------------------------------------------------------------------------------
+
+    public TextViewBuilder addRule(int verb)
+    {
+        this.rules.add(verb);
+        return this;
+    }
+
 
     // > View Builder
     // ------------------------------------------------------------------------------------------
@@ -168,6 +186,12 @@ public class TextViewBuilder implements ViewBuilder
         if (this.text != null)
             textView.setText(this.text);
 
+        // > Text Id
+        // --------------------------------------------------------------------------------------
+
+        if (this.textId != null)
+            textView.setText(this.textId);
+
         // [2] Layout
         // --------------------------------------------------------------------------------------
 
@@ -196,6 +220,11 @@ public class TextViewBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         layoutParamsBuilder.setMargins(this.margin);
+
+        // > Rules (Relative Layout Only)
+        // --------------------------------------------------------------------------------------
+
+        layoutParamsBuilder.setRules(this.rules);
 
 
         switch (this.layoutType)

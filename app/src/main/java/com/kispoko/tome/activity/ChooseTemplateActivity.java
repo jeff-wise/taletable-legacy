@@ -50,7 +50,7 @@ public class ChooseTemplateActivity extends AppCompatActivity
             gameId = getIntent().getStringExtra("game_id");
         }
 
-        renderTemplates(gameId);
+//        renderTemplates(gameId);
 
     }
 
@@ -111,6 +111,7 @@ public class ChooseTemplateActivity extends AppCompatActivity
     /**
      * Render the list of templates.
      */
+    /*
     private void renderTemplates(final String gameId)
     {
         ScrollView scrollView = (ScrollView) findViewById(R.id.template_list);
@@ -324,5 +325,6 @@ public class ChooseTemplateActivity extends AppCompatActivity
         return dividerView;
     }
 
+*/
 
 }

@@ -11,13 +11,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.CountQuery;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.ImageViewBuilder;
+import com.kispoko.tome.util.ui.LayoutType;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.RelativeLayoutBuilder;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 
 
 
@@ -31,7 +38,7 @@ public class NewCharacterActivity extends AppCompatActivity
     // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private boolean firstCharacter;
+    private boolean firstSheet;
 
 
     // ACTIVITY EVENTS
@@ -89,13 +96,15 @@ public class NewCharacterActivity extends AppCompatActivity
     {
 
         if (count == 0)
-            this.firstCharacter = true;
+            this.firstSheet = true;
         else
-            this.firstCharacter = false;
+            this.firstSheet = false;
 
         setContentView(R.layout.activity_new_character);
+
         initializeToolbar();
-        initializeButtons();
+
+        initializeView();
     }
 
 
@@ -105,56 +114,173 @@ public class NewCharacterActivity extends AppCompatActivity
     }
 
 
-
     // INTERNAL
     // -------------------------------------------------------------------------------------------
-
 
     /**
      * Initialize the toolbar ComponentUtil components.
      */
     private void initializeToolbar()
     {
+        // > Initialize action bar
+        UI.initializeToolbar(this);
         ActionBar actionBar = getSupportActionBar();
 
-        actionBar.setElevation(0);
-
-        if (!this.firstCharacter) {
+        // > If this is the first sheet, then we are not coming from another sheet, so no back
+        //   button is provided
+        if (!this.firstSheet)
+        {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        // > Set the title
+        String title = "New Character"; // + this.widgetData.getLabel();
+        TextView titleView = (TextView) findViewById(R.id.page_title);
+        titleView.setText(title);
     }
 
 
     /**
-     * Initialize the character creation option buttons.
+     * Initialize the new character view.
      */
-    private void initializeButtons()
+    private void initializeView()
     {
-
-        // Set fonts
-        TextView fromOfficialTemplateView = (TextView) findViewById(R.id.from_offical_template);
-        fromOfficialTemplateView.setTypeface(Util.serifFontBold(this));
-
-        TextView fromCharacterHubView = (TextView) findViewById(R.id.from_character_hub);
-        fromCharacterHubView.setTypeface(Util.serifFontBold(this));
-
-        TextView fromFileView = (TextView) findViewById(R.id.from_file);
-        fromFileView.setTypeface(Util.serifFontBold(this));
-
-
-        // From Template
-        LinearLayout fromTemplateButton = (LinearLayout) findViewById(R.id.from_template_button);
-        final Activity thisActivity = this;
-        fromTemplateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(thisActivity, ChooseTemplateGameActivity.class);
-                startActivity(intent);
-            }
-        });
-
+        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.new_character_content);
+        contentLayout.addView(view());
     }
 
+
+    /**
+     * The activity view.
+     * @return The linear layout.
+     */
+    private LinearLayout view()
+    {
+        LinearLayout layout = newCharacterView();
+
+        RelativeLayout fromTemplateView = buttonView(R.string.from_template,
+                                                     R.drawable.ic_from_template,
+                                                     R.string.from_template_description,
+                                                     GamesActivity.class);
+        RelativeLayout fromHubView      = buttonView(R.string.from_hub,
+                                                     R.drawable.ic_from_hub,
+                                                     R.string.from_hub_description,
+                                                     null);
+        RelativeLayout fromFileView     = buttonView(R.string.from_file,
+                                                     R.drawable.ic_from_file,
+                                                     R.string.from_file_description,
+                                                     null);
+
+        layout.addView(fromTemplateView);
+        layout.addView(fromHubView);
+        layout.addView(fromFileView);
+
+        return layout;
+    }
+
+
+    private LinearLayout newCharacterView()
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.orientation      = LinearLayout.VERTICAL;
+
+        layout.backgroundColor  = R.color.dark_blue_5;
+        layout.padding.bottom   = R.dimen.new_character_layout_padding_bottom;
+        layout.padding.left     = R.dimen.new_character_layout_padding_horz;
+        layout.padding.right    = R.dimen.new_character_layout_padding_horz;
+
+        return layout.linearLayout(this);
+    }
+
+
+    private RelativeLayout buttonView(int titleStringId,
+                                      int iconId,
+                                      int descriptionStringId,
+                                      final Class<?> nextActivity)
+    {
+        // [1] Declarations
+        // --------------------------------------------------------------------------------------
+
+        RelativeLayoutBuilder layout = new RelativeLayoutBuilder();
+
+        TextViewBuilder  title       = new TextViewBuilder();
+        ImageViewBuilder icon        = new ImageViewBuilder();
+        TextViewBuilder  description = new TextViewBuilder();
+
+        // [2] Layout
+        // --------------------------------------------------------------------------------------
+
+        layout.layoutType       = LayoutType.LINEAR;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = 0;
+        layout.weight           = 1.0f;
+
+        layout.backgroundColor  = R.color.dark_blue_9;
+        layout.margin.top       = R.dimen.new_character_button_margin_top;
+        layout.padding.top      = R.dimen.new_character_button_padding_vert;
+        layout.padding.bottom   = R.dimen.new_character_button_padding_vert;
+
+        final Activity thisActivity = this;
+        layout.onClick          = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(thisActivity, nextActivity);
+                startActivity(intent);
+            }
+        };
+
+        layout.child(title)
+              .child(icon)
+              .child(description);
+
+        // [3] Title
+        // --------------------------------------------------------------------------------------
+
+        title.layoutType    = LayoutType.RELATIVE;
+        title.width         = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        title.height        = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+        title.textId        = titleStringId;
+        title.font          = Font.sansSerifFontBold(this);
+        title.color         = R.color.gold_6;
+        title.margin.bottom = R.dimen.new_character_title_margin_bottom;
+
+        title.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+        // [4] Icon
+        // --------------------------------------------------------------------------------------
+
+        icon.layoutType     = LayoutType.RELATIVE;
+        icon.width          = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        icon.height         = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image          = iconId;
+        icon.margin.bottom  = R.dimen.new_character_icon_margin_bottom;
+
+        icon.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+        // [5] Description
+        // --------------------------------------------------------------------------------------
+
+        description.layoutType      = LayoutType.RELATIVE;
+        description.width           = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        description.height          = RelativeLayout.LayoutParams.WRAP_CONTENT;
+
+        description.textId          = descriptionStringId;
+        description.padding.left    = R.dimen.new_character_description_padding_horz;
+        description.padding.right   = R.dimen.new_character_description_padding_horz;
+        description.color           = R.color.dark_blue_hl_5;
+        description.size            = R.dimen.new_character_description_text_size;
+        description.font            = Font.sansSerifFontRegular(this);
+
+        description.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
+        return layout.relativeLayout(this);
+    }
 
 }

@@ -122,21 +122,26 @@
     <dimen name="ref_member_of_sel_item_name_text_size">5sp</dimen>
     <dimen name="ref_member_of_sel_item_info_button_margin_right">25dp</dimen>
 
+    <!-- ACTIVITY: NEW CHARACTER -->
+    <dimen name="new_character_layout_padding_bottom">14dp</dimen>
+    <dimen name="new_character_layout_padding_horz">10dp</dimen>
+    <dimen name="new_character_button_margin_top">14dp</dimen>
+    <dimen name="new_character_button_padding_vert">15dp</dimen>
+    <dimen name="new_character_title_margin_bottom">15dp</dimen>
+    <dimen name="new_character_icon_margin_bottom">15dp</dimen>
+    <dimen name="new_character_description_padding_horz">25dp</dimen>
+    <dimen name="new_character_description_text_size">3sp</dimen>
 
-    <!-- CHOOSE TEMPLATE GAME -->
-    <dimen name="choose_template_game_name_text_size">6dp</dimen>
-    <dimen name="choose_template_game_game_layout_margin_top">1dp</dimen>
-    <dimen name="choose_template_game_game_layout_height">100dp</dimen>
-    <dimen name="choose_template_game_game_layout_padding_left">17dp</dimen>
-    <dimen name="choose_template_game_game_layout_padding_top">11dp</dimen>
-    <dimen name="choose_template_game_game_layout_padding_bottom">2dp</dimen>
-    <dimen name="choose_template_game_next_icon_padding">8dp</dimen>
-    <dimen name="choose_template_game_players_number_text_size">5.1dp</dimen>
-    <dimen name="choose_template_game_players_label_text_size">5.1dp</dimen>
-    <dimen name="choose_template_game_players_number_padding_right">7dp</dimen>
-    <dimen name="choose_template_game_players_icon_padding_right">10dp</dimen>
-    <dimen name="choose_template_game_players_padding_vert">6dp</dimen>
-    <dimen name="choose_template_game_desc_padding_vert">6dp</dimen>
+    <!-- ACTIVITY: CHOOSE TEMPLATE GAME -->
+    <dimen name="games_padding_top">15dp</dimen>
+    <dimen name="games_button_layout_margin_bottom">20dp</dimen>
+    <dimen name="games_button_layout_padding_horz">15dp</dimen>
+    <dimen name="games_button_title_text_size">4.2sp</dimen>
+    <dimen name="games_button_title_margin_bottom">10dp</dimen>
+    <dimen name="games_button_facts_layout_margin_bottom">10dp</dimen>
+    <dimen name="games_button_fact_layout_margin_right">15dp</dimen>
+    <dimen name="games_button_fact_text_size">3sp</dimen>
+    <dimen name="games_button_facts_name_view_padding_right">10dp</dimen>
 
     <!-- CHOOSE TEMPLATE -->
     <dimen name="choose_template_name_text_size">6dp</dimen>
