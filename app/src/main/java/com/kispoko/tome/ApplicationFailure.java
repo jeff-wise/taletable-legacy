@@ -32,8 +32,7 @@ public class ApplicationFailure
 
     public static void templateFile(TemplateFileException exception)
     {
-        Log.d("***APP", "template file exception");
-        exception.printStackTrace();
+        Log.d("***APP", "template file exception", exception);
     }
 
 

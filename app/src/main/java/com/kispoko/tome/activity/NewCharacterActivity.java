@@ -135,7 +135,7 @@ public class NewCharacterActivity extends AppCompatActivity
         }
 
         // > Set the title
-        String title = "New Character"; // + this.widgetData.getLabel();
+        String title = "New Character"; // + this.widgetData.label();
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
     }

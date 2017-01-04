@@ -100,7 +100,7 @@ public class EditActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
 
-        String title = "Edit "; // + this.widgetData.getLabel();
+        String title = "Edit "; // + this.widgetData.label();
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
 

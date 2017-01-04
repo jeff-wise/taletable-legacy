@@ -44,7 +44,7 @@
         android:label="New Character" />
 
     <activity
-        android:name=".activity.ChooseTemplateActivity"
+        android:name=".activity.TemplatesActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Choose Template" />
 

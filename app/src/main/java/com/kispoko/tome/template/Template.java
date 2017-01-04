@@ -5,6 +5,7 @@ package com.kispoko.tome.template;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
 
+import java.util.List;
 
 
 /**
@@ -20,33 +21,40 @@ public class Template
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String name;
-    private String label;
-    private String description;
-    private String game;
+    private String          name;
+    private String          label;
+    private String          description;
+    private String          game;
+    private List<String>    variants;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public Template(String name, String label, String description, String game)
+    public Template(String name,
+                    String label,
+                    String description,
+                    String game,
+                    List<String> variants)
     {
         this.name        = name;
         this.label       = label;
         this.description = description;
         this.game        = game;
+        this.variants    = variants;
     }
 
 
     public static Template fromYaml(Yaml yaml)
                   throws YamlException
     {
-        String name        = yaml.atKey("name").getString();
-        String label       = yaml.atKey("label").getString();
-        String description = yaml.atKey("description").getString();
-        String game        = yaml.atKey("game").getString();
+        String       name        = yaml.atKey("name").getString();
+        String       label       = yaml.atKey("label").getString();
+        String       description = yaml.atKey("description").getString();
+        String       game        = yaml.atKey("game").getString();
+        List<String> variants    = yaml.atMaybeKey("variants").getStringList();
 
-        return new Template(name, label, description, game);
+        return new Template(name, label, description, game, variants);
     }
 
 
@@ -70,7 +78,7 @@ public class Template
      * Get the template name. The name is unique identifier for the template.
      * @return The template name.
      */
-    public String getName()
+    public String name()
     {
         return this.name;
     }
@@ -80,7 +88,7 @@ public class Template
      * Get the template label. The label is a short description of the template.
      * @return The template label.
      */
-    public String getLabel()
+    public String label()
     {
         return this.label;
     }
@@ -90,7 +98,7 @@ public class Template
      * Get the template description, which is a long summary of the template.
      * @return The template description.
      */
-    public String getDescription()
+    public String description()
     {
         return this.description;
     }
@@ -100,9 +108,19 @@ public class Template
      * Get the roleplaying game name that the template is designed for.
      * @return The template game.
      */
-    public String getGame()
+    public String game()
     {
         return this.game;
+    }
+
+
+    /**
+     * The template's variants.
+     * @return The variant list.
+     */
+    public List<String> variants()
+    {
+        return this.variants;
     }
 
 

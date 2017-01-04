@@ -78,15 +78,15 @@ public class SheetManager
                     Yaml yaml = Yaml.fromFile(yamlIS);
                     sheet = Sheet.fromYaml(yaml);
                 }
+                catch (YamlException exception)
+                {
+                    return exception;
+                }
                 catch (IOException exception)
                 {
                     return new TemplateFileException(
                                 new TemplateFileReadError(templateFileName),
                             TemplateFileException.ErrorType.TEMPLATE_FILE_READ);
-                }
-                catch (YamlException exception)
-                {
-                    return exception;
                 }
                 catch (Exception exception)
                 {

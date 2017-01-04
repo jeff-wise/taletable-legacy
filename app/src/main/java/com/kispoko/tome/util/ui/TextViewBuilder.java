@@ -5,12 +5,14 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -28,12 +30,14 @@ public class TextViewBuilder implements ViewBuilder
 
     public Integer              height;
     public Integer              width;
+    public Float                weight;
 
     public Integer              gravity;
     public Integer              layoutGravity;
     public Integer              visibility;
 
     public String               text;
+    public Spanned              textHtml;
     public Integer              textId;
 
     public Padding              padding;
@@ -62,12 +66,14 @@ public class TextViewBuilder implements ViewBuilder
 
         this.height             = null;
         this.width              = null;
+        this.weight             = null;
 
         this.gravity            = null;
         this.layoutGravity      = null;
         this.visibility         = null;
 
         this.text               = null;
+        this.textHtml           = null;
         this.textId             = null;
 
         this.padding            = new Padding();
@@ -186,6 +192,12 @@ public class TextViewBuilder implements ViewBuilder
         if (this.text != null)
             textView.setText(this.text);
 
+        // > Text Html
+        // --------------------------------------------------------------------------------------
+
+        if (this.textHtml != null)
+            textView.setText(this.textHtml);
+
         // > Text Id
         // --------------------------------------------------------------------------------------
 
@@ -209,6 +221,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+
+        // > Weight
+        // --------------------------------------------------------------------------------------
+
+        if (this.weight != null)
+            layoutParamsBuilder.setWeight(this.weight);
 
         // > Gravity
         // --------------------------------------------------------------------------------------

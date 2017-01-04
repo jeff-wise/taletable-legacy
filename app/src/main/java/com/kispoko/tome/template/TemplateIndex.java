@@ -10,7 +10,7 @@ import com.kispoko.tome.util.yaml.YamlException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,12 +61,20 @@ public class TemplateIndex
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the list of official character sheet templates
+     * All of the templates in the index.
+     * @param gameName Return templates for this game only.
      * @return An immutable list of Games.
      */
-    public List<Template> getTemplates()
+    public List<Template> templates(String gameName)
     {
-        return Collections.unmodifiableList(this.templates);
+        List<Template> gameTemplates = new ArrayList<>();
+
+        for (Template template : this.templates) {
+            if (template.game().equals(gameName))
+                gameTemplates.add(template);
+        }
+
+        return gameTemplates;
     }
 
 

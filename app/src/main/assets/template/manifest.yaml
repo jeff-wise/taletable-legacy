@@ -7,7 +7,6 @@ games:
   genre: Fantasy
   created: '2014'
   creators: Wizards
-  genre: Fantasy
   players: 11577
 - name: pathfinder
   label: 'Pathfinder'
@@ -54,65 +53,153 @@ templates:
   description: >
     Start your game with a Monk!
 - game: dungeons_and_dragons_5
-  name: barbarian_level_1
-  label: 'Barbarian - Level 1'
+  name: barbarian
+  label: 'Dragor Aka Rosak the Barbarian'
   description: >
-    Start your game with a Barbarian!
+    Rashnak Raga the Half-Orc Barbarian does not mix well with society. If it's a good day, he will
+    only threaten to murder you. Barbarians are strong, but not graceful, fighters with the ability
+    to rage.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 12344
 - game: dungeons_and_dragons_5
-  name: bard_level_1
-  label: 'Bard - Level 1'
+  name: bard
+  label: 'The Lonesome Bard, Everet Tiren'
   description: >
-    Start your game with a Bard!
+    The ever lonesome bard Evert Tiren spends his days searching for honest friends, who do not
+    just love him for his fame or fortune. As a bard he fights and defends with the power of his
+    music, and his a deft manipulator off the battlefield.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 6509
 - game: dungeons_and_dragons_5
-  name: cleric_level_1
-  label: 'Cleric - Level 1'
+  name: cleric
+  label: 'Johann Simion, Cleric'
   description: >
-    Start your game with a Cleric!
+    Johann Simion is a Cleric of Auril, the Goddess of winter. He is a priest of the north, giving
+    warmth to those who follow him in his faith, and guiding them in the art of ice and snow.
+    Clerics, like Johann, are healers and divine fighters, gaining strength and magic from their
+    diety.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 11344
 - game: dungeons_and_dragons_5
-  name: druid_level_1
-  label: 'Druid - Level 1'
+  name: druid
+  label: 'Druid of the Seven Forests, Fira Windstrong '
   description: >
-    Start your game with a Druid!
+    Fire Windstrong, known as the Druid of the Seven Forests, spends her time protecting the
+    wilderness and its creatures. As a Druid she gains her power from nature and is a deadly force
+    when fighting in the forest that she calls home.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 3775
 - game: dungeons_and_dragons_5
-  name: fighter_level_1
-  label: 'Fighter - Level 1'
+  name: fighter
+  label: 'The Mercenary Fighter, Aladasian Wineheart'
   description: >
-    Start your game with a Fighter!
+    Aladasian Wineheart is a mercenary fighter, doing his work for the highest bidder, even when
+    the works involves questionable activities. He is often found drinking ale -- before fighting,
+    after fighting, and sometimes, while fighting. He is a Fighter, so he is a strong, skilled, and
+    experienced warrior who dominates in both melee and ranged combat.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 13983
 - game: dungeons_and_dragons_5
-  name: monk_level_1
-  label: 'Monk - Level 1'
+  name: monk
+  label: 'Saran the Monk'
   description: >
-    Start your game with a Monk!
+    A calm and reserved man, Saran the Monk spends his time on inner conflict, fighting his own
+    troubled past, but also helping others to win their mental battles. Monks are skilled martial
+    artists, and Saran is no exception. They say in his angry, pre-meditation days, he had
+    destroyed many a tavern table or wall.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 9871
 - game: dungeons_and_dragons_5
-  name: paladin_level_1
-  label: 'Paladin - Level 1'
+  name: paladin
+  label: 'Kalmar Strongwill the Paladin'
   description: >
-    Start your game with a Paladin!
+    Kalmar Strongwill is Paladin of Helm. He has dedicated his live to protecting those who are weak
+    or cannot protect themselves. All life is important to him, and everyone has a second chance.
+    Like other Paladins he is a skilled warrior, but also gains strength and magical powers through
+    his divine relationship.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 11840
 - game: dungeons_and_dragons_5
-  name: ranger_level_1
-  label: 'Ranger - Level 1'
+  name: ranger
+  label: 'The Ranger of the Thorn, Ramion'
   description: >
-    Start your game with a Ranger!
+    Ramion, known as the Ranger of the Thorn, has spent his life in the wilderness, fighting beasts
+    and other foes before they can harm civilized society. He can survive in desolate mountains
+    and under harsh conditions. As a ranger he is a skilled fighter who is deadly if encountered
+    outdoors.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 8067
 - game: dungeons_and_dragons_5
-  name: rogue_level_1
-  label: 'Rogue - Level 1'
+  name: rogue
+  label: 'Krina Faar, Assassin of the Golden Leaf'
   description: >
-    Start your game with a Rogue!
+    Krina Fear, the Assassin of the Golden Leaf, spends her time hunting down and eliminating her
+    enemies. Her enemies though are those who she considers harmful to society. Those who are evil,
+    abusive, or manipulating. She is a Rogue, a stealthy thief that attacks with deadly precision.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 15134
 - game: dungeons_and_dragons_5
-  name: sorceror_level_1
-  label: 'Sorceror - Level 1'
+  name: sorceror
+  label: 'Yunita Hakawa, the Flamethrower'
   description: >
-    Start your game with a Sorceror!
+    Yurninta Hakawa the Flamethrower has a deadly reputation for reducing anything in her way to
+    ashes. She was born with magic in her veins, and had to be sent away at a young age to save
+    her and her family from herself. As a Sorceror she was given the gift of magic and uses it to
+    accomplish her goals, but does not always understand it.
+  number_created: 12550
 - game: dungeons_and_dragons_5
-  name: warlock_level_1
-  label: 'Warlock - Level 1'
+  name: warlock
+  label: 'Slave of Groek, Master of Pain, Kharinth'
   description: >
-    Start your game with a Warlock!
+    Kharinth, the Slave of Groek and the Master of Pain has sworn himself to serve his Demon Lord
+    master. Thus he himself has strong, frightful powers that are a source of pain for others.
+    Warlocks are practiioners of magic who gain their powerful from a patron. Karinth is a patron
+    of Groek.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 10056
 - game: dungeons_and_dragons_5
-  name: wizard_level_1
-  label: 'Wizard - Level 1'
+  name: wizard
+  label: 'The Wizard of Mirrors'
   description: >
-    Start your game with a Wizard!
+    No one is sure of his name, so they call him the Wizard of Mirrors. He uses illusions and clever
+    magic to fight, along with his wisdom and natural intelligence. As a Wizard he is a scholar,
+    gaining his use of spells through arduous study and research. He specializes in illusion, so he
+    can fight and protect without causing much harm to others.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
+  number_created: 17399
 - game: pathfinder
   name: figther_level_1
   label: 'Fighter - Level 1'

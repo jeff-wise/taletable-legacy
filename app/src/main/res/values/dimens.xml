@@ -132,7 +132,7 @@
     <dimen name="new_character_description_padding_horz">25dp</dimen>
     <dimen name="new_character_description_text_size">3sp</dimen>
 
-    <!-- ACTIVITY: CHOOSE TEMPLATE GAME -->
+    <!-- ACTIVITY: GAMES -->
     <dimen name="games_padding_top">15dp</dimen>
     <dimen name="games_button_layout_margin_bottom">20dp</dimen>
     <dimen name="games_button_layout_padding_horz">15dp</dimen>
@@ -143,17 +143,14 @@
     <dimen name="games_button_fact_text_size">3sp</dimen>
     <dimen name="games_button_facts_name_view_padding_right">10dp</dimen>
 
-    <!-- CHOOSE TEMPLATE -->
-    <dimen name="choose_template_name_text_size">6dp</dimen>
-    <dimen name="choose_template_layout_padding_top">10dp</dimen>
-    <dimen name="choose_template_layout_padding_bottom">5dp</dimen>
-    <dimen name="choose_template_add_icon_padding_left">14dp</dimen>
-    <dimen name="choose_template_add_icon_padding_right">28dp</dimen>
-    <dimen name="choose_template_created_padding_vert">10dp</dimen>
-    <dimen name="choose_template_created_icon_padding_right">10dp</dimen>
-    <dimen name="choose_template_created_number_text_size">5.1dp</dimen>
-    <dimen name="choose_template_created_number_padding_right">7dp</dimen>
-    <dimen name="choose_template_desc_padding_vert">6dp</dimen>
+    <!-- ACTIVITY: TEMPLATES -->
+    <dimen name="templates_padding_top">15dp</dimen>
+    <dimen name="templates_button_layout_padding_horz">15dp</dimen>
+    <dimen name="templates_button_layout_margin_bottom">30dp</dimen>
+    <dimen name="templates_button_title_text_size">4.2sp</dimen>
+    <dimen name="templates_button_title_margin_bottom">10dp</dimen>
+    <dimen name="templates_button_variant_button_margin_horz">2dp</dimen>
+    <dimen name="templates_button_variant_button_text_size">3sp</dimen>
 
     <!-- MANAGE SHEETS -->
     <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>

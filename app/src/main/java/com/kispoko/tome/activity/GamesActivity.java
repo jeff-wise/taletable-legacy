@@ -100,7 +100,7 @@ public class GamesActivity extends AppCompatActivity
 
 
     /**
-     * Initialize the toolbar ComponentUtil components.
+     * Initialize the toolbar.
      */
     private void initializeToolbar()
     {
@@ -119,7 +119,7 @@ public class GamesActivity extends AppCompatActivity
 
 
     /**
-     * Initialize the game  view.
+     * Initialize the game list view.
      */
     private void initializeView()
     {
@@ -235,7 +235,7 @@ public class GamesActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Intent intent = new Intent(GamesActivity.this, ChooseTemplateActivity.class);
+                Intent intent = new Intent(GamesActivity.this, TemplatesActivity.class);
 
                 Bundle bundle = new Bundle();
                 String gameId = game.name();

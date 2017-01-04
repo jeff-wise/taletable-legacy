@@ -8,6 +8,10 @@ game:
   description: >
     The fifth edition of the world's most famous roleplaying game, with simplified game
     mechanics and more focus on roleplaying and storytelling.
+  genre: Fantasy
+  created: '2014'
+  creators: Wizards
+  players: 11577
 rulesEngine:
   refinements:
   - name: class
