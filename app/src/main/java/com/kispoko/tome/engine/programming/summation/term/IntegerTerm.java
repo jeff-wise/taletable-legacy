@@ -4,6 +4,7 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
+import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
 import com.kispoko.tome.util.yaml.YamlException;
@@ -145,6 +146,19 @@ public class IntegerTerm extends Term implements Serializable
             variableReferences.add(variableReference);
 
         return variableReferences;
+    }
+
+
+    // > Summary
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * A summary of the terms variables.
+     * @return The list of 2-tuples (value, description) of each of the term's variables.
+     */
+    public List<Tuple2<Integer,String>> summary()
+    {
+        return this.termValue().summary();
     }
 
 }

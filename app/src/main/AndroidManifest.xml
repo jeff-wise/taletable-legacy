@@ -53,6 +53,11 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Choose Template" />
 
+    <activity
+        android:name=".activity.SummationActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Summation" />
+
 
 </application>
 

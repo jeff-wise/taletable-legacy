@@ -27,14 +27,9 @@ import com.kispoko.tome.util.ui.ScrollViewBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.yaml.YamlException;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import static android.R.attr.button;
-import static org.apache.commons.lang3.StringUtils.split;
 
 
 /**
@@ -213,7 +208,7 @@ public class TemplatesActivity extends AppCompatActivity
         // --------------------------------------------------------------------------------------
 
         if (!template.variants().isEmpty())
-            layout.addView(variantsView(template.variants()));
+            layout.addView(variantsView(template, template.variants()));
 
         return layout;
     }
@@ -302,13 +297,13 @@ public class TemplatesActivity extends AppCompatActivity
     }
 
 
-    private LinearLayout variantsView(List<String> variants)
+    private LinearLayout variantsView(final Template template, List<String> variants)
     {
         LinearLayout layout = variantsLayout();
 
         final List<TextView> variantButtons = new ArrayList<>();
 
-        for (String variant : variants)
+        for (final String variant : variants)
         {
             final TextView button = variantButton(variant);
 
@@ -317,6 +312,7 @@ public class TemplatesActivity extends AppCompatActivity
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    template.setSelectedVariant(variant);
                     highlightButton(button, variantButtons);
                 }
             });

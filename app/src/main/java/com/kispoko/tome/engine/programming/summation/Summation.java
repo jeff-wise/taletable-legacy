@@ -15,9 +15,11 @@ import com.kispoko.tome.util.yaml.YamlException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 
 /**
@@ -27,6 +29,9 @@ public class Summation implements Model, Serializable
 {
 
     // PROPERTIES
+    // ------------------------------------------------------------------------------------------
+
+    // > Model
     // ------------------------------------------------------------------------------------------
 
     private UUID                         id;
@@ -137,7 +142,7 @@ public class Summation implements Model, Serializable
      * Get the summation value.
      *
      * @return The sum.
-     * @throws SummationException
+     * @throws VariableException
      */
     public Integer value()
            throws VariableException
@@ -188,9 +193,41 @@ public class Summation implements Model, Serializable
      * Get the terms in the summation.
      * @return The List of Terms.
      */
-    private List<TermUnion> terms()
+    public List<TermUnion> terms()
     {
         return this.terms.getValue();
+    }
+
+
+    public List<TermUnion> termsSorted()
+    {
+        List<TermUnion> termsList = new ArrayList<>(this.terms());
+
+        Collections.sort(termsList, new Comparator<TermUnion>()
+        {
+            @Override
+            public int compare(TermUnion term1, TermUnion term2)
+            {
+                int term1Value;
+                int term2Value;
+
+                try {
+                    term1Value = term1.term().value();
+                    term2Value = term2.term().value();
+                }
+                catch (VariableException exception) {
+                    return 0;
+                }
+
+                if (term1Value > term2Value)
+                    return -1;
+                if (term1Value < term2Value)
+                    return 1;
+                return 0;
+            }
+        });
+
+        return termsList;
     }
 
 

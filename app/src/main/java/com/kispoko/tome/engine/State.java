@@ -2,8 +2,6 @@
 package com.kispoko.tome.engine;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.DiceVariable;
@@ -53,9 +51,6 @@ public class State
     public static void addVariable(VariableUnion variableUnion)
     {
         String variableName = variableUnion.variable().name();
-
-        if (variableName != null)
-            Log.d("***STATE", variableName);
 
         // [1] Add variable to index.
         // --------------------------------------------------------------------------------------
@@ -214,8 +209,6 @@ public class State
 
     public static void updateVariableDependencies(Variable variable)
     {
-        Log.d("***STATE", "update variable dependencies" + variable.name());
-
         // [1] Call onVariableUpdate on all variables listening for that variable name.
         // --------------------------------------------------------------------------------------
 

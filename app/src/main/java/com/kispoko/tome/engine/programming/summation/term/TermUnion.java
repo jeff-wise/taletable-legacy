@@ -215,7 +215,7 @@ public class TermUnion implements Model, Serializable
         switch (this.type())
         {
             case INTEGER:
-                return this.literalTerm();
+                return this.integerTerm();
             case DICE_ROLL:
                 return this.diceRollTerm();
             case CONDITIONAL:
@@ -234,7 +234,7 @@ public class TermUnion implements Model, Serializable
      * The "literal term" case. Throws an exception if the union is not a "literal term".
      * @return The Literal Term.
      */
-    public IntegerTerm literalTerm()
+    public IntegerTerm integerTerm()
     {
         if (this.type() != TermType.INTEGER) {
             ApplicationFailure.union(

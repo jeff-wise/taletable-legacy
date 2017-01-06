@@ -152,6 +152,16 @@
     <dimen name="templates_button_variant_button_margin_horz">2dp</dimen>
     <dimen name="templates_button_variant_button_text_size">3sp</dimen>
 
+    <!-- ACTIVITY: SUMMATION -->
+    <dimen name="summation_total_text_size">15sp</dimen>
+    <dimen name="summation_total_padding_vert">40dp</dimen>
+    <dimen name="summation_term_padding_horz">35dp</dimen>
+    <dimen name="summation_term_padding_vert">25dp</dimen>
+    <dimen name="summation_term_margin_bottom">2dp</dimen>
+    <dimen name="summation_term_value_text_size">5.5sp</dimen>
+    <dimen name="summation_term_description_text_size">4.5sp</dimen>
+
+
     <!-- MANAGE SHEETS -->
     <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>
     <dimen name="manage_sheets_summary_layout_padding_horz">15dp</dimen>

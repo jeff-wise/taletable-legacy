@@ -74,6 +74,7 @@ public class SheetManager
                 Sheet sheet;
                 try
                 {
+                    Log.d("***SHEETMANAGER", templateFileName);
                     InputStream yamlIS = context.getAssets().open(templateFileName);
                     Yaml yaml = Yaml.fromFile(yamlIS);
                     sheet = Sheet.fromYaml(yaml);

@@ -163,6 +163,7 @@ rulesEngine:
     - type: number
       value:
         name: armor_scalemail_armor_bonus
+        label: Scalemail Armor
         type: literal
         value: 14
         tags:
@@ -176,6 +177,7 @@ rulesEngine:
     - type: number
       value:
         name: shield_armor_bonus
+        label: Shield
         type: literal
         value: 2
         tags:
@@ -552,7 +554,7 @@ profile:
               width: 1
               label: Strength
           size: medium
-          postfixVariable:
+          postfix:
             type: program
             value:
               program: ability_modifier_string
@@ -571,7 +573,7 @@ profile:
               width: 1
               label: Dexterity
           size: medium
-          postfixVariable:
+          postfix:
             type: program
             value:
               program: ability_modifier_string
@@ -586,6 +588,7 @@ profile:
           - type: number
             value:
               name: dexterity_modifier
+              label: Dexterity
               type: program
               value:
                 program: ability_modifier
@@ -600,7 +603,7 @@ profile:
               width: 1
               label: Constitution
           size: medium
-          postfixVariable:
+          postfix:
             type: program
             value:
               program: ability_modifier_string
@@ -630,7 +633,7 @@ profile:
               width: 1
               label: Intelligence
           size: medium
-          postfixVariable:
+          postfix:
             type: program
             value:
               program: ability_modifier_string
@@ -659,7 +662,7 @@ profile:
               label: Wisdom
               width: 1
           size: medium
-          postfixVariable:
+          postfix:
             type: program
             value:
               program: ability_modifier_string
@@ -688,7 +691,7 @@ profile:
               width: 1
               label: Charisma
           size: medium
-          postfixVariable:
+          postfix:
             type: program
             value:
               program: ability_modifier_string

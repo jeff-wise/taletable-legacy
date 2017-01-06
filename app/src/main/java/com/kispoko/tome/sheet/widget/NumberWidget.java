@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -135,7 +134,7 @@ public class NumberWidget extends Widget implements Serializable
         NumberVariable    value         = NumberVariable.fromYaml(yaml.atKey("value"));
         String            valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
         TextVariable      prefix        = TextVariable.fromYaml(yaml.atMaybeKey("prefix"));
-        TextVariable      postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfixVariable"));
+        TextVariable      postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));
 
         List<VariableUnion> variables   = yaml.atMaybeKey("variables").forEach(
                                                 new Yaml.ForEach<VariableUnion>()
@@ -287,7 +286,15 @@ public class NumberWidget extends Widget implements Serializable
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public void runAction(Action action) { }
+    public void runAction(Action action)
+    {
+        switch (action)
+        {
+            case EDIT:
+                editAction();
+                break;
+        }
+    }
 
 
     // > State
@@ -463,10 +470,8 @@ public class NumberWidget extends Widget implements Serializable
      */
     private void onValueUpdate()
     {
-        Log.d("***NUMBERWIDGET", "on value update " + this.name() + " " + this.value().toString());
         if (this.valueViewId != null && !this.valueVariable.isNull())
         {
-
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
@@ -566,6 +571,22 @@ public class NumberWidget extends Widget implements Serializable
 
 
         return layout.linearLayout(context);
+    }
+
+
+    // > Actions
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Respond to the edit action. Opens another activity depending on the type of number widget
+     * value.
+     */
+    private void editAction()
+    {
+        if (this.valueVariable.isNull())
+            return;
+
+        this.valueVariable().openEditActivity(this.data().getFormat().getLabel());
     }
 
 }

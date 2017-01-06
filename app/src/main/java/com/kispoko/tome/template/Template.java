@@ -27,6 +27,8 @@ public class Template
     private String          game;
     private List<String>    variants;
 
+    private String          selectedVariant;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -42,6 +44,11 @@ public class Template
         this.description = description;
         this.game        = game;
         this.variants    = variants;
+
+        if (this.variants.isEmpty())
+            this.selectedVariant = null;
+        else
+            this.selectedVariant = this.variants.get(0);
     }
 
 
@@ -67,7 +74,21 @@ public class Template
      */
     public String officialId()
     {
-        return "official_" + this.game + "_" + this.name;
+        String variantString = "";
+        if (this.selectedVariant != null)
+            variantString = "_" + this.selectedVariant.replaceAll(" ", "_").toLowerCase();
+
+        return "official_" + this.game + "_" + this.name + variantString;
+    }
+
+
+    /**
+     * Set the template variant.
+     * @param variant The variant.
+     */
+    public void setSelectedVariant(String variant)
+    {
+        this.selectedVariant = variant;
     }
 
 

@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.programming.summation.term;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
@@ -15,6 +16,7 @@ import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -22,6 +24,8 @@ import com.kispoko.tome.util.yaml.YamlException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -203,7 +207,7 @@ public class IntegerTermValue implements Model, Serializable
      * Get the value of the integer term. It is either a literal integer, or the value of an
      * integer variable.
      * @return The integer value.
-     * @throws SummationException
+     * @throws VariableException
      */
     public Integer value()
            throws VariableException
@@ -239,6 +243,23 @@ public class IntegerTermValue implements Model, Serializable
     }
 
 
+    // > Label
+    // ------------------------------------------------------------------------------------------
+
+    public List<Tuple2<Integer,String>> summary()
+    {
+        switch (this.kind())
+        {
+            case LITERAL:
+                return new ArrayList<>();
+            case VARIABLE:
+                return this.variableSummaries();
+        }
+
+        return new ArrayList<>();
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
@@ -266,6 +287,40 @@ public class IntegerTermValue implements Model, Serializable
         }
 
         return total;
+    }
+
+
+    private List<Tuple2<Integer,String>> variableSummaries()
+    {
+        List<Tuple2<Integer,String>> summaries = new ArrayList<>();
+
+        for (VariableUnion variableUnion : this.variableReference().variables())
+        {
+            // [1] If variable is not a number, throw exception
+            // ----------------------------------------------------------------------------------
+            if (variableUnion.type() != VariableType.NUMBER) {
+                ApplicationFailure.variable(
+                        VariableException.unexpectedVariableType(
+                                new UnexpectedVariableTypeError(variableUnion.variable().name(),
+                                        VariableType.NUMBER,
+                                        variableUnion.type())));
+                continue;
+            }
+
+            NumberVariable variable = variableUnion.numberVariable();
+
+            Integer value = 0;
+            try {
+                value = variable.value();
+            }
+            catch (VariableException exception) {
+                ApplicationFailure.variable(exception);
+            }
+
+            summaries.add(new Tuple2<>(value, variable.label()));
+        }
+
+        return summaries;
     }
 
 

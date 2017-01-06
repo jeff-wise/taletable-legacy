@@ -52,7 +52,6 @@ public abstract class Variable
      */
     public void onUpdate()
     {
-        Log.d("***VARIABLE", "on update " + this.name());
         // [1] Call the variable's update listener
         // --------------------------------------------------------------------------------------
 

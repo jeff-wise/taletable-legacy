@@ -148,7 +148,10 @@
     <color name="red_5">#A14746</color>
 
 
-    <color name="green_5">#90A88D</color>
+    <!--<color name="green_hlx_5">#AFCCAB</color>-->
+    <color name="green_5">#44613A</color>
+    <!--<color name="green_hlx_5">#BCEDAA</color>-->
+    <color name="green_hlx_5">#9FE388</color>
 
 
 

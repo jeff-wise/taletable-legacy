@@ -2,8 +2,6 @@
 package com.kispoko.tome.engine.programming.mechanic;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.yaml.Yaml;
@@ -150,8 +148,6 @@ public class MechanicIndex implements Model, Serializable
 
     public void onVariableUpdate(String variableName)
     {
-        Log.d("***MECHANICINDEX", "on variable update " + variableName);
-
         // [1] Update any mechanics that require this variable
         // --------------------------------------------------------------------------------------
 
