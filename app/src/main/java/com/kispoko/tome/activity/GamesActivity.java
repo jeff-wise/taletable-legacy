@@ -25,6 +25,7 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.yaml.YamlException;
 
 
+
 /**
  * Choose Template Game Activity
  */

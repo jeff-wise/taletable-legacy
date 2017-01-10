@@ -331,15 +331,16 @@ public class SheetActivity
     {
         LinearLayout layout = this.navigationLayout();
 
-        layout.addView(this.navigationItemHeaderView("SHEET",
-                                                     this.characterName,
-                                                     R.id.nav_view_header_sheet_desc));
-        layout.addView(this.navigationItemView("VALUES"));
-        layout.addView(this.navigationItemView("FUNCTIONS"));
-        layout.addView(this.navigationItemView("PROGRAMS"));
-        layout.addView(this.navigationItemView("MECHANICS"));
-        layout.addView(this.navigationItemHeaderView("SHEETS", null, null));
-        layout.addView(this.navigationItemView("MANAGE"));
+//        layout.addView(this.navigationItemHeaderView("SHEET",
+//                null, null));
+//        layout.addView(this.navigationItemView("VALUES"));
+//        layout.addView(this.navigationItemView("FUNCTIONS"));
+//        layout.addView(this.navigationItemView("PROGRAMS"));
+//        layout.addView(this.navigationItemView("MECHANICS"));
+//        layout.addView(this.navigationItemHeaderView("SHEETS", null, null));
+//        layout.addView(this.navigationItemView("MANAGE"));
+
+        layout.addView(headerSheetView());
 
         return layout;
     }
@@ -351,6 +352,67 @@ public class SheetActivity
 
         layout.orientation  = LinearLayout.VERTICAL;
         layout.padding.top  = R.dimen.nav_view_padding_top;
+
+        return layout.linearLayout(this);
+    }
+
+
+    private TextView headerSheetView()
+    {
+        TextViewBuilder header = new TextViewBuilder();
+
+        header.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        header.text             = "SHEET";
+        header.color            = R.color.dark_blue_hlx_4;
+        header.font             = Font.sansSerifFontBold(this);
+
+        return header.textView(this);
+    }
+
+
+    private LinearLayout sheetButtonsView()
+    {
+        LinearLayout layout = sheetButtonsLayout();
+
+        // > Row 1
+        // --------------------------------------------------------------------------------------
+
+        LinearLayout row1 = sheetButtonsRowView();
+
+        layout.addView(row1);
+
+        // > Row 2
+        // --------------------------------------------------------------------------------------
+
+        LinearLayout row2 = sheetButtonsRowView();
+
+        layout.addView(row2);
+
+        return layout;
+    }
+
+
+    private LinearLayout sheetButtonsLayout()
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(this);
+    }
+
+
+    private LinearLayout sheetButtonsRowView()
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.HORIZONTAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         return layout.linearLayout(this);
     }
@@ -374,7 +436,7 @@ public class SheetActivity
         layout.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.padding.top        = R.dimen.nav_view_header_padding_vert;
         layout.padding.bottom     = R.dimen.nav_view_header_padding_vert;
-        layout.backgroundColor    = R.color.dark_blue_8;
+        layout.backgroundColor    = R.color.dark_blue_10;
 
         layout.child(headerView)
               .child(descView);
@@ -389,7 +451,7 @@ public class SheetActivity
 
         headerView.padding.left       = R.dimen.nav_view_header_padding_left;
         headerView.size               = R.dimen.nav_view_header_text_size;
-        headerView.color              = R.color.light_grey_9;
+        headerView.color              = R.color.dark_blue_hl_5;
 
         // [2 C] Description
         // --------------------------------------------------------------------------------------
@@ -420,10 +482,10 @@ public class SheetActivity
         itemView.padding.top        = R.dimen.nav_view_item_padding_vert;
         itemView.padding.bottom     = R.dimen.nav_view_item_padding_vert;
 
-        itemView.backgroundColor    = R.color.dark_blue_6;
+        itemView.backgroundColor    = R.color.dark_blue_9;
         itemView.padding.left       = R.dimen.nav_view_item_padding_left;
         itemView.size               = R.dimen.nav_view_item_text_size;
-        itemView.color              = R.color.grey_4;
+        itemView.color              = R.color.dark_blue_hl_5;
 
         return itemView.textView(this);
     }

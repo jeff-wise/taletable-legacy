@@ -5,7 +5,6 @@ package com.kispoko.tome.activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.programming.summation.Summation;
-import com.kispoko.tome.engine.programming.summation.term.IntegerTerm;
 import com.kispoko.tome.engine.programming.summation.term.TermUnion;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.util.UI;
@@ -25,6 +23,7 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 
 import java.util.List;
+
 
 
 /**
@@ -90,7 +89,8 @@ public class SummationActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id) {
+        switch (id)
+        {
             case android.R.id.home:
                 finish();
                 return true;

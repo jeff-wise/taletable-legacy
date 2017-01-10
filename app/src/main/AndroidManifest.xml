@@ -58,6 +58,11 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Summation" />
 
+    <activity
+        android:name=".activity.NumberActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Edit Number" />
+
 
 </application>
 

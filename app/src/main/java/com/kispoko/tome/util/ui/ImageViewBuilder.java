@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -28,6 +29,7 @@ public class ImageViewBuilder implements ViewBuilder
 
     public Integer              height;
     public Integer              width;
+    public Float                weight;
 
     public Integer              layoutGravity;
 
@@ -39,6 +41,8 @@ public class ImageViewBuilder implements ViewBuilder
     public ImageView.ScaleType  scaleType;
     public Boolean              adjustViewBounds;
 
+    public Integer              backgroundColor;
+
     private List<Integer>       rules;
 
 
@@ -49,10 +53,11 @@ public class ImageViewBuilder implements ViewBuilder
     {
         this.id                 = null;
 
-        this.layoutType         = LayoutType.NONE;
+        this.layoutType         = LayoutType.LINEAR;
 
         this.height             = null;
         this.width              = null;
+        this.weight             = null;
 
         this.padding            = new Padding();
         this.margin             = new Margins();
@@ -61,6 +66,8 @@ public class ImageViewBuilder implements ViewBuilder
 
         this.scaleType          = null;
         this.adjustViewBounds   = null;
+
+        this.backgroundColor    = null;
 
         this.rules              = new ArrayList<>();
     }
@@ -124,6 +131,11 @@ public class ImageViewBuilder implements ViewBuilder
         if (this.scaleType != null)
             imageView.setScaleType(this.scaleType);
 
+        // > Background Color
+        // --------------------------------------------------------------------------------------
+
+        if (this.backgroundColor != null)
+            imageView.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
 
         // > Adjust View Bounds
         // --------------------------------------------------------------------------------------
@@ -132,15 +144,12 @@ public class ImageViewBuilder implements ViewBuilder
             imageView.setAdjustViewBounds(this.adjustViewBounds);
 
 
+
         // [2] Layout
         // --------------------------------------------------------------------------------------
 
         LayoutParamsBuilder layoutParamsBuilder;
-
-        if (this.layoutType != LayoutType.NONE)
-            layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
-        else
-            layoutParamsBuilder = new LayoutParamsBuilder(LayoutType.LINEAR, context);
+        layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
 
         // > Width
         // --------------------------------------------------------------------------------------
@@ -153,6 +162,12 @@ public class ImageViewBuilder implements ViewBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+
+        // > Weight
+        // --------------------------------------------------------------------------------------
+
+        if (this.weight != null)
+            layoutParamsBuilder.setWeight(this.weight);
 
         // > Gravity
         // --------------------------------------------------------------------------------------
@@ -170,6 +185,7 @@ public class ImageViewBuilder implements ViewBuilder
 
         layoutParamsBuilder.setRules(this.rules);
 
+
         switch (this.layoutType)
         {
             case LINEAR:
@@ -178,9 +194,14 @@ public class ImageViewBuilder implements ViewBuilder
             case RELATIVE:
                 imageView.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
                 break;
-            case NONE:
-                imageView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+            case TABLE:
+                imageView.setLayoutParams(layoutParamsBuilder.tableLayoutParams());
+                break;
+            case TABLE_ROW:
+                imageView.setLayoutParams(layoutParamsBuilder.tableRowLayoutParams());
+                break;
         }
+
 
         return imageView;
     }

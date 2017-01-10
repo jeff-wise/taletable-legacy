@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.activity.NumberActivity;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.SummationActivity;
 import com.kispoko.tome.engine.State;
@@ -552,6 +553,20 @@ public class NumberVariable extends Variable implements Model, Serializable
                 intent.putExtra("widget_name", widgetName);
                 intent.putExtra("summation", this.summation());
                 ((Activity) context).startActivityForResult(intent, SheetActivity.COMPONENT_EDIT);
+                break;
+            case LITERAL:
+                Integer variableValue;
+                try {
+                    variableValue = this.value();
+                }
+                catch (VariableException exception) {
+                    return;
+                }
+                Intent numberIntent = new Intent(context, NumberActivity.class);
+                numberIntent.putExtra("widget_name", widgetName);
+                numberIntent.putExtra("value", variableValue);
+                ((Activity) context).startActivityForResult(numberIntent,
+                                                            SheetActivity.COMPONENT_EDIT);
                 break;
         }
     }

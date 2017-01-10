@@ -5,40 +5,45 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.util.Util;
-
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
  * Edit View Builder
  */
-public class EditTextBuilder
+public class EditTextBuilder implements ViewBuilder
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    public Integer  id;
+    public Integer      id;
 
-    public Integer  height;
-    public Integer  width;
-    public Integer  minHeight;
+    public LayoutType   layoutType;
 
-    public Integer  gravity;
+    public Integer      height;
+    public Integer      width;
+    public Float        weight;
+    public Integer      minHeight;
 
-    public String   text;
+    public Integer      gravity;
+    public Integer      layoutGravity;
 
-    public Padding  padding;
+    public String       text;
 
-    public Integer  size;
-    public Integer  color;
-    public Typeface font;
+    public Padding      padding;
+    public Margins      margin;
 
-    public Integer  backgroundColor;
-    public Integer  backgroundResource;
+    public Integer      size;
+    public Integer      color;
+    public Typeface     font;
+
+    public Integer      backgroundColor;
+    public Integer      backgroundResource;
 
 
     // CONSTRUCTORS
@@ -48,15 +53,20 @@ public class EditTextBuilder
     {
         this.id                 = null;
 
+        this.layoutType         = LayoutType.LINEAR;
+
         this.height             = null;
         this.width              = null;
+        this.weight             = null;
         this.minHeight          = null;
 
         this.gravity            = null;
+        this.layoutGravity      = null;
 
         this.text               = null;
 
         this.padding            = new Padding();
+        this.margin             = new Margins();
 
         this.size               = null;
         this.color              = null;
@@ -69,6 +79,13 @@ public class EditTextBuilder
 
     // API
     // ------------------------------------------------------------------------------------------
+
+
+    public View view(Context context)
+    {
+        return this.editText(context);
+    }
+
 
     public EditText editText(Context context)
     {
@@ -143,36 +160,55 @@ public class EditTextBuilder
         // [2] Layout
         // --------------------------------------------------------------------------------------
 
-        LinearLayout.LayoutParams editTextLayoutParams = Util.linearLayoutParamsMatch();
-        editText.setLayoutParams(editTextLayoutParams);
-
-        // > Height
-        // --------------------------------------------------------------------------------------
-
-        if (this.height != null)
-        {
-            if (isLayoutConstant(this.height)) {
-                editTextLayoutParams.height = this.height;
-            }
-            else {
-                editTextLayoutParams.height = (int) context.getResources()
-                                                           .getDimension(this.height);
-            }
-        }
+        LayoutParamsBuilder layoutParamsBuilder;
+        layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
 
         // > Width
         // --------------------------------------------------------------------------------------
 
         if (this.width != null)
+            layoutParamsBuilder.setWidth(this.width);
+
+        // > Height
+        // --------------------------------------------------------------------------------------
+
+        if (this.height != null)
+            layoutParamsBuilder.setHeight(this.height);
+
+        // > Weight
+        // --------------------------------------------------------------------------------------
+
+        if (this.weight != null)
+            layoutParamsBuilder.setWeight(this.weight);
+
+        // > Gravity
+        // --------------------------------------------------------------------------------------
+
+        if (this.layoutGravity != null)
+            layoutParamsBuilder.setGravity(this.layoutGravity);
+
+        // > Margins
+        // --------------------------------------------------------------------------------------
+
+        layoutParamsBuilder.setMargins(this.margin);
+
+
+        switch (this.layoutType)
         {
-            if (isLayoutConstant(this.width)) {
-                editTextLayoutParams.width = this.width;
-            }
-            else {
-                editTextLayoutParams.width = (int) context.getResources()
-                                                          .getDimension(this.width);
-            }
+            case LINEAR:
+                editText.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
+                break;
+            case RELATIVE:
+                editText.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
+                break;
+            case TABLE:
+                editText.setLayoutParams(layoutParamsBuilder.tableLayoutParams());
+                break;
+            case TABLE_ROW:
+                editText.setLayoutParams(layoutParamsBuilder.tableRowLayoutParams());
+                break;
         }
+
 
         return editText;
     }

@@ -734,6 +734,17 @@ profile:
             - edit
             format:
               width: 1
+              label: HP
+          size: medium
+          value:
+            type: literal
+            value: 10
+        - type: number
+          data:
+            actions:
+            - edit
+            format:
+              width: 1
               label: Inspiration
           size: medium
           value:

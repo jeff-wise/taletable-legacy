@@ -10,7 +10,7 @@
 
 
     <!-- NAVIGATION VIEW -->
-    <dimen name="nav_view_padding_top">70dp</dimen>
+    <dimen name="nav_view_padding_top">20dp</dimen>
     <dimen name="nav_view_header_text_size">4sp</dimen>
     <dimen name="nav_view_item_text_size">3.3sp</dimen>
     <dimen name="nav_view_header_desc_text_size">3.4sp</dimen>
@@ -160,6 +160,31 @@
     <dimen name="summation_term_margin_bottom">2dp</dimen>
     <dimen name="summation_term_value_text_size">5.5sp</dimen>
     <dimen name="summation_term_description_text_size">4.5sp</dimen>
+
+    <!-- ACTIVITY: NUMBER -->
+    <dimen name="calculator_result_layout_padding_vert">25dp</dimen>
+    <dimen name="calculator_result_layout_margin_bottom">10dp</dimen>
+    <dimen name="calculator_top_row_layout_margin_bottom">10dp</dimen>
+    <dimen name="calculator_result_text_size">7sp</dimen>
+    <dimen name="calculator_button_inc_text_size">3.8sp</dimen>
+    <dimen name="calculator_button_equals_text_size">5.5sp</dimen>
+    <dimen name="calculator_button_clear_text_size">4.2sp</dimen>
+    <dimen name="calculator_button_inc_padding_vert">10dp</dimen>
+    <dimen name="calculator_button_dec_margin_right">4dp</dimen>
+    <dimen name="calculator_button_inc_margin_left">4dp</dimen>
+    <dimen name="calculator_button_clear_padding_vert">14dp</dimen>
+    <dimen name="calculator_button_equals_padding_vert">10dp</dimen>
+    <dimen name="calculator_button_clear_margin_horz">4dp</dimen>
+    <dimen name="calculator_number_pad_text_size">4sp</dimen>
+    <dimen name="calculator_number_pad_margins_horz">15dp</dimen>
+    <dimen name="calculator_number_pad_margin_top">10dp</dimen>
+    <dimen name="calculator_number_pad_button_padding_vert">15dp</dimen>
+    <dimen name="calculator_number_pad_button_margins_horz">5dp</dimen>
+    <dimen name="calculator_number_pad_button_margins_vert">5dp</dimen>
+    <dimen name="calculator_button_operator_margin_horz">3dp</dimen>
+    <dimen name="calculator_button_operator_padding_vert">10dp</dimen>
+    <dimen name="calculator_row_padding_horz">10dp</dimen>
+    <dimen name="calculator_button_subtract_text_size">4sp</dimen>
 
 
     <!-- MANAGE SHEETS -->
