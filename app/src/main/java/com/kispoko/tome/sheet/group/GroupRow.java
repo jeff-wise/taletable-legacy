@@ -18,8 +18,10 @@ import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ import java.util.UUID;
  *
  * A row of widgets in a group.
  */
-public class GroupRow implements Model, Serializable
+public class GroupRow implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -96,19 +98,19 @@ public class GroupRow implements Model, Serializable
      * Create a row from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The new row.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static GroupRow fromYaml(Yaml yaml)
-                  throws YamlException
+    public static GroupRow fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID         id        = UUID.randomUUID();
 
         RowAlignment alignment = RowAlignment.fromYaml(yaml.atMaybeKey("alignment"));
         RowWidth     width     = RowWidth.fromYaml(yaml.atMaybeKey("width"));
 
-        List<Widget> widgets   = yaml.atKey("widgets").forEach(new Yaml.ForEach<Widget>() {
+        List<Widget> widgets   = yaml.atKey("widgets").forEach(new YamlParser.ForEach<Widget>() {
             @Override
-            public Widget forEach(Yaml yaml, int index) throws YamlException {
+            public Widget forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Widget.fromYaml(yaml);
             }
         });
@@ -162,10 +164,19 @@ public class GroupRow implements Model, Serializable
     }
 
 
-    // > State
+    // > Yaml
     // ------------------------------------------------------------------------------------------
 
-    // ** Widgets
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("alignment", this.alignment().yamlString())
+                .putString("width", this.width().yamlString())
+                .putList("widgets", this.widgets());
+    }
+
+
+    // > State
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -178,8 +189,15 @@ public class GroupRow implements Model, Serializable
     }
 
 
-    // ** Width
-    // ------------------------------------------------------------------------------------------
+    /**
+     * The row alignment.
+     * @return The row alignment.
+     */
+    public RowAlignment alignment()
+    {
+        return this.alignment.getValue();
+    }
+
 
     /**
      * Get the width of the row. The width is a value between 1 and 100, and represents a
@@ -190,7 +208,6 @@ public class GroupRow implements Model, Serializable
     {
         return this.width.getValue();
     }
-
 
 
     // > Views
@@ -204,7 +221,7 @@ public class GroupRow implements Model, Serializable
 
         for (Widget widget : this.widgets())
         {
-            int weight = widget.data().getFormat().getWidth();
+            int weight = widget.data().format().width();
             LinearLayout tileLayout = this.tileLayout(weight, context);
 
             tileLayout.addView(widget.tileView());

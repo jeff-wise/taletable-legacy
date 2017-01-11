@@ -20,8 +20,10 @@ import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ import java.util.UUID;
 /**
  * Boolean CellUnion
  */
-public class BooleanCell implements Model, Cell, Serializable
+public class BooleanCell implements Model, Cell, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -83,7 +85,7 @@ public class BooleanCell implements Model, Cell, Serializable
         // ** Value
         if (valueVariable == null) {
             valueVariable = BooleanVariable.asBoolean(UUID.randomUUID(),
-                                              column.getDefaultValue());
+                                              column.defaultValue());
         }
         this.valueVariable = ModelFunctor.full(valueVariable, BooleanVariable.class);
 
@@ -94,10 +96,11 @@ public class BooleanCell implements Model, Cell, Serializable
     }
 
 
-    public static BooleanCell fromYaml(Yaml yaml, BooleanColumn column)
-                  throws YamlException
+    public static BooleanCell fromYaml(YamlParser yaml, BooleanColumn column)
+                  throws YamlParseException
     {
         UUID            id        = UUID.randomUUID();
+
         BooleanVariable value     = BooleanVariable.fromYaml(yaml.atMaybeKey("value"));
         CellAlignment   alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
 
@@ -144,6 +147,21 @@ public class BooleanCell implements Model, Cell, Serializable
     public void onLoad()
     {
         initializeBooleanCell();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Boolean Cell's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("value", this.valueVariable())
+                .putYaml("alignment", this.alignment());
     }
 
 
@@ -221,7 +239,7 @@ public class BooleanCell implements Model, Cell, Serializable
      * Get the alignment of this cell.
      * @return The cell Alignment.
      */
-    public CellAlignment getAlignment()
+    public CellAlignment alignment()
     {
         return this.alignment.getValue();
     }
@@ -239,7 +257,7 @@ public class BooleanCell implements Model, Cell, Serializable
         Boolean value = this.value();
 
         if (value == null)
-            value = column.getDefaultValue();
+            value = column.defaultValue();
 
         if (value) {
             view.setImageDrawable(

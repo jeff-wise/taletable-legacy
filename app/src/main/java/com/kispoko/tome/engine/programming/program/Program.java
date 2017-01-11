@@ -7,11 +7,14 @@ import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,21 +23,28 @@ import java.util.UUID;
 /**
  * Program
  */
-public class Program implements Model, Serializable
+public class Program implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    // > Model
+    // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
+    private UUID                                    id;
 
-    private PrimitiveFunctor<ProgramValueType[]> parameterTypes;
-    private PrimitiveFunctor<ProgramValueType> resultType;
 
-    private CollectionFunctor<Statement> statements;
-    private ModelFunctor<Statement> resultStatement;
+    // > Functor
+    // ------------------------------------------------------------------------------------------
+
+    private PrimitiveFunctor<String>                name;
+
+    private PrimitiveFunctor<ProgramValueType[]>    parameterTypes;
+    private PrimitiveFunctor<ProgramValueType>      resultType;
+
+    private CollectionFunctor<Statement>            statements;
+    private ModelFunctor<Statement>                 resultStatement;
 
 
     // CONSTRUCTORS
@@ -42,7 +52,7 @@ public class Program implements Model, Serializable
 
     public Program()
     {
-         this.id             = null;
+        this.id             = null;
 
         // ** Name
         this.name            = new PrimitiveFunctor<>(null, String.class);
@@ -97,10 +107,10 @@ public class Program implements Model, Serializable
      * Create a Program from its Yaml representation.
      * @param yaml The Yaml parser object.
      * @return The parsed Program object.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static Program fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Program fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID     id             = UUID.randomUUID();
 
@@ -109,9 +119,9 @@ public class Program implements Model, Serializable
 
         // ** Parameter Types
         List<ProgramValueType> parameterTypes
-                = yaml.atKey("parameter_types").forEach(new Yaml.ForEach<ProgramValueType>() {
+                = yaml.atKey("parameter_types").forEach(new YamlParser.ForEach<ProgramValueType>() {
             @Override
-            public ProgramValueType forEach(Yaml yaml, int index) throws YamlException {
+            public ProgramValueType forEach(YamlParser yaml, int index) throws YamlParseException {
                 return ProgramValueType.fromYaml(yaml);
             }
         });
@@ -121,9 +131,9 @@ public class Program implements Model, Serializable
 
         // ** Statements
         List<Statement>  statements =
-                yaml.atMaybeKey("statements").forEach(new Yaml.ForEach<Statement>() {
+                yaml.atMaybeKey("statements").forEach(new YamlParser.ForEach<Statement>() {
             @Override
-            public Statement forEach(Yaml yaml, int index) throws YamlException {
+            public Statement forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Statement.fromYaml(yaml);
             }
         }, true);
@@ -173,6 +183,24 @@ public class Program implements Model, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Program's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putList("parameter_types", this.parameterTypes())
+                .putYaml("result_type", this.resultType())
+                .putList("statements", this.statements())
+                .putYaml("result_statement", this.resultStatement());
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -183,7 +211,8 @@ public class Program implements Model, Serializable
      * Get the unique name of the program.
      * @return The program's name.
      */
-    public String getName() {
+    public String name()
+    {
         return this.name.getValue();
     }
 
@@ -195,9 +224,9 @@ public class Program implements Model, Serializable
      * Get the parameter types of the program.
      * @return The program's parameter type list.
      */
-    public ProgramValueType[] getParameterTypes()
+    public List<ProgramValueType> parameterTypes()
     {
-        return this.parameterTypes.getValue();
+        return Arrays.asList(this.parameterTypes.getValue());
     }
 
 
@@ -218,7 +247,7 @@ public class Program implements Model, Serializable
      * Get the result type of the program.
      * @return The program's result type.
      */
-    public ProgramValueType getResultType()
+    public ProgramValueType resultType()
     {
         return this.resultType.getValue();
     }
@@ -241,7 +270,7 @@ public class Program implements Model, Serializable
      * Get all of the statements in the program.
      * @return The program's statements.
      */
-    public List<Statement> getStatements()
+    public List<Statement> statements()
     {
         return this.statements.getValue();
     }
@@ -266,7 +295,7 @@ public class Program implements Model, Serializable
      * of the program.
      * @return The result Statement.
      */
-    public Statement getResultStatement()
+    public Statement resultStatement()
     {
         return this.resultStatement.getValue();
     }

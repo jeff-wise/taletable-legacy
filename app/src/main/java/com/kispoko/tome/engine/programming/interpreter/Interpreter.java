@@ -152,15 +152,15 @@ public class Interpreter implements Serializable
         Map<String,ProgramValueUnion> context = new HashMap<>();
 
         // Evaluate Statements
-        for (Statement statement : program.getStatements())
+        for (Statement statement : program.statements())
         {
-            String variableName = statement.getVariableName();
+            String variableName = statement.variableName();
             ProgramValueUnion statementValue = evaluateStatement(statement, parameters, context);
 
             context.put(variableName, statementValue);
         }
 
-        ProgramValueUnion resultValue = evaluateStatement(program.getResultStatement(),
+        ProgramValueUnion resultValue = evaluateStatement(program.resultStatement(),
                                                      parameters,
                                                      context);
         return resultValue;
@@ -172,10 +172,10 @@ public class Interpreter implements Serializable
                                                 Map<String,ProgramValueUnion> context)
                           throws InterpreterException
     {
-        String functionName = statement.getFunctionName();
+        String functionName = statement.functionName();
 
         List<ProgramValueUnion> parameters = new ArrayList<>();
-        for (Parameter parameter : statement.getParameters())
+        for (Parameter parameter : statement.parameters())
         {
             parameters.add(evaluateParameter(parameter, programParameters, context));
         }
@@ -189,13 +189,13 @@ public class Interpreter implements Serializable
                                                 Map<String,ProgramValueUnion> context)
                           throws InterpreterException
     {
-        switch (parameter.getType())
+        switch (parameter.type())
         {
             case PARAMETER:
-                int parameterIndex = parameter.getParameter();
+                int parameterIndex = parameter.parameter();
                 return programParameters.get(parameterIndex - 1);
             case VARIABLE:
-                String variableName = parameter.getVariable();
+                String variableName = parameter.variable();
                 if (context.containsKey(variableName)) {
                     return context.get(variableName);
                 }
@@ -204,7 +204,7 @@ public class Interpreter implements Serializable
                             new UndefinedProgramVariableError(variableName));
                 }
             case LITERAL_STRING:
-                String stringLiteral = parameter.getStringLiteral();
+                String stringLiteral = parameter.stringLiteral();
                 return ProgramValueUnion.asString(stringLiteral);
         }
 

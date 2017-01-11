@@ -17,19 +17,21 @@ import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.R.attr.action;
 
 
 /**
  * Boolean WidgetData
  */
-public class BooleanWidget extends Widget implements Serializable
+public class BooleanWidget extends Widget
+                           implements ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -85,10 +87,11 @@ public class BooleanWidget extends Widget implements Serializable
     }
 
 
-    public static BooleanWidget fromYaml(Yaml yaml)
-                  throws YamlException
+    public static BooleanWidget fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID              id         = UUID.randomUUID();
+
         WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
         WidgetContentSize size       = WidgetContentSize.fromYaml(yaml.atKey("size"));
         BooleanVariable   value      = BooleanVariable.fromYaml(yaml.atKey("value"));
@@ -175,8 +178,33 @@ public class BooleanWidget extends Widget implements Serializable
     public void runAction(Action action) { }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Boolean Widget's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("data", this.data())
+                .putYaml("size", this.size())
+                .putYaml("value", this.valueVariable());
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The widget content size.
+     * @return The Widget Content Size.
+     */
+    public WidgetContentSize size()
+    {
+        return this.size.getValue();
+    }
 
     /**
      * Get the BooleanWidget's value variable (of type boolean).

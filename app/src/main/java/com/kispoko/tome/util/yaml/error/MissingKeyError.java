@@ -4,7 +4,7 @@ package com.kispoko.tome.util.yaml.error;
 
 
 /**
- * Yaml Error: Missing Key
+ * Yaml Parsing Error: Missing Key
  */
 public class MissingKeyError
 {

@@ -21,8 +21,10 @@ import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
@@ -30,8 +32,11 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 /**
  * Action Type
  */
-public enum Action
+public enum Action implements ToYaml
 {
+
+    // VALUES
+    // ------------------------------------------------------------------------------------------
 
     EDIT,
     CHOOSE,
@@ -39,6 +44,9 @@ public enum Action
     SHARE,
     GENERATE;
 
+
+    // CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
 
     public static Action fromString(String typeString)
                   throws InvalidDataException
@@ -51,10 +59,10 @@ public enum Action
      * Creates an Action Type from its Yaml representation.
      * @param yaml The Yaml parser.
      * @return A new Action Type.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static Action fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Action fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         if (yaml.isNull())
             return null;
@@ -63,7 +71,7 @@ public enum Action
         try {
             return Action.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 
@@ -83,8 +91,20 @@ public enum Action
     }
 
 
+    // TO YAML
+    // ------------------------------------------------------------------------------------------
 
-    // > View
+    /**
+     * The Action's yaml string representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.string(this.name().toLowerCase());
+    }
+
+
+    // VIEW
     // ------------------------------------------------------------------------------------------
 
     /**

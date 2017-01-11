@@ -22,8 +22,9 @@ import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
@@ -33,7 +34,7 @@ import java.io.Serializable;
 /**
  * Widget
  */
-public abstract class Widget implements Model, Serializable
+public abstract class Widget implements Model, ToYaml, Serializable
 {
 
     // INTERFACE
@@ -70,14 +71,14 @@ public abstract class Widget implements Model, Serializable
         }
 
 
-        public static Type fromYaml(Yaml yaml)
-                      throws YamlException
+        public static Type fromYaml(YamlParser yaml)
+                      throws YamlParseException
         {
             String typeString = yaml.getString();
             try {
                 return Type.fromString(typeString);
             } catch (InvalidDataException e) {
-                throw YamlException.invalidEnum(new InvalidEnumError(typeString));
+                throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
             }
         }
 
@@ -110,7 +111,7 @@ public abstract class Widget implements Model, Serializable
         final Context context = SheetManager.currentSheetContext();
         final Widget  widget  = this;
 
-        String label = widget.data().getFormat().getLabel();
+        String label = widget.data().format().label();
         if (label != null)
             label = label.toUpperCase();
 
@@ -195,8 +196,8 @@ public abstract class Widget implements Model, Serializable
     // STATIC METHODS
     // ------------------------------------------------------------------------------------------
 
-    public static Widget fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Widget fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         Type widgetType = Type.fromYaml(yaml.atKey("type"));
 

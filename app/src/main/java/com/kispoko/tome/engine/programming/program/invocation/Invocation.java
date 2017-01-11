@@ -6,8 +6,8 @@ import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,16 +62,16 @@ public class Invocation implements Model, Serializable
     }
 
 
-    public static Invocation fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Invocation fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID   id          = UUID.randomUUID();
         String programName = yaml.atKey("program").getString();
 
         List<InvocationParameterUnion> parameters =
-                yaml.atKey("parameters").forEach(new Yaml.ForEach<InvocationParameterUnion>() {
+                yaml.atKey("parameters").forEach(new YamlParser.ForEach<InvocationParameterUnion>() {
             @Override
-            public InvocationParameterUnion forEach(Yaml yaml, int index) throws YamlException {
+            public InvocationParameterUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return InvocationParameterUnion.fromYaml(yaml);
             }
         });

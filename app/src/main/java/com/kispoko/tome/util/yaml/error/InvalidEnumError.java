@@ -4,7 +4,7 @@ package com.kispoko.tome.util.yaml.error;
 
 
 /**
- * Yaml Error: Invalid Enum
+ * Yaml Parsing Error: Invalid Enum
  */
 public class InvalidEnumError
 {

@@ -12,7 +12,7 @@ game:
   created: '2014'
   creators: Wizards
   players: 11577
-rulesEngine:
+engine:
   refinements:
   - name: class
     type: member_of

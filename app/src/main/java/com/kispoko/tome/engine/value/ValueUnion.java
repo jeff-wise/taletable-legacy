@@ -3,24 +3,29 @@ package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.valueTo;
+import static android.R.attr.valueType;
 
 
 /**
  * Value Union
  */
-public class ValueUnion implements Model, Serializable
-{
+public class ValueUnion implements Model, ToYaml, Serializable {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
@@ -45,26 +50,25 @@ public class ValueUnion implements Model, Serializable
 
     public ValueUnion()
     {
-        this.id             = null;
+        this.id = null;
 
-        this.textValue      = ModelFunctor.empty(TextValue.class);
-        this.numberValue    = ModelFunctor.empty(NumberValue.class);
+        this.textValue = ModelFunctor.empty(TextValue.class);
+        this.numberValue = ModelFunctor.empty(NumberValue.class);
 
-        this.type           = new PrimitiveFunctor<>(null, ValueType.class);
+        this.type = new PrimitiveFunctor<>(null, ValueType.class);
     }
 
 
     private ValueUnion(UUID id, Object value, ValueType type)
     {
-        this.id             = id;
+        this.id = id;
 
-        this.textValue      = ModelFunctor.full(null, TextValue.class);
-        this.numberValue    = ModelFunctor.full(null, NumberValue.class);
+        this.textValue = ModelFunctor.full(null, TextValue.class);
+        this.numberValue = ModelFunctor.full(null, NumberValue.class);
 
-        this.type           = new PrimitiveFunctor<>(type, ValueType.class);
+        this.type = new PrimitiveFunctor<>(type, ValueType.class);
 
-        switch (type)
-        {
+        switch (type) {
             case TEXT:
                 this.textValue.setValue((TextValue) value);
                 break;
@@ -80,7 +84,8 @@ public class ValueUnion implements Model, Serializable
 
     /**
      * Create the "text case".
-     * @param id The model id.
+     *
+     * @param id        The model id.
      * @param textValue The text value.
      * @return The "text" Value Union.
      */
@@ -92,7 +97,8 @@ public class ValueUnion implements Model, Serializable
 
     /**
      * Create the "number case"
-     * @param id The model id.
+     *
+     * @param id          The model id.
      * @param numberValue The number value.
      * @return The "number" Value Union.
      */
@@ -105,15 +111,14 @@ public class ValueUnion implements Model, Serializable
     // > Yaml
     // ------------------------------------------------------------------------------------------
 
-    public static ValueUnion fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ValueUnion fromYaml(YamlParser yaml)
+            throws YamlParseException
     {
-        UUID      id        = UUID.randomUUID();
+        UUID id = UUID.randomUUID();
 
         ValueType valueType = ValueType.fromYaml(yaml.atKey("type"));
 
-        switch (valueType)
-        {
+        switch (valueType) {
             case TEXT:
                 TextValue textValue = TextValue.fromYaml(yaml.atKey("value"));
                 return ValueUnion.asText(id, textValue);
@@ -137,20 +142,20 @@ public class ValueUnion implements Model, Serializable
 
     /**
      * Get the model identifier.
+     *
      * @return The model UUID.
      */
-    public UUID getId()
-    {
+    public UUID getId() {
         return this.id;
     }
 
 
     /**
      * Set the model identifier.
+     *
      * @param id The new model UUID.
      */
-    public void setId(UUID id)
-    {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -158,7 +163,39 @@ public class ValueUnion implements Model, Serializable
     // ** On Load
     // ------------------------------------------------------------------------------------------
 
-    public void onLoad() { }
+    public void onLoad() {
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The value union's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        ToYaml valueToYaml = null;
+
+        switch (this.type())
+        {
+            case TEXT:
+                valueToYaml = this.textValue();
+                break;
+            case NUMBER:
+                valueToYaml = this.numberValue();
+                break;
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(ValueType.class.getName())));
+        }
+
+        return YamlBuilder.map()
+                .putYaml("type", this.type())
+                .putYaml("value", valueToYaml);
+    }
 
 
     // > State

@@ -4,8 +4,8 @@ package com.kispoko.tome.engine.variable;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -55,8 +55,8 @@ public class VariableName implements Model, Serializable
     }
 
 
-    public static VariableName fromYaml(Yaml yaml)
-                  throws YamlException
+    public static VariableName fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID   id        = UUID.randomUUID();
 

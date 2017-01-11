@@ -6,22 +6,31 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
+
 
 
 /**
  * Variable ErrorType
  */
-public enum VariableType
+public enum VariableType implements ToYaml
 {
+
+    // VALUES
+    // ------------------------------------------------------------------------------------------
 
     TEXT,
     NUMBER,
     BOOLEAN,
     DICE;
 
+
+    // CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
 
     public static VariableType fromString(String typeString)
                   throws InvalidDataException
@@ -30,14 +39,14 @@ public enum VariableType
     }
 
 
-    public static VariableType fromYaml(Yaml yaml)
-                  throws YamlException
+    public static VariableType fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         String typeString = yaml.getString();
         try {
             return VariableType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 
@@ -56,5 +65,13 @@ public enum VariableType
         }
     }
 
+
+    // TO YAML
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.string(this.name().toLowerCase());
+    }
 
 }

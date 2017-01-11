@@ -14,8 +14,10 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import java.util.UUID;
 /**
  * Group
  */
-public class Group implements Model, Serializable
+public class Group implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -36,14 +38,14 @@ public class Group implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                    id;
+    private UUID                        id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> label;
-    private PrimitiveFunctor<Integer> index;
+    private PrimitiveFunctor<String>    label;
+    private PrimitiveFunctor<Integer>   index;
     private CollectionFunctor<GroupRow> rows;
 
 
@@ -77,16 +79,16 @@ public class Group implements Model, Serializable
 
 
     @SuppressWarnings("unchecked")
-    public static Group fromYaml(Yaml yaml, int groupIndex)
-                  throws YamlException
+    public static Group fromYaml(YamlParser yaml, int groupIndex)
+                  throws YamlParseException
     {
         UUID      id    = UUID.randomUUID();
         String    label = yaml.atMaybeKey("label").getString();
         Integer   index = groupIndex;
 
-        List<GroupRow> groupRows = yaml.atKey("rows").forEach(new Yaml.ForEach<GroupRow>() {
+        List<GroupRow> groupRows = yaml.atKey("rows").forEach(new YamlParser.ForEach<GroupRow>() {
             @Override
-            public GroupRow forEach(Yaml yaml, int index) throws YamlException {
+            public GroupRow forEach(YamlParser yaml, int index) throws YamlParseException {
                 return GroupRow.fromYaml(yaml);
             }
         });
@@ -125,12 +127,6 @@ public class Group implements Model, Serializable
     public void onLoad() { }
 
 
-    // ** Updates
-    // ------------------------------------------------------------------------------------------
-
-    public void onValueUpdate(String valueName) { }
-
-
     // > Initialize
     // ------------------------------------------------------------------------------------------
 
@@ -146,6 +142,16 @@ public class Group implements Model, Serializable
     }
 
 
+    // > Yaml
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("label", this.label())
+                .putList("rows", this.rows());
+    }
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -156,7 +162,7 @@ public class Group implements Model, Serializable
      * Get the group label.
      * @return The group label String.
      */
-    public String getLabel()
+    public String label()
     {
         return this.label.getValue();
     }
@@ -169,7 +175,7 @@ public class Group implements Model, Serializable
      * Get the group's index (starting at 0) , which is its position in the page.
      * @return The group index.
      */
-    public Integer getIndex()
+    public Integer index()
     {
         return this.index.getValue();
     }
@@ -260,7 +266,7 @@ public class Group implements Model, Serializable
         labelView.size  = R.dimen.group_label_text_size;
         labelView.color = R.color.gold_6;
         labelView.font  = Font.sansSerifFontBold(context);
-        labelView.text  = this.getLabel().toUpperCase();
+        labelView.text  = this.label().toUpperCase();
 
 
         return labelLayout.linearLayout(context);

@@ -2,8 +2,8 @@
 package com.kispoko.tome.template;
 
 
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.util.List;
 
@@ -52,8 +52,8 @@ public class Template
     }
 
 
-    public static Template fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Template fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         String       name        = yaml.atKey("name").getString();
         String       label       = yaml.atKey("label").getString();

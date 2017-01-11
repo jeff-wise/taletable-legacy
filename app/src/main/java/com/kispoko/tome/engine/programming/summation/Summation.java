@@ -9,8 +9,8 @@ import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,8 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 
 
 /**
@@ -76,14 +74,14 @@ public class Summation implements Model, Serializable
     }
 
 
-    public static Summation fromYaml(Yaml yaml)
-            throws YamlException
+    public static Summation fromYaml(YamlParser yaml)
+            throws YamlParseException
     {
         UUID            id    = UUID.randomUUID();
 
-        List<TermUnion> terms = yaml.atKey("terms").forEach(new Yaml.ForEach<TermUnion>() {
+        List<TermUnion> terms = yaml.atKey("terms").forEach(new YamlParser.ForEach<TermUnion>() {
             @Override
-            public TermUnion forEach(Yaml yaml, int index) throws YamlException {
+            public TermUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return TermUnion.fromYaml(yaml);
             }
         }, true);

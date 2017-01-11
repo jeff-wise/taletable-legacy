@@ -4,8 +4,10 @@ package com.kispoko.tome.game;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.util.UUID;
 
@@ -16,7 +18,7 @@ import java.util.UUID;
  *
  * // TODO when do these get loaded? how do they get updated? can you create custom games?
  */
-public class Game implements Model
+public class Game implements Model, ToYaml
 {
 
     // PROPERTIES
@@ -71,8 +73,8 @@ public class Game implements Model
     }
 
 
-    public static Game fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Game fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         // Values to parse
         UUID id            = UUID.randomUUID();
@@ -116,6 +118,25 @@ public class Game implements Model
      * This method is called when the Game is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The game's Yaml representation.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putString("label", this.label())
+                .putString("description", this.description())
+                .putString("genre", this.genre())
+                .putString("created", this.created())
+                .putString("creators", this.creators())
+                .putInteger("players", this.players());
+    }
 
 
     // > State

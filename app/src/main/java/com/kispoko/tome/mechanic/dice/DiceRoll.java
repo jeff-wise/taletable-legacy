@@ -4,8 +4,10 @@ package com.kispoko.tome.mechanic.dice;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -17,7 +19,7 @@ import java.util.UUID;
 /**
  * Dice Roll
  */
-public class DiceRoll implements Model, Serializable
+public class DiceRoll implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -26,21 +28,21 @@ public class DiceRoll implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                        id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<DiceType> diceType;
-    private PrimitiveFunctor<Integer> quantity;
-    private PrimitiveFunctor<Integer> modifier;
+    private PrimitiveFunctor<DiceType>  diceType;
+    private PrimitiveFunctor<Integer>   quantity;
+    private PrimitiveFunctor<Integer>   modifier;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    Random randomGen;
+    private Random                      randomGen;
 
 
     // CONSTRUCTORS
@@ -77,10 +79,10 @@ public class DiceRoll implements Model, Serializable
      * Create a Dice Roll from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Dice Roll.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static DiceRoll fromYaml(Yaml yaml)
-                  throws YamlException
+    public static DiceRoll fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID     id       = UUID.randomUUID();
 
@@ -128,6 +130,22 @@ public class DiceRoll implements Model, Serializable
      * This method is called when the RulesEngine is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Dice Roll's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("type", this.diceType())
+                .putInteger("quantity", this.quantity())
+                .putInteger("modifier", this.modifier());
+    }
 
 
     // > State

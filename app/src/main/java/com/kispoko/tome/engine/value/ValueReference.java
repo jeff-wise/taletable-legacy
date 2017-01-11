@@ -4,8 +4,8 @@ package com.kispoko.tome.engine.value;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -58,10 +58,10 @@ public class ValueReference implements Model, Serializable
      * Create a Value Reference from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Value Reference.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static ValueReference fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ValueReference fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID   id           = UUID.randomUUID();
 

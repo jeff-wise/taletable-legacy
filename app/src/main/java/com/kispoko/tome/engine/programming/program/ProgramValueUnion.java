@@ -2,10 +2,16 @@
 package com.kispoko.tome.engine.programming.program;
 
 
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.variable.VariableType;
+import com.kispoko.tome.error.UnknownVariantError;
+import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -18,19 +24,26 @@ import java.util.UUID;
 /**
  * Function Value
  */
-public class ProgramValueUnion implements Model, Serializable
+public class ProgramValueUnion implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                             id;
+    // > Model
+    // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<Integer> integerValue;
-    private PrimitiveFunctor<String> stringValue;
-    private PrimitiveFunctor<Boolean> booleanValue;
+    private UUID                                id;
 
-    private PrimitiveFunctor<ProgramValueType> valueType;
+
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    private PrimitiveFunctor<Integer>           integerValue;
+    private PrimitiveFunctor<String>            stringValue;
+    private PrimitiveFunctor<Boolean>           booleanValue;
+
+    private PrimitiveFunctor<ProgramValueType>  valueType;
 
 
     // CONSTRUCTORS
@@ -132,8 +145,8 @@ public class ProgramValueUnion implements Model, Serializable
     }
 
 
-    public static ProgramValueUnion fromYaml(Yaml yaml, ProgramValueType valueType)
-                  throws YamlException
+    public static ProgramValueUnion fromYaml(YamlParser yaml, ProgramValueType valueType)
+                  throws YamlParseException
     {
         UUID id = UUID.randomUUID();
 
@@ -190,6 +203,33 @@ public class ProgramValueUnion implements Model, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Program Value Union's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        switch (this.type())
+        {
+            case STRING:
+                return YamlBuilder.string(this.stringValue());
+            case INTEGER:
+                return YamlBuilder.integer(this.integerValue());
+            case BOOLEAN:
+                return YamlBuilder.bool(this.booleanValue());
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(ProgramValueType.class.getName())));
+        }
+
+        return null;
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -197,7 +237,7 @@ public class ProgramValueUnion implements Model, Serializable
      * Get the type of this ProgramValueUnion.
      * @return The ProgramValueType.
      */
-    public ProgramValueType getType()
+    public ProgramValueType type()
     {
         return this.valueType.getValue();
     }
@@ -207,7 +247,7 @@ public class ProgramValueUnion implements Model, Serializable
      * Get the integer value case for this ProgramValueUnion.
      * @return The Integer value.
      */
-    public Integer getInteger()
+    public Integer integerValue()
     {
         return this.integerValue.getValue();
     }
@@ -217,7 +257,7 @@ public class ProgramValueUnion implements Model, Serializable
      * Get the string value case for this ProgramValueUnion
      * @return The String value.
      */
-    public String getString()
+    public String stringValue()
     {
         return this.stringValue.getValue();
     }
@@ -227,7 +267,7 @@ public class ProgramValueUnion implements Model, Serializable
      * Get the boolean value case for this ProgramValueUnion
      * @return The Boolean value.
      */
-    public Boolean getBoolean()
+    public Boolean booleanValue()
     {
         return this.booleanValue.getValue();
     }
@@ -239,14 +279,14 @@ public class ProgramValueUnion implements Model, Serializable
     @Override
     public String toString()
     {
-        switch (this.getType())
+        switch (this.type())
         {
             case STRING:
-                return this.getString();
+                return this.stringValue();
             case INTEGER:
-                return this.getInteger().toString();
+                return this.integerValue().toString();
             case BOOLEAN:
-                return this.getBoolean().toString();
+                return this.booleanValue().toString();
         }
 
         return "";
@@ -268,26 +308,26 @@ public class ProgramValueUnion implements Model, Serializable
 
         ProgramValueUnion functionValue = (ProgramValueUnion) o;
 
-        if (functionValue.getType() != this.getType())
+        if (functionValue.type() != this.type())
             return false;
 
-        switch (functionValue.getType())
+        switch (functionValue.type())
         {
             case STRING:
-                String thatString = functionValue.getString();
-                String thisString = this.getString();
+                String thatString = functionValue.stringValue();
+                String thisString = this.stringValue();
                 return new EqualsBuilder()
                             .append(thisString, thatString)
                             .isEquals();
             case INTEGER:
-                Integer thatInteger = functionValue.getInteger();
-                Integer thisInteger = this.getInteger();
+                Integer thatInteger = functionValue.integerValue();
+                Integer thisInteger = this.integerValue();
                 return new EqualsBuilder()
                         .append(thisInteger, thatInteger)
                         .isEquals();
             case BOOLEAN:
-                Boolean thatBoolean = functionValue.getBoolean();
-                Boolean thisBoolean = this.getBoolean();
+                Boolean thatBoolean = functionValue.booleanValue();
+                Boolean thisBoolean = this.booleanValue();
                 return new EqualsBuilder()
                         .append(thisBoolean, thatBoolean)
                         .isEquals();

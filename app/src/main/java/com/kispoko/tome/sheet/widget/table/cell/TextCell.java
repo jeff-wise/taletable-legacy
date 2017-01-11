@@ -22,8 +22,10 @@ import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ import java.util.UUID;
 /**
  * Text CellUnion
  */
-public class TextCell implements Model, Cell, Serializable
+public class TextCell implements Model, Cell, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -85,7 +87,7 @@ public class TextCell implements Model, Cell, Serializable
         // ** Value
         if (valueVariable == null) {
             valueVariable = TextVariable.asText(UUID.randomUUID(),
-                                        column.getDefaultValue());
+                                        column.defaultValue());
         }
         this.valueVariable = ModelFunctor.full(valueVariable, TextVariable.class);
 
@@ -96,10 +98,11 @@ public class TextCell implements Model, Cell, Serializable
     }
 
 
-    public static TextCell fromYaml(Yaml yaml, TextColumn column)
-                  throws YamlException
+    public static TextCell fromYaml(YamlParser yaml, TextColumn column)
+                  throws YamlParseException
     {
         UUID          id                = UUID.randomUUID();
+
         TextVariable  value             = TextVariable.fromYaml(yaml.atMaybeKey("value"));
         CellAlignment alignment         = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
 
@@ -145,6 +148,21 @@ public class TextCell implements Model, Cell, Serializable
     public void onLoad()
     {
         this.initializeTextCell();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Text Cell's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("value", this.valueVariable())
+                .putYaml("alignment", this.alignment());
     }
 
 
@@ -230,7 +248,7 @@ public class TextCell implements Model, Cell, Serializable
      * Get the alignment of this cell.
      * @return The cell Alignment.
      */
-    public CellAlignment getAlignment()
+    public CellAlignment alignment()
     {
         return this.alignment.getValue();
     }
@@ -263,7 +281,7 @@ public class TextCell implements Model, Cell, Serializable
         if (this.value() != null)
             cellView.text = this.value();
         else
-            cellView.text = column.getDefaultValue();
+            cellView.text = column.defaultValue();
 
         return cellView.textView(context);
     }

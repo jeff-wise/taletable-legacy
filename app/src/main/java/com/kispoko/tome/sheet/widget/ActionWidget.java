@@ -14,7 +14,6 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.NumberVariable;
-import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
@@ -25,13 +24,14 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 
 
 /**
- * Roll Widget
+ * Action Widget
  */
 public class ActionWidget extends Widget implements Serializable
 {
@@ -87,10 +87,10 @@ public class ActionWidget extends Widget implements Serializable
      * Create a Roll Widget from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Roll Widget.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static ActionWidget fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ActionWidget fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID           id           = UUID.randomUUID();
 
@@ -139,6 +139,26 @@ public class ActionWidget extends Widget implements Serializable
      * This method is called when the RulesEngine is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Action Widget's yaml representation.
+     * @return
+     */
+    public YamlBuilder toYaml()
+    {
+        YamlBuilder yaml = YamlBuilder.map();
+
+        yaml.putString("name", this.name());
+        yaml.putString("description", this.description());
+        yaml.putYaml("modifier", this.modifierVariable());
+        yaml.putYaml("data", this.data());
+
+        return yaml;
+    }
 
 
     // > Widget

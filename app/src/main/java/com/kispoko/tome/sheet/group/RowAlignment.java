@@ -3,13 +3,14 @@ package com.kispoko.tome.sheet.group;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
+
 
 
 /**
@@ -18,10 +19,16 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 public enum RowAlignment
 {
 
+    // VALUES
+    // ------------------------------------------------------------------------------------------
+
     LEFT,
     CENTER,
     RIGHT;
 
+
+    // CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
 
     public static RowAlignment fromString(String alignmentString)
                   throws InvalidDataException
@@ -30,8 +37,8 @@ public enum RowAlignment
     }
 
 
-    public static RowAlignment fromYaml(Yaml yaml)
-                  throws YamlException
+    public static RowAlignment fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         if (yaml.isNull())
             return CENTER;
@@ -40,7 +47,7 @@ public enum RowAlignment
         try {
             return RowAlignment.fromString(alignmentString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(alignmentString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(alignmentString));
         }
     }
 
@@ -59,5 +66,17 @@ public enum RowAlignment
         }
     }
 
+
+    // API
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The enum as a string for representation in a Yaml document.
+     * @return The enum string.
+     */
+    public String yamlString()
+    {
+        return this.name().toLowerCase();
+    }
 
 }

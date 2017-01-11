@@ -29,8 +29,9 @@ import com.kispoko.tome.util.ui.TableRowBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ import java.util.UUID;
 /**
  * Widget: Table
  */
-public class TableWidget extends Widget implements Serializable
+public class TableWidget extends Widget
+                         implements Serializable
 {
 
     // PROPERTIES
@@ -111,10 +113,10 @@ public class TableWidget extends Widget implements Serializable
      * Create a Table Widget from its yaml representation.
      * @param yaml The Yaml parser object.
      * @return A new TableWidget.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static TableWidget fromYaml(Yaml yaml)
-                  throws YamlException
+    public static TableWidget fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID         id             = UUID.randomUUID();
 
@@ -123,17 +125,17 @@ public class TableWidget extends Widget implements Serializable
 
         // ** Columns
         final List<ColumnUnion> columns
-                = yaml.atKey("columns").forEach(new Yaml.ForEach<ColumnUnion>() {
+                = yaml.atKey("columns").forEach(new YamlParser.ForEach<ColumnUnion>() {
              @Override
-             public ColumnUnion forEach(Yaml yaml, int index) throws YamlException {
+             public ColumnUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                  return ColumnUnion.fromYaml(yaml);
              }
         });
 
         // ** Rows
-        List<TableRow> rows = yaml.atKey("rows").forEach(new Yaml.ForEach<TableRow>() {
+        List<TableRow> rows = yaml.atKey("rows").forEach(new YamlParser.ForEach<TableRow>() {
             @Override
-            public TableRow forEach(Yaml yaml, int index) throws YamlException {
+            public TableRow forEach(YamlParser yaml, int index) throws YamlParseException {
                 return TableRow.fromYaml(yaml, columns);
             }
         });
@@ -180,6 +182,22 @@ public class TableWidget extends Widget implements Serializable
     public void onLoad()
     {
         initializeTable();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Table Widget yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("data", this.data())
+                .putList("columns", this.columns())
+                .putList("rows", this.rows());
     }
 
 
@@ -232,7 +250,7 @@ public class TableWidget extends Widget implements Serializable
      */
     public int width()
     {
-        return this.getColumns().size();
+        return this.columns().size();
     }
 
     // ** Height
@@ -258,7 +276,7 @@ public class TableWidget extends Widget implements Serializable
      */
     public ColumnUnion columnAtIndex(int index)
     {
-        return this.getColumns().get(index);
+        return this.columns().get(index);
 
     }
 
@@ -267,7 +285,8 @@ public class TableWidget extends Widget implements Serializable
      * Get the table columns.
      * @return List of the table's columns.
      */
-    public List<ColumnUnion> getColumns() {
+    public List<ColumnUnion> columns()
+    {
         return this.columns.getValue();
     }
 
@@ -280,7 +299,8 @@ public class TableWidget extends Widget implements Serializable
      * @param index The row index (starting at 0).
      * @return The table row at the specified index.
      */
-    public TableRow getRow(Integer index) {
+    public TableRow getRow(Integer index)
+    {
         return this.rows.getValue().get(index);
     }
 
@@ -289,7 +309,8 @@ public class TableWidget extends Widget implements Serializable
      * Get all of the table rows.
      * @return The table row list (excluding header).
      */
-    public List<TableRow> rows() {
+    public List<TableRow> rows()
+    {
         return this.rows.getValue();
     }
 
@@ -306,8 +327,8 @@ public class TableWidget extends Widget implements Serializable
     {
         List<String> columnNames = new ArrayList<>();
 
-        for (ColumnUnion columnUnion : this.getColumns()) {
-            columnNames.add(columnUnion.getColumn().getName());
+        for (ColumnUnion columnUnion : this.columns()) {
+            columnNames.add(columnUnion.column().name());
         }
 
         return columnNames;
@@ -335,7 +356,7 @@ public class TableWidget extends Widget implements Serializable
         // [2] Structure
         // --------------------------------------------------------------------------------------
 
-        tileLayout.addView(this.tableTitleView(this.data().getFormat().getLabel(), context));
+        tileLayout.addView(this.tableTitleView(this.data().format().label(), context));
         tileLayout.addView(tableLayout);
 
         // > Header
@@ -373,13 +394,13 @@ public class TableWidget extends Widget implements Serializable
 
         List<CellUnion> headerCells = new ArrayList<>();
 
-        for (ColumnUnion columnUnion : this.getColumns())
+        for (ColumnUnion columnUnion : this.columns())
         {
             TextVariable headerCellValue = TextVariable.asText(UUID.randomUUID(),
-                                                               columnUnion.getColumn().getName());
+                                                               columnUnion.column().name());
             TextCell headerCell = new TextCell(UUID.randomUUID(),
                                                headerCellValue,
-                                               columnUnion.getColumn().getAlignment(),
+                                               columnUnion.column().alignment(),
                                                null);
             CellUnion headerCellUnion = CellUnion.asText(null, headerCell);
             headerCells.add(headerCellUnion);
@@ -484,10 +505,10 @@ public class TableWidget extends Widget implements Serializable
         {
             CellUnion headerCell = this.headerRow.cellAtIndex(i);
 
-            Column column = this.columnAtIndex(i).getColumn();
+            Column column = this.columnAtIndex(i).column();
             TextColumn textColumn = new TextColumn(null, null, null,
-                                                   column.getAlignment(),
-                                                   column.getWidth());
+                                                   column.alignment(),
+                                                   column.width());
             ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
 
             TextView headerCellView = (TextView) headerCell.view(columnUnion);

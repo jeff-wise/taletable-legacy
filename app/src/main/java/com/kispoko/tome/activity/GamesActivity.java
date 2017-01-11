@@ -22,7 +22,7 @@ import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.ScrollViewBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 
 
@@ -52,7 +52,7 @@ public class GamesActivity extends AppCompatActivity
 
         try {
             this.gameIndex = GameIndex.fromManifest(this);
-        } catch (YamlException e) {
+        } catch (YamlParseException e) {
             Log.d("***CHOOSEGAME", e.errorMessage(), e);
         } catch (Exception e) {
             // TODO handle gracefully

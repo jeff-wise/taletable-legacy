@@ -5,8 +5,8 @@ package com.kispoko.tome.engine.programming.summation.term;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -68,10 +68,10 @@ public class ConditionalTerm extends Term implements Serializable
      * Create a Conditional Term from its Yaml representation.
      * @param yaml The yaml parser.
      * @return A new Conditional Term.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static ConditionalTerm fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ConditionalTerm fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID             id                   = UUID.randomUUID();
 

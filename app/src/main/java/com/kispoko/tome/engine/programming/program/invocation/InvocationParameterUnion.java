@@ -4,8 +4,8 @@ package com.kispoko.tome.engine.programming.program.invocation;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -76,8 +76,8 @@ public class InvocationParameterUnion implements Model, Serializable
      * @param yaml The Yaml parser.
      * @return A new InvocationParameterUnion.
      */
-    public static InvocationParameterUnion fromYaml(Yaml yaml)
-                  throws YamlException
+    public static InvocationParameterUnion fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID id = UUID.randomUUID();
 

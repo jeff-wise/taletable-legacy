@@ -21,8 +21,6 @@ import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
-import static android.R.attr.width;
-
 
 /**
  * Bottom Sheet Fragment for Action Dialog
@@ -67,7 +65,7 @@ public class ActionDialogFragment extends DialogFragment
 
         LinearLayout layout = this.dialogLayout(context);
 
-        for (final Action action : this.widget.data().getActions())
+        for (final Action action : this.widget.data().actions())
         {
             View actionView = Action.view(action, this.widget, this);
             layout.addView(actionView);

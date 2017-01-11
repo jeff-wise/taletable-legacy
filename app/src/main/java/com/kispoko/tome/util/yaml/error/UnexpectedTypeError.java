@@ -2,12 +2,12 @@
 package com.kispoko.tome.util.yaml.error;
 
 
-import com.kispoko.tome.util.yaml.Yaml;
+import com.kispoko.tome.util.yaml.YamlObjectType;
 
 
 
 /**
- * Yaml Error: Unexpected ErrorType
+ * Yaml Parsing Error: Unexpected ErrorType
  */
 public class UnexpectedTypeError
 {
@@ -15,13 +15,13 @@ public class UnexpectedTypeError
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private Yaml.ObjectType expectedType;
+    private YamlObjectType expectedType;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
-    public UnexpectedTypeError(Yaml.ObjectType expectedType)
+    public UnexpectedTypeError(YamlObjectType expectedType)
     {
         this.expectedType = expectedType;
     }
@@ -30,7 +30,7 @@ public class UnexpectedTypeError
     // API
     // --------------------------------------------------------------------------------------
 
-    public Yaml.ObjectType getExpectedType()
+    public YamlObjectType getExpectedType()
     {
         return this.expectedType;
     }

@@ -9,13 +9,16 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -25,13 +28,20 @@ import java.util.UUID;
 /**
  * Table Widget CellUnion
  */
-public class CellUnion implements Model, Serializable
+public class CellUnion implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID                        id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<TextCell>      textCell;
     private ModelFunctor<NumberCell>    numberCell;
@@ -122,24 +132,24 @@ public class CellUnion implements Model, Serializable
      * @param yaml The Yaml parser.
      * @param columnUnion The column the cell belongs to.
      * @return The parsed Cell Union.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static CellUnion fromYaml(Yaml yaml, ColumnUnion columnUnion)
-                  throws YamlException
+    public static CellUnion fromYaml(YamlParser yaml, ColumnUnion columnUnion)
+                  throws YamlParseException
     {
         UUID     id   = UUID.randomUUID();
 
-        switch (columnUnion.getType())
+        switch (columnUnion.type())
         {
             case TEXT:
-                TextCell textCell = TextCell.fromYaml(yaml, columnUnion.getTextColumn());
+                TextCell textCell = TextCell.fromYaml(yaml, columnUnion.textColumn());
                 return CellUnion.asText(id, textCell);
             case NUMBER:
-                NumberCell numberCell = NumberCell.fromYaml(yaml, columnUnion.getNumberColumn());
+                NumberCell numberCell = NumberCell.fromYaml(yaml, columnUnion.numberColumn());
                 return CellUnion.asNumber(id, numberCell);
             case BOOLEAN:
                 BooleanCell booleanCell = BooleanCell.fromYaml(yaml,
-                                                               columnUnion.getBooleanColumn());
+                                                               columnUnion.booleanColumn());
                 return CellUnion.asBoolean(id, booleanCell);
         }
 
@@ -185,6 +195,33 @@ public class CellUnion implements Model, Serializable
      * This method is called when the Cell Union is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Cell Union's yaml representation.
+     * @return
+     */
+    public YamlBuilder toYaml()
+    {
+        switch (this.type())
+        {
+            case TEXT:
+                return this.textCell().toYaml();
+            case NUMBER:
+                return this.numberCell().toYaml();
+            case BOOLEAN:
+                return this.booleanCell().toYaml();
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(CellType.class.getName())));
+        }
+
+        return null;
+    }
 
 
     // > State
@@ -280,13 +317,13 @@ public class CellUnion implements Model, Serializable
         switch (this.type.getValue())
         {
             case TEXT:
-                cellView = this.textCell().view(columnUnion.getTextColumn());
+                cellView = this.textCell().view(columnUnion.textColumn());
                 break;
             case NUMBER:
-                cellView = this.numberCell().view(columnUnion.getNumberColumn());
+                cellView = this.numberCell().view(columnUnion.numberColumn());
                 break;
             case BOOLEAN:
-                cellView = this.booleanCell().view(columnUnion.getBooleanColumn());
+                cellView = this.booleanCell().view(columnUnion.booleanColumn());
                 break;
         }
 
@@ -301,7 +338,7 @@ public class CellUnion implements Model, Serializable
     {
         TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) cellView.getLayoutParams();
 
-        CellAlignment cellAlignment = columnUnion.getColumn().getAlignment();
+        CellAlignment cellAlignment = columnUnion.column().alignment();
 
         switch (cellAlignment)
         {
@@ -329,7 +366,7 @@ public class CellUnion implements Model, Serializable
     {
         TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) cellView.getLayoutParams();
 
-        Integer width = columnUnion.getColumn().getWidth();
+        Integer width = columnUnion.column().width();
         if (width != null) {
             layoutParams.width = 0;
             layoutParams.weight = width;

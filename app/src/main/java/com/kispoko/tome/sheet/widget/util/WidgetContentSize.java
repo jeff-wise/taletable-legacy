@@ -9,8 +9,10 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
@@ -18,13 +20,19 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 /**
  * Widget Content Size
  */
-public enum WidgetContentSize
+public enum WidgetContentSize implements ToYaml
 {
+
+    // VALUES
+    // ------------------------------------------------------------------------------------------
 
     SMALL,
     MEDIUM,
     LARGE;
 
+
+    // CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
 
     public static WidgetContentSize fromString(String sizeString)
                   throws InvalidDataException
@@ -38,10 +46,10 @@ public enum WidgetContentSize
      * (it is null), then use MEDIUM as a default size.
      * @param yaml The Yaml parser.
      * @return A new Size enum, with MEDIUM as the default.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static WidgetContentSize fromYaml(Yaml yaml)
-                  throws YamlException
+    public static WidgetContentSize fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         if (yaml.isNull()) return MEDIUM;
 
@@ -49,7 +57,7 @@ public enum WidgetContentSize
         try {
             return WidgetContentSize.fromString(sizeString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(sizeString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(sizeString));
         }
     }
 
@@ -69,20 +77,21 @@ public enum WidgetContentSize
     }
 
 
-    public float toSP(Context context)
+    // TO YAML
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Widget Content Size's yaml string representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
     {
-        switch (this)
-        {
-            case SMALL:
-                return context.getResources().getDimension(R.dimen.text_size_small);
-            case MEDIUM:
-                return context.getResources().getDimension(R.dimen.text_size_medium);
-            case LARGE:
-                return context.getResources().getDimension(R.dimen.text_size_large);
-        }
-        return 0;
+        return YamlBuilder.string(this.name().toLowerCase());
     }
 
+
+    // API
+    // ------------------------------------------------------------------------------------------
 
     public int resourceId()
     {
@@ -98,6 +107,5 @@ public enum WidgetContentSize
 
         return 0;
     }
-
 
 }

@@ -10,8 +10,10 @@ import com.kispoko.tome.engine.programming.function.error.InvalidTupleLengthErro
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -28,13 +30,20 @@ import java.util.UUID;
 /**
  * Function
  */
-public class Function implements Model, Serializable
+public class Function implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID                               id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String> name;
     private PrimitiveFunctor<ProgramValueType[]> parameterTypes;
@@ -43,6 +52,8 @@ public class Function implements Model, Serializable
 
 
     // > Internal
+    // ------------------------------------------------------------------------------------------
+
     private Map<Parameters,ProgramValueUnion> functionMap;
 
 
@@ -96,8 +107,8 @@ public class Function implements Model, Serializable
     }
 
 
-    public static Function fromYaml(Yaml yaml)
-                  throws InvalidFunctionException, YamlException
+    public static Function fromYaml(YamlParser yaml)
+                  throws InvalidFunctionException, YamlParseException
     {
         // ** Model Id
         UUID id = UUID.randomUUID();
@@ -107,9 +118,9 @@ public class Function implements Model, Serializable
 
         // ** Parameter Types
         final List<ProgramValueType> parameterTypes
-                = yaml.atKey("parameter_types").forEach(new Yaml.ForEach<ProgramValueType>() {
+                = yaml.atKey("parameter_types").forEach(new YamlParser.ForEach<ProgramValueType>() {
             @Override
-            public ProgramValueType forEach(Yaml yaml, int index) throws YamlException {
+            public ProgramValueType forEach(YamlParser yaml, int index) throws YamlParseException {
                 return ProgramValueType.fromYaml(yaml);
             }
         });
@@ -118,9 +129,9 @@ public class Function implements Model, Serializable
         final ProgramValueType resultType = ProgramValueType.fromYaml(yaml.atKey("result_type"));
 
         // ** Tuples
-        List<Tuple> tuples = yaml.atKey("tuples").forEach(new Yaml.ForEach<Tuple>() {
+        List<Tuple> tuples = yaml.atKey("tuples").forEach(new YamlParser.ForEach<Tuple>() {
             @Override
-            public Tuple forEach(Yaml yaml, int index) throws YamlException {
+            public Tuple forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Tuple.fromYaml(yaml, parameterTypes, resultType);
             }
         });
@@ -170,45 +181,63 @@ public class Function implements Model, Serializable
     }
 
 
-    // > State
+    // > To Yaml
     // ------------------------------------------------------------------------------------------
 
-    // ** Name
+    /**
+     * The function's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putList("parameter_types", this.parameterTypes())
+                .putYaml("result_type", this.resultType())
+                .putList("tuples", this.tuples());
+    }
+
+
+    // > State
     // ------------------------------------------------------------------------------------------
 
     /**
      * Get the function name.
      * @return The function name String.
      */
-    public String getName()
+    public String name()
     {
         return this.name.getValue();
     }
 
 
-    // ** Parameter Types
-    // ------------------------------------------------------------------------------------------
-
     /**
      * Get the function's parameter type list.
      * @return The parameter type list.
      */
-    public List<ProgramValueType> getParameterTypes()
+    public List<ProgramValueType> parameterTypes()
     {
         return Arrays.asList(this.parameterTypes.getValue());
     }
 
 
-    // ** Result ErrorType
-    // ------------------------------------------------------------------------------------------
-
     /**
      * Get the function's result type.
      * @return The function's result type.
      */
-    public ProgramValueType getResultType()
+    public ProgramValueType resultType()
     {
         return this.resultType.getValue();
+    }
+
+
+    /**
+     * The function's tuples.
+     * @return The Tuple List.
+     */
+    public List<Tuple> tuples()
+    {
+        return this.tuples.getValue();
     }
 
 
@@ -241,7 +270,7 @@ public class Function implements Model, Serializable
 
         for (int i = 0; i < tuples.size(); i++)
         {
-            int tupleSize = tuples.get(i).getParameters().size();
+            int tupleSize = tuples.get(i).parameters().size();
             if (tupleSize != numberOfParameters)
                 throw new InvalidFunctionException(
                         new InvalidTupleLengthError(i, numberOfParameters, tupleSize),
@@ -260,7 +289,7 @@ public class Function implements Model, Serializable
     {
         this.functionMap = new HashMap<>();
         for (Tuple tuple : this.tuples.getValue()) {
-            this.functionMap.put(new Parameters(tuple.getParameters()), tuple.getResult());
+            this.functionMap.put(new Parameters(tuple.parameters()), tuple.result());
         }
     }
 
@@ -280,7 +309,7 @@ public class Function implements Model, Serializable
 
             StringBuilder row = new StringBuilder();
             for (ProgramValueUnion param : params.getValues()) {
-                row.append(param.getType().toString());
+                row.append(param.type().toString());
                 row.append("  ");
                 row.append(param.toString());
                 row.append("    ");
@@ -371,16 +400,16 @@ public class Function implements Model, Serializable
 
             for (ProgramValueUnion value : this.values)
             {
-                switch (value.getType())
+                switch (value.type())
                 {
                     case STRING:
-                        hashCodeBuilder.append(value.getString());
+                        hashCodeBuilder.append(value.stringValue());
                         break;
                     case INTEGER:
-                        hashCodeBuilder.append(value.getInteger());
+                        hashCodeBuilder.append(value.integerValue());
                         break;
                     case BOOLEAN:
-                        hashCodeBuilder.append(value.getBoolean());
+                        hashCodeBuilder.append(value.booleanValue());
                         break;
                 }
             }

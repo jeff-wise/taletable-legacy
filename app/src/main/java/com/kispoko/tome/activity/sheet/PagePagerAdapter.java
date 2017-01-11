@@ -65,14 +65,14 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
     public Fragment getItem(int position)
     {
         return PageFragment.newInstance(this.pages.get(position),
-                                        SheetManager.currentSheet().rulesEngine());
+                                        SheetManager.currentSheet().engine());
     }
 
 
     @Override
     public CharSequence getPageTitle(int position)
     {
-        String pageLabel = this.pages.get(position).getLabel();
+        String pageLabel = this.pages.get(position).label();
         if (pageLabel != null)
             return pageLabel;
         else

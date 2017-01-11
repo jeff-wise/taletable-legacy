@@ -2,15 +2,13 @@
 package com.kispoko.tome.engine.variable;
 
 
-import android.util.Pair;
-
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -135,10 +133,10 @@ public class VariableReference implements Model, Serializable
      * Create a Variable Reference from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Variable Reference.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static VariableReference fromYaml(Yaml yaml)
-            throws YamlException
+    public static VariableReference fromYaml(YamlParser yaml)
+            throws YamlParseException
     {
         UUID                  id   = UUID.randomUUID();
 

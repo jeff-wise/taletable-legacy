@@ -85,14 +85,14 @@ public class BuiltInFunction
 
         ProgramValueUnion modifierFunctionValue = parameters.get(0);
 
-        if (modifierFunctionValue.getType() != ProgramValueType.INTEGER) {
+        if (modifierFunctionValue.type() != ProgramValueType.INTEGER) {
             throw BuiltInFunctionException.invalidParameterType(
                     new InvalidParameterTypeError(1,
-                                                  modifierFunctionValue.getType(),
+                                                  modifierFunctionValue.type(),
                                                   ProgramValueType.INTEGER));
         }
 
-        int modifier = modifierFunctionValue.getInteger();
+        int modifier = modifierFunctionValue.integerValue();
 
         // Convert the modifier integer into a string representation
         String modifierString;
@@ -122,10 +122,10 @@ public class BuiltInFunction
 
         ProgramValueUnion templateFunctionValue = parameters.get(0);
 
-        if (templateFunctionValue.getType() != ProgramValueType.STRING) {
+        if (templateFunctionValue.type() != ProgramValueType.STRING) {
             throw BuiltInFunctionException.invalidParameterType(
                     new InvalidParameterTypeError(1,
-                                                  templateFunctionValue.getType(),
+                                                  templateFunctionValue.type(),
                                                   ProgramValueType.STRING));
         }
 
@@ -133,7 +133,7 @@ public class BuiltInFunction
         // [2] Replace all variables in template
         // --------------------------------------------------------------------------------------
 
-        String templateString = templateFunctionValue.getString();
+        String templateString = templateFunctionValue.stringValue();
 
         Pattern templatePattern = Pattern.compile("\\{\\{(.*?)\\}\\}");
         Matcher matcher = templatePattern.matcher(templateString);
@@ -153,14 +153,14 @@ public class BuiltInFunction
             if (context.containsKey(templateVariableName))
             {
                 ProgramValueUnion variableFunctionValue = context.get(templateVariableName);
-                if (variableFunctionValue.getType() != ProgramValueType.STRING) {
+                if (variableFunctionValue.type() != ProgramValueType.STRING) {
                     throw InterpreterException.unexpectedProgramVariableType(
                             new UnexpectedProgramVariableTypeError(templateVariableName,
-                                                                   variableFunctionValue.getType(),
+                                                                   variableFunctionValue.type(),
                                                                    ProgramValueType.STRING));
                 }
                 else {
-                    variableValue = variableFunctionValue.getString();
+                    variableValue = variableFunctionValue.stringValue();
                 }
             }
             else

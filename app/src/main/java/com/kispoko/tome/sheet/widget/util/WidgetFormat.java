@@ -4,8 +4,10 @@ package com.kispoko.tome.sheet.widget.util;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -15,17 +17,17 @@ import java.util.UUID;
 /**
  * Widget Format
  */
-public class WidgetFormat implements Model, Serializable
+public class WidgetFormat implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private UUID                                   id;
+    private UUID                                        id;
 
-    private PrimitiveFunctor<String> label;
-    private PrimitiveFunctor<Integer> width;
-    private PrimitiveFunctor<WidgetContentAlignment> alignment;
+    private PrimitiveFunctor<String>                    label;
+    private PrimitiveFunctor<Integer>                   width;
+    private PrimitiveFunctor<WidgetContentAlignment>    alignment;
 
 
     // CONSTRUCTORS
@@ -38,7 +40,6 @@ public class WidgetFormat implements Model, Serializable
         this.label     = new PrimitiveFunctor<>(null, String.class);
         this.width     = new PrimitiveFunctor<>(null, Integer.class);
         this.alignment = new PrimitiveFunctor<>(null, WidgetContentAlignment.class);
-
     }
 
 
@@ -82,8 +83,8 @@ public class WidgetFormat implements Model, Serializable
      * @return The parsed WidgetFormat object.
      */
     @SuppressWarnings("unchecked")
-    protected static WidgetFormat fromYaml(Yaml yaml)
-                     throws YamlException
+    protected static WidgetFormat fromYaml(YamlParser yaml)
+                     throws YamlParseException
     {
         if (yaml.isNull())
             return WidgetFormat.asDefault();
@@ -129,6 +130,21 @@ public class WidgetFormat implements Model, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // --------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        YamlBuilder yaml = YamlBuilder.map();
+
+        yaml.putString("label", this.label());
+        yaml.putInteger("width", this.width());
+        yaml.putYaml("alignment", this.alignment());
+
+        return yaml;
+    }
+
+
     // > State
     // --------------------------------------------------------------------------------------
 
@@ -139,7 +155,7 @@ public class WidgetFormat implements Model, Serializable
      * Get the component label, used to identify the component in the user interface.
      * @return The component label string.
      */
-    public String getLabel()
+    public String label()
     {
         return this.label.getValue();
     }
@@ -163,7 +179,7 @@ public class WidgetFormat implements Model, Serializable
      * much space the component takes up horizontally in the group row.
      * @return The component width.
      */
-    public Integer getWidth()
+    public Integer width()
     {
         return this.width.getValue();
     }
@@ -190,7 +206,7 @@ public class WidgetFormat implements Model, Serializable
      * data is positioned within the component's area.
      * @return The component's alignment.
      */
-    public WidgetContentAlignment getAlignment()
+    public WidgetContentAlignment alignment()
     {
         return this.alignment.getValue();
     }

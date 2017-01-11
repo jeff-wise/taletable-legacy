@@ -55,7 +55,7 @@ public class ReactiveValue<A> implements Serializable
     public A value()
     {
         if (this.currentValue == null) {
-            Interpreter interpreter = SheetManager.currentSheet().rulesEngine().getInterpreter();
+            Interpreter interpreter = SheetManager.currentSheet().engine().getInterpreter();
 
             Object computedValue = null;
             try
@@ -65,13 +65,13 @@ public class ReactiveValue<A> implements Serializable
                 switch (this.type)
                 {
                     case TEXT:
-                        computedValue = result.getString();
+                        computedValue = result.stringValue();
                         break;
                     case NUMBER:
-                        computedValue = result.getInteger();
+                        computedValue = result.integerValue();
                         break;
                     case BOOLEAN:
-                        computedValue = result.getBoolean();
+                        computedValue = result.booleanValue();
                         break;
                 }
             }

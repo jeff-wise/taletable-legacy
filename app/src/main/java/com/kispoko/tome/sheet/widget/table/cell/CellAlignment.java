@@ -5,8 +5,10 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
@@ -14,11 +16,19 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 /**
  * CellUnion alignment. Determines the alignment of the cell data inside its cell boundary.
  */
-public enum CellAlignment
+public enum CellAlignment implements ToYaml
 {
+
+    // VALUES
+    // ------------------------------------------------------------------------------------------
+
     LEFT,
     CENTER,
     RIGHT;
+
+
+    // CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
 
     public static CellAlignment fromString(String alignmentString)
                   throws InvalidDataException
@@ -32,10 +42,10 @@ public enum CellAlignment
      * not exist (is null), then a default alignment of CENTER is returned.
      * @param yaml The Yaml parser.
      * @return The parsed Alignment, or CENTER as default.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static CellAlignment fromYaml(Yaml yaml)
-                  throws YamlException
+    public static CellAlignment fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         if (yaml.isNull())
             return CENTER;
@@ -44,7 +54,7 @@ public enum CellAlignment
         try {
             return CellAlignment.fromString(alignmentString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(alignmentString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(alignmentString));
         }
     }
 
@@ -63,5 +73,13 @@ public enum CellAlignment
         }
     }
 
+
+    // TO YAML
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.string(this.name().toLowerCase());
+    }
 
 }

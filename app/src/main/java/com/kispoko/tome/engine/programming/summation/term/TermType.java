@@ -6,8 +6,8 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
@@ -35,16 +35,16 @@ public enum TermType
      * Create a ColumnType from its Yaml representation.
      * @param yaml The Yaml parser.
      * @return The parsed TermType.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static TermType fromYaml(Yaml yaml)
-                  throws YamlException
+    public static TermType fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         String typeString = yaml.getString();
         try {
             return TermType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 

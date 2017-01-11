@@ -2,8 +2,6 @@
 package com.kispoko.tome.engine.variable;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueReference;
@@ -17,8 +15,10 @@ import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ import java.util.UUID;
  * Text Variable
  */
 public class TextVariable extends Variable
-                          implements Model, Serializable
+                          implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -251,15 +251,16 @@ public class TextVariable extends Variable
      * Create a new Variable from its Yaml representation.
      * @param yaml The Yaml parser.
      * @return The new Variable.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static TextVariable fromYaml(Yaml yaml)
-                  throws YamlException
+    public static TextVariable fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         if (yaml.isNull())
             return null;
 
         UUID         id                 = UUID.randomUUID();
+
         String       name               = yaml.atMaybeKey("name").getString();
         Kind         kind               = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId       = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
@@ -324,6 +325,26 @@ public class TextVariable extends Variable
     public void onLoad()
     {
         this.initializeTextVariable();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Text Variable's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putYaml("type", this.kind())
+                .putYaml("refinement", this.refinementId())
+                .putString("value_set", this.valueSetName())
+                .putBoolean("namespaced", this.isNamespaced())
+                .putBoolean("defines_namespace", this.definesNamespace())
+                .putStringList("tags", this.tags());
     }
 
 
@@ -497,13 +518,26 @@ public class TextVariable extends Variable
             case LITERAL:
                 return this.stringLiteral();
             case VALUE:
-                Dictionary dictionary = SheetManager.currentSheet().rulesEngine().dictionary();
+                Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
                 return dictionary.textValue(this.valueReference()).value();
             case PROGRAM:
                 return this.reactiveValue.value();
         }
 
         return null;
+    }
+
+
+    // ** Value Set
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The name of the value set this text variable belongs to.
+     * @return The value set name.
+     */
+    public String valueSetName()
+    {
+        return this.valueSetName.getValue();
     }
 
 
@@ -524,7 +558,7 @@ public class TextVariable extends Variable
      * Get the refinement identifier for this variable.
      * @return The variable's refinement id, or null if there is none.
      */
-    public RefinementId getRefinementId()
+    public RefinementId refinementId()
     {
         return this.refinementId.getValue();
     }
@@ -593,7 +627,7 @@ public class TextVariable extends Variable
         if (this.kind() != Kind.VALUE)
             return;
 
-        Dictionary dictionary = SheetManager.currentSheet().rulesEngine().dictionary();
+        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
         dictionary.textValue(this.valueReference()).addToState();
     }
 
@@ -603,7 +637,7 @@ public class TextVariable extends Variable
         if (this.kind() != Kind.VALUE)
             return;
 
-        Dictionary dictionary = SheetManager.currentSheet().rulesEngine().dictionary();
+        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
         dictionary.textValue(this.valueReference()).removeFromState();
     }
 
@@ -611,12 +645,19 @@ public class TextVariable extends Variable
     // Kind
     // ------------------------------------------------------------------------------------------
 
-    public enum Kind
+    public enum Kind implements ToYaml
     {
+
+        // VALUES
+        // --------------------------------------------------------------------------------------
+
         LITERAL,
         VALUE,
         PROGRAM;
 
+
+        // CONSTRUCTORS
+        // --------------------------------------------------------------------------------------
 
         public static Kind fromString(String kindString)
                       throws InvalidDataException
@@ -625,14 +666,14 @@ public class TextVariable extends Variable
         }
 
 
-        public static Kind fromYaml(Yaml yaml)
-                      throws YamlException
+        public static Kind fromYaml(YamlParser yaml)
+                      throws YamlParseException
         {
             String kindString = yaml.getString();
             try {
                 return Kind.fromString(kindString);
             } catch (InvalidDataException e) {
-                throw YamlException.invalidEnum(new InvalidEnumError(kindString));
+                throw YamlParseException.invalidEnum(new InvalidEnumError(kindString));
             }
         }
 
@@ -649,6 +690,15 @@ public class TextVariable extends Variable
                 throw DatabaseException.invalidEnum(
                         new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
             }
+        }
+
+
+        // TO YAML
+        // --------------------------------------------------------------------------------------
+
+        public YamlBuilder toYaml()
+        {
+            return YamlBuilder.string(this.name().toLowerCase());
         }
 
     }

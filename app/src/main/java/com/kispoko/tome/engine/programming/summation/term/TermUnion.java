@@ -10,8 +10,8 @@ import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -123,10 +123,10 @@ public class TermUnion implements Model, Serializable
      * Create a Term Union from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Term Union.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static TermUnion fromYaml(Yaml yaml)
-                  throws YamlException
+    public static TermUnion fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID     id   = UUID.randomUUID();
 

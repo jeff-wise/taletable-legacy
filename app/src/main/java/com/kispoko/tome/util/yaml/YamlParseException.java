@@ -12,7 +12,7 @@ import com.kispoko.tome.util.yaml.error.UnexpectedTypeError;
 /**
  * Yaml Parse Exception
  */
-public class YamlException extends Exception
+public class YamlParseException extends Exception
 {
 
     // PROPERTIES
@@ -25,34 +25,34 @@ public class YamlException extends Exception
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    private YamlException(Object error, Type errorType)
+    private YamlParseException(Object error, Type errorType)
     {
         this.error = error;
         this.errorType = errorType;
     }
 
 
-    public static YamlException missingKey(MissingKeyError missingKeyError)
+    public static YamlParseException missingKey(MissingKeyError missingKeyError)
     {
-        return new YamlException(missingKeyError, Type.MISSING_KEY);
+        return new YamlParseException(missingKeyError, Type.MISSING_KEY);
     }
 
 
-    public static YamlException unexpectedType(UnexpectedTypeError unexpectedTypeError)
+    public static YamlParseException unexpectedType(UnexpectedTypeError unexpectedTypeError)
     {
-        return new YamlException(unexpectedTypeError, Type.UNEXPECTED_TYPE);
+        return new YamlParseException(unexpectedTypeError, Type.UNEXPECTED_TYPE);
     }
 
 
-    public static YamlException invalidEnum(InvalidEnumError invalidEnumError)
+    public static YamlParseException invalidEnum(InvalidEnumError invalidEnumError)
     {
-        return new YamlException(invalidEnumError, Type.INVALID_ENUM);
+        return new YamlParseException(invalidEnumError, Type.INVALID_ENUM);
     }
 
 
-    public static YamlException emptyValue(EmptyValueError emptyValueError)
+    public static YamlParseException emptyValue(EmptyValueError emptyValueError)
     {
-        return new YamlException(emptyValueError, Type.EMPTY_VALUE);
+        return new YamlParseException(emptyValueError, Type.EMPTY_VALUE);
     }
 
 

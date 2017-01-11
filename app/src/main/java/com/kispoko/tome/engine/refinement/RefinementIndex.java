@@ -4,8 +4,12 @@ package com.kispoko.tome.engine.refinement;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
+
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +23,7 @@ import java.util.UUID;
 /**
  * Refinement Index
  */
-public class RefinementIndex implements Model, Serializable
+public class RefinementIndex implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -74,15 +78,15 @@ public class RefinementIndex implements Model, Serializable
     }
 
 
-    public static RefinementIndex fromYaml(Yaml yaml)
-                  throws YamlException
+    public static RefinementIndex fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID                  id          = UUID.randomUUID();
 
-        List<RefinementUnion> refinements = yaml.forEach(new Yaml.ForEach<RefinementUnion>()
+        List<RefinementUnion> refinements = yaml.forEach(new YamlParser.ForEach<RefinementUnion>()
         {
             @Override
-            public RefinementUnion forEach(Yaml yaml, int index) throws YamlException
+            public RefinementUnion forEach(YamlParser yaml, int index) throws YamlParseException
             {
                 return RefinementUnion.fromYaml(yaml);
             }
@@ -130,6 +134,28 @@ public class RefinementIndex implements Model, Serializable
     public void onLoad()
     {
         this.indexRefinements();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Refinement Index yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map();
+    }
+
+
+    // > State
+    // ------------------------------------------------------------------------------------------
+
+    public List<RefinementUnion> refinements()
+    {
+        return this.refinements.getValue();
     }
 
 

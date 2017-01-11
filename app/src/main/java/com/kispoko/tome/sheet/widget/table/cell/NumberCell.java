@@ -24,8 +24,10 @@ import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ import java.util.UUID;
 /**
  * Number CellUnion
  */
-public class NumberCell implements Model, Cell, Serializable
+public class NumberCell implements Model, Cell, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -87,7 +89,7 @@ public class NumberCell implements Model, Cell, Serializable
 
         if (valueVariable == null) {
             valueVariable = NumberVariable.asInteger(UUID.randomUUID(),
-                                             column.getDefaultValue());
+                                             column.defaultValue());
         }
         this.valueVariable = ModelFunctor.full(valueVariable, NumberVariable.class);
 
@@ -98,10 +100,11 @@ public class NumberCell implements Model, Cell, Serializable
     }
 
 
-    public static NumberCell fromYaml(Yaml yaml, NumberColumn column)
-                  throws YamlException
+    public static NumberCell fromYaml(YamlParser yaml, NumberColumn column)
+                  throws YamlParseException
     {
         UUID           id        = UUID.randomUUID();
+
         NumberVariable value     = NumberVariable.fromYaml(yaml.atMaybeKey("value"));
         CellAlignment  alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
         String         prefix    = yaml.atMaybeKey("prefix").getString();
@@ -148,6 +151,22 @@ public class NumberCell implements Model, Cell, Serializable
     public void onLoad()
     {
         initializeNumberCell();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Number Cell's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("value", this.valueVariable())
+                .putYaml("alignment", this.alignment())
+                .putString("prefix", this.prefix());
     }
 
 
@@ -310,7 +329,7 @@ public class NumberCell implements Model, Cell, Serializable
         if (valueString != null)
             cellView.text = valueString;
         else
-            cellView.text = Integer.toString(column.getDefaultValue());
+            cellView.text = Integer.toString(column.defaultValue());
 
 
         return cellView.textView(context);

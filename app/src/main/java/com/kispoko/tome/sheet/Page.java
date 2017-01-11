@@ -14,8 +14,10 @@ import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.value.Functor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ import java.util.UUID;
  * to a specific theme. The fields are cotained in a list of groups, which group related
  * character content.
  */
-public class Page implements Model, Serializable
+public class Page implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -83,16 +85,16 @@ public class Page implements Model, Serializable
     }
 
 
-    public static Page fromYaml(Yaml yaml, int pageIndex)
-                  throws YamlException
+    public static Page fromYaml(YamlParser yaml, int pageIndex)
+                  throws YamlParseException
     {
         UUID       id     = UUID.randomUUID();
         String     label  = yaml.atKey("label").getString();
         Integer    index  = pageIndex;
 
-        List<Group> groups = yaml.atKey("groups").forEach(new Yaml.ForEach<Group>() {
+        List<Group> groups = yaml.atKey("groups").forEach(new YamlParser.ForEach<Group>() {
             @Override
-            public Group forEach(Yaml yaml, int index) throws YamlException {
+            public Group forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Group.fromYaml(yaml, index);
             }
         }, true);
@@ -149,6 +151,20 @@ public class Page implements Model, Serializable
     }
 
 
+    // > Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The page's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("label", this.label())
+                .putList("groups", this.groups());
+    }
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -159,7 +175,7 @@ public class Page implements Model, Serializable
      * Returns the label of this page.
      * @return The page label.
      */
-    public String getLabel()
+    public String label()
     {
         return this.label.getValue();
     }
@@ -168,7 +184,7 @@ public class Page implements Model, Serializable
     // ** Index
     // ------------------------------------------------------------------------------------------
 
-    public Integer getIndex()
+    public Integer index()
     {
         return this.index.getValue();
     }
@@ -273,9 +289,9 @@ public class Page implements Model, Serializable
         Collections.sort(this.groups.getValue(), new Comparator<Group>() {
             @Override
             public int compare(Group group1, Group group2) {
-                if (group1.getIndex() > group2.getIndex())
+                if (group1.index() > group2.index())
                     return 1;
-                if (group1.getIndex() < group2.getIndex())
+                if (group1.index() < group2.index())
                     return -1;
                 return 0;
             }

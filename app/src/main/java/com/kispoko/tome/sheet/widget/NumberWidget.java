@@ -27,8 +27,10 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,7 +42,8 @@ import java.util.UUID;
 /**
  * Widget: Number
  */
-public class NumberWidget extends Widget implements Serializable
+public class NumberWidget extends Widget
+                          implements ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -124,8 +127,8 @@ public class NumberWidget extends Widget implements Serializable
     }
 
 
-    public static NumberWidget fromYaml(Yaml yaml)
-                  throws YamlException
+    public static NumberWidget fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID              id            = UUID.randomUUID();
 
@@ -137,10 +140,10 @@ public class NumberWidget extends Widget implements Serializable
         TextVariable      postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));
 
         List<VariableUnion> variables   = yaml.atMaybeKey("variables").forEach(
-                                                new Yaml.ForEach<VariableUnion>()
+                                                new YamlParser.ForEach<VariableUnion>()
         {
             @Override
-            public VariableUnion forEach(Yaml yaml, int index) throws YamlException {
+            public VariableUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return VariableUnion.fromYaml(yaml);
             }
         }, true);
@@ -178,6 +181,22 @@ public class NumberWidget extends Widget implements Serializable
      * This method is called when the Number Widget is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("data", this.data())
+                .putYaml("size", this.size())
+                .putYaml("value", this.valueVariable())
+                .putString("value_prefix", this.valuePrefix())
+                .putYaml("prefix", this.prefixVariable())
+                .putYaml("postfix", this.postfixVariable())
+                .putList("variables", this.variables());
+    }
 
 
     // > Widget
@@ -299,6 +318,16 @@ public class NumberWidget extends Widget implements Serializable
 
     // > State
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The number widget's content size.
+     * @return The WidgetContentSize.
+     */
+    public WidgetContentSize size()
+    {
+        return this.size.getValue();
+    }
+
 
     // ** Value
     // ------------------------------------------------------------------------------------------
@@ -586,7 +615,7 @@ public class NumberWidget extends Widget implements Serializable
         if (this.valueVariable.isNull())
             return;
 
-        this.valueVariable().openEditActivity(this.data().getFormat().getLabel());
+        this.valueVariable().openEditActivity(this.data().format().label());
     }
 
 }

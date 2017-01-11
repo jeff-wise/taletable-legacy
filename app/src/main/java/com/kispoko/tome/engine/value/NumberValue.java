@@ -6,8 +6,10 @@ import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.UUID;
 /**
  * Number Value
  */
-public class NumberValue implements Model, Serializable
+public class NumberValue implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -79,10 +81,10 @@ public class NumberValue implements Model, Serializable
      * Create a Number Value from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Number Value.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static NumberValue fromYaml(Yaml yaml)
-                  throws YamlException
+    public static NumberValue fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID                id        = UUID.randomUUID();
 
@@ -90,9 +92,9 @@ public class NumberValue implements Model, Serializable
         Integer             value     = yaml.atKey("value").getInteger();
 
         List<VariableUnion> variables = yaml.atMaybeKey("variables")
-                                            .forEach(new Yaml.ForEach<VariableUnion>() {
+                                            .forEach(new YamlParser.ForEach<VariableUnion>() {
             @Override
-            public VariableUnion forEach(Yaml yaml, int index) throws YamlException {
+            public VariableUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return VariableUnion.fromYaml(yaml);
             }
         }, true);
@@ -134,6 +136,22 @@ public class NumberValue implements Model, Serializable
     // ------------------------------------------------------------------------------------------
 
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Number Value's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putInteger("value", this.value())
+                .putList("variables", this.variables());
+    }
 
 
     // > State

@@ -4,8 +4,10 @@ package com.kispoko.tome.engine.refinement;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -15,15 +17,15 @@ import java.util.UUID;
 /**
 * Created by jeff on 11/19/16.
 */
-public class RefinementId implements Model, Serializable
+public class RefinementId implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private UUID id;
-    private PrimitiveFunctor<String> name;
-    private PrimitiveFunctor<RefinementType> type;
+    private UUID                                id;
+    private PrimitiveFunctor<String>            name;
+    private PrimitiveFunctor<RefinementType>    type;
 
 
     // CONSTRUCTORS
@@ -48,8 +50,8 @@ public class RefinementId implements Model, Serializable
     }
 
 
-    public static RefinementId fromYaml(Yaml yaml)
-                  throws YamlException
+    public static RefinementId fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         // TODO Consider using a Maybe type in these situations.
         if (yaml.isNull())
@@ -93,17 +95,31 @@ public class RefinementId implements Model, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The RefinementId's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putYaml("type", this.type());
+    }
+
 
     // > State
     // --------------------------------------------------------------------------------------
 
-    public String getName()
+    public String name()
     {
         return this.name.getValue();
     }
 
 
-    public RefinementType getType()
+    public RefinementType type()
     {
         return this.type.getValue();
     }

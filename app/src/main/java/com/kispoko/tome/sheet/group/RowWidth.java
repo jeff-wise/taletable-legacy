@@ -6,8 +6,8 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
@@ -30,8 +30,8 @@ public enum RowWidth
     }
 
 
-    public static RowWidth fromYaml(Yaml yaml)
-                  throws YamlException
+    public static RowWidth fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         if (yaml.isNull())
             return FULL;
@@ -40,7 +40,7 @@ public enum RowWidth
         try {
             return RowWidth.fromString(widthString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(widthString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(widthString));
         }
     }
 
@@ -59,4 +59,16 @@ public enum RowWidth
         }
     }
 
+
+    // API
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The enum as a string for representation in a Yaml document.
+     * @return The enum string.
+     */
+    public String yamlString()
+    {
+        return this.name().toLowerCase();
+    }
 }

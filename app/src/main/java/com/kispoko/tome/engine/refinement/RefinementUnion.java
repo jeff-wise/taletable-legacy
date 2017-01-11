@@ -8,8 +8,10 @@ import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -19,7 +21,7 @@ import java.util.UUID;
 /**
  * Refinement Union
  */
-public class RefinementUnion implements Model, Serializable
+public class RefinementUnion implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -86,10 +88,10 @@ public class RefinementUnion implements Model, Serializable
      * Create a Cell Union from its Yaml representation.
      * @param yaml The Yaml parser.
      * @return The parsed Refinement Union.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static RefinementUnion fromYaml(Yaml yaml)
-                  throws YamlException
+    public static RefinementUnion fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID           id   = UUID.randomUUID();
 
@@ -142,6 +144,15 @@ public class RefinementUnion implements Model, Serializable
      * This method is called when the Cell Union is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map();
+    }
 
 
     // > State

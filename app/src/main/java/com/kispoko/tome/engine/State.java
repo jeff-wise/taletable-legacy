@@ -252,7 +252,7 @@ public class State
     {
         mechanicIndexReady = true;
 
-        MechanicIndex mechanicIndex = SheetManager.currentSheet().rulesEngine().mechanicIndex();
+        MechanicIndex mechanicIndex = SheetManager.currentSheet().engine().mechanicIndex();
         for (VariableUnion variableUnion : variableByName.values()) {
             mechanicIndex.onVariableUpdate(variableUnion.variable().name());
         }
@@ -261,7 +261,7 @@ public class State
 
     public static void updateMechanics(String variableName)
     {
-        MechanicIndex mechanicIndex = SheetManager.currentSheet().rulesEngine().mechanicIndex();
+        MechanicIndex mechanicIndex = SheetManager.currentSheet().engine().mechanicIndex();
         mechanicIndex.onVariableUpdate(variableName);
     }
 

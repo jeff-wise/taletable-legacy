@@ -7,8 +7,10 @@ import com.kispoko.tome.engine.programming.program.ProgramValueType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,16 +22,23 @@ import java.util.UUID;
 /**
  * Tuple
  */
-public class Tuple implements Model, Serializable
+public class Tuple implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                          id;
+    // > Model
+    // ------------------------------------------------------------------------------------------
 
-    private CollectionFunctor<ProgramValueUnion> parameters;
-    private ModelFunctor<ProgramValueUnion> result;
+    private UUID                                    id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
+    private CollectionFunctor<ProgramValueUnion>    parameters;
+    private ModelFunctor<ProgramValueUnion>         result;
 
 
     // CONSTRUCTORS
@@ -60,18 +69,18 @@ public class Tuple implements Model, Serializable
     }
 
 
-    public static Tuple fromYaml(Yaml yaml,
+    public static Tuple fromYaml(YamlParser yaml,
                                  final List<ProgramValueType> parameterTypes,
                                  ProgramValueType resultType)
-                  throws YamlException
+                  throws YamlParseException
     {
         UUID id = UUID.randomUUID();
 
         // ** Parameters
         List<ProgramValueUnion> parameters = yaml.atKey("parameters")
-                                            .forEach(new Yaml.ForEach<ProgramValueUnion>() {
+                                            .forEach(new YamlParser.ForEach<ProgramValueUnion>() {
             @Override
-            public ProgramValueUnion forEach(Yaml yaml, int index) throws YamlException {
+            public ProgramValueUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return ProgramValueUnion.fromYaml(yaml, parameterTypes.get(index));
             }
         });
@@ -121,6 +130,21 @@ public class Tuple implements Model, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The tuple's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putList("parameters", this.parameters())
+                .putYaml("result", this.result());
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -128,7 +152,7 @@ public class Tuple implements Model, Serializable
      * Get the tuple parameters. These represent the input to one case of a function.
      * @return List of ordered tuple parameters.
      */
-    public List<ProgramValueUnion> getParameters()
+    public List<ProgramValueUnion> parameters()
     {
         return this.parameters.getValue();
     }
@@ -139,7 +163,7 @@ public class Tuple implements Model, Serializable
      * by the inputs.
      * @return ProgramValueUnion result of the tuple.
      */
-    public ProgramValueUnion getResult()
+    public ProgramValueUnion result()
     {
         return this.result.getValue();
     }

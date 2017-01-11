@@ -29,8 +29,10 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -40,7 +42,8 @@ import java.util.UUID;
 /**
  * ImageWidget
  */
-public class ImageWidget extends Widget implements Serializable
+public class ImageWidget extends Widget
+                         implements ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -98,12 +101,13 @@ public class ImageWidget extends Widget implements Serializable
      * Create an ImageWidget from its yaml representation.
      * @param yaml The Yaml parser object.
      * @return A new ImageWidget.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static ImageWidget fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ImageWidget fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID       id         = UUID.randomUUID();
+
         WidgetData widgetData = WidgetData.fromYaml(yaml.atKey("data"));
 
         return new ImageWidget(id, widgetData, null);
@@ -159,6 +163,20 @@ public class ImageWidget extends Widget implements Serializable
      * This method is called when the Image Widget is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Image Widget's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("data", this.data());
+    }
 
 
     // > Widget

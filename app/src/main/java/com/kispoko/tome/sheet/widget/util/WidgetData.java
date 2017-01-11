@@ -6,8 +6,10 @@ import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,16 +20,16 @@ import java.util.UUID;
 /**
  * Widget Data
  */
-public class WidgetData implements Model, Serializable
+public class WidgetData implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                     id;
-    private ModelFunctor<WidgetFormat> format;
-    private PrimitiveFunctor<Action[]> actions;
-    private PrimitiveFunctor<Action> primaryAction;
+    private UUID                        id;
+    private ModelFunctor<WidgetFormat>  format;
+    private PrimitiveFunctor<Action[]>  actions;
+    private PrimitiveFunctor<Action>    primaryAction;
 
 
     // CONSTRUCTORS
@@ -67,16 +69,16 @@ public class WidgetData implements Model, Serializable
     }
 
 
-    public static WidgetData fromYaml(Yaml yaml)
-                  throws YamlException
+    public static WidgetData fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID         id            = UUID.randomUUID();
 
         WidgetFormat format        = WidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        List<Action> actions       = yaml.atKey("actions").forEach(new Yaml.ForEach<Action>() {
+        List<Action> actions       = yaml.atKey("actions").forEach(new YamlParser.ForEach<Action>() {
             @Override
-            public Action forEach(Yaml yaml, int index) throws YamlException {
+            public Action forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Action.fromYaml(yaml);
             }
         }, true);
@@ -116,13 +118,28 @@ public class WidgetData implements Model, Serializable
     public void onLoad() { }
 
 
+    // > Yaml
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        YamlBuilder yaml = YamlBuilder.map();
+
+        yaml.putYaml("format", this.format());
+        yaml.putArray("actions", this.actions());
+        yaml.putYaml("primary_action", this.primaryAction());
+
+        return yaml;
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
     // ** WidgetFormat
     // ------------------------------------------------------------------------------------------
 
-    public WidgetFormat getFormat()
+    public WidgetFormat format()
     {
         return this.format.getValue();
     }
@@ -131,7 +148,7 @@ public class WidgetData implements Model, Serializable
     // ** Actions
     // ------------------------------------------------------------------------------------------
 
-    public Action[] getActions()
+    public Action[] actions()
     {
         return this.actions.getValue();
     }

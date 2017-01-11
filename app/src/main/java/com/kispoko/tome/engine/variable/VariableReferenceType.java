@@ -5,8 +5,8 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
@@ -28,14 +28,14 @@ public enum VariableReferenceType
     }
 
 
-    public static VariableReferenceType fromYaml(Yaml yaml)
-                  throws YamlException
+    public static VariableReferenceType fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         String typeString = yaml.getString();
         try {
             return VariableReferenceType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 

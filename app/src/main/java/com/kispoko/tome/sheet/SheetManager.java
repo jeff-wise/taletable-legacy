@@ -14,8 +14,8 @@ import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.sql.Function;
 import com.kispoko.tome.util.database.sql.OrderBy;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,10 +76,10 @@ public class SheetManager
                 {
                     Log.d("***SHEETMANAGER", templateFileName);
                     InputStream yamlIS = context.getAssets().open(templateFileName);
-                    Yaml yaml = Yaml.fromFile(yamlIS);
+                    YamlParser yaml = YamlParser.fromFile(yamlIS);
                     sheet = Sheet.fromYaml(yaml);
                 }
-                catch (YamlException exception)
+                catch (YamlParseException exception)
                 {
                     return exception;
                 }
@@ -103,9 +103,9 @@ public class SheetManager
                 {
                     ApplicationFailure.templateFile((TemplateFileException) maybeSheet);
                 }
-                else if (maybeSheet instanceof YamlException)
+                else if (maybeSheet instanceof YamlParseException)
                 {
-                    ApplicationFailure.yaml((YamlException) maybeSheet);
+                    ApplicationFailure.yaml((YamlParseException) maybeSheet);
                 }
                 else if (maybeSheet instanceof Exception)
                 {

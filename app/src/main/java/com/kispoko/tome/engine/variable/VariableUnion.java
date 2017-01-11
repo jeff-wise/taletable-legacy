@@ -9,18 +9,21 @@ import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.value;
 
 
 /**
  * Variable Union
  */
-public class VariableUnion implements Model, Serializable
+public class VariableUnion implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -183,10 +186,10 @@ public class VariableUnion implements Model, Serializable
      * Create a Variable Union from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Variable Union.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static VariableUnion fromYaml(Yaml yaml)
-                  throws YamlException
+    public static VariableUnion fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID         id   = UUID.randomUUID();
 
@@ -248,6 +251,43 @@ public class VariableUnion implements Model, Serializable
      * This method is called when the RulesEngine is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Variable Union's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        YamlBuilder valueYaml = null;
+
+        switch (this.type())
+        {
+            case TEXT:
+                valueYaml = this.textVariable().toYaml();
+                break;
+            case NUMBER:
+                valueYaml = this.numberVariable().toYaml();
+                break;
+            case BOOLEAN:
+                valueYaml = this.booleanVariable().toYaml();
+                break;
+            case DICE:
+                valueYaml = this.diceVariable().toYaml();
+                break;
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(VariableType.class.getName())));
+        }
+
+        return YamlBuilder.map()
+                .putYaml("type", this.type())
+                .putYaml("value", valueYaml);
+    }
 
 
     // > State

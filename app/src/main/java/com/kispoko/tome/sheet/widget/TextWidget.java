@@ -37,8 +37,9 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ import java.util.UUID;
 /**
  * TextWidget
  */
-public class TextWidget extends Widget implements Serializable
+public class TextWidget extends Widget
+                        implements Serializable
 {
 
     // PROPERTIES
@@ -126,10 +128,10 @@ public class TextWidget extends Widget implements Serializable
      * Create a text component from a Yaml representation.
      * @param yaml The yaml parsing object at the text component node.
      * @return A new TextWidget.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static TextWidget fromYaml(Yaml yaml)
-                  throws YamlException
+    public static TextWidget fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID                id         = UUID.randomUUID();
 
@@ -138,10 +140,10 @@ public class TextWidget extends Widget implements Serializable
         TextVariable        value      = TextVariable.fromYaml(yaml.atKey("value"));
 
         List<VariableUnion> variables  = yaml.atMaybeKey("variables").forEach(
-                                                new Yaml.ForEach<VariableUnion>()
+                                                new YamlParser.ForEach<VariableUnion>()
         {
             @Override
-            public VariableUnion forEach(Yaml yaml, int index) throws YamlException {
+            public VariableUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return VariableUnion.fromYaml(yaml);
             }
         }, true);
@@ -178,6 +180,23 @@ public class TextWidget extends Widget implements Serializable
      * This method is called when the Text Widget is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Text Widget's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("data", this.data())
+                .putYaml("size", this.size())
+                .putYaml("value", this.valueVariable())
+                .putList("variables", this.variables());
+    }
 
 
     // > Widget
@@ -261,6 +280,16 @@ public class TextWidget extends Widget implements Serializable
 
     // > State
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Text Widget's content size.
+     * @return The Widget Content Size.
+     */
+    public WidgetContentSize size()
+    {
+        return this.size.getValue();
+    }
+
 
     // ** Value
     // ------------------------------------------------------------------------------------------
@@ -373,7 +402,7 @@ public class TextWidget extends Widget implements Serializable
 
     public View getTypeEditorView(Context context)
     {
-        RulesEngine rulesEngine = SheetManager.currentSheet().rulesEngine();
+        RulesEngine rulesEngine = SheetManager.currentSheet().engine();
 
         // Lookup the recyclerview in activity layout
         RecyclerView textEditorView = new RecyclerView(context);
@@ -381,8 +410,8 @@ public class TextWidget extends Widget implements Serializable
         //textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
 
         // Create adapter passing in the sample user data
-        MemberOf memberOf = rulesEngine.getRefinementIndex()
-                                 .memberOfWithName(this.valueVariable().getRefinementId().getName());
+        MemberOf memberOf = rulesEngine.refinementIndex()
+                                 .memberOfWithName(this.valueVariable().refinementId().name());
         TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
         textEditorView.setAdapter(adapter);
         // Set layout manager to position the items

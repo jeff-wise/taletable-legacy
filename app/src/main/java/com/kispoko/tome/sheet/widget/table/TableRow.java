@@ -8,8 +8,10 @@ import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,8 +23,7 @@ import java.util.UUID;
 /**
  * Table Widget Row
  */
-public class TableRow implements Model, WidgetContainer, Serializable
-{
+public class TableRow implements Model, WidgetContainer, ToYaml, Serializable {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
@@ -30,20 +31,20 @@ public class TableRow implements Model, WidgetContainer, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                            id;
+    private UUID id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private CollectionFunctor<CellUnion>    cells;
+    private CollectionFunctor<CellUnion> cells;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private String                          namespace;
-    private List<Variable>                  namespacedVariables;
+    private String namespace;
+    private List<Variable> namespacedVariables;
 
 
     // CONSTRUCTORS
@@ -51,24 +52,24 @@ public class TableRow implements Model, WidgetContainer, Serializable
 
     public TableRow()
     {
-        this.id                     = null;
+        this.id = null;
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells                  = CollectionFunctor.empty(cellClassList);
+        this.cells = CollectionFunctor.empty(cellClassList);
 
-        this.namespace              = null;
-        this.namespacedVariables    = new ArrayList<>();
+        this.namespace = null;
+        this.namespacedVariables = new ArrayList<>();
     }
 
 
     public TableRow(UUID id, List<CellUnion> cells)
     {
-        this.id         = id;
+        this.id = id;
 
         List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
         cellClassList.add(CellUnion.class);
-        this.cells      = CollectionFunctor.full(cells, cellClassList);
+        this.cells = CollectionFunctor.full(cells, cellClassList);
 
         this.initializeTableRow();
     }
@@ -76,19 +77,20 @@ public class TableRow implements Model, WidgetContainer, Serializable
 
     /**
      * Create a table row from its Yaml representation.
-     * @param yaml The yaml parser.
+     *
+     * @param yaml    The yaml parser.
      * @param columns The table columns.
      * @return The parsed Table Row.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static TableRow fromYaml(Yaml yaml, final List<ColumnUnion> columns)
-                  throws YamlException
+    public static TableRow fromYaml(YamlParser yaml, final List<ColumnUnion> columns)
+            throws YamlParseException
     {
-        UUID            id    = UUID.randomUUID();
+        UUID id = UUID.randomUUID();
 
-        List<CellUnion> cells = yaml.atKey("cells").forEach(new Yaml.ForEach<CellUnion>() {
+        List<CellUnion> cells = yaml.atKey("cells").forEach(new YamlParser.ForEach<CellUnion>() {
             @Override
-            public CellUnion forEach(Yaml yaml, int columnIndex) throws YamlException {
+            public CellUnion forEach(YamlParser yaml, int columnIndex) throws YamlParseException {
                 return CellUnion.fromYaml(yaml, columns.get(columnIndex));
             }
         });
@@ -108,20 +110,20 @@ public class TableRow implements Model, WidgetContainer, Serializable
 
     /**
      * Get the model identifier.
+     *
      * @return The model UUID.
      */
-    public UUID getId()
-    {
+    public UUID getId() {
         return this.id;
     }
 
 
     /**
      * Set the model identifier.
+     *
      * @param id The new model UUID.
      */
-    public void setId(UUID id)
-    {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -132,9 +134,22 @@ public class TableRow implements Model, WidgetContainer, Serializable
     /**
      * This method is called when the Table Widget is completely loaded for the first time.
      */
-    public void onLoad()
-    {
+    public void onLoad() {
         initializeTableRow();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Table Row's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putList("cells", this.cells());
     }
 
 

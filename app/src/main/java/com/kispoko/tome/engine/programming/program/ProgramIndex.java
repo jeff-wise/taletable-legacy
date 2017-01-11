@@ -4,8 +4,10 @@ package com.kispoko.tome.engine.programming.program;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ import java.util.UUID;
 /**
  * Program Index
  */
-public class ProgramIndex implements Model, Serializable
+public class ProgramIndex implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -72,14 +74,14 @@ public class ProgramIndex implements Model, Serializable
     }
 
 
-    public static ProgramIndex fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ProgramIndex fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID id = UUID.randomUUID();
 
-        List<Program> programs = yaml.forEach(new Yaml.ForEach<Program>() {
+        List<Program> programs = yaml.forEach(new YamlParser.ForEach<Program>() {
             @Override
-            public Program forEach(Yaml yaml, int index) throws YamlException {
+            public Program forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Program.fromYaml(yaml);
             }
         });
@@ -131,8 +133,27 @@ public class ProgramIndex implements Model, Serializable
     }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.list(this.programs());
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The programs in the index.
+     * @return The Program List.
+     */
+    public List<Program> programs()
+    {
+        return this.programs.getValue();
+    }
+
 
     /**
      * Add a new program to the index. If it has the same name as another program currently in
@@ -141,8 +162,8 @@ public class ProgramIndex implements Model, Serializable
      */
     public void addProgram(Program program)
     {
-        if (!this.programByName.containsKey(program.getName())) {
-            this.programByName.put(program.getName(), program);
+        if (!this.programByName.containsKey(program.name())) {
+            this.programByName.put(program.name(), program);
             this.programs.getValue().add(program);
         }
     }
@@ -167,7 +188,7 @@ public class ProgramIndex implements Model, Serializable
     private void indexPrograms()
     {
         for (Program program : this.programs.getValue()) {
-            this.programByName.put(program.getName(), program);
+            this.programByName.put(program.name(), program);
         }
     }
 

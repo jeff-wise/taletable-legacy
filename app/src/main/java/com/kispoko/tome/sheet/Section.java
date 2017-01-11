@@ -6,8 +6,10 @@ import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.Functor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +25,7 @@ import java.util.UUID;
  * A section is a collection of pages. It represents a certain aspect to a sheet, such as static
  * content, dynamic content, campaign information, etc...
  */
-public class Section implements Model
+public class Section implements Model, ToYaml
 {
 
     // PROPERTIES
@@ -67,15 +69,15 @@ public class Section implements Model
     }
 
 
-    public static Section fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Section fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID id = UUID.randomUUID();
 
         // TODO make this not true and catch exceptions when it's empty
-        List<Page> pages = yaml.atKey("pages").forEach(new Yaml.ForEach<Page>() {
+        List<Page> pages = yaml.atKey("pages").forEach(new YamlParser.ForEach<Page>() {
             @Override
-            public Page forEach(Yaml yaml, int index) throws YamlException {
+            public Page forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Page.fromYaml(yaml, index);
             }
         }, true);
@@ -114,6 +116,20 @@ public class Section implements Model
     public void onLoad()
     {
         this.initializeSection();
+    }
+
+
+    // > Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Section's yaml representation.
+     * @return The Yaml Builder
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putList("pages", this.pages());
     }
 
 
@@ -199,9 +215,9 @@ public class Section implements Model
         Collections.sort(this.pages.getValue(), new Comparator<Page>() {
             @Override
             public int compare(Page page1, Page page2) {
-                if (page1.getIndex() > page2.getIndex())
+                if (page1.index() > page2.index())
                     return 1;
-                if (page1.getIndex() < page2.getIndex())
+                if (page1.index() < page2.index())
                     return -1;
                 return 0;
             }

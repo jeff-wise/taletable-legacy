@@ -12,7 +12,7 @@ import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.engine.programming.interpreter.InterpreterException;
 import com.kispoko.tome.engine.programming.function.InvalidFunctionException;
 import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 
 
@@ -36,7 +36,7 @@ public class ApplicationFailure
     }
 
 
-    public static void yaml(YamlException exception)
+    public static void yaml(YamlParseException exception)
     {
         Log.d("***APP", exception.errorMessage(), exception);
     }

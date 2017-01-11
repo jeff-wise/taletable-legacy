@@ -8,8 +8,10 @@ import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -21,13 +23,20 @@ import java.util.UUID;
  *
  * Contains metadata about the cells in a table column.
  */
-public class ColumnUnion implements Model, Serializable
+public class ColumnUnion implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID                       id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<TextColumn> textColumn;
     private ModelFunctor<NumberColumn> numberColumn;
@@ -112,10 +121,11 @@ public class ColumnUnion implements Model, Serializable
     }
 
 
-    public static ColumnUnion fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ColumnUnion fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID       id   = UUID.randomUUID();
+
         ColumnType type = ColumnType.fromYaml(yaml.atKey("type"));
 
         switch (type)
@@ -175,6 +185,36 @@ public class ColumnUnion implements Model, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Column Union's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        YamlBuilder columnYaml = null;
+        switch (this.type())
+        {
+            case TEXT:
+                columnYaml = this.textColumn().toYaml();
+                break;
+            case NUMBER:
+                columnYaml = this.numberColumn().toYaml();
+                break;
+            case BOOLEAN:
+                columnYaml = this.booleanColumn().toYaml();
+                break;
+        }
+
+        return YamlBuilder.map()
+                .putYaml("type", this.type())
+                .putYaml("column", columnYaml);
+
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -185,7 +225,7 @@ public class ColumnUnion implements Model, Serializable
      * Get the type of column in the union.
      * @return The column type.
      */
-    public ColumnType getType()
+    public ColumnType type()
     {
         return this.type.getValue();
     }
@@ -194,9 +234,9 @@ public class ColumnUnion implements Model, Serializable
     // ** Column
     // ------------------------------------------------------------------------------------------
 
-    public Column getColumn()
+    public Column column()
     {
-        switch (this.getType())
+        switch (this.type())
         {
             case TEXT:
                 return this.textColumn.getValue();
@@ -215,9 +255,9 @@ public class ColumnUnion implements Model, Serializable
      * Get the text column case.
      * @return The Text Column.
      */
-    public TextColumn getTextColumn()
+    public TextColumn textColumn()
     {
-        if (this.getType() != ColumnType.TEXT) {
+        if (this.type() != ColumnType.TEXT) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("text", this.type.toString())));
@@ -230,9 +270,9 @@ public class ColumnUnion implements Model, Serializable
      * Get the number column case.
      * @return The Number Column.
      */
-    public NumberColumn getNumberColumn()
+    public NumberColumn numberColumn()
     {
-        if (this.getType() != ColumnType.NUMBER) {
+        if (this.type() != ColumnType.NUMBER) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("number", this.type.toString())));
@@ -245,9 +285,9 @@ public class ColumnUnion implements Model, Serializable
      * Get the boolean column case.
      * @return The Boolean Column.
      */
-    public BooleanColumn getBooleanColumn()
+    public BooleanColumn booleanColumn()
     {
-        if (this.getType() != ColumnType.BOOLEAN) {
+        if (this.type() != ColumnType.BOOLEAN) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("boolean", this.type.toString())));

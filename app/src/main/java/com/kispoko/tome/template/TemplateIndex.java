@@ -5,8 +5,8 @@ package com.kispoko.tome.template;
 import android.content.Context;
 
 import com.kispoko.tome.ApplicationAssets;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,14 +41,14 @@ public class TemplateIndex
      * Load the games from the manifest file which contains all of the officially support games.
      */
     public static TemplateIndex fromManifest(Context context)
-                  throws IOException, YamlException
+                  throws IOException, YamlParseException
     {
         InputStream yamlIS = context.getAssets().open(ApplicationAssets.templateManifest);
-        Yaml yaml = Yaml.fromFile(yamlIS);
+        YamlParser yaml = YamlParser.fromFile(yamlIS);
 
-        List<Template> templates = yaml.atKey("templates").forEach(new Yaml.ForEach<Template>() {
+        List<Template> templates = yaml.atKey("templates").forEach(new YamlParser.ForEach<Template>() {
             @Override
-            public Template forEach(Yaml yaml, int index) throws YamlException {
+            public Template forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Template.fromYaml(yaml);
             }
         });

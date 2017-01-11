@@ -19,8 +19,8 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -72,8 +72,8 @@ public class MemberOf implements Model, Serializable
     }
 
 
-    public static MemberOf fromYaml(Yaml yaml)
-                  throws YamlException
+    public static MemberOf fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID id = UUID.randomUUID();
 

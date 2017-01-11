@@ -6,8 +6,8 @@ import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,8 +56,8 @@ public class IntegerTerm extends Term implements Serializable
     }
 
 
-    public static IntegerTerm fromYaml(Yaml yaml)
-                  throws YamlException
+    public static IntegerTerm fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID             id        = UUID.randomUUID();
 

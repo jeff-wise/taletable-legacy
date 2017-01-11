@@ -10,11 +10,14 @@ import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +26,7 @@ import java.util.UUID;
 /**
  * Mechanic
  */
-public class Mechanic implements Model, Serializable
+public class Mechanic implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -99,8 +102,8 @@ public class Mechanic implements Model, Serializable
      * @param yaml The yaml parser.
      * @return The parsed Mechanic.
      */
-    public static Mechanic fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Mechanic fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID                id           = UUID.randomUUID();
 
@@ -109,10 +112,10 @@ public class Mechanic implements Model, Serializable
         List<String>        requirements = yaml.atMaybeKey("requirements").getStringList();
 
         List<VariableUnion> variables = yaml.atKey("variables").forEach(
-                                                        new Yaml.ForEach<VariableUnion>()
+                                                        new YamlParser.ForEach<VariableUnion>()
         {
             @Override
-            public VariableUnion forEach(Yaml yaml, int index) throws YamlException {
+            public VariableUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return VariableUnion.fromYaml(yaml);
             }
         });
@@ -162,10 +165,24 @@ public class Mechanic implements Model, Serializable
     }
 
 
-    // > State
+    // > To Yaml
     // ------------------------------------------------------------------------------------------
 
-    // ** Name
+    /**
+     * The mechanic's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putString("type", this.type())
+                .putStringList("requirements", this.requirements())
+                .putList("variables", this.variables());
+    }
+
+
+    // > State
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -178,6 +195,16 @@ public class Mechanic implements Model, Serializable
     }
 
 
+    /**
+     * The mechanic's type.
+     * @return The type.
+     */
+    public String type()
+    {
+        return this.type.getValue();
+    }
+
+
     // ** Requirements
     // ------------------------------------------------------------------------------------------
 
@@ -185,9 +212,9 @@ public class Mechanic implements Model, Serializable
      * Get the mechanic's requirements. Each requirement is the name of a boolean variable.
      * @return The requiement array.
      */
-    public String[] requirements()
+    public List<String> requirements()
     {
-        return this.requirements.getValue();
+        return Arrays.asList(this.requirements.getValue());
     }
 
 

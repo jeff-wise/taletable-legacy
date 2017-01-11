@@ -19,8 +19,8 @@ import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
@@ -115,10 +115,10 @@ public class DiceRollTermValue implements Model, Serializable
      * Create a Dice Roll Term Value from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The Dice Roll Term Value.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static DiceRollTermValue fromYaml(Yaml yaml)
-                  throws YamlException
+    public static DiceRollTermValue fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID id   = UUID.randomUUID();
 
@@ -312,14 +312,14 @@ public class DiceRollTermValue implements Model, Serializable
         }
 
 
-        public static Kind fromYaml(Yaml yaml)
-                      throws YamlException
+        public static Kind fromYaml(YamlParser yaml)
+                      throws YamlParseException
         {
             String kindString = yaml.getString();
             try {
                 return Kind.fromString(kindString);
             } catch (InvalidDataException e) {
-                throw YamlException.invalidEnum(new InvalidEnumError(kindString));
+                throw YamlParseException.invalidEnum(new InvalidEnumError(kindString));
             }
         }
 

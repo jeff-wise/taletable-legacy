@@ -6,8 +6,10 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
@@ -15,7 +17,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 /**
 * Refinement ErrorType
 */
-public enum RefinementType
+public enum RefinementType implements ToYaml
 {
     MEMBER_OF;
 
@@ -27,14 +29,14 @@ public enum RefinementType
     }
 
 
-    public static RefinementType fromYaml(Yaml yaml)
-                  throws YamlException
+    public static RefinementType fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         String sizeString = yaml.getString();
         try {
             return RefinementType.fromString(sizeString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(sizeString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(sizeString));
         }
     }
 
@@ -53,6 +55,11 @@ public enum RefinementType
         }
     }
 
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.string(this.name().toLowerCase());
+    }
 
 }
 

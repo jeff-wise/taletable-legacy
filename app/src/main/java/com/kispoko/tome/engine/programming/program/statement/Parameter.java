@@ -3,32 +3,44 @@ package com.kispoko.tome.engine.programming.program.statement;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.value;
 
 
 /**
  * Statement Parameter
  */
-public class Parameter implements Model, Serializable
+public class Parameter implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    private UUID                          id;
+    // > Model
+    // --------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<Integer> programParameter;
-    private PrimitiveFunctor<String> variableName;
-    private PrimitiveFunctor<String> literalString;
+    private UUID                            id;
+
+
+    // > Functors
+    // --------------------------------------------------------------------------------------
+
+    private PrimitiveFunctor<Integer>       programParameter;
+    private PrimitiveFunctor<String>        variableName;
+    private PrimitiveFunctor<String>        literalString;
 
     private PrimitiveFunctor<ParameterType> type;
 
@@ -116,29 +128,33 @@ public class Parameter implements Model, Serializable
      * Create a Parameter from its Yaml representation.
      * @param yaml The Yaml parser.
      * @return A new Parameter.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static Parameter fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Parameter fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID          id   = UUID.randomUUID();
+
         ParameterType type = ParameterType.fromYaml(yaml.atKey("type"));
 
-        Object value = null;
         switch (type)
         {
             case PARAMETER:
-                value = yaml.atKey("value").getInteger();
-                break;
+                Integer parameterIndex = yaml.atKey("value").getInteger();
+                return Parameter.asParameter(id, parameterIndex);
             case VARIABLE:
-                value = yaml.atKey("value").getString();
-                break;
+                String variableName = yaml.atKey("value").getString();
+                return Parameter.asVariable(id, variableName);
             case LITERAL_STRING:
-                value = yaml.atKey("value").getString();
-                break;
+                String stringValue = yaml.atKey("value").getString();
+                return Parameter.asStringLiteral(id, stringValue);
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(ParameterType.class.getName())));
         }
 
-        return new Parameter(id, value, type);
+        return null;
     }
 
 
@@ -180,6 +196,40 @@ public class Parameter implements Model, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The parameter's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        YamlBuilder valueYaml = null;
+
+        switch (this.type())
+        {
+            case PARAMETER:
+                valueYaml = YamlBuilder.integer(this.parameter());
+                break;
+            case VARIABLE:
+                valueYaml = YamlBuilder.string(this.variable());
+                break;
+            case LITERAL_STRING:
+                valueYaml = YamlBuilder.string(this.stringLiteral());
+                break;
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(ParameterType.class.getName())));
+        }
+
+        return YamlBuilder.map()
+                .putYaml("type", this.type())
+                .putYaml("value", valueYaml);
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -188,7 +238,7 @@ public class Parameter implements Model, Serializable
      * Get the parameter type.
      * @return The ParameterType.
      */
-    public ParameterType getType()
+    public ParameterType type()
     {
         return this.type.getValue();
     }
@@ -198,9 +248,9 @@ public class Parameter implements Model, Serializable
      * Get the program parameter index.
      * @return The program parameter index.
      */
-    public Integer getParameter()
+    public Integer parameter()
     {
-        if (this.getType() != ParameterType.PARAMETER) {
+        if (this.type() != ParameterType.PARAMETER) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("parameter", this.type.toString())));
@@ -213,9 +263,9 @@ public class Parameter implements Model, Serializable
      * If this parameter is a variable, get the variable name.
      * @return The variable name String.
      */
-    public String getVariable()
+    public String variable()
     {
-        if (this.getType() != ParameterType.VARIABLE) {
+        if (this.type() != ParameterType.VARIABLE) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("variable", this.type.toString())));
@@ -228,9 +278,9 @@ public class Parameter implements Model, Serializable
      * If this parameter is a string literal, get the string literal value.
      * @return The string literal value.
      */
-    public String getStringLiteral()
+    public String stringLiteral()
     {
-        if (this.getType() != ParameterType.LITERAL_STRING) {
+        if (this.type() != ParameterType.LITERAL_STRING) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("literal_string", this.type.toString())));

@@ -12,8 +12,9 @@ import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -99,8 +100,14 @@ public class Sheet implements Model
     }
 
 
-    public static Sheet fromYaml(Yaml yaml)
-                  throws YamlException
+    /**
+     * Create a Sheet from its Yaml representation.
+     * @param yaml The yaml parser.
+     * @return The parsed Sheet.
+     * @throws YamlParseException
+     */
+    public static Sheet fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID        id          = UUID.randomUUID();
 
@@ -109,7 +116,7 @@ public class Sheet implements Model
         Section     profile     = Section.fromYaml(yaml.atKey("profile"));
         Section     encounter   = Section.fromYaml(yaml.atKey("encounter"));
 
-        RulesEngine rulesEngine = RulesEngine.fromYaml(yaml.atKey("rulesEngine"));
+        RulesEngine rulesEngine = RulesEngine.fromYaml(yaml.atKey("engine"));
 
         return new Sheet(id, game, profile, encounter, null, rulesEngine);
     }
@@ -145,6 +152,19 @@ public class Sheet implements Model
     public void onLoad()
     {
         indexComponents();
+    }
+
+
+    // > Yaml
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("game", this.game())
+                .putYaml("profile", this.profileSection())
+                .putYaml("encounter", this.encounterSection())
+                .putYaml("engine", this.engine());
     }
 
 
@@ -194,7 +214,7 @@ public class Sheet implements Model
     }
 
 
-    public Game getGame()
+    public Game game()
     {
         return this.game.getValue();
     }
@@ -204,7 +224,7 @@ public class Sheet implements Model
      * Get the rules engine for this sheet.
      * @return The Rules Engine.
      */
-    public RulesEngine rulesEngine()
+    public RulesEngine engine()
     {
         return this.rules.getValue();
     }

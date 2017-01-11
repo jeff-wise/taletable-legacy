@@ -5,8 +5,10 @@ package com.kispoko.tome.sheet.widget.table.column;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -18,13 +20,20 @@ import java.util.UUID;
  *
  * Contains metadata about the cells in a table's boolean column.
  */
-public class BooleanColumn implements Model, Column, Serializable
+public class BooleanColumn implements Model, Column, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID                          id;
+
+
+    // > Functor
+    // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String> name;
     private PrimitiveFunctor<Boolean> defaultValue;
@@ -65,10 +74,10 @@ public class BooleanColumn implements Model, Column, Serializable
      * Create a boolean column from its Yaml representation.
      * @param yaml The Yaml parser.
      * @return The parsed Boolean ColumnUnion.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static BooleanColumn fromYaml(Yaml yaml)
-                  throws YamlException
+    public static BooleanColumn fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID          id           = UUID.randomUUID();
 
@@ -119,6 +128,23 @@ public class BooleanColumn implements Model, Column, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Boolean Column's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putBoolean("default_value", this.defaultValue())
+                .putYaml("default_alignment", this.alignment())
+                .putInteger("width", this.width());
+    }
+
+
     // > Column
     // ------------------------------------------------------------------------------------------
 
@@ -126,7 +152,7 @@ public class BooleanColumn implements Model, Column, Serializable
      * Get the column name.
      * @return The column name.
      */
-    public String getName()
+    public String name()
     {
         return this.name.getValue();
     }
@@ -136,7 +162,7 @@ public class BooleanColumn implements Model, Column, Serializable
      * Get the alignment of this cell.
      * @return The cell Alignment.
      */
-    public CellAlignment getAlignment()
+    public CellAlignment alignment()
     {
         return this.alignment.getValue();
     }
@@ -146,7 +172,7 @@ public class BooleanColumn implements Model, Column, Serializable
      * Get the column width. All cells in the column should have the same width.
      * @return The column width.
      */
-    public Integer getWidth()
+    public Integer width()
     {
         return this.width.getValue();
     }
@@ -160,7 +186,7 @@ public class BooleanColumn implements Model, Column, Serializable
      * is not null).
      * @return The default value.
      */
-    public Boolean getDefaultValue()
+    public Boolean defaultValue()
     {
         return this.defaultValue.getValue();
     }

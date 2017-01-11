@@ -5,8 +5,10 @@ package com.kispoko.tome.engine.programming.function;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,19 +22,28 @@ import java.util.UUID;
 /**
  * Function Index
  */
-public class FunctionIndex implements Model, Serializable
+public class FunctionIndex implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
+    private UUID                        id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
 
     private CollectionFunctor<Function> functions;
 
 
     // > Internal
-    private Map<String,Function> functionByName;
+    // ------------------------------------------------------------------------------------------
+
+    private Map<String,Function>        functionByName;
 
 
     // CONSTRUCTORS
@@ -62,14 +73,14 @@ public class FunctionIndex implements Model, Serializable
     }
 
 
-    public static FunctionIndex fromYaml(Yaml yaml)
-                  throws YamlException
+    public static FunctionIndex fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         final FunctionIndex functionIndex = new FunctionIndex(UUID.randomUUID());
 
-        List<Function> functions = yaml.forEach(new Yaml.ForEach<Function>() {
+        List<Function> functions = yaml.forEach(new YamlParser.ForEach<Function>() {
             @Override
-            public Function forEach(Yaml yaml, int index) throws YamlException {
+            public Function forEach(YamlParser yaml, int index) throws YamlParseException {
                 Function function = null;
                 try {
                     function = Function.fromYaml(yaml);
@@ -133,11 +144,30 @@ public class FunctionIndex implements Model, Serializable
     }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.list(this.functions());
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
     // ** Functions
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The functions in the index.
+     * @return The Function List.
+     */
+    public List<Function> functions()
+    {
+        return this.functions.getValue();
+    }
+
 
     /**
      * Add a new Function to the index. If a function with the same name exists, it will
@@ -146,7 +176,7 @@ public class FunctionIndex implements Model, Serializable
      */
     public void addFunction(Function function)
     {
-        this.functionByName.put(function.getName(), function);
+        this.functionByName.put(function.name(), function);
         this.functions.getValue().add(function);
     }
 

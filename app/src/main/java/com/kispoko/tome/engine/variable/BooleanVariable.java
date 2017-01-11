@@ -12,8 +12,10 @@ import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
@@ -27,7 +29,8 @@ import java.util.UUID;
 /**
  * Boolean Variable
  */
-public class BooleanVariable extends Variable implements Model, Serializable
+public class BooleanVariable extends Variable
+                             implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -199,10 +202,10 @@ public class BooleanVariable extends Variable implements Model, Serializable
      * Create a new Variable from its Yaml representation.
      * @param yaml The Yaml parser.
      * @return The new Variable.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static BooleanVariable fromYaml(Yaml yaml)
-                  throws YamlException
+    public static BooleanVariable fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         if (yaml.isNull())
             return null;
@@ -269,6 +272,22 @@ public class BooleanVariable extends Variable implements Model, Serializable
     }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Boolean Variable's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putYaml("type", this.kind())
+                .putYaml("refinement", this.refinementId())
+                .putBoolean("namespaced", this.isNamespaced())
+                .putStringList("tags", this.tags());
+    }
 
 
     // > Variable
@@ -334,6 +353,18 @@ public class BooleanVariable extends Variable implements Model, Serializable
     }
 
 
+    // ** Kind
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Boolean Variable kind.
+     * @return The Kind.
+     */
+    public Kind kind()
+    {
+        return this.kind.getValue();
+    }
+
     // ** Value
     // ------------------------------------------------------------------------------------------
 
@@ -391,7 +422,7 @@ public class BooleanVariable extends Variable implements Model, Serializable
      * Get the refinement identifier for this variable.
      * @return The variable's refinement id, or null if there is none.
      */
-    public RefinementId getRefinementId()
+    public RefinementId refinementId()
     {
         return this.refinementId.getValue();
     }
@@ -442,11 +473,18 @@ public class BooleanVariable extends Variable implements Model, Serializable
     // KIND
     // ------------------------------------------------------------------------------------------
 
-    public enum Kind
+    public enum Kind implements ToYaml
     {
+
+        // VALUES
+        // ------------------------------------------------------------------------------------------
+
         LITERAL,
         PROGRAM;
 
+
+        // CONSTRUCTORS
+        // ------------------------------------------------------------------------------------------
 
         public static Kind fromString(String kindString)
                       throws InvalidDataException
@@ -455,14 +493,14 @@ public class BooleanVariable extends Variable implements Model, Serializable
         }
 
 
-        public static Kind fromYaml(Yaml yaml)
-                      throws YamlException
+        public static Kind fromYaml(YamlParser yaml)
+                      throws YamlParseException
         {
             String kindString = yaml.getString();
             try {
                 return Kind.fromString(kindString);
             } catch (InvalidDataException e) {
-                throw YamlException.invalidEnum(new InvalidEnumError(kindString));
+                throw YamlParseException.invalidEnum(new InvalidEnumError(kindString));
             }
         }
 
@@ -479,6 +517,15 @@ public class BooleanVariable extends Variable implements Model, Serializable
                 throw DatabaseException.invalidEnum(
                         new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
             }
+        }
+
+
+        // TO YAML
+        // ------------------------------------------------------------------------------------------
+
+        public YamlBuilder toYaml()
+        {
+            return YamlBuilder.string(this.name().toLowerCase());
         }
 
     }

@@ -19,8 +19,8 @@ import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
@@ -106,10 +106,10 @@ public class IntegerTermValue implements Model, Serializable
      * Create an Integer Term Value from its Yaml representation.
      * @param yaml The yaml parser.
      * @return A new Integer Term Value.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static IntegerTermValue fromYaml(Yaml yaml)
-                  throws YamlException
+    public static IntegerTermValue fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID id   = UUID.randomUUID();
 
@@ -341,14 +341,14 @@ public class IntegerTermValue implements Model, Serializable
         }
 
 
-        public static Kind fromYaml(Yaml yaml)
-                      throws YamlException
+        public static Kind fromYaml(YamlParser yaml)
+                      throws YamlParseException
         {
             String kindString = yaml.getString();
             try {
                 return Kind.fromString(kindString);
             } catch (InvalidDataException e) {
-                throw YamlException.invalidEnum(new InvalidEnumError(kindString));
+                throw YamlParseException.invalidEnum(new InvalidEnumError(kindString));
             }
         }
 

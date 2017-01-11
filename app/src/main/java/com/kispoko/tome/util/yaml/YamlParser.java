@@ -22,7 +22,7 @@ import java.util.Map;
  * - Gives errors on incorrectly typed nodes and missing keys in maps.
  * - Tracks the context for better error messages.
  */
-public class Yaml
+public class YamlParser
 {
 
     // PROPERTIES
@@ -34,17 +34,17 @@ public class Yaml
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    private Yaml(Object yamlObject)
+    private YamlParser(Object yamlObject)
     {
         this.yamlObject = yamlObject;
     }
 
 
-    public static Yaml fromFile(InputStream yamlFileIS)
+    public static YamlParser fromFile(InputStream yamlFileIS)
     {
         org.yaml.snakeyaml.Yaml yaml = new org.yaml.snakeyaml.Yaml();
         Object yamlObject = yaml.load(yamlFileIS);
-        return new Yaml(yamlObject);
+        return new YamlParser(yamlObject);
     }
 
 
@@ -52,11 +52,11 @@ public class Yaml
     // ------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public Yaml atKey(String key)
-           throws YamlException
+    public YamlParser atKey(String key)
+           throws YamlParseException
     {
         if (this.yamlObject == null)
-            return new Yaml(null);
+            return new YamlParser(null);
 
         Object yamlObjectAtKey;
         try {
@@ -64,44 +64,44 @@ public class Yaml
             if (yamlMap.containsKey(key))
                 yamlObjectAtKey = yamlMap.get(key);
             else
-                throw YamlException.missingKey(new MissingKeyError(key));
+                throw YamlParseException.missingKey(new MissingKeyError(key));
         } catch (ClassCastException e) {
-            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.MAP));
+            throw YamlParseException.unexpectedType(new UnexpectedTypeError(YamlObjectType.MAP));
         }
 
-        return new Yaml(yamlObjectAtKey);
+        return new YamlParser(yamlObjectAtKey);
     }
 
 
     @SuppressWarnings("unchecked")
-    public Yaml atMaybeKey(String key)
-           throws YamlException
+    public YamlParser atMaybeKey(String key)
+           throws YamlParseException
     {
         if (this.yamlObject == null)
-            return new Yaml(null);
+            return new YamlParser(null);
 
         Object yamlObjectAtKey;
         try {
             Map<String,Object> yamlMap = (Map<String,Object>) this.yamlObject;
             yamlObjectAtKey = yamlMap.get(key);
         } catch (ClassCastException e) {
-            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.MAP));
+            throw YamlParseException.unexpectedType(new UnexpectedTypeError(YamlObjectType.MAP));
         }
 
-        return new Yaml(yamlObjectAtKey);
+        return new YamlParser(yamlObjectAtKey);
     }
 
 
     @SuppressWarnings("unchecked")
     public <A> List<A> forEach(ForEach<A> forEach, boolean canBeEmpty)
-               throws YamlException
+               throws YamlParseException
     {
         if (this.yamlObject == null)
         {
             if (canBeEmpty)
                 return new ArrayList<>();
             else
-                throw YamlException.emptyValue(new EmptyValueError());
+                throw YamlParseException.emptyValue(new EmptyValueError());
         }
 
         List<A> list = new ArrayList<>();
@@ -109,10 +109,10 @@ public class Yaml
         try {
             List<Object> objectList = (List<Object>) this.yamlObject;
             for (int i = 0; i < objectList.size(); i++) {
-                list.add(forEach.forEach(new Yaml(objectList.get(i)), i));
+                list.add(forEach.forEach(new YamlParser(objectList.get(i)), i));
             }
         } catch (ClassCastException e) {
-            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.LIST));
+            throw YamlParseException.unexpectedType(new UnexpectedTypeError(YamlObjectType.LIST));
         }
 
         return list;
@@ -120,7 +120,7 @@ public class Yaml
 
 
     public <A> List<A> forEach(ForEach<A> forEach)
-               throws YamlException
+               throws YamlParseException
     {
         return this.forEach(forEach, false);
     }
@@ -128,14 +128,14 @@ public class Yaml
 
     public abstract static class ForEach<A>
     {
-        abstract public A forEach(Yaml yaml, int index)
-                        throws YamlException;
+        abstract public A forEach(YamlParser yaml, int index)
+                        throws YamlParseException;
     }
 
 
     @SuppressWarnings("unchecked")
     public List<String> getStringList()
-        throws YamlException
+        throws YamlParseException
     {
         if (this.yamlObject == null)
             return new ArrayList<>();
@@ -145,7 +145,7 @@ public class Yaml
         try {
             stringList = (List<String>) this.yamlObject;
         } catch (ClassCastException e) {
-            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.LIST_STRING));
+            throw YamlParseException.unexpectedType(new UnexpectedTypeError(YamlObjectType.LIST_STRING));
         }
 
         return stringList;
@@ -153,7 +153,7 @@ public class Yaml
 
 
     public String getString()
-           throws YamlException
+           throws YamlParseException
     {
         if (this.yamlObject == null)
             return null;
@@ -163,7 +163,7 @@ public class Yaml
         try {
             stringValue = (String) this.yamlObject;
         } catch (ClassCastException e) {
-            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.STRING));
+            throw YamlParseException.unexpectedType(new UnexpectedTypeError(YamlObjectType.STRING));
         }
 
         return stringValue;
@@ -171,7 +171,7 @@ public class Yaml
 
 
     public Integer getInteger()
-           throws YamlException
+           throws YamlParseException
     {
         if (this.yamlObject == null)
             return null;
@@ -181,7 +181,7 @@ public class Yaml
         try {
             integerValue = (Integer) this.yamlObject;
         } catch (ClassCastException e) {
-            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.INTEGER));
+            throw YamlParseException.unexpectedType(new UnexpectedTypeError(YamlObjectType.INTEGER));
         }
 
         return integerValue;
@@ -189,7 +189,7 @@ public class Yaml
 
 
     public Boolean getBoolean()
-           throws YamlException
+           throws YamlParseException
     {
         if (this.yamlObject == null)
             return null;
@@ -199,7 +199,7 @@ public class Yaml
         try {
             booleanValue = (Boolean) this.yamlObject;
         } catch (ClassCastException e) {
-            throw YamlException.unexpectedType(new UnexpectedTypeError(ObjectType.BOOLEAN));
+            throw YamlParseException.unexpectedType(new UnexpectedTypeError(YamlObjectType.BOOLEAN));
         }
 
         return booleanValue;
@@ -215,20 +215,6 @@ public class Yaml
     public boolean isNull()
     {
         return this.yamlObject == null;
-    }
-
-
-    // NESTED DEFINITIONS
-    // -----------------------------------------------------------------------------------------
-
-    public enum ObjectType
-    {
-        STRING,
-        INTEGER,
-        BOOLEAN,
-        MAP,
-        LIST,
-        LIST_STRING
     }
 
 

@@ -7,8 +7,10 @@ import com.kispoko.tome.engine.value.error.UndefinedValueError;
 import com.kispoko.tome.engine.value.error.UnexpectedValueTypeError;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ import java.util.UUID;
 /**
  * Dictionary
  */
-public class Dictionary implements Model, Serializable
+public class Dictionary implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -71,14 +73,14 @@ public class Dictionary implements Model, Serializable
     }
 
 
-    public static Dictionary fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Dictionary fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID           id        = UUID.randomUUID();
 
-        List<ValueSet> valueSets = yaml.atKey("sets").forEach(new Yaml.ForEach<ValueSet>() {
+        List<ValueSet> valueSets = yaml.atKey("sets").forEach(new YamlParser.ForEach<ValueSet>() {
             @Override
-            public ValueSet forEach(Yaml yaml, int index) throws YamlException {
+            public ValueSet forEach(YamlParser yaml, int index) throws YamlParseException {
                 return ValueSet.fromYaml(yaml);
             }
         });
@@ -122,6 +124,20 @@ public class Dictionary implements Model, Serializable
     public void onLoad()
     {
         initialize();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Dictionary's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putList("sets", this.valueSets());
     }
 
 

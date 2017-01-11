@@ -5,8 +5,10 @@ package com.kispoko.tome.engine.programming.program.statement;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,17 +20,17 @@ import java.util.UUID;
 /**
  * Statement
  */
-public class Statement implements Model, Serializable
+public class Statement implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                       id;
+    private UUID                            id;
 
-    private PrimitiveFunctor<String> variableName;
-    private PrimitiveFunctor<String> functionName;
-    private CollectionFunctor<Parameter> parameters;
+    private PrimitiveFunctor<String>        variableName;
+    private PrimitiveFunctor<String>        functionName;
+    private CollectionFunctor<Parameter>    parameters;
 
 
     // CONSTRUCTORS
@@ -64,10 +66,10 @@ public class Statement implements Model, Serializable
      * Create a new Statement from its Yaml representation.
      * @param yaml The Yaml parser.
      * @return A new Statement.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static Statement fromYaml(Yaml yaml)
-                  throws YamlException
+    public static Statement fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID   id           = UUID.randomUUID();
 
@@ -75,9 +77,9 @@ public class Statement implements Model, Serializable
         String functionName = yaml.atKey("function").getString();
 
         List<Parameter> parameters = yaml.atKey("parameters")
-                                         .forEach(new Yaml.ForEach<Parameter>() {
+                                         .forEach(new YamlParser.ForEach<Parameter>() {
             @Override
-            public Parameter forEach(Yaml yaml, int index) throws YamlException {
+            public Parameter forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Parameter.fromYaml(yaml);
             }
         });
@@ -124,6 +126,22 @@ public class Statement implements Model, Serializable
     public void onLoad() { }
 
 
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The statement's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("let", this.variableName())
+                .putString("function", this.functionName())
+                .putList("parameters", this.parameters());
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -131,7 +149,7 @@ public class Statement implements Model, Serializable
      * Get the name of the variable that this statements assigns a value to.
      * @return The statement's variable name.
      */
-    public String getVariableName()
+    public String variableName()
     {
         return this.variableName.getValue();
     }
@@ -142,7 +160,7 @@ public class Statement implements Model, Serializable
      * assigned to the statement's variable.
      * @return The function name String.
      */
-    public String getFunctionName()
+    public String functionName()
     {
         return this.functionName.getValue();
     }
@@ -153,7 +171,7 @@ public class Statement implements Model, Serializable
      * and calcuate the result of the variable assigned by the statement.
      * @return The statement Parameter List.
      */
-    public List<Parameter> getParameters()
+    public List<Parameter> parameters()
     {
         return this.parameters.getValue();
     }

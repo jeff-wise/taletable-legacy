@@ -7,8 +7,10 @@ import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,7 +22,8 @@ import java.util.UUID;
 /**
  * Dice Variable
  */
-public class DiceVariable extends Variable implements Model, Serializable
+public class DiceVariable extends Variable
+                          implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -71,15 +74,16 @@ public class DiceVariable extends Variable implements Model, Serializable
      * Create a Dice Variable from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Dice Variable.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static DiceVariable fromYaml(Yaml yaml)
-                  throws YamlException
+    public static DiceVariable fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         if (yaml.isNull())
             return null;
 
         UUID     id             = UUID.randomUUID();
+
         String   name           = yaml.atMaybeKey("name").getString();
         DiceRoll diceRoll       = DiceRoll.fromYaml(yaml.atKey("dice"));
         Boolean  isNamespaced   = yaml.atMaybeKey("namespaced").getBoolean();
@@ -178,6 +182,22 @@ public class DiceVariable extends Variable implements Model, Serializable
     public void initialize()
     {
 
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Dice Variable's yaml representation.
+     * @return
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putYaml("dice", this.diceRoll())
+                .putBoolean("namespaced", this.isNamespaced());
     }
 
 

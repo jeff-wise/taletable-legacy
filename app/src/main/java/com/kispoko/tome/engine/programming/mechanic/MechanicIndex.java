@@ -4,8 +4,10 @@ package com.kispoko.tome.engine.programming.mechanic;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ import java.util.UUID;
 /**
  * Mechanic Index
  */
-public class MechanicIndex implements Model, Serializable
+public class MechanicIndex implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -74,16 +76,16 @@ public class MechanicIndex implements Model, Serializable
      * Create a Mechanic Index from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Mechanic Index
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static MechanicIndex fromYaml(Yaml yaml)
-                  throws YamlException
+    public static MechanicIndex fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID           id        = UUID.randomUUID();
 
-        List<Mechanic> mechanics = yaml.forEach(new Yaml.ForEach<Mechanic>() {
+        List<Mechanic> mechanics = yaml.forEach(new YamlParser.ForEach<Mechanic>() {
             @Override
-            public Mechanic forEach(Yaml yaml, int index) throws YamlException {
+            public Mechanic forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Mechanic.fromYaml(yaml);
             }
         });
@@ -130,6 +132,19 @@ public class MechanicIndex implements Model, Serializable
     public void onLoad()
     {
         this.initialize();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Mechanic Index's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.list(this.mechanics());
     }
 
 

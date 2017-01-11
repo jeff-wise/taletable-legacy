@@ -11,7 +11,7 @@ import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
  */
 public interface Column
 {
-    String getName();
-    CellAlignment getAlignment();
-    Integer getWidth();
+    String name();
+    CellAlignment alignment();
+    Integer width();
 }

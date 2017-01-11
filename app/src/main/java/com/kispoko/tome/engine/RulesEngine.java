@@ -11,8 +11,10 @@ import com.kispoko.tome.engine.refinement.RefinementIndex;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -22,13 +24,20 @@ import java.util.UUID;
 /**
  * Rules Engine
  */
-public class RulesEngine implements Model, Serializable
+public class RulesEngine implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID                            id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<RefinementIndex>   refinementIndex;
     private ModelFunctor<FunctionIndex>     functionIndex;
@@ -80,8 +89,8 @@ public class RulesEngine implements Model, Serializable
     }
 
 
-    public static RulesEngine fromYaml(Yaml yaml)
-                  throws YamlException
+    public static RulesEngine fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID            id              = UUID.randomUUID();
 
@@ -133,9 +142,28 @@ public class RulesEngine implements Model, Serializable
      */
     public void onLoad()
     {
-        this.interpreter = new Interpreter(this.getProgramIndex(),
+        this.interpreter = new Interpreter(this.programIndex(),
                                            this.functionIndex());
     }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Rules Engine's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("refinements", this.refinementIndex())
+                .putYaml("programs", this.programIndex())
+                .putYaml("functions", this.functionIndex())
+                .putYaml("mechanics", this.mechanicIndex())
+                .putYaml("dictionary", this.dictionary());
+    }
+
 
     // > State
     // ------------------------------------------------------------------------------------------
@@ -144,7 +172,7 @@ public class RulesEngine implements Model, Serializable
      * Get the rules' refinement index.
      * @return The RefinementIndex.
      */
-    public RefinementIndex getRefinementIndex()
+    public RefinementIndex refinementIndex()
     {
         return this.refinementIndex.getValue();
     }
@@ -154,7 +182,7 @@ public class RulesEngine implements Model, Serializable
      * Get the program index.
      * @return The Program Index.
      */
-    public ProgramIndex getProgramIndex()
+    public ProgramIndex programIndex()
     {
         return this.programIndex.getValue();
     }

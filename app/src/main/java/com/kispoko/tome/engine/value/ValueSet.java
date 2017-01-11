@@ -5,8 +5,10 @@ package com.kispoko.tome.engine.value;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import java.util.UUID;
 /**
  * ValueSet
  */
-public class ValueSet implements Model, Serializable
+public class ValueSet implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -77,18 +79,18 @@ public class ValueSet implements Model, Serializable
      * Create a Value Set from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Value Set.
-     * @throws YamlException
+     * @throws YamlParseException
      */
-    public static ValueSet fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ValueSet fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         UUID             id     = UUID.randomUUID();
 
         String           name   = yaml.atKey("name").getString();
 
-        List<ValueUnion> values = yaml.atKey("values").forEach(new Yaml.ForEach<ValueUnion>() {
+        List<ValueUnion> values = yaml.atKey("values").forEach(new YamlParser.ForEach<ValueUnion>() {
             @Override
-            public ValueUnion forEach(Yaml yaml, int index) throws YamlException {
+            public ValueUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return ValueUnion.fromYaml(yaml);
             }
         });
@@ -132,6 +134,21 @@ public class ValueSet implements Model, Serializable
     public void onLoad()
     {
         initialize();
+    }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Value Set's yaml representation.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putList("values", this.values());
     }
 
 

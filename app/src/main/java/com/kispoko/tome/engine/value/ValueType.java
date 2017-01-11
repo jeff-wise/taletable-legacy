@@ -6,8 +6,10 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.Yaml;
-import com.kispoko.tome.util.yaml.YamlException;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
+import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
@@ -15,12 +17,18 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 /**
  * Value Type
  */
-public enum ValueType
+public enum ValueType implements ToYaml
 {
+
+    // VALUES
+    // ------------------------------------------------------------------------------------------
 
     TEXT,
     NUMBER;
 
+
+    // CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
 
     public static ValueType fromString(String typeString)
                   throws InvalidDataException
@@ -29,14 +37,14 @@ public enum ValueType
     }
 
 
-    public static ValueType fromYaml(Yaml yaml)
-                  throws YamlException
+    public static ValueType fromYaml(YamlParser yaml)
+                  throws YamlParseException
     {
         String typeString = yaml.getString();
         try {
             return ValueType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw YamlException.invalidEnum(new InvalidEnumError(typeString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 
@@ -53,6 +61,15 @@ public enum ValueType
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
         }
+    }
+
+
+    // TO YAML
+    // ------------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.string(this.name().toLowerCase());
     }
 
 }

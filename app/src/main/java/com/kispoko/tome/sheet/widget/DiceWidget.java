@@ -11,6 +11,8 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -20,7 +22,8 @@ import java.util.UUID;
 /**
  * Dice Widget
  */
-public class DiceWidget extends Widget implements Serializable
+public class DiceWidget extends Widget
+                        implements ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -96,6 +99,19 @@ public class DiceWidget extends Widget implements Serializable
      * This method is called when the RulesEngine is completely loaded for the first time.
      */
     public void onLoad() { }
+
+
+    // > To Yaml
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Dice Widget's yaml representation.
+     * @return
+     */
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map();
+    }
 
 
     // > Widget
