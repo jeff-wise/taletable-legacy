@@ -136,14 +136,16 @@
     <color name="dark_blue_4">#303640</color>
     <color name="dark_blue_5">#292E36</color>
     <color name="dark_blue_6">#272C33</color>
-    <color name="dark_blue_7">#272C33</color>
-    <color name="dark_blue_8">#252930</color>
-    <color name="dark_blue_85">#23272E</color>
+    <color name="dark_blue_7">#252930</color>
+    <color name="dark_blue_8">#23272E</color>
     <color name="dark_blue_9">#21252B</color>
     <color name="dark_blue_10">#1F2329</color>
 
+    <color name="gold_1">#FCF794</color>
+    <color name="gold_2">#EDE88B</color>
+    <color name="gold_3">#E3DE85</color>
     <color name="gold_4">#DBD781</color>
-    <color name="gold_5">#9E9342</color>
+    <color name="gold_5">#D4CF7C</color>
     <color name="gold_6">#CCC878</color>
     <color name="gold_8">#BAAD4E</color>
 

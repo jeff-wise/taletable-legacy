@@ -21,16 +21,25 @@ import com.kispoko.tome.R;
 public class UI
 {
 
-    public static View divider(Context context)
+    public static View divider(Context context, Integer colorId, Integer width)
     {
         View dividerView = new View(context);
 
-        int one_dp = (int) Util.getDim(context, R.dimen.one_dp);
-        LinearLayout.LayoutParams layoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, one_dp);
-        dividerView.setLayoutParams(layoutParams);
 
-        dividerView.setBackgroundColor(ContextCompat.getColor(context, R.color.bluegrey_850));
+        if (width == 1) {
+            int one_dp = (int) Util.getDim(context, R.dimen.one_dp);
+            LinearLayout.LayoutParams layoutParams =
+                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, one_dp);
+            dividerView.setLayoutParams(layoutParams);
+        }
+        else if (width == 2) {
+            int two_dp = (int) Util.getDim(context, R.dimen.two_dp);
+            LinearLayout.LayoutParams layoutParams =
+                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, two_dp);
+            dividerView.setLayoutParams(layoutParams);
+        }
+
+        dividerView.setBackgroundColor(ContextCompat.getColor(context, colorId));
 
         return dividerView;
     }

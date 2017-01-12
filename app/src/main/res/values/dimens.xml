@@ -10,15 +10,34 @@
 
 
     <!-- NAVIGATION VIEW -->
-    <dimen name="nav_view_padding_top">20dp</dimen>
-    <dimen name="nav_view_header_text_size">4sp</dimen>
-    <dimen name="nav_view_item_text_size">3.3sp</dimen>
-    <dimen name="nav_view_header_desc_text_size">3.4sp</dimen>
-    <dimen name="nav_view_header_desc_padding_top">10dp</dimen>
-    <dimen name="nav_view_header_padding_vert">20dp</dimen>
-    <dimen name="nav_view_item_padding_vert">20dp</dimen>
-    <dimen name="nav_view_header_padding_left">12dp</dimen>
-    <dimen name="nav_view_item_padding_left">12dp</dimen>
+    <dimen name="nav_view_padding_top">27dp</dimen>
+    <dimen name="nav_view_buttons_row_layout_padding_vert">12dp</dimen>
+    <dimen name="nav_view_icon_button_text_size">2.7sp</dimen>
+    <dimen name="nav_view_icon_button_icon_margin_bottom">6dp</dimen>
+    <dimen name="nav_view_sheet_options_button_label_text_size">3dp</dimen>
+    <dimen name="nav_view_sheet_options_button_label_margin_bottom">4dp</dimen>
+    <dimen name="nav_view_sheet_options_button_description_text_size">3.4dp</dimen>
+    <dimen name="nav_view_sheet_options_button_margin_bottom">14dp</dimen>
+    <dimen name="nav_view_sheet_options_padding_top">15dp</dimen>
+    <dimen name="nav_view_sheet_options_header_margin_bottom">12dp</dimen>
+    <dimen name="nav_view_sheet_options_header_text_size">3.4sp</dimen>
+    <dimen name="nav_view_sheet_options_header_icon_margin_right">6dp</dimen>
+    <dimen name="nav_view_sheet_options_padding_horz">10dp</dimen>
+    <dimen name="nav_view_manage_sheets_button_text_size">3.4sp</dimen>
+    <dimen name="nav_view_manage_sheets_button_padding_vert">30dp</dimen>
+    <dimen name="nav_view_manage_sheets_button_icon_margin_right">7dp</dimen>
+    <dimen name="nav_view_manage_sheets_button_margin_top">10dp</dimen>
+    <dimen name="nav_view_tools_header_text_size">3.4sp</dimen>
+    <dimen name="nav_view_tools_button_text_size">2.9sp</dimen>
+    <dimen name="nav_view_tools_margin_top">20dp</dimen>
+    <dimen name="nav_view_tools_margin_bottom">16dp</dimen>
+    <dimen name="nav_view_tools_header_margin_bottom">10dp</dimen>
+    <dimen name="nav_view_tools_buttons_layout_padding_horz">8dp</dimen>
+    <dimen name="nav_view_tools_header_padding_horz">10dp</dimen>
+    <dimen name="nav_view_tools_button_margin_horz">2dp</dimen>
+    <dimen name="nav_view_tools_button_icon_margin_bottom">4dp</dimen>
+    <dimen name="nav_view_tools_header_icon_margin_right">6dp</dimen>
+
 
     <!-- ACTION DIALOG -->
     <dimen name="action_dialog_width">300dp</dimen>

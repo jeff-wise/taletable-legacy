@@ -1,40 +1,22 @@
 <resources>
-    <string name="drawer_header_text">TOME</string>
 
-    <string name="characters">Manage Characters</string>
-
-
+    <!-- GENERAL -->
     <string name="app_name">Tome</string>
-
-    <string name="action_done">Done</string>
-    <string name="action_cancel">Cancel</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
 
 
-    <!-- NEW CHARACTER ACTIVITY -->
-    <string name="nav_profile">Profile</string>
-    <string name="nav_combat">Combat</string>
-    <string name="nav_campaign">Campaign</string>
-    <string name="nav_rules">Rules</string>
-    <string name="nav_characters">Characters</string>
-
     <!-- BOTTOM NAVIGATION -->
+    <!-- ==================================================================================== -->
+
     <string name="bottom_nav_profile">Profile</string>
     <string name="bottom_nav_encounter">Encounter</string>
     <string name="bottom_nav_campaign">Campaign</string>
 
-    <!-- TABS -->
-    <string name="profile_tab">Profile</string>
-    <string name="stats_tab">Stats</string>
-    <string name="abilities_tab">Abilities</string>
-    <string name="backpack_tab">Backpack</string>
-    <string name="spellbook_tab">Spellbook</string>
 
-    <!-- NEW CHARACTER ACTIVITY -->
+    <!-- ACTIVITY: NEW CHARACTER -->
+    <!-- ==================================================================================== -->
+
     <string name="from_template">OFFICIAL TEMPLATE</string>
     <string name="from_template_description">
         Create a character based from curated templates for multiple roleplaying games
@@ -51,7 +33,47 @@
         Upload a character or character template from a local file.
     </string>
 
-    <!-- MANAGE SHEETS ACTIVITY -->
-    <string name="activity_characters_title">Characters</string>
+
+    <!-- NAVIGATION VIEW -->
+    <!-- ==================================================================================== -->
+
+    <string name="nav_view_header_sheet">SHEET</string>
+
+    <string name="nav_view_button_feedback">FEEDBACK</string>
+    <string name="nav_view_button_help">HELP</string>
+    <string name="nav_view_button_settings">SETTINGS</string>
+
+    <string name="nav_view_button_about_us">ABOUT US</string>
+    <string name="nav_view_button_upgrades">UPGRADES</string>
+    <string name="nav_view_button_news">NEWS</string>
+
+
+    <string name="button_functions_label">FUNCTIONS</string>
+    <string name="button_functions_description">
+        Value mappings e.g. Level to Proficiency Bonus
+    </string>
+
+
+    <string name="button_programs_label">PROGRAMS</string>
+    <string name="button_programs_description">
+        Values calculated from other values e.g. Ability Score Modifiers.
+    </string>
+
+    <string name="button_mechanics_label">MECHANICS</string>
+    <string name="button_mechanics_description">
+        Groups of variables active under specific conditions e.g. powers from a class ability.
+    </string>
+
+    <string name="button_dictionary_label">DICTIONARY</string>
+    <string name="button_dictionary_description">
+        Value sets e.g. classes, skills, weapons.
+    </string>
+
+    <string name="button_manage_sheets">MANAGE SHEETS</string>
+
+    <string name="nav_view_header_tools">TOOLS</string>
+
+    <string name="nav_view_tools_button_calculator">CALCULATOR</string>
+    <string name="nav_view_tools_button_name_generator">NAME GENERATOR</string>
 
 </resources>

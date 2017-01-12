@@ -50,6 +50,9 @@ public class TextViewBuilder implements ViewBuilder
     public Integer              backgroundColor;
     public Integer              backgroundResource;
 
+    public Integer              drawableTop;
+    public Integer              drawablePadding;
+
     public View.OnClickListener onClick;
 
     public List<Integer>        rules;
@@ -85,6 +88,9 @@ public class TextViewBuilder implements ViewBuilder
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
+
+        this.drawableTop        = null;
+        this.drawablePadding    = null;
 
         this.onClick            = null;
 
@@ -185,6 +191,18 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.backgroundResource != null)
             textView.setBackgroundResource(this.backgroundResource);
+
+        // > Drawable Top
+        // --------------------------------------------------------------------------------------
+
+        if (this.drawableTop != null)
+            textView.setCompoundDrawablesWithIntrinsicBounds(0, this.drawableTop, 0, 0);
+
+        // > Drawable Padding
+        // --------------------------------------------------------------------------------------
+
+        if (this.drawablePadding != null)
+            textView.setCompoundDrawablePadding(this.drawablePadding);
 
         // > Text
         // --------------------------------------------------------------------------------------
