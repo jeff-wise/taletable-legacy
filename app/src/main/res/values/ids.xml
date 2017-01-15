@@ -22,6 +22,15 @@
     <!-- VALUE LIST ITEM -->
     <item name="value_list_item_value" type="id"/>
 
+    <!-- FUNCTION LIST ITEM -->
+    <item name="function_list_item_layout" type="id"/>
+    <item name="function_list_item_header" type="id"/>
+    <item name="function_list_item_description" type="id"/>
+    <item name="function_list_item_parameter_type_1" type="id"/>
+    <item name="function_list_item_parameter_type_2" type="id"/>
+    <item name="function_list_item_parameter_type_3" type="id"/>
+    <item name="function_list_item_result_type" type="id"/>
+
 
     <item name="type_list_item_name" type="id"/>
     <item name="type_list_item_icon" type="id"/>

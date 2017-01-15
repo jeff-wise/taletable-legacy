@@ -238,6 +238,16 @@
     <dimen name="value_set_new_value_dialog_button_cancel_margin_right">25dp</dimen>
     <dimen name="value_set_new_value_dialog_button_layout_padding_right">5dp</dimen>
 
+    <!-- ACTIVITY: FUNCTION INDEX -->
+    <dimen name="function_list_item_header_text_size">4.4sp</dimen>
+    <dimen name="function_list_item_header_margin_bottom">14dp</dimen>
+    <dimen name="function_list_item_description_text_size">3.5sp</dimen>
+    <dimen name="function_list_item_description_margin_bottom">14dp</dimen>
+    <dimen name="function_list_item_type_text_size">2.9sp</dimen>
+    <dimen name="function_list_item_padding_horz">17dp</dimen>
+    <dimen name="function_list_item_padding_vert">15dp</dimen>
+    <dimen name="function_list_item_type_margin_right">10dp</dimen>
+
     <!-- MANAGE SHEETS -->
     <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>
     <dimen name="manage_sheets_summary_layout_padding_horz">15dp</dimen>

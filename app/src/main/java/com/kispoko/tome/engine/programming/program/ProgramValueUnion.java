@@ -7,6 +7,7 @@ import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -44,7 +45,7 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>           integerValue;
     private PrimitiveFunctor<String>            stringValue;
     private PrimitiveFunctor<Boolean>           booleanValue;
-    private PrimitiveFunctor<DiceRoll>          diceValue;
+    private ModelFunctor<DiceRoll>              diceValue;
     private PrimitiveFunctor<String[]>          listValue;
 
     private PrimitiveFunctor<ProgramValueType>  valueType;
@@ -60,7 +61,7 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
         this.integerValue   = new PrimitiveFunctor<>(null, Integer.class);
         this.stringValue    = new PrimitiveFunctor<>(null, String.class);
         this.booleanValue   = new PrimitiveFunctor<>(null, Boolean.class);
-        this.diceValue      = new PrimitiveFunctor<>(null, DiceRoll.class);
+        this.diceValue      = ModelFunctor.empty(DiceRoll.class);
         this.listValue      = new PrimitiveFunctor<>(null, String[].class);
 
         this.valueType      = new PrimitiveFunctor<>(null, ProgramValueType.class);
@@ -81,7 +82,7 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
         this.integerValue = new PrimitiveFunctor<>(null, Integer.class);
         this.stringValue  = new PrimitiveFunctor<>(null, String.class);
         this.booleanValue = new PrimitiveFunctor<>(null, Boolean.class);
-        this.diceValue    = new PrimitiveFunctor<>(null, DiceRoll.class);
+        this.diceValue    = ModelFunctor.full(null, DiceRoll.class);
         this.listValue    = new PrimitiveFunctor<>(null, String[].class);
 
         this.valueType    = new PrimitiveFunctor<>(valueType, ProgramValueType.class);
@@ -384,6 +385,10 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
                 return this.integerValue().toString();
             case BOOLEAN:
                 return this.booleanValue().toString();
+            case DICE:
+                return this.diceValue().toString();
+            case LIST:
+                return this.listValue().toString();
         }
 
         return "";

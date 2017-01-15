@@ -74,6 +74,18 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Value Set" />
 
+    <activity
+        android:name=".activity.FunctionIndexActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Functions" />
+
+    <activity
+        android:name=".activity.FunctionActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Function" />
+
+
 </application>
 
 </manifest>

@@ -67,6 +67,29 @@ public enum ProgramValueType implements ToYaml
     }
 
 
+    // TO STRING
+    // ------------------------------------------------------------------------------------------
+
+    public String toString()
+    {
+        switch (this)
+        {
+            case INTEGER:
+                return "Number";
+            case STRING:
+                return "Text";
+            case BOOLEAN:
+                return "True/False";
+            case DICE:
+                return "Dice";
+            case LIST:
+                return "List";
+        }
+
+        return "";
+    }
+
+
     // TO YAML
     // ------------------------------------------------------------------------------------------
 

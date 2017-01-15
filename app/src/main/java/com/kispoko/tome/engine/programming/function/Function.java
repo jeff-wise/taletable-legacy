@@ -132,7 +132,7 @@ public class Function implements Model, ToYaml, Serializable
         String label = yaml.atMaybeKey("label").getString();
 
         // ** Description
-        String description = yaml.atMaybeKey("name").getString();
+        String description = yaml.atMaybeKey("description").getString();
 
         // ** Parameter Types
         final List<ProgramValueType> parameterTypes
@@ -276,6 +276,16 @@ public class Function implements Model, ToYaml, Serializable
     public List<Tuple> tuples()
     {
         return this.tuples.getValue();
+    }
+
+
+    /**
+     * The number of parameters the function has.
+     * @return The arity.
+     */
+    public int arity()
+    {
+        return this.parameterTypes().size();
     }
 
 

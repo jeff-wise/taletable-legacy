@@ -512,9 +512,18 @@ public class SheetActivity
                                                  onDictionaryClick));
 
         // > Functions Button
+        View.OnClickListener onFunctionsClick = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, FunctionIndexActivity.class);
+                startActivity(intent);
+            }
+        };
         buttonsLayout.addView(sheetOptionsButton(R.string.button_functions_label,
                                                  R.string.button_functions_description,
-                                                 null));
+                                                 onFunctionsClick));
 
         buttonsLayout.addView(sheetOptionsButton(R.string.button_programs_label,
                                                  R.string.button_programs_description,

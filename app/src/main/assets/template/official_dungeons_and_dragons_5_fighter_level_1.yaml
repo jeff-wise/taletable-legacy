@@ -130,7 +130,7 @@ engine:
       - 30
       result: 10
   - name: proficiency_bonus
-    label: Proficicency Bonus
+    label: Proficiency Bonus
     description:
       The proficiency bonus for each level.
     parameter_types:
@@ -207,40 +207,52 @@ engine:
     tuples:
     - parameters:
       - barbarian
-      result: 1d12
+      result:
+        type: d12
     - parameters:
       - bard
-      result: 1d8
+      result:
+        type: d8
     - parameters:
       - cleric
-      result: 1d8
+      result:
+        type: d8
     - parameters:
       - druid
-      result: 1d8
+      result:
+        type: d8
     - parameters:
       - fighter
-      result: 1d10
+      result:
+        type: d10
     - parameters:
       - monk
-      result: 1d8
+      result:
+        type: d8
     - parameters:
       - paladin
-      result: 1d10
+      result:
+        type: d10
     - parameters:
       - ranger
-      result: 1d10
+      result:
+        type: d10
     - parameters:
       - rogue
-      result: 1d8
+      result:
+        type: d8
     - parameters:
       - sorceror
-      result: 1d6
+      result:
+        type: d6
     - parameters:
       - warlock
-      result: 1d8
+      result:
+        type: d8
     - parameters:
       - wizard
-      result: 1d6
+      result:
+        type: d6
   - name: class_proficient_saving_throws
     label: Class Saving Throws
     description:
@@ -319,64 +331,102 @@ engine:
     tuples:
     - parameters:
       - 1
-      result: 1d6
+      result:
+        type: d6
     - parameters:
       - 2
-      result: 1d6
+      result:
+        type: d6
     - parameters:
       - 3
-      result: 2d6
+      result:
+        type: d6
+        quantity: 2
     - parameters:
       - 4
-      result: 2d6
+      result:
+        type: d6
+        quantity: 2
     - parameters:
       - 5
-      result: 3d6
+      result:
+        type: d6
+        quantity: 3
     - parameters:
       - 6
-      result: 3d6
+      result:
+        type: d6
+        quantity: 3
     - parameters:
       - 7
-      result: 4d6
+      result:
+        type: d6
+        quantity: 4
     - parameters:
       - 8
-      result: 4d6
+      result:
+        type: d6
+        quantity: 4
     - parameters:
       - 9
-      result: 5d6
+      result:
+        type: d6
+        quantity: 5
     - parameters:
       - 10
-      result: 5d6
+      result:
+        type: d6
+        quantity: 5
     - parameters:
       - 11
-      result: 6d6
+      result:
+        type: d6
+        quantity: 6
     - parameters:
       - 12
-      result: 6d6
+      result:
+        type: d6
+        quantity: 6
     - parameters:
       - 13
-      result: 7d6
+      result:
+        type: d6
+        quantity: 7
     - parameters:
       - 14
-      result: 7d6
+      result:
+        type: d6
+        quantity: 7
     - parameters:
       - 15
-      result: 8d6
+      result:
+        type: d6
+        quantity: 8
     - parameters:
       - 16
-      result: 8d6
+      result:
+        type: d6
+        quantity: 8
     - parameters:
       - 17
-      result: 9d6
+      result:
+        type: d6
+        quantity: 9
     - parameters:
       - 18
-      result: 9d6
+      result:
+        type: d6
+        quantity: 9
     - parameters:
       - 19
-      result: 10d6
+      result:
+        type: d6
+        quantity: 10
     - parameters:
       - 20
-      result: 10d6
+      result:
+        type: d6
+        quantity: 10
   - name: barbarian_rages_per_day
     label: Barbarian Rages Per Day
     description:
@@ -445,6 +495,142 @@ engine:
     - parameters:
       - 20
       result: 1000000
+  - name: warlock_cantrips_known
+    label: Warlock Cantrips Known
+    description:
+      The number of cantrips a Warlock knows each level.
+    parameter_types:
+    - integer
+    result_type: integer
+    tuples:
+    - parameters:
+      - 1
+      result: 2
+    - parameters:
+      - 2
+      result: 2
+    - parameters:
+      - 3
+      result: 2
+    - parameters:
+      - 4
+      result: 3
+    - parameters:
+      - 5
+      result: 3
+    - parameters:
+      - 6
+      result: 3
+    - parameters:
+      - 7
+      result: 3
+    - parameters:
+      - 8
+      result: 3
+    - parameters:
+      - 9
+      result: 3
+    - parameters:
+      - 10
+      result: 4
+    - parameters:
+      - 11
+      result: 4
+    - parameters:
+      - 12
+      result: 4
+    - parameters:
+      - 13
+      result: 4
+    - parameters:
+      - 14
+      result: 4
+    - parameters:
+      - 15
+      result: 4
+    - parameters:
+      - 16
+      result: 4
+    - parameters:
+      - 17
+      result: 4
+    - parameters:
+      - 18
+      result: 4
+    - parameters:
+      - 19
+      result: 4
+    - parameters:
+      - 20
+      result: 4
+  - name: warlock_spells_known
+    label: Warlock Spells Known
+    description:
+      The number of spells a Warlock knows each level.
+    parameter_types:
+    - integer
+    result_type: integer
+    tuples:
+    - parameters:
+      - 1
+      result: 2
+    - parameters:
+      - 2
+      result: 3
+    - parameters:
+      - 3
+      result: 4
+    - parameters:
+      - 4
+      result: 5
+    - parameters:
+      - 5
+      result: 6
+    - parameters:
+      - 6
+      result: 7
+    - parameters:
+      - 7
+      result: 8
+    - parameters:
+      - 8
+      result: 9
+    - parameters:
+      - 9
+      result: 10
+    - parameters:
+      - 10
+      result: 10
+    - parameters:
+      - 11
+      result: 11
+    - parameters:
+      - 12
+      result: 11
+    - parameters:
+      - 13
+      result: 12
+    - parameters:
+      - 14
+      result: 12
+    - parameters:
+      - 15
+      result: 13
+    - parameters:
+      - 16
+      result: 13
+    - parameters:
+      - 17
+      result: 14
+    - parameters:
+      - 18
+      result: 14
+    - parameters:
+      - 19
+      result: 15
+    - parameters:
+      - 20
+      result: 15
   programs:
   - name: ability_modifier
     parameter_types:
