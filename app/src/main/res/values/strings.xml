@@ -5,6 +5,8 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="dialog_cancel">CANCEL</string>
+
 
     <!-- BOTTOM NAVIGATION -->
     <!-- ==================================================================================== -->
@@ -75,5 +77,29 @@
 
     <string name="nav_view_tools_button_calculator">CALCULATOR</string>
     <string name="nav_view_tools_button_name_generator">NAME GENERATOR</string>
+
+
+    <!-- ACTIVITY: VALUE SET -->
+    <!-- ==================================================================================== -->
+
+    <string name="value_set_field_name_label">Name</string>
+    <string name="value_set_field_name_description">
+        The Value Set\'s identifier. This value is used to uniquely identify the Value Set when
+        programming.
+    </string>
+
+    <string name="value_set_field_label_label">Label</string>
+    <string name="value_set_field_label_description">
+        The Value Set\'s name in human-readable form.
+    </string>
+
+    <string name="value_set_field_description_label">Description</string>
+    <string name="value_set_field_description_description">
+        What does the Value Set represent?
+    </string>
+
+    <string name="value_set_new_value_dialog_title">New Value</string>
+    <string name="value_set_new_value_dialog_add">ADD VALUE</string>
+
 
 </resources>

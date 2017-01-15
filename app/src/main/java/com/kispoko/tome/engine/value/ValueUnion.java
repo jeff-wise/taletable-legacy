@@ -3,7 +3,6 @@ package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
@@ -18,14 +17,13 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.R.attr.valueTo;
-import static android.R.attr.valueType;
 
 
 /**
  * Value Union
  */
-public class ValueUnion implements Model, ToYaml, Serializable {
+public class ValueUnion implements Model, ToYaml, Serializable
+{
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
@@ -68,7 +66,8 @@ public class ValueUnion implements Model, ToYaml, Serializable {
 
         this.type = new PrimitiveFunctor<>(type, ValueType.class);
 
-        switch (type) {
+        switch (type)
+        {
             case TEXT:
                 this.textValue.setValue((TextValue) value);
                 break;

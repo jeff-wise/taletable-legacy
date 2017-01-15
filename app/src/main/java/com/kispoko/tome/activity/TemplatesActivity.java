@@ -133,7 +133,7 @@ public class TemplatesActivity extends AppCompatActivity
      */
     private void initializeView(List<Template> templates)
     {
-        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.new_character_content);
+        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.templates_content);
         contentLayout.addView(view(templates));
     }
 
@@ -175,8 +175,10 @@ public class TemplatesActivity extends AppCompatActivity
     {
         ScrollViewBuilder scrollView = new ScrollViewBuilder();
 
-        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT;
-        scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT;
+        scrollView.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        scrollView.height           = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        scrollView.backgroundColor  = R.color.dark_blue_5;
 
         return scrollView.scrollView(this);
     }

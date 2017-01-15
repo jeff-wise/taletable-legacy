@@ -32,6 +32,9 @@ engine:
     - Wizard
   functions:
   - name: ability_modifier
+    label: Ability Modifier
+    description:
+      The modifier applied to dice rolls that are relevant to the ability.
     parameter_types:
     - integer
     result_type: integer
@@ -126,6 +129,322 @@ engine:
     - parameters:
       - 30
       result: 10
+  - name: proficiency_bonus
+    label: Proficicency Bonus
+    description:
+      The proficiency bonus for each level.
+    parameter_types:
+    - integer
+    result_type: integer
+    tuples:
+    - parameters:
+      - 1
+      result: 2
+    - parameters:
+      - 2
+      result: 2
+    - parameters:
+      - 3
+      result: 2
+    - parameters:
+      - 4
+      result: 2
+    - parameters:
+      - 5
+      result: 3
+    - parameters:
+      - 6
+      result: 3
+    - parameters:
+      - 7
+      result: 3
+    - parameters:
+      - 8
+      result: 3
+    - parameters:
+      - 9
+      result: 4
+    - parameters:
+      - 10
+      result: 4
+    - parameters:
+      - 11
+      result: 4
+    - parameters:
+      - 12
+      result: 4
+    - parameters:
+      - 13
+      result: 5
+    - parameters:
+      - 14
+      result: 5
+    - parameters:
+      - 15
+      result: 5
+    - parameters:
+      - 16
+      result: 5
+    - parameters:
+      - 17
+      result: 6
+    - parameters:
+      - 18
+      result: 6
+    - parameters:
+      - 19
+      result: 6
+    - parameters:
+      - 20
+      result: 6
+  - name: class_hit_dice_per_level
+    label: Class Hit Dice
+    description:
+      The dice that each class uses to calculate hit points each level.
+    parameter_types:
+    - string
+    result_type: dice
+    tuples:
+    - parameters:
+      - barbarian
+      result: 1d12
+    - parameters:
+      - bard
+      result: 1d8
+    - parameters:
+      - cleric
+      result: 1d8
+    - parameters:
+      - druid
+      result: 1d8
+    - parameters:
+      - fighter
+      result: 1d10
+    - parameters:
+      - monk
+      result: 1d8
+    - parameters:
+      - paladin
+      result: 1d10
+    - parameters:
+      - ranger
+      result: 1d10
+    - parameters:
+      - rogue
+      result: 1d8
+    - parameters:
+      - sorceror
+      result: 1d6
+    - parameters:
+      - warlock
+      result: 1d8
+    - parameters:
+      - wizard
+      result: 1d6
+  - name: class_proficient_saving_throws
+    label: Class Saving Throws
+    description:
+      The ability saving throws that each class has automatic proficiency with.
+    parameter_types:
+    - string
+    result_type: list
+    tuples:
+    - parameters:
+      - barbarian
+      result:
+      - strength
+      - constitution
+    - parameters:
+      - bard
+      result:
+      - dexterity
+      - charisma
+    - parameters:
+      - cleric
+      result:
+      - wisdom
+      - charisma
+    - parameters:
+      - druid
+      result:
+      - intelligence
+      - wisdom
+    - parameters:
+      - fighter
+      result:
+      - strength
+      - constitution
+    - parameters:
+      - monk
+      result:
+      - strength
+      - dexterity
+    - parameters:
+      - paladin
+      result:
+      - wisdom
+      - charisma
+    - parameters:
+      - ranger
+      result:
+      - strength
+      - dexterity
+    - parameters:
+      - rogue
+      result:
+      - dexterity
+      - intelligence
+    - parameters:
+      - sorceror
+      result:
+      - constitution
+      - charisma
+    - parameters:
+      - warlock
+      result:
+      - wisdom
+      - charisma
+    - parameters:
+      - wizard
+      result:
+      - intelligence
+      - wisdom
+  - name: rogue_sneak_attack_dice
+    label: Rogue Sneak Attack Damage
+    description:
+      The damage dice for the Rogue's sneak attack ability by level.
+    parameter_types:
+    - integer
+    result_type: dice
+    tuples:
+    - parameters:
+      - 1
+      result: 1d6
+    - parameters:
+      - 2
+      result: 1d6
+    - parameters:
+      - 3
+      result: 2d6
+    - parameters:
+      - 4
+      result: 2d6
+    - parameters:
+      - 5
+      result: 3d6
+    - parameters:
+      - 6
+      result: 3d6
+    - parameters:
+      - 7
+      result: 4d6
+    - parameters:
+      - 8
+      result: 4d6
+    - parameters:
+      - 9
+      result: 5d6
+    - parameters:
+      - 10
+      result: 5d6
+    - parameters:
+      - 11
+      result: 6d6
+    - parameters:
+      - 12
+      result: 6d6
+    - parameters:
+      - 13
+      result: 7d6
+    - parameters:
+      - 14
+      result: 7d6
+    - parameters:
+      - 15
+      result: 8d6
+    - parameters:
+      - 16
+      result: 8d6
+    - parameters:
+      - 17
+      result: 9d6
+    - parameters:
+      - 18
+      result: 9d6
+    - parameters:
+      - 19
+      result: 10d6
+    - parameters:
+      - 20
+      result: 10d6
+  - name: barbarian_rages_per_day
+    label: Barbarian Rages Per Day
+    description:
+      The number of rages a Barbarian can do without a long rest by level.
+    parameter_types:
+    - integer
+    result_type: integer
+    tuples:
+    - parameters:
+      - 1
+      result: 2
+    - parameters:
+      - 2
+      result: 2
+    - parameters:
+      - 3
+      result: 3
+    - parameters:
+      - 4
+      result: 3
+    - parameters:
+      - 5
+      result: 3
+    - parameters:
+      - 6
+      result: 4
+    - parameters:
+      - 7
+      result: 4
+    - parameters:
+      - 8
+      result: 4
+    - parameters:
+      - 9
+      result: 4
+    - parameters:
+      - 10
+      result: 4
+    - parameters:
+      - 11
+      result: 4
+    - parameters:
+      - 12
+      result: 5
+    - parameters:
+      - 13
+      result: 5
+    - parameters:
+      - 14
+      result: 5
+    - parameters:
+      - 15
+      result: 5
+    - parameters:
+      - 16
+      result: 5
+    - parameters:
+      - 17
+      result: 6
+    - parameters:
+      - 18
+      result: 6
+    - parameters:
+      - 19
+      result: 6
+    - parameters:
+      - 20
+      result: 1000000
   programs:
   - name: ability_modifier
     parameter_types:
@@ -227,43 +546,64 @@ engine:
           modifier: 0
   dictionary:
     sets:
-    - name: martial_melee_weapons
+    - name: class
+      label: Classes
+      description: >
+        A class represents a character's primary profession or skillset. It defines who the
+        character is and what they may do.
       values:
       - type: text
         value:
-          name: longsword
-          value: Longsword
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_longsword
-              value: true
-    - name: armor
-      values:
+          name: barbarian
+          value: Barbarian
       - type: text
         value:
-          name: scalemail
-          value: Scalemail
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_armor_scalemail
-              value: true
-    - name: shields
-      values:
+          name: bard
+          value: Bard
       - type: text
         value:
-          name: shield
-          value: Shield
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_shield
-              value: true
+          name: cleric
+          value: Cleric
+      - type: text
+        value:
+          name: druid
+          value: Druid
+      - type: text
+        value:
+          name: fighter
+          value: Fighter
+      - type: text
+        value:
+          name: monk
+          value: Monk
+      - type: text
+        value:
+          name: paladin
+          value: Paladin
+      - type: text
+        value:
+          name: ranger
+          value: Ranger
+      - type: text
+        value:
+          name: rogue
+          value: Rogue
+      - type: text
+        value:
+          name: sorceror
+          value: Sorceror
+      - type: text
+        value:
+          name: warlock
+          value: Warlock
+      - type: text
+        value:
+          name: wizard
+          value: Wizard
     - name: skill
+      label: Skills
+      description: >
+        Skills are different actions that a player may perform related to a specific ability score.
       values:
       - type: text
         value:
@@ -337,56 +677,236 @@ engine:
         value:
           name: survival
           value: Survival
-    - name: class
+    - name: simple_melee_weapons
+      label: Simple Melee Weapons
+      description: >
+        Basic melee weapons that require Simple Weapon Proficiency.
       values:
       - type: text
         value:
-          name: barbarian
-          value: Barbarian
+          name: longsword
+          value: Longsword
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_longsword
+              value: true
+    - name: martial_melee_weapons
+      label: Martial Melee Weapons
+      description: >
+        Sophisticated melee weapons that require Martial Weapon Proficiency.
+      values:
       - type: text
         value:
-          name: bard
-          value: Bard
+          name: battleaxe
+          value: Battleaxe
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_battleaxe
+              value: true
       - type: text
         value:
-          name: cleric
-          value: Cleric
+          name: flail
+          value: Flail
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_flail
+              value: true
       - type: text
         value:
-          name: druid
-          value: Druid
+          name: glaive
+          value: Glaive
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_glaive
+              value: true
       - type: text
         value:
-          name: fighter
-          value: Fighter
+          name: greataxe
+          value: Greataxe
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_greataxe
+              value: true
       - type: text
         value:
-          name: monk
-          value: Monk
+          name: greatsword
+          value: Greatsword
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_greatsword
+              value: true
       - type: text
         value:
-          name: paladin
-          value: Paladin
+          name: halberd
+          value: Halberd
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_halberd
+              value: true
       - type: text
         value:
-          name: ranger
-          value: Ranger
+          name: lance
+          value: Lance
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_lance
+              value: true
       - type: text
         value:
-          name: rogue
-          value: Rogue
+          name: longsword
+          value: Longsword
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_longsword
+              value: true
       - type: text
         value:
-          name: sorceror
-          value: Sorceror
+          name: maul
+          value: Maul
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_maul
+              value: true
       - type: text
         value:
-          name: warlock
-          value: Warlock
+          name: morningstar
+          value: Morningstar
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_morningstar
+              value: true
       - type: text
         value:
-          name: wizard
-          value: Wizard
+          name: pike
+          value: Pike
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_pike
+              value: true
+      - type: text
+        value:
+          name: rapier
+          value: Rapier
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_rapier
+              value: true
+      - type: text
+        value:
+          name: scimitar
+          value: Scimitar
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_scimitar
+              value: true
+      - type: text
+        value:
+          name: shortsword
+          value: Shortsword
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_shortsword
+              value: true
+      - type: text
+        value:
+          name: trident
+          value: Trident
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_trident
+              value: true
+      - type: text
+        value:
+          name: war_pick
+          value: War Pick
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_war_pick
+              value: true
+      - type: text
+        value:
+          name: warhammer
+          value: Warhammer
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_warhammer
+              value: true
+      - type: text
+        value:
+          name: whip
+          value: Whip
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_weapon_whip
+              value: true
+    - name: armor
+      label: Armor
+      description: >
+        The types of armor.
+      values:
+      - type: text
+        value:
+          name: scalemail
+          value: Scalemail
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_armor_scalemail
+              value: true
+    - name: shields
+      label: Shields
+      description: >
+        The shields available.
+      values:
+      - type: text
+        value:
+          name: shield
+          value: Shield
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: has_shield
+              value: true
 profile:
   pages:
   - label: Profile

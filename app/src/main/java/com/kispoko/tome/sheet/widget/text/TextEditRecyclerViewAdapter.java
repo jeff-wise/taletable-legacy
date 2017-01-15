@@ -89,6 +89,7 @@ public class TextEditRecyclerViewAdapter
         public ViewHolder(final View itemView, final MemberOf memberOf, final TextWidget textWidget)
         {
             super(itemView);
+
             this.itemView = itemView;
 
             // On Click Listener

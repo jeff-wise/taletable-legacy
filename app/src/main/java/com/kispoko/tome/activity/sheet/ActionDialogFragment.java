@@ -22,6 +22,7 @@ import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
 
+
 /**
  * Bottom Sheet Fragment for Action Dialog
  */
@@ -75,6 +76,7 @@ public class ActionDialogFragment extends DialogFragment
         return layout;
     }
 
+
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState)
     {
@@ -86,7 +88,6 @@ public class ActionDialogFragment extends DialogFragment
         final Dialog dialog = new Dialog(getActivity());
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         dialog.setContentView(root);
@@ -107,14 +108,6 @@ public class ActionDialogFragment extends DialogFragment
         //No call for super(). Bug on API Level > 11.
     }
 
-//
-//    @Override
-//    public void setupDialog(final Dialog dialog, int style)
-//    {
-//        super.setupDialog(dialog, style);
-//
-//
-//    }
 
 
     // INTERNAL

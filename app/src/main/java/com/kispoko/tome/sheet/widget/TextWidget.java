@@ -466,7 +466,7 @@ public class TextWidget extends Widget
         editText.backgroundResource = R.drawable.bg_text_component_editor;
         editText.text               = this.value();
 
-        return editText.editText(context);
+        return (EditText) editText.editText(context);
     }
 
 

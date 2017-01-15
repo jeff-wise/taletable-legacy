@@ -148,9 +148,20 @@ public class Dictionary implements Model, ToYaml, Serializable
      * The value sets.
      * @return The value sets.
      */
-    private List<ValueSet> valueSets()
+    public List<ValueSet> valueSets()
     {
         return this.valueSets.getValue();
+    }
+
+
+    /**
+     * Get a value set from the dictionary with the given name.
+     * @param setName The value set name.
+     * @return The Value Set, or null if it does not exist.
+     */
+    public ValueSet lookup(String setName)
+    {
+        return valueSetIndex.get(setName);
     }
 
 

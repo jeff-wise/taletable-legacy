@@ -488,19 +488,41 @@ public class SheetActivity
         LinearLayout layout = sheetOptionsLayout();
 
         // > Header
+        // --------------------------------------------------------------------------------------
+
         layout.addView(sheetOptionsHeaderView());
 
         // > Buttons
+        // --------------------------------------------------------------------------------------
+
         LinearLayout buttonsLayout = sheetOptionsButtonsLayout();
 
+        // > Dictionary Button
+        View.OnClickListener onDictionaryClick = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, DictionaryActivity.class);
+                startActivity(intent);
+            }
+        };
         buttonsLayout.addView(sheetOptionsButton(R.string.button_dictionary_label,
-                                                 R.string.button_dictionary_description));
+                                                 R.string.button_dictionary_description,
+                                                 onDictionaryClick));
+
+        // > Functions Button
         buttonsLayout.addView(sheetOptionsButton(R.string.button_functions_label,
-                                                 R.string.button_functions_description));
+                                                 R.string.button_functions_description,
+                                                 null));
+
         buttonsLayout.addView(sheetOptionsButton(R.string.button_programs_label,
-                                                 R.string.button_programs_description));
+                                                 R.string.button_programs_description,
+                                                 null));
+
         buttonsLayout.addView(sheetOptionsButton(R.string.button_mechanics_label,
-                                                 R.string.button_mechanics_description));
+                                                 R.string.button_mechanics_description,
+                                                 null));
 
         layout.addView(buttonsLayout);
 
@@ -536,7 +558,9 @@ public class SheetActivity
     }
 
 
-    private LinearLayout sheetOptionsButton(Integer labelStringId, Integer descriptionStringId)
+    private LinearLayout sheetOptionsButton(Integer labelStringId,
+                                            Integer descriptionStringId,
+                                            View.OnClickListener onClickListener)
     {
         // [1] Declarations
         // --------------------------------------------------------------------------------------
@@ -553,6 +577,7 @@ public class SheetActivity
         layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         layout.backgroundResource       = R.drawable.bg_nav_button;
+        layout.onClick                  = onClickListener;
 
         layout.margin.bottom            = R.dimen.nav_view_sheet_options_button_margin_bottom;
 

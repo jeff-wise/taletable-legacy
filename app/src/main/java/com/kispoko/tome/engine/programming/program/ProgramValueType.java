@@ -25,7 +25,9 @@ public enum ProgramValueType implements ToYaml
 
     INTEGER,
     STRING,
-    BOOLEAN;
+    BOOLEAN,
+    DICE,
+    LIST;
 
 
     // CONSTRUCTORS

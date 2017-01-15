@@ -205,6 +205,38 @@
     <dimen name="calculator_row_padding_horz">10dp</dimen>
     <dimen name="calculator_button_subtract_text_size">4sp</dimen>
 
+    <!-- ACTIVITY: DICTIONARY -->
+    <dimen name="dictionary_item_header_text_size">4.4sp</dimen>
+    <dimen name="dictionary_item_header_margin_top">16dp</dimen>
+    <dimen name="dictionary_item_header_margin_bottom">10dp</dimen>
+    <dimen name="dictionary_item_description_text_size">3.5sp</dimen>
+    <dimen name="dictionary_item_padding_horz">15dp</dimen>
+    <dimen name="dictionary_item_padding_vert">5dp</dimen>
+    <dimen name="dictionary_item_count_text_size">4.3sp</dimen>
+    <dimen name="dictionary_item_count_margin_right">15dp</dimen>
+
+    <!-- ACTIVITY: VALUE SET -->
+    <dimen name="value_set_item_value_text_size">4.5sp</dimen>
+    <dimen name="value_set_item_padding_horz">17dp</dimen>
+    <dimen name="value_set_item_padding_vert">25dp</dimen>
+    <dimen name="value_set_data_padding_horz">17dp</dimen>
+    <dimen name="value_set_data_padding_vert">25dp</dimen>
+    <dimen name="value_set_data_input_margin_bottom">30dp</dimen>
+    <dimen name="value_set_data_input_padding_bottom">12dp</dimen>
+    <dimen name="value_set_data_input_header_text_size">4sp</dimen>
+    <dimen name="value_set_data_input_header_margin_bottom">10dp</dimen>
+    <dimen name="value_set_data_input_description_text_size">3.4sp</dimen>
+    <dimen name="value_set_data_input_description_margin_bottom">10dp</dimen>
+    <dimen name="value_set_data_input_value_text_size">3.8sp</dimen>
+    <dimen name="value_set_new_value_dialog_padding_vert">20dp</dimen>
+    <dimen name="value_set_new_value_dialog_padding_horz">12dp</dimen>
+    <dimen name="value_set_new_value_dialog_title_text_size">4.5sp</dimen>
+    <dimen name="value_set_new_value_dialog_title_margin_bottom">25dp</dimen>
+    <dimen name="value_set_new_value_dialog_button_text_size">3.5sp</dimen>
+    <dimen name="value_set_new_value_dialog_input_text_size">4sp</dimen>
+    <dimen name="value_set_new_value_dialog_input_margin_bottom">10dp</dimen>
+    <dimen name="value_set_new_value_dialog_button_cancel_margin_right">25dp</dimen>
+    <dimen name="value_set_new_value_dialog_button_layout_padding_right">5dp</dimen>
 
     <!-- MANAGE SHEETS -->
     <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>

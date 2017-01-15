@@ -63,6 +63,16 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Edit Number" />
 
+    <activity
+        android:name=".activity.DictionaryActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Dictionary" />
+
+    <activity
+        android:name=".activity.ValueSetActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Value Set" />
 
 </application>
 

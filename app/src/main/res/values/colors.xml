@@ -111,6 +111,9 @@
     <color name="blue_7">#386078</color>
     <color name="blue_8">#305469</color>
 
+
+    <color name="transparent">#00000000</color>
+
     <color name="dark_blue_hlx_2">#C2D9FF</color>
     <color name="dark_blue_hlx_3">#BAD1F5</color>
     <color name="dark_blue_hlx_4">#B6CCF0</color>
@@ -152,10 +155,12 @@
     <color name="red_5">#A14746</color>
 
 
-    <!--<color name="green_hlx_5">#AFCCAB</color>-->
-    <color name="green_5">#466147</color>
-    <!--<color name="green_hlx_5">#BCEDAA</color>-->
-    <color name="green_hlx_5">#8EC490</color>
+    <color name="green_5">#45593C</color>
+    <color name="green_6">#3D4F35</color>
+    <!--<color name="green_hlx_5">#A2F0AA</color>-->
+    <!--<color name="green_hlx_5">#B3F09B</color>-->
+    <!--<color name="green_hlx_5">#B8F0A2</color>-->
+    <color name="green_hlx_5">#ADE098</color>
 
 
 

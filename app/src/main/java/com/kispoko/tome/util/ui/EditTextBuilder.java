@@ -4,12 +4,12 @@ package com.kispoko.tome.util.ui;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -45,6 +45,9 @@ public class EditTextBuilder implements ViewBuilder
     public Integer      backgroundColor;
     public Integer      backgroundResource;
 
+    public boolean      withLabel;
+    public String       hint;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -74,6 +77,9 @@ public class EditTextBuilder implements ViewBuilder
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
+
+        this.withLabel          = false;
+        this.hint               = null;
     }
 
 
@@ -87,7 +93,7 @@ public class EditTextBuilder implements ViewBuilder
     }
 
 
-    public EditText editText(Context context)
+    public View editText(Context context)
     {
         EditText editText = new EditText(context);
 
@@ -157,6 +163,13 @@ public class EditTextBuilder implements ViewBuilder
         if (this.text != null)
             editText.setText(this.text);
 
+        // > Hint
+        // --------------------------------------------------------------------------------------
+
+        if (this.hint != null)
+            editText.setHint(this.hint);
+
+
         // [2] Layout
         // --------------------------------------------------------------------------------------
 
@@ -193,40 +206,27 @@ public class EditTextBuilder implements ViewBuilder
         layoutParamsBuilder.setMargins(this.margin);
 
 
-        switch (this.layoutType)
-        {
-            case LINEAR:
-                editText.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
-                break;
-            case RELATIVE:
-                editText.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
-                break;
-            case TABLE:
-                editText.setLayoutParams(layoutParamsBuilder.tableLayoutParams());
-                break;
-            case TABLE_ROW:
-                editText.setLayoutParams(layoutParamsBuilder.tableRowLayoutParams());
-                break;
+        // [3] Configure Layout
+        // --------------------------------------------------------------------------------------
+
+        TextInputLayout textInputLayout = new TextInputLayout(context);
+
+        ViewGroup.LayoutParams layoutParams = layoutParamsBuilder.layoutParams();
+
+        if (withLabel)
+            textInputLayout.setLayoutParams(layoutParams);
+        else
+            editText.setLayoutParams(layoutParams);
+
+        if (withLabel) {
+            textInputLayout.addView(editText);
         }
 
 
-        return editText;
+        if (withLabel)
+            return textInputLayout;
+        else
+            return editText;
     }
-
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    private boolean isLayoutConstant(Integer constant)
-    {
-        if (constant == LinearLayout.LayoutParams.MATCH_PARENT ||
-            constant == LinearLayout.LayoutParams.WRAP_CONTENT) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
 
 }

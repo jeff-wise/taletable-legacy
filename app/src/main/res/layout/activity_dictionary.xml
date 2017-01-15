@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/new_character_content"
+            android:id="@+id/dictionary_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -37,30 +37,24 @@
 
             </android.support.v7.widget.Toolbar>
 
-
             <android.support.design.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ScrollView
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/summation_view"
-                    android:orientation="vertical"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/value_set_list_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/dark_blue_9">
-
-                </ScrollView>
-
+                    android:layout_height="match_parent">
+                </android.support.v7.widget.RecyclerView>
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/button_new_sheet"
+                    android:id="@+id/button_new_value_set"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:clickable="true"
-                    android:src="@drawable/ic_edit_summation"
-                    app:layout_anchor="@id/summation_view"
+                    android:src="@drawable/ic_dictionary_new_value_set"
+                    app:layout_anchor="@id/value_set_list_view"
                     app:layout_anchorGravity="bottom|right"
                     app:backgroundTint="@color/green_hlx_5"
                     app:rippleColor="#FFF" />
@@ -70,7 +64,6 @@
 
 
         </LinearLayout>
-
 
     </RelativeLayout>
 

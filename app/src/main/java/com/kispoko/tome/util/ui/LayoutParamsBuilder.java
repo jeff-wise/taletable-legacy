@@ -3,6 +3,8 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -96,6 +98,24 @@ public class LayoutParamsBuilder
     public TableRow.LayoutParams tableRowLayoutParams()
     {
         return this.tableRowLayoutParams;
+    }
+
+
+    public ViewGroup.LayoutParams layoutParams()
+    {
+        switch (this.layoutType)
+        {
+            case LINEAR:
+                return this.linearLayoutParams;
+            case RELATIVE:
+                return this.relativeLayoutParams;
+            case TABLE:
+                return this.tableLayoutParams;
+            case TABLE_ROW:
+                return this.tableRowLayoutParams;
+        }
+
+        return null;
     }
 
 

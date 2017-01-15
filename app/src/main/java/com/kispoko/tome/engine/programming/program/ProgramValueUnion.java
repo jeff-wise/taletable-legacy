@@ -3,9 +3,9 @@ package com.kispoko.tome.engine.programming.program;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -17,6 +17,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -36,12 +38,14 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
     private UUID                                id;
 
 
-    // > Model
+    // > Functors
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<Integer>           integerValue;
     private PrimitiveFunctor<String>            stringValue;
     private PrimitiveFunctor<Boolean>           booleanValue;
+    private PrimitiveFunctor<DiceRoll>          diceValue;
+    private PrimitiveFunctor<String[]>          listValue;
 
     private PrimitiveFunctor<ProgramValueType>  valueType;
 
@@ -51,13 +55,15 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
 
     public ProgramValueUnion()
     {
-        this.id           = null;
+        this.id             = null;
 
-        this.integerValue = new PrimitiveFunctor<>(null, Integer.class);
-        this.stringValue  = new PrimitiveFunctor<>(null, String.class);
-        this.booleanValue = new PrimitiveFunctor<>(null, Boolean.class);
+        this.integerValue   = new PrimitiveFunctor<>(null, Integer.class);
+        this.stringValue    = new PrimitiveFunctor<>(null, String.class);
+        this.booleanValue   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.diceValue      = new PrimitiveFunctor<>(null, DiceRoll.class);
+        this.listValue      = new PrimitiveFunctor<>(null, String[].class);
 
-        this.valueType    = new PrimitiveFunctor<>(null, ProgramValueType.class);
+        this.valueType      = new PrimitiveFunctor<>(null, ProgramValueType.class);
     }
 
 
@@ -75,6 +81,8 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
         this.integerValue = new PrimitiveFunctor<>(null, Integer.class);
         this.stringValue  = new PrimitiveFunctor<>(null, String.class);
         this.booleanValue = new PrimitiveFunctor<>(null, Boolean.class);
+        this.diceValue    = new PrimitiveFunctor<>(null, DiceRoll.class);
+        this.listValue    = new PrimitiveFunctor<>(null, String[].class);
 
         this.valueType    = new PrimitiveFunctor<>(valueType, ProgramValueType.class);
 
@@ -89,6 +97,12 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
                 break;
             case BOOLEAN:
                 this.stringValue.setValue((String) value);
+                break;
+            case DICE:
+                this.diceValue.setValue((DiceRoll) value);
+                break;
+            case LIST:
+                this.listValue.setValue((String[]) value);
                 break;
         }
     }
@@ -145,6 +159,61 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
     }
 
 
+    /**
+     * Create a "dice" variant.
+     * @param diceValue The dice value.
+     * @return A Program Value "dice" case.
+     */
+    public static ProgramValueUnion asDice(UUID id, DiceRoll diceValue)
+    {
+        return new ProgramValueUnion(id, diceValue, ProgramValueType.DICE);
+    }
+
+
+    /**
+     * Create a "dice" variant that is not a model.
+     * @param diceValue The dice value.
+     * @return A Program Value "dice" case.
+     */
+    public static ProgramValueUnion asDice(DiceRoll diceValue)
+    {
+        return new ProgramValueUnion(null, diceValue, ProgramValueType.DICE);
+    }
+
+
+    /**
+     * Create a "list" variant.
+     * @param listValue The list value.
+     * @return A Program Value "list" case.
+     */
+    public static ProgramValueUnion asList(UUID id, List<String> listValue)
+    {
+        String[] stringArray = new String[listValue.size()];
+        listValue.toArray(stringArray);
+        return new ProgramValueUnion(id, stringArray, ProgramValueType.LIST);
+    }
+
+
+    /**
+     * Create a "list" variant that is not a model.
+     * @param listValue The list value.
+     * @return A Program Value "list" case.
+     */
+    public static ProgramValueUnion asList(List<String> listValue)
+    {
+        String[] stringArray = new String[listValue.size()];
+        listValue.toArray(stringArray);
+        return new ProgramValueUnion(null, stringArray, ProgramValueType.LIST);
+    }
+
+
+    /**
+     * Create a ProgramValueUnion from its Yaml representation.
+     * @param yaml The yaml parser.
+     * @param valueType The type of Program VAlue.
+     * @return The parsed ProgramValueUnion.
+     * @throws YamlParseException
+     */
     public static ProgramValueUnion fromYaml(YamlParser yaml, ProgramValueType valueType)
                   throws YamlParseException
     {
@@ -158,6 +227,10 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
                 return ProgramValueUnion.asInteger(id, yaml.getInteger());
             case BOOLEAN:
                 return ProgramValueUnion.asBoolean(id, yaml.getBoolean());
+            case DICE:
+                return ProgramValueUnion.asDice(id, DiceRoll.fromYaml(yaml));
+            case LIST:
+                return ProgramValueUnion.asList(id, yaml.getStringList());
         }
 
         // Shouldn't be possible for ProgramValueType to be null
@@ -220,6 +293,10 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
                 return YamlBuilder.integer(this.integerValue());
             case BOOLEAN:
                 return YamlBuilder.bool(this.booleanValue());
+            case DICE:
+                return this.diceValue().toYaml();
+            case LIST:
+                return YamlBuilder.stringList(this.listValue());
             default:
                 ApplicationFailure.union(
                         UnionException.unknownVariant(
@@ -270,6 +347,26 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
     public Boolean booleanValue()
     {
         return this.booleanValue.getValue();
+    }
+
+
+    /**
+     * The dice value case.
+     * @return The DiceRoll.
+     */
+    public DiceRoll diceValue()
+    {
+        return this.diceValue.getValue();
+    }
+
+
+    /**
+     * The list value case.
+     * @return The list value.
+     */
+    public List<String> listValue()
+    {
+        return Arrays.asList(this.listValue.getValue());
     }
 
 
@@ -331,6 +428,18 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
                 return new EqualsBuilder()
                         .append(thisBoolean, thatBoolean)
                         .isEquals();
+            case DICE:
+                DiceRoll thatDiceRoll = functionValue.diceValue();
+                DiceRoll thisDiceRoll = this.diceValue();
+                return new EqualsBuilder()
+                        .append(thisDiceRoll, thatDiceRoll)
+                        .isEquals();
+            case LIST:
+                List<String> thatList = functionValue.listValue();
+                List<String> thisList = this.listValue();
+                return new EqualsBuilder()
+                        .append(thisList, thatList)
+                        .isEquals();
         }
 
         return false;
@@ -338,11 +447,14 @@ public class ProgramValueUnion implements Model, ToYaml, Serializable
 
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return new HashCodeBuilder(17, 37)
                     .append(stringValue)
                     .append(integerValue)
                     .append(booleanValue)
+                    .append(diceValue)
+                    .append(listValue)
                     .append(valueType)
                     .toHashCode();
     }

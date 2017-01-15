@@ -39,22 +39,24 @@ public class Function implements Model, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                               id;
+    private UUID                                    id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
-    private PrimitiveFunctor<ProgramValueType[]> parameterTypes;
-    private PrimitiveFunctor<ProgramValueType> resultType;
-    private CollectionFunctor<Tuple> tuples;
+    private PrimitiveFunctor<String>                name;
+    private PrimitiveFunctor<String>                label;
+    private PrimitiveFunctor<String>                description;
+    private PrimitiveFunctor<ProgramValueType[]>    parameterTypes;
+    private PrimitiveFunctor<ProgramValueType>      resultType;
+    private CollectionFunctor<Tuple>                tuples;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Map<Parameters,ProgramValueUnion> functionMap;
+    private Map<Parameters,ProgramValueUnion>       functionMap;
 
 
     // CONSTRUCTORS
@@ -64,6 +66,8 @@ public class Function implements Model, ToYaml, Serializable
     {
         this.id             = null;
         this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.label          = new PrimitiveFunctor<>(null, String.class);
+        this.description    = new PrimitiveFunctor<>(null, String.class);
         this.parameterTypes = new PrimitiveFunctor<>(null, ProgramValueType[].class);
         this.resultType     = new PrimitiveFunctor<>(null, ProgramValueType.class);
 
@@ -75,6 +79,8 @@ public class Function implements Model, ToYaml, Serializable
 
     public Function(UUID id,
                     String name,
+                    String label,
+                    String description,
                     List<ProgramValueType> parameterTypes,
                     ProgramValueType resultType,
                     List<Tuple> tuples)
@@ -85,6 +91,12 @@ public class Function implements Model, ToYaml, Serializable
 
         // ** Name
         this.name           = new PrimitiveFunctor<>(name, String.class);
+
+        // ** Label
+        this.label          = new PrimitiveFunctor<>(label, String.class);
+
+        // ** Description
+        this.description    = new PrimitiveFunctor<>(description, String.class);
 
         // ** Parameter Types
         ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
@@ -116,6 +128,12 @@ public class Function implements Model, ToYaml, Serializable
         // ** Name
         String name = yaml.atKey("name").getString();
 
+        // ** Label
+        String label = yaml.atMaybeKey("label").getString();
+
+        // ** Description
+        String description = yaml.atMaybeKey("name").getString();
+
         // ** Parameter Types
         final List<ProgramValueType> parameterTypes
                 = yaml.atKey("parameter_types").forEach(new YamlParser.ForEach<ProgramValueType>() {
@@ -136,7 +154,7 @@ public class Function implements Model, ToYaml, Serializable
             }
         });
 
-        return new Function(id, name, parameterTypes, resultType, tuples);
+        return new Function(id, name, label, description, parameterTypes, resultType, tuples);
     }
 
 
@@ -208,6 +226,26 @@ public class Function implements Model, ToYaml, Serializable
     public String name()
     {
         return this.name.getValue();
+    }
+
+
+    /**
+     * The function's label.
+     * @return The label.
+     */
+    public String label()
+    {
+        return this.label.getValue();
+    }
+
+
+    /**
+     * The function's description.
+     * @return The description.
+     */
+    public String description()
+    {
+        return this.description.getValue();
     }
 
 

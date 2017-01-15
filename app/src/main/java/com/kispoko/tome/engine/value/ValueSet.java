@@ -37,6 +37,8 @@ public class ValueSet implements Model, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<String>        label;
+    private PrimitiveFunctor<String>        description;
     private CollectionFunctor<ValueUnion>   values;
 
 
@@ -51,25 +53,33 @@ public class ValueSet implements Model, ToYaml, Serializable
 
     public ValueSet()
     {
-        this.id     = null;
+        this.id             = null;
 
-        this.name   = new PrimitiveFunctor<>(null, String.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.label          = new PrimitiveFunctor<>(null, String.class);
+        this.description    = new PrimitiveFunctor<>(null, String.class);
 
         List<Class<? extends ValueUnion>> valueClasses = new ArrayList<>();
         valueClasses.add(ValueUnion.class);
-        this.values = CollectionFunctor.empty(valueClasses);
+        this.values         = CollectionFunctor.empty(valueClasses);
     }
 
 
-    public ValueSet(UUID id, String name, List<ValueUnion> values)
+    public ValueSet(UUID id,
+                    String name,
+                    String label,
+                    String description,
+                    List<ValueUnion> values)
     {
-        this.id     = id;
+        this.id             = id;
 
-        this.name   = new PrimitiveFunctor<>(name, String.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.label          = new PrimitiveFunctor<>(label, String.class);
+        this.description    = new PrimitiveFunctor<>(description, String.class);
 
         List<Class<? extends ValueUnion>> valueClasses = new ArrayList<>();
         valueClasses.add(ValueUnion.class);
-        this.values = CollectionFunctor.full(values, valueClasses);
+        this.values         = CollectionFunctor.full(values, valueClasses);
 
         initialize();
     }
@@ -84,18 +94,22 @@ public class ValueSet implements Model, ToYaml, Serializable
     public static ValueSet fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID             id     = UUID.randomUUID();
+        UUID             id          = UUID.randomUUID();
 
-        String           name   = yaml.atKey("name").getString();
+        String           name        = yaml.atKey("name").getString();
+        String           label       = yaml.atMaybeKey("label").getString();
+        String           description = yaml.atMaybeKey("description").getString();
 
-        List<ValueUnion> values = yaml.atKey("values").forEach(new YamlParser.ForEach<ValueUnion>() {
+        List<ValueUnion> values      = yaml.atKey("values").forEach(
+                                            new YamlParser.ForEach<ValueUnion>()
+        {
             @Override
             public ValueUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return ValueUnion.fromYaml(yaml);
             }
         });
 
-        return new ValueSet(id, name, values);
+        return new ValueSet(id, name, label, description, values);
     }
 
 
@@ -165,14 +179,44 @@ public class ValueSet implements Model, ToYaml, Serializable
     }
 
 
+    /**
+     * The value set's label.
+      * @return The label.
+     */
+    public String label()
+    {
+        return this.label.getValue();
+    }
+
+
+    /**
+     * The value set description.
+     * @return The description.
+     */
+    public String description()
+    {
+        return this.description.getValue();
+    }
+
+
     // > Values
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The size of the value set (number of values it contains).
+     * @return The size.
+     */
+    public Integer size()
+    {
+        return this.values().size();
+    }
+
 
     /**
      * The set values.
      * @return The list of values.
      */
-    private List<ValueUnion> values()
+    public List<ValueUnion> values()
     {
         return this.values.getValue();
     }

@@ -65,6 +65,9 @@ public class YamlBuilder
             case BOOLEAN:
                 this.booleanValue = (Boolean) initialValue;
                 break;
+            case LIST_STRING:
+                this.listValue = (List<Object>) initialValue;
+                break;
         }
     }
 
@@ -92,6 +95,17 @@ public class YamlBuilder
         }
 
         return new YamlBuilder(YamlObjectType.LIST, yamlObjectList);
+    }
+
+
+    /**
+     * Create a Yaml Builder that represents a list of strings
+     * @param list The string list.
+     * @return the Yaml Builder.
+     */
+    public static YamlBuilder stringList(List<String> list)
+    {
+        return new YamlBuilder(YamlObjectType.LIST_STRING, list);
     }
 
 
@@ -159,6 +173,8 @@ public class YamlBuilder
                 return this.integerValue;
             case BOOLEAN:
                 return this.booleanValue;
+            case LIST_STRING:
+                return this.listValue;
         }
 
         return null;

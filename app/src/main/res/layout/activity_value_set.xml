@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/new_character_content"
+            android:id="@+id/value_set_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -37,30 +37,46 @@
 
             </android.support.v7.widget.Toolbar>
 
-
             <android.support.design.widget.CoordinatorLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ScrollView
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/summation_view"
+                android:layout_height="wrap_content">
+                
+                <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/dark_blue_9">
+                    android:layout_height="match_parent">
 
-                </ScrollView>
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/value_set_tab_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/dark_blue_9"
+                        app:tabGravity="fill"
+                        app:tabMode="fixed"
+                        app:tabTextColor="@color/dark_blue_hl_7"
+                        app:tabSelectedTextColor="@color/dark_blue_hlx_7"
+                        app:tabIndicatorColor="@color/dark_blue_hlx_7"
+                        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/value_set_pager"
+                        android:layout_width="match_parent"
+                        android:focusableInTouchMode="true"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+                    </android.support.v4.view.ViewPager>
+
+                </LinearLayout>
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/button_new_sheet"
+                    android:id="@+id/button_new_value_set_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:clickable="true"
-                    android:src="@drawable/ic_edit_summation"
-                    app:layout_anchor="@id/summation_view"
+                    android:src="@drawable/ic_dictionary_new_value_set"
+                    app:layout_anchor="@id/value_set_pager"
                     app:layout_anchorGravity="bottom|right"
                     app:backgroundTint="@color/green_hlx_5"
                     app:rippleColor="#FFF" />
@@ -68,9 +84,7 @@
             </android.support.design.widget.CoordinatorLayout>
 
 
-
         </LinearLayout>
-
 
     </RelativeLayout>
 
