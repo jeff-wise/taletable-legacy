@@ -525,9 +525,17 @@ public class SheetActivity
                                                  R.string.button_functions_description,
                                                  onFunctionsClick));
 
+        // > Programs Button
+        View.OnClickListener onProgramsClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SheetActivity.this, ProgramIndexActivity.class);
+                startActivity(intent);
+            }
+        };
         buttonsLayout.addView(sheetOptionsButton(R.string.button_programs_label,
                                                  R.string.button_programs_description,
-                                                 null));
+                                                 onProgramsClick));
 
         buttonsLayout.addView(sheetOptionsButton(R.string.button_mechanics_label,
                                                  R.string.button_mechanics_description,
@@ -618,7 +626,7 @@ public class SheetActivity
         description.textId          = descriptionStringId;
         description.font            = Font.sansSerifFontRegular(this);
         description.size            = R.dimen.nav_view_sheet_options_button_description_text_size;
-        description.color           = R.color.dark_blue_hl_5;
+        description.color           = R.color.dark_blue_hl_8;
 
         return layout.linearLayout(this);
     }

@@ -38,6 +38,9 @@ engine:
     parameter_types:
     - integer
     result_type: integer
+    parameter_names:
+    - Ability Score
+    result_name: Ability Modifier
     tuples:
     - parameters:
       - 1
@@ -136,6 +139,9 @@ engine:
     parameter_types:
     - integer
     result_type: integer
+    parameter_names:
+    - Level
+    result_name: Proficiency Bonus
     tuples:
     - parameters:
       - 1
@@ -204,6 +210,9 @@ engine:
     parameter_types:
     - string
     result_type: dice
+    parameter_names:
+    - Class
+    result_name: Hit Dice
     tuples:
     - parameters:
       - barbarian
@@ -260,6 +269,9 @@ engine:
     parameter_types:
     - string
     result_type: list
+    parameter_names:
+    - Class
+    result_name: Saving Throws
     tuples:
     - parameters:
       - barbarian
@@ -328,6 +340,9 @@ engine:
     parameter_types:
     - integer
     result_type: dice
+    parameter_names:
+    - Level
+    result_name: Damage
     tuples:
     - parameters:
       - 1
@@ -434,6 +449,9 @@ engine:
     parameter_types:
     - integer
     result_type: integer
+    parameter_names:
+    - Level
+    result_name: Rages Per Day
     tuples:
     - parameters:
       - 1
@@ -502,6 +520,9 @@ engine:
     parameter_types:
     - integer
     result_type: integer
+    parameter_names:
+    - Level
+    result_name: Cantrips Known
     tuples:
     - parameters:
       - 1
@@ -570,6 +591,9 @@ engine:
     parameter_types:
     - integer
     result_type: integer
+    parameter_names:
+    - Level
+    result_name: Spells Known
     tuples:
     - parameters:
       - 1
@@ -633,6 +657,9 @@ engine:
       result: 15
   programs:
   - name: ability_modifier
+    label: Ability Modifier
+    description: >
+      Calculates the modifier value for any ability score value.
     parameter_types:
     - integer
     result_type: integer
@@ -643,6 +670,9 @@ engine:
       - type: parameter
         value: 1
   - name: ability_modifier_string
+    label: Ability Modifier String
+    description: >
+      Takes a modifier value and creates a string of the modifier with a plus or minus sign prefix.
     parameter_types:
     - integer
     result_type: string

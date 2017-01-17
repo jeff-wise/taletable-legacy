@@ -1,5 +1,4 @@
-
-package com.kispoko.tome.activity.functionindex;
+package com.kispoko.tome.activity.programindex;
 
 
 import android.content.Context;
@@ -18,9 +17,9 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 
 
 /**
- * Function List Item View
+ * Program List Item View
  */
-public class FunctionListItemView
+public class ProgramListItemView
 {
 
 
@@ -45,7 +44,7 @@ public class FunctionListItemView
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.id                       = R.id.function_list_item_layout;
+        layout.id                       = R.id.program_list_item_layout;
         layout.orientation              = LinearLayout.VERTICAL;
         layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -63,15 +62,15 @@ public class FunctionListItemView
     {
         TextViewBuilder header = new TextViewBuilder();
 
-        header.id                   = R.id.function_list_item_header;
+        header.id                   = R.id.program_list_item_header;
         header.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         header.font                 = Font.sansSerifFontBold(context);
         header.color                = R.color.gold_5;
-        header.size                 = R.dimen.function_list_item_header_text_size;
+        header.size                 = R.dimen.program_list_item_header_text_size;
 
-        header.margin.bottom        = R.dimen.function_list_item_header_margin_bottom;
+        header.margin.bottom        = R.dimen.program_list_item_header_margin_bottom;
 
         return header.textView(context);
     }
@@ -81,15 +80,15 @@ public class FunctionListItemView
     {
         TextViewBuilder description = new TextViewBuilder();
 
-        description.id                  = R.id.function_list_item_description;
+        description.id                  = R.id.program_list_item_description;
         description.width               = LinearLayout.LayoutParams.MATCH_PARENT;
         description.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         description.font                = Font.sansSerifFontRegular(context);
         description.color               = R.color.dark_blue_hl_8;
-        description.size                = R.dimen.function_list_item_description_text_size;
+        description.size                = R.dimen.program_list_item_description_text_size;
 
-        description.margin.bottom       = R.dimen.function_list_item_description_margin_bottom;
+        description.margin.bottom       = R.dimen.program_list_item_description_margin_bottom;
 
         return description.textView(context);
     }
@@ -136,7 +135,7 @@ public class FunctionListItemView
 
         arrow.image             = R.drawable.ic_type_arrow;
 
-        arrow.margin.right      = R.dimen.function_list_item_type_margin_right;
+        arrow.margin.right      = R.dimen.program_list_item_type_margin_right;
 
         return arrow.imageView(context);
     }
@@ -151,24 +150,24 @@ public class FunctionListItemView
 
         type.color              = R.color.dark_blue_hl_8;
         type.font               = Font.sansSerifFontRegular(context);
-        type.size               = R.dimen.function_list_item_type_text_size;
+        type.size               = R.dimen.program_list_item_type_text_size;
 
         type.backgroundResource = R.drawable.bg_parameter_type;
         type.visibility         = View.GONE;
 
-        type.margin.right       = R.dimen.function_list_item_type_margin_right;
+        type.margin.right       = R.dimen.program_list_item_type_margin_right;
 
         // > Set the id
         switch (parameterIndex)
         {
             case 1:
-                type.id = R.id.function_list_item_parameter_type_1;
+                type.id = R.id.program_list_item_parameter_type_1;
                 break;
             case 2:
-                type.id = R.id.function_list_item_parameter_type_2;
+                type.id = R.id.program_list_item_parameter_type_2;
                 break;
             case 3:
-                type.id = R.id.function_list_item_parameter_type_3;
+                type.id = R.id.program_list_item_parameter_type_3;
                 break;
         }
 
@@ -180,18 +179,19 @@ public class FunctionListItemView
     {
         TextViewBuilder type = new TextViewBuilder();
 
-        type.id                 = R.id.function_list_item_result_type;
+        type.id                 = R.id.program_list_item_result_type;
         type.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
         type.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         type.color              = R.color.dark_blue_hl_8;
         type.font               = Font.sansSerifFontRegular(context);
-        type.size               = R.dimen.function_list_item_type_text_size;
+        type.size               = R.dimen.program_list_item_type_text_size;
 
         type.backgroundResource = R.drawable.bg_result_type;
 
         return type.textView(context);
     }
+
 
 
 }

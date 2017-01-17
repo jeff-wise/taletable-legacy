@@ -128,8 +128,8 @@ public class NumberActivity extends AppCompatActivity
         LinearLayout layout = viewLayout();
 
         // > Add Calculator to view
-        LinearLayout calculator = Calculator.view(value, this);
-        layout.addView(calculator);
+//        LinearLayout calculator = Calculator.view(value, this);
+//        layout.addView(calculator);
 
         return layout;
     }

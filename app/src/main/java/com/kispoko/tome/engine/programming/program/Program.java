@@ -39,6 +39,8 @@ public class Program implements Model, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String>                name;
+    private PrimitiveFunctor<String>                label;
+    private PrimitiveFunctor<String>                description;
 
     private PrimitiveFunctor<ProgramValueType[]>    parameterTypes;
     private PrimitiveFunctor<ProgramValueType>      resultType;
@@ -56,6 +58,12 @@ public class Program implements Model, ToYaml, Serializable
 
         // ** Name
         this.name            = new PrimitiveFunctor<>(null, String.class);
+
+        // ** Label
+        this.label           = new PrimitiveFunctor<>(null, String.class);
+
+        // ** Description
+        this.description     = new PrimitiveFunctor<>(null, String.class);
 
         // ** Parameter Types
         this.parameterTypes  = new PrimitiveFunctor<>(null, ProgramValueType[].class);
@@ -75,6 +83,8 @@ public class Program implements Model, ToYaml, Serializable
 
     public Program(UUID id,
                    String name,
+                   String label,
+                   String description,
                    List<ProgramValueType> parameterTypes,
                    ProgramValueType resultType,
                    List<Statement> statements,
@@ -84,6 +94,12 @@ public class Program implements Model, ToYaml, Serializable
 
         // ** Name
         this.name            = new PrimitiveFunctor<>(name, String.class);
+
+        // ** Label
+        this.label           = new PrimitiveFunctor<>(label, String.class);
+
+        // ** Description
+        this.description     = new PrimitiveFunctor<>(description, String.class);
 
         // ** Parameter Types
         ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
@@ -117,6 +133,12 @@ public class Program implements Model, ToYaml, Serializable
         // ** Name
         String   name           = yaml.atKey("name").getString();
 
+        // ** Label
+        String   label          = yaml.atMaybeKey("label").getString();
+
+        // ** Description
+        String   description    = yaml.atMaybeKey("description").getString();
+
         // ** Parameter Types
         List<ProgramValueType> parameterTypes
                 = yaml.atKey("parameter_types").forEach(new YamlParser.ForEach<ProgramValueType>() {
@@ -141,7 +163,8 @@ public class Program implements Model, ToYaml, Serializable
         // ** Result Statement
         Statement resultStatement = Statement.fromYaml(yaml.atKey("result_statement"));
 
-        return new Program(id, name, parameterTypes, resultType, statements, resultStatement);
+        return new Program(id, name, label, description, parameterTypes, resultType,
+                           statements, resultStatement);
     }
 
 
@@ -217,6 +240,32 @@ public class Program implements Model, ToYaml, Serializable
     }
 
 
+    // ** Label
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The Program's label (human-friendly name).
+     * @return The label.
+     */
+    public String label()
+    {
+        return this.label.getValue();
+    }
+
+
+    // ** Description
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * A description of what the program is/does.
+     * @return The description.
+     */
+    public String description()
+    {
+        return this.description.getValue();
+    }
+
+
     // ** Parameter Types
     // ------------------------------------------------------------------------------------------
 
@@ -240,7 +289,7 @@ public class Program implements Model, ToYaml, Serializable
     }
 
 
-    // ** Result ErrorType
+    // ** Result Type
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -289,7 +338,6 @@ public class Program implements Model, ToYaml, Serializable
     // ** Result Statement
     // ------------------------------------------------------------------------------------------
 
-
     /**
      * Get the program's result statement. The result of the result statement is the result
      * of the program.
@@ -298,6 +346,19 @@ public class Program implements Model, ToYaml, Serializable
     public Statement resultStatement()
     {
         return this.resultStatement.getValue();
+    }
+
+
+    // > Arity
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The number of parameters the program accepts.
+     * @return The program arity.
+     */
+    public int arity()
+    {
+        return this.parameterTypes().size();
     }
 
 

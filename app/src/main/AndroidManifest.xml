@@ -85,6 +85,17 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Function" />
 
+    <activity
+        android:name=".activity.ProgramIndexActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Programs" />
+
+    <activity
+        android:name=".activity.ProgramActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Program" />
+
 
 </application>
 

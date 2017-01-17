@@ -38,6 +38,7 @@ public class TableLayoutBuilder
     public Padding                 padding;
 
     public Boolean                 shrinkAllColumns;
+    public Boolean                 stretchAllColumns;
 
     public View.OnClickListener    onClick;
 
@@ -64,6 +65,7 @@ public class TableLayoutBuilder
         this.padding            = new Padding();
 
         this.shrinkAllColumns   = null;
+        this.stretchAllColumns  = null;
 
         this.onClick            = null;
     }
@@ -129,11 +131,17 @@ public class TableLayoutBuilder
         if (this.backgroundResource != null)
             tableLayout.setBackgroundResource(this.backgroundResource);
 
-        // > Shrink All Column
+        // > Shrink All Columns
         // --------------------------------------------------------------------------------------
 
         if (this.shrinkAllColumns != null)
             tableLayout.setShrinkAllColumns(this.shrinkAllColumns);
+
+        // > Stretch All Columns
+        // --------------------------------------------------------------------------------------
+
+        if (this.stretchAllColumns != null)
+            tableLayout.setStretchAllColumns(this.stretchAllColumns);
 
 
         // [2] Layout Parameters

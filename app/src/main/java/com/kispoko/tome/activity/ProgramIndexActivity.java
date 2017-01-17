@@ -15,8 +15,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.functionindex.FunctionListRecyclerViewAdapter;
-import com.kispoko.tome.engine.programming.function.FunctionIndex;
+import com.kispoko.tome.activity.programindex.ProgramListRecyclerViewAdapter;
+import com.kispoko.tome.engine.programming.program.ProgramIndex;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
@@ -24,9 +24,9 @@ import com.kispoko.tome.util.UI;
 
 
 /**
- * Function Index Activity
+ * Program Index Activity
  */
-public class FunctionIndexActivity extends AppCompatActivity
+public class ProgramIndexActivity extends AppCompatActivity
 {
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -37,13 +37,13 @@ public class FunctionIndexActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_function_index);
+        setContentView(R.layout.activity_program_index);
 
         initializeToolbar();
 
-        FunctionIndex functionIndex = SheetManager.currentSheet().engine().functionIndex();
+        ProgramIndex programIndex = SheetManager.currentSheet().engine().programIndex();
 
-        initializeView(functionIndex);
+        initializeView(programIndex);
     }
 
 
@@ -97,7 +97,7 @@ public class FunctionIndexActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // > Set the title
-        String title = "Functions";
+        String title = "Programs";
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
     }
@@ -106,26 +106,25 @@ public class FunctionIndexActivity extends AppCompatActivity
     /**
      * Initialize the template list view.
      */
-    private void initializeView(FunctionIndex functionIndex)
+    private void initializeView(ProgramIndex programIndex)
     {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.function_index_list_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.program_index_list_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
         recyclerView.setAdapter(
-                new FunctionListRecyclerViewAdapter(functionIndex.functions(), this));
+                new ProgramListRecyclerViewAdapter(programIndex.programs(), this));
 
         FloatingActionButton addValueSetButton =
-                (FloatingActionButton) findViewById(R.id.button_new_function);
+                (FloatingActionButton) findViewById(R.id.button_new_program);
         addValueSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FunctionIndexActivity.this, FunctionActivity.class);
+                Intent intent = new Intent(ProgramIndexActivity.this, ProgramActivity.class);
                 startActivity(intent);
             }
         });
 
     }
-
 
 }

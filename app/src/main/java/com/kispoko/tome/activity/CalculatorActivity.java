@@ -7,26 +7,24 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.functionindex.FunctionListRecyclerViewAdapter;
 import com.kispoko.tome.engine.programming.function.FunctionIndex;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
-
+import com.kispoko.tome.view.Calculator;
 
 
 /**
- * Function Index Activity
+ * Calculator Activity
  */
-public class FunctionIndexActivity extends AppCompatActivity
+public class CalculatorActivity extends AppCompatActivity
 {
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -37,13 +35,11 @@ public class FunctionIndexActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_function_index);
+        setContentView(R.layout.activity_calculator);
 
         initializeToolbar();
 
-        FunctionIndex functionIndex = SheetManager.currentSheet().engine().functionIndex();
-
-        initializeView(functionIndex);
+        initializeView();
     }
 
 
@@ -103,29 +99,26 @@ public class FunctionIndexActivity extends AppCompatActivity
     }
 
 
-    /**
-     * Initialize the template list view.
-     */
-    private void initializeView(FunctionIndex functionIndex)
+    private void initializeView()
     {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.function_index_list_view);
+        FrameLayout activityLayout = (FrameLayout) findViewById(R.id.calculator_view);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-        recyclerView.setAdapter(
-                new FunctionListRecyclerViewAdapter(functionIndex.functions(), this));
+        // > Calculator View
+        // -------------------------------------------------------------------------------------
+        //activityLayout.addView(Calculator.view(0, this));
 
-        FloatingActionButton addValueSetButton =
-                (FloatingActionButton) findViewById(R.id.button_new_function);
-        addValueSetButton.setOnClickListener(new View.OnClickListener() {
+        // > Floating Action Button
+        // -------------------------------------------------------------------------------------
+
+        FloatingActionButton calculateButton =
+                (FloatingActionButton) findViewById(R.id.button_calculate);
+
+        calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FunctionIndexActivity.this, FunctionActivity.class);
-                startActivity(intent);
             }
         });
 
     }
-
 
 }

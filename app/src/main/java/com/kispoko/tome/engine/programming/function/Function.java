@@ -50,6 +50,8 @@ public class Function implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>                description;
     private PrimitiveFunctor<ProgramValueType[]>    parameterTypes;
     private PrimitiveFunctor<ProgramValueType>      resultType;
+    private PrimitiveFunctor<String[]>              parameterNames;
+    private PrimitiveFunctor<String>                resultName;
     private CollectionFunctor<Tuple>                tuples;
 
 
@@ -70,6 +72,8 @@ public class Function implements Model, ToYaml, Serializable
         this.description    = new PrimitiveFunctor<>(null, String.class);
         this.parameterTypes = new PrimitiveFunctor<>(null, ProgramValueType[].class);
         this.resultType     = new PrimitiveFunctor<>(null, ProgramValueType.class);
+        this.parameterNames = new PrimitiveFunctor<>(null, String[].class);
+        this.resultName     = new PrimitiveFunctor<>(null, String.class);
 
         List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
         tupleClasses.add(Tuple.class);
@@ -83,6 +87,8 @@ public class Function implements Model, ToYaml, Serializable
                     String description,
                     List<ProgramValueType> parameterTypes,
                     ProgramValueType resultType,
+                    List<String> parameterNames,
+                    String resultName,
                     List<Tuple> tuples)
            throws InvalidFunctionException
     {
@@ -103,8 +109,16 @@ public class Function implements Model, ToYaml, Serializable
                                                     new ProgramValueType[parameterTypes.size()]);
         this.parameterTypes = new PrimitiveFunctor<>(parameterTypeArray, ProgramValueType[].class);
 
-        // ** Result ErrorType
+        // ** Result Type
         this.resultType     = new PrimitiveFunctor<>(resultType, ProgramValueType.class);
+
+        // ** Parameter Names
+        String[] parameterNameArray = new String[parameterNames.size()];
+        parameterNames.toArray(parameterNameArray);
+        this.parameterNames = new PrimitiveFunctor<>(parameterNameArray, String[].class);
+
+        // ** Result Name
+        this.resultName     = new PrimitiveFunctor<>(resultName, String.class);
 
         // ** Tuples
         List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
@@ -143,8 +157,14 @@ public class Function implements Model, ToYaml, Serializable
             }
         });
 
-        // ** Result ErrorType
+        // ** Result Type
         final ProgramValueType resultType = ProgramValueType.fromYaml(yaml.atKey("result_type"));
+
+        // ** Parameter Names
+        List<String> parameterNames = yaml.atMaybeKey("parameter_names").getStringList();
+
+        // ** Result Name
+        String resultName = yaml.atMaybeKey("result_name").getString();
 
         // ** Tuples
         List<Tuple> tuples = yaml.atKey("tuples").forEach(new YamlParser.ForEach<Tuple>() {
@@ -154,7 +174,8 @@ public class Function implements Model, ToYaml, Serializable
             }
         });
 
-        return new Function(id, name, label, description, parameterTypes, resultType, tuples);
+        return new Function(id, name, label, description, parameterTypes, resultType,
+                            parameterNames, resultName, tuples);
     }
 
 
@@ -210,8 +231,12 @@ public class Function implements Model, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putString("name", this.name())
+                .putString("label", this.label())
+                .putString("description", this.description())
                 .putList("parameter_types", this.parameterTypes())
                 .putYaml("result_type", this.resultType())
+                .putStringList("parameter_names", this.parameterNames())
+                .putString("result_name", this.resultName())
                 .putList("tuples", this.tuples());
     }
 
@@ -266,6 +291,26 @@ public class Function implements Model, ToYaml, Serializable
     public ProgramValueType resultType()
     {
         return this.resultType.getValue();
+    }
+
+
+    /**
+     * The function's parameter names.
+     * @return The List of names.
+     */
+    public List<String> parameterNames()
+    {
+        return Arrays.asList(this.parameterNames.getValue());
+    }
+
+
+    /**
+     * The name of the function's result.
+     * @return The reuslt name.
+     */
+    public String resultName()
+    {
+        return this.resultName.getValue();
     }
 
 

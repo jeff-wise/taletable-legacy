@@ -101,5 +101,23 @@
     <string name="value_set_new_value_dialog_title">New Value</string>
     <string name="value_set_new_value_dialog_add">ADD VALUE</string>
 
+    <!-- ACTIVITY: FUNCTION -->
+    <!-- ==================================================================================== -->
+
+    <string name="function_field_name_label">Name</string>
+    <string name="function_field_name_description">
+        The Function\'s identifier. This value is used to uniquely identify the Function when
+        programming.
+    </string>
+
+    <string name="function_field_label_label">Label</string>
+    <string name="function_field_label_description">
+        The function name in form for human consumption.
+    </string>
+
+    <string name="function_field_description_label">Description</string>
+    <string name="function_field_description_description">
+        A description of what the function represents or calculates.
+    </string>
 
 </resources>

@@ -22,8 +22,18 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 public class Calculator
 {
 
+    // PROPERTIES
+    // --------------------------------------------------------------------------------------
 
-    public static LinearLayout view(int startValue, Context context)
+
+    // CONSTRUCTORS
+    // --------------------------------------------------------------------------------------
+
+
+    // API
+    // --------------------------------------------------------------------------------------
+
+    public LinearLayout view(int startValue, Context context)
     {
         LinearLayout layout = calculatorLayout(context);
 
@@ -63,7 +73,13 @@ public class Calculator
     }
 
 
-    private static LinearLayout calculatorLayout(Context context)
+    // INTERNAL
+    // --------------------------------------------------------------------------------------
+
+    // > VIEWS
+    // --------------------------------------------------------------------------------------
+
+    private LinearLayout calculatorLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -79,7 +95,7 @@ public class Calculator
      * The result view.
      * @return The Linear Layout.
      */
-    private static LinearLayout resultView(int startValue, Context context)
+    private LinearLayout resultView(int startValue, Context context)
     {
         // [1] Declarations
         // --------------------------------------------------------------------------------------
@@ -122,7 +138,7 @@ public class Calculator
      * @param context The context.
      * @return The Linear Layout.
      */
-    private static LinearLayout topRowLayout(Context context)
+    private LinearLayout topRowLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -143,7 +159,7 @@ public class Calculator
      * @param context The context.
      * @return The Text View.
      */
-    private static TextView incrementButton(Context context)
+    private TextView incrementButton(Context context)
     {
         TextViewBuilder button = new TextViewBuilder();
 
@@ -171,7 +187,7 @@ public class Calculator
      * @param context The context.
      * @return The Text View.
      */
-    private static TextView decrementButton(Context context)
+    private TextView decrementButton(Context context)
     {
         TextViewBuilder button = new TextViewBuilder();
 
@@ -199,7 +215,7 @@ public class Calculator
      * @param context The context.
      * @return The Text View.
      */
-    private static TextView clearButton(Context context)
+    private TextView clearButton(Context context)
     {
         TextViewBuilder button = new TextViewBuilder();
 
@@ -228,7 +244,7 @@ public class Calculator
      * @param context The context.
      * @return The Text View.
      */
-    private static TextView equalsButton(Context context)
+    private TextView equalsButton(Context context)
     {
         TextViewBuilder button = new TextViewBuilder();
 
@@ -257,7 +273,7 @@ public class Calculator
      * @param context The context.
      * @return The Linear Layout.
      */
-    private static LinearLayout numberPadView(Context context)
+    private LinearLayout numberPadView(Context context)
     {
         LinearLayout layout = numberPadLayout(context);
 
@@ -315,7 +331,7 @@ public class Calculator
      * @param context The context.
      * @return The Linear Layout.
      */
-    private static LinearLayout numberPadLayout(Context context)
+    private LinearLayout numberPadLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -336,7 +352,7 @@ public class Calculator
      * @param context The context.
      * @return The Linear Layout.
      */
-    private static LinearLayout numberPadRowView(Context context)
+    private LinearLayout numberPadRowView(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -354,7 +370,7 @@ public class Calculator
      * @param context The context.
      * @return The Text View.
      */
-    private static TextView numberButton(String label, Context context)
+    private TextView numberButton(String label, Context context)
     {
         TextViewBuilder button = new TextViewBuilder();
 
@@ -385,7 +401,7 @@ public class Calculator
      * @param context The context.
      * @return The Linear Layout.
      */
-    private static LinearLayout operatorsRowView(Context context)
+    private LinearLayout operatorsRowView(Context context)
     {
         LinearLayout layout = operatorsRowLayout(context);
 
