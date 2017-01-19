@@ -7,6 +7,10 @@
 
     <string name="dialog_cancel">CANCEL</string>
 
+    <string name="action_delete">DELETE</string>
+
+    <string name="toolbar_home">HOME</string>
+
 
     <!-- BOTTOM NAVIGATION -->
     <!-- ==================================================================================== -->
@@ -163,6 +167,32 @@
 
     <string name="statement_field_function_button_builtin">CHOOSE BUILT-IN</string>
     <string name="statement_field_function_button_defined">CHOOSE DEFINED</string>
+
+    <!-- ACTIVITY: MECHANIC INDEX -->
+    <!-- ==================================================================================== -->
+
+    <string name="mechanic_list_item_variable">Variable</string>
+    <string name="mechanic_list_item_variables">Variables</string>
+
+
+    <!-- ACTIVITY: MECHANIC -->
+    <!-- ==================================================================================== -->
+
+    <string name="mechanic_field_name_label">Name</string>
+    <string name="mechanic_field_name_description">
+        The Mechanic\'s identifier. This value is used to uniquely identify the Mechanic when
+        programming.
+    </string>
+
+    <string name="mechanic_field_label_label">Label</string>
+    <string name="mechanic_field_label_description">
+        The mechanic name (meant to be read by people).
+    </string>
+
+    <string name="mechanic_field_type_label">Type</string>
+    <string name="mechanic_field_type_description">
+        The type of mechanic i.e. a category that the mechanic belongs to.
+    </string>
 
 
 </resources>

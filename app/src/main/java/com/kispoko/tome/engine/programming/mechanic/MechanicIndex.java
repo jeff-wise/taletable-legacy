@@ -46,6 +46,8 @@ public class MechanicIndex implements Model, ToYaml, Serializable
 
     private Map<String,Set<Mechanic>>   requirementToListeners;
 
+    private Map<String,Mechanic>        mechanicsByName;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -155,7 +157,7 @@ public class MechanicIndex implements Model, ToYaml, Serializable
      * Get the mechanics in the index.
      * @return The list of mechanics.
      */
-    private List<Mechanic> mechanics()
+    public List<Mechanic> mechanics()
     {
         return this.mechanics.getValue();
     }
@@ -172,6 +174,12 @@ public class MechanicIndex implements Model, ToYaml, Serializable
                 mechanic.onRequirementUpdate();
             }
         }
+    }
+
+
+    public Mechanic mechanicWithName(String mechanicName)
+    {
+        return this.mechanicsByName.get(mechanicName);
     }
 
 
@@ -195,6 +203,14 @@ public class MechanicIndex implements Model, ToYaml, Serializable
                 Set<Mechanic> listeners = this.requirementToListeners.get(requirement);
                 listeners.add(mechanic);
             }
+        }
+
+        // Index mechanic names
+        // --------------------------------------------------------------------------------------
+
+        this.mechanicsByName = new HashMap<>();
+        for (Mechanic mechanic : this.mechanics()) {
+            this.mechanicsByName.put(mechanic.name(), mechanic);
         }
 
     }

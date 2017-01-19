@@ -2,8 +2,6 @@
 package com.kispoko.tome.engine.variable;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.engine.State;
 
 import java.util.List;
@@ -20,6 +18,7 @@ public abstract class Variable
     // ------------------------------------------------------------------------------------------
 
     public abstract String                  name();
+    public abstract String                  label();
     public abstract void                    setName(String name);
     public abstract boolean                 isNamespaced();
     public abstract List<VariableReference> dependencies();
@@ -29,7 +28,7 @@ public abstract class Variable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private OnUpdateListener onUpdateListener;
+    private OnUpdateListener                onUpdateListener;
 
 
     // CONSTRUCTORS

@@ -1,0 +1,9 @@
+
+
+---
+name: cache_variable_values
+type: feature
+priority: 75
+tags: 
+- before_release
+- performance

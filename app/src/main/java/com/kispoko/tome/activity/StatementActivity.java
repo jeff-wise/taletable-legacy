@@ -6,10 +6,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.engine.programming.program.statement.Parameter;
 import com.kispoko.tome.engine.programming.program.statement.Statement;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.ui.Form;
@@ -132,22 +136,51 @@ public class StatementActivity extends AppCompatActivity
         String builtInButtonLabel = getString(R.string.statement_field_function_button_builtin);
         String definedButtonLabel = getString(R.string.statement_field_function_button_defined);
 
-        TextView builtInButton = Form.textInputButton(builtInButtonLabel, this);
-        TextView definedButton = Form.textInputButton(definedButtonLabel, this);
+        LinearLayout builtInButton = Form.textInputButton(builtInButtonLabel,
+                                                          R.drawable.ic_statement_function_choose,
+                                                          this);
+        LinearLayout definedButton = Form.textInputButton(definedButtonLabel,
+                                                          R.drawable.ic_statement_function_choose,
+                                                          this);
 
-        List<TextView> functionButtons = Arrays.asList(builtInButton, definedButton);
+        List<LinearLayout> functionButtons = Arrays.asList(builtInButton, definedButton);
         LinearLayout inputView = Form.textInput(this.statement.functionName(),
-                                                functionButtons, this);
+                                                functionButtons,
+                                                this);
 
         LinearLayout functionField = Form.field(R.string.statement_field_function_label,
                                                 R.string.statement_field_function_description,
                                                 inputView,
                                                 this);
 
+        // > Parameters Field
+        // -------------------------------------------------------------------------------------
+
+        List<String> columnNames = Arrays.asList("Value", "Type");
+        TableLayout parametersTable = Form.tableInput(columnNames, this);
+
+        for (Parameter parameter : this.statement.parameters())
+        {
+            LinearLayout valueCell = Form.textInputCell(parameter.valueString(), this);
+            TextView typeCell = Form.buttonInputCell(parameter.typeString(), this);
+            TableRow parameterRow = Form.tableInputRow(this);
+            parameterRow.addView(valueCell);
+            parameterRow.addView(typeCell);
+
+            parametersTable.addView(parameterRow);
+        }
+
+        LinearLayout parametersField =
+                Form.field(R.string.statement_field_parameters_label,
+                           R.string.statement_field_parameters_description,
+                           parametersTable,
+                           this);
+
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
         layout.addView(functionField);
+        layout.addView(parametersField);
 
 
         return layout;

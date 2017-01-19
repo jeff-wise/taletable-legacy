@@ -46,6 +46,7 @@ public class BooleanVariable extends Variable
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String>    name;
+    private PrimitiveFunctor<String>    label;
 
     private PrimitiveFunctor<Boolean>   booleanValue;
     private ModelFunctor<Invocation>    invocationValue;
@@ -74,6 +75,7 @@ public class BooleanVariable extends Variable
         this.id                     = null;
 
         this.name                   = new PrimitiveFunctor<>(null, String.class);
+        this.label                  = new PrimitiveFunctor<>(null, String.class);
 
         this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
         this.invocationValue        = ModelFunctor.empty(Invocation.class);
@@ -99,6 +101,7 @@ public class BooleanVariable extends Variable
      */
     private BooleanVariable(UUID id,
                             String name,
+                            String label,
                             Object value,
                             Kind kind,
                             RefinementId refinementId,
@@ -110,6 +113,7 @@ public class BooleanVariable extends Variable
         this.id                     = id;
 
         this.name                   = new PrimitiveFunctor<>(name, String.class);
+        this.label                  = new PrimitiveFunctor<>(label, String.class);
 
         this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
         this.invocationValue        = ModelFunctor.full(null, Invocation.class);
@@ -157,12 +161,13 @@ public class BooleanVariable extends Variable
      */
     public static BooleanVariable asBoolean(UUID id,
                                             String name,
+                                            String label,
                                             Boolean booleanValue,
                                             RefinementId refinementId,
                                             Boolean isNamespaced,
                                             List<String> tags)
     {
-        return new BooleanVariable(id, name, booleanValue, Kind.LITERAL, refinementId,
+        return new BooleanVariable(id, name, label, booleanValue, Kind.LITERAL, refinementId,
                                    isNamespaced, tags);
     }
 
@@ -176,7 +181,7 @@ public class BooleanVariable extends Variable
     public static BooleanVariable asBoolean(UUID id,
                                             Boolean booleanValue)
     {
-        return new BooleanVariable(id, null, booleanValue, Kind.LITERAL, null, null, null);
+        return new BooleanVariable(id, null, null, booleanValue, Kind.LITERAL, null, null, null);
     }
 
 
@@ -188,12 +193,13 @@ public class BooleanVariable extends Variable
      */
     public static BooleanVariable asProgram(UUID id,
                                             String name,
+                                            String label,
                                             Invocation invocation,
                                             RefinementId refinementId,
                                             Boolean isNamespaced,
                                             List<String> tags)
     {
-        return new BooleanVariable(id, name, invocation, Kind.PROGRAM, refinementId,
+        return new BooleanVariable(id, name, label, invocation, Kind.PROGRAM, refinementId,
                                    isNamespaced, tags);
     }
 
@@ -212,6 +218,7 @@ public class BooleanVariable extends Variable
 
         UUID         id                 = UUID.randomUUID();
         String       name               = yaml.atMaybeKey("name").getString();
+        String       label              = yaml.atMaybeKey("label").getString();
         Kind         kind               = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId       = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
         Boolean      isNamespaced       = yaml.atMaybeKey("namespaced").getBoolean();
@@ -221,11 +228,11 @@ public class BooleanVariable extends Variable
         {
             case LITERAL:
                 Boolean booleanValue  = yaml.atKey("value").getBoolean();
-                return BooleanVariable.asBoolean(id, name, booleanValue, refinementId,
+                return BooleanVariable.asBoolean(id, name, label, booleanValue, refinementId,
                                                  isNamespaced, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return BooleanVariable.asProgram(id, name, invocation, refinementId,
+                return BooleanVariable.asProgram(id, name, label, invocation, refinementId,
                                                  isNamespaced, tags);
         }
 
@@ -283,6 +290,7 @@ public class BooleanVariable extends Variable
     {
         return YamlBuilder.map()
                 .putString("name", this.name())
+                .putString("label", this.label())
                 .putYaml("type", this.kind())
                 .putYaml("refinement", this.refinementId())
                 .putBoolean("namespaced", this.isNamespaced())
@@ -297,6 +305,13 @@ public class BooleanVariable extends Variable
     public String name()
     {
         return this.name.getValue();
+    }
+
+
+    @Override
+    public String label()
+    {
+        return this.label.getValue();
     }
 
 
@@ -526,6 +541,24 @@ public class BooleanVariable extends Variable
         public YamlBuilder toYaml()
         {
             return YamlBuilder.string(this.name().toLowerCase());
+        }
+
+
+        // TO STRING
+        // ------------------------------------------------------------------------------------------
+
+        @Override
+        public String toString()
+        {
+            switch (this)
+            {
+                case LITERAL:
+                    return "Literal";
+                case PROGRAM:
+                    return "Program";
+            }
+
+            return "";
         }
 
     }

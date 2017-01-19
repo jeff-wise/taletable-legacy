@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.id;
 
 
 /**
@@ -58,7 +57,7 @@ public class Mechanic implements Model, ToYaml, Serializable
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private boolean                          active;
+    private boolean                             active;
 
 
     // CONSTRUCTORS
@@ -206,6 +205,16 @@ public class Mechanic implements Model, ToYaml, Serializable
 
 
     /**
+     * The mechanic's label.
+     * @return The label.
+     */
+    public String label()
+    {
+        return this.label.getValue();
+    }
+
+
+    /**
      * The mechanic's type.
      * @return The type.
      */
@@ -235,9 +244,19 @@ public class Mechanic implements Model, ToYaml, Serializable
      * Get the mechanic's variables.
      * @return The Variable list.
      */
-    private List<VariableUnion> variables()
+    public List<VariableUnion> variables()
     {
         return this.variables.getValue();
+    }
+
+
+    /**
+     * The number of variables defined by the mechanic.
+     * @return The variable count.
+     */
+    public Integer variableCount()
+    {
+        return this.variables().size();
     }
 
 

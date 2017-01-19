@@ -3,5 +3,6 @@
 ---
 name: change_svg_color_references
 type: bug
-priority: moderate
-tags: before_release
+priority: 90
+tags: 
+- before_release

@@ -49,6 +49,7 @@ public class TextVariable extends Variable
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<String>        label;
 
     private PrimitiveFunctor<String>        stringLiteral;
     private ModelFunctor<ValueReference>    valueReference;
@@ -81,6 +82,7 @@ public class TextVariable extends Variable
         this.id                     = null;
 
         this.name                   = new PrimitiveFunctor<>(null, String.class);
+        this.label                  = new PrimitiveFunctor<>(null, String.class);
 
         this.stringLiteral          = new PrimitiveFunctor<>(null, String.class);
         this.valueReference         = ModelFunctor.empty(ValueReference.class);
@@ -109,6 +111,7 @@ public class TextVariable extends Variable
      */
     private TextVariable(UUID id,
                          String name,
+                         String label,
                          Object value,
                          Kind kind,
                          RefinementId refinementId,
@@ -125,6 +128,9 @@ public class TextVariable extends Variable
 
         // ** Name
         this.name                   = new PrimitiveFunctor<>(name, String.class);
+
+        // ** Label
+        this.label                  = new PrimitiveFunctor<>(label, String.class);
 
         // ** Value Variants
         this.stringLiteral          = new PrimitiveFunctor<>(null, String.class);
@@ -184,12 +190,13 @@ public class TextVariable extends Variable
      */
     public static TextVariable asText(UUID id,
                                       String name,
+                                      String label,
                                       String stringValue,
                                       Boolean isNamespaced,
                                       Boolean definesNamespace,
                                       List<String> tags)
     {
-        return new TextVariable(id, name, stringValue, Kind.LITERAL,
+        return new TextVariable(id, name, label, stringValue, Kind.LITERAL,
                                 null, null, isNamespaced, definesNamespace, tags);
     }
 
@@ -203,7 +210,8 @@ public class TextVariable extends Variable
     public static TextVariable asText(UUID id,
                                       String stringValue)
     {
-        return new TextVariable(id, null, stringValue, Kind.LITERAL, null, null, null, null, null);
+        return new TextVariable(id, null, null, stringValue, Kind.LITERAL,
+                                null, null, null, null, null);
     }
 
 
@@ -218,13 +226,14 @@ public class TextVariable extends Variable
      */
     public static TextVariable asValue(UUID id,
                                        String name,
+                                       String label,
                                        ValueReference valueReference,
                                        String valueSetName,
                                        Boolean isNamespaced,
                                        Boolean definesNamespace,
                                        List<String> tags)
     {
-        return new TextVariable(id, name, valueReference, Kind.VALUE, null,
+        return new TextVariable(id, name, label, valueReference, Kind.VALUE, null,
                                 valueSetName, isNamespaced, definesNamespace, tags);
     }
 
@@ -237,12 +246,13 @@ public class TextVariable extends Variable
      */
     public static TextVariable asProgram(UUID id,
                                          String name,
+                                         String label,
                                          Invocation invocation,
                                          Boolean isNamespaced,
                                          Boolean definesNamespace,
                                          List<String> tags)
     {
-        return new TextVariable(id, name, invocation, Kind.PROGRAM, null, null,
+        return new TextVariable(id, name, label, invocation, Kind.PROGRAM, null, null,
                                 isNamespaced, definesNamespace, tags);
     }
 
@@ -262,6 +272,7 @@ public class TextVariable extends Variable
         UUID         id                 = UUID.randomUUID();
 
         String       name               = yaml.atMaybeKey("name").getString();
+        String       label              = yaml.atMaybeKey("label").getString();
         Kind         kind               = Kind.fromYaml(yaml.atKey("type"));
         RefinementId refinementId       = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
         String       valueSetName       = yaml.atMaybeKey("value_set").getString();
@@ -273,15 +284,15 @@ public class TextVariable extends Variable
         {
             case LITERAL:
                 String stringValue = yaml.atKey("value").getString();
-                return TextVariable.asText(id, name, stringValue, isNamespaced,
+                return TextVariable.asText(id, name, label, stringValue, isNamespaced,
                                            definesNamespace, tags);
             case VALUE:
                 ValueReference valueReference = ValueReference.fromYaml(yaml.atKey("value"));
-                return TextVariable.asValue(id, name, valueReference, valueSetName,
+                return TextVariable.asValue(id, name, label, valueReference, valueSetName,
                                             isNamespaced, definesNamespace, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return TextVariable.asProgram(id, name, invocation, isNamespaced,
+                return TextVariable.asProgram(id, name, label, invocation, isNamespaced,
                                               definesNamespace, tags);
         }
 
@@ -339,6 +350,7 @@ public class TextVariable extends Variable
     {
         return YamlBuilder.map()
                 .putString("name", this.name())
+                .putString("label", this.label())
                 .putYaml("type", this.kind())
                 .putYaml("refinement", this.refinementId())
                 .putString("value_set", this.valueSetName())
@@ -355,6 +367,13 @@ public class TextVariable extends Variable
     public String name()
     {
         return this.name.getValue();
+    }
+
+
+    @Override
+    public String label()
+    {
+        return this.label.getValue();
     }
 
 
@@ -415,7 +434,7 @@ public class TextVariable extends Variable
      * The text variable kind.
      * @return The kind.
      */
-    private Kind kind()
+    public Kind kind()
     {
         return this.kind.getValue();
     }
@@ -699,6 +718,26 @@ public class TextVariable extends Variable
         public YamlBuilder toYaml()
         {
             return YamlBuilder.string(this.name().toLowerCase());
+        }
+
+
+        // TO STRING
+        // --------------------------------------------------------------------------------------
+
+        @Override
+        public String toString()
+        {
+            switch (this)
+            {
+                case LITERAL:
+                    return "Literal";
+                case PROGRAM:
+                    return "Program";
+                case VALUE:
+                    return "Value";
+            }
+
+            return "";
         }
 
     }

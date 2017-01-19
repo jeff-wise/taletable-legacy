@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.program;
+package com.kispoko.tome.activity.variable;
 
 
 import android.content.Context;
@@ -12,39 +12,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.kispoko.tome.activity.program.StatementListFragment;
+import com.kispoko.tome.activity.program.StatementListRecyclerViewAdapter;
+import com.kispoko.tome.engine.programming.mechanic.Mechanic;
 import com.kispoko.tome.engine.programming.program.Program;
-import com.kispoko.tome.engine.programming.program.statement.Statement;
+import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.ui.RecyclerViewBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 
 /**
- * Statements Fragment
+ * Variable List Fragment
  */
-public class StatementListFragment extends Fragment
+public class VariableListFragment extends Fragment
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Program program;
+    private Mechanic mechanic;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static StatementListFragment newInstance(Program program)
+    public static VariableListFragment newInstance(Mechanic mechanic)
     {
-        StatementListFragment statementListFragment = new StatementListFragment();
+        VariableListFragment variableListFragment = new VariableListFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("program", program);
-        statementListFragment.setArguments(args);
+        args.putSerializable("mechanic", mechanic);
+        variableListFragment.setArguments(args);
 
-        return statementListFragment;
+        return variableListFragment;
     }
 
 
@@ -55,7 +59,7 @@ public class StatementListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.program = (Program) getArguments().getSerializable("program");
+        this.mechanic = (Mechanic) getArguments().getSerializable("mechanic");
     }
 
 
@@ -73,7 +77,6 @@ public class StatementListFragment extends Fragment
     // VIEWS
     // ------------------------------------------------------------------------------------------
 
-
     private RecyclerView view(Context context)
     {
         RecyclerViewBuilder recyclerView = new RecyclerViewBuilder();
@@ -82,18 +85,16 @@ public class StatementListFragment extends Fragment
         recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT;
 
         recyclerView.layoutManager      = new LinearLayoutManager(context);
-        //recyclerView.divider            = new SimpleDividerItemDecoration(getContext());
+        recyclerView.divider            = new SimpleDividerItemDecoration(getContext());
 
         // > Adapter
-        List<Statement> statements      = new ArrayList<>();
-        statements.addAll(this.program.statements());
-        statements.add(this.program.resultStatement());
-        recyclerView.adapter            = new StatementListRecyclerViewAdapter(statements,
-                                                                               getContext());
-
+        List<VariableUnion> variables = mechanic.variables();
+        recyclerView.adapter            = new VariableListRecyclerViewAdapter(variables,
+                                                                              getContext());
 
         return recyclerView.recyclerView(context);
     }
+
 
 
 }

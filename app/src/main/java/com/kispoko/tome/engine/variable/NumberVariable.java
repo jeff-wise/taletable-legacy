@@ -37,7 +37,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.y;
 
 
 /**
@@ -386,6 +385,14 @@ public class NumberVariable extends Variable
     public String name()
     {
         return this.name.getValue();
+
+    }
+
+
+    @Override
+    public String label()
+    {
+        return this.label.getValue();
     }
 
 
@@ -464,7 +471,7 @@ public class NumberVariable extends Variable
      * Get the kind of number variable.
      * @return The number variable kind.
      */
-    private Kind kind()
+    public Kind kind()
     {
         return this.kind.getValue();
     }
@@ -472,16 +479,6 @@ public class NumberVariable extends Variable
 
     // ** Properties
     // ------------------------------------------------------------------------------------------
-
-    /**
-     * The variable label (the name for displaying to the user)
-     * @return The label.
-     */
-    public String label()
-    {
-        return this.label.getValue();
-    }
-
 
     /**
      * The refinement id.
@@ -698,6 +695,26 @@ public class NumberVariable extends Variable
         public YamlBuilder toYaml()
         {
             return YamlBuilder.string(this.name().toLowerCase());
+        }
+
+
+        // TO STRING
+        // ------------------------------------------------------------------------------------------
+
+        @Override
+        public String toString()
+        {
+            switch (this)
+            {
+                case LITERAL:
+                    return "Literal";
+                case PROGRAM:
+                    return "Program";
+                case SUMMATION:
+                    return "Summation";
+            }
+
+            return "";
         }
 
     }

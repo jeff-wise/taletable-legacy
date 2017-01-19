@@ -690,6 +690,7 @@ engine:
         value: '{{modifier_string}}'
   mechanics:
   - name: armor_scalemail
+    label: Scalemail
     type: armor
     requirements:
     - has_armor_scalemail
@@ -704,6 +705,7 @@ engine:
         tags:
         - armor_class_bonus
   - name: shield
+    label: Shield
     type: shield
     requirements:
     - has_shield
@@ -718,6 +720,7 @@ engine:
         tags:
         - armor_class_bonus
   - name: weapon_longsword
+    label: Longsword
     type: weapon
     requirements:
     - has_weapon_longsword
@@ -725,6 +728,7 @@ engine:
     - type: dice
       value:
         name: weapon_longsword_damage
+        label: Longsword Damage
         dice:
           type: d8
           quantity: 1
@@ -732,11 +736,13 @@ engine:
     - type: dice
       value:
         name: weapon_longsword_two_handed_damage
+        label: Longsword Damage (Two-Handed)
         dice:
           type: d10
           quantity: 1
           modifier: 0
   - name: weapon_heavy_crossbow
+    label: Heavy Crossbow
     type: weapon
     requirements:
     - has_weapon_heavy_crossbow
@@ -744,11 +750,13 @@ engine:
     - type: dice
       value:
         name: weapon_heavy_crossbow_damage
+        label: Heavy Crossbow Damage
         dice:
           type: d10
           quantity: 1
           modifier: 0
   - name: weapon_dagger
+    label: Dagger
     type: weapon
     requirements:
     - has_weapon_dagger
@@ -756,6 +764,7 @@ engine:
     - type: dice
       value:
         name: weapon_dagger_damage
+        label: Dagger Damage
         dice:
           type: d4
           quantity: 1

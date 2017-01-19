@@ -102,6 +102,16 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Statement" />
 
+    <activity
+        android:name=".activity.MechanicIndexActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Mechanics" />
+
+    <activity
+        android:name=".activity.MechanicActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Mechanic" />
 
 </application>
 

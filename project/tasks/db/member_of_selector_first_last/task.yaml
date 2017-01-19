@@ -3,4 +3,4 @@
 ---
 name: member_of_selector_first_last
 type: bug
-priority: high
+priority: 80

@@ -537,9 +537,17 @@ public class SheetActivity
                                                  R.string.button_programs_description,
                                                  onProgramsClick));
 
+        // > Mechanics Button
+        View.OnClickListener onMechanicsClick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SheetActivity.this, MechanicIndexActivity.class);
+                startActivity(intent);
+            }
+        };
         buttonsLayout.addView(sheetOptionsButton(R.string.button_mechanics_label,
                                                  R.string.button_mechanics_description,
-                                                 null));
+                                                 onMechanicsClick));
 
         layout.addView(buttonsLayout);
 

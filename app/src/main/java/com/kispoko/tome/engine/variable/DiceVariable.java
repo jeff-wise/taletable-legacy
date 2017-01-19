@@ -39,6 +39,8 @@ public class DiceVariable extends Variable
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String>    name;
+    private PrimitiveFunctor<String>    label;
+
     private ModelFunctor<DiceRoll>      diceRoll;
 
     private PrimitiveFunctor<Boolean>   isNamespaced;
@@ -52,17 +54,21 @@ public class DiceVariable extends Variable
         this.id             = null;
 
         this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.label          = new PrimitiveFunctor<>(null, String.class);
+
         this.diceRoll       = ModelFunctor.empty(DiceRoll.class);
 
         this.isNamespaced   = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
 
-    public DiceVariable(UUID id, String name, DiceRoll diceRoll, Boolean isNamespaced)
+    public DiceVariable(UUID id, String name, String label, DiceRoll diceRoll, Boolean isNamespaced)
     {
         this.id             = id;
 
         this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.label          = new PrimitiveFunctor<>(label, String.class);
+
         this.diceRoll       = ModelFunctor.full(diceRoll, DiceRoll.class);
 
         if (isNamespaced == null) isNamespaced = false;
@@ -85,10 +91,12 @@ public class DiceVariable extends Variable
         UUID     id             = UUID.randomUUID();
 
         String   name           = yaml.atMaybeKey("name").getString();
+        String   label          = yaml.atMaybeKey("label").getString();
+
         DiceRoll diceRoll       = DiceRoll.fromYaml(yaml.atKey("dice"));
         Boolean  isNamespaced   = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new DiceVariable(id, name, diceRoll, isNamespaced);
+        return new DiceVariable(id, name, label, diceRoll, isNamespaced);
     }
 
 
@@ -140,6 +148,13 @@ public class DiceVariable extends Variable
     public String name()
     {
         return this.name.getValue();
+    }
+
+
+    @Override
+    public String label()
+    {
+        return this.label.getValue();
     }
 
 
@@ -196,6 +211,7 @@ public class DiceVariable extends Variable
     {
         return YamlBuilder.map()
                 .putString("name", this.name())
+                .putString("label", this.label())
                 .putYaml("dice", this.diceRoll())
                 .putBoolean("namespaced", this.isNamespaced());
     }

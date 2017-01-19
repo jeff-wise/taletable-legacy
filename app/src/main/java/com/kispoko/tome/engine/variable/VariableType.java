@@ -74,4 +74,26 @@ public enum VariableType implements ToYaml
         return YamlBuilder.string(this.name().toLowerCase());
     }
 
+
+    // TO STRING
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString()
+    {
+        switch (this)
+        {
+            case TEXT:
+                return "Text";
+            case NUMBER:
+                return "Number";
+            case BOOLEAN:
+                return "True/False";
+            case DICE:
+                return "Dice Roll";
+        }
+
+        return "";
+    }
+
 }
