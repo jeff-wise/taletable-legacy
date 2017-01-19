@@ -96,6 +96,12 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Program" />
 
+    <activity
+        android:name=".activity.StatementActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Statement" />
+
 
 </application>
 

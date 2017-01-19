@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.function;
+package com.kispoko.tome.activity.program;
 
 
 import android.content.Context;
@@ -11,14 +11,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.programming.function.Function;
+import com.kispoko.tome.engine.programming.program.Program;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
 
 
 /**
- * Function Data Fragment
+ * Data Fragment
  */
 public class DataFragment extends Fragment
 {
@@ -26,18 +26,18 @@ public class DataFragment extends Fragment
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Function function;
+    private Program program;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static DataFragment newInstance(Function function)
+    public static DataFragment newInstance(Program program)
     {
         DataFragment dataFragment = new DataFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("function", function);
+        args.putSerializable("program", program);
         dataFragment.setArguments(args);
 
         return dataFragment;
@@ -51,7 +51,7 @@ public class DataFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.function = (Function) getArguments().getSerializable("function");
+        this.program = (Program) getArguments().getSerializable("program");
     }
 
 
@@ -77,23 +77,23 @@ public class DataFragment extends Fragment
 
         // > Name Field
         LinearLayout nameField = Form.field(
-                    R.string.function_field_name_label,
-                    R.string.function_field_name_description,
-                    Form.textInput(this.function.name(), null, getContext()),
+                    R.string.program_field_name_label,
+                    R.string.program_field_name_description,
+                    Form.textInput(this.program.name(), null, getContext()),
                     getContext());
 
         // > Label Field
         LinearLayout labelField = Form.field(
-                    R.string.function_field_label_label,
-                    R.string.function_field_label_description,
-                    Form.textInput(this.function.label(), null, getContext()),
+                    R.string.program_field_label_label,
+                    R.string.program_field_label_description,
+                    Form.textInput(this.program.label(), null, getContext()),
                     getContext());
 
         // > Description Field
         LinearLayout descriptionField =
-                Form.field(R.string.function_field_description_label,
-                           R.string.function_field_description_description,
-                           Form.textInput(this.function.description(), null, getContext()),
+                Form.field(R.string.program_field_description_label,
+                           R.string.program_field_description_description,
+                           Form.textInput(this.program.description(), null, getContext()),
                            getContext());
 
         // [2] Add Fields
@@ -115,11 +115,12 @@ public class DataFragment extends Fragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left         = R.dimen.function_data_padding_horz;
-        layout.padding.right        = R.dimen.function_data_padding_horz;
-        layout.padding.top          = R.dimen.function_data_padding_vert;
-        layout.padding.bottom       = R.dimen.function_data_padding_vert;
+        layout.padding.left         = R.dimen.program_data_padding_horz;
+        layout.padding.right        = R.dimen.program_data_padding_horz;
+        layout.padding.top          = R.dimen.program_data_padding_vert;
+        layout.padding.bottom       = R.dimen.program_data_padding_vert;
 
         return layout.linearLayout(context);
     }
+
 }

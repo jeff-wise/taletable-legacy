@@ -17,7 +17,6 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.R.attr.value;
 
 
 /**

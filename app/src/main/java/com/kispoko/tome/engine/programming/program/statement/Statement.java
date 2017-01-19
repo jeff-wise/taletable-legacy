@@ -32,6 +32,8 @@ public class Statement implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>        functionName;
     private CollectionFunctor<Parameter>    parameters;
 
+    public static final int MAX_PARAMETERS = 3;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -176,6 +178,18 @@ public class Statement implements Model, ToYaml, Serializable
         return this.parameters.getValue();
     }
 
+
+    // > Arity
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The number of parameters the statement takes.
+     * @return The arity.
+     */
+    public int arity()
+    {
+        return this.parameters().size();
+    }
 
 }
 

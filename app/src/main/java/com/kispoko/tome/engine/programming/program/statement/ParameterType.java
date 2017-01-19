@@ -2,7 +2,10 @@
 package com.kispoko.tome.engine.programming.program.statement;
 
 
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
+import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -71,6 +74,30 @@ public enum ParameterType implements ToYaml
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
+    }
+
+
+    // TO STRING
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString()
+    {
+        switch (this)
+        {
+            case PARAMETER:
+                return "Parameter";
+            case VARIABLE:
+                return "Variable";
+            case LITERAL_STRING:
+                return "String Literal";
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(ParameterType.class.getName())));
+        }
+
+        return "";
     }
 
 }

@@ -35,6 +35,8 @@ public class LinearLayoutBuilder implements ViewBuilder
     public Integer                  width;
     public Float                    weight;
 
+    public Integer                  visibility;
+
     public LayoutType               layoutType;
 
     public Integer                  gravity;
@@ -70,6 +72,8 @@ public class LinearLayoutBuilder implements ViewBuilder
         this.height             = null;
         this.width              = null;
         this.weight             = null;
+
+        this.visibility         = null;
 
         this.layoutType         = LayoutType.NONE;
 
@@ -156,6 +160,11 @@ public class LinearLayoutBuilder implements ViewBuilder
         if (this.gravity != null)
             linearLayout.setGravity(this.gravity);
 
+        // > Visible
+        // --------------------------------------------------------------------------------------
+
+        if (this.visibility != null)
+            linearLayout.setVisibility(this.visibility);
 
         // > On Click Listener
         // --------------------------------------------------------------------------------------

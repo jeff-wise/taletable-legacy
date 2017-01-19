@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Table Row Builder
  */
-public class TableRowBuilder
+public class TableRowBuilder implements ViewBuilder
 {
 
     // PROPERTIES
@@ -28,6 +28,8 @@ public class TableRowBuilder
 
     public Integer                 height;
     public Integer                 width;
+
+    public Integer                 visibility;
 
     public LayoutType              layoutType;
 
@@ -59,6 +61,8 @@ public class TableRowBuilder
         this.height             = null;
         this.width              = null;
 
+        this.visibility         = null;
+
         this.layoutType         = LayoutType.TABLE_ROW;
 
         this.gravity            = null;
@@ -82,7 +86,7 @@ public class TableRowBuilder
     // > Attributes
     // ------------------------------------------------------------------------------------------
 
-    public TableRowBuilder addChild(ViewBuilder childViewBuilder)
+    public TableRowBuilder child(ViewBuilder childViewBuilder)
     {
         this.children.add(childViewBuilder);
         return this;
@@ -127,6 +131,12 @@ public class TableRowBuilder
 
         if (this.gravity != null)
             tableRow.setGravity(this.gravity);
+
+        // > Visibility
+        // --------------------------------------------------------------------------------------
+
+        if (this.visibility != null)
+            tableRow.setVisibility(this.visibility);
 
         // > On Click Listener
         // --------------------------------------------------------------------------------------

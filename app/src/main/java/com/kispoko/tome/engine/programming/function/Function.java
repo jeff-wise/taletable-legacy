@@ -140,13 +140,15 @@ public class Function implements Model, ToYaml, Serializable
         UUID id = UUID.randomUUID();
 
         // ** Name
-        String name = yaml.atKey("name").getString();
+        String name = yaml.atKey("name").getString().trim();
 
         // ** Label
         String label = yaml.atMaybeKey("label").getString();
+        if (label != null)  label = label.trim();
 
         // ** Description
         String description = yaml.atMaybeKey("description").getString();
+        if (description != null)  description = description.trim();
 
         // ** Parameter Types
         final List<ProgramValueType> parameterTypes

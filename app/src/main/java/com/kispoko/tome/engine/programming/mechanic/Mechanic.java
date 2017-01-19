@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.id;
 
 
 /**
@@ -35,22 +36,23 @@ public class Mechanic implements Model, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                                id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>         name;
-    private PrimitiveFunctor<String>         type;
+    private PrimitiveFunctor<String>            name;
+    private PrimitiveFunctor<String>            label;
+    private PrimitiveFunctor<String>            type;
 
     /**
      * A requirement is the name of a boolean variable. If all the requiremnet variable values are
      * true, then the mechanic is set to active ie. added to the state.
      */
-    private PrimitiveFunctor<String[]>       requirements;
+    private PrimitiveFunctor<String[]>          requirements;
 
-    private CollectionFunctor<VariableUnion> variables;
+    private CollectionFunctor<VariableUnion>    variables;
 
 
     // > Internal
@@ -67,6 +69,7 @@ public class Mechanic implements Model, ToYaml, Serializable
         this.id           = null;
 
         this.name         = new PrimitiveFunctor<>(null, String.class);
+        this.label        = new PrimitiveFunctor<>(null, String.class);
         this.type         = new PrimitiveFunctor<>(null, String.class);
         this.requirements = new PrimitiveFunctor<>(null, String[].class);
 
@@ -78,6 +81,7 @@ public class Mechanic implements Model, ToYaml, Serializable
 
     public Mechanic(UUID id,
                     String name,
+                    String label,
                     String type,
                     List<String> requirements,
                     List<VariableUnion> variables)
@@ -85,6 +89,7 @@ public class Mechanic implements Model, ToYaml, Serializable
         this.id           = id;
 
         this.name         = new PrimitiveFunctor<>(name, String.class);
+        this.label        = new PrimitiveFunctor<>(label, String.class);
         this.type         = new PrimitiveFunctor<>(type, String.class);
 
         String[] requirementsArray = new String[requirements.size()];
@@ -108,7 +113,12 @@ public class Mechanic implements Model, ToYaml, Serializable
         UUID                id           = UUID.randomUUID();
 
         String              name         = yaml.atKey("name").getString();
+
+        String              label        = yaml.atMaybeKey("label").getString();
+        if (label != null)  label = label.trim();
+
         String              type         = yaml.atMaybeKey("type").getString();
+
         List<String>        requirements = yaml.atMaybeKey("requirements").getStringList();
 
         List<VariableUnion> variables = yaml.atKey("variables").forEach(
@@ -120,7 +130,7 @@ public class Mechanic implements Model, ToYaml, Serializable
             }
         });
 
-        return new Mechanic(id, name, type, requirements, variables);
+        return new Mechanic(id, name, label, type, requirements, variables);
     }
 
 

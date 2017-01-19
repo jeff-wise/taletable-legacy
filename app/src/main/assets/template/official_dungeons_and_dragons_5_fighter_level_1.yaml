@@ -703,7 +703,7 @@ engine:
         value: 14
         tags:
         - armor_class_bonus
-  - name: shield_scalemail
+  - name: shield
     type: shield
     requirements:
     - has_shield

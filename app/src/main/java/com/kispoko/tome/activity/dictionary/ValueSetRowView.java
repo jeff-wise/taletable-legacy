@@ -89,7 +89,6 @@ public class ValueSetRowView
         header.color                = R.color.gold_5;
         header.font                 = Font.sansSerifFontBold(context);
 
-        header.margin.top           = R.dimen.dictionary_item_header_margin_top;
         header.margin.bottom        = R.dimen.dictionary_item_header_margin_bottom;
 
         // [3 B] Description
@@ -118,7 +117,7 @@ public class ValueSetRowView
 
         count.id                    = R.id.value_set_row_items;
         count.font                  = Font.sansSerifFontBold(context);
-        count.color                 = R.color.dark_blue_hlx_9;
+        count.color                 = R.color.dark_blue_hl_4;
         count.size                  = R.dimen.dictionary_item_count_text_size;
 
         count.backgroundResource    = R.drawable.bg_value_set_size;

@@ -207,12 +207,11 @@
 
     <!-- ACTIVITY: DICTIONARY -->
     <dimen name="dictionary_item_header_text_size">4.4sp</dimen>
-    <dimen name="dictionary_item_header_margin_top">16dp</dimen>
     <dimen name="dictionary_item_header_margin_bottom">10dp</dimen>
     <dimen name="dictionary_item_description_text_size">3.5sp</dimen>
     <dimen name="dictionary_item_padding_horz">15dp</dimen>
-    <dimen name="dictionary_item_padding_vert">5dp</dimen>
-    <dimen name="dictionary_item_count_text_size">4.3sp</dimen>
+    <dimen name="dictionary_item_padding_vert">18dp</dimen>
+    <dimen name="dictionary_item_count_text_size">3.8sp</dimen>
     <dimen name="dictionary_item_count_margin_right">15dp</dimen>
 
     <!-- ACTIVITY: VALUE SET -->
@@ -240,12 +239,12 @@
 
     <!-- ACTIVITY: FUNCTION INDEX -->
     <dimen name="function_list_item_header_text_size">4.4sp</dimen>
-    <dimen name="function_list_item_header_margin_bottom">14dp</dimen>
+    <dimen name="function_list_item_header_margin_bottom">12dp</dimen>
     <dimen name="function_list_item_description_text_size">3.5sp</dimen>
     <dimen name="function_list_item_description_margin_bottom">14dp</dimen>
     <dimen name="function_list_item_type_text_size">2.9sp</dimen>
     <dimen name="function_list_item_padding_horz">17dp</dimen>
-    <dimen name="function_list_item_padding_vert">15dp</dimen>
+    <dimen name="function_list_item_padding_vert">18dp</dimen>
     <dimen name="function_list_item_type_margin_right">10dp</dimen>
 
     <!-- ACTIVITY: FUNCTION -->
@@ -258,10 +257,9 @@
     <dimen name="function_tuples_tuple_cell_padding_left">3dp</dimen>
     <dimen name="function_tuples_header_cell_text_size">3.7sp</dimen>
 
-
     <!-- ACTIVITY: PROGRAM INDEX -->
     <dimen name="program_list_item_header_text_size">4.4sp</dimen>
-    <dimen name="program_list_item_header_margin_bottom">14dp</dimen>
+    <dimen name="program_list_item_header_margin_bottom">12dp</dimen>
     <dimen name="program_list_item_description_text_size">3.5sp</dimen>
     <dimen name="program_list_item_description_margin_bottom">14dp</dimen>
     <dimen name="program_list_item_type_text_size">2.9sp</dimen>
@@ -269,6 +267,30 @@
     <dimen name="program_list_item_padding_vert">15dp</dimen>
     <dimen name="program_list_item_type_margin_right">10dp</dimen>
 
+    <!-- ACTIVITY: PROGRAM -->
+    <dimen name="program_data_padding_horz">17dp</dimen>
+    <dimen name="program_data_padding_vert">15dp</dimen>
+    <dimen name="program_statements_card_margin_horz">14dp</dimen>
+    <dimen name="program_statements_card_margin_vert">10dp</dimen>
+    <dimen name="program_statements_card_variable_text_size">4.4sp</dimen>
+    <dimen name="program_statements_card_header_margin_bottom">12dp</dimen>
+    <dimen name="program_statements_card_result_header_text_size">3.8sp</dimen>
+    <dimen name="program_statements_card_function_text_size">3.8sp</dimen>
+    <dimen name="program_statements_card_function_margin_bottom">10dp</dimen>
+    <dimen name="program_statements_card_function_label_text_size">2.7sp</dimen>
+    <dimen name="program_statements_card_function_label_margin_bottom">7dp</dimen>
+    <dimen name="program_statements_card_parameters_label_text_size">2.7sp</dimen>
+    <dimen name="program_statements_card_parameters_label_margin_bottom">3dp</dimen>
+    <dimen name="program_statements_card_parameter_value_text_size">3.5sp</dimen>
+    <dimen name="program_statements_card_parameter_type_text_size">3.5sp</dimen>
+    <dimen name="program_statements_card_parameter_cell_padding_horz">10dp</dimen>
+    <dimen name="program_statements_card_parameter_row_padding_vert">5dp</dimen>
+    <dimen name="program_statements_card_parameters_table_header_text_size">2.7sp</dimen>
+
+    <!-- ACTIVITY: STATEMENT -->
+
+    <dimen name="statement_padding_horz">17dp</dimen>
+    <dimen name="statement_padding_vert">17dp</dimen>
 
     <!-- MANAGE SHEETS -->
     <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>
@@ -291,6 +313,8 @@
     <dimen name="field_description_text_size">3.3sp</dimen>
     <dimen name="field_description_margin_bottom">11dp</dimen>
     <dimen name="field_text_input_text_size">3.8sp</dimen>
+    <dimen name="field_text_input_button_text_size">3.3sp</dimen>
+    <dimen name="field_text_input_button_padding_vert">10dp</dimen>
     <dimen name="field_margin_bottom">30dp</dimen>
 
 

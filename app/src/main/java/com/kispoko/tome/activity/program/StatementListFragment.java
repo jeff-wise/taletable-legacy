@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.valueset;
+package com.kispoko.tome.activity.program;
 
 
 import android.content.Context;
@@ -7,103 +7,94 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.programming.program.Program;
+import com.kispoko.tome.engine.programming.program.statement.Statement;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.ui.RecyclerViewBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 
 /**
- * ValueSet Value List Fragment
+ * Statements Fragment
  */
-public class ValueListFragment extends Fragment
+public class StatementListFragment extends Fragment
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ValueSet valueSet;
+    private Program program;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ValueListFragment() {
-        // Empty Fragment Constructor
-    }
-
-
-    public static ValueListFragment newInstance(ValueSet valueSet)
+    public static StatementListFragment newInstance(Program program)
     {
-        ValueListFragment valueListFragment = new ValueListFragment();
-
+        StatementListFragment statementListFragment = new StatementListFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("value_set", valueSet);
-        valueListFragment.setArguments(args);
+        args.putSerializable("program", program);
+        statementListFragment.setArguments(args);
 
-        return valueListFragment;
+        return statementListFragment;
     }
 
 
     // FRAGMENT API
     // ------------------------------------------------------------------------------------------
 
-    // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        this.valueSet = (ValueSet) getArguments().getSerializable("value_set");
+        this.program = (Program) getArguments().getSerializable("program");
     }
 
 
+    // Inflate the view for the fragment based on layout XML
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState)
     {
-        return view();
-    }
 
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-    }
-
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
+        return this.view(getContext());
     }
 
 
     // VIEWS
     // ------------------------------------------------------------------------------------------
 
-    private RecyclerView view()
+
+    private RecyclerView view(Context context)
     {
         RecyclerViewBuilder recyclerView = new RecyclerViewBuilder();
 
         recyclerView.width              = LinearLayout.LayoutParams.MATCH_PARENT;
         recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        recyclerView.layoutManager      = new LinearLayoutManager(getContext());
-        recyclerView.divider            = new SimpleDividerItemDecoration(getContext());
-        recyclerView.adapter            = new ValuesRecyclerViewAdapter(this.valueSet.values());
+        recyclerView.layoutManager      = new LinearLayoutManager(context);
+        //recyclerView.divider            = new SimpleDividerItemDecoration(getContext());
+
+        // > Adapter
+        List<Statement> statements      = new ArrayList<>();
+        statements.addAll(this.program.statements());
+        statements.add(this.program.resultStatement());
+        recyclerView.adapter            = new StatementListRecyclerViewAdapter(statements,
+                                                                               getContext());
 
 
-        return recyclerView.recyclerView(getContext());
+        return recyclerView.recyclerView(context);
     }
+
 
 }

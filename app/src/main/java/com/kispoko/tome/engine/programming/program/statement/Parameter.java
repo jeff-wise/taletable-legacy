@@ -17,7 +17,6 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.R.attr.value;
 
 
 /**
@@ -289,5 +288,40 @@ public class Parameter implements Model, ToYaml, Serializable
     }
 
 
+    // > String Representations
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The parameter value as a string.
+     * @return The value string.
+     */
+    public String valueString()
+    {
+        switch (this.type())
+        {
+            case PARAMETER:
+                return this.parameter().toString();
+            case VARIABLE:
+                return this.variable();
+            case LITERAL_STRING:
+                return this.stringLiteral();
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(ParameterType.class.getName())));
+        }
+
+        return "";
+    }
+
+
+    /**
+     * The parameter's type as a "pretty" string.
+     * @return The type string.
+     */
+    public String typeString()
+    {
+        return this.type().toString();
+    }
 
 }

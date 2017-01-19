@@ -120,4 +120,49 @@
         A description of what the function represents or calculates.
     </string>
 
+    <!-- ACTIVITY: PROGRAM -->
+    <!-- ==================================================================================== -->
+
+    <string name="program_field_name_label">Name</string>
+    <string name="program_field_name_description">
+        The Program\'s identifier. This value is used to uniquely identify the Function when
+        programming.
+    </string>
+
+    <string name="program_field_label_label">Label</string>
+    <string name="program_field_label_description">
+        The program name (meant to be read by people).
+    </string>
+
+    <string name="program_field_description_label">Description</string>
+    <string name="program_field_description_description">
+        A description of what the program represents or calculates.
+    </string>
+
+    <string name="statement_result_header">RESULT</string>
+    <string name="statement_function_name_label">FUNCTION</string>
+    <string name="statement_parameters_label">PARAMETERS</string>
+    <string name="statement_parameters_table_header_value">VALUE</string>
+    <string name="statement_parameters_table_header_type">TYPE</string>
+
+    <!-- ACTIVITY: STATEMENT -->
+    <!-- ==================================================================================== -->
+
+    <string name="statement_activity_title">Statement</string>
+
+    <string name="statement_field_function_label">Function</string>
+    <string name="statement_field_function_description">
+        The function that this statement calls to create its result.
+    </string>
+
+    <string name="statement_field_parameters_label">Parameters</string>
+    <string name="statement_field_parameters_description">
+        The function\'s parameters which may come from program parameters, other program defined
+        variables, or be literal values.
+    </string>
+
+    <string name="statement_field_function_button_builtin">CHOOSE BUILT-IN</string>
+    <string name="statement_field_function_button_defined">CHOOSE DEFINED</string>
+
+
 </resources>

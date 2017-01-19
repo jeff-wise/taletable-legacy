@@ -97,8 +97,12 @@ public class ValueSet implements Model, ToYaml, Serializable
         UUID             id          = UUID.randomUUID();
 
         String           name        = yaml.atKey("name").getString();
+
         String           label       = yaml.atMaybeKey("label").getString();
+        if (label != null)  label = label.trim();
+
         String           description = yaml.atMaybeKey("description").getString();
+        if (description != null)  description = description.trim();
 
         List<ValueUnion> values      = yaml.atKey("values").forEach(
                                             new YamlParser.ForEach<ValueUnion>()

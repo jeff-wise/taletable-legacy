@@ -40,6 +40,21 @@
     <item name="program_list_item_parameter_type_3" type="id"/>
     <item name="program_list_item_result_type" type="id"/>
 
+    <!-- STATEMENT LIST ITEM -->
+    <item name="statement_list_item_layout" type="id"/>
+    <item name="statement_list_item_variable" type="id"/>
+    <item name="statement_list_item_function" type="id"/>
+    <item name="statement_list_item_parameter1_layout" type="id"/>
+    <item name="statement_list_item_parameter1_value" type="id"/>
+    <item name="statement_list_item_parameter1_type" type="id"/>
+    <item name="statement_list_item_parameter2_layout" type="id"/>
+    <item name="statement_list_item_parameter2_value" type="id"/>
+    <item name="statement_list_item_parameter2_type" type="id"/>
+    <item name="statement_list_item_parameter3_layout" type="id"/>
+    <item name="statement_list_item_parameter3_value" type="id"/>
+    <item name="statement_list_item_parameter3_type" type="id"/>
+
+
     <item name="type_list_item_name" type="id"/>
     <item name="type_list_item_icon" type="id"/>
 

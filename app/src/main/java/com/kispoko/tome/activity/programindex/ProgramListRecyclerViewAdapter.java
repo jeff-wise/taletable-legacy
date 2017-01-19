@@ -12,13 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.FunctionActivity;
 import com.kispoko.tome.activity.ProgramActivity;
-import com.kispoko.tome.activity.functionindex.FunctionListItemView;
-import com.kispoko.tome.activity.functionindex.FunctionListRecyclerViewAdapter;
 import com.kispoko.tome.engine.programming.program.Program;
 
 import java.util.List;
+
 
 
 /**

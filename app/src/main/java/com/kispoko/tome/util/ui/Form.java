@@ -3,11 +3,14 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+
+import java.util.List;
 
 
 /**
@@ -92,9 +95,44 @@ public class Form
     // TEXT INPUT
     // -----------------------------------------------------------------------------------------
 
-    public static LinearLayout textInput(String value, Context context)
+    public static LinearLayout textInput(String value, List<TextView> buttonViews, Context context)
     {
-        // [1] Declarations
+        LinearLayout layout = textInputLayout(context);
+
+        // > Input Field
+        layout.addView(textInputView(value, context));
+
+        // > Buttons
+        if (buttonViews != null)
+        {
+            LinearLayout buttonsLayout = textInputButtonsLayout(context);
+
+            for (TextView buttonView : buttonViews) {
+                buttonsLayout.addView(buttonView);
+            }
+
+            layout.addView(buttonsLayout);
+        }
+
+        return layout;
+    }
+
+
+    private static LinearLayout textInputLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation              = LinearLayout.VERTICAL;
+        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private static LinearLayout textInputView(String value, Context context)
+    {
+         // [1] Declarations
         // --------------------------------------------------------------------------------------
 
         LinearLayoutBuilder layout    = new LinearLayoutBuilder();
@@ -122,7 +160,46 @@ public class Form
 
         inputText.backgroundResource    = R.drawable.bg_edit_text;
 
+
         return layout.linearLayout(context);
     }
+
+
+    private static LinearLayout textInputButtonsLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation              = LinearLayout.HORIZONTAL;
+        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    // > Buttons
+    // -----------------------------------------------------------------------------------------
+
+    public static TextView textInputButton(String buttonLabel, Context context)
+    {
+        TextViewBuilder button = new TextViewBuilder();
+
+        button.width                = 0;
+        button.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        button.weight               = 1.0f;
+        button.gravity              = Gravity.CENTER_HORIZONTAL;
+
+        button.text                 = buttonLabel.toUpperCase();
+        button.font                 = Font.sansSerifFontBold(context);
+        button.size                 = R.dimen.field_text_input_button_text_size;
+        button.color                = R.color.dark_blue_hl_2;
+
+        button.padding.top          = R.dimen.field_text_input_button_padding_vert;
+        button.padding.bottom       = R.dimen.field_text_input_button_padding_vert;
+
+        return button.textView(context);
+    }
+
+
 
 }
