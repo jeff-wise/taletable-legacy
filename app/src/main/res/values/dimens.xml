@@ -310,6 +310,10 @@
     <dimen name="variable_list_item_name_margin_bottom">12dp</dimen>
     <dimen name="variable_list_item_type_margin_right">10dp</dimen>
 
+    <!-- ACTIVITY: VARIABLE -->
+    <dimen name="variable_form_padding_horz">16dp</dimen>
+    <dimen name="variable_form_padding_vert">15dp</dimen>
+
 
     <!-- MANAGE SHEETS -->
     <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>
@@ -327,6 +331,7 @@
     <dimen name="two_dp">2dp</dimen>
 
     <!-- FIELD -->
+    <dimen name="field_margin_bottom">30dp</dimen>
     <dimen name="field_header_text_size">4.2sp</dimen>
     <dimen name="field_header_margin_bottom">11dp</dimen>
     <dimen name="field_description_text_size">3.3sp</dimen>
@@ -338,7 +343,11 @@
     <dimen name="field_table_input_header_text_size">3.3sp</dimen>
     <dimen name="field_table_input_header_row_padding_vert">7dp</dimen>
     <dimen name="field_table_input_cell_margin_right">5dp</dimen>
-    <dimen name="field_margin_bottom">30dp</dimen>
+    <dimen name="field_list_input_item_text_size">4sp</dimen>
+    <dimen name="field_list_input_item_margin_bottom">5dp</dimen>
+    <dimen name="field_list_input_button_margin_top">10dp</dimen>
+    <dimen name="field_list_input_button_icon_margin_right">4dp</dimen>
+    <dimen name="field_option_input_tab_text_size">4dp</dimen>
 
 
 </resources>

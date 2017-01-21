@@ -113,6 +113,30 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Mechanic" />
 
+    <activity
+        android:name=".activity.TextVariableActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Text Variable" />
+
+    <activity
+        android:name=".activity.NumberVariableActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Number Variable" />
+
+    <activity
+        android:name=".activity.BooleanVariableActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Boolean Variable" />
+
+    <activity
+        android:name=".activity.DiceVariableActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Dice Variable" />
+
 </application>
 
 </manifest>

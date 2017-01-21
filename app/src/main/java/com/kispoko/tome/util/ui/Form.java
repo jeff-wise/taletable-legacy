@@ -3,9 +3,11 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.support.v7.widget.SwitchCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -14,11 +16,6 @@ import com.kispoko.tome.R;
 
 import java.util.List;
 
-import static android.R.attr.button;
-import static android.R.attr.gravity;
-import static android.R.attr.value;
-import static android.R.attr.width;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 
 /**
@@ -404,6 +401,277 @@ public class Form
         cell.margin.right           = R.dimen.field_table_input_cell_margin_right;
 
         return cell.textView(context);
+    }
+
+
+    // LIST INPUT
+    // -----------------------------------------------------------------------------------------
+
+    public static LinearLayout listInput(String itemName, List<String> values, Context context)
+    {
+        LinearLayout layout = listInputLayout(context);
+
+        // > Items
+        LinearLayout listLayout = listInputListLayout(context);
+        layout.addView(listLayout);
+
+        for (String value : values) {
+            layout.addView(listInputItemView(value, context));
+        }
+
+
+        // > Add Button
+        layout.addView(listInputAddItemButton(itemName, context));
+
+        return layout;
+    }
+
+
+    private static LinearLayout listInputLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation              = LinearLayout.VERTICAL;
+        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private static LinearLayout listInputListLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation              = LinearLayout.VERTICAL;
+        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private static TextView listInputItemView(String value, Context context)
+    {
+        TextViewBuilder item = new TextViewBuilder();
+
+        item.width              = LinearLayout.LayoutParams.MATCH_PARENT;
+        item.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        item.text               = value;
+        item.font               = Font.sansSerifFontRegular(context);
+        item.color              = R.color.dark_blue_hl_6;
+        item.size               = R.dimen.field_list_input_item_text_size;
+
+        item.backgroundResource = R.drawable.bg_edit_text;
+
+        item.margin.bottom      = R.dimen.field_list_input_item_margin_bottom;
+
+        return item.textView(context);
+    }
+
+
+    public static LinearLayout listInputAddItemButton(String itemName, Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        ImageViewBuilder    icon   = new ImageViewBuilder();
+        TextViewBuilder     label  = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.gravity              = Gravity.CENTER;
+        layout.layoutGravity        = Gravity.CENTER_HORIZONTAL;
+
+        layout.margin.top           = R.dimen.field_list_input_button_margin_top;
+
+        layout.child(icon)
+              .child(label);
+
+        // [3 A] Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image                  = R.drawable.ic_field_list_add;
+
+        icon.margin.right           = R.dimen.field_list_input_button_icon_margin_right;
+
+        // [3 B] Label
+        // -------------------------------------------------------------------------------------
+
+        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        String buttonLabel          = context.getString(R.string.form_add_list_item)
+                                       + " " + itemName;
+        label.text                  = buttonLabel.toUpperCase();
+        label.font                  = Font.sansSerifFontBold(context);
+        label.size                  = R.dimen.field_text_input_button_text_size;
+        label.color                 = R.color.dark_blue_hl_5;
+
+        return layout.linearLayout(context);
+    }
+
+
+    // BOOLEAN INPUT
+    // -----------------------------------------------------------------------------------------
+
+    public static RelativeLayout booleanInput(Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        RelativeLayoutBuilder layout     = new RelativeLayoutBuilder();
+        SwitchBuilder         switchView = new SwitchBuilder(R.style.SwitchStyle);
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.layoutType               = LayoutType.LINEAR;
+        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.child(switchView);
+
+        // [3] Switch
+        // -------------------------------------------------------------------------------------
+
+        switchView.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        switchView.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        switchView.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+        switchView.checked              = false;
+
+        return layout.relativeLayout(context);
+    }
+
+
+    // OPTION INPUT
+    // -----------------------------------------------------------------------------------------
+
+    public static LinearLayout optionInput(List<String> options,
+                                           List<View> optionViews,
+                                           Context context)
+    {
+        LinearLayout layout = optionInputLayout(context);
+
+        LinearLayout contentLayout = optionInputContentLayout(context);
+
+        // > Tabs
+        layout.addView(optionInputTabsView(options, optionViews, contentLayout, context));
+
+        // > Content Layout
+        layout.addView(contentLayout);
+
+        return layout;
+    }
+
+
+    private static LinearLayout optionInputLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private static LinearLayout optionInputTabsView(List<String> options,
+                                                    List<View> optionViews,
+                                                    LinearLayout contentLayout,
+                                                    Context context)
+    {
+        LinearLayout layout = optionInputTabLayout(context);
+
+        for (int i = 0; i < options.size(); i++)
+        {
+            String option     = options.get(i);
+            View   optionView = optionViews.get(i);
+
+            if (i == 0) {
+                layout.addView(optionInputTabView(option, optionView,
+                                                  contentLayout, true, context));
+            }
+            else {
+                layout.addView(optionInputTabView(option, optionView,
+                                                  contentLayout, false, context));
+            }
+        }
+
+        // Display first tab by default
+        contentLayout.addView(optionViews.get(0));
+
+        return layout;
+    }
+
+
+    private static LinearLayout optionInputTabLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation              = LinearLayout.HORIZONTAL;
+        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private static TextView optionInputTabView(String tabLabel,
+                                               final View tabView,
+                                               final LinearLayout contentLayout,
+                                               boolean selected,
+                                               Context context)
+    {
+        TextViewBuilder tab = new TextViewBuilder();
+
+        tab.width                   = 0;
+        tab.height                  = LinearLayout.LayoutParams.WRAP_CONTENT;
+        tab.weight                  = 1.0f;
+
+        tab.text                    = tabLabel;
+        tab.size                    = R.dimen.field_option_input_tab_text_size;
+        tab.font                    = Font.sansSerifFontRegular(context);
+
+        if (selected)
+            tab.color               = R.color.dark_blue_hlx_7;
+        else
+            tab.color               = R.color.dark_blue_hl_5;
+
+        tab.onClick                 = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                contentLayout.removeAllViews();
+                contentLayout.addView(tabView);
+            }
+        };
+
+        return tab.textView(context);
+    }
+
+
+    private static LinearLayout optionInputContentLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
     }
 
 

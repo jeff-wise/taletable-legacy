@@ -9,12 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.programming.mechanic.Mechanic;
-import com.kispoko.tome.engine.programming.program.Program;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.ScrollViewBuilder;
 
 
 /**
@@ -70,7 +71,10 @@ public class DataFragment extends Fragment
 
     private View view()
     {
-        LinearLayout layout = viewLayout(getContext());
+        ScrollView scrollView = dataScrollView(getContext());
+        LinearLayout layout = formLayout(getContext());
+
+        scrollView.addView(layout);
 
         // [1] Define Fields
         // -------------------------------------------------------------------------------------
@@ -96,19 +100,28 @@ public class DataFragment extends Fragment
                            Form.textInput(this.mechanic.type(), getContext()),
                            getContext());
 
+        // > Requirements Field
+        LinearLayout reqsField =
+                Form.field(R.string.mechanic_field_reqs_label,
+                           R.string.mechanic_field_reqs_description,
+                           Form.listInput("REQUIREMENT",
+                                          this.mechanic.requirements(),
+                                          getContext()),
+                           getContext());
+
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
         layout.addView(nameField);
         layout.addView(labelField);
         layout.addView(typeField);
+        layout.addView(reqsField);
 
-        return layout;
-
+        return scrollView;
     }
 
 
-    private LinearLayout viewLayout(Context context)
+    private LinearLayout formLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -122,6 +135,17 @@ public class DataFragment extends Fragment
         layout.padding.bottom       = R.dimen.mechanic_data_padding_vert;
 
         return layout.linearLayout(context);
+    }
+
+
+    private ScrollView dataScrollView(Context context)
+    {
+        ScrollViewBuilder scrollView = new ScrollViewBuilder();
+
+        scrollView.width    = LinearLayout.LayoutParams.MATCH_PARENT;
+        scrollView.height   = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        return scrollView.scrollView(context);
     }
 
 

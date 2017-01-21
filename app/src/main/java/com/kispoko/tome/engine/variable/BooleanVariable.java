@@ -48,7 +48,7 @@ public class BooleanVariable extends Variable
     private PrimitiveFunctor<String>    name;
     private PrimitiveFunctor<String>    label;
 
-    private PrimitiveFunctor<Boolean>   booleanValue;
+    private PrimitiveFunctor<Boolean>   literalValue;
     private ModelFunctor<Invocation>    invocationValue;
 
     private PrimitiveFunctor<Kind>      kind;
@@ -77,7 +77,7 @@ public class BooleanVariable extends Variable
         this.name                   = new PrimitiveFunctor<>(null, String.class);
         this.label                  = new PrimitiveFunctor<>(null, String.class);
 
-        this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
+        this.literalValue           = new PrimitiveFunctor<>(null, Boolean.class);
         this.invocationValue        = ModelFunctor.empty(Invocation.class);
 
         this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
@@ -115,7 +115,7 @@ public class BooleanVariable extends Variable
         this.name                   = new PrimitiveFunctor<>(name, String.class);
         this.label                  = new PrimitiveFunctor<>(label, String.class);
 
-        this.booleanValue           = new PrimitiveFunctor<>(null, Boolean.class);
+        this.literalValue           = new PrimitiveFunctor<>(null, Boolean.class);
         this.invocationValue        = ModelFunctor.full(null, Invocation.class);
 
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
@@ -139,7 +139,7 @@ public class BooleanVariable extends Variable
         switch (kind)
         {
             case LITERAL:
-                this.booleanValue.setValue((Boolean) value);
+                this.literalValue.setValue((Boolean) value);
                 break;
             case PROGRAM:
                 this.invocationValue.setValue((Invocation) value);
@@ -380,6 +380,20 @@ public class BooleanVariable extends Variable
         return this.kind.getValue();
     }
 
+
+    // ** Cases
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The literal case.
+     * @return The boolean value.
+     */
+    public Boolean literalValue()
+    {
+        return this.literalValue.getValue();
+    }
+
+
     // ** Value
     // ------------------------------------------------------------------------------------------
 
@@ -392,7 +406,7 @@ public class BooleanVariable extends Variable
         switch (this.kind.getValue())
         {
             case LITERAL:
-                this.booleanValue.setValue(newValue);
+                this.literalValue.setValue(newValue);
                 this.onUpdate();
                 break;
             case PROGRAM:
@@ -410,7 +424,7 @@ public class BooleanVariable extends Variable
         switch (this.kind.getValue())
         {
             case LITERAL:
-                return this.booleanValue.getValue();
+                return this.literalValue.getValue();
             case PROGRAM:
                 return this.reactiveValue.value();
         }

@@ -12,14 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.FunctionActivity;
-import com.kispoko.tome.engine.variable.TextVariable;
-import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.activity.TextVariableActivity;
 import com.kispoko.tome.engine.variable.VariableUnion;
 
 import java.util.List;
-
-import static android.R.attr.name;
 
 
 /**
@@ -150,13 +146,21 @@ public class VariableListRecyclerViewAdapter
                 @Override
                 public void onClick(View view)
                 {
-                    Intent intent = new Intent(context, FunctionActivity.class);
+                    switch (variable.type())
+                    {
+                        case TEXT:
+                            Intent intent = new Intent(context, TextVariableActivity.class);
 
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("variable", variable);
-                    intent.putExtras(bundle);
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("text_variable", variable.textVariable());
+                            intent.putExtras(bundle);
 
-                    context.startActivity(intent);
+                            context.startActivity(intent);
+                            break;
+
+                    }
+
+
                 }
             });
         }

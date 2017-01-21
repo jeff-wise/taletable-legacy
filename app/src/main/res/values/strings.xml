@@ -194,5 +194,71 @@
         The type of mechanic i.e. a category that the mechanic belongs to.
     </string>
 
+    <string name="mechanic_field_reqs_label">Requirements</string>
+    <string name="mechanic_field_reqs_description">
+        Each requirement is the name of a boolean variable. If the values of all the requirement
+        values are true then the mechanic is considered active, and its variables are added to the
+        system.
+    </string>
+
+
+    <!-- ACTIVITY: VARIABLE -->
+    <!-- ==================================================================================== -->
+
+    <string name="variable_field_name_label">Name</string>
+    <string name="variable_field_name_description">
+        The Variable\'s identifier. This value is used to uniquely identify the Variable when
+        programming.
+    </string>
+
+    <string name="variable_field_label_label">Label</string>
+    <string name="variable_field_label_description">
+        The variable name (meant to be read by people).
+    </string>
+
+
+
+    <string name="variable_field_is_namespaced_label">Is Namespaced?</string>
+    <string name="variable_field_is_namespaced_description">
+        If the variable is namespaced then it exists in a certain context. For example, the general
+        variable is_equipped can exist in the context of a weapon or armor. If it does, then its
+        name becomes weapon.is_equipped.
+    </string>
+
+    <string name="variable_field_defines_namespace_label">Defines Namespace?</string>
+    <string name="variable_field_defines_namespace_description">
+        A variable that defines a namespace provides a content for other variables in the same
+        widget. For example, a "longsword" variable could be a context for general "is_equipped"
+        or "damage" variables.
+    </string>
+
+    <string name="text_variable_field_value_label">Value</string>
+    <string name="text_variable_field_value_description">
+        The variable\'s value. It could be a text value, a value chosen from a value set, or a
+        computation that creates the value from other values.
+    </string>
+
+    <string name="number_variable_field_value_label">Value</string>
+    <string name="number_variable_field_value_description">
+        The variable\'s value. It could be a number value, a summation of other variables, or a
+        computation that creates the value from other values.
+    </string>
+
+    <string name="boolean_variable_field_value_label">Value</string>
+    <string name="boolean_variable_field_value_description">
+        The variable\'s value. It could be a true/false value, or acomputation that creates the
+        value from other values.
+    </string>
+
+    <string name="dice_variable_field_value_label">Value</string>
+    <string name="dice_variable_field_value_description">
+        The dice roll value.
+    </string>
+
+    <!-- FORM -->
+    <!-- ==================================================================================== -->
+
+    <string name="form_add_list_item">ADD</string>
+
 
 </resources>

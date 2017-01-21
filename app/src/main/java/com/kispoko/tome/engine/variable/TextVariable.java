@@ -467,7 +467,7 @@ public class TextVariable extends Variable
      * The value reference case.
      * @return The value reference.
      */
-    private ValueReference valueReference()
+    public ValueReference valueReference()
     {
         return this.valueReference.getValue();
     }

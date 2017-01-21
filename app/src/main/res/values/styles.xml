@@ -9,13 +9,30 @@
         <item name="colorControlNormal">@color/dark_blue_hlx_7</item>
         <item name="colorControlActivated">@color/dark_blue_hlx_7</item>
         <item name="colorControlHighlight">#876333</item>
+        <item name="colorSwitchThumbNormal">@color/dark_blue_hl_8</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/dark_blue_hlx_7</item>
+        <item name="colorPrimaryDark">@color/dark_blue_hlx_7</item>
+        <item name="colorAccent">@color/dark_blue_hlx_7</item>
         <item name="colorControlNormal">@color/dark_blue_hlx_7</item>
+        <item name="colorControlActivated">@color/dark_blue_hlx_7</item>
+        <item name="colorControlHighlight">@color/dark_blue_hlx_7</item>
+        <item name="colorSwitchThumbNormal">@color/dark_blue_hl_8</item>
+    </style>
+
+
+    <style name="SwitchStyle" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/dark_blue_hlx_7</item>
+        <item name="colorPrimaryDark">@color/dark_blue_hlx_7</item>
+        <item name="colorAccent">@color/dark_blue_hlx_7</item>
+        <item name="colorControlNormal">@color/dark_blue_hlx_7</item>
+        <item name="colorControlActivated">@color/dark_blue_hlx_7</item>
+        <item name="colorControlHighlight">@color/dark_blue_hlx_7</item>
+        <item name="colorSwitchThumbNormal">@color/dark_blue_hl_8</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -29,6 +46,7 @@
         <item name="android:textColorPrimary">@color/dark_blue_hl_5</item>
         <!--dialog background-->
         <item name="android:windowBackground">@drawable/bg_alert_dialog</item>
+        <item name="colorSwitchThumbNormal">@color/dark_blue_hl_8</item>
     </style>
 
 </resources>

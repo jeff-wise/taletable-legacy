@@ -61,7 +61,7 @@ public class NumberVariable extends Variable
     private PrimitiveFunctor<String>    name;
     private PrimitiveFunctor<String>    label;
 
-    private PrimitiveFunctor<Integer>   integerValue;
+    private PrimitiveFunctor<Integer>   literalValue;
     private ModelFunctor<Invocation>    invocationValue;
     private ModelFunctor<Summation>     summation;
 
@@ -92,7 +92,7 @@ public class NumberVariable extends Variable
         this.name               = new PrimitiveFunctor<>(null, String.class);
         this.label              = new PrimitiveFunctor<>(null, String.class);
 
-        this.integerValue       = new PrimitiveFunctor<>(null, Integer.class);
+        this.literalValue       = new PrimitiveFunctor<>(null, Integer.class);
         this.invocationValue    = ModelFunctor.empty(Invocation.class);
         this.summation          = ModelFunctor.empty(Summation.class);
 
@@ -131,7 +131,7 @@ public class NumberVariable extends Variable
         this.name                   = new PrimitiveFunctor<>(name, String.class);
         this.label                  = new PrimitiveFunctor<>(label, String.class);
 
-        this.integerValue           = new PrimitiveFunctor<>(null, Integer.class);
+        this.literalValue = new PrimitiveFunctor<>(null, Integer.class);
         this.invocationValue        = ModelFunctor.full(null, Invocation.class);
         this.summation              = ModelFunctor.full(null, Summation.class);
 
@@ -155,7 +155,7 @@ public class NumberVariable extends Variable
         switch (kind)
         {
             case LITERAL:
-                this.integerValue.setValue((Integer) value);
+                this.literalValue.setValue((Integer) value);
                 break;
             case PROGRAM:
                 this.invocationValue.setValue((Invocation) value);
@@ -477,6 +477,19 @@ public class NumberVariable extends Variable
     }
 
 
+    // ** Cases
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The literal value case.
+     * @return The integer value.
+     */
+    public Integer literalValue()
+    {
+        return this.literalValue.getValue();
+    }
+
+
     // ** Properties
     // ------------------------------------------------------------------------------------------
 
@@ -502,7 +515,7 @@ public class NumberVariable extends Variable
         switch (this.kind.getValue())
         {
             case LITERAL:
-                this.integerValue.setValue(newValue);
+                this.literalValue.setValue(newValue);
                 this.onUpdate();
                 break;
             case PROGRAM:
@@ -526,7 +539,7 @@ public class NumberVariable extends Variable
         switch (this.kind.getValue())
         {
             case LITERAL:
-                return this.integerValue.getValue();
+                return this.literalValue.getValue();
             case PROGRAM:
                 return this.reactiveValue.value();
             case SUMMATION:
