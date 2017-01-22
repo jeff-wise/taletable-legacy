@@ -185,7 +185,7 @@ public class SheetManager
         // Construct query
         List<OrderBy.Field> fields = new ArrayList<>();
         // TODO make this derived, not hardcoded
-        fields.add(new OrderBy.Field("last_used", Function.DATETIME));
+        fields.add(new OrderBy.Field("lastused", Function.DATETIME));
         OrderBy orderBy = new OrderBy(fields, OrderBy.Order.DESC);
 
         ModelQueryParameters.TopResult topResultQuery =

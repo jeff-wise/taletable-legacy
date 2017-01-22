@@ -12,6 +12,7 @@ game:
   created: '2014'
   creators: Wizards
   players: 11577
+campaign_name: dawn_of_sky_break
 engine:
   refinements:
   - name: class

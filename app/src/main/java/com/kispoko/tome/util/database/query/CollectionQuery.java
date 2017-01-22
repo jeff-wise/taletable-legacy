@@ -25,7 +25,7 @@ public class CollectionQuery
 {
 
     // PROPERTIES
-    // --------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private String              tableName;
     private OneToManyRelation   oneToManyRelation;
@@ -36,7 +36,7 @@ public class CollectionQuery
 
 
     // CONSTRUCTORS
-    // --------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public CollectionQuery(String tableName,
                            OneToManyRelation oneToManyRelation,
@@ -58,7 +58,7 @@ public class CollectionQuery
 
 
     // API
-    // --------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public List<ResultRow> result()
            throws DatabaseException

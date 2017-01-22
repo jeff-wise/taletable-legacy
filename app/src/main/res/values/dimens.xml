@@ -143,7 +143,7 @@
 
     <!-- ACTIVITY: NEW CHARACTER -->
     <dimen name="new_character_layout_padding_bottom">14dp</dimen>
-    <dimen name="new_character_layout_padding_horz">10dp</dimen>
+    <dimen name="new_character_layout_padding_horz">12dp</dimen>
     <dimen name="new_character_button_margin_top">14dp</dimen>
     <dimen name="new_character_button_padding_vert">15dp</dimen>
     <dimen name="new_character_title_margin_bottom">15dp</dimen>
@@ -315,6 +315,16 @@
     <dimen name="variable_form_padding_vert">15dp</dimen>
 
 
+    <!-- ACTIVITY: PAGE LIST -->
+    <dimen name="page_list_item_name_text_size">4.4sp</dimen>
+    <dimen name="page_list_item_drag_margin_right">6dp</dimen>
+    <dimen name="page_list_item_group_count_text_size">3.5sp</dimen>
+    <dimen name="page_list_item_group_label_text_size">3.2sp</dimen>
+    <dimen name="page_list_item_margin_horz">5dp</dimen>
+    <dimen name="page_list_item_margin_vert">3dp</dimen>
+    <dimen name="page_list_item_group_count_margin_right">4dp</dimen>
+
+
     <!-- MANAGE SHEETS -->
     <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>
     <dimen name="manage_sheets_summary_layout_padding_horz">15dp</dimen>
@@ -329,6 +339,17 @@
     <!-- GENERAL -->
     <dimen name="one_dp">1dp</dimen>
     <dimen name="two_dp">2dp</dimen>
+
+    <!-- ACTIVITY: SECTIONS -->
+    <dimen name="sections_padding_bottom">12dp</dimen>
+    <dimen name="sections_padding_horz">12dp</dimen>
+
+    <!-- SECTION CARD-->
+    <dimen name="section_card_margin_top">12dp</dimen>
+    <dimen name="section_card_title_text_size">3.7sp</dimen>
+    <dimen name="section_card_description_text_size">3sp</dimen>
+    <dimen name="section_card_title_margin_bottom">10dp</dimen>
+    <dimen name="section_card_icon_margin_bottom">10dp</dimen>
 
     <!-- FIELD -->
     <dimen name="field_margin_bottom">30dp</dimen>

@@ -6,6 +6,7 @@ import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.Functor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -31,13 +32,17 @@ public class Section implements Model, ToYaml
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                  id;
-
-
-    // > Values
+    // > Model
     // ------------------------------------------------------------------------------------------
 
-    private CollectionFunctor<Page> pages;
+    private UUID                            id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
+    private PrimitiveFunctor<SectionType>   type;
+    private CollectionFunctor<Page>         pages;
 
 
     // CONSTRUCTORS
@@ -45,31 +50,47 @@ public class Section implements Model, ToYaml
 
     public Section()
     {
-        this.id = null;
+        this.id     = null;
+
+        this.type   = new PrimitiveFunctor<>(null, SectionType.class);
 
         // ** Configure Pages Value
         List<Class<? extends Page>> pageClasses = new ArrayList<>();
         pageClasses.add(Page.class);
 
-        this.pages = CollectionFunctor.empty(pageClasses);
+        this.pages  = CollectionFunctor.empty(pageClasses);
     }
 
 
-    public Section(UUID id, List<Page> pages)
+    public Section(UUID id, SectionType sectionType, List<Page> pages)
     {
-        this.id = id;
+        this.id     = id;
+
+        this.type   = new PrimitiveFunctor<>(sectionType, SectionType.class);
 
         // ** Configure Pages Value
         List<Class<? extends Page>> pageClasses = new ArrayList<>();
         pageClasses.add(Page.class);
 
-        this.pages = CollectionFunctor.full(pages, pageClasses);
+        this.pages  = CollectionFunctor.full(pages, pageClasses);
 
         this.initializeSection();
     }
 
 
-    public static Section fromYaml(YamlParser yaml)
+    /**
+     * A Campaign Section.
+     * @param id The model id.
+     * @param pages The campaign pages.
+     * @return The Campaign Section.
+     */
+    public static Section asCampaign(UUID id, List<Page> pages)
+    {
+        return new Section(id, SectionType.CAMPAIGN, pages);
+    }
+
+
+    public static Section fromYaml(SectionType sectionType, YamlParser yaml)
                   throws YamlParseException
     {
         UUID id = UUID.randomUUID();
@@ -82,7 +103,7 @@ public class Section implements Model, ToYaml
             }
         }, true);
 
-        return new Section(id, pages);
+        return new Section(id, sectionType, pages);
     }
 
 
@@ -135,6 +156,19 @@ public class Section implements Model, ToYaml
 
     // > State
     // ------------------------------------------------------------------------------------------
+
+    // ** Type
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The section type.
+     * @return The section type.
+     */
+    public SectionType type()
+    {
+        return this.type.getValue();
+    }
+
 
     // ** Pages
     // ------------------------------------------------------------------------------------------

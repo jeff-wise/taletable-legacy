@@ -66,6 +66,12 @@
     <item name="variable_list_item_type" type="id"/>
     <item name="variable_list_item_kind" type="id"/>
 
+    <!-- PAGE LIST ITEM -->
+    <item name="page_list_item_layout" type="id"/>
+    <item name="page_list_item_name" type="id"/>
+    <item name="page_list_item_group_count" type="id"/>
+    <item name="page_list_item_group_label" type="id"/>
+
 
     <item name="type_list_item_name" type="id"/>
     <item name="type_list_item_icon" type="id"/>

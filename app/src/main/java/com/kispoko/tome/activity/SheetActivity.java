@@ -497,6 +497,20 @@ public class SheetActivity
 
         LinearLayout buttonsLayout = sheetOptionsButtonsLayout();
 
+        // > Layout Button
+        View.OnClickListener onLayoutClick = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, SectionsActivity.class);
+                startActivity(intent);
+            }
+        };
+        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_layout_label,
+                                                 R.string.nav_view_button_layout_description,
+                                                 onLayoutClick));
+
         // > Dictionary Button
         View.OnClickListener onDictionaryClick = new View.OnClickListener()
         {
@@ -507,8 +521,8 @@ public class SheetActivity
                 startActivity(intent);
             }
         };
-        buttonsLayout.addView(sheetOptionsButton(R.string.button_dictionary_label,
-                                                 R.string.button_dictionary_description,
+        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_dictionary_label,
+                                                 R.string.nav_view_button_dictionary_description,
                                                  onDictionaryClick));
 
         // > Functions Button
@@ -521,8 +535,8 @@ public class SheetActivity
                 startActivity(intent);
             }
         };
-        buttonsLayout.addView(sheetOptionsButton(R.string.button_functions_label,
-                                                 R.string.button_functions_description,
+        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_functions_label,
+                                                 R.string.nav_view_button_functions_description,
                                                  onFunctionsClick));
 
         // > Programs Button
@@ -533,8 +547,8 @@ public class SheetActivity
                 startActivity(intent);
             }
         };
-        buttonsLayout.addView(sheetOptionsButton(R.string.button_programs_label,
-                                                 R.string.button_programs_description,
+        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_programs_label,
+                                                 R.string.nav_view_button_programs_description,
                                                  onProgramsClick));
 
         // > Mechanics Button
@@ -545,8 +559,8 @@ public class SheetActivity
                 startActivity(intent);
             }
         };
-        buttonsLayout.addView(sheetOptionsButton(R.string.button_mechanics_label,
-                                                 R.string.button_mechanics_description,
+        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_mechanics_label,
+                                                 R.string.nav_view_button_mechanics_description,
                                                  onMechanicsClick));
 
         layout.addView(buttonsLayout);

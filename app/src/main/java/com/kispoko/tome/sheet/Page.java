@@ -41,17 +41,17 @@ public class Page implements Model, ToYaml, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                    id;
+    private UUID                        id;
 
-    private PrimitiveFunctor<String> label;
-    private PrimitiveFunctor<Integer> index;
-    private CollectionFunctor<Group> groups;
+    private PrimitiveFunctor<String>    name;
+    private PrimitiveFunctor<Integer>   index;
+    private CollectionFunctor<Group>    groups;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private int                     pageViewId;
+    private int                         pageViewId;
 
 
     // CONSTRUCTORS
@@ -59,27 +59,27 @@ public class Page implements Model, ToYaml, Serializable
 
     public Page()
     {
-        this.id = null;
+        this.id             = null;
 
-        this.label  = new PrimitiveFunctor<>(null, String.class);
-        this.index  = new PrimitiveFunctor<>(null, Integer.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.index          = new PrimitiveFunctor<>(null, Integer.class);
 
         List<Class<? extends Group>> groupClasses = new ArrayList<>();
         groupClasses.add(Group.class);
-        this.groups = CollectionFunctor.empty(groupClasses);
+        this.groups         = CollectionFunctor.empty(groupClasses);
     }
 
 
-    public Page(UUID id, String label, Integer index, List<Group> groups)
+    public Page(UUID id, String name, Integer index, List<Group> groups)
     {
-        this.id = id;
+        this.id             = id;
 
-        this.label  = new PrimitiveFunctor<>(label, String.class);
-        this.index  = new PrimitiveFunctor<>(index, Integer.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.index          = new PrimitiveFunctor<>(index, Integer.class);
 
         List<Class<? extends Group>> groupClasses = new ArrayList<>();
         groupClasses.add(Group.class);
-        this.groups = CollectionFunctor.full(groups, groupClasses);
+        this.groups         = CollectionFunctor.full(groups, groupClasses);
 
         this.initializePage();
     }
@@ -89,6 +89,7 @@ public class Page implements Model, ToYaml, Serializable
                   throws YamlParseException
     {
         UUID       id     = UUID.randomUUID();
+
         String     label  = yaml.atKey("label").getString();
         Integer    index  = pageIndex;
 
@@ -161,7 +162,7 @@ public class Page implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putString("label", this.label())
+                .putString("label", this.name())
                 .putList("groups", this.groups());
     }
 
@@ -175,9 +176,9 @@ public class Page implements Model, ToYaml, Serializable
      * Returns the label of this page.
      * @return The page label.
      */
-    public String label()
+    public String name()
     {
-        return this.label.getValue();
+        return this.name.getValue();
     }
 
 

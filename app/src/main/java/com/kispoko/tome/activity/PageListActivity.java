@@ -15,18 +15,25 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.functionindex.FunctionListRecyclerViewAdapter;
-import com.kispoko.tome.engine.programming.function.FunctionIndex;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
+import com.kispoko.tome.activity.pagelist.PageListRecyclerViewAdpater;
+import com.kispoko.tome.sheet.Section;
+import com.kispoko.tome.sheet.SectionType;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.UI;
 
 
 
 /**
- * Switch Character Screen
+ * Pages Activity
  */
-public class ManageSheetsActivity extends AppCompatActivity
+public class PageListActivity extends AppCompatActivity
 {
+
+    // PROPERTIES
+    // ------------------------------------------------------------------------------------------
+
+    private Section section;
+
 
     // ACTIVITY LIFECYCLE EVENTS
     // ------------------------------------------------------------------------------------------
@@ -36,11 +43,28 @@ public class ManageSheetsActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_manage_sheets);
+        setContentView(R.layout.activity_page_list);
+
+        SectionType sectionType = null;
+        if (getIntent().hasExtra("section_type")) {
+            sectionType = (SectionType) getIntent().getSerializableExtra("section_type");
+        }
+
+        switch (sectionType)
+        {
+            case PROFILE:
+                this.section = SheetManager.currentSheet().profileSection();
+                break;
+            case ENCOUNTER:
+                this.section = SheetManager.currentSheet().encounterSection();
+                break;
+            case CAMPAIGN:
+                break;
+        }
 
         initializeToolbar();
 
-//        initializeView();
+        initializeView();
     }
 
 
@@ -94,51 +118,35 @@ public class ManageSheetsActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // > Set the title
+        String title = this.section.type().toString(this) + " Pages";
+
         TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(R.string.activity_manage_sheets_title);
+        titleView.setText(title);
     }
 
 
     /**
      * Initialize the template list view.
      */
-    private void initializeView(FunctionIndex functionIndex)
+    private void initializeView()
     {
-//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.function_index_list_view);
-//
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-//        recyclerView.setAdapter(
-//                new FunctionListRecyclerViewAdapter(functionIndex.functions(), this));
-//
-//        FloatingActionButton addValueSetButton =
-//                (FloatingActionButton) findViewById(R.id.button_new_function);
-//        addValueSetButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(FunctionIndexActivity.this, FunctionActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.page_list_view);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        recyclerView.setAdapter(new PageListRecyclerViewAdpater(this.section.pages(), this));
+
+        FloatingActionButton addValueSetButton =
+                (FloatingActionButton) findViewById(R.id.button_new_page);
+        addValueSetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PageListActivity.this, PageActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
-
-
-
-//    String[] mockCampaignNames = {
-//                "Restless",
-//                "Keep on the Borderlands",
-//                "Subterranean Myth",
-//                "Trouble in the City of Towers",
-//                "The Endless War",
-//                "Waves of Eden",
-//                "Forgotten Star",
-//                "Orc King",
-//                "Darkness Alight",
-//                "Distant Shores",
-//        };
-
-
 
 
 }

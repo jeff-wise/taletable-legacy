@@ -43,12 +43,16 @@ public class Sheet implements Model
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<Long>      last_used;
+    private PrimitiveFunctor<Long>      lastUsed;
 
-    private ModelFunctor<Game>          game;
+
     private ModelFunctor<Section>       profileSection;
     private ModelFunctor<Section>       encounterSection;
     private ModelFunctor<Section>       campaignSection;
+
+
+    private ModelFunctor<Game>          game;
+    private PrimitiveFunctor<String>    campaignName;
     private ModelFunctor<RulesEngine>   rules;
 
 
@@ -66,34 +70,37 @@ public class Sheet implements Model
         this.id                 = null;
 
         Long currentTimeMS      = System.currentTimeMillis();
-        this.last_used          = new PrimitiveFunctor<>(currentTimeMS, Long.class);
+        this.lastUsed           = new PrimitiveFunctor<>(currentTimeMS, Long.class);
 
-        this.game               = ModelFunctor.empty(Game.class);
         this.profileSection     = ModelFunctor.empty(Section.class);
         this.encounterSection   = ModelFunctor.empty(Section.class);
         this.campaignSection    = ModelFunctor.empty(Section.class);
+
+        this.campaignName       = new PrimitiveFunctor<>(null, String.class);
+        this.game               = ModelFunctor.empty(Game.class);
         this.rules              = ModelFunctor.empty(RulesEngine.class);
     }
 
 
     public Sheet(UUID id,
                  Game game,
+                 String campaignName,
+                 RulesEngine rulesEngine,
                  Section profileSection,
                  Section encounterSection,
-                 Section campaignSection,
-                 RulesEngine rulesEngine)
+                 Section campaignSection)
     {
         this.id                 = id;
 
         Long currentTimeMS      = System.currentTimeMillis();
-        this.last_used          = new PrimitiveFunctor<>(currentTimeMS, Long.class);
-
-        this.game               = ModelFunctor.full(game, Game.class);
+        this.lastUsed           = new PrimitiveFunctor<>(currentTimeMS, Long.class);
 
         this.profileSection     = ModelFunctor.full(profileSection, Section.class);
         this.encounterSection   = ModelFunctor.full(encounterSection, Section.class);
         this.campaignSection    = ModelFunctor.full(null, Section.class);
 
+        this.campaignName       = new PrimitiveFunctor<>(campaignName, String.class);
+        this.game               = ModelFunctor.full(game, Game.class);
         this.rules              = ModelFunctor.full(rulesEngine, RulesEngine.class);
 
         indexComponents();
@@ -109,16 +116,17 @@ public class Sheet implements Model
     public static Sheet fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID        id          = UUID.randomUUID();
+        UUID        id              = UUID.randomUUID();
 
-        Game        game        = Game.fromYaml(yaml.atKey("game"));
+        Section     profile         = Section.fromYaml(SectionType.PROFILE, yaml.atKey("profile"));
+        Section     encounter       = Section.fromYaml(SectionType.ENCOUNTER,
+                                                       yaml.atKey("encounter"));
 
-        Section     profile     = Section.fromYaml(yaml.atKey("profile"));
-        Section     encounter   = Section.fromYaml(yaml.atKey("encounter"));
+        String      campaignName    = yaml.atKey("campaign_name").getString();
+        Game        game            = Game.fromYaml(yaml.atKey("game"));
+        RulesEngine rulesEngine     = RulesEngine.fromYaml(yaml.atKey("engine"));
 
-        RulesEngine rulesEngine = RulesEngine.fromYaml(yaml.atKey("engine"));
-
-        return new Sheet(id, game, profile, encounter, null, rulesEngine);
+        return new Sheet(id, game, campaignName, rulesEngine, profile, encounter, null);
     }
 
 

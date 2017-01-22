@@ -137,6 +137,23 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Dice Variable" />
 
+    <activity
+        android:name=".activity.PageListActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Pages" />
+
+    <activity
+        android:name=".activity.GroupListActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
+    <activity
+        android:name=".activity.SectionsActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Groups" />
+
 </application>
 
 </manifest>

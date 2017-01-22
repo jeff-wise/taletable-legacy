@@ -20,6 +20,8 @@ import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.refinement.RefinementType;
 import com.kispoko.tome.mechanic.dice.DiceType;
+import com.kispoko.tome.sheet.Section;
+import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.group.RowAlignment;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.action.Action;
@@ -168,6 +170,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(CellType.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(SectionType.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -337,6 +343,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof CellType)
         {
             String enumString = ((CellType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof SectionType)
+        {
+            String enumString = ((SectionType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof ColumnType)
@@ -509,6 +520,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             CellType cellType = CellType.fromSQLValue(sqlValue);
             this.setValue((A) cellType);
+        }
+        else if (this.valueClass.isAssignableFrom(SectionType.class))
+        {
+            SectionType sectionType = SectionType.fromSQLValue(sqlValue);
+            this.setValue((A) sectionType);
         }
         else if (this.valueClass.isAssignableFrom(ColumnType.class))
         {

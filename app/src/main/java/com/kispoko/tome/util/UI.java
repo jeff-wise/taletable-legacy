@@ -25,7 +25,6 @@ public class UI
     {
         View dividerView = new View(context);
 
-
         if (width == 1) {
             int one_dp = (int) Util.getDim(context, R.dimen.one_dp);
             LinearLayout.LayoutParams layoutParams =

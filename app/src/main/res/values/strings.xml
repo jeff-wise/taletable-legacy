@@ -11,6 +11,9 @@
 
     <string name="toolbar_home">HOME</string>
 
+    <string name="group_upper">GROUP</string>
+    <string name="groups_upper">GROUPS</string>
+
 
     <!-- BOTTOM NAVIGATION -->
     <!-- ==================================================================================== -->
@@ -39,6 +42,25 @@
         Upload a character or character template from a local file.
     </string>
 
+    <!-- ACTIVITY: SECTIONS -->
+    <!-- ==================================================================================== -->
+
+    <string name="sections_button_profile_label">PROFILE</string>
+    <string name="sections_button_profile_description">
+        The character\'s attributes and abilities. Information that changes slowly.
+    </string>
+
+    <string name="sections_button_encounter_label">ENCOUNTER</string>
+    <string name="sections_button_encounter_description">
+        Information that changes rapidly e.g. hit points. Also dice rolls and abilities that are
+        relevant during an encounter.
+    </string>
+
+    <string name="sections_button_campaign_label">CAMPAIGN</string>
+    <string name="sections_button_campaign_description">
+        Campaign level information that is relevant across multiple play sessions such as logs
+        and stats.
+    </string>
 
     <!-- NAVIGATION VIEW -->
     <!-- ==================================================================================== -->
@@ -53,25 +75,28 @@
     <string name="nav_view_button_upgrades">UPGRADES</string>
     <string name="nav_view_button_news">NEWS</string>
 
+    <string name="nav_view_button_layout_label">LAYOUT</string>
+    <string name="nav_view_button_layout_description">
+        Customize the structure of the sheet &#8212; add widgets, groups and pages.
+    </string>
 
-    <string name="button_functions_label">FUNCTIONS</string>
-    <string name="button_functions_description">
+    <string name="nav_view_button_functions_label">FUNCTIONS</string>
+    <string name="nav_view_button_functions_description">
         Value mappings e.g. Level to Proficiency Bonus
     </string>
 
-
-    <string name="button_programs_label">PROGRAMS</string>
-    <string name="button_programs_description">
+    <string name="nav_view_button_programs_label">PROGRAMS</string>
+    <string name="nav_view_button_programs_description">
         Values calculated from other values e.g. Ability Score Modifiers.
     </string>
 
-    <string name="button_mechanics_label">MECHANICS</string>
-    <string name="button_mechanics_description">
+    <string name="nav_view_button_mechanics_label">MECHANICS</string>
+    <string name="nav_view_button_mechanics_description">
         Groups of variables active under specific conditions e.g. powers from a class ability.
     </string>
 
-    <string name="button_dictionary_label">DICTIONARY</string>
-    <string name="button_dictionary_description">
+    <string name="nav_view_button_dictionary_label">DICTIONARY</string>
+    <string name="nav_view_button_dictionary_description">
         Value sets e.g. classes, skills, weapons.
     </string>
 
@@ -255,10 +280,36 @@
         The dice roll value.
     </string>
 
+    <!-- ACTIVITY: MANAGE SHEETS -->
+    <!-- ==================================================================================== -->
+
+    <string name="activity_manage_sheets_title">Manage Sheets</string>
+
+
+    <!-- ACTIVITY: PAGE LIST -->
+    <!-- ==================================================================================== -->
+
+    <string name="activity_page_list_title">Pages</string>
+
+
+
+
+    <!-- ACTIVITY: SECTIONS -->
+    <!-- ==================================================================================== -->
+
+    <string name="activity_sections_title">Sections</string>
+
+
     <!-- FORM -->
     <!-- ==================================================================================== -->
 
     <string name="form_add_list_item">ADD</string>
 
+    <!-- SECTION NAMES -->
+    <!-- ==================================================================================== -->
+
+    <string name="section_profile">Profile</string>
+    <string name="section_encounter">Encounter</string>
+    <string name="section_campaign">Campaign</string>
 
 </resources>

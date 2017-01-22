@@ -72,7 +72,7 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
     @Override
     public CharSequence getPageTitle(int position)
     {
-        String pageLabel = this.pages.get(position).label();
+        String pageLabel = this.pages.get(position).name();
         if (pageLabel != null)
             return pageLabel;
         else
