@@ -11,8 +11,18 @@
 
     <string name="toolbar_home">HOME</string>
 
+    <string name="group">Group</string>
     <string name="group_upper">GROUP</string>
     <string name="groups_upper">GROUPS</string>
+
+    <string name="row">Row</string>
+    <string name="row_upper">ROW</string>
+    <string name="rows_upper">ROWS</string>
+
+    <string name="page">Page</string>
+
+    <string name="widget_upper">WIDGET</string>
+    <string name="widgets_upper">WIDGETS</string>
 
 
     <!-- BOTTOM NAVIGATION -->
@@ -241,8 +251,6 @@
         The variable name (meant to be read by people).
     </string>
 
-
-
     <string name="variable_field_is_namespaced_label">Is Namespaced?</string>
     <string name="variable_field_is_namespaced_description">
         If the variable is namespaced then it exists in a certain context. For example, the general
@@ -291,7 +299,36 @@
 
     <string name="activity_page_list_title">Pages</string>
 
+    <!-- ACTIVITY: PAGE -->
+    <!-- ==================================================================================== -->
 
+    <string name="page_field_name_label">Name</string>
+    <string name="page_field_name_description">
+        The page name.
+    </string>
+
+
+    <!-- ACTIVITY: GROUP -->
+    <!-- ==================================================================================== -->
+
+    <string name="group_field_name_label">Name</string>
+    <string name="group_field_name_description">
+        The group name.
+    </string>
+
+
+    <!-- ACTIVITY: GROUP ROW -->
+    <!-- ==================================================================================== -->
+
+    <string name="group_row_field_alignment_label">Alignment</string>
+    <string name="group_row_field_alignment_description">
+        The alignment of the widgets within the row i.e. left, right, or center.
+    </string>
+
+    <string name="group_row_field_width_label">Width</string>
+    <string name="group_row_field_width_description">
+        The width of the row.
+    </string>
 
 
     <!-- ACTIVITY: SECTIONS -->

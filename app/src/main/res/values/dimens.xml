@@ -314,7 +314,6 @@
     <dimen name="variable_form_padding_horz">16dp</dimen>
     <dimen name="variable_form_padding_vert">15dp</dimen>
 
-
     <!-- ACTIVITY: PAGE LIST -->
     <dimen name="page_list_item_name_text_size">4.4sp</dimen>
     <dimen name="page_list_item_drag_margin_right">6dp</dimen>
@@ -323,6 +322,48 @@
     <dimen name="page_list_item_margin_horz">5dp</dimen>
     <dimen name="page_list_item_margin_vert">3dp</dimen>
     <dimen name="page_list_item_group_count_margin_right">4dp</dimen>
+
+
+    <!-- ACTIVITY: PAGE -->
+
+    <dimen name="page_data_padding_horz">17dp</dimen>
+    <dimen name="page_data_padding_vert">15dp</dimen>
+
+    <dimen name="page_group_list_padding_top">3dp</dimen>
+
+    <dimen name="group_list_item_margin_horz">5dp</dimen>
+    <dimen name="group_list_item_margin_vert">3dp</dimen>
+    <dimen name="group_list_item_drag_margin_right">6dp</dimen>
+    <dimen name="group_list_item_row_count_text_size">3.5sp</dimen>
+    <dimen name="group_list_item_row_label_text_size">3.2sp</dimen>
+    <dimen name="group_list_item_name_text_size">4.4sp</dimen>
+    <dimen name="group_list_item_group_count_text_size">3.5sp</dimen>
+    <dimen name="group_list_item_group_label_text_size">3.2sp</dimen>
+    <dimen name="group_list_item_group_count_margin_right">4dp</dimen>
+
+
+    <!-- ACTIVITY: GROUP -->
+
+    <dimen name="group_data_padding_horz">17dp</dimen>
+    <dimen name="group_data_padding_vert">15dp</dimen>
+
+    <dimen name="group_row_list_padding_top">3dp</dimen>
+
+    <dimen name="group_row_list_item_margin_horz">5dp</dimen>
+    <dimen name="group_row_list_item_margin_vert">3dp</dimen>
+    <dimen name="group_row_list_item_drag_margin_right">6dp</dimen>
+    <dimen name="group_row_list_item_row_count_text_size">3.5sp</dimen>
+    <dimen name="group_row_list_item_row_label_text_size">3.2sp</dimen>
+    <dimen name="group_row_list_item_name_text_size">4.4sp</dimen>
+    <dimen name="group_row_list_item_group_count_text_size">3.5sp</dimen>
+    <dimen name="group_row_list_item_group_label_text_size">3.2sp</dimen>
+    <dimen name="group_row_list_item_group_count_margin_right">4dp</dimen>
+
+
+    <!-- ACTIVITY: GROUP ROW -->
+
+    <dimen name="group_row_widget_list_padding_top">3dp</dimen>
+    <dimen name="widget_list_item_type_text_size">3.5dp</dimen>
 
 
     <!-- MANAGE SHEETS -->
@@ -369,6 +410,9 @@
     <dimen name="field_list_input_button_margin_top">10dp</dimen>
     <dimen name="field_list_input_button_icon_margin_right">4dp</dimen>
     <dimen name="field_option_input_tab_text_size">4dp</dimen>
+
+    <dimen name="field_variant_input_button_margin_horz">2dp</dimen>
+    <dimen name="field_variant_input_button_text_size">3sp</dimen>
 
 
 </resources>

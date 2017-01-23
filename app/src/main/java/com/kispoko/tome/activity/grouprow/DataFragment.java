@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.function;
+package com.kispoko.tome.activity.grouprow;
 
 
 import android.content.Context;
@@ -11,14 +11,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.programming.function.Function;
+import com.kispoko.tome.sheet.group.GroupRow;
+import com.kispoko.tome.sheet.group.RowAlignment;
+import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
 
 
 /**
- * Function Data Fragment
+ * Group Row Data Fragment
  */
 public class DataFragment extends Fragment
 {
@@ -26,18 +28,18 @@ public class DataFragment extends Fragment
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Function function;
+    private GroupRow groupRow;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static DataFragment newInstance(Function function)
+    public static DataFragment newInstance(GroupRow groupRow)
     {
         DataFragment dataFragment = new DataFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("function", function);
+        args.putSerializable("group_row", groupRow);
         dataFragment.setArguments(args);
 
         return dataFragment;
@@ -51,7 +53,7 @@ public class DataFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.function = (Function) getArguments().getSerializable("function");
+        this.groupRow = (GroupRow) getArguments().getSerializable("group_row");
     }
 
 
@@ -75,33 +77,31 @@ public class DataFragment extends Fragment
         // [1] Define Fields
         // -------------------------------------------------------------------------------------
 
-        // > Name Field
-        LinearLayout nameField = Form.field(
-                    R.string.function_field_name_label,
-                    R.string.function_field_name_description,
-                    Form.textInput(this.function.name(), null, getContext()),
+        // > Alignment Field
+        LinearLayout alignmentField =
+                Form.field(
+                    R.string.group_row_field_alignment_label,
+                    R.string.group_row_field_alignment_description,
+                    Form.variantInput(RowAlignment.valueStringList(),
+                                      RowAlignment.CENTER.name(),
+                                      getContext()),
                     getContext());
 
-        // > Label Field
-        LinearLayout labelField = Form.field(
-                    R.string.function_field_label_label,
-                    R.string.function_field_label_description,
-                    Form.textInput(this.function.label(), null, getContext()),
-                    getContext());
-
-        // > Description Field
-        LinearLayout descriptionField =
-                Form.field(R.string.function_field_description_label,
-                           R.string.function_field_description_description,
-                           Form.textInput(this.function.description(), null, getContext()),
-                           getContext());
+        // > Width Field
+        LinearLayout widthField =
+                Form.field(
+                        R.string.group_row_field_width_label,
+                        R.string.group_row_field_width_description,
+                        Form.variantInput(RowWidth.valueStringList(),
+                                          RowWidth.FULL.name(),
+                                          getContext()),
+                        getContext());
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
-        layout.addView(nameField);
-        layout.addView(labelField);
-        layout.addView(descriptionField);
+        layout.addView(alignmentField);
+        layout.addView(widthField);
 
         return layout;
     }
@@ -115,10 +115,10 @@ public class DataFragment extends Fragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left         = R.dimen.function_data_padding_horz;
-        layout.padding.right        = R.dimen.function_data_padding_horz;
-        layout.padding.top          = R.dimen.function_data_padding_vert;
-        layout.padding.bottom       = R.dimen.function_data_padding_vert;
+        layout.padding.left         = R.dimen.group_data_padding_horz;
+        layout.padding.right        = R.dimen.group_data_padding_horz;
+        layout.padding.top          = R.dimen.group_data_padding_vert;
+        layout.padding.bottom       = R.dimen.group_data_padding_vert;
 
         return layout.linearLayout(context);
     }

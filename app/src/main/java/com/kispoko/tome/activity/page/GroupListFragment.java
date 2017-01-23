@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.variable;
+package com.kispoko.tome.activity.page;
 
 
 import android.content.Context;
@@ -12,39 +12,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.engine.programming.mechanic.Mechanic;
-import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
+import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.util.ui.RecyclerViewBuilder;
-
-import java.util.List;
 
 
 
 /**
- * Variable List Fragment
+ * Group List Fragment
  */
-public class VariableListFragment extends Fragment
+public class GroupListFragment extends Fragment
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Mechanic mechanic;
+    private Page page;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static VariableListFragment newInstance(Mechanic mechanic)
+    public static GroupListFragment newInstance(Page page)
     {
-        VariableListFragment variableListFragment = new VariableListFragment();
+        GroupListFragment groupListFragment = new GroupListFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("mechanic", mechanic);
-        variableListFragment.setArguments(args);
+        args.putSerializable("page", page);
+        groupListFragment.setArguments(args);
 
-        return variableListFragment;
+        return groupListFragment;
     }
 
 
@@ -55,7 +52,7 @@ public class VariableListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.mechanic = (Mechanic) getArguments().getSerializable("mechanic");
+        this.page = (Page) getArguments().getSerializable("page");
     }
 
 
@@ -81,16 +78,15 @@ public class VariableListFragment extends Fragment
         recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT;
 
         recyclerView.layoutManager      = new LinearLayoutManager(context);
-        recyclerView.divider            = new SimpleDividerItemDecoration(getContext());
 
         // > Adapter
-        List<VariableUnion> variables = mechanic.variables();
-        recyclerView.adapter            = new VariableListRecyclerViewAdapter(variables,
-                                                                              getContext());
+        recyclerView.adapter            = new GroupListRecyclerViewAdapter(this.page.groups(),
+                                                                           getContext());
+
+        recyclerView.padding.top        = R.dimen.page_group_list_padding_top;
 
         return recyclerView.recyclerView(context);
     }
-
 
 
 }

@@ -1,0 +1,154 @@
+
+package com.kispoko.tome.activity.group;
+
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.kispoko.tome.R;
+import com.kispoko.tome.activity.GroupActivity;
+import com.kispoko.tome.activity.GroupRowActivity;
+import com.kispoko.tome.sheet.group.GroupRow;
+
+import java.util.List;
+
+import static android.R.attr.name;
+import static android.R.attr.rowCount;
+
+
+/**
+ * Group Row List Recycler View Adapater
+ */
+public class GroupRowListRecyclerViewAdapter
+       extends RecyclerView.Adapter<GroupRowListRecyclerViewAdapter.ViewHolder>
+{
+
+
+    // PROPERTIES
+    // -------------------------------------------------------------------------------------------
+
+    private List<GroupRow>  rowList;
+
+    private Context         context;
+
+
+    // CONSTRUCTORS
+    // -------------------------------------------------------------------------------------------
+
+    public GroupRowListRecyclerViewAdapter(List<GroupRow> rowList, Context context)
+    {
+        this.rowList    = rowList;
+        this.context    = context;
+    }
+
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
+        View itemView = GroupRowListItemView.view(parent.getContext());
+        return new ViewHolder(itemView);
+    }
+
+
+    @Override
+    public void onBindViewHolder(GroupRowListRecyclerViewAdapter.ViewHolder viewHolder,
+                                 int position)
+    {
+        GroupRow groupRow = this.rowList.get(position);
+
+        // > Index
+        String indexString = this.context.getString(R.string.row) +
+                              " " + Integer.toString(position + 1);
+        viewHolder.setIndexString(indexString);
+
+        // > Widgets
+        viewHolder.setWidgets(groupRow.widgets().size());
+
+        // > On Click Listener
+        viewHolder.setOnClick(groupRow, this.context);
+    }
+
+
+    // The number of value sets to display
+    @Override
+    public int getItemCount()
+    {
+        return this.rowList.size();
+    }
+
+
+    /**
+     * The View Holder caches a view for each item.
+     */
+    public class ViewHolder extends RecyclerView.ViewHolder
+    {
+
+        private RelativeLayout  layoutView;
+        private TextView        indexView;
+        private TextView        widgetCountView;
+        private TextView        widgetCountLabelView;
+
+
+        public ViewHolder(final View itemView)
+        {
+            super(itemView);
+
+            this.layoutView =
+                    (RelativeLayout) itemView.findViewById(R.id.group_row_list_item_layout);
+
+            this.indexView =
+                    (TextView) itemView.findViewById(R.id.group_row_list_item_index);
+
+            this.widgetCountView =
+                    (TextView) itemView.findViewById(R.id.group_row_list_item_widget_count);
+
+            this.widgetCountLabelView =
+                    (TextView) itemView.findViewById(R.id.group_row_list_item_widget_count_label);
+        }
+
+
+        public void setIndexString(String indexString)
+        {
+            this.indexView.setText(indexString);
+        }
+
+
+        public void setWidgets(Integer widgetCount)
+        {
+            this.widgetCountView.setText(widgetCount.toString());
+
+            if (widgetCount == 1)
+                this.widgetCountLabelView.setText(R.string.widget_upper);
+            else
+                this.widgetCountLabelView.setText(R.string.widgets_upper);
+        }
+
+
+        public void setOnClick(final GroupRow groupRow, final Context context)
+        {
+            this.layoutView.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    Intent intent = new Intent(context, GroupRowActivity.class);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("group_row", groupRow);
+                    intent.putExtras(bundle);
+
+                    context.startActivity(intent);
+                }
+            });
+        }
+
+    }
+
+
+}

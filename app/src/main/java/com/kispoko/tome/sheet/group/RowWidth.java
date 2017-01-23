@@ -10,6 +10,9 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 /**
@@ -18,10 +21,28 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 public enum RowWidth
 {
 
+    // VALUES
+    // ------------------------------------------------------------------------------------------
+
     FULL,
     THREE_QUARTERS,
     HALF;
 
+
+    public static List<String> valueStringList()
+    {
+        List<String> stringList = new ArrayList<>();
+
+        for (RowWidth rowWidth : RowWidth.values()) {
+            stringList.add(rowWidth.name());
+        }
+
+        return stringList;
+    }
+
+
+    // CONSTRUCTORS
+    // ------------------------------------------------------------------------------------------
 
     public static RowWidth fromString(String widthString)
                   throws InvalidDataException

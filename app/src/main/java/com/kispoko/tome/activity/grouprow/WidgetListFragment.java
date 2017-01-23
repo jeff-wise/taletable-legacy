@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.variable;
+package com.kispoko.tome.activity.grouprow;
 
 
 import android.content.Context;
@@ -12,39 +12,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.engine.programming.mechanic.Mechanic;
-import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
+import com.kispoko.tome.R;
+import com.kispoko.tome.activity.page.GroupListFragment;
+import com.kispoko.tome.activity.page.GroupListRecyclerViewAdapter;
+import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.util.ui.RecyclerViewBuilder;
 
-import java.util.List;
-
+import static com.kispoko.tome.R.string.page;
 
 
 /**
- * Variable List Fragment
+ * Widget List Fragment
  */
-public class VariableListFragment extends Fragment
+public class WidgetListFragment extends Fragment
 {
+
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Mechanic mechanic;
+    private GroupRow groupRow;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static VariableListFragment newInstance(Mechanic mechanic)
+    public static WidgetListFragment newInstance(GroupRow groupRow)
     {
-        VariableListFragment variableListFragment = new VariableListFragment();
+        WidgetListFragment widgetListFragment = new WidgetListFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("mechanic", mechanic);
-        variableListFragment.setArguments(args);
+        args.putSerializable("group_row", groupRow);
+        widgetListFragment.setArguments(args);
 
-        return variableListFragment;
+        return widgetListFragment;
     }
 
 
@@ -55,7 +56,7 @@ public class VariableListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.mechanic = (Mechanic) getArguments().getSerializable("mechanic");
+        this.groupRow = (GroupRow) getArguments().getSerializable("group_row");
     }
 
 
@@ -81,16 +82,15 @@ public class VariableListFragment extends Fragment
         recyclerView.height             = LinearLayout.LayoutParams.MATCH_PARENT;
 
         recyclerView.layoutManager      = new LinearLayoutManager(context);
-        recyclerView.divider            = new SimpleDividerItemDecoration(getContext());
 
         // > Adapter
-        List<VariableUnion> variables = mechanic.variables();
-        recyclerView.adapter            = new VariableListRecyclerViewAdapter(variables,
-                                                                              getContext());
+        recyclerView.adapter            = new WidgetListRecyclerViewAdapter(this.groupRow.widgets(),
+                                                                            getContext());
+
+        recyclerView.padding.top        = R.dimen.group_row_widget_list_padding_top;
 
         return recyclerView.recyclerView(context);
     }
-
 
 
 }

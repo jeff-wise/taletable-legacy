@@ -44,7 +44,6 @@ public abstract class Widget implements Model, ToYaml, Serializable
     abstract public View editorView(Context context);
 
     abstract public void runAction(Action action);
-    abstract public String name();
 
     abstract public WidgetData data();
 
@@ -61,7 +60,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
         BOOLEAN,
         IMAGE,
         TABLE,
-        ROLL;
+        ACTION;
 
 
         public static Type fromString(String typeString)
@@ -212,7 +211,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
                 return ImageWidget.fromYaml(yaml);
             case TABLE:
                 return TableWidget.fromYaml(yaml);
-            case ROLL:
+            case ACTION:
                 return ActionWidget.fromYaml(yaml);
             default:
                 ApplicationFailure.union(

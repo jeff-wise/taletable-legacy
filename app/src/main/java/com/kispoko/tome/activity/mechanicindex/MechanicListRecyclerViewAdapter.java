@@ -8,12 +8,10 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.FunctionActivity;
 import com.kispoko.tome.activity.MechanicActivity;
 import com.kispoko.tome.engine.programming.mechanic.Mechanic;
 

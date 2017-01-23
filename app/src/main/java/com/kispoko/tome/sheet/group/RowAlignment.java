@@ -6,10 +6,12 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -25,6 +27,18 @@ public enum RowAlignment
     LEFT,
     CENTER,
     RIGHT;
+
+
+    public static List<String> valueStringList()
+    {
+        List<String> stringList = new ArrayList<>();
+
+        for (RowAlignment rowAlignment : RowAlignment.values()) {
+            stringList.add(rowAlignment.name());
+        }
+
+        return stringList;
+    }
 
 
     // CONSTRUCTORS

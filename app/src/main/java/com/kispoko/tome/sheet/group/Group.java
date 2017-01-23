@@ -44,7 +44,7 @@ public class Group implements Model, ToYaml, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>    label;
+    private PrimitiveFunctor<String>    name;
     private PrimitiveFunctor<Integer>   index;
     private CollectionFunctor<GroupRow> rows;
 
@@ -54,27 +54,27 @@ public class Group implements Model, ToYaml, Serializable
 
     public Group()
     {
-        this.id           = null;
+        this.id         = null;
 
-        this.label        = new PrimitiveFunctor<>(null, String.class);
-        this.index        = new PrimitiveFunctor<>(null, Integer.class);
+        this.name       = new PrimitiveFunctor<>(null, String.class);
+        this.index      = new PrimitiveFunctor<>(null, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
         rowClasses.add(GroupRow.class);
-        this.rows         = CollectionFunctor.empty(rowClasses);
+        this.rows       = CollectionFunctor.empty(rowClasses);
     }
 
 
-    public Group(UUID id, String label, Integer index, List<GroupRow> groupRows)
+    public Group(UUID id, String name, Integer index, List<GroupRow> groupRows)
     {
-        this.id           = id;
+        this.id         = id;
 
-        this.label        = new PrimitiveFunctor<>(label, String.class);
-        this.index        = new PrimitiveFunctor<>(index, Integer.class);
+        this.name       = new PrimitiveFunctor<>(name, String.class);
+        this.index      = new PrimitiveFunctor<>(index, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
         rowClasses.add(GroupRow.class);
-        this.rows         = CollectionFunctor.full(groupRows, rowClasses);
+        this.rows       = CollectionFunctor.full(groupRows, rowClasses);
     }
 
 
@@ -83,13 +83,14 @@ public class Group implements Model, ToYaml, Serializable
                   throws YamlParseException
     {
         UUID      id    = UUID.randomUUID();
+
         String    label = yaml.atMaybeKey("label").getString();
         Integer   index = groupIndex;
 
         List<GroupRow> groupRows = yaml.atKey("rows").forEach(new YamlParser.ForEach<GroupRow>() {
             @Override
             public GroupRow forEach(YamlParser yaml, int index) throws YamlParseException {
-                return GroupRow.fromYaml(yaml);
+                return GroupRow.fromYaml(index, yaml);
             }
         });
 
@@ -148,7 +149,7 @@ public class Group implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putString("label", this.label())
+                .putString("label", this.name())
                 .putList("rows", this.rows());
     }
 
@@ -162,9 +163,9 @@ public class Group implements Model, ToYaml, Serializable
      * Get the group label.
      * @return The group label String.
      */
-    public String label()
+    public String name()
     {
-        return this.label.getValue();
+        return this.name.getValue();
     }
 
 
@@ -209,7 +210,7 @@ public class Group implements Model, ToYaml, Serializable
 
         LinearLayout layout = this.layout(context);
 
-        if (!this.label.isNull())
+        if (!this.name.isNull())
             layout.addView(this.labelView(context));
 
         for (GroupRow groupRow : this.rows()) {
@@ -266,7 +267,7 @@ public class Group implements Model, ToYaml, Serializable
         labelView.size  = R.dimen.group_label_text_size;
         labelView.color = R.color.gold_6;
         labelView.font  = Font.sansSerifFontBold(context);
-        labelView.text  = this.label().toUpperCase();
+        labelView.text  = this.name().toUpperCase();
 
 
         return labelLayout.linearLayout(context);

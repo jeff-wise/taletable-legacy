@@ -373,5 +373,4 @@ public class TemplatesActivity extends AppCompatActivity
     }
 
 
-
 }

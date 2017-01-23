@@ -3,7 +3,7 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
-import android.support.v7.widget.SwitchCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,8 +14,11 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 /**
@@ -672,6 +675,95 @@ public class Form
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         return layout.linearLayout(context);
+    }
+
+
+    // TOGGLE INPUT
+    // -----------------------------------------------------------------------------------------
+
+    public static LinearLayout variantInput(List<String> variants,
+                                            String selectedVariant,
+                                            final Context context)
+    {
+        LinearLayout layout = variantInputLayout(context);
+
+        Map<String,TextView> buttonsByVariant = new HashMap<>();
+
+        // > Create all buttons
+        for (String variant : variants)
+        {
+            TextView variantButton = variantInputButton(variant, context);
+            buttonsByVariant.put(variant, variantButton);
+        }
+
+        // > Add On Click Listeners
+        final Collection<TextView> buttons = buttonsByVariant.values();
+        for (final TextView button : buttons)
+        {
+            button.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    variantInputHighlightButton(button, buttons, context);
+                }
+            });
+        }
+
+        // > Highlight initial button
+        variantInputHighlightButton(buttonsByVariant.get(selectedVariant),
+                                    buttons,
+                                    context);
+
+        return layout;
+    }
+
+
+    private static void variantInputHighlightButton(TextView clickedButton,
+                                                    Collection<TextView> allButtons,
+                                                    Context context)
+    {
+        for (TextView button : allButtons)
+        {
+            button.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_blue_4));
+            button.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_1));
+        }
+
+        clickedButton.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_blue_hl_6));
+        clickedButton.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_3));
+    }
+
+
+    private static LinearLayout variantInputLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation  = LinearLayout.HORIZONTAL;
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private static TextView variantInputButton(String variant, Context context)
+    {
+        TextViewBuilder button = new TextViewBuilder();
+
+        button.width                = 0;
+        button.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        button.weight               = 1.0f;
+
+        button.gravity              = Gravity.CENTER;
+        button.margin.left          = R.dimen.field_variant_input_button_margin_horz;
+        button.margin.right         = R.dimen.field_variant_input_button_margin_horz;
+
+        button.backgroundResource   = R.drawable.bg_variant_button;
+        button.text                 = variant;
+        button.font                 = Font.sansSerifFontBold(context);
+        button.size                 = R.dimen.field_variant_input_button_text_size;
+
+        return button.textView(context);
     }
 
 

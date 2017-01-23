@@ -39,31 +39,33 @@ public class GroupRow implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Model
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private UUID                            id;
 
 
     // > Functors
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
+    private PrimitiveFunctor<Integer>       index;
     private PrimitiveFunctor<RowAlignment>  alignment;
     private PrimitiveFunctor<RowWidth>      width;
     private CollectionFunctor<Widget>       widgets;
 
 
     // CONSTRUCTORS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public GroupRow()
     {
-        this.id           = null;
+        this.id             = null;
 
-        this.alignment    = new PrimitiveFunctor<>(null, RowAlignment.class);
-        this.width        = new PrimitiveFunctor<>(null, RowWidth.class);
+        this.index          = new PrimitiveFunctor<>(null, Integer.class);
+        this.alignment      = new PrimitiveFunctor<>(null, RowAlignment.class);
+        this.width          = new PrimitiveFunctor<>(null, RowWidth.class);
 
         List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
         widgetClasses.add(TextWidget.class);
@@ -76,12 +78,17 @@ public class GroupRow implements Model, ToYaml, Serializable
     }
 
 
-    public GroupRow(UUID id, List<Widget> widgets, RowAlignment alignment, RowWidth width)
+    public GroupRow(UUID id,
+                    Integer index,
+                    List<Widget> widgets,
+                    RowAlignment alignment,
+                    RowWidth width)
     {
-        this.id           = id;
+        this.id             = id;
 
-        this.alignment    = new PrimitiveFunctor<>(alignment, RowAlignment.class);
-        this.width        = new PrimitiveFunctor<>(width, RowWidth.class);
+        this.index          = new PrimitiveFunctor<>(index, Integer.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, RowAlignment.class);
+        this.width          = new PrimitiveFunctor<>(width, RowWidth.class);
 
         List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
         widgetClasses.add(TextWidget.class);
@@ -90,7 +97,7 @@ public class GroupRow implements Model, ToYaml, Serializable
         widgetClasses.add(TableWidget.class);
         widgetClasses.add(ImageWidget.class);
         widgetClasses.add(ActionWidget.class);
-        this.widgets      = CollectionFunctor.full(widgets, widgetClasses);
+        this.widgets        = CollectionFunctor.full(widgets, widgetClasses);
     }
 
 
@@ -100,7 +107,7 @@ public class GroupRow implements Model, ToYaml, Serializable
      * @return The new row.
      * @throws YamlParseException
      */
-    public static GroupRow fromYaml(YamlParser yaml)
+    public static GroupRow fromYaml(Integer index, YamlParser yaml)
                   throws YamlParseException
     {
         UUID         id        = UUID.randomUUID();
@@ -115,7 +122,7 @@ public class GroupRow implements Model, ToYaml, Serializable
             }
         });
 
-        return new GroupRow(id, widgets, alignment, width);
+        return new GroupRow(id, index, widgets, alignment, width);
     }
 
 
@@ -178,6 +185,16 @@ public class GroupRow implements Model, ToYaml, Serializable
 
     // > State
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The row index.
+     * @return The index.
+     */
+    public Integer index()
+    {
+        return this.index.getValue();
+    }
+
 
     /**
      * Get the widgets in the row.

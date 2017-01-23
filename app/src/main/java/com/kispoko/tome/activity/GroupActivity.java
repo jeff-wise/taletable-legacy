@@ -13,25 +13,24 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.page.PagePagerAdapter;
-import com.kispoko.tome.sheet.Page;
+import com.kispoko.tome.activity.group.GroupPagerAdapter;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.UI;
 
 
 
 /**
- * Page Activity
+ * Group Activity
  */
-public class PageActivity extends AppCompatActivity
+public class GroupActivity extends AppCompatActivity
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Page                    page;
+    private Group                   group;
 
-    private FloatingActionButton    addGroupButton;
+    private FloatingActionButton    addGroupRowButton;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -42,11 +41,11 @@ public class PageActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_page);
+        setContentView(R.layout.activity_group);
 
         // > Read Parameters
-        if (getIntent().hasExtra("page")) {
-            this.page = (Page) getIntent().getSerializableExtra("page");
+        if (getIntent().hasExtra("group")) {
+            this.group = (Group) getIntent().getSerializableExtra("group");
         }
 
         initializeToolbar();
@@ -107,7 +106,7 @@ public class PageActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // > Set the title
-        String title = this.page.name() + " " + getString(R.string.page);
+        String title = this.group.name() + " " + getString(R.string.group);
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
     }
@@ -116,9 +115,9 @@ public class PageActivity extends AppCompatActivity
     private void initializeView()
     {
         // > Store reference to FAB
-        this.addGroupButton =
-                (FloatingActionButton) findViewById(R.id.button_new_group);
-        this.addGroupButton.hide();
+        this.addGroupRowButton =
+                (FloatingActionButton) findViewById(R.id.button_new_group_row);
+        this.addGroupRowButton.hide();
 
 //        this.addTupleButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -135,19 +134,19 @@ public class PageActivity extends AppCompatActivity
         // > Create Pager Adapter
         // --------------------------------------------------------------------------------------
 
-        PagePagerAdapter functionPagerAdapter
-                = new PagePagerAdapter(getSupportFragmentManager(), this.page);
+        GroupPagerAdapter groupPagerAdapter
+                = new GroupPagerAdapter(getSupportFragmentManager(), this.group);
 
         // > Configure Pager
         // --------------------------------------------------------------------------------------
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
-        viewPager.setAdapter(functionPagerAdapter);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.group_pager);
+        viewPager.setAdapter(groupPagerAdapter);
 
         // > Configure Pager Tabs
         // --------------------------------------------------------------------------------------
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.page_tab_layout);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.group_tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
 
@@ -166,10 +165,10 @@ public class PageActivity extends AppCompatActivity
             public void onPageSelected(int position)
             {
                 if (position == 1) {
-                    addGroupButton.show();
+                    addGroupRowButton.show();
                 }
                 else {
-                    addGroupButton.hide();
+                    addGroupRowButton.hide();
                 }
             }
 

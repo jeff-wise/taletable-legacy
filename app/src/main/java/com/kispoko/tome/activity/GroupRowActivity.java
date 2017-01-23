@@ -13,25 +13,26 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.page.PagePagerAdapter;
-import com.kispoko.tome.sheet.Page;
-import com.kispoko.tome.sheet.group.Group;
+import com.kispoko.tome.activity.group.GroupPagerAdapter;
+import com.kispoko.tome.activity.grouprow.GroupRowPagerAdapter;
+import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.util.UI;
 
 
 
 /**
- * Page Activity
+ * Group Row Activity
  */
-public class PageActivity extends AppCompatActivity
+public class GroupRowActivity extends AppCompatActivity
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Page                    page;
+    private GroupRow             groupRow;
+    private String               groupName;
 
-    private FloatingActionButton    addGroupButton;
+    private FloatingActionButton addWidgetButton;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -42,11 +43,15 @@ public class PageActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_page);
+        setContentView(R.layout.activity_group_row);
 
         // > Read Parameters
-        if (getIntent().hasExtra("page")) {
-            this.page = (Page) getIntent().getSerializableExtra("page");
+        if (getIntent().hasExtra("group_row")) {
+            this.groupRow = (GroupRow) getIntent().getSerializableExtra("group_row");
+        }
+
+        if (getIntent().hasExtra("group_name")) {
+            this.groupName = getIntent().getStringExtra("group_name");
         }
 
         initializeToolbar();
@@ -107,7 +112,8 @@ public class PageActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // > Set the title
-        String title = this.page.name() + " " + getString(R.string.page);
+        String title = this.groupName + " " + getString(R.string.row) +
+                        " " + this.groupRow.index().toString();
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
     }
@@ -116,9 +122,9 @@ public class PageActivity extends AppCompatActivity
     private void initializeView()
     {
         // > Store reference to FAB
-        this.addGroupButton =
-                (FloatingActionButton) findViewById(R.id.button_new_group);
-        this.addGroupButton.hide();
+        this.addWidgetButton =
+                (FloatingActionButton) findViewById(R.id.button_new_widget);
+        this.addWidgetButton.hide();
 
 //        this.addTupleButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -135,19 +141,19 @@ public class PageActivity extends AppCompatActivity
         // > Create Pager Adapter
         // --------------------------------------------------------------------------------------
 
-        PagePagerAdapter functionPagerAdapter
-                = new PagePagerAdapter(getSupportFragmentManager(), this.page);
+        GroupRowPagerAdapter groupRowPagerAdapter
+                = new GroupRowPagerAdapter(getSupportFragmentManager(), this.groupRow);
 
         // > Configure Pager
         // --------------------------------------------------------------------------------------
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
-        viewPager.setAdapter(functionPagerAdapter);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.group_row_pager);
+        viewPager.setAdapter(groupRowPagerAdapter);
 
         // > Configure Pager Tabs
         // --------------------------------------------------------------------------------------
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.page_tab_layout);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.group_row_tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
 
@@ -166,10 +172,10 @@ public class PageActivity extends AppCompatActivity
             public void onPageSelected(int position)
             {
                 if (position == 1) {
-                    addGroupButton.show();
+                    addWidgetButton.show();
                 }
                 else {
-                    addGroupButton.hide();
+                    addWidgetButton.hide();
                 }
             }
 
@@ -185,10 +191,9 @@ public class PageActivity extends AppCompatActivity
     // NEW VALUE DIALOG LISTENER
     // ------------------------------------------------------------------------------------------
 
-    public void onNewGroup(Group group)
+    public void onNewGroup(GroupRow groupRow)
     {
     }
-
 
 
 }

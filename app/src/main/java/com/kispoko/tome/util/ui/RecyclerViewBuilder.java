@@ -5,6 +5,7 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -24,6 +25,8 @@ public class RecyclerViewBuilder
     public RecyclerView.LayoutManager   layoutManager;
     public RecyclerView.Adapter         adapter;
 
+    public Padding                      padding;
+
     public RecyclerView.ItemDecoration  divider;
 
 
@@ -39,6 +42,8 @@ public class RecyclerViewBuilder
 
         this.layoutManager      = null;
         this.adapter            = null;
+
+        this.padding            = new Padding();
 
         this.divider            = null;
     }
@@ -71,6 +76,15 @@ public class RecyclerViewBuilder
 
         if (this.divider != null)
             recyclerView.addItemDecoration(this.divider);
+
+        // > Padding
+        // --------------------------------------------------------------------------------------
+
+        recyclerView.setPadding(this.padding.left(context),
+                                this.padding.top(context),
+                                this.padding.right(context),
+                                this.padding.bottom(context));
+
 
 
         // [2] Layout

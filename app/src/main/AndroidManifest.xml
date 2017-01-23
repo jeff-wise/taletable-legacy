@@ -154,6 +154,24 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Groups" />
 
+    <activity
+        android:name=".activity.PageActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
+    <activity
+        android:name=".activity.GroupActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
+    <activity
+        android:name=".activity.GroupRowActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
 </application>
 
 </manifest>
