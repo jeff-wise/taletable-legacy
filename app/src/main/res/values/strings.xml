@@ -337,6 +337,44 @@
     <string name="activity_sections_title">Sections</string>
 
 
+    <!-- ACTIVITY: TEXT WIDGET -->
+    <!-- ==================================================================================== -->
+
+    <string name="text_widget_field_name_label">Name</string>
+    <string name="text_widget_field_name_description">
+        The name of the Text Widget.
+    </string>
+
+    <string name="text_widget_field_alignment_label">Text Alignment</string>
+    <string name="text_widget_field_alignment_description">
+        The alignment of the text in the widget.
+    </string>
+
+    <string name="text_widget_field_size_label">Text Size</string>
+    <string name="text_widget_field_size_description">
+        The size of the text displayed by the text widget.
+    </string>
+
+    <string name="text_widget_field_width_label">Width</string>
+    <string name="text_widget_field_width_description">
+        The relative width of the text widget compared to other widgets in the row. For example,
+        if a row has two widgets, one with a width of 1 and the other with a width of 2, then
+        the second widget will appear twice as large as the first. The first widget will use 1/3 of
+        row and the second will use 2/3 of the row.
+    </string>
+
+    <string name="text_widget_field_value_label">Value Variable</string>
+    <string name="text_widget_field_value_description">
+        The text widget\'s text value.
+    </string>
+
+    <string name="text_widget_field_variables_label">Variables</string>
+    <string name="text_widget_field_variables_description">
+        Variables associated with the widget\'s value. When the widget exists, then these variables
+        are created as well, often as auxiliary data to the widget\'s main value.
+    </string>
+
+
     <!-- FORM -->
     <!-- ==================================================================================== -->
 

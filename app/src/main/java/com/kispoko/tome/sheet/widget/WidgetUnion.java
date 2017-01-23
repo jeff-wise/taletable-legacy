@@ -299,6 +299,35 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     }
 
 
+    // > Widget
+    // ------------------------------------------------------------------------------------------
+
+    public Widget widget()
+    {
+        switch (this.type())
+        {
+            case ACTION:
+                return this.actionWidget();
+            case BOOLEAN:
+                return this.booleanWidget();
+            case IMAGE:
+                return this.imageWidget();
+            case NUMBER:
+                return this.numberWidget();
+            case TABLE:
+                return this.tableWidget();
+            case TEXT:
+                return this.textWidget();
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(WidgetType.class.getName())));
+        }
+
+        return null;
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 

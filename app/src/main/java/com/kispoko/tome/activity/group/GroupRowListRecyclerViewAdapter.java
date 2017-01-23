@@ -12,14 +12,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.GroupActivity;
 import com.kispoko.tome.activity.GroupRowActivity;
 import com.kispoko.tome.sheet.group.GroupRow;
 
 import java.util.List;
 
-import static android.R.attr.name;
-import static android.R.attr.rowCount;
 
 
 /**
@@ -34,6 +31,7 @@ public class GroupRowListRecyclerViewAdapter
     // -------------------------------------------------------------------------------------------
 
     private List<GroupRow>  rowList;
+    private String          groupName;
 
     private Context         context;
 
@@ -41,9 +39,13 @@ public class GroupRowListRecyclerViewAdapter
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public GroupRowListRecyclerViewAdapter(List<GroupRow> rowList, Context context)
+    public GroupRowListRecyclerViewAdapter(List<GroupRow> rowList,
+                                           String groupName,
+                                           Context context)
     {
         this.rowList    = rowList;
+        this.groupName  = groupName;
+
         this.context    = context;
     }
 
@@ -71,7 +73,7 @@ public class GroupRowListRecyclerViewAdapter
         viewHolder.setWidgets(groupRow.widgets().size());
 
         // > On Click Listener
-        viewHolder.setOnClick(groupRow, this.context);
+        viewHolder.setOnClick(groupRow, this.groupName, this.context);
     }
 
 
@@ -130,7 +132,9 @@ public class GroupRowListRecyclerViewAdapter
         }
 
 
-        public void setOnClick(final GroupRow groupRow, final Context context)
+        public void setOnClick(final GroupRow groupRow,
+                               final String groupName,
+                               final Context context)
         {
             this.layoutView.setOnClickListener(new View.OnClickListener()
             {
@@ -141,6 +145,7 @@ public class GroupRowListRecyclerViewAdapter
 
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("group_row", groupRow);
+                    bundle.putString("group_name", groupName);
                     intent.putExtras(bundle);
 
                     context.startActivity(intent);

@@ -9,6 +9,7 @@ import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.Widget;
+import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
@@ -266,8 +267,8 @@ public class Sheet implements Model
         for (Page page : this.profileSection.getValue().pages()) {
             for (Group group : page.groups()) {
                 for (GroupRow groupRow : group.rows()) {
-                    for (Widget widget : groupRow.widgets()) {
-                        componentById.put(widget.getId(), widget);
+                    for (WidgetUnion widgetUnion : groupRow.widgets()) {
+                        componentById.put(widgetUnion.widget().getId(), widgetUnion.widget());
                     }
                 }
             }

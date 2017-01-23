@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.group.GroupPagerAdapter;
 import com.kispoko.tome.activity.grouprow.GroupRowPagerAdapter;
 import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.util.UI;
@@ -112,8 +111,8 @@ public class GroupRowActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // > Set the title
-        String title = this.groupName + " " + getString(R.string.row) +
-                        " " + this.groupRow.index().toString();
+        Integer rowIndex = this.groupRow.index() + 1;
+        String title = this.groupName + " " + getString(R.string.row) + " " + rowIndex.toString();
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
     }

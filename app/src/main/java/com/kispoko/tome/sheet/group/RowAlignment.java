@@ -6,6 +6,8 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
+import com.kispoko.tome.util.yaml.ToYaml;
+import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
@@ -18,7 +20,7 @@ import java.util.List;
 /**
  * Row Alignment
  */
-public enum RowAlignment
+public enum RowAlignment implements ToYaml
 {
 
     // VALUES
@@ -34,7 +36,7 @@ public enum RowAlignment
         List<String> stringList = new ArrayList<>();
 
         for (RowAlignment rowAlignment : RowAlignment.values()) {
-            stringList.add(rowAlignment.name());
+            stringList.add(rowAlignment.toString());
         }
 
         return stringList;
@@ -81,16 +83,32 @@ public enum RowAlignment
     }
 
 
-    // API
+    // TO YAML
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * The enum as a string for representation in a Yaml document.
-     * @return The enum string.
-     */
-    public String yamlString()
+    public YamlBuilder toYaml()
     {
-        return this.name().toLowerCase();
+        return YamlBuilder.string(this.name().toLowerCase());
+    }
+
+
+    // TO STRING
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString()
+    {
+        switch (this)
+        {
+            case LEFT:
+                return "Left";
+            case CENTER:
+                return "Center";
+            case RIGHT:
+                return "Right";
+        }
+
+        return "";
     }
 
 }

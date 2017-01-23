@@ -204,16 +204,6 @@ public class TableWidget extends Widget
     // > Widget
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * The widget type as a string.
-     * @return The widget's type as a string.
-     */
-    @Override
-    public String name() {
-        return "text";
-    }
-
-
     @Override
     public void initialize()
     {

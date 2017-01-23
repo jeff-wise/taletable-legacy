@@ -14,6 +14,7 @@ import com.kispoko.tome.sheet.widget.ActionWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
+import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
@@ -53,7 +54,7 @@ public class GroupRow implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>       index;
     private PrimitiveFunctor<RowAlignment>  alignment;
     private PrimitiveFunctor<RowWidth>      width;
-    private CollectionFunctor<Widget>       widgets;
+    private CollectionFunctor<WidgetUnion>  widgets;
 
 
     // CONSTRUCTORS
@@ -67,20 +68,15 @@ public class GroupRow implements Model, ToYaml, Serializable
         this.alignment      = new PrimitiveFunctor<>(null, RowAlignment.class);
         this.width          = new PrimitiveFunctor<>(null, RowWidth.class);
 
-        List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
-        widgetClasses.add(TextWidget.class);
-        widgetClasses.add(NumberWidget.class);
-        widgetClasses.add(BooleanWidget.class);
-        widgetClasses.add(TableWidget.class);
-        widgetClasses.add(ImageWidget.class);
-        widgetClasses.add(ActionWidget.class);
-        this.widgets      = CollectionFunctor.empty(widgetClasses);
+        List<Class<? extends WidgetUnion>> widgetClasses = new ArrayList<>();
+        widgetClasses.add(WidgetUnion.class);
+        this.widgets       = CollectionFunctor.empty(widgetClasses);
     }
 
 
     public GroupRow(UUID id,
                     Integer index,
-                    List<Widget> widgets,
+                    List<WidgetUnion> widgets,
                     RowAlignment alignment,
                     RowWidth width)
     {
@@ -90,13 +86,8 @@ public class GroupRow implements Model, ToYaml, Serializable
         this.alignment      = new PrimitiveFunctor<>(alignment, RowAlignment.class);
         this.width          = new PrimitiveFunctor<>(width, RowWidth.class);
 
-        List<Class<? extends Widget>> widgetClasses = new ArrayList<>();
-        widgetClasses.add(TextWidget.class);
-        widgetClasses.add(NumberWidget.class);
-        widgetClasses.add(BooleanWidget.class);
-        widgetClasses.add(TableWidget.class);
-        widgetClasses.add(ImageWidget.class);
-        widgetClasses.add(ActionWidget.class);
+        List<Class<? extends WidgetUnion>> widgetClasses = new ArrayList<>();
+        widgetClasses.add(WidgetUnion.class);
         this.widgets        = CollectionFunctor.full(widgets, widgetClasses);
     }
 
@@ -110,15 +101,16 @@ public class GroupRow implements Model, ToYaml, Serializable
     public static GroupRow fromYaml(Integer index, YamlParser yaml)
                   throws YamlParseException
     {
-        UUID         id        = UUID.randomUUID();
+        UUID         id           = UUID.randomUUID();
 
-        RowAlignment alignment = RowAlignment.fromYaml(yaml.atMaybeKey("alignment"));
-        RowWidth     width     = RowWidth.fromYaml(yaml.atMaybeKey("width"));
+        RowAlignment alignment    = RowAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        RowWidth     width        = RowWidth.fromYaml(yaml.atMaybeKey("width"));
 
-        List<Widget> widgets   = yaml.atKey("widgets").forEach(new YamlParser.ForEach<Widget>() {
+        List<WidgetUnion> widgets = yaml.atKey("widgets").forEach(
+                                                new YamlParser.ForEach<WidgetUnion>() {
             @Override
-            public Widget forEach(YamlParser yaml, int index) throws YamlParseException {
-                return Widget.fromYaml(yaml);
+            public WidgetUnion forEach(YamlParser yaml, int index) throws YamlParseException {
+                return WidgetUnion.fromYaml(yaml);
             }
         });
 
@@ -165,8 +157,9 @@ public class GroupRow implements Model, ToYaml, Serializable
     public void initialize()
     {
         // Initialize each widget
-        for (Widget widget : this.widgets()) {
-            widget.initialize();
+        for (WidgetUnion widgetUnion : this.widgets())
+        {
+            widgetUnion.widget().initialize();
         }
     }
 
@@ -177,8 +170,8 @@ public class GroupRow implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putString("alignment", this.alignment().yamlString())
-                .putString("width", this.width().yamlString())
+                .putYaml("alignment", this.alignment())
+                .putYaml("width", this.width())
                 .putList("widgets", this.widgets());
     }
 
@@ -200,7 +193,7 @@ public class GroupRow implements Model, ToYaml, Serializable
      * Get the widgets in the row.
      * @return A list of widgets.
      */
-    public List<Widget> widgets()
+    public List<WidgetUnion> widgets()
     {
         return this.widgets.getValue();
     }
@@ -236,8 +229,10 @@ public class GroupRow implements Model, ToYaml, Serializable
 
         LinearLayout layout = this.layout(context);
 
-        for (Widget widget : this.widgets())
+        for (WidgetUnion widgetUnion : this.widgets())
         {
+            Widget widget = widgetUnion.widget();
+
             int weight = widget.data().format().width();
             LinearLayout tileLayout = this.tileLayout(weight, context);
 

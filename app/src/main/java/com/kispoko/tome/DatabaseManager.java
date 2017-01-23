@@ -56,6 +56,7 @@ import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.sheet.widget.ActionWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
+import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.sheet.widget.table.TableRow;
 import com.kispoko.tome.sheet.widget.table.cell.BooleanCell;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
@@ -112,6 +113,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(DiceRoll.class);
 
             // ** Widget
+            modelClasses.add(WidgetUnion.class);
             modelClasses.add(TextWidget.class);
             modelClasses.add(NumberWidget.class);
             modelClasses.add(BooleanWidget.class);

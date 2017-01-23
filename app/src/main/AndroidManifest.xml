@@ -172,6 +172,42 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Groups" />
 
+    <activity
+        android:name=".activity.ActionWidgetActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
+    <activity
+        android:name=".activity.BooleanWidgetActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
+    <activity
+        android:name=".activity.ImageWidgetActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
+    <activity
+        android:name=".activity.NumberWidgetActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
+    <activity
+        android:name=".activity.TableWidgetActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
+    <activity
+        android:name=".activity.TextWidgetActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Groups" />
+
 </application>
 
 </manifest>

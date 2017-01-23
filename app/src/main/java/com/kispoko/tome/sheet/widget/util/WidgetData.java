@@ -26,7 +26,15 @@ public class WidgetData implements Model, ToYaml, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
+    // > Model
+    // ------------------------------------------------------------------------------------------
+
     private UUID                        id;
+
+
+    // > Functors
+    // ------------------------------------------------------------------------------------------
+
     private ModelFunctor<WidgetFormat>  format;
     private PrimitiveFunctor<Action[]>  actions;
     private PrimitiveFunctor<Action>    primaryAction;

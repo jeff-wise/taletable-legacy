@@ -81,6 +81,7 @@ public class GroupRowListFragment extends Fragment
 
         // > Adapter
         recyclerView.adapter            = new GroupRowListRecyclerViewAdapter(this.group.rows(),
+                                                                              this.group.name(),
                                                                               getContext());
 
         recyclerView.padding.top        = R.dimen.group_row_list_padding_top;

@@ -48,7 +48,6 @@ public class ActionWidget extends Widget implements Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>        name;
     private PrimitiveFunctor<String>        description;
     private ModelFunctor<NumberVariable>    modifier;
     private ModelFunctor<WidgetData>        widgetData;
@@ -61,7 +60,6 @@ public class ActionWidget extends Widget implements Serializable
     {
         this.id = null;
 
-        this.name         = new PrimitiveFunctor<>(null, String.class);
         this.description  = new PrimitiveFunctor<>(null, String.class);
         this.modifier     = ModelFunctor.empty(NumberVariable.class);
         this.widgetData   = ModelFunctor.empty(WidgetData.class);
@@ -69,14 +67,12 @@ public class ActionWidget extends Widget implements Serializable
 
 
     public ActionWidget(UUID id,
-                        String name,
                         String description,
                         NumberVariable modifier,
                         WidgetData widgetData)
     {
         this.id           = id;
 
-        this.name         = new PrimitiveFunctor<>(name, String.class);
         this.description  = new PrimitiveFunctor<>(description, String.class);
         this.modifier     = ModelFunctor.full(modifier, NumberVariable.class);
         this.widgetData   = ModelFunctor.full(widgetData, WidgetData.class);
@@ -94,12 +90,11 @@ public class ActionWidget extends Widget implements Serializable
     {
         UUID           id           = UUID.randomUUID();
 
-        String         name         = yaml.atKey("name").getString();
         String         description  = yaml.atMaybeKey("description").getString();
         NumberVariable modifier     = NumberVariable.fromYaml(yaml.atKey("modifier"));
         WidgetData     widgetData   = WidgetData.fromYaml(yaml.atKey("data"));
 
-        return new ActionWidget(id, name, description, modifier, widgetData);
+        return new ActionWidget(id, description, modifier, widgetData);
     }
 
 
@@ -152,7 +147,6 @@ public class ActionWidget extends Widget implements Serializable
     {
         YamlBuilder yaml = YamlBuilder.map();
 
-        yaml.putString("name", this.name());
         yaml.putString("description", this.description());
         yaml.putYaml("modifier", this.modifierVariable());
         yaml.putYaml("data", this.data());
@@ -163,13 +157,6 @@ public class ActionWidget extends Widget implements Serializable
 
     // > Widget
     // ------------------------------------------------------------------------------------------
-
-    @Override
-    public String name()
-    {
-        return "roll";
-    }
-
 
     @Override
     public void initialize()
@@ -248,16 +235,6 @@ public class ActionWidget extends Widget implements Serializable
 
     // > State
     // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the roll widget name.
-     * @return The roll name.
-     */
-    public String rollName()
-    {
-        return this.name.getValue();
-    }
-
 
     /**
      * Get the roll description.
@@ -359,7 +336,7 @@ public class ActionWidget extends Widget implements Serializable
 
         titleView.width     = LinearLayout.LayoutParams.WRAP_CONTENT;
         titleView.height    = LinearLayout.LayoutParams.WRAP_CONTENT;
-        titleView.text      = this.rollName().toUpperCase();
+        // titleView.text      = this.rollName().toUpperCase();
         titleView.size      = R.dimen.widget_roll_name_text_size;
         titleView.color     = R.color.dark_blue_hl_4;
         titleView.font      = Font.sansSerifFontRegular(context);

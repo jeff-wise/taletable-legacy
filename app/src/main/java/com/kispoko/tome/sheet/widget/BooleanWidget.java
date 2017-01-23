@@ -133,13 +133,6 @@ public class BooleanWidget extends Widget
     // > Widget
     // ------------------------------------------------------------------------------------------
 
-    @Override
-    public String name()
-    {
-        return "text";
-    }
-
-
     /**
      * Initialize the text widget state.
      */

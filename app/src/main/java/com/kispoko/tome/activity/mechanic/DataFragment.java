@@ -18,6 +18,7 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.ScrollViewBuilder;
 
 
+
 /**
  * Mechanic Data Fragment
  */

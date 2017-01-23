@@ -117,17 +117,6 @@ public class DiceWidget extends Widget
     // > Widget
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * The widget name.
-     * @return The widget name.
-     */
-    @Override
-    public String name()
-    {
-        return "roll";
-    }
-
-
     @Override
     public void initialize() { }
 

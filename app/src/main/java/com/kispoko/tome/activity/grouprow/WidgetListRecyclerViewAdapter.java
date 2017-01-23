@@ -11,14 +11,23 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.GroupActivity;
-import com.kispoko.tome.sheet.widget.Widget;
+import com.kispoko.tome.activity.ActionWidgetActivity;
+import com.kispoko.tome.activity.BooleanWidgetActivity;
+import com.kispoko.tome.activity.ImageWidgetActivity;
+import com.kispoko.tome.activity.NumberWidgetActivity;
+import com.kispoko.tome.activity.TableWidgetActivity;
+import com.kispoko.tome.activity.TextWidgetActivity;
+import com.kispoko.tome.error.UnknownVariantError;
+import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.sheet.widget.WidgetType;
+import com.kispoko.tome.sheet.widget.WidgetUnion;
 
+import java.io.Serializable;
 import java.util.List;
 
 import static com.kispoko.tome.R.string.group;
-
 
 
 /**
@@ -32,15 +41,15 @@ public class WidgetListRecyclerViewAdapter
     // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private List<Widget>    widgetList;
+    private List<WidgetUnion>   widgetList;
 
-    private Context         context;
+    private Context             context;
 
 
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public WidgetListRecyclerViewAdapter(List<Widget> widgetList, Context context)
+    public WidgetListRecyclerViewAdapter(List<WidgetUnion> widgetList, Context context)
     {
         this.widgetList = widgetList;
         this.context    = context;
@@ -59,16 +68,19 @@ public class WidgetListRecyclerViewAdapter
     public void onBindViewHolder(WidgetListRecyclerViewAdapter.ViewHolder viewHolder,
                                  int position)
     {
-        Widget widget = this.widgetList.get(position);
+        WidgetUnion widgetUnion = this.widgetList.get(position);
 
         // > Name
-        //viewHolder.setName(group.name());
+        String label = widgetUnion.widget().data().format().label();
+        if (label == null)
+            label = "No Label";
+        viewHolder.setName(label);
 
-        // > Rows
-        //viewHolder.setRows(group.rows().size());
+        // > Type
+        viewHolder.setType(widgetUnion.type().name());
 
         // > On Click Listener
-        //viewHolder.setOnClick(group, this.context);
+        viewHolder.setOnClick(widgetUnion, this.context);
     }
 
 
@@ -113,26 +125,58 @@ public class WidgetListRecyclerViewAdapter
         }
 
 
-        public void setOnClick(final Widget widget, final Context context)
+        public void setOnClick(final WidgetUnion widgetUnion, final Context context)
         {
             this.layoutView.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    switch (widget.type())
+                    switch (widgetUnion.type())
                     {
-
+                        case ACTION:
+                            openWidgetActivity(ActionWidgetActivity.class,
+                                               widgetUnion.actionWidget());
+                            break;
+                        case BOOLEAN:
+                            openWidgetActivity(BooleanWidgetActivity.class,
+                                               widgetUnion.booleanWidget());
+                            break;
+                        case IMAGE:
+                            openWidgetActivity(ImageWidgetActivity.class,
+                                               widgetUnion.imageWidget());
+                            break;
+                        case NUMBER:
+                            openWidgetActivity(NumberWidgetActivity.class,
+                                               widgetUnion.numberWidget());
+                            break;
+                        case TABLE:
+                            openWidgetActivity(TableWidgetActivity.class,
+                                               widgetUnion.tableWidget());
+                            break;
+                        case TEXT:
+                            openWidgetActivity(TextWidgetActivity.class,
+                                               widgetUnion.textWidget());
+                            break;
+                        default:
+                            ApplicationFailure.union(
+                                    UnionException.unknownVariant(
+                                            new UnknownVariantError(WidgetType.class.getName())));
                     }
-                    Intent intent = new Intent(context, GroupActivity.class);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("group", group);
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
                 }
             });
+        }
+
+
+        private void openWidgetActivity(Class<?> widgetActivityClass, Serializable widget)
+        {
+            Intent intent = new Intent(context, widgetActivityClass);
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("widget", widget);
+            intent.putExtras(bundle);
+
+            context.startActivity(intent);
         }
 
     }

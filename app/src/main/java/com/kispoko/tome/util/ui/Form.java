@@ -681,19 +681,21 @@ public class Form
     // TOGGLE INPUT
     // -----------------------------------------------------------------------------------------
 
-    public static LinearLayout variantInput(List<String> variants,
-                                            String selectedVariant,
-                                            final Context context)
+    public static <A extends Enum<A>> LinearLayout variantInput(Class<A> variantEnum,
+                                                                A selectedVariant,
+                                                                final Context context)
     {
         LinearLayout layout = variantInputLayout(context);
 
-        Map<String,TextView> buttonsByVariant = new HashMap<>();
+        Map<A,TextView> buttonsByVariant = new HashMap<>();
 
         // > Create all buttons
-        for (String variant : variants)
+        for (A variant : variantEnum.getEnumConstants())
         {
-            TextView variantButton = variantInputButton(variant, context);
+            String variantString = variant.toString().toUpperCase();
+            TextView variantButton = variantInputButton(variantString, context);
             buttonsByVariant.put(variant, variantButton);
+            layout.addView(variantButton);
         }
 
         // > Add On Click Listeners
@@ -726,11 +728,12 @@ public class Form
         for (TextView button : allButtons)
         {
             button.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_blue_4));
-            button.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_1));
+            //button.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_1));
+            button.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_6));
         }
 
-        clickedButton.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_blue_hl_6));
-        clickedButton.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_3));
+        clickedButton.setBackgroundColor(ContextCompat.getColor(context, R.color.dark_blue_1));
+        clickedButton.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_6));
     }
 
 
@@ -758,7 +761,7 @@ public class Form
         button.margin.left          = R.dimen.field_variant_input_button_margin_horz;
         button.margin.right         = R.dimen.field_variant_input_button_margin_horz;
 
-        button.backgroundResource   = R.drawable.bg_variant_button;
+        button.backgroundResource   = R.drawable.bg_form_variant_button;
         button.text                 = variant;
         button.font                 = Font.sansSerifFontBold(context);
         button.size                 = R.dimen.field_variant_input_button_text_size;

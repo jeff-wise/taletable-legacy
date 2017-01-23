@@ -327,7 +327,7 @@
     <!-- ACTIVITY: PAGE -->
 
     <dimen name="page_data_padding_horz">17dp</dimen>
-    <dimen name="page_data_padding_vert">15dp</dimen>
+    <dimen name="page_data_padding_vert">17dp</dimen>
 
     <dimen name="page_group_list_padding_top">3dp</dimen>
 
@@ -361,9 +361,11 @@
 
 
     <!-- ACTIVITY: GROUP ROW -->
+    <dimen name="group_row_data_padding_horz">17dp</dimen>
+    <dimen name="group_row_data_padding_vert">17dp</dimen>
 
     <dimen name="group_row_widget_list_padding_top">3dp</dimen>
-    <dimen name="widget_list_item_type_text_size">3.5dp</dimen>
+    <dimen name="widget_list_item_type_text_size">3.3dp</dimen>
 
 
     <!-- MANAGE SHEETS -->
@@ -413,6 +415,11 @@
 
     <dimen name="field_variant_input_button_margin_horz">2dp</dimen>
     <dimen name="field_variant_input_button_text_size">3sp</dimen>
+
+
+    <!-- FORM -->
+    <dimen name="form_padding_horz">17dp</dimen>
+    <dimen name="form_padding_vert">17dp</dimen>
 
 
 </resources>

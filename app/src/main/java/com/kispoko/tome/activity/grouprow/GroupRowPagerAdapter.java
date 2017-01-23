@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.kispoko.tome.activity.group.GroupRowListFragment;
 import com.kispoko.tome.sheet.group.GroupRow;
 
 
@@ -54,7 +53,7 @@ public class GroupRowPagerAdapter extends FragmentStatePagerAdapter
             case 0:
                 return DataFragment.newInstance(this.groupRow);
             case 1:
-                return GroupRowListFragment.newInstance(this.groupRow);
+                return WidgetListFragment.newInstance(this.groupRow);
             default:
                 return null;
         }

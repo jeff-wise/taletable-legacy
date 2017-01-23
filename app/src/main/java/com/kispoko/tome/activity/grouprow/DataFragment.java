@@ -82,8 +82,8 @@ public class DataFragment extends Fragment
                 Form.field(
                     R.string.group_row_field_alignment_label,
                     R.string.group_row_field_alignment_description,
-                    Form.variantInput(RowAlignment.valueStringList(),
-                                      RowAlignment.CENTER.name(),
+                    Form.variantInput(RowAlignment.class,
+                                      this.groupRow.alignment(),
                                       getContext()),
                     getContext());
 
@@ -92,8 +92,8 @@ public class DataFragment extends Fragment
                 Form.field(
                         R.string.group_row_field_width_label,
                         R.string.group_row_field_width_description,
-                        Form.variantInput(RowWidth.valueStringList(),
-                                          RowWidth.FULL.name(),
+                        Form.variantInput(RowWidth.class,
+                                          this.groupRow.width(),
                                           getContext()),
                         getContext());
 
@@ -115,10 +115,10 @@ public class DataFragment extends Fragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left         = R.dimen.group_data_padding_horz;
-        layout.padding.right        = R.dimen.group_data_padding_horz;
-        layout.padding.top          = R.dimen.group_data_padding_vert;
-        layout.padding.bottom       = R.dimen.group_data_padding_vert;
+        layout.padding.left         = R.dimen.group_row_data_padding_horz;
+        layout.padding.right        = R.dimen.group_row_data_padding_horz;
+        layout.padding.top          = R.dimen.group_row_data_padding_vert;
+        layout.padding.bottom       = R.dimen.group_row_data_padding_vert;
 
         return layout.linearLayout(context);
     }

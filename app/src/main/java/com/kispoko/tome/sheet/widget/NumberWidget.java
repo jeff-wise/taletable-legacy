@@ -203,17 +203,6 @@ public class NumberWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the name of the Widget.
-     * @return The widget's name as a String.
-     */
-    @Override
-    public String name()
-    {
-        return "number";
-    }
-
-
-    /**
      * Initialize the text widget state.
      */
     @Override
