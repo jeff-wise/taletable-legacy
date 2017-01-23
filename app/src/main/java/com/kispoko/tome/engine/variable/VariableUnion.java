@@ -3,7 +3,6 @@ package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.value.NumberValue;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;

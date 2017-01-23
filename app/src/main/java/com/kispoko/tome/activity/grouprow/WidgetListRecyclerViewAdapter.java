@@ -17,8 +17,8 @@ import com.kispoko.tome.sheet.widget.Widget;
 
 import java.util.List;
 
-import static android.R.attr.type;
 import static com.kispoko.tome.R.string.group;
+
 
 
 /**
@@ -32,7 +32,7 @@ public class WidgetListRecyclerViewAdapter
     // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private List<Widget> widgetList;
+    private List<Widget>    widgetList;
 
     private Context         context;
 
@@ -120,6 +120,10 @@ public class WidgetListRecyclerViewAdapter
                 @Override
                 public void onClick(View view)
                 {
+                    switch (widget.type())
+                    {
+
+                    }
                     Intent intent = new Intent(context, GroupActivity.class);
 
                     Bundle bundle = new Bundle();
