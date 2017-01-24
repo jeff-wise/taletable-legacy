@@ -7,7 +7,6 @@ import com.kispoko.tome.engine.programming.interpreter.Interpreter;
 import com.kispoko.tome.engine.programming.function.FunctionIndex;
 import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.programming.program.ProgramIndex;
-import com.kispoko.tome.engine.refinement.RefinementIndex;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -39,7 +38,6 @@ public class RulesEngine implements Model, ToYaml, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<RefinementIndex>   refinementIndex;
     private ModelFunctor<FunctionIndex>     functionIndex;
     private ModelFunctor<ProgramIndex>      programIndex;
     private ModelFunctor<MechanicIndex>     mechanicIndex;
@@ -55,7 +53,6 @@ public class RulesEngine implements Model, ToYaml, Serializable
     {
         this.id              = null;
 
-        this.refinementIndex = ModelFunctor.empty(RefinementIndex.class);
         this.functionIndex   = ModelFunctor.empty(FunctionIndex.class);
         this.programIndex    = ModelFunctor.empty(ProgramIndex.class);
         this.mechanicIndex   = ModelFunctor.empty(MechanicIndex.class);
@@ -68,7 +65,6 @@ public class RulesEngine implements Model, ToYaml, Serializable
 
 
     public RulesEngine(UUID id,
-                       RefinementIndex refinementIndex,
                        FunctionIndex functionIndex,
                        ProgramIndex programIndex,
                        MechanicIndex mechanicIndex,
@@ -76,7 +72,6 @@ public class RulesEngine implements Model, ToYaml, Serializable
     {
         this.id = id;
 
-        this.refinementIndex = ModelFunctor.full(refinementIndex, RefinementIndex.class);
         this.functionIndex   = ModelFunctor.full(functionIndex, FunctionIndex.class);
         this.programIndex    = ModelFunctor.full(programIndex, ProgramIndex.class);
         this.mechanicIndex   = ModelFunctor.full(mechanicIndex, MechanicIndex.class);
@@ -94,14 +89,12 @@ public class RulesEngine implements Model, ToYaml, Serializable
     {
         UUID            id              = UUID.randomUUID();
 
-        RefinementIndex refinementIndex = RefinementIndex.fromYaml(yaml.atKey("refinements"));
         ProgramIndex    programIndex    = ProgramIndex.fromYaml(yaml.atKey("programs"));
         FunctionIndex   functionIndex   = FunctionIndex.fromYaml(yaml.atKey("functions"));
         MechanicIndex   mechanicIndex   = MechanicIndex.fromYaml(yaml.atKey("mechanics"));
         Dictionary      dictionary      = Dictionary.fromYaml(yaml.atKey("dictionary"));
 
-        return new RulesEngine(id, refinementIndex, functionIndex, programIndex,
-                               mechanicIndex, dictionary);
+        return new RulesEngine(id, functionIndex, programIndex, mechanicIndex, dictionary);
     }
 
 
@@ -157,7 +150,6 @@ public class RulesEngine implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putYaml("refinements", this.refinementIndex())
                 .putYaml("programs", this.programIndex())
                 .putYaml("functions", this.functionIndex())
                 .putYaml("mechanics", this.mechanicIndex())
@@ -167,16 +159,6 @@ public class RulesEngine implements Model, ToYaml, Serializable
 
     // > State
     // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the rules' refinement index.
-     * @return The RefinementIndex.
-     */
-    public RefinementIndex refinementIndex()
-    {
-        return this.refinementIndex.getValue();
-    }
-
 
     /**
      * Get the program index.

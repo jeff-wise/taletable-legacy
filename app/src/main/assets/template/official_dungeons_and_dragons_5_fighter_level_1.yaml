@@ -14,23 +14,6 @@ game:
   players: 11577
 campaign_name: dawn_of_sky_break
 engine:
-  refinements:
-  - name: class
-    type: member_of
-    label: Classes
-    values:
-    - Barbarian
-    - Bard
-    - Cleric
-    - Druid
-    - Fighter
-    - Monk
-    - Paladin
-    - Ranger
-    - Rogue
-    - Sorceror
-    - Warlock
-    - Wizard
   functions:
   - name: ability_modifier
     label: Ability Modifier
