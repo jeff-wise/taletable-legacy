@@ -11,9 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
@@ -25,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 /**
  * Text Widget Activity
  */
 public class TextWidgetActivity extends AppCompatActivity
 {
-
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------

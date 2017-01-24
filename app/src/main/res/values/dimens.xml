@@ -368,6 +368,10 @@
     <dimen name="widget_list_item_type_text_size">3.3dp</dimen>
 
 
+    <!-- ACTIVITY: TABLE WIDGET -->
+    <dimen name="column_list_item_type_text_size">3.3dp</dimen>
+
+
     <!-- MANAGE SHEETS -->
     <dimen name="manage_sheets_summary_layout_padding_vert">14dp</dimen>
     <dimen name="manage_sheets_summary_layout_padding_horz">15dp</dimen>
@@ -416,10 +420,15 @@
     <dimen name="field_variant_input_button_margin_horz">2dp</dimen>
     <dimen name="field_variant_input_button_text_size">3sp</dimen>
 
+    <dimen name="divider_margin_bottom">25dp</dimen>
+
 
     <!-- FORM -->
     <dimen name="form_padding_horz">17dp</dimen>
     <dimen name="form_padding_vert">17dp</dimen>
+
+    <!-- DRAGGABLE CARD -->
+    <dimen name="draggable_list_padding_top">3dp</dimen>
 
 
 </resources>

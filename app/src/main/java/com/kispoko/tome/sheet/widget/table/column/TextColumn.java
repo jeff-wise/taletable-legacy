@@ -16,7 +16,7 @@ import java.util.UUID;
 
 
 /**
- * Text ColumnUnion
+ * Text Column
  *
  * Contains metadata about the cells in a table's text column.
  */
@@ -29,16 +29,16 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                          id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
-    private PrimitiveFunctor<String> defaultValue;
+    private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<String>        defaultValue;
     private PrimitiveFunctor<CellAlignment> alignment;
-    private PrimitiveFunctor<Integer> width;
+    private PrimitiveFunctor<Integer>       width;
 
 
     // CONSTRUCTORS

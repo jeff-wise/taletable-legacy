@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -32,17 +33,17 @@ public class ColumnUnion implements Model, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                       id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<TextColumn> textColumn;
-    private ModelFunctor<NumberColumn> numberColumn;
-    private ModelFunctor<BooleanColumn> booleanColumn;
+    private ModelFunctor<TextColumn>        textColumn;
+    private ModelFunctor<NumberColumn>      numberColumn;
+    private ModelFunctor<BooleanColumn>     booleanColumn;
 
-    private PrimitiveFunctor<ColumnType> type;
+    private PrimitiveFunctor<ColumnType>    type;
 
 
     // CONSTRUCTORS
@@ -139,6 +140,10 @@ public class ColumnUnion implements Model, ToYaml, Serializable
             case BOOLEAN:
                 BooleanColumn booleanColumn = BooleanColumn.fromYaml(yaml.atKey("column"));
                 return ColumnUnion.asBoolean(id, booleanColumn);
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(ColumnType.class.getName())));
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.

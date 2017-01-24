@@ -144,13 +144,38 @@
     <color name="dark_blue_9">#21252B</color>
     <color name="dark_blue_10">#1F2329</color>
 
-    <color name="gold_1">#FCF794</color>
-    <color name="gold_2">#EDE88B</color>
-    <color name="gold_3">#E3DE85</color>
-    <color name="gold_4">#DBD781</color>
+
+    <color name="gold_hlx_1">#FFFA96</color>
+    <color name="gold_hlx_2">#FCF794</color>
+    <color name="gold_hlx_3">#FAF593</color>
+    <color name="gold_hlx_4">#F7F291</color>
+    <color name="gold_hlx_5">#F5F090</color>
+    <color name="gold_hlx_6">#F2ED8E</color>
+    <color name="gold_hlx_7">#F0EB8D</color>
+    <color name="gold_hlx_8">#EDE88B</color>
+    <color name="gold_hlx_9">#EBE68A</color>
+
+    <color name="gold_hl_1">#E8E388</color>
+    <color name="gold_hl_2">#E5E187</color>
+    <color name="gold_hl_3">#E3DE85</color>
+    <color name="gold_hl_4">#E0DC84</color>
+    <color name="gold_hl_5">#DED982</color>
+    <color name="gold_hl_6">#DBD781</color>
+    <color name="gold_hl_7">#D9D47F</color>
+    <color name="gold_hl_8">#D6D27E</color>
+    <color name="gold_hl_9">#D4CF7C</color>
+
+    <color name="gold_1">#D1CD7B</color>
+    <color name="gold_2">#CFCA79</color>
+    <color name="gold_3">#CCC878</color>
+    <color name="gold_4">#C9C576</color>
+
     <color name="gold_5">#D4CF7C</color>
     <color name="gold_6">#CCC878</color>
-    <color name="gold_8">#BAAD4E</color>
+
+    <color name="gold_7">#C9C576</color>
+    <color name="gold_8">#C7C375</color>
+    <color name="gold_9">#C4C073</color>
 
     <color name="red_5">#A14746</color>
 

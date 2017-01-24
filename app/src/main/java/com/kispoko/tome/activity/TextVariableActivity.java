@@ -196,7 +196,7 @@ public class TextVariableActivity extends AppCompatActivity
         LinearLayout isNamespacedField =
                 Form.field(R.string.variable_field_is_namespaced_label,
                            R.string.variable_field_is_namespaced_description,
-                           Form.booleanInput(this),
+                           Form.booleanInput(this.variable.isNamespaced(), this),
                            this);
 
         // > Defines Namespace Field
@@ -204,7 +204,7 @@ public class TextVariableActivity extends AppCompatActivity
         LinearLayout definesNamespaceField =
                 Form.field(R.string.variable_field_defines_namespace_label,
                         R.string.variable_field_defines_namespace_description,
-                        Form.booleanInput(this),
+                        Form.booleanInput(this.variable.definesNamespace(), this),
                         this);
 
 

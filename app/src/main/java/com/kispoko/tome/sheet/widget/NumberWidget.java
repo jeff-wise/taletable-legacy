@@ -62,6 +62,7 @@ public class NumberWidget extends Widget
     private PrimitiveFunctor<WidgetContentSize> size;
     private ModelFunctor<NumberVariable>        valueVariable;
     private PrimitiveFunctor<String>            valuePrefix;
+    private PrimitiveFunctor<String>            valuePostfix;
     private ModelFunctor<TextVariable>          prefixVariable;
     private ModelFunctor<TextVariable>          postfixVariable;
     private CollectionFunctor<VariableUnion>    variables;
@@ -80,14 +81,15 @@ public class NumberWidget extends Widget
 
     public NumberWidget()
     {
-        this.id             = null;
+        this.id                 = null;
 
-        this.widgetData     = ModelFunctor.empty(WidgetData.class);
-        this.size           = new PrimitiveFunctor<>(null, WidgetContentSize.class);
-        this.valueVariable = ModelFunctor.empty(NumberVariable.class);
-        this.valuePrefix    = new PrimitiveFunctor<>(null, String.class);
-        this.prefixVariable = ModelFunctor.empty(TextVariable.class);
-        this.postfixVariable = ModelFunctor.empty(TextVariable.class);
+        this.widgetData         = ModelFunctor.empty(WidgetData.class);
+        this.size               = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.valueVariable      = ModelFunctor.empty(NumberVariable.class);
+        this.valuePrefix        = new PrimitiveFunctor<>(null, String.class);
+        this.valuePostfix       = new PrimitiveFunctor<>(null, String.class);
+        this.prefixVariable     = ModelFunctor.empty(TextVariable.class);
+        this.postfixVariable    = ModelFunctor.empty(TextVariable.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -104,18 +106,20 @@ public class NumberWidget extends Widget
                         WidgetContentSize size,
                         NumberVariable valueVariable,
                         String valuePrefix,
+                        String valuePostfix,
                         TextVariable prefixVariable,
                         TextVariable postfixVariable,
                         List<VariableUnion> variables)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.widgetData     = ModelFunctor.full(widgetData, WidgetData.class);
-        this.size           = new PrimitiveFunctor<>(size, WidgetContentSize.class);
-        this.valueVariable = ModelFunctor.full(valueVariable, NumberVariable.class);
-        this.valuePrefix    = new PrimitiveFunctor<>(valuePrefix, String.class);
-        this.prefixVariable = ModelFunctor.full(prefixVariable, TextVariable.class);
-        this.postfixVariable = ModelFunctor.full(postfixVariable, TextVariable.class);
+        this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
+        this.size               = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.valueVariable      = ModelFunctor.full(valueVariable, NumberVariable.class);
+        this.valuePrefix        = new PrimitiveFunctor<>(valuePrefix, String.class);
+        this.valuePostfix       = new PrimitiveFunctor<>(valuePostfix, String.class);
+        this.prefixVariable     = ModelFunctor.full(prefixVariable, TextVariable.class);
+        this.postfixVariable    = ModelFunctor.full(postfixVariable, TextVariable.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -136,6 +140,7 @@ public class NumberWidget extends Widget
         WidgetContentSize size          = WidgetContentSize.fromYaml(yaml.atKey("size"));
         NumberVariable    value         = NumberVariable.fromYaml(yaml.atKey("value"));
         String            valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
+        String            valuePostfix  = yaml.atMaybeKey("value_postfix").getString();
         TextVariable      prefix        = TextVariable.fromYaml(yaml.atMaybeKey("prefix"));
         TextVariable      postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));
 
@@ -148,7 +153,7 @@ public class NumberWidget extends Widget
             }
         }, true);
 
-        return new NumberWidget(id, widgetData, size, value, valuePrefix,
+        return new NumberWidget(id, widgetData, size, value, valuePrefix, valuePostfix,
                                 prefix, postfix, variables);
     }
 
@@ -193,6 +198,7 @@ public class NumberWidget extends Widget
                 .putYaml("size", this.size())
                 .putYaml("value", this.valueVariable())
                 .putString("value_prefix", this.valuePrefix())
+                .putString("value_postfix", this.valuePostfix())
                 .putYaml("prefix", this.prefixVariable())
                 .putYaml("postfix", this.postfixVariable())
                 .putList("variables", this.variables());
@@ -359,12 +365,17 @@ public class NumberWidget extends Widget
         Integer value = this.value();
         if (value != null)
         {
-            String valueString = Integer.toString(value);
+            StringBuilder valueString = new StringBuilder();
 
             if (!this.valuePrefix.isNull())
-                valueString = this.valuePrefix() + valueString;
+                valueString.append(this.valuePrefix());
 
-            return valueString;
+            valueString.append(Integer.toString(value));
+
+            if (!this.valuePostfix.isNull())
+                valueString.append(this.valuePostfix());
+
+            return valueString.toString();
         }
         else
         {
@@ -380,6 +391,16 @@ public class NumberWidget extends Widget
     public String valuePrefix()
     {
         return this.valuePrefix.getValue();
+    }
+
+
+    /**
+     * Get the value postfix (may be null).
+     * @return The value postfix string.
+     */
+    public String valuePostfix()
+    {
+        return this.valuePostfix.getValue();
     }
 
 

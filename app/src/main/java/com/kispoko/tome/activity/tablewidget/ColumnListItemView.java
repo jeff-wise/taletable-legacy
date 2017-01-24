@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.grouprow;
+package com.kispoko.tome.activity.tablewidget;
 
 
 import android.content.Context;
@@ -17,11 +17,10 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 
 
 /**
- * Widget List Item View
+ * Column List Item View
  */
-public class WidgetListItemView
+public class ColumnListItemView
 {
-
 
     public static View view(Context context)
     {
@@ -52,17 +51,18 @@ public class WidgetListItemView
         // [3 A] Count
         // -------------------------------------------------------------------------------------
 
-        type.id                     = R.id.widget_list_item_type;
+        type.id                     = R.id.column_list_item_type;
         type.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         type.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         type.font                   = Font.sansSerifFontBold(context);
-        type.size                   = R.dimen.widget_list_item_type_text_size;
+        type.size                   = R.dimen.column_list_item_type_text_size;
         type.color                  = R.color.dark_blue_hl_8;
 
 
         return layout.linearLayout(context);
     }
+
 
 
 }

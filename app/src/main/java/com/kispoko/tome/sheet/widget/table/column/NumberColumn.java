@@ -29,16 +29,16 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
-    private PrimitiveFunctor<Integer> defaultValue;
+    private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<Integer>       defaultValue;
     private PrimitiveFunctor<CellAlignment> alignment;
-    private PrimitiveFunctor<Integer> width;
+    private PrimitiveFunctor<Integer>       width;
 
 
     // CONSTRUCTORS

@@ -84,9 +84,13 @@
     <item name="group_row_list_item_widget_count" type="id"/>
     <item name="group_row_list_item_widget_count_label" type="id"/>
 
+
     <!-- WIDGET LIST ITEM -->
     <item name="widget_list_item_type" type="id"/>
 
+
+    <!-- COLUMN LIST ITEM -->
+    <item name="column_list_item_type" type="id"/>
 
     <!-- DRAGGABLE CARD -->
     <item name="draggable_card_layout" type="id"/>

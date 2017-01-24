@@ -11,7 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.widget.ImageWidget;
+import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
+import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -19,15 +20,15 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
 
 /**
- * Image Widget Activity
+ * Number Column Activity
  */
-public class ImageWidgetActivity extends AppCompatActivity
+public class NumberColumnActivity extends AppCompatActivity
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ImageWidget imageWidget;
+    private NumberColumn numberColumn;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -38,11 +39,11 @@ public class ImageWidgetActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_widget);
+        setContentView(R.layout.activity_column);
 
         // > Read Parameters
-        if (getIntent().hasExtra("widget")) {
-            this.imageWidget = (ImageWidget) getIntent().getSerializableExtra("widget");
+        if (getIntent().hasExtra("column")) {
+            this.numberColumn = (NumberColumn) getIntent().getSerializableExtra("column");
         }
 
         initializeToolbar();
@@ -101,9 +102,7 @@ public class ImageWidgetActivity extends AppCompatActivity
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // > Set the title
-        String title = this.imageWidget.data().format().label();
-        if (title == null)
-            title = "Image Widget";
+        String title = this.numberColumn.name() + " " + getString(R.string.column);
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
     }
@@ -111,13 +110,13 @@ public class ImageWidgetActivity extends AppCompatActivity
 
     private void initializeView()
     {
-        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.widget_content);
+        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.column_content);
         contentLayout.addView(formView());
     }
 
 
     // VIEWS
-    // -----------------------------------------------------------------------------------------
+    // ------------------------------------------------------------------------------------------
 
     private LinearLayout formView()
     {
@@ -129,31 +128,54 @@ public class ImageWidgetActivity extends AppCompatActivity
         // > Name Field
         // -------------------------------------------------------------------------------------
 
-        String name = this.imageWidget.data().format().label();
+        String name = this.numberColumn.name();
 
         LinearLayout nameField =
                 Form.field(
-                    R.string.image_widget_field_name_label,
-                    R.string.image_widget_field_name_description,
+                    R.string.number_column_field_name_label,
+                    R.string.number_column_field_name_description,
                     Form.textInput(name, this),
                     this);
 
-        // > Width
+        // > Default Value
         // -------------------------------------------------------------------------------------
 
-        String width = this.imageWidget.data().format().width().toString();
+        LinearLayout defaultValueField =
+                Form.field(
+                    R.string.number_column_field_default_value_label,
+                    R.string.number_column_field_default_value_description,
+                    Form.textInput(this.numberColumn.defaultValue().toString(), this),
+                    this);
+
+        // > Alignment Field
+        // -------------------------------------------------------------------------------------
+
+        LinearLayout alignmentField =
+                Form.field(
+                        R.string.number_column_field_alignment_label,
+                        R.string.number_column_field_alignment_description,
+                        Form.variantInput(CellAlignment.class,
+                                          this.numberColumn.alignment(),
+                                          this),
+                        this);
+
+        // > Width Field
+        // -------------------------------------------------------------------------------------
 
         LinearLayout widthField =
                 Form.field(
-                        R.string.image_widget_field_width_label,
-                        R.string.image_widget_field_width_description,
-                        Form.textInput(width, this),
+                        R.string.number_column_field_width_label,
+                        R.string.number_column_field_width_description,
+                        Form.textInput(this.numberColumn.width().toString(), this),
                         this);
+
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
         layout.addView(nameField);
+        layout.addView(defaultValueField);
+        layout.addView(alignmentField);
         layout.addView(widthField);
 
 

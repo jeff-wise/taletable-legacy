@@ -13,12 +13,15 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static android.R.attr.width;
 
 
 /**
@@ -526,7 +529,8 @@ public class Form
     // BOOLEAN INPUT
     // -----------------------------------------------------------------------------------------
 
-    public static RelativeLayout booleanInput(Context context)
+
+    public static RelativeLayout booleanInput(Boolean isChecked, Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -551,7 +555,7 @@ public class Form
 
         switchView.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
-        switchView.checked              = false;
+        switchView.checked              = isChecked;
 
         return layout.relativeLayout(context);
     }
@@ -767,6 +771,24 @@ public class Form
         button.size                 = R.dimen.field_variant_input_button_text_size;
 
         return button.textView(context);
+    }
+
+
+    // DIVIDER
+    // -----------------------------------------------------------------------------------------
+
+    public static View divider(Context context)
+    {
+        LinearLayoutBuilder divider = new LinearLayoutBuilder();
+
+        divider.width               = LinearLayout.LayoutParams.MATCH_PARENT;
+        divider.height              = R.dimen.one_dp;
+
+        divider.backgroundColor     = R.color.dark_blue_4;
+
+        divider.margin.bottom       = R.dimen.divider_margin_bottom;
+
+        return divider.linearLayout(context);
     }
 
 

@@ -27,7 +27,6 @@ import com.kispoko.tome.sheet.widget.WidgetUnion;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.kispoko.tome.R.string.group;
 
 
 /**
@@ -36,7 +35,6 @@ import static com.kispoko.tome.R.string.group;
 public class WidgetListRecyclerViewAdapter
        extends RecyclerView.Adapter<WidgetListRecyclerViewAdapter.ViewHolder>
 {
-
 
     // PROPERTIES
     // -------------------------------------------------------------------------------------------

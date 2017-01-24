@@ -16,7 +16,7 @@ import java.util.UUID;
 
 
 /**
- * Boolean ColumnUnion
+ * Boolean Column
  *
  * Contains metadata about the cells in a table's boolean column.
  */
@@ -29,16 +29,16 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                          id;
+    private UUID                            id;
 
 
     // > Functor
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String> name;
-    private PrimitiveFunctor<Boolean> defaultValue;
+    private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<Boolean>       defaultValue;
     private PrimitiveFunctor<CellAlignment> alignment;
-    private PrimitiveFunctor<Integer> width;
+    private PrimitiveFunctor<Integer>       width;
 
 
     // CONSTRUCTORS
