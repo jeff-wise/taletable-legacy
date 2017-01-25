@@ -3,10 +3,10 @@ package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.programming.interpreter.Interpreter;
-import com.kispoko.tome.engine.programming.interpreter.InterpreterException;
-import com.kispoko.tome.engine.programming.program.invocation.Invocation;
-import com.kispoko.tome.engine.programming.program.ProgramValueUnion;
+import com.kispoko.tome.engine.interpreter.Interpreter;
+import com.kispoko.tome.engine.interpreter.InterpreterException;
+import com.kispoko.tome.engine.program.invocation.Invocation;
+import com.kispoko.tome.engine.program.ProgramValueUnion;
 import com.kispoko.tome.sheet.SheetManager;
 
 import java.io.Serializable;

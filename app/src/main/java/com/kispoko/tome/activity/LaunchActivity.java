@@ -16,6 +16,7 @@ import com.kispoko.tome.util.database.SQL;
 import com.kispoko.tome.util.database.query.CountQuery;
 
 
+
 /**
  * Launch Activity
  *

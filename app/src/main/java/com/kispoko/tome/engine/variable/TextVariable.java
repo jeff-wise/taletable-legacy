@@ -6,7 +6,7 @@ import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.engine.programming.program.invocation.Invocation;
+import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;

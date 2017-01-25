@@ -10,7 +10,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.programming.program.statement.Statement;
+import com.kispoko.tome.engine.program.statement.Statement;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;

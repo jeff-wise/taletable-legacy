@@ -8,6 +8,7 @@ import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.model.ModelLib;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -51,6 +52,9 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
     }
 
 
+    // > Full Functor
+    // -----------------------------------------------------------------------------------------
+
     public static <A extends Model> CollectionFunctor<A> full(List<A> value,
                                                               List<Class<? extends A>> modelClasses)
     {
@@ -58,8 +62,28 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
     }
 
 
+    public static <A extends Model> CollectionFunctor<A> full(List<A> value,
+                                                              Class<? extends A> modelClass)
+    {
+        List<Class<? extends A>> modelClasses = new ArrayList<>();
+        modelClasses.add(modelClass);
+        return new CollectionFunctor<>(value, modelClasses, false, true);
+    }
+
+
+    // > Empty Functor
+    // -----------------------------------------------------------------------------------------
+
     public static <A extends Model> CollectionFunctor<A> empty(List<Class<? extends A>> modelClasses)
     {
+        return new CollectionFunctor<>(null, modelClasses, true, false);
+    }
+
+
+    public static <A extends Model> CollectionFunctor<A> empty(Class<? extends A> modelClass)
+    {
+        List<Class<? extends A>> modelClasses = new ArrayList<>();
+        modelClasses.add(modelClass);
         return new CollectionFunctor<>(null, modelClasses, true, false);
     }
 
@@ -122,7 +146,16 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
 
 
     // > Asynchronous Operations
-    // --------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Load an entire table of values.
+     */
+    public void load()
+    {
+        ModelLib.modelCollectionFromDatabase(null, this.modelClasses, this.onLoadListener(null));
+    }
+
 
     @SuppressWarnings("unchecked")
     public void load(final Model ownerModel,
@@ -133,7 +166,7 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
                                                       this.name(),
                                                       ownerModel.getId());
         ModelLib.<A>modelCollectionFromDatabase(oneToManyRelation,
-                                                modelClasses,
+                                                this.modelClasses,
                                                 this.onLoadListener(dynamicOnLoadListener));
     }
 

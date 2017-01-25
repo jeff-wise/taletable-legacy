@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.function.FunctionPagerAdapter;
-import com.kispoko.tome.engine.programming.function.Function;
-import com.kispoko.tome.engine.programming.function.FunctionIndex;
-import com.kispoko.tome.engine.programming.function.Tuple;
+import com.kispoko.tome.engine.function.Function;
+import com.kispoko.tome.engine.function.FunctionIndex;
+import com.kispoko.tome.engine.function.Tuple;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.UI;
 

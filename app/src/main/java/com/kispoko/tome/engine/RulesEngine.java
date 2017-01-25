@@ -2,11 +2,11 @@
 package com.kispoko.tome.engine;
 
 
-import com.kispoko.tome.engine.programming.function.builtin.BuiltInFunction;
-import com.kispoko.tome.engine.programming.interpreter.Interpreter;
-import com.kispoko.tome.engine.programming.function.FunctionIndex;
-import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
-import com.kispoko.tome.engine.programming.program.ProgramIndex;
+import com.kispoko.tome.engine.function.builtin.BuiltInFunction;
+import com.kispoko.tome.engine.interpreter.Interpreter;
+import com.kispoko.tome.engine.function.FunctionIndex;
+import com.kispoko.tome.engine.mechanic.MechanicIndex;
+import com.kispoko.tome.engine.program.ProgramIndex;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;

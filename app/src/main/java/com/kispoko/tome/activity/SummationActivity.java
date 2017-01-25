@@ -13,8 +13,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.programming.summation.Summation;
-import com.kispoko.tome.engine.programming.summation.term.TermUnion;
+import com.kispoko.tome.engine.summation.Summation;
+import com.kispoko.tome.engine.summation.term.TermUnion;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.tuple.Tuple2;

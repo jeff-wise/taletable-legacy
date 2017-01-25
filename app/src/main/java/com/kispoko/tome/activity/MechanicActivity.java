@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.mechanic.MechanicPagerAdapter;
-import com.kispoko.tome.engine.programming.function.Tuple;
-import com.kispoko.tome.engine.programming.mechanic.Mechanic;
-import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
+import com.kispoko.tome.engine.function.Tuple;
+import com.kispoko.tome.engine.mechanic.Mechanic;
+import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.UI;
 

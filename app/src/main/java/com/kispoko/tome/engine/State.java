@@ -2,7 +2,7 @@
 package com.kispoko.tome.engine;
 
 
-import com.kispoko.tome.engine.programming.mechanic.MechanicIndex;
+import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.DiceVariable;
 import com.kispoko.tome.engine.variable.NumberVariable;

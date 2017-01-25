@@ -4,13 +4,13 @@ package com.kispoko.tome;
 
 import android.util.Log;
 
-import com.kispoko.tome.engine.programming.mechanic.MechanicException;
+import com.kispoko.tome.engine.mechanic.MechanicException;
 import com.kispoko.tome.engine.value.ValueException;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.engine.programming.interpreter.InterpreterException;
-import com.kispoko.tome.engine.programming.function.InvalidFunctionException;
+import com.kispoko.tome.engine.interpreter.InterpreterException;
+import com.kispoko.tome.engine.function.InvalidFunctionException;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.yaml.YamlParseException;
 

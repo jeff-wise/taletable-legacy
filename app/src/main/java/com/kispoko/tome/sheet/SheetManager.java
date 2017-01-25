@@ -36,7 +36,9 @@ public class SheetManager
     // > Sheet State
     private static ModelFunctor<Sheet> currentSheet;
 
-    private static Context           currentSheetContext;
+    private static Context             currentSheetContext;
+
+    // > Campaign Index
 
 
     // API

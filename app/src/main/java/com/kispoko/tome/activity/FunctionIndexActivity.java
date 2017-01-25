@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.functionindex.FunctionListRecyclerViewAdapter;
-import com.kispoko.tome.engine.programming.function.FunctionIndex;
+import com.kispoko.tome.engine.function.FunctionIndex;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;

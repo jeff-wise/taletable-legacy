@@ -2,22 +2,15 @@
 package com.kispoko.tome.activity;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.functionindex.FunctionListRecyclerViewAdapter;
-import com.kispoko.tome.engine.programming.function.FunctionIndex;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
+import com.kispoko.tome.engine.function.FunctionIndex;
 import com.kispoko.tome.util.UI;
 
 

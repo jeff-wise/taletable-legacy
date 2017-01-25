@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.MechanicActivity;
-import com.kispoko.tome.engine.programming.mechanic.Mechanic;
+import com.kispoko.tome.engine.mechanic.Mechanic;
 
 import java.util.List;
 

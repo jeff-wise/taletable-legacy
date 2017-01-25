@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.ProgramActivity;
-import com.kispoko.tome.engine.programming.program.Program;
+import com.kispoko.tome.engine.program.Program;
 
 import java.util.List;
 

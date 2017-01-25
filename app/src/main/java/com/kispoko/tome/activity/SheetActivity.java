@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
+import com.kispoko.tome.campaign.CampaignIndex;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.sheet.Page;
@@ -326,6 +327,7 @@ public class SheetActivity
         else
             SheetManager.goToMostRecent(this, this);
 
+        CampaignIndex.initialize();
     }
 
 

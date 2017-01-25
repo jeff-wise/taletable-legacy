@@ -2,7 +2,6 @@
 package com.kispoko.tome.campaign;
 
 
-import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -32,6 +31,9 @@ public class Campaign implements Model
     // -----------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<String>        label;
+    private PrimitiveFunctor<String>        gameName;
+    private PrimitiveFunctor<String>        dungeonMaster;
 
 
     // CONSTRUCTORS
@@ -39,14 +41,23 @@ public class Campaign implements Model
 
     public Campaign()
     {
-        this.name = new PrimitiveFunctor<>(null, String.class);
+        this.id             = null;
+
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.label          = new PrimitiveFunctor<>(null, String.class);
+        this.gameName       = new PrimitiveFunctor<>(null, String.class);
+        this.dungeonMaster  = new PrimitiveFunctor<>(null, String.class);
     }
 
 
-    public Campaign(UUID id, String name)
+    public Campaign(UUID id, String name, String label, String gameName, String dungeonMaster)
     {
-        this.id     = id;
-        this.name   = new PrimitiveFunctor<>(name, String.class);
+        this.id             = id;
+
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.label          = new PrimitiveFunctor<>(label, String.class);
+        this.gameName       = new PrimitiveFunctor<>(gameName, String.class);
+        this.dungeonMaster  = new PrimitiveFunctor<>(dungeonMaster, String.class);
     }
 
 
@@ -59,17 +70,19 @@ public class Campaign implements Model
     public static Campaign fromYaml(YamlParser yaml)
             throws YamlParseException
     {
-        UUID        id          = UUID.randomUUID();
+        UUID   id            = UUID.randomUUID();
 
-        String      name        = yaml.atKey("name").getString();
+        String name          = yaml.atKey("name").getString();
+        String label         = yaml.atKey("label").getString();
+        String gameName      = yaml.atKey("game").getString();
+        String dungeonMaster = yaml.atKey("dungeon_master").getString();
 
-        return new Campaign(id, name);
+        return new Campaign(id, name, label, gameName, dungeonMaster);
     }
 
 
     // API
     // -----------------------------------------------------------------------------------------
-
 
     // > Model
     // ------------------------------------------------------------------------------------------
@@ -119,5 +132,36 @@ public class Campaign implements Model
     {
         return this.name.getValue();
     }
+
+
+    /**
+     * The campaign label (the name for human consumption).
+     * @return The label.
+     */
+    public String label()
+    {
+        return this.label.getValue();
+    }
+
+
+    /**
+     * The name (identifier) of the game the campaign uses.
+     * @return The game name.
+     */
+    public String gameName()
+    {
+        return this.gameName.getValue();
+    }
+
+
+    /**
+     * The name of the dungeon master for the campaign.
+     * @return The dungeon master.
+     */
+    public String dungeonMaster()
+    {
+        return this.dungeonMaster.getValue();
+    }
+
 
 }

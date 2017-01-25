@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.StatementActivity;
-import com.kispoko.tome.engine.programming.program.statement.Parameter;
-import com.kispoko.tome.engine.programming.program.statement.Statement;
+import com.kispoko.tome.engine.program.statement.Parameter;
+import com.kispoko.tome.engine.program.statement.Statement;
 
 import java.util.List;
 

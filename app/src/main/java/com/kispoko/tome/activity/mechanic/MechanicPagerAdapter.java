@@ -6,10 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.kispoko.tome.activity.program.StatementListFragment;
 import com.kispoko.tome.activity.variable.VariableListFragment;
-import com.kispoko.tome.engine.programming.mechanic.Mechanic;
-import com.kispoko.tome.engine.programming.program.Program;
+import com.kispoko.tome.engine.mechanic.Mechanic;
 
 import static com.kispoko.tome.activity.mechanic.DataFragment.newInstance;
 

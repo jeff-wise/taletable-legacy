@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.programming.mechanic.Mechanic;
+import com.kispoko.tome.engine.mechanic.Mechanic;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.ScrollViewBuilder;

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.engine.programming.mechanic.Mechanic;
+import com.kispoko.tome.engine.mechanic.Mechanic;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.ui.RecyclerViewBuilder;

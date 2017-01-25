@@ -1,0 +1,5 @@
+campaigns:
+- name: trouble_city_of_towers
+  label: Trouble in the City of Towers
+  game: dungeons_and_dragons_5
+  dungeon_master: Christina

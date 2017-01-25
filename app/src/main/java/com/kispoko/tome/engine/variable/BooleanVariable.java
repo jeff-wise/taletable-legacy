@@ -4,7 +4,7 @@ package com.kispoko.tome.engine.variable;
 
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.engine.programming.program.invocation.Invocation;
+import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;

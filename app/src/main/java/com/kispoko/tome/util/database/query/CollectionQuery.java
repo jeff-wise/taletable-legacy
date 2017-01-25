@@ -132,10 +132,12 @@ public class CollectionQuery
 
         // SELECT Clause
         // --------------------------------------------------------------------------------------
+
         queryBuilder.append("SELECT ");
 
         int columnIndex = 0;
-        for (String columnName : this.columnNames) {
+        for (String columnName : this.columnNames)
+        {
             queryBuilder.append(this.tableName);
             queryBuilder.append(".");
             queryBuilder.append(columnName);
@@ -150,20 +152,25 @@ public class CollectionQuery
 
         // FROM Clause
         // --------------------------------------------------------------------------------------
+
         queryBuilder.append("FROM ");
         queryBuilder.append(this.tableName);
         queryBuilder.append(" ");
 
         // WHERE Clause
         // --------------------------------------------------------------------------------------
-        queryBuilder.append("WHERE ");
-        queryBuilder.append(this.tableName);
-        queryBuilder.append(".");
-        queryBuilder.append(this.oneToManyRelation.childSQLColumnName());
-        queryBuilder.append(" = ");
-        queryBuilder.append("'");
-        queryBuilder.append(this.oneToManyRelation.getParentId());
-        queryBuilder.append("'");
+
+        if (this.oneToManyRelation != null)
+        {
+            queryBuilder.append("WHERE ");
+            queryBuilder.append(this.tableName);
+            queryBuilder.append(".");
+            queryBuilder.append(this.oneToManyRelation.childSQLColumnName());
+            queryBuilder.append(" = ");
+            queryBuilder.append("'");
+            queryBuilder.append(this.oneToManyRelation.getParentId());
+            queryBuilder.append("'");
+        }
 
         return queryBuilder.toString();
     }

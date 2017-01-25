@@ -4,6 +4,8 @@ package com.kispoko.tome.sheet;
 
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.VariableType;
+import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.group.Group;
@@ -18,6 +20,7 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -46,15 +49,16 @@ public class Sheet implements Model
 
     private PrimitiveFunctor<Long>      lastUsed;
 
-
     private ModelFunctor<Section>       profileSection;
     private ModelFunctor<Section>       encounterSection;
     private ModelFunctor<Section>       campaignSection;
 
-
     private ModelFunctor<Game>          game;
     private PrimitiveFunctor<String>    campaignName;
     private ModelFunctor<RulesEngine>   rules;
+
+    private PrimitiveFunctor<String[]>  summaryVariables;
+    private ModelFunctor<Summary>       summary;
 
 
     // > Internal
@@ -80,12 +84,16 @@ public class Sheet implements Model
         this.campaignName       = new PrimitiveFunctor<>(null, String.class);
         this.game               = ModelFunctor.empty(Game.class);
         this.rules              = ModelFunctor.empty(RulesEngine.class);
+
+        this.summaryVariables   = new PrimitiveFunctor<>(null, String[].class);
+        this.summary            = ModelFunctor.empty(Summary.class);
     }
 
 
     public Sheet(UUID id,
                  Game game,
                  String campaignName,
+                 List<String> summaryVariables,
                  RulesEngine rulesEngine,
                  Section profileSection,
                  Section encounterSection,
@@ -104,7 +112,11 @@ public class Sheet implements Model
         this.game               = ModelFunctor.full(game, Game.class);
         this.rules              = ModelFunctor.full(rulesEngine, RulesEngine.class);
 
-        indexComponents();
+        String[] summaryVariablesArray = summaryVariables.toArray(new String[0]);
+        this.summaryVariables   = new PrimitiveFunctor<>(summaryVariablesArray, String[].class);
+        this.summary            = ModelFunctor.full(null, Summary.class);
+
+        initializeSheet();
     }
 
 
@@ -117,17 +129,21 @@ public class Sheet implements Model
     public static Sheet fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID        id              = UUID.randomUUID();
+        UUID         id               = UUID.randomUUID();
 
-        Section     profile         = Section.fromYaml(SectionType.PROFILE, yaml.atKey("profile"));
-        Section     encounter       = Section.fromYaml(SectionType.ENCOUNTER,
+        Section      profile          = Section.fromYaml(SectionType.PROFILE,
+                                                         yaml.atKey("profile"));
+        Section      encounter        = Section.fromYaml(SectionType.ENCOUNTER,
                                                        yaml.atKey("encounter"));
 
-        String      campaignName    = yaml.atKey("campaign_name").getString();
-        Game        game            = Game.fromYaml(yaml.atKey("game"));
-        RulesEngine rulesEngine     = RulesEngine.fromYaml(yaml.atKey("engine"));
+        String       campaignName     = yaml.atKey("campaign_name").getString();
+        Game         game             = Game.fromYaml(yaml.atKey("game"));
+        RulesEngine  rulesEngine      = RulesEngine.fromYaml(yaml.atKey("engine"));
 
-        return new Sheet(id, game, campaignName, rulesEngine, profile, encounter, null);
+        List<String> summaryVariables = yaml.atKey("summary_variables").getStringList();
+
+        return new Sheet(id, game, campaignName, summaryVariables,
+                         rulesEngine, profile, encounter, null);
     }
 
 
@@ -160,7 +176,9 @@ public class Sheet implements Model
      */
     public void onLoad()
     {
-        indexComponents();
+        initializeSheet();
+
+        this.summary.setValue(sheetSummary());
     }
 
 
@@ -257,6 +275,12 @@ public class Sheet implements Model
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
+    private void initializeSheet()
+    {
+        indexComponents();
+    }
+
+
     /**
      * Index the widgets by their id, so that can later be retrieved.
      */
@@ -273,6 +297,31 @@ public class Sheet implements Model
                 }
             }
         }
+    }
+
+
+    private Summary sheetSummary()
+    {
+        // > Sheet Name
+        String sheetName = "";
+        VariableUnion nameVariable = State.variableWithName("name");
+        if (nameVariable.type() == VariableType.TEXT) {
+            sheetName = nameVariable.textVariable().value();
+        }
+
+        return new Summary(
+                        UUID.randomUUID(),
+                        sheetName,
+                        this.lastUsed.getValue(),
+
+
+        );
+    }
+
+
+    private void initializeSummary()
+    {
+
     }
 
 
