@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.kispoko.tome.campaign.Campaign;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.function.FunctionIndex;
 import com.kispoko.tome.engine.mechanic.Mechanic;
@@ -39,12 +40,10 @@ import com.kispoko.tome.engine.program.Program;
 import com.kispoko.tome.engine.program.statement.Statement;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.engine.refinement.RefinementUnion;
 import com.kispoko.tome.game.Game;
-import com.kispoko.tome.engine.refinement.RefinementId;
-import com.kispoko.tome.engine.refinement.RefinementIndex;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.sheet.Section;
+import com.kispoko.tome.sheet.Summary;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.Sheet;
@@ -68,7 +67,6 @@ import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
-import com.kispoko.tome.engine.refinement.MemberOf;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.model.ModelLib;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -101,8 +99,12 @@ public class DatabaseManager extends SQLiteOpenHelper
             // ** Game
             modelClasses.add(Game.class);
 
+            // ** Campaign
+            modelClasses.add(Campaign.class);
+
             // ** Sheet
             modelClasses.add(Sheet.class);
+            modelClasses.add(Summary.class);
             modelClasses.add(RulesEngine.class);
             modelClasses.add(Section.class);
             modelClasses.add(Page.class);
@@ -137,12 +139,6 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(BooleanColumn.class);
             modelClasses.add(NumberColumn.class);
             modelClasses.add(TextColumn.class);
-
-            // ** Refinements
-            modelClasses.add(RefinementUnion.class);
-            modelClasses.add(RefinementId.class);
-            modelClasses.add(RefinementIndex.class);
-            modelClasses.add(MemberOf.class);
 
             // ** Mechanics
             modelClasses.add(Mechanic.class);

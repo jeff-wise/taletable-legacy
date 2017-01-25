@@ -18,7 +18,6 @@ import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
-import com.kispoko.tome.engine.refinement.RefinementType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.group.RowAlignment;
@@ -190,10 +189,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(RowWidth.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(RefinementType.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -372,11 +367,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof RowWidth)
         {
             String enumString = ((RowWidth) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof RefinementType)
-        {
-            String enumString = ((RefinementType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof ProgramValueType)
@@ -684,11 +674,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             WidgetContentAlignment alignment = WidgetContentAlignment.fromSQLValue(sqlValue);
             this.setValue((A) alignment);
-        }
-        else if (this.valueClass.isAssignableFrom(RefinementType.class))
-        {
-            RefinementType refinementType = RefinementType.fromSQLValue(sqlValue);
-            this.setValue((A) refinementType);
         }
         else if (this.valueClass.isAssignableFrom(ParameterType.class))
         {

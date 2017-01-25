@@ -5,7 +5,6 @@ package com.kispoko.tome.engine.variable;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
-import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -52,7 +51,6 @@ public class BooleanVariable extends Variable
     private ModelFunctor<Invocation>    invocationValue;
 
     private PrimitiveFunctor<Kind>      kind;
-    private ModelFunctor<RefinementId>  refinementId;
 
     private PrimitiveFunctor<Boolean>   isNamespaced;
 
@@ -82,8 +80,6 @@ public class BooleanVariable extends Variable
 
         this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
 
-        this.refinementId           = ModelFunctor.empty(RefinementId.class);
-
         this.isNamespaced           = new PrimitiveFunctor<>(null, Boolean.class);
 
         this.tags                   = new PrimitiveFunctor<>(null, String[].class);
@@ -104,7 +100,6 @@ public class BooleanVariable extends Variable
                             String label,
                             Object value,
                             Kind kind,
-                            RefinementId refinementId,
                             Boolean isNamespaced,
                             List<String> tags)
     {
@@ -119,8 +114,6 @@ public class BooleanVariable extends Variable
         this.invocationValue        = ModelFunctor.full(null, Invocation.class);
 
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
-
-        this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
 
         if (isNamespaced == null) isNamespaced = false;
 
@@ -155,7 +148,6 @@ public class BooleanVariable extends Variable
      * @param id The Model id.
      * @param name The variable name.
      * @param booleanValue The Boolean value.
-     * @param refinementId The id of the variable's refinement.
      * @param tags The variable's tags.
      * @return A new "boolean" variable.
      */
@@ -163,12 +155,10 @@ public class BooleanVariable extends Variable
                                             String name,
                                             String label,
                                             Boolean booleanValue,
-                                            RefinementId refinementId,
                                             Boolean isNamespaced,
                                             List<String> tags)
     {
-        return new BooleanVariable(id, name, label, booleanValue, Kind.LITERAL, refinementId,
-                                   isNamespaced, tags);
+        return new BooleanVariable(id, name, label, booleanValue, Kind.LITERAL, isNamespaced, tags);
     }
 
 
@@ -181,7 +171,7 @@ public class BooleanVariable extends Variable
     public static BooleanVariable asBoolean(UUID id,
                                             Boolean booleanValue)
     {
-        return new BooleanVariable(id, null, null, booleanValue, Kind.LITERAL, null, null, null);
+        return new BooleanVariable(id, null, null, booleanValue, Kind.LITERAL, null, null);
     }
 
 
@@ -195,12 +185,10 @@ public class BooleanVariable extends Variable
                                             String name,
                                             String label,
                                             Invocation invocation,
-                                            RefinementId refinementId,
                                             Boolean isNamespaced,
                                             List<String> tags)
     {
-        return new BooleanVariable(id, name, label, invocation, Kind.PROGRAM, refinementId,
-                                   isNamespaced, tags);
+        return new BooleanVariable(id, name, label, invocation, Kind.PROGRAM, isNamespaced, tags);
     }
 
 
@@ -220,7 +208,6 @@ public class BooleanVariable extends Variable
         String       name               = yaml.atMaybeKey("name").getString();
         String       label              = yaml.atMaybeKey("label").getString();
         Kind         kind               = Kind.fromYaml(yaml.atKey("type"));
-        RefinementId refinementId       = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
         Boolean      isNamespaced       = yaml.atMaybeKey("namespaced").getBoolean();
         List<String> tags               = yaml.atMaybeKey("tags").getStringList();
 
@@ -228,12 +215,10 @@ public class BooleanVariable extends Variable
         {
             case LITERAL:
                 Boolean booleanValue  = yaml.atKey("value").getBoolean();
-                return BooleanVariable.asBoolean(id, name, label, booleanValue, refinementId,
-                                                 isNamespaced, tags);
+                return BooleanVariable.asBoolean(id, name, label, booleanValue, isNamespaced, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return BooleanVariable.asProgram(id, name, label, invocation, refinementId,
-                                                 isNamespaced, tags);
+                return BooleanVariable.asProgram(id, name, label, invocation, isNamespaced, tags);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
@@ -292,7 +277,6 @@ public class BooleanVariable extends Variable
                 .putString("name", this.name())
                 .putString("label", this.label())
                 .putYaml("type", this.kind())
-                .putYaml("refinement", this.refinementId())
                 .putBoolean("namespaced", this.isNamespaced())
                 .putStringList("tags", this.tags());
     }
@@ -352,6 +336,16 @@ public class BooleanVariable extends Variable
     public List<String> tags()
     {
         return Arrays.asList(this.tags.getValue());
+    }
+
+
+    @Override
+    public String valueString()
+    {
+        if (this.value())
+            return "True";
+        else
+            return "False";
     }
 
 
@@ -430,30 +424,6 @@ public class BooleanVariable extends Variable
         }
 
         return null;
-    }
-
-
-    // ** Refinement
-    // ------------------------------------------------------------------------------------------
-
-
-    /**
-     * Returns true if the variable has a refinement.
-     * @return True if the variable has a refinement.
-     */
-    public boolean hasRefinement()
-    {
-        return this.refinementId != null;
-    }
-
-
-    /**
-     * Get the refinement identifier for this variable.
-     * @return The variable's refinement id, or null if there is none.
-     */
-    public RefinementId refinementId()
-    {
-        return this.refinementId.getValue();
     }
 
 

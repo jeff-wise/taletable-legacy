@@ -191,6 +191,13 @@ public class DiceVariable extends Variable
     }
 
 
+    @Override
+    public String valueString()
+    {
+        return this.diceRoll().toString();
+    }
+
+
     // > Initialize
     // ------------------------------------------------------------------------------------------
 

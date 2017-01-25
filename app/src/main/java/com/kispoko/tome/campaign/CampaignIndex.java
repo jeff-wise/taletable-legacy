@@ -2,11 +2,23 @@
 package com.kispoko.tome.campaign;
 
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
+
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.error.TemplateFileReadError;
+import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.CountQuery;
 import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.util.yaml.YamlParser;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +49,7 @@ public class CampaignIndex
     // API
     // -----------------------------------------------------------------------------------------
 
-    public static void initialize()
+    public static void initialize(final Context context)
     {
         CountQuery.OnCountListener onCountListener = new CountQuery.OnCountListener()
         {
@@ -45,7 +57,7 @@ public class CampaignIndex
             public void onCountResult(String tableName, Integer count)
             {
                 if (count == 0)
-                    initializeFromYaml();
+                    initializeFromYaml(context);
                 else
                     initializeFromDB();
             }
@@ -64,6 +76,8 @@ public class CampaignIndex
 
     private static void initializeFromDB()
     {
+        campaigns = CollectionFunctor.empty(Campaign.class);
+
         campaigns.setOnLoadListener(new CollectionFunctor.OnLoadListener<Campaign>()
         {
             @Override
@@ -89,8 +103,102 @@ public class CampaignIndex
     }
 
 
-    private static void initializeFromYaml()
+    private static void initializeFromYaml(final Context context)
     {
+        final String campaignsFileName = "template/campaigns.yaml";
+
+        new AsyncTask<Void,Void,Object>()
+        {
+
+            protected Object doInBackground(Void... args)
+            {
+
+                try
+                {
+                    InputStream yamlIS = context.getAssets().open(campaignsFileName);
+                    YamlParser yaml = YamlParser.fromFile(yamlIS);
+
+                    List<Campaign> yamlCampaigns;
+
+                    yamlCampaigns = yaml.atKey("campaigns").forEach(new YamlParser.ForEach<Campaign>() {
+                        @Override
+                        public Campaign forEach(YamlParser yaml, int index)
+                               throws YamlParseException {
+                            return Campaign.fromYaml(yaml);
+                        }
+                    }, true);
+
+                    return yamlCampaigns;
+                }
+                catch (YamlParseException exception)
+                {
+                    return exception;
+                }
+                catch (IOException exception)
+                {
+                    // TODO read file errors better
+                    return new TemplateFileException(
+                                new TemplateFileReadError(campaignsFileName),
+                            TemplateFileException.ErrorType.TEMPLATE_FILE_READ);
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+
+            @SuppressWarnings("unchecked")
+            protected void onPostExecute(Object maybeCampaignList)
+            {
+                if (maybeCampaignList instanceof TemplateFileException)
+                {
+                    ApplicationFailure.templateFile((TemplateFileException) maybeCampaignList);
+                }
+                else if (maybeCampaignList instanceof YamlParseException)
+                {
+                    ApplicationFailure.yaml((YamlParseException) maybeCampaignList);
+                }
+                else if (maybeCampaignList instanceof Exception)
+                {
+                    Log.d("***CAMPAIGNINDEX", "template load exception",
+                            (Exception) maybeCampaignList);
+                }
+                else if (maybeCampaignList instanceof List<?>)
+                {
+                    List<Campaign> campaignList = (List<Campaign>) maybeCampaignList;
+
+                    campaigns = CollectionFunctor.full(campaignList, Campaign.class);
+
+                    initializeCampaigns();
+
+                    CollectionFunctor.OnSaveListener onSaveListener =
+                                                new CollectionFunctor.OnSaveListener()
+                    {
+                        @Override
+                        public void onSave()
+                        {
+                        }
+
+                        @Override
+                        public void onSaveDBError(DatabaseException exception)
+                        {
+                            ApplicationFailure.database(exception);
+                        }
+
+                        @Override
+                        public void onSaveError(Exception exception)
+                        {
+                        }
+                    };
+
+                    campaigns.setOnSaveListener(onSaveListener);
+
+                    campaigns.save();
+                }
+            }
+
+        }.execute();
+
 
     }
 
@@ -126,6 +234,8 @@ public class CampaignIndex
         for (Campaign campaign : campaigns()) {
             campaignByName.put(campaign.name(), campaign);
         }
+
+        SheetManager.campaignIndexReady();
     }
 
 

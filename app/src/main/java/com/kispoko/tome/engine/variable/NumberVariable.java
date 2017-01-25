@@ -16,7 +16,6 @@ import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.summation.Summation;
-import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
@@ -67,8 +66,6 @@ public class NumberVariable extends Variable
 
     private PrimitiveFunctor<Kind>      kind;
 
-    private ModelFunctor<RefinementId>  refinementId;
-
     private PrimitiveFunctor<Boolean>   isNamespaced;
 
     private PrimitiveFunctor<String[]>  tags;
@@ -98,8 +95,6 @@ public class NumberVariable extends Variable
 
         this.kind               = new PrimitiveFunctor<>(null, Kind.class);
 
-        this.refinementId       = ModelFunctor.empty(RefinementId.class);
-
         this.isNamespaced       = new PrimitiveFunctor<>(null, Boolean.class);
 
         this.tags               = new PrimitiveFunctor<>(null, String[].class);
@@ -120,7 +115,6 @@ public class NumberVariable extends Variable
                            String label,
                            Object value,
                            Kind kind,
-                           RefinementId refinementId,
                            Boolean isNamespaced,
                            List<String> tags)
     {
@@ -136,8 +130,6 @@ public class NumberVariable extends Variable
         this.summation              = ModelFunctor.full(null, Summation.class);
 
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
-
-        this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
 
         if (isNamespaced == null) isNamespaced = false;
         this.isNamespaced           = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
@@ -174,7 +166,6 @@ public class NumberVariable extends Variable
      * @param id The Model id.
      * @param name The variable name
      * @param integerValue The Integer value.
-     * @param refinementId The id of the variable's refinement.
      * @param tags The variable's tags.
      * @return A new "literal" Integer Variable.
      */
@@ -182,12 +173,10 @@ public class NumberVariable extends Variable
                                            String name,
                                            String label,
                                            Integer integerValue,
-                                           RefinementId refinementId,
                                            Boolean isNamespaced,
                                            List<String> tags)
     {
-        return new NumberVariable(id, name, label, integerValue, Kind.LITERAL, refinementId,
-                                  isNamespaced, tags);
+        return new NumberVariable(id, name, label, integerValue, Kind.LITERAL, isNamespaced, tags);
     }
 
 
@@ -200,7 +189,7 @@ public class NumberVariable extends Variable
     public static NumberVariable asInteger(UUID id,
                                            Integer integerValue)
     {
-        return new NumberVariable(id, null, null, integerValue, Kind.LITERAL, null, null, null);
+        return new NumberVariable(id, null, null, integerValue, Kind.LITERAL, null, null);
     }
 
 
@@ -214,12 +203,10 @@ public class NumberVariable extends Variable
                                            String name,
                                            String label,
                                            Invocation invocation,
-                                           RefinementId refinementId,
                                            Boolean isNamespaced,
                                            List<String> tags)
     {
-        return new NumberVariable(id, name, label, invocation, Kind.PROGRAM, refinementId,
-                                  isNamespaced, tags);
+        return new NumberVariable(id, name, label, invocation, Kind.PROGRAM, isNamespaced, tags);
     }
 
 
@@ -233,12 +220,10 @@ public class NumberVariable extends Variable
                                              String name,
                                              String label,
                                              Summation summation,
-                                             RefinementId refinementId,
                                              Boolean isNamespaced,
                                              List<String> tags)
     {
-        return new NumberVariable(id, name, label, summation, Kind.SUMMATION, refinementId,
-                                  isNamespaced, tags);
+        return new NumberVariable(id, name, label, summation, Kind.SUMMATION, isNamespaced, tags);
     }
 
 
@@ -258,7 +243,6 @@ public class NumberVariable extends Variable
         String       name         = yaml.atMaybeKey("name").getString();
         String       label        = yaml.atMaybeKey("label").getString();
         Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
-        RefinementId refinementId = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
         Boolean      isNamespaced = yaml.atMaybeKey("namespaced").getBoolean();
         List<String> tags         = yaml.atMaybeKey("tags").getStringList();
 
@@ -266,16 +250,13 @@ public class NumberVariable extends Variable
         {
             case LITERAL:
                 Integer integerValue  = yaml.atKey("value").getInteger();
-                return NumberVariable.asInteger(id, name, label, integerValue, refinementId,
-                                                isNamespaced, tags);
+                return NumberVariable.asInteger(id, name, label, integerValue, isNamespaced, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asProgram(id, name, label, invocation, refinementId,
-                                                isNamespaced, tags);
+                return NumberVariable.asProgram(id, name, label, invocation, isNamespaced, tags);
             case SUMMATION:
                 Summation summation = Summation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asSummation(id, name, label, summation, refinementId,
-                                                  isNamespaced, tags);
+                return NumberVariable.asSummation(id, name, label, summation, isNamespaced, tags);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
@@ -334,7 +315,6 @@ public class NumberVariable extends Variable
                 .putString("name", this.name())
                 .putString("label", this.label())
                 .putYaml("type", this.kind())
-                .putYaml("refinement", this.refinementId())
                 .putBoolean("namespaced", this.isNamespaced())
                 .putStringList("tags", this.tags());
     }
@@ -452,6 +432,33 @@ public class NumberVariable extends Variable
     }
 
 
+    /**
+     * Get the value string representation. If the value contains any dice rolls, then it appears
+     * as a formula, otherwise it is just an integer string.
+     * @return The value string.
+     * @throws VariableException
+     */
+    public String valueString()
+           throws VariableException
+    {
+        switch (this.kind())
+        {
+            case LITERAL:
+                return this.value().toString();
+            case PROGRAM:
+                return this.value().toString();
+            case SUMMATION:
+                return this.summation.getValue().valueString();
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(Kind.class.getName())));
+        }
+
+        return "";
+    }
+
+
     // > Initialize
     // ------------------------------------------------------------------------------------------
 
@@ -487,19 +494,6 @@ public class NumberVariable extends Variable
     public Integer literalValue()
     {
         return this.literalValue.getValue();
-    }
-
-
-    // ** Properties
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The refinement id.
-     * @return The RefinementId.
-     */
-    public RefinementId refinementId()
-    {
-        return this.refinementId.getValue();
     }
 
 
@@ -549,32 +543,6 @@ public class NumberVariable extends Variable
         return null;
     }
 
-
-    /**
-     * Get the value string representation. If the value contains any dice rolls, then it appears
-     * as a formula, otherwise it is just an integer string.
-     * @return The value string.
-     * @throws VariableException
-     */
-    public String valueString()
-           throws VariableException
-    {
-        switch (this.kind())
-        {
-            case LITERAL:
-                return this.value().toString();
-            case PROGRAM:
-                return this.value().toString();
-            case SUMMATION:
-                return this.summation.getValue().valueString();
-            default:
-                ApplicationFailure.union(
-                        UnionException.unknownVariant(
-                                new UnknownVariantError(Kind.class.getName())));
-        }
-
-        return "";
-    }
 
 
     // > Edit Activity

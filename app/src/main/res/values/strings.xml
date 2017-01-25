@@ -26,6 +26,8 @@
     <string name="widget_upper">WIDGET</string>
     <string name="widgets_upper">WIDGETS</string>
 
+    <string name="last_used">Last Used</string>
+
 
     <!-- BOTTOM NAVIGATION -->
     <!-- ==================================================================================== -->

@@ -38,7 +38,11 @@ public class SheetManager
 
     private static Context             currentSheetContext;
 
-    // > Campaign Index
+    private static Sheet.OnSheetListener sheetListener;
+
+
+    private static boolean sheetReady           = false;
+    private static boolean campaignIndexReady   = false;
 
 
     // API
@@ -53,6 +57,32 @@ public class SheetManager
     public static Context currentSheetContext()
     {
         return currentSheetContext;
+    }
+
+
+    public static void campaignIndexReady()
+    {
+        campaignIndexReady = true;
+
+        if (campaignIndexReady && sheetReady)
+            initializeSheet();
+    }
+
+
+    public static void sheetReady()
+    {
+        sheetReady = true;
+
+        if (campaignIndexReady && sheetReady)
+            initializeSheet();
+    }
+
+
+    private static void initializeSheet()
+    {
+        currentSheet().initialize();
+
+        sheetListener.onSheet(currentSheet());
     }
 
 
@@ -120,7 +150,9 @@ public class SheetManager
                     currentSheet = ModelFunctor.full(templateSheet, Sheet.class);
                     currentSheetContext = context;
 
-                    templateSheet.initialize();
+                    SheetManager.sheetListener = sheetListener;
+
+                    SheetManager.sheetReady();
 
                     ModelFunctor.OnSaveListener onSaveListener = new ModelFunctor.OnSaveListener()
                     {
@@ -145,8 +177,6 @@ public class SheetManager
 
                     currentSheet.setOnSaveListener(onSaveListener);
                     currentSheet.save();
-
-                    sheetListener.onSheet(templateSheet);
                 }
             }
 
@@ -163,7 +193,10 @@ public class SheetManager
             {
                 Log.d("***SHEET MANAGER", "on load sheet");
 
-                value.initialize();
+                // value.initialize();
+
+                SheetManager.sheetReady();
+
                 listener.onSheet(value);
             }
 

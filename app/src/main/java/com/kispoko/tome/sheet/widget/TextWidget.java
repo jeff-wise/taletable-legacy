@@ -5,8 +5,6 @@ package com.kispoko.tome.sheet.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,20 +13,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.EditActivity;
 import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
-import com.kispoko.tome.sheet.widget.text.TextEditRecyclerViewAdapter;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.engine.refinement.MemberOf;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.EditTextBuilder;
 import com.kispoko.tome.util.ui.Font;
@@ -218,12 +212,12 @@ public class TextWidget extends Widget
     {
         switch (action)
         {
-            case EDIT:
-                Context context = SheetManager.currentSheetContext();
-                Intent intent = new Intent(context, EditActivity.class);
-                intent.putExtra("WIDGET", this);
-                ((Activity) context).startActivityForResult(intent, SheetActivity.COMPONENT_EDIT);
-                break;
+//            case EDIT:
+//                Context context = SheetManager.currentSheetContext();
+//                Intent intent = new Intent(context, EditActivity.class);
+//                intent.putExtra("WIDGET", this);
+//                ((Activity) context).startActivityForResult(intent, SheetActivity.COMPONENT_EDIT);
+//                break;
         }
     }
 
@@ -255,7 +249,6 @@ public class TextWidget extends Widget
         textView.size    = this.size.getValue().resourceId();
         textView.font    = Font.serifFontBold(context);
         textView.color   = R.color.dark_blue_hlx_6;
-        //textView.color   = R.color.light_grey_6;
         textView.text    = this.value();
 
         contentLayout.addView(textView.textView(context));
@@ -270,11 +263,11 @@ public class TextWidget extends Widget
      */
     public View editorView(Context context)
     {
-        if (this.valueVariable().hasRefinement())
-            return this.getTypeEditorView(context);
-        // No type is set, so allow free form edit
-        else
-            return this.freeEditorView(context);
+//        if (this.valueVariable().hasRefinement())
+//            return this.getTypeEditorView(context);
+//        // No type is set, so allow free form edit
+//        else
+        return this.freeEditorView(context);
     }
 
 
@@ -397,27 +390,6 @@ public class TextWidget extends Widget
             if (value != null)
                 textView.setText(value);
         }
-    }
-
-
-    public View getTypeEditorView(Context context)
-    {
-        RulesEngine rulesEngine = SheetManager.currentSheet().engine();
-
-        // Lookup the recyclerview in activity layout
-        RecyclerView textEditorView = new RecyclerView(context);
-        textEditorView.setLayoutParams(Util.linearLayoutParamsMatch());
-        //textEditorView.addItemDecoration(new SimpleDividerItemDecoration(context));
-
-        // Create adapter passing in the sample user data
-        MemberOf memberOf = rulesEngine.refinementIndex()
-                                 .memberOfWithName(this.valueVariable().refinementId().name());
-        TextEditRecyclerViewAdapter adapter = new TextEditRecyclerViewAdapter(this, memberOf);
-        textEditorView.setAdapter(adapter);
-        // Set layout manager to position the items
-        textEditorView.setLayoutManager(new LinearLayoutManager(context));
-
-        return textEditorView;
     }
 
 

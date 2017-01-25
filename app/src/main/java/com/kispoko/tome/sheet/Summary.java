@@ -41,6 +41,12 @@ public class Summary implements Model
     private PrimitiveFunctor<String>    feature3Name;
     private PrimitiveFunctor<String>    feature3Value;
 
+    // > Internal
+    // ------------------------------------------------------------------------------------------
+
+    private boolean                     hasFeature1;
+    private boolean                     hasFeature2;
+    private boolean                     hasFeature3;
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -78,14 +84,42 @@ public class Summary implements Model
         this.lastUsed       = new PrimitiveFunctor<>(lastUsed, Long.class);
         this.campaignName   = new PrimitiveFunctor<>(campaignName, String.class);
 
-        this.feature1Name   = new PrimitiveFunctor<>(feature1.getItem1(), String.class);
-        this.feature1Value  = new PrimitiveFunctor<>(feature1.getItem2(), String.class);
+        this.feature1Name   = new PrimitiveFunctor<>(null, String.class);
+        this.feature1Value  = new PrimitiveFunctor<>(null, String.class);
 
-        this.feature2Name   = new PrimitiveFunctor<>(feature2.getItem1(), String.class);
-        this.feature2Value  = new PrimitiveFunctor<>(feature2.getItem2(), String.class);
+        this.feature2Name   = new PrimitiveFunctor<>(null, String.class);
+        this.feature2Value  = new PrimitiveFunctor<>(null, String.class);
 
-        this.feature3Name   = new PrimitiveFunctor<>(feature3.getItem1(), String.class);
-        this.feature3Value  = new PrimitiveFunctor<>(feature3.getItem2(), String.class);
+        this.feature3Name   = new PrimitiveFunctor<>(null, String.class);
+        this.feature3Value  = new PrimitiveFunctor<>(null, String.class);
+
+        this.hasFeature1    = false;
+        this.hasFeature2    = false;
+        this.hasFeature3    = false;
+
+        if (feature1 != null)
+        {
+            this.feature1Name   = new PrimitiveFunctor<>(feature1.getItem1(), String.class);
+            this.feature1Value  = new PrimitiveFunctor<>(feature1.getItem2(), String.class);
+
+            this.hasFeature1    = true;
+        }
+
+        if (feature2 != null)
+        {
+            this.feature2Name   = new PrimitiveFunctor<>(feature2.getItem1(), String.class);
+            this.feature2Value  = new PrimitiveFunctor<>(feature2.getItem2(), String.class);
+
+            this.hasFeature2    = true;
+        }
+
+        if (feature3 != null)
+        {
+            this.feature3Name   = new PrimitiveFunctor<>(feature3.getItem1(), String.class);
+            this.feature3Value  = new PrimitiveFunctor<>(feature3.getItem2(), String.class);
+
+            this.hasFeature3    = true;
+        }
     }
 
 
@@ -123,6 +157,9 @@ public class Summary implements Model
     // ------------------------------------------------------------------------------------------
 
     // > State
+    // ------------------------------------------------------------------------------------------
+
+    // ** Attributes
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -214,5 +251,37 @@ public class Summary implements Model
         return this.feature3Value.getValue();
     }
 
+
+    // ** Features
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Does the summary have one feature?
+     * @return True if feature one exists.
+     */
+    public boolean hasFeature1()
+    {
+        return hasFeature1;
+    }
+
+
+    /**
+     * Does the summary have two features?
+     * @return True if feature two exists.
+     */
+    public boolean hasFeature2()
+    {
+        return hasFeature2;
+    }
+
+
+    /**
+     * Does the summary have three features?
+     * @return True if feature three exists.
+     */
+    public boolean hasFeature3()
+    {
+        return hasFeature3;
+    }
 
 }

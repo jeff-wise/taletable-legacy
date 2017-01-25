@@ -5,13 +5,21 @@ package com.kispoko.tome.activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.function.FunctionIndex;
+import com.kispoko.tome.activity.managesheets.SheetSummaryRecyclerViewAdpater;
+import com.kispoko.tome.sheet.Summary;
+import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
+import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.value.CollectionFunctor;
+
+import java.util.List;
 
 
 
@@ -33,7 +41,7 @@ public class ManageSheetsActivity extends AppCompatActivity
 
         initializeToolbar();
 
-//        initializeView();
+        loadSummaries();
     }
 
 
@@ -95,15 +103,14 @@ public class ManageSheetsActivity extends AppCompatActivity
     /**
      * Initialize the template list view.
      */
-    private void initializeView(FunctionIndex functionIndex)
+    private void initializeView(List<Summary> summaryList)
     {
-//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.function_index_list_view);
-//
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-//        recyclerView.setAdapter(
-//                new FunctionListRecyclerViewAdapter(functionIndex.functions(), this));
-//
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.sheet_list_view);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        recyclerView.setAdapter(new SheetSummaryRecyclerViewAdpater(summaryList, this));
+
 //        FloatingActionButton addValueSetButton =
 //                (FloatingActionButton) findViewById(R.id.button_new_function);
 //        addValueSetButton.setOnClickListener(new View.OnClickListener() {
@@ -117,21 +124,32 @@ public class ManageSheetsActivity extends AppCompatActivity
     }
 
 
+    private void loadSummaries()
+    {
+        CollectionFunctor<Summary> summaries = CollectionFunctor.empty(Summary.class);
 
-//    String[] mockCampaignNames = {
-//                "Restless",
-//                "Keep on the Borderlands",
-//                "Subterranean Myth",
-//                "Trouble in the City of Towers",
-//                "The Endless War",
-//                "Waves of Eden",
-//                "Forgotten Star",
-//                "Orc King",
-//                "Darkness Alight",
-//                "Distant Shores",
-//        };
+        summaries.setOnLoadListener(new CollectionFunctor.OnLoadListener<Summary>()
+        {
+            @Override
+            public void onLoad(List<Summary> value)
+            {
+                initializeView(value);
+            }
 
+            @Override
+            public void onLoadDBError(DatabaseException exception)
+            {
+                // TODO
+            }
 
+            @Override
+            public void onLoadError(Exception exception)
+            {
+                // TODO
+            }
+        });
 
+        summaries.load();
+    }
 
 }

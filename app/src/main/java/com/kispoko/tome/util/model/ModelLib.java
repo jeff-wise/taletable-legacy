@@ -328,7 +328,7 @@ public class ModelLib
 
 
     /**
-     * @return A new instance of the moddel.
+     * @return A new instance of the model.
      * @throws DatabaseException
      */
     public static void modelCollectionToDatabase(

@@ -172,6 +172,15 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
 
 
     @SuppressWarnings("unchecked")
+    public void save()
+    {
+        ModelLib.modelCollectionToDatabase((List<Model>) this.getValue(),
+                                           new ArrayList<OneToManyRelation>(),
+                                           this.onSaveListener(null));
+    }
+
+
+    @SuppressWarnings("unchecked")
     public void save(List<OneToManyRelation> parentRelations,
                      OnSaveListener dynamicOnSaveListener)
     {

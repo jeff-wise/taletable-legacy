@@ -2,7 +2,11 @@
 package com.kispoko.tome.sheet;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
+import com.kispoko.tome.campaign.Campaign;
+import com.kispoko.tome.campaign.CampaignIndex;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
@@ -13,17 +17,20 @@ import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.kispoko.tome.engine.State.variableWithName;
 
 
 /**
@@ -177,8 +184,6 @@ public class Sheet implements Model
     public void onLoad()
     {
         initializeSheet();
-
-        this.summary.setValue(sheetSummary());
     }
 
 
@@ -189,6 +194,8 @@ public class Sheet implements Model
     {
         return YamlBuilder.map()
                 .putYaml("game", this.game())
+                .putString("campaign_name", this.campaignName())
+                .putStringList("summary_variables", this.summaryVariables())
                 .putYaml("profile", this.profileSection())
                 .putYaml("encounter", this.encounterSection())
                 .putYaml("engine", this.engine());
@@ -204,13 +211,14 @@ public class Sheet implements Model
 
         this.profileSection().initialize();
         this.encounterSection().initialize();
-        //this.campaignSection().initialize();
+
+        this.summary.setValue(sheetSummary());
+        this.summary.save();
     }
 
 
-    // > State
+    // > Components
     // ------------------------------------------------------------------------------------------
-
 
     public Widget componentWithId(UUID componentId)
     {
@@ -218,8 +226,29 @@ public class Sheet implements Model
     }
 
 
-    // ** Sections
+    // > State
     // ------------------------------------------------------------------------------------------
+
+    /**
+     * The name of the campaign.
+     * @return The campaign name.
+     */
+    private String campaignName()
+    {
+        return this.campaignName.getValue();
+    }
+
+
+    /**
+     * The variables which act as summary data for the sheet i.e highlight important information.
+     * These values are used in the sheet list to provide an interesting overview of the sheet.
+     * @return The List of variable names.
+     */
+    private List<String> summaryVariables()
+    {
+        return Arrays.asList(this.summaryVariables.getValue());
+    }
+
 
     /**
      * Get the profileSection section.
@@ -305,17 +334,43 @@ public class Sheet implements Model
         // > Sheet Name
         String sheetName = "";
         VariableUnion nameVariable = State.variableWithName("name");
-        if (nameVariable.type() == VariableType.TEXT) {
+        if (nameVariable != null && nameVariable.type() == VariableType.TEXT) {
             sheetName = nameVariable.textVariable().value();
         }
+
+        // > Campaign Name
+        String campaignName = "";
+        Campaign campaign = CampaignIndex.campaignWithName(this.campaignName());
+        if (campaign != null)
+            campaignName = campaign.label();
+
+        // > Feature 1
+        Tuple2<String,String> feature1 = null;
+        if (summaryVariables().size() > 0) {
+            feature1 = State.variableTuple(summaryVariables().get(0));
+        }
+
+        // > Feature 2
+        Tuple2<String,String> feature2 = null;
+        if (summaryVariables().size() > 1) {
+            feature2 = State.variableTuple(summaryVariables().get(1));
+        }
+
+        // > Feature 3
+        Tuple2<String,String> feature3 = null;
+        if (summaryVariables().size() > 2) {
+            feature3 = State.variableTuple(summaryVariables().get(2));
+        }
+
 
         return new Summary(
                         UUID.randomUUID(),
                         sheetName,
                         this.lastUsed.getValue(),
-
-
-        );
+                        campaignName,
+                        feature1,
+                        feature2,
+                        feature3);
     }
 
 

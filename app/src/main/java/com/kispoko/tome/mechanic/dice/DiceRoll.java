@@ -212,6 +212,12 @@ public class DiceRoll implements Model, ToYaml, Serializable
     // > To String
     // ------------------------------------------------------------------------------------------
 
+    @Override
+    public String toString()
+    {
+        return this.toString(true);
+    }
+
     public String toString(boolean withModifier)
     {
         StringBuilder diceRoll = new StringBuilder();

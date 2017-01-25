@@ -8,9 +8,11 @@ import com.kispoko.tome.engine.variable.DiceVariable;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.util.tuple.Tuple2;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -263,6 +265,33 @@ public class State
     {
         MechanicIndex mechanicIndex = SheetManager.currentSheet().engine().mechanicIndex();
         mechanicIndex.onVariableUpdate(variableName);
+    }
+
+
+    /**
+     * Get a variable tuple that consists of the variable name and its string value. This method
+     * returns null if the variable does not exist or another error occurs.
+     * @param variableName The variable id.
+     * @return The variable (name, value) tuple.
+     */
+    public static Tuple2<String,String> variableTuple(String variableName)
+    {
+        Tuple2<String,String> tuple = null;
+
+        VariableUnion variableUnion = State.variableWithName(variableName);
+
+        if (variableUnion != null)
+        {
+            try {
+                tuple = new Tuple2<>(variableUnion.variable().label(),
+                                     variableUnion.variable().valueString());
+            }
+            catch (VariableException exception) {
+                // TODO Log?
+            }
+        }
+
+        return tuple;
     }
 
 }

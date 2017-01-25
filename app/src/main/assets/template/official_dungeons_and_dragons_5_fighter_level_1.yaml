@@ -13,6 +13,10 @@ game:
   creators: Wizards
   players: 11577
 campaign_name: dawn_of_sky_break
+summary_variables:
+- level
+- class
+- race
 engine:
   functions:
   - name: ability_modifier
@@ -1160,6 +1164,7 @@ profile:
           size: medium
           value:
             type: literal
+            name: level
             value: 1
         - type: text
           name: class
@@ -1188,6 +1193,7 @@ profile:
           size: medium
           value:
             type: literal
+            name: race
             value: Human
         - type: text
           data:

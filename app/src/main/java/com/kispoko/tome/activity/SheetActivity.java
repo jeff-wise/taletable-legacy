@@ -173,9 +173,9 @@ public class SheetActivity
      */
     public void openEditActivity(WidgetData widgetData)
     {
-        Intent intent = new Intent(this, EditActivity.class);
-        intent.putExtra("COMPONENT", widgetData);
-        startActivityForResult(intent, COMPONENT_EDIT);
+//        Intent intent = new Intent(this, EditActivity.class);
+//        intent.putExtra("COMPONENT", widgetData);
+//        startActivityForResult(intent, COMPONENT_EDIT);
     }
 
 
@@ -320,14 +320,14 @@ public class SheetActivity
         if (getIntent().hasExtra("TEMPLATE_ID"))
             templateId = getIntent().getStringExtra("TEMPLATE_ID");
 
+        CampaignIndex.initialize(this.getApplicationContext());
+
         // > This will be a new character sheet
         if (templateId != null)
             SheetManager.goToTemplate(this, templateId, this);
         // > Load the most recently used character sheet
         else
             SheetManager.goToMostRecent(this, this);
-
-        CampaignIndex.initialize();
     }
 
 
@@ -724,6 +724,16 @@ public class SheetActivity
         layout.padding.top          = R.dimen.nav_view_manage_sheets_button_padding_vert;
         layout.padding.bottom       = R.dimen.nav_view_manage_sheets_button_padding_vert;
         layout.margin.top           = R.dimen.nav_view_manage_sheets_button_margin_top;
+
+        layout.onClick              = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, ManageSheetsActivity.class);
+                startActivity(intent);
+            }
+        };
 
         layout.child(icon)
               .child(label);

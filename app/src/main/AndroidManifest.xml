@@ -34,11 +34,6 @@
         android:windowSoftInputMode="adjustPan" />
 
     <activity
-        android:name=".activity.EditActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Edit" />
-
-    <activity
         android:name=".activity.NewCharacterActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="New Character" />

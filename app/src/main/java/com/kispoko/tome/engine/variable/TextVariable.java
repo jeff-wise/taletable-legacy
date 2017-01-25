@@ -7,7 +7,6 @@ import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
-import com.kispoko.tome.engine.refinement.RefinementId;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -57,7 +56,6 @@ public class TextVariable extends Variable
 
     private PrimitiveFunctor<Kind>          kind;
 
-    private ModelFunctor<RefinementId>      refinementId;
     private PrimitiveFunctor<String>        valueSetName;
 
     private PrimitiveFunctor<Boolean>       isNamespaced;
@@ -90,7 +88,6 @@ public class TextVariable extends Variable
 
         this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
 
-        this.refinementId           = ModelFunctor.empty(RefinementId.class);
         this.valueSetName           = new PrimitiveFunctor<>(null, String.class);
 
         this.isNamespaced           = new PrimitiveFunctor<>(null, Boolean.class);
@@ -114,7 +111,6 @@ public class TextVariable extends Variable
                          String label,
                          Object value,
                          Kind kind,
-                         RefinementId refinementId,
                          String valueSetName,
                          Boolean isNamespaced,
                          Boolean definesNamespace,
@@ -140,12 +136,8 @@ public class TextVariable extends Variable
         // ** Kind (Literal or Program)
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
 
-        // ** Refinement Id (if any)
-        this.refinementId           = ModelFunctor.full(refinementId, RefinementId.class);
-
         // ** Value Set Name (if any)
         this.valueSetName           = new PrimitiveFunctor<>(valueSetName, String.class);
-
 
         // ** Namespace
         if (isNamespaced == null) isNamespaced = false;
@@ -196,8 +188,8 @@ public class TextVariable extends Variable
                                       Boolean definesNamespace,
                                       List<String> tags)
     {
-        return new TextVariable(id, name, label, stringValue, Kind.LITERAL,
-                                null, null, isNamespaced, definesNamespace, tags);
+        return new TextVariable(id, name, label, stringValue, Kind.LITERAL, null,
+                                isNamespaced, definesNamespace, tags);
     }
 
 
@@ -210,8 +202,7 @@ public class TextVariable extends Variable
     public static TextVariable asText(UUID id,
                                       String stringValue)
     {
-        return new TextVariable(id, null, null, stringValue, Kind.LITERAL,
-                                null, null, null, null, null);
+        return new TextVariable(id, null, null, stringValue, Kind.LITERAL, null, null, null, null);
     }
 
 
@@ -233,7 +224,7 @@ public class TextVariable extends Variable
                                        Boolean definesNamespace,
                                        List<String> tags)
     {
-        return new TextVariable(id, name, label, valueReference, Kind.VALUE, null,
+        return new TextVariable(id, name, label, valueReference, Kind.VALUE,
                                 valueSetName, isNamespaced, definesNamespace, tags);
     }
 
@@ -252,7 +243,7 @@ public class TextVariable extends Variable
                                          Boolean definesNamespace,
                                          List<String> tags)
     {
-        return new TextVariable(id, name, label, invocation, Kind.PROGRAM, null, null,
+        return new TextVariable(id, name, label, invocation, Kind.PROGRAM, null,
                                 isNamespaced, definesNamespace, tags);
     }
 
@@ -274,7 +265,6 @@ public class TextVariable extends Variable
         String       name               = yaml.atMaybeKey("name").getString();
         String       label              = yaml.atMaybeKey("label").getString();
         Kind         kind               = Kind.fromYaml(yaml.atKey("type"));
-        RefinementId refinementId       = RefinementId.fromYaml(yaml.atMaybeKey("refinement"));
         String       valueSetName       = yaml.atMaybeKey("value_set").getString();
         Boolean      isNamespaced       = yaml.atMaybeKey("namespaced").getBoolean();
         Boolean      definesNamespace   = yaml.atMaybeKey("defines_namespace").getBoolean();
@@ -352,7 +342,6 @@ public class TextVariable extends Variable
                 .putString("name", this.name())
                 .putString("label", this.label())
                 .putYaml("type", this.kind())
-                .putYaml("refinement", this.refinementId())
                 .putString("value_set", this.valueSetName())
                 .putBoolean("namespaced", this.isNamespaced())
                 .putBoolean("defines_namespace", this.definesNamespace())
@@ -420,6 +409,13 @@ public class TextVariable extends Variable
     public List<String> tags()
     {
         return Arrays.asList(this.tags.getValue());
+    }
+
+
+    @Override
+    public String valueString()
+    {
+        return this.value();
     }
 
 
@@ -557,29 +553,6 @@ public class TextVariable extends Variable
     public String valueSetName()
     {
         return this.valueSetName.getValue();
-    }
-
-
-    // ** Refinement
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Returns true if the variable has a refinement.
-     * @return True if the variable has a refinement.
-     */
-    public boolean hasRefinement()
-    {
-        return !this.refinementId.isNull();
-    }
-
-
-    /**
-     * Get the refinement identifier for this variable.
-     * @return The variable's refinement id, or null if there is none.
-     */
-    public RefinementId refinementId()
-    {
-        return this.refinementId.getValue();
     }
 
 
