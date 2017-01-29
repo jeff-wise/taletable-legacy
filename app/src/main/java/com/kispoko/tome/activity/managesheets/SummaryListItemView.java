@@ -38,10 +38,15 @@ public class SummaryListItemView
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.id           = R.id.sheet_summary_list_item_layout;
-        layout.orientation  = LinearLayout.VERTICAL;
-        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.id               = R.id.sheet_summary_list_item_layout;
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.padding.left     = R.dimen.sheet_summary_list_item_padding_horz;
+        layout.padding.right    = R.dimen.sheet_summary_list_item_padding_horz;
+        layout.padding.bottom   = R.dimen.sheet_summary_list_item_padding_vert;
+        layout.padding.top      = R.dimen.sheet_summary_list_item_padding_vert;
 
         return layout.linearLayout(context);
     }
@@ -63,6 +68,8 @@ public class SummaryListItemView
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.margin.bottom        = R.dimen.sheet_summary_list_item_last_used_margin_bottom;
+
         layout.child(date)
               .child(label);
 
@@ -74,8 +81,10 @@ public class SummaryListItemView
         date.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         date.font                   = Font.sansSerifFontBold(context);
-        date.color                  = R.color.dark_blue_hlx_7;
+        date.color                  = R.color.dark_blue_hl_5;
         date.size                   = R.dimen.sheet_summary_list_item_last_used_text_size;
+
+        date.margin.right           = R.dimen.sheet_summary_list_item_last_used_value_margin_right;
 
         // [3 B] Label
         // -------------------------------------------------------------------------------------
@@ -83,10 +92,11 @@ public class SummaryListItemView
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.textId                = R.string.last_used;
+        label.textId                = R.string.last_used_upper;
         label.font                  = Font.sansSerifFontBold(context);
-        label.color                 = R.color.dark_blue_hl_5;
+        label.color                 = R.color.dark_blue_hl_8;
         label.size                  = R.dimen.sheet_summary_list_item_last_used_label_text_size;
+
 
 
         return layout.linearLayout(context);
@@ -101,7 +111,7 @@ public class SummaryListItemView
         name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         name.id                 = R.id.sheet_summary_list_item_name;
-        name.font               = Font.sansSerifFontRegular(context);
+        name.font               = Font.sansSerifFontBold(context);
         name.color              = R.color.gold_hl_9;
         name.size               = R.dimen.sheet_summary_list_item_name_text_size;
 

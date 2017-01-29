@@ -167,10 +167,6 @@ public class BooleanWidget extends Widget
     }
 
 
-    @Override
-    public void runAction(Action action) { }
-
-
     // > To Yaml
     // ------------------------------------------------------------------------------------------
 
@@ -220,10 +216,9 @@ public class BooleanWidget extends Widget
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    public View tileView()
+    @Override
+    public View view(boolean rowHasLabel, Context context)
     {
-        Context context = SheetManager.currentSheetContext();
-
         TextView view = new TextView(context);
 
         this.valueViewId = Util.generateViewId();

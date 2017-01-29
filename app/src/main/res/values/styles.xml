@@ -45,7 +45,7 @@
         <!--title and message color-->
         <item name="android:textColorPrimary">@color/dark_blue_hl_5</item>
         <!--dialog background-->
-        <item name="android:windowBackground">@drawable/bg_alert_dialog</item>
+        <!--<item name="android:windowBackground">@drawable/bg_alert_dialog</item>-->
         <item name="colorSwitchThumbNormal">@color/dark_blue_hl_8</item>
     </style>
 

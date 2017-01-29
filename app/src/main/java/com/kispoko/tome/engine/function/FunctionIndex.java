@@ -70,6 +70,8 @@ public class FunctionIndex implements Model, ToYaml, Serializable
         this.functions = CollectionFunctor.full(new ArrayList<Function>(), functionClasses);
 
         this.functionByName = new HashMap<>();
+
+        initialize();
     }
 
 
@@ -136,11 +138,7 @@ public class FunctionIndex implements Model, ToYaml, Serializable
      */
     public void onLoad()
     {
-        // Functions are loaded into collection, but not indexed. Index functions when all of them
-        // are loaded.
-        for (Function function : this.functions.getValue()) {
-            this.addFunction(function);
-        }
+        initialize();
     }
 
 
@@ -202,4 +200,14 @@ public class FunctionIndex implements Model, ToYaml, Serializable
         return this.functionByName.containsKey(functionName);
     }
 
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initialize()
+    {
+        for (Function function : this.functions.getValue()) {
+            this.functionByName.put(function.name(), function);
+        }
+    }
 }

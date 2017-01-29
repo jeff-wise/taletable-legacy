@@ -114,6 +114,8 @@
 
     <color name="transparent">#00000000</color>
 
+    <!-- DARK BLUE -->
+
     <color name="dark_blue_hlx_2">#C2D9FF</color>
     <color name="dark_blue_hlx_3">#BAD1F5</color>
     <color name="dark_blue_hlx_4">#B6CCF0</color>
@@ -144,6 +146,7 @@
     <color name="dark_blue_9">#21252B</color>
     <color name="dark_blue_10">#1F2329</color>
 
+    <!-- GOLD -->
 
     <color name="gold_hlx_1">#FFFA96</color>
     <color name="gold_hlx_2">#FCF794</color>
@@ -177,6 +180,16 @@
     <color name="gold_8">#C7C375</color>
     <color name="gold_9">#C4C073</color>
 
+
+    <!-- DARK BLUE -->
+
+
+
+    <!-- GREEN -->
+
+    <color name="green_hlx_5">#ADE098</color>
+
+
     <color name="red_5">#A14746</color>
 
 
@@ -185,7 +198,6 @@
     <!--<color name="green_hlx_5">#A2F0AA</color>-->
     <!--<color name="green_hlx_5">#B3F09B</color>-->
     <!--<color name="green_hlx_5">#B8F0A2</color>-->
-    <color name="green_hlx_5">#ADE098</color>
 
 
 

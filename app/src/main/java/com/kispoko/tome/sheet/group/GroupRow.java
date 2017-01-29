@@ -6,13 +6,6 @@ import android.content.Context;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.BooleanWidget;
-import com.kispoko.tome.sheet.widget.ImageWidget;
-import com.kispoko.tome.sheet.widget.NumberWidget;
-import com.kispoko.tome.sheet.widget.ActionWidget;
-import com.kispoko.tome.sheet.widget.TableWidget;
-import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
@@ -54,6 +47,7 @@ public class GroupRow implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>       index;
     private PrimitiveFunctor<RowAlignment>  alignment;
     private PrimitiveFunctor<RowWidth>      width;
+    private PrimitiveFunctor<SpaceAbove>    spaceAbove;
     private CollectionFunctor<WidgetUnion>  widgets;
 
 
@@ -67,6 +61,7 @@ public class GroupRow implements Model, ToYaml, Serializable
         this.index          = new PrimitiveFunctor<>(null, Integer.class);
         this.alignment      = new PrimitiveFunctor<>(null, RowAlignment.class);
         this.width          = new PrimitiveFunctor<>(null, RowWidth.class);
+        this.spaceAbove     = new PrimitiveFunctor<>(null, SpaceAbove.class);
 
         List<Class<? extends WidgetUnion>> widgetClasses = new ArrayList<>();
         widgetClasses.add(WidgetUnion.class);
@@ -78,17 +73,23 @@ public class GroupRow implements Model, ToYaml, Serializable
                     Integer index,
                     List<WidgetUnion> widgets,
                     RowAlignment alignment,
-                    RowWidth width)
+                    RowWidth width,
+                    SpaceAbove spaceAbove)
     {
         this.id             = id;
 
         this.index          = new PrimitiveFunctor<>(index, Integer.class);
         this.alignment      = new PrimitiveFunctor<>(alignment, RowAlignment.class);
         this.width          = new PrimitiveFunctor<>(width, RowWidth.class);
+        this.spaceAbove     = new PrimitiveFunctor<>(spaceAbove, SpaceAbove.class);
 
         List<Class<? extends WidgetUnion>> widgetClasses = new ArrayList<>();
         widgetClasses.add(WidgetUnion.class);
         this.widgets        = CollectionFunctor.full(widgets, widgetClasses);
+
+        this.setAlignment(alignment);
+        this.setWidth(width);
+        this.setSpaceAbove(spaceAbove);
     }
 
 
@@ -101,10 +102,11 @@ public class GroupRow implements Model, ToYaml, Serializable
     public static GroupRow fromYaml(Integer index, YamlParser yaml)
                   throws YamlParseException
     {
-        UUID         id           = UUID.randomUUID();
+        UUID         id             = UUID.randomUUID();
 
-        RowAlignment alignment    = RowAlignment.fromYaml(yaml.atMaybeKey("alignment"));
-        RowWidth     width        = RowWidth.fromYaml(yaml.atMaybeKey("width"));
+        RowAlignment  alignment     = RowAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        RowWidth      width         = RowWidth.fromYaml(yaml.atMaybeKey("width"));
+        SpaceAbove separation       = SpaceAbove.fromYaml(yaml.atMaybeKey("space_above"));
 
         List<WidgetUnion> widgets = yaml.atKey("widgets").forEach(
                                                 new YamlParser.ForEach<WidgetUnion>() {
@@ -114,7 +116,7 @@ public class GroupRow implements Model, ToYaml, Serializable
             }
         });
 
-        return new GroupRow(id, index, widgets, alignment, width);
+        return new GroupRow(id, index, widgets, alignment, width, separation);
     }
 
 
@@ -172,6 +174,7 @@ public class GroupRow implements Model, ToYaml, Serializable
         return YamlBuilder.map()
                 .putYaml("alignment", this.alignment())
                 .putYaml("width", this.width())
+                .putYaml("space_above", this.spaceAbove())
                 .putList("widgets", this.widgets());
     }
 
@@ -199,6 +202,9 @@ public class GroupRow implements Model, ToYaml, Serializable
     }
 
 
+    // ** Alignment
+    // ------------------------------------------------------------------------------------------
+
     /**
      * The row alignment.
      * @return The row alignment.
@@ -208,6 +214,18 @@ public class GroupRow implements Model, ToYaml, Serializable
         return this.alignment.getValue();
     }
 
+
+    public void setAlignment(RowAlignment alignment)
+    {
+        if (alignment != null)
+            this.alignment.setValue(alignment);
+        else
+            this.alignment.setValue(RowAlignment.CENTER);
+    }
+
+
+    // ** Width
+    // ------------------------------------------------------------------------------------------
 
     /**
      * Get the width of the row. The width is a value between 1 and 100, and represents a
@@ -220,32 +238,64 @@ public class GroupRow implements Model, ToYaml, Serializable
     }
 
 
+    public void setWidth(RowWidth width)
+    {
+        if (width != null)
+            this.width.setValue(width);
+        else
+            this.width.setValue(RowWidth.FULL);
+    }
+
+
+    // ** Separation
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The row separation (the vertical row margins).
+     * @return The row separtaion.
+     */
+    public SpaceAbove spaceAbove()
+    {
+        return this.spaceAbove.getValue();
+    }
+
+
+    public void setSpaceAbove(SpaceAbove spaceAbove)
+    {
+        if (spaceAbove != null)
+            this.spaceAbove.setValue(spaceAbove);
+        else
+            this.spaceAbove.setValue(SpaceAbove.MEDIUM);
+    }
+
+
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayout view()
+    public LinearLayout view(Context context)
     {
-        Context context = SheetManager.currentSheetContext();
-
         LinearLayout layout = this.layout(context);
+
+        boolean rowHasLabel = false;
+
+        for (WidgetUnion widgetUnion : this.widgets())
+        {
+            if (widgetUnion.widget().data().format().label() != null)
+                rowHasLabel = true;
+        }
 
         for (WidgetUnion widgetUnion : this.widgets())
         {
             Widget widget = widgetUnion.widget();
 
-            int weight = widget.data().format().width();
-            LinearLayout tileLayout = this.tileLayout(weight, context);
-
-            tileLayout.addView(widget.tileView());
-
-            layout.addView(tileLayout);
+            layout.addView(widget.view(rowHasLabel, context));
         }
 
         return layout;
     }
 
 
-    // INTERNAL
+    // > Views
     // ------------------------------------------------------------------------------------------
 
     private LinearLayout layout(Context context)
@@ -253,11 +303,12 @@ public class GroupRow implements Model, ToYaml, Serializable
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
         layout.orientation      = LinearLayout.HORIZONTAL;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.padding.bottom   = R.dimen.group_row_padding_bottom;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        // Row Width
+        layout.margin.top       = this.spaceAbove().resourceId();
+
+        // > Row Width
         switch (this.width())
         {
             case THREE_QUARTERS:
@@ -272,19 +323,5 @@ public class GroupRow implements Model, ToYaml, Serializable
 
         return layout.linearLayout(context);
     }
-
-
-    private LinearLayout tileLayout(Integer weight, Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.orientation  = LinearLayout.VERTICAL;
-        layout.width        = 0;
-        layout.weight       = weight.floatValue();
-
-        return layout.linearLayout(context);
-    }
-
 
 }

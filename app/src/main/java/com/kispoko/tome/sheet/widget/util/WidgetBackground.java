@@ -1,78 +1,66 @@
 
-package com.kispoko.tome.sheet.group;
+package com.kispoko.tome.sheet.widget.util;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static com.kispoko.tome.sheet.widget.util.WidgetContentSize.MEDIUM_LARGE;
+import static com.kispoko.tome.sheet.widget.util.WidgetContentSize.MEDIUM_SMALL;
 
 
 /**
- * Row Alignment
+ * Widget Background
  */
-public enum RowAlignment implements ToYaml
+public enum WidgetBackground
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    LEFT,
-    CENTER,
-    RIGHT;
-
-
-    public static List<String> valueStringList()
-    {
-        List<String> stringList = new ArrayList<>();
-
-        for (RowAlignment rowAlignment : RowAlignment.values()) {
-            stringList.add(rowAlignment.toString());
-        }
-
-        return stringList;
-    }
+    NONE,
+    LIGHT,
+    MEDIUM,
+    DARK;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static RowAlignment fromString(String alignmentString)
+    public static WidgetBackground fromString(String bgString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(RowAlignment.class, alignmentString);
+        return EnumUtils.fromString(WidgetBackground.class, bgString);
     }
 
 
-    public static RowAlignment fromYaml(YamlParser yaml)
+    public static WidgetBackground fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        String alignmentString = yaml.getString();
+        String bgString = yaml.getString();
         try {
-            return RowAlignment.fromString(alignmentString);
+            return WidgetBackground.fromString(bgString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(alignmentString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
         }
     }
 
 
-    public static RowAlignment fromSQLValue(SQLValue sqlValue)
+    public static WidgetBackground fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            RowAlignment alignment = RowAlignment.fromString(enumString);
-            return alignment;
+            WidgetBackground background = WidgetBackground.fromString(enumString);
+            return background;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -83,29 +71,34 @@ public enum RowAlignment implements ToYaml
     // TO YAML
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * The Widget Content Alignment's yaml string representation.
+     * @return The Yaml Builder.
+     */
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
     }
 
 
-    // TO STRING
+    // RESOURCE ID
     // ------------------------------------------------------------------------------------------
 
-    @Override
-    public String toString()
+    public Integer resourceId()
     {
         switch (this)
         {
-            case LEFT:
-                return "Left";
-            case CENTER:
-                return "Center";
-            case RIGHT:
-                return "Right";
+            case NONE:
+                return null;
+            case LIGHT:
+                return R.drawable.bg_widget_light;
+            case MEDIUM:
+                return R.drawable.bg_widget_medium;
+            case DARK:
+                return R.drawable.bg_widget_dark;
         }
 
-        return "";
+        return 0;
     }
 
 }

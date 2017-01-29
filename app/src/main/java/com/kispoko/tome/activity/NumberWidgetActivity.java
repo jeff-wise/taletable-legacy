@@ -157,7 +157,7 @@ public class NumberWidgetActivity extends AppCompatActivity
                         R.string.number_widget_field_size_label,
                         R.string.number_widget_field_size_description,
                         Form.variantInput(WidgetContentSize.class,
-                                          this.numberWidget.size(),
+                                          this.numberWidget.format().size(),
                                           this),
                         this);
 

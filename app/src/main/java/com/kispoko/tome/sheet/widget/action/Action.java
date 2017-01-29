@@ -169,7 +169,6 @@ public enum Action implements ToYaml
         layout.height          = R.dimen.action_height;
         layout.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.orientation     = LinearLayout.HORIZONTAL;
-        //layout.layoutGravity   = Gravity.CENTER_VERTICAL;
         layout.padding.left    = R.dimen.action_padding_left;
         layout.padding.top     = R.dimen.action_padding_vert;
         layout.padding.bottom  = R.dimen.action_padding_vert;
@@ -180,8 +179,8 @@ public enum Action implements ToYaml
             @Override
             public void onClick(View v)
             {
-                widget.runAction(action);
-                dialog.dismiss();
+                //widget.runAction(action);
+                //dialog.dismiss();
             }
         };
 

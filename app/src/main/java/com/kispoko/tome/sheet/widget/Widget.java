@@ -14,8 +14,8 @@ import com.kispoko.tome.activity.sheet.ActionDialogFragment;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.model.Model;
@@ -40,10 +40,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
     // INTERFACE
     // ------------------------------------------------------------------------------------------
 
-    abstract public View tileView();
-    abstract public View editorView(Context context);
-
-    abstract public void runAction(Action action);
+    abstract public View view(boolean rowhasLabel, Context context);
 
     abstract public WidgetData data();
 
@@ -89,8 +86,8 @@ public abstract class Widget implements Model, ToYaml, Serializable
 
     public void runPrimaryAction()
     {
-        Action primaryAction = this.data().primaryAction();
-        this.runAction(primaryAction);
+//        Action primaryAction = this.data().primaryAction();
+//        this.runAction(primaryAction);
     }
 
 
@@ -102,13 +99,12 @@ public abstract class Widget implements Model, ToYaml, Serializable
      *
      * @return A LinearLayout that represents the outer-most container of a component view.
      */
-    public LinearLayout widgetLayout(boolean readStyle)
+    public LinearLayout layout(boolean readStyle, final Context context)
     {
         // [1 A] Declarations
         // --------------------------------------------------------------------------------------
 
-        final Context context = SheetManager.currentSheetContext();
-        final Widget  widget  = this;
+        final Widget widget  = this;
 
         String label = widget.data().format().label();
         if (label != null)
@@ -125,9 +121,8 @@ public abstract class Widget implements Model, ToYaml, Serializable
         // --------------------------------------------------------------------------------------
 
         layout.orientation         = LinearLayout.VERTICAL;
-        layout.backgroundResource  = R.drawable.bg_widget;
-        layout.margin.left         = R.dimen.widget_layout_margins_horz;
-        layout.margin.right        = R.dimen.widget_layout_margins_horz;
+
+        setWidgetBackgroundResource(layout);
 
         layout.onClick             = new View.OnClickListener() {
             @Override
@@ -171,8 +166,6 @@ public abstract class Widget implements Model, ToYaml, Serializable
         else
         {
             contentLayout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
-//            contentLayout.padding.top         = R.dimen.widget_content_active_padding_vert;
-//            contentLayout.padding.bottom      = R.dimen.widget_content_active_padding_vert;
         }
 
         // [2 C] Label
@@ -182,13 +175,35 @@ public abstract class Widget implements Model, ToYaml, Serializable
         labelView.text            = label;
         labelView.size            = R.dimen.widget_label_text_size;
         labelView.color           = R.color.dark_blue_hl_9;
-        //labelView.color           = R.color.grey_4;
         labelView.font            = Font.sansSerifFontRegular(context);
         labelView.backgroundColor = R.color.dark_blue_4;
         labelView.padding.bottom  = R.dimen.widget_label_padding_vert;
         labelView.padding.top     = R.dimen.widget_label_padding_vert;
 
         return layout.linearLayout(context);
+    }
+
+
+    private void setWidgetBackgroundResource(LinearLayoutBuilder layout)
+    {
+        WidgetBackground background = this.data().format().background();
+
+        switch (background)
+        {
+            case NONE:
+                // DO NOTHING
+                break;
+            case LIGHT:
+                layout.backgroundResource = R.drawable.bg_widget_light;
+                break;
+            case MEDIUM:
+                layout.backgroundResource = R.drawable.bg_widget_medium;
+                break;
+            case DARK:
+                layout.backgroundResource = R.drawable.bg_widget_dark;
+                break;
+        }
+
     }
 
 

@@ -1,9 +1,0 @@
-
-
----
-name: loading_screens
-type: feature
-priority: 70
-tags: 
-- before_release
-- ui

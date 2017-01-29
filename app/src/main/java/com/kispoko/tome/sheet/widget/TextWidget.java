@@ -4,16 +4,12 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.EditResult;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.TextVariable;
@@ -21,16 +17,16 @@ import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
+import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.ui.EditTextBuilder;
 import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
@@ -62,7 +58,7 @@ public class TextWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<WidgetData>            widgetData;
-    private PrimitiveFunctor<WidgetContentSize> size;
+    private ModelFunctor<TextWidgetFormat>      format;
     private ModelFunctor<TextVariable>          valueVariable;
     private CollectionFunctor<VariableUnion>    variables;
 
@@ -87,8 +83,8 @@ public class TextWidget extends Widget
         this.id                 = null;
 
         this.widgetData         = ModelFunctor.empty(WidgetData.class);
+        this.format             = ModelFunctor.empty(TextWidgetFormat.class);
         this.valueVariable      = ModelFunctor.empty(TextVariable.class);
-        this.size               = new PrimitiveFunctor<>(null, WidgetContentSize.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -100,15 +96,15 @@ public class TextWidget extends Widget
 
     public TextWidget(UUID id,
                       WidgetData widgetData,
-                      WidgetContentSize size,
+                      TextWidgetFormat format,
                       TextVariable valueVariable,
                       List<VariableUnion> variables)
     {
         this.id                 = id;
 
         this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
+        this.format             = ModelFunctor.full(format, TextWidgetFormat.class);
         this.valueVariable      = ModelFunctor.full(valueVariable, TextVariable.class);
-        this.size               = new PrimitiveFunctor<>(size, WidgetContentSize.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -127,11 +123,11 @@ public class TextWidget extends Widget
     public static TextWidget fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID                id         = UUID.randomUUID();
+        UUID             id         = UUID.randomUUID();
 
-        WidgetData          widgetData = WidgetData.fromYaml(yaml.atKey("data"));
-        WidgetContentSize   size       = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
-        TextVariable        value      = TextVariable.fromYaml(yaml.atKey("value"));
+        WidgetData       widgetData = WidgetData.fromYaml(yaml.atKey("data"));
+        TextWidgetFormat format     = TextWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
+        TextVariable     value      = TextVariable.fromYaml(yaml.atKey("value"));
 
         List<VariableUnion> variables  = yaml.atMaybeKey("variables").forEach(
                                                 new YamlParser.ForEach<VariableUnion>()
@@ -142,7 +138,7 @@ public class TextWidget extends Widget
             }
         }, true);
 
-        return new TextWidget(id, widgetData, size, value, variables);
+        return new TextWidget(id, widgetData, format, value, variables);
     }
 
 
@@ -187,7 +183,6 @@ public class TextWidget extends Widget
     {
         return YamlBuilder.map()
                 .putYaml("data", this.data())
-                .putYaml("size", this.size())
                 .putYaml("value", this.valueVariable())
                 .putList("variables", this.variables());
     }
@@ -222,65 +217,27 @@ public class TextWidget extends Widget
     }
 
 
-
-    /**
-     * The text widget's tile view.
-     * @return The tile view.
-     */
-    public View tileView()
+    @Override
+    public View view(boolean rowHasLabel, Context context)
     {
-        // [1] Setup / Declarations
-        // --------------------------------------------------------------------------------------
-
-        final Context context = SheetManager.currentSheetContext();
-        LinearLayout textLayout = this.widgetLayout(true);
-        LinearLayout contentLayout =
-                (LinearLayout) textLayout.findViewById(R.id.widget_content_layout);
-
-        this.displayTextViewId = Util.generateViewId();
-
-        // [2] Text View
-        // --------------------------------------------------------------------------------------
-
-        TextViewBuilder textView = new TextViewBuilder();
-
-        textView.gravity = Gravity.CENTER_HORIZONTAL;
-        textView.id      = this.displayTextViewId;
-        textView.size    = this.size.getValue().resourceId();
-        textView.font    = Font.serifFontBold(context);
-        textView.color   = R.color.dark_blue_hlx_6;
-        textView.text    = this.value();
-
-        contentLayout.addView(textView.textView(context));
-
-        return textLayout;
+        return this.widgetView(rowHasLabel, context);
     }
 
-
-    /**
-     * The text widget's editor view.
-     * @return The editor view.
-     */
-    public View editorView(Context context)
-    {
-//        if (this.valueVariable().hasRefinement())
-//            return this.getTypeEditorView(context);
-//        // No type is set, so allow free form edit
-//        else
-        return this.freeEditorView(context);
-    }
 
 
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Format
+    // ------------------------------------------------------------------------------------------
+
     /**
-     * The Text Widget's content size.
-     * @return The Widget Content Size.
+     * The text widget's format object.
+     * @return The Text Widget Format.
      */
-    public WidgetContentSize size()
+    public TextWidgetFormat format()
     {
-        return this.size.getValue();
+        return this.format.getValue();
     }
 
 
@@ -374,7 +331,6 @@ public class TextWidget extends Widget
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-
     /**
      * When the text widget's valueVariable is updated.
      */
@@ -393,91 +349,258 @@ public class TextWidget extends Widget
     }
 
 
-    public View freeEditorView(final Context context)
+    // > Views
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The text widget's tile view.
+     * @return The tile view.
+     */
+    private View widgetView(boolean rowHasLabel, Context context)
     {
-        LinearLayout layout = this.freeEditorLayout(context);
+        LinearLayout layout = viewLayout(rowHasLabel, context);
 
-        EditText editView   = this.freeEditView(context);
-        TextView saveButton = this.saveButtonView(context, editView);
+        // > Label View
+        if (this.data().format().label() != null)
+            layout.addView(this.labelView(context));
 
-        layout.addView(editView);
-        layout.addView(saveButton);
+        // > Value View
+        layout.addView(valueView(context));
+
+        // > Quote View
+        if (this.format().isQuote())
+            layout.addView(quoteView(context));
 
         return layout;
     }
 
 
-    private LinearLayout freeEditorLayout(Context context)
+    private LinearLayout viewLayout(boolean rowHasLabel, final Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.backgroundColor = R.color.dark_grey_7;
-        layout.gravity         = Gravity.CENTER_HORIZONTAL;
-        layout.orientation     = LinearLayout.VERTICAL;
-        layout.padding.left    = R.dimen.widget_text_editor_free_layout_padding_horz;
-        layout.padding.right   = R.dimen.widget_text_editor_free_layout_padding_horz;
-        layout.padding.top     = R.dimen.widget_text_editor_free_layout_padding_vert;
-        layout.padding.bottom  = R.dimen.widget_text_editor_free_layout_padding_vert;
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = 0;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.weight               = this.data().format().width().floatValue();
+
+        if (this.data().format().label() == null && rowHasLabel) {
+            layout.padding.top      = R.dimen.widget_label_fill_padding;
+        }
+
+        layout.margin.left          = R.dimen.widget_margin_horz;
+        layout.margin.right         = R.dimen.widget_margin_horz;
+
+        layout.onClick          = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onTextWidgetShortClick();
+            }
+        };
+
+        layout.onLongClick      = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                onTextWidgetLongClick(context);
+                return false;
+            }
+        };
+
+        layout.hapticFeedback   = true;
+
+        if (this.format().isQuote()) {
+            layout.padding.left  = R.dimen.widget_text_layout_quote_padding_horz;
+            layout.padding.right = R.dimen.widget_text_layout_quote_padding_horz;
+        }
 
         return layout.linearLayout(context);
     }
 
 
-    private EditText freeEditView(Context context)
+    private LinearLayout valueView(Context context)
     {
-        EditTextBuilder editText    = new EditTextBuilder();
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
 
-        editText.id                 = R.id.comp_text_editor_value;
-        editText.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        editText.width              = LinearLayout.LayoutParams.MATCH_PARENT;
-        editText.gravity            = Gravity.TOP;
-        editText.size               = R.dimen.widget_text_editor_free_value_text_size;
-        editText.font               = Font.serifFontBold(context);
-        editText.color              = R.color.light_grey_5;
-        editText.minHeight          = R.dimen.widget_text_editor_free_value_min_height;
-        editText.backgroundResource = R.drawable.bg_text_component_editor;
-        editText.text               = this.value();
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        TextViewBuilder     value  = new TextViewBuilder();
 
-        return (EditText) editText.editText(context);
-    }
+        this.displayTextViewId = Util.generateViewId();
 
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
 
-    private TextView saveButtonView(final Context context, final EditText editText)
-    {
-        TextViewBuilder saveButton = new TextViewBuilder();
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        final TextWidget thisTextWidget = this;
+        layout.backgroundResource   = this.data().format().background().resourceId();
 
-        saveButton.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        saveButton.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        saveButton.layoutGravity        = Gravity.CENTER_HORIZONTAL;
-        saveButton.gravity              = Gravity.CENTER_HORIZONTAL;
-        saveButton.backgroundResource   = R.drawable.bg_text_component_editor_save_button;
-        saveButton.text                 = "DONE";
-        saveButton.font                 = Font.sansSerifFontBold(context);
-        saveButton.color                = R.color.green_5;
-        saveButton.size                 = R.dimen.widget_text_editor_free_button_text_size;
+        layout.child(value);
 
-        saveButton.onClick              = new View.OnClickListener()
+        // [3] Value
+        // -------------------------------------------------------------------------------------
+
+        value.id                    = this.displayTextViewId;
+
+        value.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        value.text                  = this.value();
+        value.size                  = this.format().size().resourceId();
+        value.color                 = R.color.dark_blue_hl_1;
+
+        // > Alignment
+        // -------------------------------------------------------------------------------------
+
+        switch (this.data().format().alignment())
         {
-            @Override
-            public void onClick(View v)
-            {
-                Log.d("***TEXTWIDGET", "on click");
-                Activity editActivity = (Activity) context;
-                String newValue = editText.getText().toString();
-                EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
-                                                       thisTextWidget.getId(), newValue);
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("RESULT", editResult);
-                editActivity.setResult(Activity.RESULT_OK, resultIntent);
-                editActivity.finish();
-            }
-        };
+            case LEFT:
+                value.gravity = Gravity.START;
+                value.layoutGravity = Gravity.START;
+                break;
+            case CENTER:
+                value.gravity = Gravity.CENTER_HORIZONTAL;
+                value.layoutGravity = Gravity.CENTER_HORIZONTAL;
+                break;
+            case RIGHT:
+                value.gravity = Gravity.END;
+                value.layoutGravity = Gravity.END;
+                break;
+        }
 
-        return saveButton.textView(context);
+        // > Background
+        // -------------------------------------------------------------------------------------
+
+        if (this.data().format().background() != WidgetBackground.NONE) {
+            value.padding.top    = R.dimen.widget_padding_vert;
+            value.padding.bottom = R.dimen.widget_padding_vert;
+        }
+
+
+        // ** Font
+        // -------------------------------------------------------------------------------------
+
+        if (this.data().format().isBold())
+            value.font   = Font.serifFontBold(context);
+        else
+            value.font   = Font.serifFontRegular(context);
+
+
+        return layout.linearLayout(context);
     }
 
 
+    private LinearLayout quoteView(Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout      = new LinearLayoutBuilder();
+
+        ImageViewBuilder    icon        = new ImageViewBuilder();
+        TextViewBuilder     source      = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.orientation     = LinearLayout.HORIZONTAL;
+        layout.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.layoutGravity   = Gravity.CENTER_HORIZONTAL;
+        layout.gravity         = Gravity.CENTER_VERTICAL;
+
+        layout.margin.top      = R.dimen.widget_text_quote_margin_top;
+
+        layout.child(icon)
+              .child(source);
+
+        // [3 A] Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image                  = R.drawable.ic_quote;
+
+        // [3 B] Source
+        // -------------------------------------------------------------------------------------
+
+        source.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        source.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        source.text                 = this.format().quoteSource();
+        source.font                 = Font.sansSerifFontRegular(context);
+        source.color                = R.color.dark_blue_hl_8;
+        source.size                 = R.dimen.widget_text_quote_source_text_size;
+
+        return layout.linearLayout(context);
+    }
+
+
+    /**
+     * The text widget label view.
+     * @param context The context.
+     * @return The Text View.
+     */
+    private TextView labelView(Context context)
+    {
+        TextViewBuilder label = new TextViewBuilder();
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text              = this.data().format().label();
+        label.font              = Font.serifFontRegular(context);
+        label.color             = R.color.dark_blue_1;
+        label.size              = R.dimen.widget_label_text_size;
+
+        label.margin.bottom     = R.dimen.widget_label_margin_bottom;
+
+        return label.textView(context);
+    }
+
+
+    // > Clicks
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * On a short click, open the value editor.
+     */
+    private void onTextWidgetShortClick()
+    {
+        switch (this.valueVariable().kind())
+        {
+            case LITERAL:
+                break;
+            case VALUE:
+                break;
+            case PROGRAM:
+                break;
+        }
+    }
+
+
+    /**
+     * On a long click, open the text widget action dialog.
+     */
+    private void onTextWidgetLongClick(Context context)
+    {
+        SheetActivity sheetActivity = (SheetActivity) context;
+        String widgetName = this.data().format().label();
+
+        ActionDialogFragment actionDialogFragment = ActionDialogFragment.newInstance(widgetName);
+        actionDialogFragment.show(sheetActivity.getSupportFragmentManager(), "actions");
+    }
+
+
+//                Activity editActivity = (Activity) context;
+//                String newValue = editText.getText().toString();
+//                EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
+//                                                       thisTextWidget.getId(), newValue);
+//                Intent resultIntent = new Intent();
+//                resultIntent.putExtra("RESULT", editResult);
+//                editActivity.setResult(Activity.RESULT_OK, resultIntent);
+//                editActivity.finish();
 
 }

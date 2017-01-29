@@ -224,10 +224,6 @@ public class TableWidget extends Widget
     }
 
 
-    @Override
-    public void runAction(Action action) { }
-
-
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -333,12 +329,11 @@ public class TableWidget extends Widget
      * Create the tableWidget view.
      * @return
      */
-    public View tileView()
+    @Override
+    public View view(boolean rowHasLabel, Context context)
     {
         // [1] Declarations
         // --------------------------------------------------------------------------------------
-
-        Context context = SheetManager.currentSheetContext();
 
         LinearLayout tileLayout  = this.tileLayout(context);
         TableLayout  tableLayout = this.tileTableLayout(context);
@@ -449,9 +444,7 @@ public class TableWidget extends Widget
         layout.orientation         = LinearLayout.VERTICAL;
         layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.margin.left         = R.dimen.widget_layout_margins_horz;
-        layout.margin.right        = R.dimen.widget_layout_margins_horz;
-        layout.backgroundResource  = R.drawable.bg_widget;
+        layout.backgroundResource  = R.drawable.bg_widget_light;
 
         return layout.linearLayout(context);
     }

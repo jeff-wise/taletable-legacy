@@ -1125,56 +1125,90 @@ profile:
   - label: Profile
     groups:
     - label: General
+      show_name: false
       rows:
-      - widgets:
+      - space_above: large
+        widgets:
         - type: text
           data:
-            actions:
-            - edit
-            - generate
             format:
-              width: 1
-          size: large
+              background: none
+              bold: false
+              name: Name
+          format:
+            size: large
           value:
             name: name
+            label: Name
             type: literal
             value: Aladaisian Wineheart
-      - widgets:
+      - space_above: large
+        widgets:
+        - type: text
+          data:
+            format:
+             background: none
+          format:
+            name: Summary
+            size: small
+            is_quote: true
+            quote_source: Letter to an Old Friend
+          value:
+            name: summary
+            type: literal
+            value: >
+              You learn to fight for you life; you learn to fight for others' lives; you learn what
+              life is.
+      - space_above: large
+        widgets:
         - type: image
           data:
-            actions:
-            - choose
-            - share
             format:
-              show_label: false
-              row: 2
-              column: 1
-              width: 1
-              label: Picture
-    - label: Features
+              background: none
+              name: Picture
+    - label: I am a ...
+      space_above: large
       rows:
-      - widgets:
+      - space_above: small
+        widgets:
         - type: number
           data:
             actions:
             - edit
             format:
-              label: Level
+              label: level
+              name: Level
               width: 1
-          size: medium
+              background: dark
+          format:
+            size: medium_small
           value:
             type: literal
             name: level
             value: 1
+        - type: text
+          data:
+            format:
+              name: Race
+              width: 2
+              background: dark
+          format:
+            size: medium_small
+          value:
+            type: literal
+            name: race
+            value: Human
         - type: text
           name: class
           data:
             actions:
             - edit
             format:
-              label: Class
-              width: 1
-          size: medium
+              name: Class
+              width: 2
+              background: dark
+          format:
+            size: medium_small
           value:
             type: value
             name: class
@@ -1182,33 +1216,37 @@ profile:
             value:
               set_name: class
               value_name: fighter
-      - widgets:
+      - space_above: small
+        widgets:
         - type: text
           data:
-            actions:
-            - edit
             format:
-              label: Race
+              background: dark
+              label: I pray to
+              name: Diety
               width: 1
-          size: medium
+          format:
+            size: medium_small
           value:
             type: literal
-            name: race
-            value: Human
+            value: Tritherion
         - type: text
           data:
-            actions:
-            - edit
             format:
+              background: dark
+              label: and I am
+              name: Alignment
               width: 1
-              label: Alignment
-          size: medium
+          format:
+            size: medium_small
           value:
             type: literal
             value: Chaotic Good
     - label: Appearance
+      space_above: medium
       rows:
-      - widgets:
+      - space_above: very_small
+        widgets:
         - type: number
           data:
             actions:
@@ -1242,7 +1280,8 @@ profile:
           value:
             type: literal
             value: 167
-      - widgets:
+      - space_above: very_small
+        widgets:
         - type: text
           data:
             actions:

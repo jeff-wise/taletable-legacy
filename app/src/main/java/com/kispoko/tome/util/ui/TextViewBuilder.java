@@ -24,38 +24,41 @@ public class TextViewBuilder implements ViewBuilder
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    public Integer              id;
+    public Integer                  id;
 
-    public LayoutType           layoutType;
+    public LayoutType               layoutType;
 
-    public Integer              height;
-    public Integer              width;
-    public Float                weight;
+    public Integer                  height;
+    public Integer                  width;
+    public Float                    weight;
 
-    public Integer              gravity;
-    public Integer              layoutGravity;
-    public Integer              visibility;
+    public Integer                  gravity;
+    public Integer                  layoutGravity;
+    public Integer                  visibility;
 
-    public String               text;
-    public Spanned              textHtml;
-    public Integer              textId;
+    public String                   text;
+    public Spanned                  textHtml;
+    public Integer                  textId;
 
-    public Padding              padding;
-    public Margins              margin;
+    public Padding                  padding;
+    public Margins                  margin;
 
-    public Integer              size;
-    public Integer              color;
-    public Typeface             font;
+    public Integer                  size;
+    public Integer                  color;
+    public Typeface                 font;
 
-    public Integer              backgroundColor;
-    public Integer              backgroundResource;
+    public Integer                  backgroundColor;
+    public Integer                  backgroundResource;
 
-    public Integer              drawableTop;
-    public Integer              drawablePadding;
+    public Integer                  drawableTop;
+    public Integer                  drawablePadding;
 
-    public View.OnClickListener onClick;
+    public View.OnClickListener     onClick;
+    public View.OnLongClickListener onLongClick;
 
-    public List<Integer>        rules;
+    public Boolean                  hapticFeedback;
+
+    public List<Integer>            rules;
 
 
     // CONSTRUCTORS
@@ -93,6 +96,9 @@ public class TextViewBuilder implements ViewBuilder
         this.drawablePadding    = null;
 
         this.onClick            = null;
+        this.onLongClick        = null;
+
+        this.hapticFeedback     = null;
 
         this.rules              = new ArrayList<>();
     }
@@ -161,6 +167,18 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.onClick != null)
             textView.setOnClickListener(this.onClick);
+
+        // > On Long Click Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onLongClick != null)
+            textView.setOnLongClickListener(this.onLongClick);
+
+        // > Haptic Feedback
+        // --------------------------------------------------------------------------------------
+
+        if (this.hapticFeedback != null)
+            textView.setHapticFeedbackEnabled(this.hapticFeedback);
 
         // > Size
         // --------------------------------------------------------------------------------------

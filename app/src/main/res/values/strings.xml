@@ -21,12 +21,23 @@
 
     <string name="page">Page</string>
 
-    <string name="column">Column</string>
+    <!-- WIDGET -->
+    <!-- ==================================================================================== -->
 
+    <string name="widget">Widget</string>
     <string name="widget_upper">WIDGET</string>
     <string name="widgets_upper">WIDGETS</string>
 
+
+    <string name="column">Column</string>
+
+
     <string name="last_used">Last Used</string>
+    <string name="last_used_upper">LAST USED</string>
+
+    <string name="edit_the_sheet">Edit the Sheet</string>
+    <string name="you_clicked">You clicked the</string>
+
 
 
     <!-- BOTTOM NAVIGATION -->

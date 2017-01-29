@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -38,15 +37,17 @@ public class Group implements Model, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>    name;
-    private PrimitiveFunctor<Integer>   index;
-    private CollectionFunctor<GroupRow> rows;
+    private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<Boolean>       showName;
+    private PrimitiveFunctor<SpaceAbove>    spaceAbove;
+    private PrimitiveFunctor<Integer>       index;
+    private CollectionFunctor<GroupRow>     rows;
 
 
     // CONSTRUCTORS
@@ -57,6 +58,8 @@ public class Group implements Model, ToYaml, Serializable
         this.id         = null;
 
         this.name       = new PrimitiveFunctor<>(null, String.class);
+        this.showName   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.spaceAbove = new PrimitiveFunctor<>(null, SpaceAbove.class);
         this.index      = new PrimitiveFunctor<>(null, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
@@ -65,27 +68,39 @@ public class Group implements Model, ToYaml, Serializable
     }
 
 
-    public Group(UUID id, String name, Integer index, List<GroupRow> groupRows)
+    public Group(UUID id,
+                 String name,
+                 Boolean showName,
+                 SpaceAbove spaceAbove,
+                 Integer index,
+                 List<GroupRow> groupRows)
     {
         this.id         = id;
 
         this.name       = new PrimitiveFunctor<>(name, String.class);
+        this.showName   = new PrimitiveFunctor<>(showName, Boolean.class);
+        this.spaceAbove = new PrimitiveFunctor<>(spaceAbove, SpaceAbove.class);
         this.index      = new PrimitiveFunctor<>(index, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
         rowClasses.add(GroupRow.class);
         this.rows       = CollectionFunctor.full(groupRows, rowClasses);
+
+        this.setShowName(showName);
+        this.setSpaceAbove(spaceAbove);
     }
 
 
     @SuppressWarnings("unchecked")
     public static Group fromYaml(YamlParser yaml, int groupIndex)
-                  throws YamlParseException
+            throws YamlParseException
     {
-        UUID      id    = UUID.randomUUID();
+        UUID        id          = UUID.randomUUID();
 
-        String    label = yaml.atMaybeKey("label").getString();
-        Integer   index = groupIndex;
+        String      label       = yaml.atMaybeKey("label").getString();
+        Boolean     showName    = yaml.atMaybeKey("show_name").getBoolean();
+        SpaceAbove  spaceAbove  = SpaceAbove.fromYaml(yaml.atMaybeKey("space_above"));
+        Integer     index       = groupIndex;
 
         List<GroupRow> groupRows = yaml.atKey("rows").forEach(new YamlParser.ForEach<GroupRow>() {
             @Override
@@ -94,7 +109,7 @@ public class Group implements Model, ToYaml, Serializable
             }
         });
 
-        return new Group(id, label, index, groupRows);
+        return new Group(id, label, showName, spaceAbove, index, groupRows);
     }
 
 
@@ -150,6 +165,7 @@ public class Group implements Model, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putString("label", this.name())
+                .putBoolean("show_name", this.showName())
                 .putList("rows", this.rows());
     }
 
@@ -161,11 +177,56 @@ public class Group implements Model, ToYaml, Serializable
 
     /**
      * Get the group label.
+     *
      * @return The group label String.
      */
     public String name()
     {
         return this.name.getValue();
+    }
+
+
+    // ** Show Name
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * True if the group name is displayed in the sheet.
+     * @return Show name?
+     */
+    public Boolean showName()
+    {
+        return this.showName.getValue();
+    }
+
+
+    public void setShowName(Boolean showName)
+    {
+        if (showName != null)
+            this.showName.setValue(showName);
+        else
+            this.showName.setValue(true);
+    }
+
+
+    // ** Space Above
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The space above the group on the sheet.
+     * @return The Space Above.
+     */
+    public SpaceAbove spaceAbove()
+    {
+        return this.spaceAbove.getValue();
+    }
+
+
+    public void setSpaceAbove(SpaceAbove spaceAbove)
+    {
+        if (spaceAbove != null)
+            this.spaceAbove.setValue(spaceAbove);
+        else
+            this.spaceAbove.setValue(SpaceAbove.SMALL);
     }
 
 
@@ -198,23 +259,18 @@ public class Group implements Model, ToYaml, Serializable
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public View view()
+    public View view(Context context)
     {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
-
-        Context context = SheetManager.currentSheetContext();
-
         // [2] Structure
         // --------------------------------------------------------------------------------------
 
         LinearLayout layout = this.layout(context);
 
-        if (!this.name.isNull())
+        if (this.showName())
             layout.addView(this.labelView(context));
 
         for (GroupRow groupRow : this.rows()) {
-            layout.addView(groupRow.view());
+            layout.addView(groupRow.view(context));
         }
 
         return layout;
@@ -234,9 +290,11 @@ public class Group implements Model, ToYaml, Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.orientation      = LinearLayout.VERTICAL;
-        layout.margin.bottom    = R.dimen.group_margin_bottom;
-        layout.padding.left     = R.dimen.group_padding_horz;
-        layout.padding.right    = R.dimen.group_padding_horz;
+
+        layout.margin.left      = R.dimen.group_margin_horz;
+        layout.margin.right     = R.dimen.group_margin_horz;
+
+        layout.margin.top       = this.spaceAbove().resourceId();
 
         return layout.linearLayout(context);
     }
@@ -253,10 +311,10 @@ public class Group implements Model, ToYaml, Serializable
         // [2 A] Layout
         // --------------------------------------------------------------------------------------
 
-        labelLayout.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        labelLayout.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-        labelLayout.padding.left   = R.dimen.group_label_padding_left;
-        labelLayout.padding.bottom = R.dimen.group_label_padding_bottom;
+        labelLayout.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        labelLayout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        labelLayout.margin.left     = R.dimen.group_label_margin_left;
 
         labelLayout.child(labelView);
 
@@ -265,9 +323,9 @@ public class Group implements Model, ToYaml, Serializable
 
         labelView.id    = R.id.widget_label;
         labelView.size  = R.dimen.group_label_text_size;
-        labelView.color = R.color.gold_6;
-        labelView.font  = Font.sansSerifFontBold(context);
-        labelView.text  = this.name().toUpperCase();
+        labelView.color = R.color.gold_hl_9;
+        labelView.font  = Font.serifFontRegular(context);
+        labelView.text  = this.name();
 
 
         return labelLayout.linearLayout(context);

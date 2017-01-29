@@ -116,7 +116,7 @@ public class ImageWidgetActivity extends AppCompatActivity
     }
 
 
-    // VIEWS
+    // > Views
     // -----------------------------------------------------------------------------------------
 
     private LinearLayout formView()
@@ -149,6 +149,17 @@ public class ImageWidgetActivity extends AppCompatActivity
                         R.string.image_widget_field_width_description,
                         Form.textInput(width, this),
                         this);
+
+        // > Image
+        // -------------------------------------------------------------------------------------
+
+        LinearLayout imageField =
+                Form.field(
+                        R.string.image_widget_field_width_label,
+                        R.string.image_widget_field_width_description,
+                        Form.textInput(width, this),
+                        this);
+
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------

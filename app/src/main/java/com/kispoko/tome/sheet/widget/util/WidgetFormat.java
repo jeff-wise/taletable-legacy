@@ -25,9 +25,12 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
     private UUID                                        id;
 
+    private PrimitiveFunctor<String>                    name;
     private PrimitiveFunctor<String>                    label;
     private PrimitiveFunctor<Integer>                   width;
     private PrimitiveFunctor<WidgetContentAlignment>    alignment;
+    private PrimitiveFunctor<WidgetBackground>          background;
+    private PrimitiveFunctor<Boolean>                   isBold;
 
 
     // CONSTRUCTORS
@@ -35,28 +38,39 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
     public WidgetFormat()
     {
-        this.id        = null;
+        this.id         = null;
 
-        this.label     = new PrimitiveFunctor<>(null, String.class);
-        this.width     = new PrimitiveFunctor<>(null, Integer.class);
-        this.alignment = new PrimitiveFunctor<>(null, WidgetContentAlignment.class);
+        this.name       = new PrimitiveFunctor<>(null, String.class);
+        this.label      = new PrimitiveFunctor<>(null, String.class);
+        this.width      = new PrimitiveFunctor<>(null, Integer.class);
+        this.alignment  = new PrimitiveFunctor<>(null, WidgetContentAlignment.class);
+        this.background = new PrimitiveFunctor<>(null, WidgetBackground.class);
+        this.isBold     = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
 
     public WidgetFormat(UUID id,
+                        String name,
                         String label,
                         Integer width,
-                        WidgetContentAlignment alignment)
+                        WidgetContentAlignment alignment,
+                        WidgetBackground background,
+                        Boolean isBold)
     {
-        this.id = id;
+        this.id         = id;
 
-        this.label     = new PrimitiveFunctor<>(label, String.class);
-        this.width     = new PrimitiveFunctor<>(width, Integer.class);
-        this.alignment = new PrimitiveFunctor<>(alignment, WidgetContentAlignment.class);
+        this.name       = new PrimitiveFunctor<>(name, String.class);
+        this.label      = new PrimitiveFunctor<>(label, String.class);
+        this.width      = new PrimitiveFunctor<>(width, Integer.class);
+        this.alignment  = new PrimitiveFunctor<>(alignment, WidgetContentAlignment.class);
+        this.background = new PrimitiveFunctor<>(background, WidgetBackground.class);
+        this.isBold     = new PrimitiveFunctor<>(isBold, Boolean.class);
 
-        this.setLabel(label);
+        this.setName(name);
         this.setWidth(width);
         this.setAlignment(alignment);
+        this.setBackground(background);
+        this.setIsBold(isBold);
     }
 
 
@@ -69,9 +83,10 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         WidgetFormat defaultFormat = new WidgetFormat();
 
         defaultFormat.setId(UUID.randomUUID());
-        defaultFormat.setLabel(null);
         defaultFormat.setWidth(null);
         defaultFormat.setAlignment(null);
+        defaultFormat.setBackground(null);
+        defaultFormat.setIsBold(null);
 
         return defaultFormat;
     }
@@ -89,14 +104,18 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return WidgetFormat.asDefault();
 
-        UUID                   id        = UUID.randomUUID();
+        UUID                   id         = UUID.randomUUID();
 
-        String                 label     = yaml.atMaybeKey("label").getString();
-        Integer                width     = yaml.atMaybeKey("width").getInteger();
-        WidgetContentAlignment alignment = WidgetContentAlignment.fromYaml(
+        String                 name       = yaml.atMaybeKey("name").getString();
+        String                 label      = yaml.atMaybeKey("label").getString();
+        Integer                width      = yaml.atMaybeKey("width").getInteger();
+        WidgetContentAlignment alignment  = WidgetContentAlignment.fromYaml(
                                                                 yaml.atMaybeKey("alignment"));
+        WidgetBackground       background = WidgetBackground.fromYaml(
+                                                                yaml.atMaybeKey("background"));
+        Boolean                isBold     = yaml.atMaybeKey("bold").getBoolean();
 
-        return new WidgetFormat(id, label, width, alignment);
+        return new WidgetFormat(id, name, label, width, alignment, background, isBold);
     }
 
 
@@ -148,6 +167,28 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     // > State
     // --------------------------------------------------------------------------------------
 
+    // ** Name
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The Widget's name. May not be null.
+     * @return The widget name.
+     */
+    public String name()
+    {
+        return this.name.getValue();
+    }
+
+
+    public void setName(String name)
+    {
+        if (name != null)
+            this.name.setValue(name);
+        else
+            this.name.setValue("");
+    }
+
+
     // ** Label
     // --------------------------------------------------------------------------------------
 
@@ -158,16 +199,6 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     public String label()
     {
         return this.label.getValue();
-    }
-
-
-    /**
-     * Set the component's label. Defaults to empty string.
-     * @param label The component's display label.
-     */
-    public void setLabel(String label)
-    {
-        this.label.setValue(label);
     }
 
 
@@ -224,5 +255,49 @@ public class WidgetFormat implements Model, ToYaml, Serializable
             this.alignment.setValue(WidgetContentAlignment.CENTER);
     }
 
+
+    // ** Background
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The widget's background. Determines how dark or light (or transparent) the widget's
+     * background will be.
+     * @return The widget background value.
+     */
+    public WidgetBackground background()
+    {
+        return this.background.getValue();
+    }
+
+
+    public void setBackground(WidgetBackground background)
+    {
+        if (background != null)
+            this.background.setValue(background);
+        else
+            this.background.setValue(WidgetBackground.MEDIUM);
+    }
+
+
+    // ** Is Bold
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * True if the widget's text is BOLD.
+     * @return True if the widget is bold.
+     */
+    public Boolean isBold()
+    {
+        return this.isBold.getValue();
+    }
+
+
+    public void setIsBold(Boolean isBold)
+    {
+        if (isBold != null)
+            this.isBold.setValue(isBold);
+        else
+            this.isBold.setValue(false);
+    }
 }
 

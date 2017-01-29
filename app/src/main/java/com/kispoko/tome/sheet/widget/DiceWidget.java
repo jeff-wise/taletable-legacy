@@ -17,6 +17,7 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.action;
 
 
 /**
@@ -133,37 +134,15 @@ public class DiceWidget extends Widget
 
 
     /**
-     * Run an action on the Dice Widget.
-     * @param action The widget action.
-     */
-    @Override
-    public void runAction(Action action) { }
-
-
-    /**
      * The text widget's tile view.
      * @return The tile view.
      */
-    public View tileView()
+    @Override
+    public View view(boolean rowHasLabel, Context context)
     {
-        // [1] Setup / Declarations
-        // --------------------------------------------------------------------------------------
-
-        Context context = SheetManager.currentSheetContext();
-
         // [2 A] Layouts
         // --------------------------------------------------------------------------------------
 
-        return new LinearLayout(context);
-    }
-
-
-    /**
-     * The text widget's editor view.
-     * @return The editor view.
-     */
-    public View editorView(Context context)
-    {
         return new LinearLayout(context);
     }
 

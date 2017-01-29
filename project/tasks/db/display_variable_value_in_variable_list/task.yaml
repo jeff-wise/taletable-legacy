@@ -1,9 +1,0 @@
-
-
----
-name: display_variable_value_in_variable_list
-type: feature
-priority: 50
-tags: 
-- ui
-dependencies: cache_variable_values

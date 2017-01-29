@@ -273,7 +273,7 @@ public class TextVariable extends Variable
         switch (kind)
         {
             case LITERAL:
-                String stringValue = yaml.atKey("value").getString();
+                String stringValue = yaml.atKey("value").getString().trim();
                 return TextVariable.asText(id, name, label, stringValue, isNamespaced,
                                            definesNamespace, tags);
             case VALUE:

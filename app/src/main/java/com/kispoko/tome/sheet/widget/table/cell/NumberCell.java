@@ -369,7 +369,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
             Activity activity = (Activity) SheetManager.currentSheetContext();
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
-            if (this.value() != null)
+            if (this.value() != null && textView != null)
                 textView.setText(this.valueString());
         }
     }

@@ -21,12 +21,14 @@ import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.group.RowAlignment;
+import com.kispoko.tome.sheet.group.SpaceAbove;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.util.SerialBitmap;
@@ -40,7 +42,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 
 
 /**
@@ -157,6 +158,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(WidgetBackground.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(SerialBitmap.class))
         {
             return SQLValue.Type.BLOB;
@@ -189,6 +194,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(RowWidth.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(SpaceAbove.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -314,6 +323,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((WidgetContentSize) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
+        else if (this.getValue() instanceof WidgetBackground)
+        {
+            String enumString = ((WidgetBackground) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
         else if (this.getValue() instanceof SerialBitmap)
         {
             Bitmap bitmap = ((SerialBitmap) this.getValue()).getBitmap();
@@ -367,6 +381,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof RowWidth)
         {
             String enumString = ((RowWidth) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof SpaceAbove)
+        {
+            String enumString = ((SpaceAbove) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof ProgramValueType)
@@ -546,6 +565,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
             WidgetContentSize size = WidgetContentSize.fromSQLValue(sqlValue);
             this.setValue((A) size);
         }
+        else if (this.valueClass.isAssignableFrom(WidgetBackground.class))
+        {
+            WidgetBackground background = WidgetBackground.fromSQLValue(sqlValue);
+            this.setValue((A) background);
+        }
         else if (this.valueClass.isAssignableFrom(ProgramValueType.class))
         {
             ProgramValueType programValueType = ProgramValueType.fromSQLValue(sqlValue);
@@ -607,6 +631,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             RowWidth width = RowWidth.fromSQLValue(sqlValue);
             this.setValue((A) width);
+        }
+        else if (this.valueClass.isAssignableFrom(SpaceAbove.class))
+        {
+            SpaceAbove separation = SpaceAbove.fromSQLValue(sqlValue);
+            this.setValue((A) separation);
         }
         else if (this.valueClass.isAssignableFrom(VariableType.class))
         {

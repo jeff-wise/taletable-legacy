@@ -66,11 +66,11 @@ public class ActionDialogFragment extends DialogFragment
 
         LinearLayout layout = this.dialogLayout(context);
 
-        for (final Action action : this.widget.data().actions())
-        {
-            View actionView = Action.view(action, this.widget, this);
-            layout.addView(actionView);
-        }
+//        for (final Action action : this.widget.data().actions())
+//        {
+//            View actionView = Action.view(action, this.widget, this);
+//            layout.addView(actionView);
+//        }
 
 
         return layout;

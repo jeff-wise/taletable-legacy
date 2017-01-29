@@ -195,6 +195,8 @@ public class SheetManager
 
                 // value.initialize();
 
+                SheetManager.sheetListener = listener;
+
                 SheetManager.sheetReady();
 
                 listener.onSheet(value);

@@ -37,6 +37,7 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 
 /**
@@ -186,14 +187,6 @@ public class ImageWidget extends Widget
     public void initialize() { }
 
 
-    @Override
-    public void runAction(Action action)
-    {
-        if (this.bitmap.isNull())
-            this.chooseImageDialog();
-    }
-
-
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -235,116 +228,42 @@ public class ImageWidget extends Widget
      * Use setMode to change the view dynamically.
      * @return
      */
-    public View tileView()
+    public View view(boolean rowHasLabel, Context context)
     {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
-
-        final Context context = SheetManager.currentSheetContext();
-
-        final LinearLayout imageLayout = this.widgetLayout(true);
-        LinearLayout contentLayout = (LinearLayout) imageLayout.findViewById(
-                R.id.widget_content_layout);
+        LinearLayout layout = viewLayout(context);
 
 
-        // [2] Layout
-        // --------------------------------------------------------------------------------------
-
-        LinearLayout chooseImageLayout = this.chooseImageLayout(context);
-        ImageView    imageView         = this.imageView(context);
+        LinearLayout chooseImageView = this.chooseImageView(context);
+        ImageView    imageView       = this.imageView(context);
 
         // Add views to layout
-        contentLayout.addView(chooseImageLayout);
-        contentLayout.addView(imageView);
+        layout.addView(chooseImageView);
+        layout.addView(imageView);
 
         // No stored picture, give user upload button
         if (this.bitmap.isNull())
         {
-            chooseImageLayout.setVisibility(View.VISIBLE);
+            chooseImageView.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.GONE);
         }
         // Have a picture, show it
         else
         {
-            chooseImageLayout.setVisibility(View.GONE);
+            chooseImageView.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
             imageView.setImageBitmap(this.bitmap.getValue().getBitmap());
         }
 
 
-        return imageLayout;
+        return layout;
     }
 
 
-    public View editorView(Context context)
-    {
-        return new LinearLayout(context);
-    }
-
-
-    // > INTERNAL
+    // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-
-    private ImageView imageView(Context context)
-    {
-        ImageViewBuilder imageView = new ImageViewBuilder();
-        this.imageViewId = Util.generateViewId();
-
-        imageView.id                = this.imageViewId;
-        imageView.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        imageView.height            = R.dimen.widget_image_view_height;
-        imageView.scaleType         = ImageView.ScaleType.FIT_XY;
-        imageView.adjustViewBounds  = true;
-
-        return imageView.imageView(context);
-    }
-
-
-    private LinearLayout chooseImageLayout(Context context)
-    {
-        LinearLayoutBuilder layout   = new LinearLayoutBuilder();
-        ImageViewBuilder    iconView = new ImageViewBuilder();
-        TextViewBuilder     textView = new TextViewBuilder();
-
-        this.chooseImageButtonId = Util.generateViewId();
-
-        // > Layout
-        // --------------------------------------------------------------------------------------
-
-        layout.id               = this.chooseImageButtonId;
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.padding.top      = R.dimen.widget_image_choose_layout_padding_vert;
-        layout.padding.bottom   = R.dimen.widget_image_choose_layout_padding_vert;
-        layout.gravity          = Gravity.CENTER_VERTICAL;
-
-        layout.child(iconView)
-              .child(textView);
-
-        // > Icon View
-        // --------------------------------------------------------------------------------------
-
-        iconView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        iconView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-        iconView.image          = R.drawable.ic_choose_a_picture;
-        iconView.margin.right   = R.dimen.widget_image_choose_icon_margin_right;
-        iconView.padding.bottom = R.dimen.one_dp;
-
-        // > Text View
-        // --------------------------------------------------------------------------------------
-
-        textView.width  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        textView.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        textView.text   = "CHOOSE A PICTURE";
-        textView.size   = R.dimen.widget_image_choose_text_size;
-        textView.color  = R.color.dark_blue_hl_4;
-        textView.font   = Font.sansSerifFontRegular(context);
-
-
-        return layout.linearLayout(context);
-    }
-
+    // > Choose Image Dialog
+    // ------------------------------------------------------------------------------------------
 
     private void chooseImageDialog()
     {
@@ -368,6 +287,110 @@ public class ImageWidget extends Widget
         sheetActivity.setChooseImageAction(new ChooseImageAction(this));
 
         sheetActivity.startActivityForResult(intent, SheetActivity.CHOOSE_IMAGE_FROM_FILE);
+    }
+
+
+    // > Views
+    // ------------------------------------------------------------------------------------------
+
+    private LinearLayout viewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.gravity              = Gravity.CENTER_HORIZONTAL;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private ImageView imageView(Context context)
+    {
+        ImageViewBuilder imageView = new ImageViewBuilder();
+        this.imageViewId = Util.generateViewId();
+
+        imageView.id                = this.imageViewId;
+        imageView.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        imageView.height            = R.dimen.widget_image_view_height;
+        imageView.scaleType         = ImageView.ScaleType.FIT_XY;
+        imageView.adjustViewBounds  = true;
+
+        return imageView.imageView(context);
+    }
+
+
+    /**
+     * The choose image view that is displayed on the sheet if the image widget is present, but no
+     * image is currently chosen or loaded.
+     * @param context The context.
+     * @return The choose image view.
+     */
+    private LinearLayout chooseImageView(Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout   = new LinearLayoutBuilder();
+        ImageViewBuilder    iconView = new ImageViewBuilder();
+        TextViewBuilder     textView = new TextViewBuilder();
+
+        this.chooseImageButtonId = Util.generateViewId();
+
+        // [2] Layout
+        // --------------------------------------------------------------------------------------
+
+        layout.id                   = this.chooseImageButtonId;
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.gravity              = Gravity.CENTER_HORIZONTAL;
+
+//        layout.padding.top      = R.dimen.widget_image_choose_layout_padding_vert;
+//        layout.padding.bottom   = R.dimen.widget_image_choose_layout_padding_vert;
+
+        layout.backgroundResource   = R.drawable.bg_choose_image_button;
+
+        layout.child(iconView)
+              .child(textView);
+
+        // [3 A] Icon View
+        // --------------------------------------------------------------------------------------
+
+        iconView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        iconView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        iconView.image          = R.drawable.ic_choose_a_picture;
+
+        iconView.margin.bottom  = R.dimen.widget_image_choose_icon_margin_bottom;
+
+        // [3 B] Text View
+        // --------------------------------------------------------------------------------------
+
+        textView.width  = LinearLayout.LayoutParams.WRAP_CONTENT;
+        textView.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        textView.text   = "Choose a Picture";
+        textView.size   = R.dimen.widget_image_choose_text_size;
+        textView.color  = R.color.dark_blue_2;
+        textView.font   = Font.sansSerifFontRegular(context);
+
+
+        return layout.linearLayout(context);
+    }
+
+
+
+    // > Clicks
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * On image widget click, go to choose image dialog.
+     */
+    private void onImageWidgetShortClick()
+    {
+        this.chooseImageDialog();
     }
 
 

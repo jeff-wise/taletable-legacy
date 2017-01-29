@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +18,8 @@ import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.action.Action;
+import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
@@ -59,7 +61,7 @@ public class NumberWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<WidgetData>            widgetData;
-    private PrimitiveFunctor<WidgetContentSize> size;
+    private ModelFunctor<NumberWidgetFormat>    format;
     private ModelFunctor<NumberVariable>        valueVariable;
     private PrimitiveFunctor<String>            valuePrefix;
     private PrimitiveFunctor<String>            valuePostfix;
@@ -84,7 +86,7 @@ public class NumberWidget extends Widget
         this.id                 = null;
 
         this.widgetData         = ModelFunctor.empty(WidgetData.class);
-        this.size               = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.format             = ModelFunctor.empty(NumberWidgetFormat.class);
         this.valueVariable      = ModelFunctor.empty(NumberVariable.class);
         this.valuePrefix        = new PrimitiveFunctor<>(null, String.class);
         this.valuePostfix       = new PrimitiveFunctor<>(null, String.class);
@@ -103,7 +105,7 @@ public class NumberWidget extends Widget
 
     public NumberWidget(UUID id,
                         WidgetData widgetData,
-                        WidgetContentSize size,
+                        NumberWidgetFormat format,
                         NumberVariable valueVariable,
                         String valuePrefix,
                         String valuePostfix,
@@ -114,7 +116,7 @@ public class NumberWidget extends Widget
         this.id                 = id;
 
         this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
-        this.size               = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.format             = ModelFunctor.full(format, NumberWidgetFormat.class);
         this.valueVariable      = ModelFunctor.full(valueVariable, NumberVariable.class);
         this.valuePrefix        = new PrimitiveFunctor<>(valuePrefix, String.class);
         this.valuePostfix       = new PrimitiveFunctor<>(valuePostfix, String.class);
@@ -134,15 +136,15 @@ public class NumberWidget extends Widget
     public static NumberWidget fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID              id            = UUID.randomUUID();
+        UUID               id            = UUID.randomUUID();
 
-        WidgetData        widgetData    = WidgetData.fromYaml(yaml.atKey("data"));
-        WidgetContentSize size          = WidgetContentSize.fromYaml(yaml.atKey("size"));
-        NumberVariable    value         = NumberVariable.fromYaml(yaml.atKey("value"));
-        String            valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
-        String            valuePostfix  = yaml.atMaybeKey("value_postfix").getString();
-        TextVariable      prefix        = TextVariable.fromYaml(yaml.atMaybeKey("prefix"));
-        TextVariable      postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));
+        WidgetData         widgetData    = WidgetData.fromYaml(yaml.atKey("data"));
+        NumberWidgetFormat format        = NumberWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
+        NumberVariable     value         = NumberVariable.fromYaml(yaml.atKey("value"));
+        String             valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
+        String             valuePostfix  = yaml.atMaybeKey("value_postfix").getString();
+        TextVariable       prefix        = TextVariable.fromYaml(yaml.atMaybeKey("prefix"));
+        TextVariable       postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));
 
         List<VariableUnion> variables   = yaml.atMaybeKey("variables").forEach(
                                                 new YamlParser.ForEach<VariableUnion>()
@@ -153,7 +155,7 @@ public class NumberWidget extends Widget
             }
         }, true);
 
-        return new NumberWidget(id, widgetData, size, value, valuePrefix, valuePostfix,
+        return new NumberWidget(id, widgetData, format, value, valuePrefix, valuePostfix,
                                 prefix, postfix, variables);
     }
 
@@ -195,7 +197,7 @@ public class NumberWidget extends Widget
     {
         return YamlBuilder.map()
                 .putYaml("data", this.data())
-                .putYaml("size", this.size())
+                .putYaml("format", this.format())
                 .putYaml("value", this.valueVariable())
                 .putString("value_prefix", this.valuePrefix())
                 .putString("value_postfix", this.valuePostfix())
@@ -296,31 +298,36 @@ public class NumberWidget extends Widget
     }
 
 
-    // ** Run Action
-    // ------------------------------------------------------------------------------------------
-
     @Override
-    public void runAction(Action action)
+    public View view(boolean rowHasLabel, Context context)
     {
-        switch (action)
-        {
-            case EDIT:
-                editAction();
-                break;
-        }
+        LinearLayout layout = viewLayout(rowHasLabel, context);
+
+        // > Label View
+        if (this.data().format().label() != null)
+            layout.addView(this.labelView(context));
+
+        // > Value
+        layout.addView(this.valueView(context));
+
+        return layout;
     }
+
 
 
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Format
+    // ------------------------------------------------------------------------------------------
+
     /**
-     * The number widget's content size.
-     * @return The WidgetContentSize.
+     * The Number Widget Format.
+     * @return The Number Widget Format.
      */
-    public WidgetContentSize size()
+    public NumberWidgetFormat format()
     {
-        return this.size.getValue();
+        return this.format.getValue();
     }
 
 
@@ -470,39 +477,12 @@ public class NumberWidget extends Widget
     }
 
 
-    // > Views
-    // ------------------------------------------------------------------------------------------
-
-    public View tileView()
-    {
-        // [1] Setup / Declarations
-        // --------------------------------------------------------------------------------------
-
-        Context context            = SheetManager.currentSheetContext();
-        LinearLayout integerLayout = this.widgetLayout(true);
-        LinearLayout contentLayout = (LinearLayout) integerLayout.findViewById(
-                                                                    R.id.widget_content_layout);
-
-        // [2] Value View
-        // --------------------------------------------------------------------------------------
-
-        LinearLayout valueView = this.valueView(context);
-
-        contentLayout.addView(valueView);
-
-        return integerLayout;
-    }
-
-
-    public View editorView(Context context)
-    {
-        return new LinearLayout(context);
-    }
-
 
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
+    // > Value Updates
+    // ------------------------------------------------------------------------------------------
 
     /**
      * When the text widget's value is updated.
@@ -556,7 +536,8 @@ public class NumberWidget extends Widget
 
             String postfixValue = this.postfix();
 
-            if (postfixValue != null)
+            // TODO why is textView null on hotswapping??
+            if (postfixValue != null && textView != null)
                 textView.setText(postfixValue);
         }
     }
@@ -565,14 +546,34 @@ public class NumberWidget extends Widget
     // > Views
     // ------------------------------------------------------------------------------------------
 
+    private LinearLayout viewLayout(boolean rowHasLabel, Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = 0;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.weight           = this.data().format().width().floatValue();
+
+        if (this.data().format().label() == null && rowHasLabel) {
+            layout.padding.top      = R.dimen.widget_label_fill_padding;
+        }
+
+        layout.margin.left      = R.dimen.widget_margin_horz;
+        layout.margin.right     = R.dimen.widget_margin_horz;
+
+        return layout.linearLayout(context);
+    }
+
+
     private LinearLayout valueView(Context context)
     {
         // [1] Views
         // --------------------------------------------------------------------------------------
 
-        LinearLayoutBuilder layout      = new LinearLayoutBuilder();
-        TextViewBuilder     valueView   = new TextViewBuilder();
-        TextViewBuilder     postfixView = new TextViewBuilder();
+        LinearLayoutBuilder layout  = new LinearLayoutBuilder();
+        TextViewBuilder     value   = new TextViewBuilder();
+        TextViewBuilder     postfix = new TextViewBuilder();
 
         this.valueViewId   = Util.generateViewId();
         this.postfixViewId = Util.generateViewId();
@@ -580,52 +581,87 @@ public class NumberWidget extends Widget
         // [2 A] Layout
         // --------------------------------------------------------------------------------------
 
-        layout.width        = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.child(valueView);
+        layout.backgroundResource   = this.data().format().background().resourceId();
+
+        layout.child(value);
 
         if (!this.postfixVariable.isNull())
-            layout.child(postfixView);
+            layout.child(postfix);
 
         // [2 B] Value
         // --------------------------------------------------------------------------------------
 
-        valueView.id            = this.valueViewId;
-        valueView.size          = this.size.getValue().resourceId();
-        valueView.font          = Font.serifFontBold(context);
-        valueView.color         = R.color.dark_blue_hlx_6;
-        //valueView.color         = R.color.light_grey_6;
-        valueView.text          = this.valueString();
-        valueView.margin.right  = R.dimen.widget_number_value_margin_right;
+        value.id            = this.valueViewId;
+
+        value.width         = LinearLayout.LayoutParams.MATCH_PARENT;
+        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        value.size          = this.format().size().resourceId();
+        value.font          = Font.serifFontRegular(context);
+        value.color         = R.color.dark_blue_hl_1;
+        value.text          = this.valueString();
+
+        value.margin.right  = R.dimen.widget_number_value_margin_right;
+
+        // > Content Alignment
+        switch (this.data().format().alignment())
+        {
+            case LEFT:
+                layout.gravity  = Gravity.START;
+                layout.layoutGravity  = Gravity.START;
+                break;
+            case CENTER:
+                value.gravity  = Gravity.CENTER_HORIZONTAL;
+                value.layoutGravity  = Gravity.CENTER_HORIZONTAL;
+                break;
+            case RIGHT:
+                layout.gravity  = Gravity.END;
+                layout.layoutGravity  = Gravity.END;
+                break;
+        }
+
+        // > Background
+        // -------------------------------------------------------------------------------------
+
+        if (this.data().format().background() != WidgetBackground.NONE) {
+            value.padding.top    = R.dimen.widget_padding_vert;
+            value.padding.bottom = R.dimen.widget_padding_vert;
+        }
+
 
         // [2 C] Postfix
         // --------------------------------------------------------------------------------------
 
-        postfixView.id    = this.postfixViewId;
-        postfixView.size  = this.size.getValue().resourceId();
-        postfixView.font  = Font.serifFontBold(context);
-        postfixView.color = R.color.dark_blue_hl_5;
-        postfixView.text  = this.postfix();
+        postfix.id    = this.postfixViewId;
+
+        postfix.text  = this.postfix();
+        postfix.size  = this.format().size().resourceId();
+        postfix.font  = Font.serifFontBold(context);
+        postfix.color = R.color.dark_blue_hl_5;
 
 
         return layout.linearLayout(context);
     }
 
 
-    // > Actions
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Respond to the edit action. Opens another activity depending on the type of number widget
-     * value.
-     */
-    private void editAction()
+    private TextView labelView(Context context)
     {
-        if (this.valueVariable.isNull())
-            return;
+        TextViewBuilder label = new TextViewBuilder();
 
-        this.valueVariable().openEditActivity(this.data().format().label());
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text              = this.data().format().label();
+        label.font              = Font.serifFontRegular(context);
+        label.color             = R.color.dark_blue_1;
+        label.size              = R.dimen.widget_label_text_size;
+
+        label.margin.bottom     = R.dimen.widget_label_margin_bottom;
+
+        return label.textView(context);
     }
 
 }

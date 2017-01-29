@@ -56,9 +56,6 @@ public enum RowWidth implements ToYaml
     public static RowWidth fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        if (yaml.isNull())
-            return FULL;
-
         String widthString = yaml.getString();
         try {
             return RowWidth.fromString(widthString);

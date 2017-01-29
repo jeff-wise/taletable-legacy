@@ -11,6 +11,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.value.Functor;
@@ -211,23 +212,28 @@ public class Page implements Model, ToYaml, Serializable
     {
         Context context = SheetManager.currentSheetContext();
 
-        LinearLayout pageLayout = new LinearLayout(context);
-        this.pageViewId = Util.generateViewId();
-        pageLayout.setId(this.pageViewId);
+        LinearLayout layout = viewLayout(context);
 
-        LinearLayout.LayoutParams profileLayoutParams =
-                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                              LinearLayout.LayoutParams.WRAP_CONTENT);
+        updateView(layout);
 
-        int paddingTop = (int) Util.getDim(context, R.dimen.page_padding_top);
-        pageLayout.setPadding(0, paddingTop, 0, 0);
+        return layout;
+    }
 
-        pageLayout.setOrientation(LinearLayout.VERTICAL);
-        pageLayout.setLayoutParams(profileLayoutParams);
 
-        updateView(pageLayout);
+    private LinearLayout viewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        return pageLayout;
+        this.pageViewId         = Util.generateViewId();
+        layout.id               = this.pageViewId;
+
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        //layout.padding.top      = R.dimen.page_padding_top;
+
+        return layout.linearLayout(context);
     }
 
 
@@ -246,7 +252,7 @@ public class Page implements Model, ToYaml, Serializable
         // --------------------------------------------------------------------------------------
         if (!this.groups.isNull()) {
             for (Group group : this.groups.getValue()) {
-                pageLayout.addView(group.view());
+                pageLayout.addView(group.view(context));
             }
         }
     }

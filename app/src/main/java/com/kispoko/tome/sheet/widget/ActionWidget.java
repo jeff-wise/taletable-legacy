@@ -178,25 +178,17 @@ public class ActionWidget extends Widget implements Serializable
     }
 
 
-    @Override
-    public void runAction(Action action) { }
-
-
     /**
      * The text widget's tile view.
      * @return The tile view.
      */
-    public View tileView()
+    @Override
+    public View view(boolean rowHasLabel, Context context)
     {
-        // [1] Setup / Declarations
-        // --------------------------------------------------------------------------------------
-
-        Context context = SheetManager.currentSheetContext();
-
         // [2 A] Layouts
         // --------------------------------------------------------------------------------------
 
-        LinearLayout layout            = this.widgetLayout(false);
+        LinearLayout layout            = this.layout(false, context);
         LinearLayout contentLayout =
                 (LinearLayout) layout.findViewById(R.id.widget_content_layout);
         // ((LinearLayout.LayoutParams) contentLayout.getLayoutParams()).gravity = Gravity.TOP;

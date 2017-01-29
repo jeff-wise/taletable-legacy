@@ -2,8 +2,6 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
-import android.content.Context;
-
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
@@ -27,7 +25,9 @@ public enum WidgetContentSize implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     SMALL,
+    MEDIUM_SMALL,
     MEDIUM,
+    MEDIUM_LARGE,
     LARGE;
 
 
@@ -99,8 +99,12 @@ public enum WidgetContentSize implements ToYaml
         {
             case SMALL:
                 return R.dimen.text_size_small;
+            case MEDIUM_SMALL:
+                return R.dimen.text_size_medium_small;
             case MEDIUM:
                 return R.dimen.text_size_medium;
+            case MEDIUM_LARGE:
+                return R.dimen.text_size_medium_large;
             case LARGE:
                 return R.dimen.text_size_large;
         }

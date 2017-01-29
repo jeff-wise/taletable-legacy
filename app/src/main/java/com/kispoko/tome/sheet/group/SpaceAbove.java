@@ -2,77 +2,69 @@
 package com.kispoko.tome.sheet.group;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 
 /**
- * Row Alignment
+ * Row Separation
+ *
+ * The vertical margins of the group row.
  */
-public enum RowAlignment implements ToYaml
+public enum SpaceAbove implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    LEFT,
-    CENTER,
-    RIGHT;
-
-
-    public static List<String> valueStringList()
-    {
-        List<String> stringList = new ArrayList<>();
-
-        for (RowAlignment rowAlignment : RowAlignment.values()) {
-            stringList.add(rowAlignment.toString());
-        }
-
-        return stringList;
-    }
+    VERY_SMALL,
+    SMALL,
+    MEDIUM_SMALL,
+    MEDIUM,
+    MEDIUM_LARGE,
+    LARGE,
+    VERY_LARGE;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static RowAlignment fromString(String alignmentString)
+    public static SpaceAbove fromString(String sepString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(RowAlignment.class, alignmentString);
+        return EnumUtils.fromString(SpaceAbove.class, sepString);
     }
 
 
-    public static RowAlignment fromYaml(YamlParser yaml)
+    public static SpaceAbove fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        String alignmentString = yaml.getString();
+        String sepString = yaml.getString();
         try {
-            return RowAlignment.fromString(alignmentString);
+            return SpaceAbove.fromString(sepString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(alignmentString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(sepString));
         }
     }
 
 
-    public static RowAlignment fromSQLValue(SQLValue sqlValue)
+    public static SpaceAbove fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            RowAlignment alignment = RowAlignment.fromString(enumString);
-            return alignment;
+            SpaceAbove separation = SpaceAbove.fromString(enumString);
+            return separation;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -89,23 +81,31 @@ public enum RowAlignment implements ToYaml
     }
 
 
-    // TO STRING
+    // RESOURCE ID
     // ------------------------------------------------------------------------------------------
 
-    @Override
-    public String toString()
+    public Integer resourceId()
     {
         switch (this)
         {
-            case LEFT:
-                return "Left";
-            case CENTER:
-                return "Center";
-            case RIGHT:
-                return "Right";
+            case VERY_SMALL:
+                return R.dimen.space_abvoe_very_small;
+            case SMALL:
+                return R.dimen.space_abvoe_small;
+            case MEDIUM_SMALL:
+                return R.dimen.space_above_medium_small;
+            case MEDIUM:
+                return R.dimen.space_above_medium;
+            case MEDIUM_LARGE:
+                return R.dimen.space_above_medium_large;
+            case LARGE:
+                return R.dimen.space_above_large;
+            case VERY_LARGE:
+                return R.dimen.space_above_very_large;
         }
 
-        return "";
+        return 0;
     }
+
 
 }

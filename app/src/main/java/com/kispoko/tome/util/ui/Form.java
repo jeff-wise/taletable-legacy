@@ -682,7 +682,7 @@ public class Form
     }
 
 
-    // TOGGLE INPUT
+    // VARIANT INPUT
     // -----------------------------------------------------------------------------------------
 
     public static <A extends Enum<A>> LinearLayout variantInput(Class<A> variantEnum,

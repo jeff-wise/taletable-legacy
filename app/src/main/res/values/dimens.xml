@@ -56,46 +56,70 @@
 
     <!-- GROUP -->
     <dimen name="group_margin_bottom">15dp</dimen>
-    <dimen name="group_padding_horz">2dp</dimen>
+    <dimen name="group_margin_horz">10dp</dimen>
 
-    <dimen name="group_label_padding_left">8dp</dimen>
-    <dimen name="group_label_padding_bottom">9dp</dimen>
-    <dimen name="group_label_text_size">3sp</dimen>
+    <dimen name="group_label_margin_left">3dp</dimen>
+    <dimen name="group_label_text_size">4.4sp</dimen>
 
     <!-- GROUP: ROW -->
-    <dimen name="group_row_padding_bottom">4dp</dimen>
     <dimen name="group_row_three_quarters_padding">40dp</dimen>
     <dimen name="group_row_half_padding">70dp</dimen>
 
 
+    <!-- SPACE ABOVE -->
+    <dimen name="space_abvoe_very_small">6dp</dimen>
+    <dimen name="space_abvoe_small">10dp</dimen>
+    <dimen name="space_above_medium_small">15dp</dimen>
+    <dimen name="space_above_medium">20dp</dimen>
+    <dimen name="space_above_medium_large">25dp</dimen>
+    <dimen name="space_above_large">30dp</dimen>
+    <dimen name="space_above_very_large">35dp</dimen>
+
+
     <!-- WIDGET LAYOUT -->
-    <dimen name="widget_layout_margins_horz">2dp</dimen>
     <dimen name="widget_content_read_padding_vert">25dp</dimen>
     <dimen name="widget_content_active_padding_vert">5dp</dimen>
     <dimen name="widget_label_padding_vert">4dp</dimen>
-    <dimen name="widget_label_text_size">2.4sp</dimen>
+
+
+    <!-- WIDGET: GENERAL -->
+    <dimen name="text_size_large">6.2dp</dimen>
+    <dimen name="text_size_medium_large">5.5dp</dimen>
+    <dimen name="text_size_medium">4.7dp</dimen>
+    <dimen name="text_size_medium_small">4.2dp</dimen>
+    <dimen name="text_size_small">3.6dp</dimen>
+
+    <dimen name="widget_padding_vert">17dp</dimen>
+    <dimen name="widget_margin_horz">3dp</dimen>
+
+    <dimen name="widget_label_text_size">3.4sp</dimen>
+    <dimen name="widget_label_margin_bottom">4dp</dimen>
+    <dimen name="widget_label_fill_padding">21dp</dimen>
+
+
+    <!-- WIDGET: ACTION DIALOG -->
+    <dimen name="widget_action_dialog_title_text_size">4sp</dimen>
+    <dimen name="widget_action_dialog_title_margin_bottom">15dp</dimen>
+    <dimen name="widget_action_dialog_heading_text_size">3.2dp</dimen>
+    <dimen name="widget_action_dialog_button_text_size">4.2sp</dimen>
+    <dimen name="widget_action_dialog_button_padding_vert">14dp</dimen>
+    <dimen name="widget_action_dialog_button_padding_horz">10dp</dimen>
 
 
     <!-- WIDGET: TEXT -->
-    <dimen name="text_size_extra_large">7.5dp</dimen>
-    <dimen name="text_size_large">6.5dp</dimen>
-    <dimen name="text_size_medium">5dp</dimen>
-    <dimen name="text_size_small">4dp</dimen>
+    <dimen name="widget_text_quote_source_text_size">3sp</dimen>
+    <dimen name="widget_text_layout_quote_padding_horz">10dp</dimen>
+    <dimen name="widget_text_quote_margin_top">6dp</dimen>
 
 
     <!-- WIDGET: NUMBER -->
     <dimen name="widget_number_value_margin_right">6dp</dimen>
 
 
-    <!-- COMPONENT: DOCUMENT -->
-    <dimen name="document_component_text_size">5dp</dimen>
-
-
-    <!-- COMPONENT: IMAGE -->
-    <dimen name="widget_image_choose_text_size">3.3sp</dimen>
+    <!-- WIDGET: IMAGE -->
+    <dimen name="widget_image_choose_text_size">2.8sp</dimen>
     <dimen name="widget_image_view_height">250dp</dimen>
-    <dimen name="widget_image_choose_layout_padding_vert">12dp</dimen>
-    <dimen name="widget_image_choose_icon_margin_right">7dp</dimen>
+    <dimen name="widget_image_choose_icon_margin_bottom">2dp</dimen>
 
 
     <!-- WIDGET: ROLL  -->
@@ -373,9 +397,13 @@
 
 
     <!-- MANAGE SHEETS -->
-    <dimen name="sheet_summary_list_item_last_used_text_size">3.3dp</dimen>
-    <dimen name="sheet_summary_list_item_last_used_label_text_size">3.3dp</dimen>
+    <dimen name="sheet_summary_list_item_padding_vert">16dp</dimen>
+    <dimen name="sheet_summary_list_item_padding_horz">16dp</dimen>
+    <dimen name="sheet_summary_list_item_last_used_text_size">3dp</dimen>
+    <dimen name="sheet_summary_list_item_last_used_label_text_size">2.9dp</dimen>
     <dimen name="sheet_summary_list_item_name_text_size">4.4dp</dimen>
+    <dimen name="sheet_summary_list_item_last_used_margin_bottom">8dp</dimen>
+    <dimen name="sheet_summary_list_item_last_used_value_margin_right">6dp</dimen>
 
 
 
