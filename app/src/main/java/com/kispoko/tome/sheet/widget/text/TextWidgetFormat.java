@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.text;
 
 
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
+import com.kispoko.tome.sheet.widget.util.WidgetTextTint;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -35,8 +36,10 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     // -----------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<WidgetContentSize> size;
+    private PrimitiveFunctor<WidgetTextTint>    tint;
     private PrimitiveFunctor<Boolean>           isQuote;
     private PrimitiveFunctor<String>            quoteSource;
+    private PrimitiveFunctor<String>            inlineLabel;
 
 
     // CONSTRUCTORS
@@ -47,21 +50,32 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.id             = null;
 
         this.size           = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.tint           = new PrimitiveFunctor<>(null, WidgetTextTint.class);
         this.isQuote        = new PrimitiveFunctor<>(null, Boolean.class);
         this.quoteSource    = new PrimitiveFunctor<>(null, String.class);
+        this.inlineLabel    = new PrimitiveFunctor<>(null, String.class);
     }
 
 
-    public TextWidgetFormat(UUID id, WidgetContentSize size, Boolean isQuote, String quoteSource)
+    public TextWidgetFormat(UUID id,
+                            WidgetContentSize size,
+                            WidgetTextTint tint,
+                            Boolean isQuote,
+                            String quoteSource,
+                            String inlineLabel)
     {
         this.id             = id;
 
         this.size           = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.tint           = new PrimitiveFunctor<>(tint, WidgetTextTint.class);
         this.isQuote        = new PrimitiveFunctor<>(isQuote, Boolean.class);
         this.quoteSource    = new PrimitiveFunctor<>(quoteSource, String.class);
+        this.inlineLabel    = new PrimitiveFunctor<>(inlineLabel, String.class);
 
         this.setIsQuote(isQuote);
+        this.setSize(size);
         this.setQuoteSource(quoteSource);
+        this.setTint(tint);
     }
 
 
@@ -74,10 +88,12 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         UUID              id          = UUID.randomUUID();
 
         WidgetContentSize size        = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
+        WidgetTextTint    tint        = WidgetTextTint.fromYaml(yaml.atMaybeKey("tint"));
         Boolean           isQuote     = yaml.atMaybeKey("is_quote").getBoolean();
         String            quoteSource = yaml.atMaybeKey("quote_source").getString();
+        String            inlineLabel = yaml.atMaybeKey("inline_label").getString();
 
-        return new TextWidgetFormat(id, size, isQuote, quoteSource);
+        return new TextWidgetFormat(id, size, tint, isQuote, quoteSource, inlineLabel);
     }
 
 
@@ -87,8 +103,10 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         textWidgetFormat.setId(UUID.randomUUID());
         textWidgetFormat.setSize(null);
+        textWidgetFormat.setTint(null);
         textWidgetFormat.setIsQuote(null);
         textWidgetFormat.setQuoteSource(null);
+        textWidgetFormat.setInlineLabel(null);
 
         return textWidgetFormat;
     }
@@ -168,6 +186,28 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     }
 
 
+    // ** Tint
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The text widget tint.
+     * @return The tint.
+     */
+    public WidgetTextTint tint()
+    {
+        return this.tint.getValue();
+    }
+
+
+    public void setTint(WidgetTextTint tint)
+    {
+        if (tint != null)
+            this.tint.setValue(tint);
+        else
+            this.tint.setValue(WidgetTextTint.MEDIUM);
+    }
+
+
     // ** Is Quote
     // --------------------------------------------------------------------------------------
 
@@ -219,6 +259,28 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
             this.quoteSource.setValue("");
     }
 
+
+    // ** Inline Label
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The text widget's inline label (may be null).
+     * @return The inline label.
+     */
+    public String inlineLabel()
+    {
+        return this.inlineLabel.getValue();
+    }
+
+
+    /**
+     * Set the inline label.
+     * @param inlineLabel The label.
+     */
+    public void setInlineLabel(String inlineLabel)
+    {
+        this.inlineLabel.setValue(inlineLabel);
+    }
 
 
 }

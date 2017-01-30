@@ -30,6 +30,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>                   width;
     private PrimitiveFunctor<WidgetContentAlignment>    alignment;
     private PrimitiveFunctor<WidgetBackground>          background;
+    private PrimitiveFunctor<WidgetCorners>             corners;
     private PrimitiveFunctor<Boolean>                   isBold;
 
 
@@ -45,6 +46,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         this.width      = new PrimitiveFunctor<>(null, Integer.class);
         this.alignment  = new PrimitiveFunctor<>(null, WidgetContentAlignment.class);
         this.background = new PrimitiveFunctor<>(null, WidgetBackground.class);
+        this.corners    = new PrimitiveFunctor<>(null, WidgetCorners.class);
         this.isBold     = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
@@ -55,6 +57,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
                         Integer width,
                         WidgetContentAlignment alignment,
                         WidgetBackground background,
+                        WidgetCorners corners,
                         Boolean isBold)
     {
         this.id         = id;
@@ -64,12 +67,14 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         this.width      = new PrimitiveFunctor<>(width, Integer.class);
         this.alignment  = new PrimitiveFunctor<>(alignment, WidgetContentAlignment.class);
         this.background = new PrimitiveFunctor<>(background, WidgetBackground.class);
+        this.corners    = new PrimitiveFunctor<>(corners, WidgetCorners.class);
         this.isBold     = new PrimitiveFunctor<>(isBold, Boolean.class);
 
         this.setName(name);
         this.setWidth(width);
         this.setAlignment(alignment);
         this.setBackground(background);
+        this.setCorners(corners);
         this.setIsBold(isBold);
     }
 
@@ -86,6 +91,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         defaultFormat.setWidth(null);
         defaultFormat.setAlignment(null);
         defaultFormat.setBackground(null);
+        defaultFormat.setCorners(null);
         defaultFormat.setIsBold(null);
 
         return defaultFormat;
@@ -108,14 +114,19 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
         String                 name       = yaml.atMaybeKey("name").getString();
         String                 label      = yaml.atMaybeKey("label").getString();
+
+        if (label != null)
+            label = label.trim();
+
         Integer                width      = yaml.atMaybeKey("width").getInteger();
         WidgetContentAlignment alignment  = WidgetContentAlignment.fromYaml(
                                                                 yaml.atMaybeKey("alignment"));
         WidgetBackground       background = WidgetBackground.fromYaml(
                                                                 yaml.atMaybeKey("background"));
+        WidgetCorners          corners    = WidgetCorners.fromYaml(yaml.atMaybeKey("corners"));
         Boolean                isBold     = yaml.atMaybeKey("bold").getBoolean();
 
-        return new WidgetFormat(id, name, label, width, alignment, background, isBold);
+        return new WidgetFormat(id, name, label, width, alignment, background, corners, isBold);
     }
 
 
@@ -156,9 +167,13 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     {
         YamlBuilder yaml = YamlBuilder.map();
 
+        yaml.putString("name", this.name());
         yaml.putString("label", this.label());
         yaml.putInteger("width", this.width());
         yaml.putYaml("alignment", this.alignment());
+        yaml.putYaml("background", this.background());
+        yaml.putYaml("corners", this.corners());
+        yaml.putBoolean("bold", this.isBold());
 
         return yaml;
     }
@@ -275,7 +290,33 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         if (background != null)
             this.background.setValue(background);
         else
-            this.background.setValue(WidgetBackground.MEDIUM);
+            this.background.setValue(WidgetBackground.DARK);
+    }
+
+
+    // ** Corners
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The widget's corner radius.
+     * @return The Widget Corners.
+     */
+    public WidgetCorners corners()
+    {
+        return this.corners.getValue();
+    }
+
+
+    /**
+     * The set widget corner radius.
+     * @param corners The widget corners.
+     */
+    public void setCorners(WidgetCorners corners)
+    {
+        if (corners != null)
+            this.corners.setValue(corners);
+        else
+            this.corners.setValue(WidgetCorners.SMALL);
     }
 
 

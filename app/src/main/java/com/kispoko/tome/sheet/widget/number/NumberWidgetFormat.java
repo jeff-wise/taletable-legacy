@@ -2,10 +2,8 @@
 package com.kispoko.tome.sheet.widget.number;
 
 
-import com.kispoko.tome.sheet.widget.NumberWidget;
-import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
-import com.kispoko.tome.sheet.widget.util.WidgetFormat;
+import com.kispoko.tome.sheet.widget.util.WidgetTextTint;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -15,6 +13,7 @@ import com.kispoko.tome.util.yaml.YamlParser;
 
 import java.io.Serializable;
 import java.util.UUID;
+
 
 
 /**
@@ -36,6 +35,8 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     // -----------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<WidgetContentSize> size;
+    private PrimitiveFunctor<WidgetTextTint>    tint;
+    private PrimitiveFunctor<String>            inlineLabel;
 
 
     // CONSTRUCTORS
@@ -43,19 +44,27 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
     public NumberWidgetFormat()
     {
-        this.id     = null;
+        this.id             = null;
 
-        this.size   = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.size           = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.tint           = new PrimitiveFunctor<>(null, WidgetTextTint.class);
+        this.inlineLabel    = new PrimitiveFunctor<>(null, String.class);
     }
 
 
-    public NumberWidgetFormat(UUID id, WidgetContentSize size)
+    public NumberWidgetFormat(UUID id,
+                              WidgetContentSize size,
+                              WidgetTextTint tint,
+                              String inlineLabel)
     {
-        this.id     = id;
+        this.id             = id;
 
-        this.size   = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.size           = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.tint           = new PrimitiveFunctor<>(tint, WidgetTextTint.class);
+        this.inlineLabel    = new PrimitiveFunctor<>(inlineLabel, String.class);
 
         this.setSize(size);
+        this.setTint(tint);
     }
 
 
@@ -74,8 +83,10 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         UUID              id          = UUID.randomUUID();
 
         WidgetContentSize size        = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
+        WidgetTextTint    tint        = WidgetTextTint.fromYaml(yaml.atMaybeKey("tint"));
+        String            inlineLabel = yaml.atMaybeKey("inline_label").getString();
 
-        return new NumberWidgetFormat(id, size);
+        return new NumberWidgetFormat(id, size, tint, inlineLabel);
     }
 
 
@@ -85,6 +96,8 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         numberWidgetFormat.setId(UUID.randomUUID());
         numberWidgetFormat.setSize(null);
+        numberWidgetFormat.setTint(null);
+        numberWidgetFormat.setInlineLabel(null);
 
         return numberWidgetFormat;
     }
@@ -160,5 +173,51 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         else
             this.size.setValue(WidgetContentSize.MEDIUM);
     }
+
+
+    // ** Tint
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The number widget's tint.
+     * @return The tint.
+     */
+    public WidgetTextTint tint()
+    {
+        return this.tint.getValue();
+    }
+
+
+    public void setTint(WidgetTextTint tint)
+    {
+        if (tint != null)
+            this.tint.setValue(tint);
+        else
+            this.tint.setValue(WidgetTextTint.MEDIUM);
+    }
+
+
+    // ** Inline Label
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * A label to be displayed before the number widget value.
+     * @return The inline label text.
+     */
+    public String inlineLabel()
+    {
+        return this.inlineLabel.getValue();
+    }
+
+
+    /**
+     * Set the inline label.
+     * @param inlineLabel The label to be displayed before the value.
+     */
+    public void setInlineLabel(String inlineLabel)
+    {
+        this.inlineLabel.setValue(inlineLabel);
+    }
+
 
 }

@@ -4,17 +4,22 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.action.Action;
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
+import com.kispoko.tome.sheet.widget.bool.BooleanWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.Util;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -25,6 +30,7 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.value;
 
 
 /**
@@ -47,8 +53,11 @@ public class BooleanWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<WidgetData>            widgetData;
-    private PrimitiveFunctor<WidgetContentSize> size;
+    private ModelFunctor<BooleanWidgetFormat>   format;
     private ModelFunctor<BooleanVariable>       valueVariable;
+
+    private PrimitiveFunctor<String>            onText;
+    private PrimitiveFunctor<String>            offText;
 
 
     // > Internal
@@ -65,8 +74,11 @@ public class BooleanWidget extends Widget
         this.id             = null;
 
         this.widgetData     = ModelFunctor.empty(WidgetData.class);
-        this.size           = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.format         = ModelFunctor.empty(BooleanWidgetFormat.class);
         this.valueVariable  = ModelFunctor.empty(BooleanVariable.class);
+
+        this.onText         = new PrimitiveFunctor<>(null, String.class);
+        this.offText        = new PrimitiveFunctor<>(null, String.class);
 
         this.valueViewId    = null;
     }
@@ -74,14 +86,19 @@ public class BooleanWidget extends Widget
 
     public BooleanWidget(UUID id,
                          WidgetData widgetData,
-                         WidgetContentSize size,
-                         BooleanVariable valueVariable)
+                         BooleanWidgetFormat format,
+                         BooleanVariable valueVariable,
+                         String onText,
+                         String offText)
     {
         this.id             = id;
 
         this.widgetData     = ModelFunctor.full(widgetData, WidgetData.class);
-        this.size           = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.format         = ModelFunctor.full(format, BooleanWidgetFormat.class);
         this.valueVariable  = ModelFunctor.full(valueVariable, BooleanVariable.class);
+
+        this.onText         = new PrimitiveFunctor<>(onText, String.class);
+        this.offText        = new PrimitiveFunctor<>(offText, String.class);
 
         this.valueViewId    = null;
     }
@@ -90,13 +107,16 @@ public class BooleanWidget extends Widget
     public static BooleanWidget fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID              id         = UUID.randomUUID();
+        UUID                id         = UUID.randomUUID();
 
-        WidgetData        widgetData = WidgetData.fromYaml(yaml.atKey("data"));
-        WidgetContentSize size       = WidgetContentSize.fromYaml(yaml.atKey("size"));
-        BooleanVariable   value      = BooleanVariable.fromYaml(yaml.atKey("value"));
+        WidgetData          widgetData = WidgetData.fromYaml(yaml.atKey("data"));
+        BooleanWidgetFormat format     = BooleanWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
+        BooleanVariable     value      = BooleanVariable.fromYaml(yaml.atKey("value"));
 
-        return new BooleanWidget(id, widgetData, size, value);
+        String            onText     = yaml.atMaybeKey("on_text").getString();
+        String            offText    = yaml.atMaybeKey("off_text").getString();
+
+        return new BooleanWidget(id, widgetData, format, value, onText, offText);
     }
 
 
@@ -167,6 +187,39 @@ public class BooleanWidget extends Widget
     }
 
 
+    @Override
+    public View view(boolean rowHasLabel, Context context)
+    {
+        LinearLayout layout = viewLayout(rowHasLabel, context);
+
+        // > Label View
+//        if (this.data().format().label() != null) {
+//            layout.addView(this.labelView(context));
+//        }
+
+        // > Value
+        final TextView valueView = valueView(context);
+
+        valueView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (value()) {
+                    setValue(false);
+                    valueView.setText(offText());
+                }
+                else {
+                    setValue(true);
+                    valueView.setText(onText());
+                }
+            }
+        });
+
+        layout.addView(valueView);
+
+        return layout;
+    }
+
+
     // > To Yaml
     // ------------------------------------------------------------------------------------------
 
@@ -178,22 +231,12 @@ public class BooleanWidget extends Widget
     {
         return YamlBuilder.map()
                 .putYaml("data", this.data())
-                .putYaml("size", this.size())
                 .putYaml("value", this.valueVariable());
     }
 
 
     // > State
     // ------------------------------------------------------------------------------------------
-
-    /**
-     * The widget content size.
-     * @return The Widget Content Size.
-     */
-    public WidgetContentSize size()
-    {
-        return this.size.getValue();
-    }
 
     /**
      * Get the BooleanWidget's value variable (of type boolean).
@@ -213,31 +256,121 @@ public class BooleanWidget extends Widget
     }
 
 
-    // > Views
-    // ------------------------------------------------------------------------------------------
-
-    @Override
-    public View view(boolean rowHasLabel, Context context)
+    public void setValue(Boolean value)
     {
-        TextView view = new TextView(context);
-
-        this.valueViewId = Util.generateViewId();
-        view.setId(this.valueViewId);
-
-        view.setText(this.value().toString());
-
-        return view;
+        this.valueVariable().setValue(value);
     }
 
 
-    public View editorView(Context context)
+    /**
+     * The text displayed when the widget's value is true.
+     * @return The on text.
+     */
+    public String onText()
     {
-        return new TextView(context);
+        return this.onText.getValue();
+    }
+
+
+    /**
+     * The text displayed when the widget's value is false.
+     * @return The off text.
+     */
+    public String offText()
+    {
+        return this.offText.getValue();
+    }
+
+
+    /**
+     * The Boolean Widget format settings.
+     * @return The boolean widget format.
+     */
+    public BooleanWidgetFormat format()
+    {
+        return this.format.getValue();
     }
 
 
     // INTERNAL
     // ------------------------------------------------------------------------------------------
+
+    // > Views
+    // ------------------------------------------------------------------------------------------
+
+    private LinearLayout viewLayout(boolean rowHasLabel, Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.width                = 0;
+        layout.weight               = this.data().format().width().floatValue();
+        layout.gravity              = Gravity.CENTER;
+
+        layout.margin.left          = R.dimen.widget_margin_horz;
+        layout.margin.right         = R.dimen.widget_margin_horz;
+
+        if (this.data().format().label() == null && rowHasLabel) {
+            layout.padding.top      = R.dimen.widget_label_fill_padding;
+        }
+
+
+        return layout.linearLayout(context);
+    }
+
+
+    private TextView valueView(Context context)
+    {
+        TextViewBuilder value = new TextViewBuilder();
+
+        value.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        value.font                  = Font.serifFontRegular(context);
+        value.size                  = this.format().size().resourceId();
+
+        value.backgroundResource    = this.data().format().background()
+                                          .resourceId(this.data().format().corners());
+
+        value.gravity               = Gravity.CENTER;
+        value.layoutGravity         = Gravity.CENTER;
+
+        if (this.value())
+        {
+            value.text  = this.onText();
+            value.color =  R.color.dark_blue_hl_1;
+        }
+        else
+        {
+            value.text  = this.offText();
+            value.color =  R.color.dark_blue_hl_6;
+        }
+
+        return value.textView(context);
+    }
+
+
+    private TextView labelView(Context context)
+    {
+        TextViewBuilder label = new TextViewBuilder();
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text              = this.data().format().label();
+        label.font              = Font.serifFontRegular(context);
+        label.color             = R.color.dark_blue_1;
+        label.size              = R.dimen.widget_label_text_size;
+
+        label.margin.bottom     = R.dimen.widget_label_margin_bottom;
+
+        return label.textView(context);
+    }
+
+
+    // > Value Updates
+    // -----------------------------------------------------------------------------------------
 
     /**
      * When the text widget's value is updated.

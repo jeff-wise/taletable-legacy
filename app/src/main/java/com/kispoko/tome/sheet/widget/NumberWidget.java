@@ -21,6 +21,7 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
+import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
@@ -304,8 +305,9 @@ public class NumberWidget extends Widget
         LinearLayout layout = viewLayout(rowHasLabel, context);
 
         // > Label View
-        if (this.data().format().label() != null)
+        if (this.data().format().label() != null) {
             layout.addView(this.labelView(context));
+        }
 
         // > Value
         layout.addView(this.valueView(context));
@@ -573,66 +575,86 @@ public class NumberWidget extends Widget
 
         LinearLayoutBuilder layout  = new LinearLayoutBuilder();
         TextViewBuilder     value   = new TextViewBuilder();
+        TextViewBuilder     label   = new TextViewBuilder();
         TextViewBuilder     postfix = new TextViewBuilder();
 
         this.valueViewId   = Util.generateViewId();
         this.postfixViewId = Util.generateViewId();
 
-        // [2 A] Layout
+        // [2] Layout
         // --------------------------------------------------------------------------------------
 
+        layout.orientation          = LinearLayout.HORIZONTAL;
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.gravity              = Gravity.CENTER;
 
-        layout.backgroundResource   = this.data().format().background().resourceId();
+        layout.backgroundResource   = this.data().format().background()
+                                          .resourceId(this.data().format().corners());
+
+        // > Content Alignment
+        switch (this.data().format().alignment())
+        {
+            case LEFT:
+                layout.gravity  = Gravity.START | Gravity.CENTER_VERTICAL;
+                //layout.layoutGravity  = Gravity.START;
+                break;
+            case CENTER:
+                layout.gravity  = Gravity.CENTER;
+                //layout.layoutGravity  = Gravity.CENTER_HORIZONTAL;
+                break;
+            case RIGHT:
+                layout.gravity  = Gravity.END | Gravity.CENTER_VERTICAL;
+                //layout.layoutGravity  = Gravity.END;
+                break;
+        }
+
+        if (this.format().inlineLabel() != null)
+            layout.child(label);
 
         layout.child(value);
 
         if (!this.postfixVariable.isNull())
             layout.child(postfix);
 
-        // [2 B] Value
+        // [3 A] Value
         // --------------------------------------------------------------------------------------
 
         value.id            = this.valueViewId;
 
-        value.width         = LinearLayout.LayoutParams.MATCH_PARENT;
+        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         value.size          = this.format().size().resourceId();
         value.font          = Font.serifFontRegular(context);
-        value.color         = R.color.dark_blue_hl_1;
+        value.color         = this.format().tint().resourceId();
         value.text          = this.valueString();
 
         value.margin.right  = R.dimen.widget_number_value_margin_right;
 
-        // > Content Alignment
-        switch (this.data().format().alignment())
-        {
-            case LEFT:
-                layout.gravity  = Gravity.START;
-                layout.layoutGravity  = Gravity.START;
-                break;
-            case CENTER:
-                value.gravity  = Gravity.CENTER_HORIZONTAL;
-                value.layoutGravity  = Gravity.CENTER_HORIZONTAL;
-                break;
-            case RIGHT:
-                layout.gravity  = Gravity.END;
-                layout.layoutGravity  = Gravity.END;
-                break;
-        }
-
         // > Background
         // -------------------------------------------------------------------------------------
 
-        if (this.data().format().background() != WidgetBackground.NONE) {
-            value.padding.top    = R.dimen.widget_padding_vert;
-            value.padding.bottom = R.dimen.widget_padding_vert;
-        }
+//        if (this.data().format().background() != WidgetBackground.NONE) {
+//            value.padding.top    = R.dimen.widget_padding_vert;
+//            value.padding.bottom = R.dimen.widget_padding_vert;
+//        }
 
 
-        // [2 C] Postfix
+        // [3 B] Label
+        // --------------------------------------------------------------------------------------
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text              = this.format().inlineLabel();
+        label.font              = Font.serifFontRegular(context);
+        label.color             = this.format().tint().labelResourceId();
+        label.size              = this.format().size().labelResourceId();
+
+        label.margin.right      = R.dimen.widget_label_inline_margin_right;
+
+        // [3 C] Postfix
         // --------------------------------------------------------------------------------------
 
         postfix.id    = this.postfixViewId;
@@ -656,7 +678,7 @@ public class NumberWidget extends Widget
 
         label.text              = this.data().format().label();
         label.font              = Font.serifFontRegular(context);
-        label.color             = R.color.dark_blue_1;
+        label.color             = R.color.dark_blue_hl_8;
         label.size              = R.dimen.widget_label_text_size;
 
         label.margin.bottom     = R.dimen.widget_label_margin_bottom;

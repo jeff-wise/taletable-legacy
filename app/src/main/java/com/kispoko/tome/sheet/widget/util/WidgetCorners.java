@@ -2,7 +2,6 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
-import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -16,50 +15,53 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Widget Background
+ * Widget Corners
+ *
+ * The corner radius of the widget background.
  */
-public enum WidgetBackground implements ToYaml
+public enum WidgetCorners implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
     NONE,
-    LIGHT,
+    SMALL,
     MEDIUM,
-    DARK;
+    LARGE,
+    CIRCLE;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetBackground fromString(String bgString)
+    public static WidgetCorners fromString(String radius)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetBackground.class, bgString);
+        return EnumUtils.fromString(WidgetCorners.class, radius);
     }
 
 
-    public static WidgetBackground fromYaml(YamlParser yaml)
+    public static WidgetCorners fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         String bgString = yaml.getString();
         try {
-            return WidgetBackground.fromString(bgString);
+            return WidgetCorners.fromString(bgString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
         }
     }
 
 
-    public static WidgetBackground fromSQLValue(SQLValue sqlValue)
+    public static WidgetCorners fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetBackground background = WidgetBackground.fromString(enumString);
-            return background;
+            WidgetCorners radius = WidgetCorners.fromString(enumString);
+            return radius;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -77,44 +79,6 @@ public enum WidgetBackground implements ToYaml
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
-    }
-
-
-    // RESOURCE ID
-    // ------------------------------------------------------------------------------------------
-
-    public Integer resourceId(WidgetCorners corners)
-    {
-        switch (this)
-        {
-            case NONE:
-                return null;
-            case LIGHT:
-                return R.drawable.bg_widget_light;
-            case MEDIUM:
-                return R.drawable.bg_widget_medium;
-            case DARK:
-                if (corners != null)
-                {
-                    switch (corners)
-                    {
-                        case SMALL:
-                            return R.drawable.bg_widget_dark_small_corners;
-                        case MEDIUM:
-                            return R.drawable.bg_widget_dark_medium_corners;
-                        case LARGE:
-                            return R.drawable.bg_widget_dark_large_corners;
-                        case CIRCLE:
-                            return R.drawable.bg_widget_dark_circle;
-                    }
-                }
-                else
-                {
-                    return R.drawable.bg_widget_dark_small_corners;
-                }
-        }
-
-        return 0;
     }
 
 }

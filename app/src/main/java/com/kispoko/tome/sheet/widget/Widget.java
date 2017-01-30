@@ -14,7 +14,6 @@ import com.kispoko.tome.activity.sheet.ActionDialogFragment;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.EnumUtils;
@@ -76,6 +75,28 @@ public abstract class Widget implements Model, ToYaml, Serializable
             } catch (InvalidDataException e) {
                 throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
             }
+        }
+
+
+        public int stringLabelResourceId()
+        {
+            switch (this)
+            {
+                case TEXT:
+                    return R.string.widget_text;
+                case NUMBER:
+                    return R.string.widget_number;
+                case BOOLEAN:
+                    return R.string.widget_boolean;
+                case TABLE:
+                    return R.string.widget_table;
+                case IMAGE:
+                    return R.string.widget_image;
+                case ACTION:
+                    return R.string.widget_action;
+            }
+
+            return 0;
         }
 
     }
@@ -200,7 +221,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
                 layout.backgroundResource = R.drawable.bg_widget_medium;
                 break;
             case DARK:
-                layout.backgroundResource = R.drawable.bg_widget_dark;
+                layout.backgroundResource = R.drawable.bg_widget_dark_large_corners;
                 break;
         }
 

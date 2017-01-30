@@ -24,6 +24,7 @@ public enum WidgetContentSize implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
+    VERY_SMALL,
     SMALL,
     MEDIUM_SMALL,
     MEDIUM,
@@ -97,6 +98,8 @@ public enum WidgetContentSize implements ToYaml
     {
         switch (this)
         {
+            case VERY_SMALL:
+                return R.dimen.text_size_very_small;
             case SMALL:
                 return R.dimen.text_size_small;
             case MEDIUM_SMALL:
@@ -107,6 +110,28 @@ public enum WidgetContentSize implements ToYaml
                 return R.dimen.text_size_medium_large;
             case LARGE:
                 return R.dimen.text_size_large;
+        }
+
+        return 0;
+    }
+
+
+    public int labelResourceId()
+    {
+        switch (this)
+        {
+            case VERY_SMALL:
+                return R.dimen.label_size_very_small;
+            case SMALL:
+                return R.dimen.label_size_small;
+            case MEDIUM_SMALL:
+                return R.dimen.label_size_medium_small;
+            case MEDIUM:
+                return R.dimen.label_size_medium;
+            case MEDIUM_LARGE:
+                return R.dimen.label_size_medium_large;
+            case LARGE:
+                return R.dimen.label_size_large;
         }
 
         return 0;

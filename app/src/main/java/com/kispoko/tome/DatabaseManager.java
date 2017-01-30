@@ -56,6 +56,7 @@ import com.kispoko.tome.sheet.widget.ActionWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
+import com.kispoko.tome.sheet.widget.bool.BooleanWidgetFormat;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.widget.table.TableRow;
 import com.kispoko.tome.sheet.widget.table.cell.BooleanCell;
@@ -123,6 +124,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(NumberWidget.class);
             modelClasses.add(NumberWidgetFormat.class);
             modelClasses.add(BooleanWidget.class);
+            modelClasses.add(BooleanWidgetFormat.class);
             modelClasses.add(ImageWidget.class);
             modelClasses.add(TableWidget.class);
             modelClasses.add(ActionWidget.class);

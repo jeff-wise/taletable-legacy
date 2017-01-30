@@ -6,7 +6,9 @@ import android.content.Context;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
+import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -276,19 +278,20 @@ public class GroupRow implements Model, ToYaml, Serializable
     {
         LinearLayout layout = this.layout(context);
 
-        boolean rowHasLabel = false;
+        boolean rowHasTopLabel = false;
 
         for (WidgetUnion widgetUnion : this.widgets())
         {
-            if (widgetUnion.widget().data().format().label() != null)
-                rowHasLabel = true;
+            if (widgetUnion.widget().data().format().label() != null) {
+                rowHasTopLabel = true;
+            }
         }
 
         for (WidgetUnion widgetUnion : this.widgets())
         {
             Widget widget = widgetUnion.widget();
 
-            layout.addView(widget.view(rowHasLabel, context));
+            layout.addView(widget.view(rowHasTopLabel, context));
         }
 
         return layout;

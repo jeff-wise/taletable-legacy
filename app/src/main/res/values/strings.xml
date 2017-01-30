@@ -28,6 +28,12 @@
     <string name="widget_upper">WIDGET</string>
     <string name="widgets_upper">WIDGETS</string>
 
+    <string name="widget_text">Text Widget</string>
+    <string name="widget_number">Number Widget</string>
+    <string name="widget_boolean">Boolean Widget</string>
+    <string name="widget_table">Table Widget</string>
+    <string name="widget_action">Action Widget</string>
+    <string name="widget_image">Image Widget</string>
 
     <string name="column">Column</string>
 
@@ -37,6 +43,7 @@
 
     <string name="edit_the_sheet">Edit the Sheet</string>
     <string name="you_clicked">You clicked the</string>
+    <string name="edit_its">Edit its</string>
 
 
 

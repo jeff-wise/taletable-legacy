@@ -1,9 +1,11 @@
 
-package com.kispoko.tome.sheet.widget.util;
+package com.kispoko.tome.sheet.group;
 
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -14,11 +16,10 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
-
 /**
- * Widget Background
+ * Group Background
  */
-public enum WidgetBackground implements ToYaml
+public enum GroupBackground implements ToYaml
 {
 
     // VALUES
@@ -26,39 +27,38 @@ public enum WidgetBackground implements ToYaml
 
     NONE,
     LIGHT,
-    MEDIUM,
     DARK;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetBackground fromString(String bgString)
+    public static GroupBackground fromString(String bgString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetBackground.class, bgString);
+        return EnumUtils.fromString(GroupBackground.class, bgString);
     }
 
 
-    public static WidgetBackground fromYaml(YamlParser yaml)
+    public static GroupBackground fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         String bgString = yaml.getString();
         try {
-            return WidgetBackground.fromString(bgString);
+            return GroupBackground.fromString(bgString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
         }
     }
 
 
-    public static WidgetBackground fromSQLValue(SQLValue sqlValue)
+    public static GroupBackground fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetBackground background = WidgetBackground.fromString(enumString);
+            GroupBackground background = GroupBackground.fromString(enumString);
             return background;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
@@ -83,38 +83,20 @@ public enum WidgetBackground implements ToYaml
     // RESOURCE ID
     // ------------------------------------------------------------------------------------------
 
-    public Integer resourceId(WidgetCorners corners)
+    public Integer resourceId()
     {
         switch (this)
         {
             case NONE:
                 return null;
             case LIGHT:
-                return R.drawable.bg_widget_light;
-            case MEDIUM:
-                return R.drawable.bg_widget_medium;
+                return R.color.dark_blue_4;
             case DARK:
-                if (corners != null)
-                {
-                    switch (corners)
-                    {
-                        case SMALL:
-                            return R.drawable.bg_widget_dark_small_corners;
-                        case MEDIUM:
-                            return R.drawable.bg_widget_dark_medium_corners;
-                        case LARGE:
-                            return R.drawable.bg_widget_dark_large_corners;
-                        case CIRCLE:
-                            return R.drawable.bg_widget_dark_circle;
-                    }
-                }
-                else
-                {
-                    return R.drawable.bg_widget_dark_small_corners;
-                }
+                return R.color.dark_blue_7;
         }
 
         return 0;
     }
+
 
 }

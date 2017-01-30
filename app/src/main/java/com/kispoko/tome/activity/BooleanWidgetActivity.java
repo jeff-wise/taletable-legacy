@@ -140,18 +140,6 @@ public class BooleanWidgetActivity extends AppCompatActivity
                     Form.textInput(name, this),
                     this);
 
-        // > Text Size Field
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout textSizeField =
-                Form.field(
-                        R.string.boolean_widget_field_size_label,
-                        R.string.boolean_widget_field_size_description,
-                        Form.variantInput(WidgetContentSize.class,
-                                          this.booleanWidget.size(),
-                                          this),
-                        this);
-
         // > Alignment Field
         // -------------------------------------------------------------------------------------
 
@@ -193,7 +181,6 @@ public class BooleanWidgetActivity extends AppCompatActivity
 
         layout.addView(Form.divider(this));
 
-        layout.addView(textSizeField);
         layout.addView(alignmentField);
         layout.addView(widthField);
 

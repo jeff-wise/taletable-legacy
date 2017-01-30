@@ -51,12 +51,14 @@
 
 
     <!-- PAGE -->
-    <dimen name="page_padding_top">12dp</dimen>
+    <dimen name="page_padding_bottom">20dp</dimen>
 
 
     <!-- GROUP -->
     <dimen name="group_margin_bottom">15dp</dimen>
-    <dimen name="group_margin_horz">10dp</dimen>
+    <dimen name="group_padding_horz">7dp</dimen>
+    <dimen name="group_background_padding_horz">10dp</dimen>
+    <dimen name="group_background_padding_vert">12dp</dimen>
 
     <dimen name="group_label_margin_left">3dp</dimen>
     <dimen name="group_label_text_size">4.4sp</dimen>
@@ -86,22 +88,42 @@
     <dimen name="text_size_large">6.2dp</dimen>
     <dimen name="text_size_medium_large">5.5dp</dimen>
     <dimen name="text_size_medium">4.7dp</dimen>
-    <dimen name="text_size_medium_small">4.2dp</dimen>
-    <dimen name="text_size_small">3.6dp</dimen>
+    <dimen name="text_size_medium_small">4dp</dimen>
+    <dimen name="text_size_small">3.5dp</dimen>
+    <dimen name="text_size_very_small">3dp</dimen>
 
-    <dimen name="widget_padding_vert">17dp</dimen>
+    <dimen name="label_size_large">5.3dp</dimen>
+    <dimen name="label_size_medium_large">4.7dp</dimen>
+    <dimen name="label_size_medium">4.1dp</dimen>
+    <dimen name="label_size_medium_small">3.5dp</dimen>
+    <dimen name="label_size_small">3dp</dimen>
+    <dimen name="label_size_very_small">2.4dp</dimen>
+
+    <dimen name="widget_padding_vert">15dp</dimen>
     <dimen name="widget_margin_horz">3dp</dimen>
 
     <dimen name="widget_label_text_size">3.4sp</dimen>
     <dimen name="widget_label_margin_bottom">4dp</dimen>
     <dimen name="widget_label_fill_padding">21dp</dimen>
+    <dimen name="widget_label_inline_margin_right">10dp</dimen>
 
 
     <!-- WIDGET: ACTION DIALOG -->
     <dimen name="widget_action_dialog_title_text_size">4sp</dimen>
     <dimen name="widget_action_dialog_title_margin_bottom">15dp</dimen>
     <dimen name="widget_action_dialog_heading_text_size">3.2dp</dimen>
-    <dimen name="widget_action_dialog_button_text_size">4.2sp</dimen>
+    <dimen name="widget_action_dialog_heading_margin_bottom">15dp</dimen>
+    <dimen name="widget_action_dialog_target_padding_horz">15dp</dimen>
+    <dimen name="widget_action_dialog_target_padding_top">15dp</dimen>
+    <dimen name="widget_action_dialog_target_padding_bottom">20dp</dimen>
+    <dimen name="widget_action_dialog_target_name_text_size">4.8sp</dimen>
+    <dimen name="widget_action_dialog_target_name_margin_bottom">3dp</dimen>
+    <dimen name="widget_action_dialog_target_type_text_size">2.6sp</dimen>
+    <dimen name="widget_action_dialog_target_icon_margin_right">5dp</dimen>
+    <dimen name="widget_action_dialog_parents_padding_horz">15dp</dimen>
+    <dimen name="widget_action_dialog_parents_padding_top">15dp</dimen>
+    <dimen name="widget_action_dialog_parents_padding_bottom">15dp</dimen>
+    <dimen name="widget_action_dialog_button_text_size">4.6sp</dimen>
     <dimen name="widget_action_dialog_button_padding_vert">14dp</dimen>
     <dimen name="widget_action_dialog_button_padding_horz">10dp</dimen>
 

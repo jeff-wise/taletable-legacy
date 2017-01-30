@@ -24,6 +24,7 @@ import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 
+import static android.R.attr.button;
 
 
 /**
@@ -37,7 +38,8 @@ public class ActionDialogFragment extends DialogFragment
 
     private NewValueDialogListener newValueDialogListener;
 
-    private String widgetName;
+    private String      widgetName;
+    private Widget.Type widgetType;
 
 
     // CONSTRUCTORS
@@ -46,12 +48,13 @@ public class ActionDialogFragment extends DialogFragment
     public ActionDialogFragment() { }
 
 
-    public static ActionDialogFragment newInstance(String widgetName)
+    public static ActionDialogFragment newInstance(String widgetName, Widget.Type widgetType)
     {
         ActionDialogFragment actionDialogFragment = new ActionDialogFragment();
 
         Bundle args = new Bundle();
         args.putString("widget_name", widgetName);
+        args.putSerializable("widget_type", widgetType);
         actionDialogFragment.setArguments(args);
 
         return actionDialogFragment;
@@ -80,6 +83,7 @@ public class ActionDialogFragment extends DialogFragment
 
         // > Read State
         this.widgetName = getArguments().getString("widget_name");
+        this.widgetType = (Widget.Type) getArguments().getSerializable("widget_type");
 
         return dialog;
     }
@@ -145,33 +149,15 @@ public class ActionDialogFragment extends DialogFragment
     {
         LinearLayout layout = viewLayout(context);
 
-        // > Header
+        // > Widget
         // -------------------------------------------------------------------------------------
 
-        layout.addView(headerView(context));
-
-        // > Context
-        // -------------------------------------------------------------------------------------
-
-        layout.addView(contextView(context));
-
+        layout.addView(targetView(context));
 
         // > Buttons
         // -------------------------------------------------------------------------------------
 
-
-//        TextView widgetButton = buttonView("View Widget", context);
-//        TextView rowButton    = buttonView("View its Row", context);
-//        TextView groupButton  = buttonView("View its Group", context);
-//        TextView pageButton   = buttonView("View its Page", context);
-//        TextView editButton   = buttonView("Edit its text value", context);
-//
-//        layout.addView(widgetButton);
-//        layout.addView(rowButton);
-//        layout.addView(groupButton);
-//        layout.addView(pageButton);
-//        layout.addView(editButton);
-
+        layout.addView(parentsView(context));
 
         return layout;
     }
@@ -191,67 +177,22 @@ public class ActionDialogFragment extends DialogFragment
     }
 
 
-    private LinearLayout headerView(Context context)
+
+    private LinearLayout targetView(Context context)
     {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        TextViewBuilder     title  = new TextViewBuilder();
-        ImageViewBuilder    icon   = new ImageViewBuilder();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER_HORIZONTAL;
-
-        layout.child(title)
-              .child(icon);
-
-        // [3 A] Title
-        // -------------------------------------------------------------------------------------
-
-        title.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        title.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        title.font              = Font.sansSerifFontRegular(context);
-        title.size              = R.dimen.widget_action_dialog_title_text_size;
-        title.color             = R.color.dark_blue_hl_4;
-        title.textId            = R.string.edit_the_sheet;
-
-        title.margin.bottom     = R.dimen.widget_action_dialog_title_margin_bottom;
-
-        // [3 B] Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.image              = R.drawable.ic_edit_sheet;
-
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout contextView(Context context)
-    {
-        LinearLayout layout = contextLayout(context);
+        LinearLayout layout = targetViewLayout(context);
 
         // > Header
-        layout.addView(contextHeaderView(context));
+        layout.addView(targetHeaderView(context));
 
-        // > Widget
-        layout.addView(contextWidgetView(context));
+        // > Name
+        layout.addView(targetNameView(context));
 
         return layout;
     }
 
 
-    private LinearLayout contextLayout(Context context)
+    private LinearLayout targetViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -259,11 +200,18 @@ public class ActionDialogFragment extends DialogFragment
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.backgroundResource  = R.drawable.bg_dialog_header;
+
+        layout.padding.left     = R.dimen.widget_action_dialog_target_padding_horz;
+        layout.padding.right    = R.dimen.widget_action_dialog_target_padding_horz;
+        layout.padding.top      = R.dimen.widget_action_dialog_target_padding_top;
+        layout.padding.bottom   = R.dimen.widget_action_dialog_target_padding_bottom;
+
         return layout.linearLayout(context);
     }
 
 
-    private TextView contextHeaderView(Context context)
+    private TextView targetHeaderView(Context context)
     {
         TextViewBuilder header = new TextViewBuilder();
 
@@ -272,45 +220,204 @@ public class ActionDialogFragment extends DialogFragment
 
         header.textId           = R.string.you_clicked;
         header.font             = Font.sansSerifFontBold(context);
-        header.color            = R.color.gold_hl_9;
+        header.color            = R.color.dark_blue_hl_8;
         header.size             = R.dimen.widget_action_dialog_heading_text_size;
+
+        header.margin.bottom    = R.dimen.widget_action_dialog_heading_margin_bottom;
 
         return header.textView(context);
     }
 
 
-    private TextView contextWidgetView(Context context)
+    private LinearLayout targetNameView(Context context)
     {
-        TextViewBuilder widget = new TextViewBuilder();
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
 
-        widget.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        widget.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        LinearLayoutBuilder layout      = new LinearLayoutBuilder();
+
+        LinearLayoutBuilder nameLayout  = new LinearLayoutBuilder();
+
+        ImageViewBuilder    icon        = new ImageViewBuilder();
+        TextViewBuilder     name        = new TextViewBuilder();
+
+        TextViewBuilder     type        = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.gravity              = Gravity.CENTER;
+
+        layout.child(nameLayout)
+              .child(type);
 
 
-        return widget.textView(context);
+        // [3] Name Layout
+        // -------------------------------------------------------------------------------------
+
+        nameLayout.orientation      = LinearLayout.HORIZONTAL;
+        nameLayout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        nameLayout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        nameLayout.gravity          = Gravity.CENTER_VERTICAL;
+
+        nameLayout.margin.bottom    = R.dimen.widget_action_dialog_target_name_margin_bottom;
+
+        nameLayout.child(icon)
+                  .child(name);
+
+        // [3 A] Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image              = R.drawable.ic_launch;
+
+        icon.margin.right       = R.dimen.widget_action_dialog_target_icon_margin_right;
+
+        // [3 B] Name
+        // -------------------------------------------------------------------------------------
+
+        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        name.text               = this.widgetName;
+        name.font               = Font.sansSerifFontRegular(context);
+        name.color              = R.color.dark_blue_hl_4;
+        name.size               = R.dimen.widget_action_dialog_target_name_text_size;
+
+        // [4] Type
+        // -------------------------------------------------------------------------------------
+
+        type.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        type.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        type.text               = getString(this.widgetType.stringLabelResourceId()).toUpperCase();
+        type.font               = Font.sansSerifFontRegular(context);
+        type.color              = R.color.dark_blue_1;
+        type.size               = R.dimen.widget_action_dialog_target_type_text_size;
+
+
+        return layout.linearLayout(context);
     }
 
 
-    private TextView buttonView(String label, Context context)
+    private LinearLayout parentsView(Context context)
     {
-        TextViewBuilder button = new TextViewBuilder();
+        LinearLayout layout = parentsLayout(context);
 
-        button.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        // > Header
+        layout.addView(parentsHeaderView(context));
 
-        button.text             = label;
-        button.font             = Font.sansSerifFontBold(context);
-        button.color            = R.color.dark_blue_hl_5;
-        button.size             = R.dimen.widget_action_dialog_button_text_size;
+        // > Buttons
+        LinearLayout buttonsLayout = parentsButtonsLayout(context);
 
-        button.padding.top      = R.dimen.widget_action_dialog_button_padding_vert;
-        button.padding.bottom   = R.dimen.widget_action_dialog_button_padding_vert;
-//        button.padding.left     = R.dimen.widget_action_dialog_button_padding_horz;
-//        button.padding.right    = R.dimen.widget_action_dialog_button_padding_horz;
+        buttonsLayout.addView(buttonView(R.string.row, context));
+        buttonsLayout.addView(buttonView(R.string.group, context));
+        buttonsLayout.addView(buttonView(R.string.page, context));
 
-        button.backgroundResource   = R.drawable.bg_widget_dark;
+        layout.addView(buttonsLayout);
 
-        return button.textView(context);
+
+        return layout;
+    }
+
+
+    private LinearLayout parentsLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.padding.left     = R.dimen.widget_action_dialog_parents_padding_horz;
+        layout.padding.right    = R.dimen.widget_action_dialog_parents_padding_horz;
+        layout.padding.top      = R.dimen.widget_action_dialog_parents_padding_top;
+        layout.padding.bottom   = R.dimen.widget_action_dialog_parents_padding_bottom;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private TextView parentsHeaderView(Context context)
+    {
+        TextViewBuilder header = new TextViewBuilder();
+
+        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        header.textId           = R.string.edit_its;
+        header.font             = Font.sansSerifFontBold(context);
+        header.color            = R.color.gold_9;
+        header.size             = R.dimen.widget_action_dialog_heading_text_size;
+
+        header.margin.bottom    = R.dimen.widget_action_dialog_heading_margin_bottom;
+
+        return header.textView(context);
+    }
+
+
+    private LinearLayout parentsButtonsLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout buttonView(int labelId, Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        ImageViewBuilder    icon   = new ImageViewBuilder();
+        TextViewBuilder     parent = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.gravity              = Gravity.CENTER_VERTICAL;
+
+        layout.padding.top          = R.dimen.widget_action_dialog_button_padding_vert;
+        layout.padding.bottom       = R.dimen.widget_action_dialog_button_padding_vert;
+
+        layout.child(icon)
+              .child(parent);
+
+        // [3 A] Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image                  = R.drawable.ic_launch;
+
+        icon.margin.right           = R.dimen.widget_action_dialog_target_icon_margin_right;
+
+        // [3 B]
+        // -------------------------------------------------------------------------------------
+
+        parent.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        parent.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        parent.textId           = labelId;
+        parent.font             = Font.sansSerifFontRegular(context);
+        parent.color            = R.color.dark_blue_hl_2;
+        parent.size             = R.dimen.widget_action_dialog_button_text_size;
+
+
+        return layout.linearLayout(context);
     }
 
 

@@ -7,7 +7,6 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -16,50 +15,51 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Widget Background
+ * Widget Text Tint
  */
-public enum WidgetBackground implements ToYaml
+public enum WidgetTextTint
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    NONE,
     LIGHT,
+    MEDIUM_LIGHT,
     MEDIUM,
+    MEDIUM_DARK,
     DARK;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetBackground fromString(String bgString)
+    public static WidgetTextTint fromString(String bgString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetBackground.class, bgString);
+        return EnumUtils.fromString(WidgetTextTint.class, bgString);
     }
 
 
-    public static WidgetBackground fromYaml(YamlParser yaml)
+    public static WidgetTextTint fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         String bgString = yaml.getString();
         try {
-            return WidgetBackground.fromString(bgString);
+            return WidgetTextTint.fromString(bgString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
         }
     }
 
 
-    public static WidgetBackground fromSQLValue(SQLValue sqlValue)
+    public static WidgetTextTint fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetBackground background = WidgetBackground.fromString(enumString);
-            return background;
+            WidgetTextTint tint = WidgetTextTint.fromString(enumString);
+            return tint;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -71,7 +71,7 @@ public enum WidgetBackground implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The Widget Content Alignment's yaml string representation.
+     * The Widget Text Tint's yaml string representation.
      * @return The Yaml Builder.
      */
     public YamlBuilder toYaml()
@@ -83,38 +83,44 @@ public enum WidgetBackground implements ToYaml
     // RESOURCE ID
     // ------------------------------------------------------------------------------------------
 
-    public Integer resourceId(WidgetCorners corners)
+    public Integer resourceId()
     {
         switch (this)
         {
-            case NONE:
-                return null;
             case LIGHT:
-                return R.drawable.bg_widget_light;
+                return R.color.dark_blue_hlx_7;
+            case MEDIUM_LIGHT:
+                return R.color.dark_blue_hlx_9;
             case MEDIUM:
-                return R.drawable.bg_widget_medium;
+                return R.color.dark_blue_hl_1;
+            case MEDIUM_DARK:
+                return R.color.dark_blue_hl_3;
             case DARK:
-                if (corners != null)
-                {
-                    switch (corners)
-                    {
-                        case SMALL:
-                            return R.drawable.bg_widget_dark_small_corners;
-                        case MEDIUM:
-                            return R.drawable.bg_widget_dark_medium_corners;
-                        case LARGE:
-                            return R.drawable.bg_widget_dark_large_corners;
-                        case CIRCLE:
-                            return R.drawable.bg_widget_dark_circle;
-                    }
-                }
-                else
-                {
-                    return R.drawable.bg_widget_dark_small_corners;
-                }
+                return R.color.dark_blue_hl_5;
         }
 
         return 0;
     }
+
+
+    public Integer labelResourceId()
+    {
+        switch (this)
+        {
+            case LIGHT:
+                return R.color.dark_blue_hl_2;
+            case MEDIUM_LIGHT:
+                return R.color.dark_blue_hl_4;
+            case MEDIUM:
+                return R.color.dark_blue_hl_6;
+            case MEDIUM_DARK:
+                return R.color.dark_blue_hl_8;
+            case DARK:
+                return R.color.dark_blue_1;
+        }
+
+        return 0;
+    }
+
 
 }
