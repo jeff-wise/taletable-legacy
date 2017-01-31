@@ -22,7 +22,7 @@ import java.util.UUID;
 /**
  * Text Value
  */
-public class TextValue implements Model, ToYaml, Serializable
+public class TextValue implements Value, Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -39,6 +39,7 @@ public class TextValue implements Model, ToYaml, Serializable
 
     private PrimitiveFunctor<String>         name;
     private PrimitiveFunctor<String>         value;
+    private PrimitiveFunctor<String>         summary;
     private CollectionFunctor<VariableUnion> variables;
 
 
@@ -51,6 +52,7 @@ public class TextValue implements Model, ToYaml, Serializable
 
         this.name       = new PrimitiveFunctor<>(null, String.class);
         this.value      = new PrimitiveFunctor<>(null, String.class);
+        this.summary    = new PrimitiveFunctor<>(null, String.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -58,12 +60,17 @@ public class TextValue implements Model, ToYaml, Serializable
     }
 
 
-    public TextValue(UUID id, String name, String value, List<VariableUnion> variables)
+    public TextValue(UUID id,
+                     String name,
+                     String value,
+                     String summary,
+                     List<VariableUnion> variables)
     {
         this.id         = id;
 
         this.name       = new PrimitiveFunctor<>(name, String.class);
         this.value      = new PrimitiveFunctor<>(value, String.class);
+        this.summary    = new PrimitiveFunctor<>(summary, String.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -91,6 +98,7 @@ public class TextValue implements Model, ToYaml, Serializable
 
         String              name      = yaml.atMaybeKey("name").getString();
         String              value     = yaml.atKey("value").getString();
+        String              summary   = yaml.atMaybeKey("summary").getString();
 
         List<VariableUnion> variables = yaml.atMaybeKey("variables")
                                             .forEach(new YamlParser.ForEach<VariableUnion>() {
@@ -100,7 +108,7 @@ public class TextValue implements Model, ToYaml, Serializable
             }
         }, true);
 
-        return new TextValue(id, name, value, variables);
+        return new TextValue(id, name, value, summary, variables);
     }
 
 
@@ -151,6 +159,7 @@ public class TextValue implements Model, ToYaml, Serializable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putString("value", this.value())
+                .putString("summary", this.summary())
                 .putList("variables", this.variables());
     }
 
@@ -175,6 +184,15 @@ public class TextValue implements Model, ToYaml, Serializable
     public String value()
     {
         return this.value.getValue();
+    }
+
+
+    /**
+     * The text value's summary (a short description of what it represents).
+     */
+    public String summary()
+    {
+        return this.summary.getValue();
     }
 
 

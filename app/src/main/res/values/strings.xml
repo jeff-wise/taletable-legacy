@@ -31,6 +31,7 @@
     <string name="widget_text">Text Widget</string>
     <string name="widget_number">Number Widget</string>
     <string name="widget_boolean">Boolean Widget</string>
+    <string name="widget_list">List Widget</string>
     <string name="widget_table">Table Widget</string>
     <string name="widget_action">Action Widget</string>
     <string name="widget_image">Image Widget</string>

@@ -56,6 +56,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
         BOOLEAN,
         IMAGE,
         TABLE,
+        LIST,
         ACTION;
 
 
@@ -88,6 +89,8 @@ public abstract class Widget implements Model, ToYaml, Serializable
                     return R.string.widget_number;
                 case BOOLEAN:
                     return R.string.widget_boolean;
+                case LIST:
+                    return R.string.widget_list;
                 case TABLE:
                     return R.string.widget_table;
                 case IMAGE:

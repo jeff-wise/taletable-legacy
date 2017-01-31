@@ -20,8 +20,6 @@ import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
@@ -561,6 +559,7 @@ public class NumberWidget extends Widget
             layout.padding.top      = R.dimen.widget_label_fill_padding;
         }
 
+
         layout.margin.left      = R.dimen.widget_margin_horz;
         layout.margin.right     = R.dimen.widget_margin_horz;
 
@@ -592,6 +591,11 @@ public class NumberWidget extends Widget
         layout.backgroundResource   = this.data().format().background()
                                           .resourceId(this.data().format().corners());
 
+        if (this.data().format().background() == WidgetBackground.NONE) {
+            layout.padding.top      = R.dimen.widget_padding_vert;
+            layout.padding.bottom   = R.dimen.widget_padding_vert;
+        }
+
         // > Content Alignment
         switch (this.data().format().alignment())
         {
@@ -601,7 +605,7 @@ public class NumberWidget extends Widget
                 break;
             case CENTER:
                 layout.gravity  = Gravity.CENTER;
-                //layout.layoutGravity  = Gravity.CENTER_HORIZONTAL;
+                value.gravity  = Gravity.CENTER_HORIZONTAL;
                 break;
             case RIGHT:
                 layout.gravity  = Gravity.END | Gravity.CENTER_VERTICAL;

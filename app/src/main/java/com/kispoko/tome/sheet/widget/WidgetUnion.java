@@ -3,8 +3,6 @@ package com.kispoko.tome.sheet.widget;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.variable.NumberVariable;
-import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
@@ -16,6 +14,7 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -41,6 +40,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     private ModelFunctor<ActionWidget>      actionWidget;
     private ModelFunctor<BooleanWidget>     booleanWidget;
     private ModelFunctor<ImageWidget>       imageWidget;
+    private ModelFunctor<ListWidget>        listWidget;
     private ModelFunctor<NumberWidget>      numberWidget;
     private ModelFunctor<TableWidget>       tableWidget;
     private ModelFunctor<TextWidget>        textWidget;
@@ -58,6 +58,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.actionWidget   = ModelFunctor.empty(ActionWidget.class);
         this.booleanWidget  = ModelFunctor.empty(BooleanWidget.class);
         this.imageWidget    = ModelFunctor.empty(ImageWidget.class);
+        this.listWidget     = ModelFunctor.empty(ListWidget.class);
         this.numberWidget   = ModelFunctor.empty(NumberWidget.class);
         this.tableWidget    = ModelFunctor.empty(TableWidget.class);
         this.textWidget     = ModelFunctor.empty(TextWidget.class);
@@ -73,6 +74,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.actionWidget   = ModelFunctor.full(null, ActionWidget.class);
         this.booleanWidget  = ModelFunctor.full(null, BooleanWidget.class);
         this.imageWidget    = ModelFunctor.full(null, ImageWidget.class);
+        this.listWidget     = ModelFunctor.full(null, ListWidget.class);
         this.numberWidget   = ModelFunctor.full(null, NumberWidget.class);
         this.tableWidget    = ModelFunctor.full(null, TableWidget.class);
         this.textWidget     = ModelFunctor.full(null, TextWidget.class);
@@ -89,6 +91,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case IMAGE:
                 this.imageWidget.setValue((ImageWidget) widget);
+                break;
+            case LIST:
+                this.listWidget.setValue((ListWidget) widget);
                 break;
             case NUMBER:
                 this.numberWidget.setValue((NumberWidget) widget);
@@ -136,6 +141,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public static WidgetUnion asImage(UUID id, ImageWidget imageWidget)
     {
         return new WidgetUnion(id, imageWidget, WidgetType.IMAGE);
+    }
+
+
+    /**
+     * Create the "list" variant.
+     * @param listWidget The list widget.
+     * @return The "list" Widget Union.
+     */
+    public static WidgetUnion asList(UUID id, ListWidget listWidget)
+    {
+        return new WidgetUnion(id, listWidget, WidgetType.LIST);
     }
 
 
@@ -199,6 +215,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case IMAGE:
                 ImageWidget imageWidget = ImageWidget.fromYaml(yaml);
                 return WidgetUnion.asImage(id, imageWidget);
+            case LIST:
+                ListWidget listWidget = ListWidget.fromYaml(yaml);
+                return WidgetUnion.asList(id, listWidget);
             case NUMBER:
                 NumberWidget numberWidget = NumberWidget.fromYaml(yaml);
                 return WidgetUnion.asNumber(id, numberWidget);
@@ -278,6 +297,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case IMAGE:
                 widgetYaml = this.imageWidget().toYaml();
                 break;
+            case LIST:
+                widgetYaml = this.listWidget().toYaml();
+                break;
             case NUMBER:
                 widgetYaml = this.numberWidget().toYaml();
                 break;
@@ -312,6 +334,8 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 return this.booleanWidget();
             case IMAGE:
                 return this.imageWidget();
+            case LIST:
+                return this.listWidget();
             case NUMBER:
                 return this.numberWidget();
             case TABLE:
@@ -374,6 +398,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public ImageWidget imageWidget()
     {
         return this.imageWidget.getValue();
+    }
+
+
+    /**
+     * The "list" case.
+     * @return The List Widget.
+     */
+    public ListWidget listWidget()
+    {
+        return this.listWidget.getValue();
     }
 
 

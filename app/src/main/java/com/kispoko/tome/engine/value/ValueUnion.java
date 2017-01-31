@@ -197,6 +197,23 @@ public class ValueUnion implements Model, ToYaml, Serializable
     }
 
 
+    // > Value
+    // ------------------------------------------------------------------------------------------
+
+    public Value value()
+    {
+        switch (this.type())
+        {
+            case TEXT:
+                return this.textValue();
+            case NUMBER:
+                return this.numberValue();
+        }
+
+        return null;
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 

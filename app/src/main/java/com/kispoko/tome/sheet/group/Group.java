@@ -319,7 +319,6 @@ public class Group implements Model, ToYaml, Serializable
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.orientation      = LinearLayout.VERTICAL;
 
-
         layout.margin.top       = this.spaceAbove().resourceId();
 
         // > Background
@@ -327,13 +326,13 @@ public class Group implements Model, ToYaml, Serializable
             layout.backgroundColor  = this.background().resourceId();
             layout.padding.top      = R.dimen.group_background_padding_vert;
             layout.padding.bottom   = R.dimen.group_background_padding_vert;
-            layout.padding.left     = R.dimen.group_background_padding_horz;
-            layout.padding.right    = R.dimen.group_background_padding_horz;
+//            layout.padding.left     = R.dimen.group_background_padding_horz;
+//            layout.padding.right    = R.dimen.group_background_padding_horz;
         }
-        else {
+        //else {
             layout.padding.left     = R.dimen.group_padding_horz;
             layout.padding.right    = R.dimen.group_padding_horz;
-        }
+       // }
 
         return layout.linearLayout(context);
     }
@@ -353,7 +352,7 @@ public class Group implements Model, ToYaml, Serializable
         labelLayout.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
         labelLayout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        labelLayout.margin.left     = R.dimen.group_label_margin_left;
+        labelLayout.margin.left = R.dimen.group_label_margin_left;
 
         labelLayout.child(labelView);
 

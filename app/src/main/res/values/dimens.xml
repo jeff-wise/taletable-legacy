@@ -57,7 +57,7 @@
     <!-- GROUP -->
     <dimen name="group_margin_bottom">15dp</dimen>
     <dimen name="group_padding_horz">7dp</dimen>
-    <dimen name="group_background_padding_horz">10dp</dimen>
+    <dimen name="group_background_padding_horz">11dp</dimen>
     <dimen name="group_background_padding_vert">12dp</dimen>
 
     <dimen name="group_label_margin_left">3dp</dimen>
@@ -99,7 +99,7 @@
     <dimen name="label_size_small">3dp</dimen>
     <dimen name="label_size_very_small">2.4dp</dimen>
 
-    <dimen name="widget_padding_vert">15dp</dimen>
+    <dimen name="widget_padding_vert">14dp</dimen>
     <dimen name="widget_margin_horz">3dp</dimen>
 
     <dimen name="widget_label_text_size">3.4sp</dimen>
@@ -107,6 +107,15 @@
     <dimen name="widget_label_fill_padding">21dp</dimen>
     <dimen name="widget_label_inline_margin_right">10dp</dimen>
 
+
+    <!-- WIDGET: LIST -->
+    <dimen name="widget_list_bullet_width">4dp</dimen>
+    <dimen name="widget_list_bullet_margin_right">7dp</dimen>
+    <dimen name="widget_list_item_padding_vert">12dp</dimen>
+    <dimen name="widget_list_item_margins_horz">4dp</dimen>
+    <dimen name="widget_list_item_padding_horz">2dp</dimen>
+    <dimen name="widget_list_item_value_padding_left">3dp</dimen>
+    <dimen name="widget_list_inline_label_margin_left">7dp</dimen>
 
     <!-- WIDGET: ACTION DIALOG -->
     <dimen name="widget_action_dialog_title_text_size">4sp</dimen>

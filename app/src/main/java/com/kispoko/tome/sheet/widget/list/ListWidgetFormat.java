@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget.text;
+package com.kispoko.tome.sheet.widget.list;
 
 
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
@@ -11,16 +11,15 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 
-
 import java.io.Serializable;
 import java.util.UUID;
 
 
 
 /**
- * Text Widget Format
+ * List Widget Format
  */
-public class TextWidgetFormat implements Model, ToYaml, Serializable
+public class ListWidgetFormat implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -37,78 +36,64 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
     private PrimitiveFunctor<WidgetContentSize> size;
     private PrimitiveFunctor<WidgetTextTint>    tint;
-    private PrimitiveFunctor<Boolean>           isQuote;
-    private PrimitiveFunctor<String>            quoteSource;
-    private PrimitiveFunctor<String>            inlineLabel;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public TextWidgetFormat()
+    public ListWidgetFormat()
     {
         this.id             = null;
 
         this.size           = new PrimitiveFunctor<>(null, WidgetContentSize.class);
         this.tint           = new PrimitiveFunctor<>(null, WidgetTextTint.class);
-        this.isQuote        = new PrimitiveFunctor<>(null, Boolean.class);
-        this.quoteSource    = new PrimitiveFunctor<>(null, String.class);
-        this.inlineLabel    = new PrimitiveFunctor<>(null, String.class);
     }
 
 
-    public TextWidgetFormat(UUID id,
+    public ListWidgetFormat(UUID id,
                             WidgetContentSize size,
-                            WidgetTextTint tint,
-                            Boolean isQuote,
-                            String quoteSource,
-                            String inlineLabel)
+                            WidgetTextTint tint)
     {
         this.id             = id;
 
         this.size           = new PrimitiveFunctor<>(size, WidgetContentSize.class);
         this.tint           = new PrimitiveFunctor<>(tint, WidgetTextTint.class);
-        this.isQuote        = new PrimitiveFunctor<>(isQuote, Boolean.class);
-        this.quoteSource    = new PrimitiveFunctor<>(quoteSource, String.class);
-        this.inlineLabel    = new PrimitiveFunctor<>(inlineLabel, String.class);
 
-        this.setIsQuote(isQuote);
         this.setSize(size);
-        this.setQuoteSource(quoteSource);
         this.setTint(tint);
     }
 
 
-    public static TextWidgetFormat fromYaml(YamlParser yaml)
+    /**
+     * Create a List Widget Format from its yaml representation.
+     * @param yaml The yaml parser.
+     * @return The List Widget Format.
+     * @throws YamlParseException
+     */
+    public static ListWidgetFormat fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         if (yaml.isNull())
-            return TextWidgetFormat.asDefault();
+            return ListWidgetFormat.asDefault();
 
         UUID              id          = UUID.randomUUID();
 
         WidgetContentSize size        = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
         WidgetTextTint    tint        = WidgetTextTint.fromYaml(yaml.atMaybeKey("tint"));
-        Boolean           isQuote     = yaml.atMaybeKey("is_quote").getBoolean();
-        String            quoteSource = yaml.atMaybeKey("quote_source").getString();
-        String            inlineLabel = yaml.atMaybeKey("inline_label").getString();
 
-        return new TextWidgetFormat(id, size, tint, isQuote, quoteSource, inlineLabel);
+        return new ListWidgetFormat(id, size, tint);
     }
 
 
-    private static TextWidgetFormat asDefault()
+    private static ListWidgetFormat asDefault()
     {
-        TextWidgetFormat textWidgetFormat = new TextWidgetFormat();
+        ListWidgetFormat listWidgetFormat = new ListWidgetFormat();
 
-        textWidgetFormat.setId(UUID.randomUUID());
-        textWidgetFormat.setSize(null);
-        textWidgetFormat.setTint(null);
-        textWidgetFormat.setIsQuote(null);
-        textWidgetFormat.setQuoteSource(null);
-        textWidgetFormat.setInlineLabel(null);
+        listWidgetFormat.setId(UUID.randomUUID());
+        listWidgetFormat.setSize(null);
+        listWidgetFormat.setTint(null);
 
-        return textWidgetFormat;
+        return listWidgetFormat;
     }
 
 
@@ -151,8 +136,6 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         yaml.putYaml("size", this.size());
         yaml.putYaml("tint", this.tint());
-        yaml.putBoolean("is_quote", this.isQuote());
-        yaml.putString("quote_source", this.quoteSource());
 
         return yaml;
     }
@@ -165,7 +148,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     // --------------------------------------------------------------------------------------
 
     /**
-     * The Text Widget's text size.
+     * The List Widget's item text size.
      * @return The Widget Content Size.
      */
     public WidgetContentSize size()
@@ -175,7 +158,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
 
     /**
-     * Set the text widget's text size.
+     * Set the list widget's item text size.
      * @param size The text size.
      */
     public void setSize(WidgetContentSize size)
@@ -191,7 +174,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     // --------------------------------------------------------------------------------------
 
     /**
-     * The text widget tint.
+     * The list widget item text tint.
      * @return The tint.
      */
     public WidgetTextTint tint()
@@ -206,81 +189,6 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
             this.tint.setValue(tint);
         else
             this.tint.setValue(WidgetTextTint.MEDIUM);
-    }
-
-
-    // ** Is Quote
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * True if this text widget represents a quote.
-     * @return Is Quote Boolean.
-     */
-    public Boolean isQuote()
-    {
-        return this.isQuote.getValue();
-    }
-
-
-    /**
-     * Set the is quote value. True if the text widget is a quote.
-     * @param isQuote Is Quote?
-     */
-    public void setIsQuote(Boolean isQuote)
-    {
-        if (isQuote != null)
-            this.isQuote.setValue(isQuote);
-        else
-            this.isQuote.setValue(false);
-    }
-
-
-    // ** Quote Source
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The quote source (who said it).
-     * @return The quote source.
-     */
-    public String quoteSource()
-    {
-        return this.quoteSource.getValue();
-    }
-
-
-    /**
-     * Set the quote source (who said the quote)
-     * @param quoteSource The quote source.
-     */
-    public void setQuoteSource(String quoteSource)
-    {
-        if (quoteSource != null)
-            this.quoteSource.setValue(quoteSource);
-        else
-            this.quoteSource.setValue("");
-    }
-
-
-    // ** Inline Label
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The text widget's inline label (may be null).
-     * @return The inline label.
-     */
-    public String inlineLabel()
-    {
-        return this.inlineLabel.getValue();
-    }
-
-
-    /**
-     * Set the inline label.
-     * @param inlineLabel The label.
-     */
-    public void setInlineLabel(String inlineLabel)
-    {
-        this.inlineLabel.setValue(inlineLabel);
     }
 
 

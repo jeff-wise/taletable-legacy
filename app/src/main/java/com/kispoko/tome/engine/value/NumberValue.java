@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * Number Value
  */
-public class NumberValue implements Model, ToYaml, Serializable
+public class NumberValue implements Value, Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -38,6 +38,7 @@ public class NumberValue implements Model, ToYaml, Serializable
 
     private PrimitiveFunctor<String>            name;
     private PrimitiveFunctor<Integer>           value;
+    private PrimitiveFunctor<String>            summary;
     private CollectionFunctor<VariableUnion>    variables;
 
 
@@ -50,6 +51,7 @@ public class NumberValue implements Model, ToYaml, Serializable
 
         this.name       = new PrimitiveFunctor<>(null, String.class);
         this.value      = new PrimitiveFunctor<>(null, Integer.class);
+        this.summary    = new PrimitiveFunctor<>(null, String.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -57,12 +59,17 @@ public class NumberValue implements Model, ToYaml, Serializable
     }
 
 
-    public NumberValue(UUID id, String name, Integer value, List<VariableUnion> variables)
+    public NumberValue(UUID id,
+                       String name,
+                       Integer value,
+                       String summary,
+                       List<VariableUnion> variables)
     {
         this.id         = id;
 
         this.name       = new PrimitiveFunctor<>(name, String.class);
         this.value      = new PrimitiveFunctor<>(value, Integer.class);
+        this.summary    = new PrimitiveFunctor<>(summary, String.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -90,6 +97,7 @@ public class NumberValue implements Model, ToYaml, Serializable
 
         String              name      = yaml.atKey("name").getString();
         Integer             value     = yaml.atKey("value").getInteger();
+        String              summary   = yaml.atMaybeKey("summary").getString();
 
         List<VariableUnion> variables = yaml.atMaybeKey("variables")
                                             .forEach(new YamlParser.ForEach<VariableUnion>() {
@@ -99,7 +107,7 @@ public class NumberValue implements Model, ToYaml, Serializable
             }
         }, true);
 
-        return new NumberValue(id, name, value, variables);
+        return new NumberValue(id, name, value, summary, variables);
     }
 
 
@@ -175,6 +183,17 @@ public class NumberValue implements Model, ToYaml, Serializable
     public Integer value()
     {
         return this.value.getValue();
+    }
+
+
+    /**
+     * The number value's summary (may be null). It is a short description of what the value
+     * represents.
+     * @return The summary.
+     */
+    public String summary()
+    {
+        return this.summary.getValue();
     }
 
 

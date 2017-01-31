@@ -18,6 +18,7 @@ import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
@@ -437,6 +438,11 @@ public class TextWidget extends Widget
 
         layout.backgroundResource   = this.data().format().background()
                                           .resourceId(this.data().format().corners());
+
+        if (this.data().format().background() == WidgetBackground.NONE) {
+            layout.padding.top      = R.dimen.widget_padding_vert;
+            layout.padding.bottom   = R.dimen.widget_padding_vert;
+        }
 
         if (this.format().inlineLabel() != null)
             layout.child(label);

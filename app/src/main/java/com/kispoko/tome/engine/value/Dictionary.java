@@ -217,6 +217,20 @@ public class Dictionary implements Model, ToYaml, Serializable
     }
 
 
+    public Value value(ValueReference valueReference)
+    {
+        ValueUnion valueUnion = this.lookup(valueReference.valueSetName(),
+                                            valueReference.valueName());
+
+
+        if (valueUnion != null)
+            return valueUnion.value();
+
+        return null;
+    }
+
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 

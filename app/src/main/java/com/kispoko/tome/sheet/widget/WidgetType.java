@@ -27,6 +27,7 @@ public enum WidgetType implements ToYaml
     NUMBER,
     BOOLEAN,
     IMAGE,
+    LIST,
     TABLE,
     ACTION;
 

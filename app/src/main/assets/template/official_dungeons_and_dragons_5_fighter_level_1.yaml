@@ -813,6 +813,45 @@ engine:
         value:
           name: wizard
           value: Wizard
+    - name: language
+      label: Languages
+      description: >
+        The standard spoken languages.
+      values:
+      - type: text
+        value:
+          name: common
+          value: Common
+          summary: One flagon of ale, please.
+      - type: text
+        value:
+          name: dwarvish
+          value: Dwarvish
+      - type: text
+        value:
+          name: elvish
+          value: Elvish
+      - type: text
+        value:
+          name: giant
+          value: Giant
+      - type: text
+        value:
+          name: gnomish
+          value: Gnomish
+      - type: text
+        value:
+          name: goblin
+          value: Goblin
+      - type: text
+        value:
+          name: halfling
+          value: Halfling
+      - type: text
+        value:
+          name: orc
+          value: Orc
+          summary: Aga aga! Vata nara rinak!
     - name: skill
       label: Skills
       description: >
@@ -1142,7 +1181,7 @@ profile:
             label: Name
             type: literal
             value: Aladaisian Wineheart
-      - space_above: large
+      - space_above: medium_large
         widgets:
         - type: text
           data:
@@ -1303,6 +1342,7 @@ profile:
             - edit
             format:
               alignment: left
+              background: none
               width: 1
           format:
             inline_label: age
@@ -1317,6 +1357,7 @@ profile:
             - edit
             format:
               alignment: left
+              background: none
               width: 1
           format:
             inline_label: height
@@ -1331,6 +1372,7 @@ profile:
             - edit
             format:
               alignment: left
+              background: none
               width: 1
           format:
             inline_label: weight
@@ -1344,10 +1386,9 @@ profile:
         widgets:
         - type: text
           data:
-            actions:
-            - edit
             format:
               alignment: left
+              background: none
               width: 1
           format:
             inline_label: eyes
@@ -1358,10 +1399,9 @@ profile:
             value: Blue
         - type: text
           data:
-            actions:
-            - edit
             format:
               alignment: left
+              background: none
               width: 1
           format:
             inline_label: skin
@@ -1372,10 +1412,9 @@ profile:
             value: Light
         - type: text
           data:
-            actions:
-            - edit
             format:
               alignment: left
+              background: none
               width: 1
           format:
             inline_label: hair
@@ -1384,6 +1423,27 @@ profile:
           value:
             type: literal
             value: Brown
+    - label: Languages
+      space_above: medium
+      rows:
+      - space_above: small
+        widgets:
+        - type: list
+          format:
+            size: medium_small
+          values:
+          - type: text
+            value:
+              type: value
+              value:
+                set_name: language
+                value_name: common
+          - type: text
+            value:
+              type: value
+              value:
+                set_name: language
+                value_name: orc
   - label: Stats
     groups:
     - label: Ability Scores
