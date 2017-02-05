@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.group;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -27,6 +28,7 @@ public enum RowWidth implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     FULL,
+    INDENTED,
     THREE_QUARTERS,
     HALF;
 
@@ -99,6 +101,8 @@ public enum RowWidth implements ToYaml
         {
             case FULL:
                 return "100%";
+            case INDENTED:
+                return "90%";
             case THREE_QUARTERS:
                 return "75%";
             case HALF:
@@ -106,6 +110,27 @@ public enum RowWidth implements ToYaml
         }
 
         return "";
+    }
+
+
+    // RESOURCE ID
+    // ------------------------------------------------------------------------------------------
+
+    public int resourceId()
+    {
+        switch (this)
+        {
+            case FULL:
+                return R.dimen.zero_dp;
+            case INDENTED:
+                return R.dimen.group_row_indented_padding;
+            case THREE_QUARTERS:
+                return R.dimen.group_row_three_quarters_padding;
+            case HALF:
+                return R.dimen.group_row_half_padding;
+        }
+
+        return 0;
     }
 
 }

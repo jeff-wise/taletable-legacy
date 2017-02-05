@@ -5,6 +5,8 @@ package com.kispoko.tome.util.database;
 import com.kispoko.tome.util.database.error.ColumnDoesNotExistError;
 import com.kispoko.tome.util.database.error.InvalidEnumError;
 import com.kispoko.tome.util.database.error.NullColumnTypeError;
+import com.kispoko.tome.util.database.error.NullModelError;
+import com.kispoko.tome.util.database.error.NullModelIdentifierError;
 import com.kispoko.tome.util.database.error.QueryError;
 import com.kispoko.tome.util.database.error.SerializationError;
 import com.kispoko.tome.util.database.error.UnexpectedSQLTypeError;
@@ -60,6 +62,18 @@ public class DatabaseException extends Exception
     }
 
 
+    public static DatabaseException nullModelId(NullModelIdentifierError error)
+    {
+        return new DatabaseException(error, ErrorType.NULL_MODEL_ID);
+    }
+
+
+    public static DatabaseException nullModel(NullModelError error)
+    {
+        return new DatabaseException(error, ErrorType.NULL_MODEL);
+    }
+
+
     public static DatabaseException uninitializedFunctor(UninitializedFunctorError error)
     {
         return new DatabaseException(error, ErrorType.UNINITIALIZED_FUNCTOR);
@@ -90,8 +104,6 @@ public class DatabaseException extends Exception
     // > Errors
     // -----------------------------------------------------------------------------------------
 
-
-
     // > Error Message
     // -----------------------------------------------------------------------------------------
 
@@ -114,6 +126,12 @@ public class DatabaseException extends Exception
                 break;
             case NULL_COLUMN_TYPE:
                 errorBuilder.append(((NullColumnTypeError) this.error).errorMessage());
+                break;
+            case NULL_MODEL:
+                errorBuilder.append(((NullModelError) this.error).errorMessage());
+                break;
+            case NULL_MODEL_ID:
+                errorBuilder.append(((NullModelIdentifierError) this.error).errorMessage());
                 break;
             case UNINITIALIZED_FUNCTOR:
                 errorBuilder.append(((UninitializedFunctorError) this.error).errorMessage());
@@ -142,6 +160,8 @@ public class DatabaseException extends Exception
         UNEXPECTED_SQL_TYPE,
         COLUMN_DOES_NOT_EXIST,
         NULL_COLUMN_TYPE,
+        NULL_MODEL,
+        NULL_MODEL_ID,
         UNINITIALIZED_FUNCTOR,
         INVALID_ENUM,
         SERIALIZATION,

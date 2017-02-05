@@ -13,6 +13,7 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
+import static android.graphics.Color.GREEN;
 
 
 /**
@@ -25,9 +26,11 @@ public enum WidgetBackground implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     NONE,
+    EMPTY,
     LIGHT,
-    MEDIUM,
-    DARK;
+    DARK,
+    PURPLE_CIRCLE,
+    GREEN_CIRCLE;
 
 
     // CONSTRUCTORS
@@ -88,11 +91,11 @@ public enum WidgetBackground implements ToYaml
         switch (this)
         {
             case NONE:
-                return null;
+                return R.drawable.bg_widget_none;
+            case EMPTY:
+                return R.drawable.bg_widget_empty;
             case LIGHT:
                 return R.drawable.bg_widget_light;
-            case MEDIUM:
-                return R.drawable.bg_widget_medium;
             case DARK:
                 if (corners != null)
                 {
@@ -112,6 +115,8 @@ public enum WidgetBackground implements ToYaml
                 {
                     return R.drawable.bg_widget_dark_small_corners;
                 }
+            case PURPLE_CIRCLE:
+                return R.drawable.bg_widget_purple_circle;
         }
 
         return 0;

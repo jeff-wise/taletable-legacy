@@ -3,6 +3,8 @@ package com.kispoko.tome.engine.interpreter;
 
 
 
+import android.util.Log;
+
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.function.builtin.BuiltInFunction;
@@ -103,6 +105,7 @@ public class Interpreter implements Serializable
 
                     // Lookup variable
                     String variableName = invocationParameter.reference();
+
                     VariableUnion variableUnion = State.variableWithName(variableName);
                     if (variableUnion == null) {
                         throw InterpreterException.undefinedVariable(

@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.variable;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.interpreter.Interpreter;
 import com.kispoko.tome.engine.interpreter.InterpreterException;
@@ -54,10 +56,12 @@ public class ReactiveValue<A> implements Serializable
     @SuppressWarnings("unchecked")
     public A value()
     {
-        if (this.currentValue == null) {
+        if (this.currentValue == null)
+        {
             Interpreter interpreter = SheetManager.currentSheet().engine().getInterpreter();
 
             Object computedValue = null;
+
             try
             {
                 ProgramValueUnion result = interpreter.evaluate(this.invocation);
@@ -69,6 +73,8 @@ public class ReactiveValue<A> implements Serializable
                         break;
                     case NUMBER:
                         computedValue = result.integerValue();
+                        if (computedValue == null)
+                            Log.d("***REACTIVE VALUE", "computer value is null");
                         break;
                     case BOOLEAN:
                         computedValue = result.booleanValue();
@@ -77,9 +83,12 @@ public class ReactiveValue<A> implements Serializable
             }
             catch (InterpreterException exception)
             {
-                if (exception.getErrorType() != InterpreterException.ErrorType.NULL_VARIABLE) {
-                    ApplicationFailure.interpreter(exception);
-                }
+                Log.d("***REACTIVE VALUE", "exception");
+                // Why??
+//                if (exception.getErrorType() != InterpreterException.ErrorType.NULL_VARIABLE) {
+//                    ApplicationFailure.interpreter(exception);
+//                }
+                ApplicationFailure.interpreter(exception);
             }
 
             this.currentValue = (A) computedValue;

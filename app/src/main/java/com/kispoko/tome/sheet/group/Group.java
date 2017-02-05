@@ -45,8 +45,10 @@ public class Group implements Model, ToYaml, Serializable
 
     private PrimitiveFunctor<String>            name;
     private PrimitiveFunctor<Boolean>           showName;
-    private PrimitiveFunctor<SpaceAbove>        spaceAbove;
+    private PrimitiveFunctor<Spacing>           spaceAbove;
+    private PrimitiveFunctor<Spacing>           spaceBelow;
     private PrimitiveFunctor<GroupBackground>   background;
+    private PrimitiveFunctor<GroupLabelType>    labelType;
     private PrimitiveFunctor<Integer>           index;
     private CollectionFunctor<GroupRow>         rows;
 
@@ -60,8 +62,10 @@ public class Group implements Model, ToYaml, Serializable
 
         this.name       = new PrimitiveFunctor<>(null, String.class);
         this.showName   = new PrimitiveFunctor<>(null, Boolean.class);
-        this.spaceAbove = new PrimitiveFunctor<>(null, SpaceAbove.class);
+        this.spaceAbove = new PrimitiveFunctor<>(null, Spacing.class);
+        this.spaceBelow = new PrimitiveFunctor<>(null, Spacing.class);
         this.background = new PrimitiveFunctor<>(null, GroupBackground.class);
+        this.labelType  = new PrimitiveFunctor<>(null, GroupLabelType.class);
         this.index      = new PrimitiveFunctor<>(null, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
@@ -73,8 +77,10 @@ public class Group implements Model, ToYaml, Serializable
     public Group(UUID id,
                  String name,
                  Boolean showName,
-                 SpaceAbove spaceAbove,
+                 Spacing spaceAbove,
+                 Spacing spaceBelow,
                  GroupBackground background,
+                 GroupLabelType labelType,
                  Integer index,
                  List<GroupRow> groupRows)
     {
@@ -82,8 +88,10 @@ public class Group implements Model, ToYaml, Serializable
 
         this.name       = new PrimitiveFunctor<>(name, String.class);
         this.showName   = new PrimitiveFunctor<>(showName, Boolean.class);
-        this.spaceAbove = new PrimitiveFunctor<>(spaceAbove, SpaceAbove.class);
+        this.spaceAbove = new PrimitiveFunctor<>(spaceAbove, Spacing.class);
+        this.spaceBelow = new PrimitiveFunctor<>(spaceBelow, Spacing.class);
         this.background = new PrimitiveFunctor<>(background, GroupBackground.class);
+        this.labelType  = new PrimitiveFunctor<>(labelType, GroupLabelType.class);
         this.index      = new PrimitiveFunctor<>(index, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
@@ -92,7 +100,9 @@ public class Group implements Model, ToYaml, Serializable
 
         this.setShowName(showName);
         this.setSpaceAbove(spaceAbove);
+        this.setSpaceBelow(spaceBelow);
         this.setBackground(background);
+        this.setLabelType(labelType);
     }
 
 
@@ -104,8 +114,10 @@ public class Group implements Model, ToYaml, Serializable
 
         String          label       = yaml.atMaybeKey("label").getString();
         Boolean         showName    = yaml.atMaybeKey("show_name").getBoolean();
-        SpaceAbove      spaceAbove  = SpaceAbove.fromYaml(yaml.atMaybeKey("space_above"));
+        Spacing         spaceAbove  = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
+        Spacing         spaceBelow  = Spacing.fromYaml(yaml.atMaybeKey("space_below"));
         GroupBackground background  = GroupBackground.fromYaml(yaml.atMaybeKey("background"));
+        GroupLabelType  labelType   = GroupLabelType.fromYaml(yaml.atMaybeKey("label_type"));
         Integer         index       = groupIndex;
 
         List<GroupRow> groupRows = yaml.atKey("rows").forEach(new YamlParser.ForEach<GroupRow>() {
@@ -115,7 +127,8 @@ public class Group implements Model, ToYaml, Serializable
             }
         });
 
-        return new Group(id, label, showName, spaceAbove, background, index, groupRows);
+        return new Group(id, label, showName, spaceAbove, spaceBelow,
+                         background, labelType, index, groupRows);
     }
 
 
@@ -172,6 +185,10 @@ public class Group implements Model, ToYaml, Serializable
         return YamlBuilder.map()
                 .putString("label", this.name())
                 .putBoolean("show_name", this.showName())
+                .putYaml("space_above", this.spaceAbove())
+                .putYaml("space_below", this.spaceBelow())
+                .putYaml("background", this.background())
+                .putYaml("label_type", this.labelType())
                 .putList("rows", this.rows());
     }
 
@@ -221,18 +238,40 @@ public class Group implements Model, ToYaml, Serializable
      * The space above the group on the sheet.
      * @return The Space Above.
      */
-    public SpaceAbove spaceAbove()
+    public Spacing spaceAbove()
     {
         return this.spaceAbove.getValue();
     }
 
 
-    public void setBackground(GroupBackground background)
+    public void setSpaceAbove(Spacing spaceAbove)
     {
-        if (background != null)
-            this.background.setValue(background);
+        if (spaceAbove != null)
+            this.spaceAbove.setValue(spaceAbove);
         else
-            this.background.setValue(GroupBackground.NONE);
+            this.spaceAbove.setValue(Spacing.SMALL);
+    }
+
+
+    // ** Space Below
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The space at the bottom of the group.
+     * @return The Space Above.
+     */
+    public Spacing spaceBelow()
+    {
+        return this.spaceBelow.getValue();
+    }
+
+
+    public void setSpaceBelow(Spacing spacing)
+    {
+        if (spacing != null)
+            this.spaceBelow.setValue(spacing);
+        else
+            this.spaceBelow.setValue(Spacing.SMALL);
     }
 
 
@@ -249,12 +288,34 @@ public class Group implements Model, ToYaml, Serializable
     }
 
 
-    public void setSpaceAbove(SpaceAbove spaceAbove)
+    public void setBackground(GroupBackground background)
     {
-        if (spaceAbove != null)
-            this.spaceAbove.setValue(spaceAbove);
+        if (background != null)
+            this.background.setValue(background);
         else
-            this.spaceAbove.setValue(SpaceAbove.SMALL);
+            this.background.setValue(GroupBackground.NONE);
+    }
+
+
+    // ** Label Type
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The group label type. Indicates what level of heading the group label is.
+     * @return The label type.
+     */
+    public GroupLabelType labelType()
+    {
+        return this.labelType.getValue();
+    }
+
+
+    public void setLabelType(GroupLabelType labelType)
+    {
+        if (labelType != null)
+            this.labelType.setValue(labelType);
+        else
+            this.labelType.setValue(GroupLabelType.PRIMARY);
     }
 
 
@@ -316,23 +377,23 @@ public class Group implements Model, ToYaml, Serializable
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.orientation      = LinearLayout.VERTICAL;
 
-        layout.margin.top       = this.spaceAbove().resourceId();
+        layout.padding.top      = this.spaceAbove().resourceId();
+        layout.padding.bottom   = this.spaceBelow().resourceId();
 
         // > Background
         if (this.background() != GroupBackground.NONE) {
             layout.backgroundColor  = this.background().resourceId();
-            layout.padding.top      = R.dimen.group_background_padding_vert;
-            layout.padding.bottom   = R.dimen.group_background_padding_vert;
+//            layout.padding.top      = R.dimen.group_background_padding_vert;
+//            layout.padding.bottom   = R.dimen.group_background_padding_vert;
 //            layout.padding.left     = R.dimen.group_background_padding_horz;
 //            layout.padding.right    = R.dimen.group_background_padding_horz;
         }
-        //else {
-            layout.padding.left     = R.dimen.group_padding_horz;
-            layout.padding.right    = R.dimen.group_padding_horz;
-       // }
+
+        layout.padding.left     = R.dimen.group_padding_horz;
+        layout.padding.right    = R.dimen.group_padding_horz;
 
         return layout.linearLayout(context);
     }
@@ -360,10 +421,22 @@ public class Group implements Model, ToYaml, Serializable
         // --------------------------------------------------------------------------------------
 
         labelView.id    = R.id.widget_label;
-        labelView.size  = R.dimen.group_label_text_size;
-        labelView.color = R.color.gold_hl_9;
-        labelView.font  = Font.serifFontRegular(context);
         labelView.text  = this.name();
+
+        // Color & Size determined via label type
+        switch (this.labelType())
+        {
+            case PRIMARY:
+                labelView.size  = R.dimen.group_label_text_size;
+                labelView.color = R.color.gold_hl_9;
+                labelView.font  = Font.serifFontRegular(context);
+                break;
+            case SECONDARY:
+                labelView.size  = R.dimen.group_label_secondary_text_size;
+                labelView.color = R.color.dark_blue_hl_2;
+                labelView.font  = Font.serifFontBold(context);
+                break;
+        }
 
 
         return labelLayout.linearLayout(context);

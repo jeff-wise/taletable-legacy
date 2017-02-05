@@ -314,7 +314,6 @@ public class NumberWidget extends Widget
     }
 
 
-
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -584,32 +583,32 @@ public class NumberWidget extends Widget
         // --------------------------------------------------------------------------------------
 
         layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        if (this.data().format().background() == WidgetBackground.PURPLE_CIRCLE)
+            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        else
+            layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER;
 
         layout.backgroundResource   = this.data().format().background()
                                           .resourceId(this.data().format().corners());
-
-        if (this.data().format().background() == WidgetBackground.NONE) {
-            layout.padding.top      = R.dimen.widget_padding_vert;
-            layout.padding.bottom   = R.dimen.widget_padding_vert;
-        }
 
         // > Content Alignment
         switch (this.data().format().alignment())
         {
             case LEFT:
                 layout.gravity  = Gravity.START | Gravity.CENTER_VERTICAL;
-                //layout.layoutGravity  = Gravity.START;
+                value.gravity   = Gravity.START;
                 break;
             case CENTER:
                 layout.gravity  = Gravity.CENTER;
+                layout.layoutGravity = Gravity.CENTER;
                 value.gravity  = Gravity.CENTER_HORIZONTAL;
                 break;
             case RIGHT:
                 layout.gravity  = Gravity.END | Gravity.CENTER_VERTICAL;
-                //layout.layoutGravity  = Gravity.END;
+                value.gravity   = Gravity.END;
                 break;
         }
 
@@ -634,17 +633,6 @@ public class NumberWidget extends Widget
         value.color         = this.format().tint().resourceId();
         value.text          = this.valueString();
 
-        value.margin.right  = R.dimen.widget_number_value_margin_right;
-
-        // > Background
-        // -------------------------------------------------------------------------------------
-
-//        if (this.data().format().background() != WidgetBackground.NONE) {
-//            value.padding.top    = R.dimen.widget_padding_vert;
-//            value.padding.bottom = R.dimen.widget_padding_vert;
-//        }
-
-
         // [3 B] Label
         // --------------------------------------------------------------------------------------
 
@@ -661,12 +649,15 @@ public class NumberWidget extends Widget
         // [3 C] Postfix
         // --------------------------------------------------------------------------------------
 
+        postfix.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        postfix.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
+
         postfix.id    = this.postfixViewId;
 
         postfix.text  = this.postfix();
         postfix.size  = this.format().size().resourceId();
-        postfix.font  = Font.serifFontBold(context);
-        postfix.color = R.color.dark_blue_hl_5;
+        postfix.font  = Font.serifFontRegular(context);
+        postfix.color = R.color.dark_blue_hl_8;
 
 
         return layout.linearLayout(context);
@@ -677,15 +668,20 @@ public class NumberWidget extends Widget
     {
         TextViewBuilder label = new TextViewBuilder();
 
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.width             = LinearLayout.LayoutParams.MATCH_PARENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.gravity           = this.data().format().labelAlignment().gravityConstant();
 
         label.text              = this.data().format().label();
         label.font              = Font.serifFontRegular(context);
         label.color             = R.color.dark_blue_hl_8;
         label.size              = R.dimen.widget_label_text_size;
 
-        label.margin.bottom     = R.dimen.widget_label_margin_bottom;
+        if (this.data().format().background() == WidgetBackground.PURPLE_CIRCLE)
+            label.margin.bottom     = R.dimen.widget_label_margin_bottom_circle;
+        else
+            label.margin.bottom     = R.dimen.widget_label_margin_bottom;
 
         return label.textView(context);
     }

@@ -30,18 +30,6 @@ public class UnexpectedSQLTypeError
     // API
     // -----------------------------------------------------------------------------------------
 
-    public SQLValue.Type getExpectedType()
-    {
-        return this.expectedType;
-    }
-
-
-    public SQLValue.Type getActualType()
-    {
-        return this.actualType;
-    }
-
-
     public String errorMessage()
     {
         return "Unexpected SQL ErrorType:\n" +

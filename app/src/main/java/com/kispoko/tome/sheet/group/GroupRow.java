@@ -5,10 +5,7 @@ package com.kispoko.tome.sheet.group;
 import android.content.Context;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.Widget;
-import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -49,7 +46,7 @@ public class GroupRow implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>       index;
     private PrimitiveFunctor<RowAlignment>  alignment;
     private PrimitiveFunctor<RowWidth>      width;
-    private PrimitiveFunctor<SpaceAbove>    spaceAbove;
+    private PrimitiveFunctor<Spacing>    spaceAbove;
     private CollectionFunctor<WidgetUnion>  widgets;
 
 
@@ -63,7 +60,7 @@ public class GroupRow implements Model, ToYaml, Serializable
         this.index          = new PrimitiveFunctor<>(null, Integer.class);
         this.alignment      = new PrimitiveFunctor<>(null, RowAlignment.class);
         this.width          = new PrimitiveFunctor<>(null, RowWidth.class);
-        this.spaceAbove     = new PrimitiveFunctor<>(null, SpaceAbove.class);
+        this.spaceAbove     = new PrimitiveFunctor<>(null, Spacing.class);
 
         List<Class<? extends WidgetUnion>> widgetClasses = new ArrayList<>();
         widgetClasses.add(WidgetUnion.class);
@@ -76,14 +73,14 @@ public class GroupRow implements Model, ToYaml, Serializable
                     List<WidgetUnion> widgets,
                     RowAlignment alignment,
                     RowWidth width,
-                    SpaceAbove spaceAbove)
+                    Spacing spaceAbove)
     {
         this.id             = id;
 
         this.index          = new PrimitiveFunctor<>(index, Integer.class);
         this.alignment      = new PrimitiveFunctor<>(alignment, RowAlignment.class);
         this.width          = new PrimitiveFunctor<>(width, RowWidth.class);
-        this.spaceAbove     = new PrimitiveFunctor<>(spaceAbove, SpaceAbove.class);
+        this.spaceAbove     = new PrimitiveFunctor<>(spaceAbove, Spacing.class);
 
         List<Class<? extends WidgetUnion>> widgetClasses = new ArrayList<>();
         widgetClasses.add(WidgetUnion.class);
@@ -108,7 +105,7 @@ public class GroupRow implements Model, ToYaml, Serializable
 
         RowAlignment  alignment     = RowAlignment.fromYaml(yaml.atMaybeKey("alignment"));
         RowWidth      width         = RowWidth.fromYaml(yaml.atMaybeKey("width"));
-        SpaceAbove separation       = SpaceAbove.fromYaml(yaml.atMaybeKey("space_above"));
+        Spacing separation       = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
 
         List<WidgetUnion> widgets = yaml.atKey("widgets").forEach(
                                                 new YamlParser.ForEach<WidgetUnion>() {
@@ -256,18 +253,18 @@ public class GroupRow implements Model, ToYaml, Serializable
      * The row separation (the vertical row margins).
      * @return The row separtaion.
      */
-    public SpaceAbove spaceAbove()
+    public Spacing spaceAbove()
     {
         return this.spaceAbove.getValue();
     }
 
 
-    public void setSpaceAbove(SpaceAbove spaceAbove)
+    public void setSpaceAbove(Spacing spaceAbove)
     {
         if (spaceAbove != null)
             this.spaceAbove.setValue(spaceAbove);
         else
-            this.spaceAbove.setValue(SpaceAbove.MEDIUM);
+            this.spaceAbove.setValue(Spacing.MEDIUM);
     }
 
 
@@ -311,18 +308,9 @@ public class GroupRow implements Model, ToYaml, Serializable
 
         layout.margin.top       = this.spaceAbove().resourceId();
 
-        // > Row Width
-        switch (this.width())
-        {
-            case THREE_QUARTERS:
-                layout.padding.left  = R.dimen.group_row_three_quarters_padding;
-                layout.padding.right = R.dimen.group_row_three_quarters_padding;
-                break;
-            case HALF:
-                layout.padding.left  = R.dimen.group_row_half_padding;
-                layout.padding.right = R.dimen.group_row_half_padding;
-                break;
-        }
+        int paddingDimenId = this.width().resourceId();
+        layout.padding.left     = paddingDimenId;
+        layout.padding.right    = paddingDimenId;
 
         return layout.linearLayout(context);
     }

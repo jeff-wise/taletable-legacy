@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget;
+package com.kispoko.tome.sheet;
 
 
 import android.app.Dialog;
@@ -19,18 +19,19 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.value.ValueUnion;
+import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.SheetDialog;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 
-import static android.R.attr.button;
 
 
 /**
- * Action Dialog Fragment
+ * Action SheetDialog Fragment
  */
-public class ActionDialogFragment extends DialogFragment
+public class NavigationDialogFragment extends DialogFragment
 {
 
     // PROPERTIES
@@ -39,18 +40,18 @@ public class ActionDialogFragment extends DialogFragment
     private NewValueDialogListener newValueDialogListener;
 
     private String      widgetName;
-    private Widget.Type widgetType;
+    private WidgetType  widgetType;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ActionDialogFragment() { }
+    public NavigationDialogFragment() { }
 
 
-    public static ActionDialogFragment newInstance(String widgetName, Widget.Type widgetType)
+    public static NavigationDialogFragment newInstance(String widgetName, WidgetType widgetType)
     {
-        ActionDialogFragment actionDialogFragment = new ActionDialogFragment();
+        NavigationDialogFragment actionDialogFragment = new NavigationDialogFragment();
 
         Bundle args = new Bundle();
         args.putString("widget_name", widgetName);
@@ -83,7 +84,7 @@ public class ActionDialogFragment extends DialogFragment
 
         // > Read State
         this.widgetName = getArguments().getString("widget_name");
-        this.widgetType = (Widget.Type) getArguments().getSerializable("widget_type");
+        this.widgetType = (WidgetType) getArguments().getSerializable("widget_type");
 
         return dialog;
     }
@@ -125,7 +126,7 @@ public class ActionDialogFragment extends DialogFragment
     // VIEWS
     // ------------------------------------------------------------------------------------------
 
-    // > Dialog Layout
+    // > SheetDialog Layout
     // ------------------------------------------------------------------------------------------
 
     private LinearLayout dialogLayout(Context context)
@@ -152,7 +153,8 @@ public class ActionDialogFragment extends DialogFragment
         // > Widget
         // -------------------------------------------------------------------------------------
 
-        layout.addView(targetView(context));
+        String widgetTypeString = getString(this.widgetType.stringLabelResourceId()).toUpperCase();
+        layout.addView(SheetDialog.headerView(this.widgetName, widgetTypeString, getContext()));
 
         // > Buttons
         // -------------------------------------------------------------------------------------
@@ -171,135 +173,7 @@ public class ActionDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundResource   = R.drawable.bg_dialog;
-
-        return layout.linearLayout(context);
-    }
-
-
-
-    private LinearLayout targetView(Context context)
-    {
-        LinearLayout layout = targetViewLayout(context);
-
-        // > Header
-        layout.addView(targetHeaderView(context));
-
-        // > Name
-        layout.addView(targetNameView(context));
-
-        return layout;
-    }
-
-
-    private LinearLayout targetViewLayout(Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation      = LinearLayout.VERTICAL;
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.backgroundResource  = R.drawable.bg_dialog_header;
-
-        layout.padding.left     = R.dimen.widget_action_dialog_target_padding_horz;
-        layout.padding.right    = R.dimen.widget_action_dialog_target_padding_horz;
-        layout.padding.top      = R.dimen.widget_action_dialog_target_padding_top;
-        layout.padding.bottom   = R.dimen.widget_action_dialog_target_padding_bottom;
-
-        return layout.linearLayout(context);
-    }
-
-
-    private TextView targetHeaderView(Context context)
-    {
-        TextViewBuilder header = new TextViewBuilder();
-
-        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        header.textId           = R.string.you_clicked;
-        header.font             = Font.sansSerifFontBold(context);
-        header.color            = R.color.dark_blue_hl_8;
-        header.size             = R.dimen.widget_action_dialog_heading_text_size;
-
-        header.margin.bottom    = R.dimen.widget_action_dialog_heading_margin_bottom;
-
-        return header.textView(context);
-    }
-
-
-    private LinearLayout targetNameView(Context context)
-    {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout      = new LinearLayoutBuilder();
-
-        LinearLayoutBuilder nameLayout  = new LinearLayoutBuilder();
-
-        ImageViewBuilder    icon        = new ImageViewBuilder();
-        TextViewBuilder     name        = new TextViewBuilder();
-
-        TextViewBuilder     type        = new TextViewBuilder();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER;
-
-        layout.child(nameLayout)
-              .child(type);
-
-
-        // [3] Name Layout
-        // -------------------------------------------------------------------------------------
-
-        nameLayout.orientation      = LinearLayout.HORIZONTAL;
-        nameLayout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        nameLayout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        nameLayout.gravity          = Gravity.CENTER_VERTICAL;
-
-        nameLayout.margin.bottom    = R.dimen.widget_action_dialog_target_name_margin_bottom;
-
-        nameLayout.child(icon)
-                  .child(name);
-
-        // [3 A] Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.image              = R.drawable.ic_launch;
-
-        icon.margin.right       = R.dimen.widget_action_dialog_target_icon_margin_right;
-
-        // [3 B] Name
-        // -------------------------------------------------------------------------------------
-
-        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        name.text               = this.widgetName;
-        name.font               = Font.sansSerifFontRegular(context);
-        name.color              = R.color.dark_blue_hl_4;
-        name.size               = R.dimen.widget_action_dialog_target_name_text_size;
-
-        // [4] Type
-        // -------------------------------------------------------------------------------------
-
-        type.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        type.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        type.text               = getString(this.widgetType.stringLabelResourceId()).toUpperCase();
-        type.font               = Font.sansSerifFontRegular(context);
-        type.color              = R.color.dark_blue_1;
-        type.size               = R.dimen.widget_action_dialog_target_type_text_size;
-
+        layout.backgroundResource   = R.drawable.bg_dialog_dark;
 
         return layout.linearLayout(context);
     }
@@ -310,7 +184,7 @@ public class ActionDialogFragment extends DialogFragment
         LinearLayout layout = parentsLayout(context);
 
         // > Header
-        layout.addView(parentsHeaderView(context));
+        // layout.addView(parentsHeaderView(context));
 
         // > Buttons
         LinearLayout buttonsLayout = parentsButtonsLayout(context);
@@ -334,30 +208,12 @@ public class ActionDialogFragment extends DialogFragment
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left     = R.dimen.widget_action_dialog_parents_padding_horz;
-        layout.padding.right    = R.dimen.widget_action_dialog_parents_padding_horz;
-        layout.padding.top      = R.dimen.widget_action_dialog_parents_padding_top;
-        layout.padding.bottom   = R.dimen.widget_action_dialog_parents_padding_bottom;
+        layout.padding.left     = R.dimen.dialog_padding_horz;
+        layout.padding.right    = R.dimen.dialog_padding_horz;
+
+        layout.padding.bottom   = R.dimen.nav_dialog_padding_bottom;
 
         return layout.linearLayout(context);
-    }
-
-
-    private TextView parentsHeaderView(Context context)
-    {
-        TextViewBuilder header = new TextViewBuilder();
-
-        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        header.textId           = R.string.edit_its;
-        header.font             = Font.sansSerifFontBold(context);
-        header.color            = R.color.gold_9;
-        header.size             = R.dimen.widget_action_dialog_heading_text_size;
-
-        header.margin.bottom    = R.dimen.widget_action_dialog_heading_margin_bottom;
-
-        return header.textView(context);
     }
 
 
@@ -389,8 +245,9 @@ public class ActionDialogFragment extends DialogFragment
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
-        layout.padding.top          = R.dimen.widget_action_dialog_button_padding_vert;
-        layout.padding.bottom       = R.dimen.widget_action_dialog_button_padding_vert;
+        layout.backgroundResource   = R.drawable.bg_dialog_button;
+
+        layout.margin.bottom        = R.dimen.nav_dialog_button_margin_bottom;
 
         layout.child(icon)
               .child(parent);
@@ -401,9 +258,9 @@ public class ActionDialogFragment extends DialogFragment
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_launch;
+        icon.image                  = R.drawable.ic_launch_button;
 
-        icon.margin.right           = R.dimen.widget_action_dialog_target_icon_margin_right;
+        icon.margin.right           = R.dimen.sheet_dialog_target_icon_margin_right;
 
         // [3 B]
         // -------------------------------------------------------------------------------------
@@ -414,7 +271,7 @@ public class ActionDialogFragment extends DialogFragment
         parent.textId           = labelId;
         parent.font             = Font.sansSerifFontRegular(context);
         parent.color            = R.color.dark_blue_hl_2;
-        parent.size             = R.dimen.widget_action_dialog_button_text_size;
+        parent.size             = R.dimen.nav_dialog_button_text_size;
 
 
         return layout.linearLayout(context);

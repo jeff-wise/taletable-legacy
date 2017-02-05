@@ -15,10 +15,10 @@ import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.sheet.NavigationDialogFragment;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.action.Action;
+import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
@@ -203,26 +203,11 @@ public class TextWidget extends Widget
     }
 
 
-    public void runAction(Action action)
-    {
-        switch (action)
-        {
-//            case EDIT:
-//                Context context = SheetManager.currentSheetContext();
-//                Intent intent = new Intent(context, EditActivity.class);
-//                intent.putExtra("WIDGET", this);
-//                ((Activity) context).startActivityForResult(intent, SheetActivity.COMPONENT_EDIT);
-//                break;
-        }
-    }
-
-
     @Override
     public View view(boolean rowHasLabel, Context context)
     {
         return this.widgetView(rowHasLabel, context);
     }
-
 
 
     // > State
@@ -364,12 +349,16 @@ public class TextWidget extends Widget
         if (this.data().format().label() != null)
             layout.addView(this.labelView(context));
 
-        // > Value View
-        layout.addView(valueView(context));
+        // > Content
+        LinearLayout contentView = contentView(context);
+        layout.addView(contentView);
 
-        // > Quote View
+        // ** Value View
+        contentView.addView(valueView(context));
+
+        // ** Quote View
         if (this.format().isQuote())
-            layout.addView(quoteView(context));
+            contentView.addView(quoteView(context));
 
         return layout;
     }
@@ -394,7 +383,7 @@ public class TextWidget extends Widget
         layout.onClick          = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onTextWidgetShortClick();
+                onTextWidgetShortClick(context);
             }
         };
 
@@ -412,6 +401,22 @@ public class TextWidget extends Widget
             layout.padding.left  = R.dimen.widget_text_layout_quote_padding_horz;
             layout.padding.right = R.dimen.widget_text_layout_quote_padding_horz;
         }
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout contentView(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.gravity              = Gravity.CENTER_VERTICAL;
+
+        layout.backgroundResource   = this.data().format().background()
+                                          .resourceId(this.data().format().corners());
 
         return layout.linearLayout(context);
     }
@@ -435,14 +440,6 @@ public class TextWidget extends Widget
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.gravity              = Gravity.CENTER_VERTICAL;
-
-        layout.backgroundResource   = this.data().format().background()
-                                          .resourceId(this.data().format().corners());
-
-        if (this.data().format().background() == WidgetBackground.NONE) {
-            layout.padding.top      = R.dimen.widget_padding_vert;
-            layout.padding.bottom   = R.dimen.widget_padding_vert;
-        }
 
         if (this.format().inlineLabel() != null)
             layout.child(label);
@@ -583,11 +580,15 @@ public class TextWidget extends Widget
     /**
      * On a short click, open the value editor.
      */
-    private void onTextWidgetShortClick()
+    private void onTextWidgetShortClick(Context context)
     {
+        SheetActivity sheetActivity = (SheetActivity) context;
+
         switch (this.valueVariable().kind())
         {
             case LITERAL:
+                TextWidgetDialogFragment dialog = TextWidgetDialogFragment.newInstance(this);
+                dialog.show(sheetActivity.getSupportFragmentManager(), "");
                 break;
             case VALUE:
                 break;
@@ -605,8 +606,8 @@ public class TextWidget extends Widget
         SheetActivity sheetActivity = (SheetActivity) context;
         String widgetName = this.data().format().name();
 
-        ActionDialogFragment actionDialogFragment =
-                ActionDialogFragment.newInstance(widgetName, Type.TEXT);
+        NavigationDialogFragment actionDialogFragment =
+                NavigationDialogFragment.newInstance(widgetName, WidgetType.TEXT);
         actionDialogFragment.show(sheetActivity.getSupportFragmentManager(), "actions");
     }
 

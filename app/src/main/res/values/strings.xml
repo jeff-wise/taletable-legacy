@@ -6,6 +6,9 @@
     <string name="action_settings">Settings</string>
 
     <string name="dialog_cancel">CANCEL</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="save">Save</string>
 
     <string name="action_delete">DELETE</string>
 
@@ -20,6 +23,16 @@
     <string name="rows_upper">ROWS</string>
 
     <string name="page">Page</string>
+
+
+
+    <!-- DIALOG -->
+    <!-- ==================================================================================== -->
+
+    <string name="rules">Rules</string>
+
+    <string name="edit_text_value">Edit text value</string>
+
 
     <!-- WIDGET -->
     <!-- ==================================================================================== -->

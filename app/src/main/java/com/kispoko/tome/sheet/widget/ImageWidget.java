@@ -262,7 +262,7 @@ public class ImageWidget extends Widget
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    // > Choose Image Dialog
+    // > Choose Image SheetDialog
     // ------------------------------------------------------------------------------------------
 
     private void chooseImageDialog()

@@ -12,11 +12,9 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.ActionDialogFragment;
 import com.kispoko.tome.error.UnknownVariantError;
-import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -24,7 +22,6 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
-import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 
@@ -45,64 +42,6 @@ public abstract class Widget implements Model, ToYaml, Serializable
 
     abstract public void initialize();
 
-
-    // TYPE
-    // ------------------------------------------------------------------------------------------
-
-    public enum Type
-    {
-        TEXT,
-        NUMBER,
-        BOOLEAN,
-        IMAGE,
-        TABLE,
-        LIST,
-        ACTION;
-
-
-        public static Type fromString(String typeString)
-                      throws InvalidDataException
-        {
-            return EnumUtils.fromString(Type.class, typeString);
-        }
-
-
-        public static Type fromYaml(YamlParser yaml)
-                      throws YamlParseException
-        {
-            String typeString = yaml.getString();
-            try {
-                return Type.fromString(typeString);
-            } catch (InvalidDataException e) {
-                throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
-            }
-        }
-
-
-        public int stringLabelResourceId()
-        {
-            switch (this)
-            {
-                case TEXT:
-                    return R.string.widget_text;
-                case NUMBER:
-                    return R.string.widget_number;
-                case BOOLEAN:
-                    return R.string.widget_boolean;
-                case LIST:
-                    return R.string.widget_list;
-                case TABLE:
-                    return R.string.widget_table;
-                case IMAGE:
-                    return R.string.widget_image;
-                case ACTION:
-                    return R.string.widget_action;
-            }
-
-            return 0;
-        }
-
-    }
 
 
     // METHODS
@@ -220,9 +159,6 @@ public abstract class Widget implements Model, ToYaml, Serializable
             case LIGHT:
                 layout.backgroundResource = R.drawable.bg_widget_light;
                 break;
-            case MEDIUM:
-                layout.backgroundResource = R.drawable.bg_widget_medium;
-                break;
             case DARK:
                 layout.backgroundResource = R.drawable.bg_widget_dark_large_corners;
                 break;
@@ -237,7 +173,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
     public static Widget fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        Type widgetType = Type.fromYaml(yaml.atKey("type"));
+        WidgetType widgetType = WidgetType.fromYaml(yaml.atKey("type"));
 
         switch (widgetType) {
             case TEXT:
@@ -255,7 +191,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
             default:
                 ApplicationFailure.union(
                         UnionException.unknownVariant(
-                                new UnknownVariantError(Type.class.getName())));
+                                new UnknownVariantError(WidgetType.class.getName())));
         }
 
         return null;

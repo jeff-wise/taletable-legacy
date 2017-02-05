@@ -1,8 +1,9 @@
 
-package com.kispoko.tome.sheet.widget;
+package com.kispoko.tome.sheet.widget.util;
 
 
-import com.kispoko.tome.R;
+import android.view.Gravity;
+
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -14,55 +15,50 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
-
 /**
- * Widget Type
+ * Widget Label Alignment
  */
-public enum WidgetType implements ToYaml
+public enum WidgetLabelAlignment implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    TEXT,
-    NUMBER,
-    BOOLEAN,
-    IMAGE,
-    LIST,
-    TABLE,
-    ACTION;
+    LEFT,
+    CENTER,
+    RIGHT;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetType fromString(String typeString)
+    public static WidgetLabelAlignment fromString(String alignmentString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetType.class, typeString);
+        return EnumUtils.fromString(WidgetLabelAlignment.class, alignmentString);
     }
 
 
-    public static WidgetType fromYaml(YamlParser yaml)
+    public static WidgetLabelAlignment fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        String typeString = yaml.getString();
+        String alignmentString = yaml.getString();
         try {
-            return WidgetType.fromString(typeString);
+            return WidgetLabelAlignment.fromString(alignmentString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(alignmentString));
         }
     }
 
 
-    public static WidgetType fromSQLValue(SQLValue sqlValue)
+    public static WidgetLabelAlignment fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetType widgetType = WidgetType.fromString(enumString);
-            return widgetType;
+            WidgetLabelAlignment alignment = WidgetLabelAlignment.fromString(enumString);
+            return alignment;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -73,37 +69,32 @@ public enum WidgetType implements ToYaml
     // TO YAML
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * The Widget Content Alignment's yaml string representation.
+     * @return The Yaml Builder.
+     */
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
     }
 
 
-    // LABEL
+    // Gravity Constant
     // ------------------------------------------------------------------------------------------
 
-    public int stringLabelResourceId()
+    public int gravityConstant()
     {
         switch (this)
         {
-            case TEXT:
-                return R.string.widget_text;
-            case NUMBER:
-                return R.string.widget_number;
-            case BOOLEAN:
-                return R.string.widget_boolean;
-            case LIST:
-                return R.string.widget_list;
-            case TABLE:
-                return R.string.widget_table;
-            case IMAGE:
-                return R.string.widget_image;
-            case ACTION:
-                return R.string.widget_action;
+            case LEFT:
+                return Gravity.START;
+            case CENTER:
+                return Gravity.CENTER_HORIZONTAL;
+            case RIGHT:
+                return Gravity.END;
         }
 
         return 0;
     }
-
 
 }

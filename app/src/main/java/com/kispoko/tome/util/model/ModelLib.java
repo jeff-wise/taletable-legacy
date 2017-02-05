@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
+import com.kispoko.tome.util.database.error.NullModelError;
+import com.kispoko.tome.util.database.error.NullModelIdentifierError;
 import com.kispoko.tome.util.database.error.SerializationError;
 import com.kispoko.tome.util.database.error.UninitializedFunctorError;
 import com.kispoko.tome.util.database.query.CollectionQuery;
@@ -1086,6 +1088,18 @@ public class ModelLib
         for (ModelFunctor<? extends Model> modelValue : modelValues)
         {
             String columnName = modelValue.sqlColumnName();
+
+            UUID modelId = modelValue.getValue().getId();
+
+            if (modelValue.getValue() == null) {
+                throw DatabaseException.nullModel(
+                        new NullModelError(modelValue.getValue().getClass().getName()));
+            }
+
+            if (modelId == null) {
+                throw DatabaseException.nullModelId(
+                        new NullModelIdentifierError(modelValue.getValue().getClass().getName()));
+            }
 
             if (modelValue.isNull())
                 row.putNull(columnName);

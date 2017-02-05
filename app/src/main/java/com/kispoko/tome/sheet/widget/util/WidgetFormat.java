@@ -29,6 +29,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>                    label;
     private PrimitiveFunctor<Integer>                   width;
     private PrimitiveFunctor<WidgetContentAlignment>    alignment;
+    private PrimitiveFunctor<WidgetLabelAlignment>      labelAlignment;
     private PrimitiveFunctor<WidgetBackground>          background;
     private PrimitiveFunctor<WidgetCorners>             corners;
     private PrimitiveFunctor<Boolean>                   isBold;
@@ -39,15 +40,16 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
     public WidgetFormat()
     {
-        this.id         = null;
+        this.id             = null;
 
-        this.name       = new PrimitiveFunctor<>(null, String.class);
-        this.label      = new PrimitiveFunctor<>(null, String.class);
-        this.width      = new PrimitiveFunctor<>(null, Integer.class);
-        this.alignment  = new PrimitiveFunctor<>(null, WidgetContentAlignment.class);
-        this.background = new PrimitiveFunctor<>(null, WidgetBackground.class);
-        this.corners    = new PrimitiveFunctor<>(null, WidgetCorners.class);
-        this.isBold     = new PrimitiveFunctor<>(null, Boolean.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.label          = new PrimitiveFunctor<>(null, String.class);
+        this.width          = new PrimitiveFunctor<>(null, Integer.class);
+        this.alignment      = new PrimitiveFunctor<>(null, WidgetContentAlignment.class);
+        this.labelAlignment = new PrimitiveFunctor<>(null, WidgetLabelAlignment.class);
+        this.background     = new PrimitiveFunctor<>(null, WidgetBackground.class);
+        this.corners        = new PrimitiveFunctor<>(null, WidgetCorners.class);
+        this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
 
@@ -56,23 +58,26 @@ public class WidgetFormat implements Model, ToYaml, Serializable
                         String label,
                         Integer width,
                         WidgetContentAlignment alignment,
+                        WidgetLabelAlignment labelAlignment,
                         WidgetBackground background,
                         WidgetCorners corners,
                         Boolean isBold)
     {
-        this.id         = id;
+        this.id             = id;
 
-        this.name       = new PrimitiveFunctor<>(name, String.class);
-        this.label      = new PrimitiveFunctor<>(label, String.class);
-        this.width      = new PrimitiveFunctor<>(width, Integer.class);
-        this.alignment  = new PrimitiveFunctor<>(alignment, WidgetContentAlignment.class);
-        this.background = new PrimitiveFunctor<>(background, WidgetBackground.class);
-        this.corners    = new PrimitiveFunctor<>(corners, WidgetCorners.class);
-        this.isBold     = new PrimitiveFunctor<>(isBold, Boolean.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.label          = new PrimitiveFunctor<>(label, String.class);
+        this.width          = new PrimitiveFunctor<>(width, Integer.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, WidgetContentAlignment.class);
+        this.labelAlignment = new PrimitiveFunctor<>(labelAlignment, WidgetLabelAlignment.class);
+        this.background     = new PrimitiveFunctor<>(background, WidgetBackground.class);
+        this.corners        = new PrimitiveFunctor<>(corners, WidgetCorners.class);
+        this.isBold         = new PrimitiveFunctor<>(isBold, Boolean.class);
 
         this.setName(name);
         this.setWidth(width);
         this.setAlignment(alignment);
+        this.setLabelAlignment(labelAlignment);
         this.setBackground(background);
         this.setCorners(corners);
         this.setIsBold(isBold);
@@ -90,6 +95,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         defaultFormat.setId(UUID.randomUUID());
         defaultFormat.setWidth(null);
         defaultFormat.setAlignment(null);
+        defaultFormat.setLabelAlignment(null);
         defaultFormat.setBackground(null);
         defaultFormat.setCorners(null);
         defaultFormat.setIsBold(null);
@@ -110,23 +116,26 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return WidgetFormat.asDefault();
 
-        UUID                   id         = UUID.randomUUID();
+        UUID                   id             = UUID.randomUUID();
 
-        String                 name       = yaml.atMaybeKey("name").getString();
-        String                 label      = yaml.atMaybeKey("label").getString();
+        String                 name           = yaml.atMaybeKey("name").getString();
+        String                 label          = yaml.atMaybeKey("label").getString();
 
         if (label != null)
             label = label.trim();
 
-        Integer                width      = yaml.atMaybeKey("width").getInteger();
-        WidgetContentAlignment alignment  = WidgetContentAlignment.fromYaml(
+        Integer                width          = yaml.atMaybeKey("width").getInteger();
+        WidgetContentAlignment alignment      = WidgetContentAlignment.fromYaml(
                                                                 yaml.atMaybeKey("alignment"));
-        WidgetBackground       background = WidgetBackground.fromYaml(
+        WidgetLabelAlignment   labelAlignment = WidgetLabelAlignment.fromYaml(
+                                                                yaml.atMaybeKey("label_alignment"));
+        WidgetBackground       background     = WidgetBackground.fromYaml(
                                                                 yaml.atMaybeKey("background"));
-        WidgetCorners          corners    = WidgetCorners.fromYaml(yaml.atMaybeKey("corners"));
-        Boolean                isBold     = yaml.atMaybeKey("bold").getBoolean();
+        WidgetCorners          corners        = WidgetCorners.fromYaml(yaml.atMaybeKey("corners"));
+        Boolean                isBold         = yaml.atMaybeKey("bold").getBoolean();
 
-        return new WidgetFormat(id, name, label, width, alignment, background, corners, isBold);
+        return new WidgetFormat(id, name, label, width, alignment, labelAlignment,
+                                background, corners, isBold);
     }
 
 
@@ -171,6 +180,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         yaml.putString("label", this.label());
         yaml.putInteger("width", this.width());
         yaml.putYaml("alignment", this.alignment());
+        yaml.putYaml("label_alignment", this.labelAlignment());
         yaml.putYaml("background", this.background());
         yaml.putYaml("corners", this.corners());
         yaml.putBoolean("bold", this.isBold());
@@ -268,6 +278,32 @@ public class WidgetFormat implements Model, ToYaml, Serializable
             this.alignment.setValue(alignment);
         else
             this.alignment.setValue(WidgetContentAlignment.CENTER);
+    }
+
+
+    // ** Label Alignment
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * Get the widget's label's alignment.
+     * @return The widget label alignment.
+     */
+    public WidgetLabelAlignment labelAlignment()
+    {
+        return this.labelAlignment.getValue();
+    }
+
+
+    /**
+     * Set the widget label alignment.
+     * @param labelAlignment The alignment
+     */
+    public void setLabelAlignment(WidgetLabelAlignment labelAlignment)
+    {
+        if (labelAlignment != null)
+            this.labelAlignment.setValue(labelAlignment);
+        else
+            this.labelAlignment.setValue(WidgetLabelAlignment.LEFT);
     }
 
 

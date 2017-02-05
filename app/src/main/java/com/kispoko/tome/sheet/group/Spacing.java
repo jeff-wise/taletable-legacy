@@ -20,12 +20,13 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
  *
  * The vertical margins of the group row.
  */
-public enum SpaceAbove implements ToYaml
+public enum Spacing implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
+    NONE,
     VERY_SMALL,
     SMALL,
     MEDIUM_SMALL,
@@ -38,32 +39,32 @@ public enum SpaceAbove implements ToYaml
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static SpaceAbove fromString(String sepString)
+    public static Spacing fromString(String sepString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(SpaceAbove.class, sepString);
+        return EnumUtils.fromString(Spacing.class, sepString);
     }
 
 
-    public static SpaceAbove fromYaml(YamlParser yaml)
+    public static Spacing fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         String sepString = yaml.getString();
         try {
-            return SpaceAbove.fromString(sepString);
+            return Spacing.fromString(sepString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(sepString));
         }
     }
 
 
-    public static SpaceAbove fromSQLValue(SQLValue sqlValue)
+    public static Spacing fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            SpaceAbove separation = SpaceAbove.fromString(enumString);
+            Spacing separation = Spacing.fromString(enumString);
             return separation;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
@@ -88,10 +89,12 @@ public enum SpaceAbove implements ToYaml
     {
         switch (this)
         {
+            case NONE:
+                return R.dimen.zero_dp;
             case VERY_SMALL:
-                return R.dimen.space_abvoe_very_small;
+                return R.dimen.space_above_very_small;
             case SMALL:
-                return R.dimen.space_abvoe_small;
+                return R.dimen.space_above_small;
             case MEDIUM_SMALL:
                 return R.dimen.space_above_medium_small;
             case MEDIUM:

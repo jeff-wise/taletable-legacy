@@ -27,7 +27,7 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 
 
 /**
- * New Value Dialog Fragment
+ * New Value SheetDialog Fragment
  */
 public class NewValueDialogFragment extends DialogFragment
 {

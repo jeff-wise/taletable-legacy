@@ -181,14 +181,25 @@
     <color name="gold_9">#C4C073</color>
 
 
+    <color name="gold_bright">#D4CF7C</color>
+    <color name="gold_light">#D4CF7C</color>
+    <color name="gold_medium">#D4CF7C</color>
+    <color name="gold_dark">#B0AC67</color>
+
+
     <!-- PURPLE -->
     <!--<color name="purple_hlx_5">#A08FC9</color>-->
     <color name="purple_hlx_5">#8A7AB2</color>
+    <color name="purple_bright">#8A7AB2</color>
+    <color name="purple_medium">#6D608C</color>
 
 
     <!-- GREEN -->
 
     <color name="green_hlx_5">#ADE098</color>
+    <color name="green_bright">#ADE098</color>
+
+    <color name="green_light">#90BA7E</color>
 
 
     <color name="red_5">#A14746</color>

@@ -240,7 +240,7 @@ public class VariableReference implements Model, Serializable
         {
             case NAME:
                 Set<VariableUnion> variables = new HashSet<>();
-                variables.add( variableByName(this.name()));
+                variables.add( variableByName(this.name()) );
                 return variables;
             case TAG:
                 return variablesByTag(this.tag());

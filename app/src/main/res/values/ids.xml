@@ -110,6 +110,11 @@
     <item name="draggable_card_title" type="id"/>
 
 
+    <!-- DIALOG -->
+    <item name="dialog_visibility_button" type="id"/>
+    <item name="dialog_info_button" type="id"/>
+
+
     <item name="type_list_item_name" type="id"/>
     <item name="type_list_item_icon" type="id"/>
 

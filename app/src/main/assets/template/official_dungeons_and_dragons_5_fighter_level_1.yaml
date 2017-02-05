@@ -1338,11 +1338,10 @@ profile:
         widgets:
         - type: number
           data:
-            actions:
-            - edit
             format:
               alignment: left
-              background: none
+              background: dark
+              name: Age
               width: 1
           format:
             inline_label: age
@@ -1353,11 +1352,10 @@ profile:
             value: 41
         - type: text
           data:
-            actions:
-            - edit
             format:
               alignment: left
-              background: none
+              background: dark
+              name: Height
               width: 1
           format:
             inline_label: height
@@ -1368,11 +1366,10 @@ profile:
             value: 5'11"
         - type: number
           data:
-            actions:
-            - edit
             format:
               alignment: left
-              background: none
+              background: dark
+              name: Weight
               width: 1
           format:
             inline_label: weight
@@ -1388,7 +1385,8 @@ profile:
           data:
             format:
               alignment: left
-              background: none
+              background: dark
+              name: Eyes
               width: 1
           format:
             inline_label: eyes
@@ -1401,7 +1399,8 @@ profile:
           data:
             format:
               alignment: left
-              background: none
+              background: dark
+              name: Skin
               width: 1
           format:
             inline_label: skin
@@ -1414,7 +1413,8 @@ profile:
           data:
             format:
               alignment: left
-              background: none
+              background: dark
+              name: Hair
               width: 1
           format:
             inline_label: hair
@@ -1444,216 +1444,431 @@ profile:
               value:
                 set_name: language
                 value_name: orc
-  - label: Stats
-    groups:
-    - label: Ability Scores
+    - label: Background
+      space_above: medium_large
       rows:
-      - widgets:
+      - space_above: medium
+        alignment: center
+        width: half
+        widgets:
+        - type: text
+          data:
+            format:
+              alignment: center
+              background: none
+              name: Background
+              width: 1
+          format:
+            size: medium_large
+            tint: medium_dark
+          value:
+            type: literal
+            value: The Hard Life
+    - label: Personality Traits
+      label_type: secondary
+      space_above: medium
+      rows:
+      - space_above: small
+        width: indented
+        widgets:
+        - type: text
+          data:
+            format:
+              alignment: left
+              background: none
+              name: 'Personality Trait #1'
+              width: 1
+          format:
+            size: small
+            tint: dark
+          value:
+            type: literal
+            value: >
+              I am cynical of society. Show me a fair king, a good committee, a man of pure faith,
+              and I give you every reason that you've been deceived.
+      - space_above: medium_small
+        width: indented
+        widgets:
+        - type: text
+          data:
+            format:
+              alignment: left
+              background: none
+              name: 'Personality Trait #1'
+              width: 1
+          format:
+            size: small
+            tint: dark
+          value:
+            type: literal
+            value: >
+              I still remember those days, a boy running on dirty feet in ragged clothes devouring
+              a stolen loaf of bread -- starving, guilty, ashamed. I will always appreciate a bowl
+              of hot soup or the smallest gift from a stranger.
+    - label: Ideals
+      label_type: secondary
+      space_above: medium
+      rows:
+      - space_above: small
+        width: indented
+        widgets:
+        - type: text
+          data:
+            format:
+              alignment: left
+              background: none
+              name: Ideal
+              width: 1
+          format:
+            size: small
+            tint: dark
+          value:
+            type: literal
+            value: >
+              Equality. Those of all races and all backgrounds should be given the same opportunties
+              and equal respect.
+    - label: Bonds
+      label_type: secondary
+      space_above: medium
+      rows:
+      - space_above: small
+        width: indented
+        widgets:
+        - type: text
+          data:
+            format:
+              alignment: left
+              background: none
+              name: Bond
+              width: 1
+          format:
+            size: small
+            tint: dark
+          value:
+            type: literal
+            value: >
+              My mentor was killed, and there was nothing I could do. He was a good, innocent man. I
+              have devoted my life to revenge, for myself and for others that have walked the same
+              path.
+    - label: Flaws
+      label_type: secondary
+      space_above: medium
+      rows:
+      - space_above: small
+        width: indented
+        widgets:
+        - type: text
+          data:
+            format:
+              alignment: left
+              background: none
+              name: Flaw
+              width: 1
+          format:
+            size: small
+            tint: dark
+          value:
+            type: literal
+            value: >
+              I am willing to sacrifice myself to fight for the smallest injustice caused by those
+              with more wealth and power.
+  - label: Abilities
+    groups:
+    - space_above: medium_small
+      background: dark
+      show_name: false
+      space_below: medium
+      rows:
+      - width: full
+        space_above: small
+        widgets:
         - type: number
           data:
-            actions:
-            - edit
             format:
-              width: 1
+              alignment: center
+              background: purple_circle
               label: Strength
-          size: medium
-          postfix:
-            type: program
-            value:
-              program: ability_modifier_string
-              parameters:
-              - type: reference
-                value: strength_modifier
+              label_alignment: center
+              width: 1
+          format:
+            tint: purple
           value:
             name: strength
             type: literal
             value: 16
         - type: number
           data:
-            actions:
-            - edit
             format:
-              width: 1
+              alignment: center
+              background: purple_circle
               label: Dexterity
-          size: medium
-          postfix:
-            type: program
-            value:
-              program: ability_modifier_string
-              parameters:
-              - type: reference
-                value: dexterity_modifier
+              label_alignment: center
+              width: 1
+          format:
+            tint: purple
           value:
             name: dexterity
             type: literal
             value: 14
-          variables:
-          - type: number
-            value:
-              name: dexterity_modifier
-              label: Dexterity
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: dexterity
         - type: number
           data:
-            actions:
-            - edit
             format:
-              width: 1
+              alignment: center
+              background: purple_circle
               label: Constitution
-          size: medium
-          postfix:
-            type: program
-            value:
-              program: ability_modifier_string
-              parameters:
-              - type: reference
-                value: constitution_modifier
+              label_alignment: center
+              width: 1
+          format:
+            tint: purple
           value:
             name: constitution
             type: literal
             value: 14
-          variables:
-          - type: number
-            value:
-              name: constitution_modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: constitution
-      - widgets:
+      - space_above: very_small
+        widgets:
         - type: number
           data:
-            actions:
-            - edit
             format:
+              alignment: center
+              background: empty
               width: 1
-              label: Intelligence
-          size: medium
-          postfix:
+          format:
+            size: small
+            tint: very_dark
+          value:
+            name: strength_modifier
+            label: Strength Modifier
             type: program
             value:
-              program: ability_modifier_string
+              program: ability_modifier
               parameters:
               - type: reference
-                value: intelligence_modifier
+                value: strength
+          value_prefix: '+'
+        - type: number
+          data:
+            format:
+              alignment: center
+              background: empty
+              width: 1
+          format:
+            size: small
+            tint: very_dark
+          value:
+            name: dexterity_modifier
+            label: Dexterity Modifier
+            type: program
+            value:
+              program: ability_modifier
+              parameters:
+              - type: reference
+                value: dexterity
+          value_prefix: '+'
+        - type: number
+          data:
+            format:
+              alignment: center
+              background: empty
+              width: 1
+          format:
+            size: small
+            tint: very_dark
+          value:
+            name: constitution_modifier
+            label: Constitution Modifier
+            type: program
+            value:
+              program: ability_modifier
+              parameters:
+              - type: reference
+                value: constitution
+          value_prefix: '+'
+      - width: full
+        space_above: medium
+        widgets:
+        - type: number
+          data:
+            format:
+              alignment: center
+              background: purple_circle
+              label: Intelligence
+              label_alignment: center
+              width: 1
+          format:
+            tint: purple
           value:
             name: intelligence
             type: literal
             value: 11
-          variables:
-          - type: number
-            value:
-              name: intelligence_modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: intelligence
         - type: number
           data:
-            actions:
-            - edit
             format:
+              alignment: center
+              background: purple_circle
               label: Wisdom
+              label_alignment: center
               width: 1
-          size: medium
-          postfix:
-            type: program
-            value:
-              program: ability_modifier_string
-              parameters:
-              - type: reference
-                value: wisdom_modifier
+          format:
+            tint: purple
           value:
             name: wisdom
             type: literal
             value: 11
-          variables:
-          - type: number
-            value:
-              name: wisdom_modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: wisdom
         - type: number
           data:
-            actions:
-            - edit
             format:
-              width: 1
+              alignment: center
+              background: purple_circle
               label: Charisma
-          size: medium
-          postfix:
-            type: program
-            value:
-              program: ability_modifier_string
-              parameters:
-              - type: reference
-                value: charisma_modifier
+              label_alignment: center
+              width: 1
+          format:
+            tint: purple
           value:
             name: charisma
             type: literal
             value: 13
-          variables:
-          - type: number
-            value:
-              name: charisma_modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: charisma
-    - label: General
-      rows:
-      - widgets:
+      - space_above: very_small
+        widgets:
         - type: number
           data:
-            actions:
-            - edit
             format:
+              alignment: center
+              background: empty
               width: 1
-              label: Proficiency Bonus
+          format:
+            size: small
+            tint: very_dark
+          value:
+            name: intelligence_modifier
+            label: Intelligence Modifier
+            type: program
+            value:
+              program: ability_modifier
+              parameters:
+              - type: reference
+                value: intelligence
+          value_prefix: '+'
+        - type: number
+          data:
+            format:
+              alignment: center
+              background: empty
+              width: 1
+          format:
+            size: small
+            tint: very_dark
+          value:
+            name: wisdom_modifier
+            label: Wisdom Modifier
+            type: program
+            value:
+              program: ability_modifier
+              parameters:
+              - type: reference
+                value: wisdom
+          value_prefix: '+'
+        - type: number
+          data:
+            format:
+              alignment: center
+              background: empty
+              width: 1
+          format:
+            size: small
+            tint: very_dark
+          value:
+            name: charisma_modifier
+            label: Charisma Modifier
+            type: program
+            value:
+              program: ability_modifier
+              parameters:
+              - type: reference
+                value: charisma
+          value_prefix: '+'
+    - label: Saving Throws
+      space_above: medium
+      rows:
+      - space_above: medium
+        widgets:
+        - type: number
+          data:
+            format:
+              background: none
+              label: Strength
+              label_alignment: center
+              width: 1
           size: medium
           value_prefix: '+'
           value:
-            name: proficiency_bonus
             type: literal
-            value: 2
+            value: 0
         - type: number
           data:
-            actions:
-            - edit
             format:
+              background: none
+              label: Dexterity
+              label_alignment: center
               width: 1
-              label: HP
           size: medium
-          value:
-            type: literal
-            value: 10
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              width: 1
-              label: Inspiration
-          size: medium
+          value_prefix: '+'
           value:
             type: literal
             value: 4
-    - label: Combat
+        - type: number
+          data:
+            format:
+              background: none
+              label: Constitution
+              label_alignment: center
+              width: 1
+          size: medium
+          value_prefix: '+'
+          value:
+            type: literal
+            value: 2
+      - space_above: small
+        widgets:
+        - type: number
+          data:
+            format:
+              background: none
+              label: Intelligence
+              label_alignment: center
+              width: 1
+          size: medium
+          value_prefix: '+'
+          value:
+            type: literal
+            value: 12
+        - type: number
+          data:
+            format:
+              background: none
+              label: Wisdom
+              label_alignment: center
+              width: 1
+          size: medium
+          value_prefix: '+'
+          value:
+            type: literal
+            value: 8
+        - type: number
+          data:
+            format:
+              background: none
+              label: Charisma
+              label_alignment: center
+              width: 1
+          size: medium
+          value_prefix: '+'
+          value:
+            type: literal
+            value: 1
+  - label: Features
+    groups:
+    - label:
       rows:
       - widgets:
         - type: number
@@ -1704,96 +1919,16 @@ profile:
           value:
             type: literal
             value: 30
-    - label: Saving Throws
-      rows:
       - widgets:
         - type: number
           data:
-            actions:
-            - edit
             format:
-              label: Strength
               width: 1
           size: medium
-          value_prefix: '+'
           value:
             type: literal
-            value: 0
-          variables:
-          - type: number
-            value:
-              name: strength_modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: strength
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              label: Dexterity
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 4
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              label: Constitution
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
+            name: proficiency_bonus
             value: 2
-      - widgets:
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              label: Intelligence
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 12
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              label: Wisdom
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 8
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              label: Charisma
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 1
-  - label: Abilities
-    groups:
-    - label:
-      rows:
       - widgets:
         - type: table
           data:

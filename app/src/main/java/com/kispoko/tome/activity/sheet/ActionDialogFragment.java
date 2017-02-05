@@ -24,7 +24,7 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
 
 /**
- * Bottom Sheet Fragment for Action Dialog
+ * Bottom Sheet Fragment for Action SheetDialog
  */
 public class ActionDialogFragment extends DialogFragment
 {

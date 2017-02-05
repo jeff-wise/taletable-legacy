@@ -22,7 +22,7 @@ import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.group.GroupBackground;
 import com.kispoko.tome.sheet.group.RowAlignment;
-import com.kispoko.tome.sheet.group.SpaceAbove;
+import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.sheet.widget.action.Action;
@@ -46,8 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.tint;
-import static android.R.attr.width;
 
 
 /**
@@ -216,7 +214,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(SpaceAbove.class))
+        else if (valueClass.isAssignableFrom(Spacing.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -407,14 +405,19 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((RowAlignment) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
+        else if (this.getValue() instanceof RowWidth)
+        {
+            String enumString = ((RowWidth) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
         else if (this.getValue() instanceof GroupBackground)
         {
             String enumString = ((GroupBackground) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof SpaceAbove)
+        else if (this.getValue() instanceof Spacing)
         {
-            String enumString = ((SpaceAbove) this.getValue()).name().toLowerCase();
+            String enumString = ((Spacing) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof ProgramValueType)
@@ -676,9 +679,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             GroupBackground background = GroupBackground.fromSQLValue(sqlValue);
             this.setValue((A) background);
         }
-        else if (this.valueClass.isAssignableFrom(SpaceAbove.class))
+        else if (this.valueClass.isAssignableFrom(Spacing.class))
         {
-            SpaceAbove separation = SpaceAbove.fromSQLValue(sqlValue);
+            Spacing separation = Spacing.fromSQLValue(sqlValue);
             this.setValue((A) separation);
         }
         else if (this.valueClass.isAssignableFrom(VariableType.class))

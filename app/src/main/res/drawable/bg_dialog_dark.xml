@@ -5,7 +5,7 @@
     android:shape="rectangle">
 
     <solid
-        android:color="@color/dark_blue_4">
+        android:color="@color/dark_blue_9">
     </solid>
 
     <!--<stroke-->
@@ -13,15 +13,15 @@
         <!--android:color="@color/sheet_light_border">-->
     <!--</stroke>-->
 
-    <padding
-        android:left="0dp"
-        android:top="0dp"
-        android:right="0dp"
-        android:bottom="0dp">
-    </padding>
+    <!--<padding-->
+        <!--android:left="15dp"-->
+        <!--android:top="15dp"-->
+        <!--android:right="15dp"-->
+        <!--android:bottom="15dp">-->
+    <!--</padding>-->
 
     <corners
-        android:radius="2.5dp" >
+        android:radius="4dp" >
     </corners>
 
 </shape>
