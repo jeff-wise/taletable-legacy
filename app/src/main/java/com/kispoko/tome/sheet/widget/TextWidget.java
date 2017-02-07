@@ -19,6 +19,7 @@ import com.kispoko.tome.sheet.NavigationDialogFragment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
+import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
@@ -353,6 +354,12 @@ public class TextWidget extends Widget
         LinearLayout contentView = contentView(context);
         layout.addView(contentView);
 
+        // ** Top Label View
+        if (this.format().label() != null &&
+            this.format().labelPosition() == InlineLabelPosition.TOP) {
+            contentView.addView(this.valueTopLabelView(context));
+        }
+
         // ** Value View
         contentView.addView(valueView(context));
 
@@ -441,8 +448,10 @@ public class TextWidget extends Widget
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
-        if (this.format().inlineLabel() != null)
+        if (this.format().label() != null &&
+                this.format().labelPosition() == InlineLabelPosition.LEFT) {
             layout.child(label);
+        }
 
         layout.child(value);
 
@@ -492,13 +501,62 @@ public class TextWidget extends Widget
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.text                  = this.format().inlineLabel();
+        label.text                  = this.format().label();
         label.color                 = R.color.dark_blue_hl_6;
         label.font                  = Font.serifFontRegular(context);
         label.size                  = this.format().size().labelResourceId();
 
         label.margin.right          = R.dimen.widget_label_inline_margin_right;
 
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout valueTopLabelView(Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        TextViewBuilder     label  = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.orientation          = LinearLayout.HORIZONTAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.gravity              = Gravity.CENTER_HORIZONTAL;
+
+        layout.child(label);
+
+        // [3] Label
+        // -------------------------------------------------------------------------------------
+
+        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text                  = this.format().label();
+        label.color                 = this.format().tint().labelResourceId();
+        label.size                  = R.dimen.widget_label_text_size;
+        label.font                  = Font.serifFontRegular(context);
+
+        switch (this.format().size())
+        {
+            case VERY_SMALL:
+                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_small;
+            case SMALL:
+                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_small;
+            case MEDIUM_SMALL:
+                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_medium;
+            case MEDIUM:
+                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_medium;
+            case MEDIUM_LARGE:
+                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_large;
+            case LARGE:
+                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_large;
+        }
 
         return layout.linearLayout(context);
     }

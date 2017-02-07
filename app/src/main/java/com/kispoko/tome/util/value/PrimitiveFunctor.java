@@ -21,6 +21,7 @@ import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.group.GroupBackground;
+import com.kispoko.tome.sheet.group.GroupLabelType;
 import com.kispoko.tome.sheet.group.RowAlignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
@@ -214,6 +215,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(GroupLabelType.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(Spacing.class))
         {
             return SQLValue.Type.TEXT;
@@ -226,6 +231,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        // TODO remove
         else if (valueClass.isAssignableFrom(Action[].class))
         {
             return SQLValue.Type.TEXT;
@@ -282,6 +288,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        // TODO remove
         else if (valueClass.isAssignableFrom(Action.class))
         {
             return SQLValue.Type.TEXT;
@@ -413,6 +420,51 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof GroupBackground)
         {
             String enumString = ((GroupBackground) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof GroupLabelType)
+        {
+            String enumString = ((GroupLabelType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof Spacing)
+        {
+            String enumString = ((Spacing) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof ProgramValueType)
+        {
+            String enumString = ((ProgramValueType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof ProgramValueType[])
+        {
+            ProgramValueType[] programValueTypeArray = (ProgramValueType[]) this.getValue();
+            List<String> programValueTypeStrings = new ArrayList<>();
+            for (int i = 0; i < programValueTypeArray.length; i++) {
+                programValueTypeStrings.add(programValueTypeArray[i].name().toLowerCase());
+            }
+            String arrayString = TextUtils.join("***", programValueTypeStrings);
+            return SQLValue.newText(arrayString);
+        }
+        else if (this.getValue() instanceof Action[])
+        {
+            Action[] actionArray = (Action[]) this.getValue();
+            List<String> actionStrings = new ArrayList<>();
+            for (int i = 0; i < actionArray.length; i++) {
+                actionStrings.add(actionArray[i].name().toLowerCase());
+            }
+            String arrayString = TextUtils.join("***", actionStrings);
+            return SQLValue.newText(arrayString);
+        }
+        else if (this.getValue() instanceof ParameterType)
+        {
+            String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof VariableType)
+        {
+            String enumString = ((VariableType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof Spacing)
@@ -678,6 +730,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             GroupBackground background = GroupBackground.fromSQLValue(sqlValue);
             this.setValue((A) background);
+        }
+        else if (this.valueClass.isAssignableFrom(GroupLabelType.class))
+        {
+            GroupLabelType groupLabelType = GroupLabelType.fromSQLValue(sqlValue);
+            this.setValue((A) groupLabelType);
         }
         else if (this.valueClass.isAssignableFrom(Spacing.class))
         {

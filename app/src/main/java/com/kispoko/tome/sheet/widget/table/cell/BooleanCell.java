@@ -4,9 +4,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -18,6 +16,9 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.LayoutType;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -61,6 +62,9 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
     private WidgetContainer                 widgetContainer;
 
+    private String                          trueText;
+    private String                          falseText;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -76,17 +80,12 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
     public BooleanCell(UUID id,
                        BooleanVariable valueVariable,
-                       CellAlignment alignment,
-                       BooleanColumn column)
+                       CellAlignment alignment)
     {
         // ** Id
         this.id        = id;
 
         // ** Value
-        if (valueVariable == null) {
-            valueVariable = BooleanVariable.asBoolean(UUID.randomUUID(),
-                                              column.defaultValue());
-        }
         this.valueVariable = ModelFunctor.full(valueVariable, BooleanVariable.class);
 
         // ** Alignment
@@ -96,7 +95,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     }
 
 
-    public static BooleanCell fromYaml(YamlParser yaml, BooleanColumn column)
+    public static BooleanCell fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         UUID            id        = UUID.randomUUID();
@@ -104,7 +103,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
         BooleanVariable value     = BooleanVariable.fromYaml(yaml.atMaybeKey("value"));
         CellAlignment   alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
 
-        return new BooleanCell(id, value, alignment, column);
+        return new BooleanCell(id, value, alignment);
     }
 
 
@@ -172,7 +171,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
      * Set the cells widget container (which is the parent Table Row).
      * @param widgetContainer The widget container.
      */
-    public void initialize(WidgetContainer widgetContainer)
+    public void initialize(BooleanColumn column, WidgetContainer widgetContainer)
     {
         // [1] Set the widget container
         // --------------------------------------------------------------------------------------
@@ -182,20 +181,28 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
         // [2] Initialize the value variable
         // --------------------------------------------------------------------------------------
 
-        // > If the variable is non-null
-        if (!this.valueVariable.isNull())
-        {
-            this.valueVariable().initialize();
-
-            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onValueUpdate();
-                }
-            });
-
-            State.addVariable(this.valueVariable());
+        if (this.valueVariable.isNull()) {
+            valueVariable.setValue(BooleanVariable.asBoolean(UUID.randomUUID(),
+                                                             column.defaultValue()));
         }
+
+        this.valueVariable().initialize();
+
+        this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener()
+        {
+             @Override
+             public void onUpdate() {
+                onValueUpdate();
+            }
+        });
+
+        State.addVariable(this.valueVariable());
+
+        // [3] Save Column Data
+        // --------------------------------------------------------------------------------------
+
+        this.trueText           = column.trueText();
+        this.falseText          = column.trueText();
     }
 
 
@@ -248,47 +255,48 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public View view(BooleanColumn column)
+    public View view(Context context)
     {
-        final Context context = SheetManager.currentSheetContext();
+        final TextView valueView = valueView(context);
 
-        final ImageView view = new ImageView(context);
-
-        Boolean value = this.value();
-
-        if (value == null)
-            value = column.defaultValue();
-
-        if (value) {
-            view.setImageDrawable(
-                    ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
-        } else {
-            view.setImageDrawable(
-                    ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
-        }
-
-        TableRow.LayoutParams layoutParams =
-                new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                                          TableRow.LayoutParams.WRAP_CONTENT);
-        view.setLayoutParams(layoutParams);
-
-
-        view.setOnClickListener(new View.OnClickListener() {
+        valueView.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 if (value()) {
                     valueVariable().setValue(false);
-                    view.setImageDrawable(
-                            ContextCompat.getDrawable(context, R.drawable.ic_boolean_false));
+                    valueView.setText(falseText);
                 } else {
                     valueVariable().setValue(true);
-                    view.setImageDrawable(
-                            ContextCompat.getDrawable(context, R.drawable.ic_boolean_true));
+                    valueView.setText(trueText);
                 }
             }
         });
 
-        return view;
+        return valueView;
+    }
+
+
+    private TextView valueView(Context context)
+    {
+        TextViewBuilder value = new TextViewBuilder();
+
+        value.layoutType        = LayoutType.TABLE_ROW;
+        value.width             = TableRow.LayoutParams.WRAP_CONTENT;
+        value.height            = TableRow.LayoutParams.WRAP_CONTENT;
+
+        // > Value
+        if (this.value())
+            value.text          = trueText;
+        else
+            value.text          = falseText;
+
+        value.font              = Font.serifFontRegular(context);
+        value.size              = R.dimen.widget_table_cell_text_size;
+        value.color             = R.color.dark_blue_hl_1;
+
+        return value.textView(context);
     }
 
 
@@ -300,8 +308,8 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
      */
     private void initializeBooleanCell()
     {
-        this.valueViewId   = null;
-        this.widgetContainer = null;
+        this.valueViewId        = null;
+        this.widgetContainer    = null;
     }
 
 

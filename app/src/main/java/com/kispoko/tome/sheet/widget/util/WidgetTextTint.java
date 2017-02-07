@@ -126,6 +126,8 @@ public enum WidgetTextTint implements ToYaml
                 return R.color.dark_blue_1;
             case VERY_DARK:
                 return R.color.dark_blue_3;
+            case PURPLE:
+                return R.color.dark_blue_hl_5;
         }
 
         return 0;

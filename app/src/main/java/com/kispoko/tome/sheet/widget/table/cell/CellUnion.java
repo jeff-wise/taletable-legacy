@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.table.cell;
 
 
+import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TableRow;
@@ -142,14 +143,13 @@ public class CellUnion implements Model, ToYaml, Serializable
         switch (columnUnion.type())
         {
             case TEXT:
-                TextCell textCell = TextCell.fromYaml(yaml, columnUnion.textColumn());
+                TextCell textCell = TextCell.fromYaml(yaml);
                 return CellUnion.asText(id, textCell);
             case NUMBER:
-                NumberCell numberCell = NumberCell.fromYaml(yaml, columnUnion.numberColumn());
+                NumberCell numberCell = NumberCell.fromYaml(yaml);
                 return CellUnion.asNumber(id, numberCell);
             case BOOLEAN:
-                BooleanCell booleanCell = BooleanCell.fromYaml(yaml,
-                                                               columnUnion.booleanColumn());
+                BooleanCell booleanCell = BooleanCell.fromYaml(yaml);
                 return CellUnion.asBoolean(id, booleanCell);
         }
 
@@ -310,7 +310,7 @@ public class CellUnion implements Model, ToYaml, Serializable
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public View view(ColumnUnion columnUnion)
+    public View view(ColumnUnion columnUnion, Context context)
     {
         View cellView = null;
 
@@ -323,7 +323,7 @@ public class CellUnion implements Model, ToYaml, Serializable
                 cellView = this.numberCell().view(columnUnion.numberColumn());
                 break;
             case BOOLEAN:
-                cellView = this.booleanCell().view(columnUnion.booleanColumn());
+                cellView = this.booleanCell().view(context);
                 break;
         }
 

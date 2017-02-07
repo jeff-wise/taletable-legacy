@@ -1166,7 +1166,7 @@ profile:
     - label: General
       show_name: false
       rows:
-      - space_above: medium_large
+      - space_above: medium
         widgets:
         - type: text
           data:
@@ -1205,15 +1205,14 @@ profile:
             format:
               background: none
               name: Picture
-    - label: I am a
+    - name: I am a
       space_above: medium_large
+      space_below: medium_large
       rows:
-      - space_above: small
+      - space_above: medium_small
         widgets:
         - type: number
           data:
-            actions:
-            - edit
             format:
               label: level
               name: Level
@@ -1255,7 +1254,7 @@ profile:
             value:
               set_name: class
               value_name: fighter
-      - space_above: small
+      - space_above: medium_small
         widgets:
         - type: text
           data:
@@ -1313,7 +1312,8 @@ profile:
               width: 5
           format:
             size: medium
-            inline_label: XP
+            label: XP
+            label_position: left
           value:
             type: literal
             value: 103
@@ -1330,7 +1330,7 @@ profile:
           value:
             type: literal
             value: true
-    - label: My Body
+    - name: My Body
       space_above: medium
       background: dark
       rows:
@@ -1344,7 +1344,7 @@ profile:
               name: Age
               width: 1
           format:
-            inline_label: age
+            label: age
             size: medium_small
             tint: medium_dark
           value:
@@ -1358,7 +1358,8 @@ profile:
               name: Height
               width: 1
           format:
-            inline_label: height
+            label: height
+            label_position: left
             size: medium_small
             tint: medium_dark
           value:
@@ -1372,7 +1373,8 @@ profile:
               name: Weight
               width: 1
           format:
-            inline_label: weight
+            label: weight
+            label_position: left
             size: medium_small
             tint: medium_dark
           size: medium_small
@@ -1389,7 +1391,8 @@ profile:
               name: Eyes
               width: 1
           format:
-            inline_label: eyes
+            label: eyes
+            label_position: left
             size: medium_small
             tint: medium_dark
           value:
@@ -1403,7 +1406,8 @@ profile:
               name: Skin
               width: 1
           format:
-            inline_label: skin
+            label: skin
+            label_position: left
             size: medium_small
             tint: medium_dark
           value:
@@ -1417,13 +1421,14 @@ profile:
               name: Hair
               width: 1
           format:
-            inline_label: hair
+            label: hair
+            label_position: left
             size: medium_small
             tint: medium_dark
           value:
             type: literal
             value: Brown
-    - label: Languages
+    - name: Languages
       space_above: medium
       rows:
       - space_above: small
@@ -1444,10 +1449,10 @@ profile:
               value:
                 set_name: language
                 value_name: orc
-    - label: Background
-      space_above: medium_large
+    - name: Background
+      space_above: medium
       rows:
-      - space_above: medium
+      - space_above: medium_small
         alignment: center
         width: half
         widgets:
@@ -1464,9 +1469,9 @@ profile:
           value:
             type: literal
             value: The Hard Life
-    - label: Personality Traits
+    - name: Personality Traits
       label_type: secondary
-      space_above: medium
+      space_above: small
       rows:
       - space_above: small
         width: indented
@@ -1505,7 +1510,7 @@ profile:
               I still remember those days, a boy running on dirty feet in ragged clothes devouring
               a stolen loaf of bread -- starving, guilty, ashamed. I will always appreciate a bowl
               of hot soup or the smallest gift from a stranger.
-    - label: Ideals
+    - name: Ideals
       label_type: secondary
       space_above: medium
       rows:
@@ -1527,7 +1532,7 @@ profile:
             value: >
               Equality. Those of all races and all backgrounds should be given the same opportunties
               and equal respect.
-    - label: Bonds
+    - name: Bonds
       label_type: secondary
       space_above: medium
       rows:
@@ -1550,7 +1555,7 @@ profile:
               My mentor was killed, and there was nothing I could do. He was a good, innocent man. I
               have devoted my life to revenge, for myself and for others that have walked the same
               path.
-    - label: Flaws
+    - name: Flaws
       label_type: secondary
       space_above: medium
       rows:
@@ -1576,6 +1581,7 @@ profile:
     groups:
     - space_above: medium_small
       background: dark
+      name: Ability Scores
       show_name: false
       space_below: medium
       rows:
@@ -1586,11 +1592,11 @@ profile:
           data:
             format:
               alignment: center
-              background: purple_circle
               label: Strength
               label_alignment: center
               width: 1
           format:
+            style: purple_circle
             tint: purple
           value:
             name: strength
@@ -1600,11 +1606,11 @@ profile:
           data:
             format:
               alignment: center
-              background: purple_circle
               label: Dexterity
               label_alignment: center
               width: 1
           format:
+            style: purple_circle
             tint: purple
           value:
             name: dexterity
@@ -1614,11 +1620,11 @@ profile:
           data:
             format:
               alignment: center
-              background: purple_circle
               label: Constitution
               label_alignment: center
               width: 1
           format:
+            style: purple_circle
             tint: purple
           value:
             name: constitution
@@ -1690,11 +1696,11 @@ profile:
           data:
             format:
               alignment: center
-              background: purple_circle
               label: Intelligence
               label_alignment: center
               width: 1
           format:
+            style: purple_circle
             tint: purple
           value:
             name: intelligence
@@ -1704,11 +1710,11 @@ profile:
           data:
             format:
               alignment: center
-              background: purple_circle
               label: Wisdom
               label_alignment: center
               width: 1
           format:
+            style: purple_circle
             tint: purple
           value:
             name: wisdom
@@ -1718,11 +1724,11 @@ profile:
           data:
             format:
               alignment: center
-              background: purple_circle
               label: Charisma
               label_alignment: center
               width: 1
           format:
+            style: purple_circle
             tint: purple
           value:
             name: charisma
@@ -1787,7 +1793,7 @@ profile:
               - type: reference
                 value: charisma
           value_prefix: '+'
-    - label: Saving Throws
+    - name: Saving Throws
       space_above: medium
       rows:
       - space_above: medium
@@ -1803,7 +1809,7 @@ profile:
           value_prefix: '+'
           value:
             type: literal
-            value: 0
+            value: 5
         - type: number
           data:
             format:
@@ -1866,70 +1872,11 @@ profile:
           value:
             type: literal
             value: 1
-  - label: Features
-    groups:
-    - label:
+    - name: Skills
+      space_above: small
       rows:
-      - widgets:
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              width: 1
-              label: Armor Class
-          size: medium
-          value:
-            name: armor_class
-            type: summation
-            value:
-              terms:
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: tag
-                    tag: armor_class_bonus
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: dexterity_modifier
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              label: Initiative
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 7
-        - type: number
-          data:
-            actions:
-            - edit
-            format:
-              label: Speed
-              width: 1
-          size: medium
-          value:
-            type: literal
-            value: 30
-      - widgets:
-        - type: number
-          data:
-            format:
-              width: 1
-          size: medium
-          value:
-            type: literal
-            name: proficiency_bonus
-            value: 2
-      - widgets:
+      - space_above: small
+        widgets:
         - type: table
           data:
             actions:
@@ -1942,19 +1889,19 @@ profile:
               name: NAME
               default_value: skill
               width: 3
-              default_alignment: left
+              alignment: left
           - type: number
             column:
               name: MODIFIER
               default_value: 0
               width: 2
-              default_alignment: center
+              alignment: center
           - type: boolean
             column:
               name: PROFICIENT?
               default_value: false
               width: 2
-              default_alignment: center
+              alignment: center
           rows:
           - cells:
             - value:
@@ -2532,15 +2479,126 @@ profile:
                 name: survival_is_proficient
                 type: literal
                 value: false
+  - label: Features
+    groups:
+    - name: Proficiency Bonus
+      show_name: false
+      space_above: medium_small
+      rows:
+      - space_above: small
+        widgets:
+        - type: number
+          data:
+            format:
+              background: none
+              width: 1
+          format:
+            label: Proficiency Bonus
+            label_position: left
+          value:
+            type: literal
+            name: proficiency_bonus
+            value: 2
+          value_prefix: '+'
+    - name: Combat Main
+      show_name: false
+      space_above: none
+      rows:
+      - space_above: small
+        widgets:
+        - type: number
+          data:
+            format:
+              width: 1
+          format:
+            label: Armor Class
+            label_position: top
+            size: large
+          value:
+            name: armor_class
+            type: summation
+            value:
+              terms:
+              - type: integer
+                value:
+                  type: variable
+                  variable:
+                    type: tag
+                    tag: armor_class_bonus
+              - type: integer
+                value:
+                  type: variable
+                  variable:
+                    type: name
+                    name: dexterity_modifier
+        - type: number
+          data:
+            format:
+              width: 1
+          format:
+            label: Hit Points
+            label_position: top
+            size: large
+          size: medium
+          value:
+            name: hit_points
+            type: literal
+            value: 9
+    - name: Combat Secondary
+      show_name: false
+      space_above: none
+      rows:
+      - space_above: none
+        widgets:
+        - type: number
+          data:
+            format:
+              background: none
+              label_alignment: center
+              width: 1
+          format:
+            label: Initiative
+            label_position: top
+            tint: medium_dark
+          value_prefix: '+'
+          value:
+            type: literal
+            value: 7
+        - type: number
+          data:
+            format:
+              background: none
+              label_alignment: center
+              width: 1
+          format:
+            label: Speed
+            label_position: top
+            tint: medium_dark
+          value:
+            type: literal
+            value: 30
+          value_postfix: ' ft'
+        - type: text
+          data:
+            format:
+              background: none
+              width: 1
+          format:
+            label: Hit Dice
+            label_position: top
+            tint: medium_dark
+          value:
+            type: literal
+            value: 1d8
   - label: Inventory
     groups:
-    - label:
+    - name: Weapons
+      space_above: medium_large
       rows:
-      - widgets:
+      - space_above: medium_small
+        widgets:
         - type: table
           data:
-            actions:
-            - edit
             format:
               label: Weapons
           columns:
@@ -2549,19 +2607,19 @@ profile:
               name: NAME
               default_value: weapon
               width: 3
-              default_alignment: left
+              alignment: left
           - type: number
             column:
               name: QUANTITY
               default_value: 1
               width: 2
-              default_alignment: center
+              alignment: center
           - type: boolean
             column:
               name: EQUIPPED?
               default_value: false
               width: 2
-              default_alignment: center
+              alignment: center
           rows:
           - cells:
             - value:
@@ -2599,9 +2657,11 @@ profile:
                 name: equipped
                 type: literal
                 value: false
-    - label:
+    - name: Armor
+      space_above: medium_large
       rows:
-      - widgets:
+      - space_above: medium_small
+        widgets:
         - type: table
           data:
             actions:
@@ -2614,19 +2674,19 @@ profile:
               name: NAME
               default_value: armor
               width: 3
-              default_alignment: left
+              alignment: left
           - type: number
             column:
               name: QUANTITY
               default_value: 1
               width: 2
-              default_alignment: center
+              alignment: center
           - type: boolean
             column:
               name: EQUIPPED?
               default_value: false
               width: 2
-              default_alignment: center
+              alignment: center
           rows:
           - cells:
             - value:
@@ -2660,7 +2720,8 @@ profile:
                 type: literal
                 value: true
                 namespaced: true
-    - label: Wealth
+    - name: Wealth
+      space_above: medium_large
       rows:
       - widgets:
         - type: number
@@ -2724,7 +2785,8 @@ profile:
             name: wealth_electrum
             type: literal
             value: 0
-    - label:
+    - name: Gear
+      space_above: medium_large
       rows:
       - widgets:
         - type: table
@@ -2739,13 +2801,13 @@ profile:
               name: NAME
               default_value: armor
               width: 1
-              default_alignment: left
+              alignment: left
           - type: number
             column:
               name: QUANTITY
               default_value: 1
               width: 1
-              default_alignment: center
+              alignment: center
           rows:
           - cells:
             - value:

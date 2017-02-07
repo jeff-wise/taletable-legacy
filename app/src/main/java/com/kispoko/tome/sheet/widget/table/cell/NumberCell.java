@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.kispoko.tome.R.string.column;
 
 
 /**
@@ -82,15 +83,10 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
     public NumberCell(UUID id,
                       NumberVariable valueVariable,
                       CellAlignment alignment,
-                      NumberColumn column,
                       String prefix)
     {
         this.id             = id;
 
-        if (valueVariable == null) {
-            valueVariable = NumberVariable.asInteger(UUID.randomUUID(),
-                                             column.defaultValue());
-        }
         this.valueVariable = ModelFunctor.full(valueVariable, NumberVariable.class);
 
         this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
@@ -100,7 +96,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
     }
 
 
-    public static NumberCell fromYaml(YamlParser yaml, NumberColumn column)
+    public static NumberCell fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         UUID           id        = UUID.randomUUID();
@@ -109,7 +105,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         CellAlignment  alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
         String         prefix    = yaml.atMaybeKey("prefix").getString();
 
-        return new NumberCell(id, value, alignment, column, prefix);
+        return new NumberCell(id, value, alignment, prefix);
     }
 
 
@@ -177,7 +173,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
      * Set the cells widget container (which is the parent Table Row).
      * @param widgetContainer The widget container.
      */
-    public void initialize(WidgetContainer widgetContainer)
+    public void initialize(NumberColumn column, WidgetContainer widgetContainer)
     {
         // [1] Set the widget container
         // --------------------------------------------------------------------------------------
@@ -187,20 +183,23 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         // [2] Initialize the value variable
         // --------------------------------------------------------------------------------------
 
-        // > If the variable is non-null
-        if (!this.valueVariable.isNull())
-        {
-            this.valueVariable().initialize();
-
-            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onValueUpdate();
-                }
-            });
-
-            State.addVariable(this.valueVariable());
+        // > If null, set default value
+        if (this.valueVariable.isNull()) {
+            valueVariable.setValue(NumberVariable.asInteger(UUID.randomUUID(),
+                                                            column.defaultValue()));
         }
+
+        // > Initialize the variable
+        this.valueVariable().initialize();
+
+        this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                                             @Override
+                                             public void onUpdate() {
+                onValueUpdate();
+        }
+    });
+
+        State.addVariable(this.valueVariable());
 
     }
 
@@ -321,9 +320,14 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         cellView.layoutType = LayoutType.TABLE_ROW;
         cellView.width      = TableRow.LayoutParams.WRAP_CONTENT;
         cellView.height     = TableRow.LayoutParams.WRAP_CONTENT;
-        cellView.color      = R.color.dark_blue_hl_3;
-        cellView.font       = Font.serifFontRegular(context);
+        cellView.color      = R.color.dark_blue_hl_2;
         cellView.size       = R.dimen.widget_table_cell_text_size;
+
+        // > Font
+        if (column.isBold())
+            cellView.font   = Font.serifFontBold(context);
+        else
+            cellView.font   = Font.serifFontRegular(context);
 
         String valueString = this.valueString();
         if (valueString != null)

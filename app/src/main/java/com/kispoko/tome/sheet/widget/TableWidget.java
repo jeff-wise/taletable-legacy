@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.TextVariable;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.table.TableRow;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
@@ -21,12 +19,10 @@ import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TableLayoutBuilder;
 import com.kispoko.tome.util.ui.TableRowBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -208,7 +204,7 @@ public class TableWidget extends Widget
     public void initialize()
     {
         for (TableRow tableRow : this.rows()) {
-            tableRow.initialize();
+            tableRow.initialize(this.columns());
         }
     }
 
@@ -335,14 +331,13 @@ public class TableWidget extends Widget
         // [1] Declarations
         // --------------------------------------------------------------------------------------
 
-        LinearLayout tileLayout  = this.tileLayout(context);
+        LinearLayout widgetLayout  = this.widgetLayout(context);
         TableLayout  tableLayout = this.tileTableLayout(context);
 
         // [2] Structure
         // --------------------------------------------------------------------------------------
 
-        tileLayout.addView(this.tableTitleView(this.data().format().label(), context));
-        tileLayout.addView(tableLayout);
+        widgetLayout.addView(tableLayout);
 
         // > Header
         // --------------------------------------------------------------------------------------
@@ -358,13 +353,7 @@ public class TableWidget extends Widget
             tableLayout.addView(tableRow);
         }
 
-        return tileLayout;
-    }
-
-
-    public View editorView(Context context)
-    {
-        return new LinearLayout(context);
+        return widgetLayout;
     }
 
 
@@ -385,8 +374,7 @@ public class TableWidget extends Widget
                                                                columnUnion.column().name());
             TextCell headerCell = new TextCell(UUID.randomUUID(),
                                                headerCellValue,
-                                               columnUnion.column().alignment(),
-                                               null);
+                                               columnUnion.column().alignment());
             CellUnion headerCellUnion = CellUnion.asText(null, headerCell);
             headerCells.add(headerCellUnion);
         }
@@ -395,41 +383,25 @@ public class TableWidget extends Widget
     }
 
 
-    private TextView tableTitleView(String title, Context context)
-    {
-        TextViewBuilder tableTitle = new TextViewBuilder();
-
-        tableTitle.layoutType       = LayoutType.LINEAR;
-        tableTitle.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        tableTitle.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        tableTitle.text             = title.toUpperCase();
-        tableTitle.padding.top      = R.dimen.widget_table_title_padding_top;
-        tableTitle.padding.left     = R.dimen.widget_table_title_paddin_left;
-        tableTitle.size             = R.dimen.widget_table_title_text_size;
-        tableTitle.color            = R.color.gold_6;
-        tableTitle.font             = Font.sansSerifFontBold(context);
-
-        return tableTitle.textView(context);
-    }
-
-
     private android.widget.TableRow tableRow(TableRow row, Context context)
     {
         TableRowBuilder tableRow = new TableRowBuilder();
 
-        tableRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
-        tableRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
-        tableRow.padding.left   = R.dimen.widget_table_row_padding_horz;
-        tableRow.padding.right  = R.dimen.widget_table_row_padding_horz;
-        tableRow.padding.top    = R.dimen.widget_table_row_padding_vert;
-        tableRow.padding.bottom = R.dimen.widget_table_row_padding_vert;
+        tableRow.layoutType         = LayoutType.TABLE;
+        tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT;
+        tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT;
+
+        tableRow.backgroundResource = R.drawable.bg_table_row;
+
+        tableRow.margin.top         = R.dimen.widget_table_row_margins_vert;
+        tableRow.margin.bottom      = R.dimen.widget_table_row_margins_vert;
 
         android.widget.TableRow tableRowView = tableRow.tableRow(context);
 
         for (int i = 0; i < row.width(); i++)
         {
             CellUnion cell = row.cellAtIndex(i);
-            View cellView = cell.view(this.columnAtIndex(i));
+            View cellView = cell.view(this.columnAtIndex(i), context);
             tableRowView.addView(cellView);
         }
 
@@ -437,14 +409,14 @@ public class TableWidget extends Widget
     }
 
 
-    private LinearLayout tileLayout(Context context)
+    private LinearLayout widgetLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
         layout.orientation         = LinearLayout.VERTICAL;
         layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.backgroundResource  = R.drawable.bg_widget_light;
+        //layout.backgroundResource  = R.drawable.bg_widget_light;
 
         return layout.linearLayout(context);
     }
@@ -459,13 +431,11 @@ public class TableWidget extends Widget
         layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.shrinkAllColumns    = true;
 
-        TableLayout tableLayout = layout.tableLayout(context);
+//        tableLayout.setDividerDrawable(
+//                ContextCompat.getDrawable(context, R.drawable.table_row_divider));
+//        tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 
-        tableLayout.setDividerDrawable(
-                ContextCompat.getDrawable(context, R.drawable.table_row_divider));
-        tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-
-        return tableLayout;
+        return layout.tableLayout(context);
     }
 
 
@@ -476,7 +446,7 @@ public class TableWidget extends Widget
 
         headerRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
         headerRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
-        headerRow.padding.top    = R.dimen.widget_table_header_padding_vert;
+        //headerRow.padding.top    = R.dimen.widget_table_header_padding_vert;
         headerRow.padding.bottom = R.dimen.widget_table_header_padding_vert;
         headerRow.padding.left   = R.dimen.widget_table_row_padding_horz;
         headerRow.padding.right  = R.dimen.widget_table_row_padding_horz;
@@ -491,16 +461,17 @@ public class TableWidget extends Widget
             Column column = this.columnAtIndex(i).column();
             TextColumn textColumn = new TextColumn(null, null, null,
                                                    column.alignment(),
+                                                   false,
                                                    column.width());
             ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
 
-            TextView headerCellView = (TextView) headerCell.view(columnUnion);
+            TextView headerCellView = (TextView) headerCell.view(columnUnion, context);
 
             float headerTextSize = (int) context.getResources()
                                                 .getDimension(R.dimen.widget_table_header_text_size);
             headerCellView.setTextSize(headerTextSize);
-            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hlx_8));
-            headerCellView.setTypeface(Util.sansSerifFontBold(context));
+            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_4));
+            headerCellView.setTypeface(Util.serifFontBold(context));
 
             headerRowView.addView(headerCellView);
         }

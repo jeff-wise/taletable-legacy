@@ -140,9 +140,13 @@
 
     <dimen name="widget_label_text_size">3.4sp</dimen>
     <dimen name="widget_label_margin_bottom">4dp</dimen>
-    <dimen name="widget_label_margin_bottom_circle">7dp</dimen>
+    <dimen name="widget_label_margin_bottom_circle">8dp</dimen>
     <dimen name="widget_label_fill_padding">21dp</dimen>
     <dimen name="widget_label_inline_margin_right">10dp</dimen>
+
+    <dimen name="widget_label_inline_top_margin_bottom_small">2dp</dimen>
+    <dimen name="widget_label_inline_top_margin_bottom_medium">5dp</dimen>
+    <dimen name="widget_label_inline_top_margin_bottom_large">15dp</dimen>
 
 
     <!-- WIDGET: LIST -->
@@ -198,19 +202,20 @@
 
     <!-- WIDGET: TABLE -->
     <dimen name="comp_table_cell_padding">5dp</dimen>
-    <dimen name="widget_table_header_text_size">3.2sp</dimen>
+    <dimen name="widget_table_header_text_size">2.9sp</dimen>
     <dimen name="widget_table_title_padding_top">18dp</dimen>
     <dimen name="widget_table_title_text_size">3sp</dimen>
     <dimen name="widget_table_title_paddin_left">14dp</dimen>
     <dimen name="widget_table_row_padding_vert">22dp</dimen>
     <dimen name="widget_table_row_padding_horz">15dp</dimen>
-    <dimen name="widget_table_header_padding_vert">20dp</dimen>
+    <dimen name="widget_table_row_margins_vert">2.5dp</dimen>
+    <dimen name="widget_table_header_padding_vert">10dp</dimen>
     <dimen name="comp_table_layout_padding">5dp</dimen>
 
     <dimen name="prefix_padding_left">4.2dp</dimen>
 
     <!-- WIDGET: TABLE: CELL -->
-    <dimen name="widget_table_cell_text_size">4.1dp</dimen>
+    <dimen name="widget_table_cell_text_size">3.6dp</dimen>
 
 
     <!-- WIDGET: TEXT: EDITOR: FREE -->

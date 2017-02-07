@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.kispoko.tome.R.string.column;
 
 
 /**
@@ -78,17 +80,12 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
 
     public TextCell(UUID id,
                     TextVariable valueVariable,
-                    CellAlignment alignment,
-                    TextColumn column)
+                    CellAlignment alignment)
     {
         // ** Id
         this.id        = id;
 
         // ** Value
-        if (valueVariable == null) {
-            valueVariable = TextVariable.asText(UUID.randomUUID(),
-                                        column.defaultValue());
-        }
         this.valueVariable = ModelFunctor.full(valueVariable, TextVariable.class);
 
         this.alignment          = new PrimitiveFunctor<>(alignment, CellAlignment.class);
@@ -98,7 +95,7 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     }
 
 
-    public static TextCell fromYaml(YamlParser yaml, TextColumn column)
+    public static TextCell fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         UUID          id                = UUID.randomUUID();
@@ -106,7 +103,7 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
         TextVariable  value             = TextVariable.fromYaml(yaml.atMaybeKey("value"));
         CellAlignment alignment         = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
 
-        return new TextCell(id, value, alignment, column);
+        return new TextCell(id, value, alignment);
     }
 
 
@@ -173,7 +170,7 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
      * Set the cells widget container (which is the parent Table Row).
      * @param widgetContainer The widget container.
      */
-    public void initialize(WidgetContainer widgetContainer)
+    public void initialize(TextColumn column, WidgetContainer widgetContainer)
     {
         // [1] Set widget container
         // --------------------------------------------------------------------------------------
@@ -183,20 +180,22 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
         // [2] Initialize value variable
         // --------------------------------------------------------------------------------------
 
-        // > If the variable is non-null
-        if (!this.valueVariable.isNull())
-        {
-            this.valueVariable().initialize();
-
-            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onValueUpdate();
-                }
-            });
-
-            State.addVariable(this.valueVariable());
+        // > If null, set default value
+        if (this.valueVariable.isNull()) {
+            valueVariable.setValue(TextVariable.asText(UUID.randomUUID(),
+                                                       column.defaultValue()));
         }
+
+        this.valueVariable().initialize();
+
+        this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+                                             @Override
+                                             public void onUpdate() {
+                onValueUpdate();
+        }
+    });
+
+        State.addVariable(this.valueVariable());
 
         // [3] Configure namespace
         // --------------------------------------------------------------------------------------
@@ -274,9 +273,17 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
         cellView.layoutType = LayoutType.TABLE_ROW;
         cellView.width      = TableRow.LayoutParams.WRAP_CONTENT;
         cellView.height     = TableRow.LayoutParams.WRAP_CONTENT;
-        cellView.color      = R.color.dark_blue_hl_3;
-        cellView.font       = Font.serifFontRegular(context);
         cellView.size       = R.dimen.widget_table_cell_text_size;
+
+        // > Font
+        if (column.isBold()) {
+            cellView.font   = Font.serifFontBold(context);
+            cellView.color  = R.color.dark_blue_hl_3;
+        }
+        else {
+            cellView.font   = Font.serifFontRegular(context);
+            cellView.color  = R.color.dark_blue_hl_1;
+        }
 
         if (this.value() != null)
             cellView.text = this.value();

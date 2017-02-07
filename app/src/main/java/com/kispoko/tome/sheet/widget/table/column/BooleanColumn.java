@@ -36,9 +36,14 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String>        name;
+
     private PrimitiveFunctor<Boolean>       defaultValue;
+
     private PrimitiveFunctor<CellAlignment> alignment;
     private PrimitiveFunctor<Integer>       width;
+
+    private PrimitiveFunctor<String>        trueText;
+    private PrimitiveFunctor<String>        falseText;
 
 
     // CONSTRUCTORS
@@ -46,12 +51,17 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
 
     public BooleanColumn()
     {
-        this.id           = null;
+        this.id             = null;
 
-        this.name         = new PrimitiveFunctor<>(null, String.class);
-        this.defaultValue = new PrimitiveFunctor<>(null, Boolean.class);
-        this.alignment    = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.width        = new PrimitiveFunctor<>(null, Integer.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+
+        this.defaultValue   = new PrimitiveFunctor<>(null, Boolean.class);
+
+        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.width          = new PrimitiveFunctor<>(null, Integer.class);
+
+        this.trueText       = new PrimitiveFunctor<>(null, String.class);
+        this.falseText      = new PrimitiveFunctor<>(null, String.class);
     }
 
 
@@ -59,14 +69,24 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
                          String name,
                          Boolean defaultValue,
                          CellAlignment alignment,
-                         Integer width)
+                         Integer width,
+                         String trueText,
+                         String falseText)
     {
-        this.id           = id;
+        this.id             = id;
 
-        this.name         = new PrimitiveFunctor<>(name, String.class);
-        this.defaultValue = new PrimitiveFunctor<>(defaultValue, Boolean.class);
-        this.alignment    = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-        this.width        = new PrimitiveFunctor<>(width, Integer.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+
+        this.defaultValue   = new PrimitiveFunctor<>(defaultValue, Boolean.class);
+
+        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.width          = new PrimitiveFunctor<>(width, Integer.class);
+
+        this.trueText       = new PrimitiveFunctor<>(trueText, String.class);
+        this.falseText      = new PrimitiveFunctor<>(falseText, String.class);
+
+        this.setTrueText(trueText);
+        this.setFalseText(falseText);
     }
 
 
@@ -82,11 +102,16 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
         UUID          id           = UUID.randomUUID();
 
         String        name         = yaml.atKey("name").getString();
+
         Boolean       defaultValue = yaml.atKey("default_value").getBoolean();
-        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+
+        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("alignment"));
         Integer       width        = yaml.atKey("width").getInteger();
 
-        return new BooleanColumn(id, name, defaultValue, alignment, width);
+        String        trueText     = yaml.atMaybeKey("true").getString();
+        String        falseText    = yaml.atMaybeKey("false").getString();
+
+        return new BooleanColumn(id, name, defaultValue, alignment, width, trueText, falseText);
     }
 
 
@@ -140,8 +165,10 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putBoolean("default_value", this.defaultValue())
-                .putYaml("default_alignment", this.alignment())
-                .putInteger("width", this.width());
+                .putYaml("alignment", this.alignment())
+                .putInteger("width", this.width())
+                .putString("true", this.trueText())
+                .putString("false", this.falseText());
     }
 
 
@@ -179,6 +206,61 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
 
 
     // > State
+    // ------------------------------------------------------------------------------------------
+
+    // ** True Text
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The text to display in the column's cells when the value is true.
+     * @return The true text.
+     */
+    public String trueText()
+    {
+        return this.trueText.getValue();
+    }
+
+
+    /**
+     * Set the true text value.
+     * @param trueText The true text. If null, defaults to 'Yes'
+     */
+    public void setTrueText(String trueText)
+    {
+        if (trueText != null)
+            this.trueText.setValue(trueText);
+        else
+            this.trueText.setValue("Yes");
+    }
+
+
+    // ** False Text
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The text to display in the column's cells when the value is false.
+     * @return The false text.
+     */
+    public String falseText()
+    {
+        return this.falseText.getValue();
+    }
+
+
+    /**
+     * Set the false text value.
+     * @param falseText The false text. If null, defaults to 'No'
+     */
+    public void setFalseText(String falseText)
+    {
+        if (falseText != null)
+            this.falseText.setValue(falseText);
+        else
+            this.falseText.setValue("No");
+    }
+
+
+    // ** Default Value
     // ------------------------------------------------------------------------------------------
 
     /**

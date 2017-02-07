@@ -112,7 +112,7 @@ public class Group implements Model, ToYaml, Serializable
     {
         UUID            id          = UUID.randomUUID();
 
-        String          label       = yaml.atMaybeKey("label").getString();
+        String          label       = yaml.atMaybeKey("name").getString();
         Boolean         showName    = yaml.atMaybeKey("show_name").getBoolean();
         Spacing         spaceAbove  = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
         Spacing         spaceBelow  = Spacing.fromYaml(yaml.atMaybeKey("space_below"));

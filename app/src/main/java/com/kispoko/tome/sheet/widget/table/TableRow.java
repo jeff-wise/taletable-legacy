@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget.table;
 
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
+import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
@@ -23,7 +24,8 @@ import java.util.UUID;
 /**
  * Table Widget Row
  */
-public class TableRow implements Model, WidgetContainer, ToYaml, Serializable {
+public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
+{
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
@@ -43,8 +45,8 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable {
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private String namespace;
-    private List<Variable> namespacedVariables;
+    private String          namespace;
+    private List<Variable>  namespacedVariables;
 
 
     // CONSTRUCTORS
@@ -176,11 +178,26 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable {
     // > Initialize
     // ------------------------------------------------------------------------------------------
 
-    public void initialize()
+    public void initialize(List<ColumnUnion> columns)
     {
         // Initialize each cell
-        for (CellUnion cellUnion : this.cells()) {
-            cellUnion.cell().initialize(this);
+        for (int i = 0; i < this.width(); i++)
+        {
+            CellUnion   cell = this.cellAtIndex(i);
+            ColumnUnion column = columns.get(i);
+
+            switch (cell.type())
+            {
+                case TEXT:
+                    cell.textCell().initialize(column.textColumn(), this);
+                    break;
+                case NUMBER:
+                    cell.numberCell().initialize(column.numberColumn(), this);
+                    break;
+                case BOOLEAN:
+                    cell.booleanCell().initialize(column.booleanColumn(), this);
+                    break;
+            }
         }
     }
 

@@ -13,8 +13,6 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
-import static android.graphics.Color.GREEN;
-
 
 /**
  * Widget Background
@@ -28,9 +26,7 @@ public enum WidgetBackground implements ToYaml
     NONE,
     EMPTY,
     LIGHT,
-    DARK,
-    PURPLE_CIRCLE,
-    GREEN_CIRCLE;
+    DARK;
 
 
     // CONSTRUCTORS
@@ -102,7 +98,7 @@ public enum WidgetBackground implements ToYaml
                     switch (corners)
                     {
                         case SMALL:
-                            return R.drawable.bg_widget_dark_small_corners;
+                            return R.drawable.bg_widget_dark_small_corners_small;
                         case MEDIUM:
                             return R.drawable.bg_widget_dark_medium_corners;
                         case LARGE:
@@ -113,10 +109,57 @@ public enum WidgetBackground implements ToYaml
                 }
                 else
                 {
-                    return R.drawable.bg_widget_dark_small_corners;
+                    return R.drawable.bg_widget_dark_small_corners_small;
                 }
-            case PURPLE_CIRCLE:
-                return R.drawable.bg_widget_purple_circle;
+        }
+
+        return 0;
+    }
+
+
+    public Integer resourceId(WidgetCorners corners, WidgetContentSize size)
+    {
+        switch (this)
+        {
+            case NONE:
+                return R.drawable.bg_widget_none;
+            case EMPTY:
+                return R.drawable.bg_widget_empty;
+            case LIGHT:
+                return R.drawable.bg_widget_light;
+            case DARK:
+                if (corners != null)
+                {
+                    switch (corners)
+                    {
+                        case SMALL:
+                            switch (size)
+                            {
+                                case VERY_SMALL:
+                                    return R.drawable.bg_widget_dark_small_corners_small;
+                                case SMALL:
+                                    return R.drawable.bg_widget_dark_small_corners_small;
+                                case MEDIUM_SMALL:
+                                    return R.drawable.bg_widget_dark_small_corners_small;
+                                case MEDIUM:
+                                    return R.drawable.bg_widget_dark_small_corners_medium;
+                                case MEDIUM_LARGE:
+                                    return R.drawable.bg_widget_dark_small_corners_large;
+                                case LARGE:
+                                    return R.drawable.bg_widget_dark_small_corners_large;
+                            }
+                        case MEDIUM:
+                            return R.drawable.bg_widget_dark_medium_corners;
+                        case LARGE:
+                            return R.drawable.bg_widget_dark_large_corners;
+                        case CIRCLE:
+                            return R.drawable.bg_widget_dark_circle;
+                    }
+                }
+                else
+                {
+                    return R.drawable.bg_widget_dark_small_corners_small;
+                }
         }
 
         return 0;

@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.text;
 
 
+import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetTextTint;
 import com.kispoko.tome.util.model.Model;
@@ -29,17 +30,18 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                                    id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<WidgetContentSize> size;
-    private PrimitiveFunctor<WidgetTextTint>    tint;
-    private PrimitiveFunctor<Boolean>           isQuote;
-    private PrimitiveFunctor<String>            quoteSource;
-    private PrimitiveFunctor<String>            inlineLabel;
+    private PrimitiveFunctor<WidgetContentSize>     size;
+    private PrimitiveFunctor<WidgetTextTint>        tint;
+    private PrimitiveFunctor<Boolean>               isQuote;
+    private PrimitiveFunctor<String>                quoteSource;
+    private PrimitiveFunctor<String>                label;
+    private PrimitiveFunctor<InlineLabelPosition>   labelPosition;
 
 
     // CONSTRUCTORS
@@ -53,7 +55,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.tint           = new PrimitiveFunctor<>(null, WidgetTextTint.class);
         this.isQuote        = new PrimitiveFunctor<>(null, Boolean.class);
         this.quoteSource    = new PrimitiveFunctor<>(null, String.class);
-        this.inlineLabel    = new PrimitiveFunctor<>(null, String.class);
+        this.label          = new PrimitiveFunctor<>(null, String.class);
+        this.labelPosition  = new PrimitiveFunctor<>(null, InlineLabelPosition.class);
     }
 
 
@@ -62,7 +65,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                             WidgetTextTint tint,
                             Boolean isQuote,
                             String quoteSource,
-                            String inlineLabel)
+                            String label,
+                            InlineLabelPosition labelPosition)
     {
         this.id             = id;
 
@@ -70,12 +74,14 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.tint           = new PrimitiveFunctor<>(tint, WidgetTextTint.class);
         this.isQuote        = new PrimitiveFunctor<>(isQuote, Boolean.class);
         this.quoteSource    = new PrimitiveFunctor<>(quoteSource, String.class);
-        this.inlineLabel    = new PrimitiveFunctor<>(inlineLabel, String.class);
+        this.label          = new PrimitiveFunctor<>(label, String.class);
+        this.labelPosition  = new PrimitiveFunctor<>(labelPosition, InlineLabelPosition.class);
 
         this.setIsQuote(isQuote);
         this.setSize(size);
         this.setQuoteSource(quoteSource);
         this.setTint(tint);
+        this.setLabelPosition(labelPosition);
     }
 
 
@@ -85,15 +91,17 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return TextWidgetFormat.asDefault();
 
-        UUID              id          = UUID.randomUUID();
+        UUID                id              = UUID.randomUUID();
 
-        WidgetContentSize size        = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
-        WidgetTextTint    tint        = WidgetTextTint.fromYaml(yaml.atMaybeKey("tint"));
-        Boolean           isQuote     = yaml.atMaybeKey("is_quote").getBoolean();
-        String            quoteSource = yaml.atMaybeKey("quote_source").getString();
-        String            inlineLabel = yaml.atMaybeKey("inline_label").getString();
+        WidgetContentSize   size            = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
+        WidgetTextTint      tint            = WidgetTextTint.fromYaml(yaml.atMaybeKey("tint"));
+        Boolean             isQuote         = yaml.atMaybeKey("is_quote").getBoolean();
+        String              quoteSource     = yaml.atMaybeKey("quote_source").getString();
+        String              label           = yaml.atMaybeKey("label").getString();
+        InlineLabelPosition labelPosition   = InlineLabelPosition.fromYaml(
+                                                        yaml.atMaybeKey("label_position"));
 
-        return new TextWidgetFormat(id, size, tint, isQuote, quoteSource, inlineLabel);
+        return new TextWidgetFormat(id, size, tint, isQuote, quoteSource, label, labelPosition);
     }
 
 
@@ -106,7 +114,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         textWidgetFormat.setTint(null);
         textWidgetFormat.setIsQuote(null);
         textWidgetFormat.setQuoteSource(null);
-        textWidgetFormat.setInlineLabel(null);
+        textWidgetFormat.setLabel(null);
+        textWidgetFormat.setLabelPosition(null);
 
         return textWidgetFormat;
     }
@@ -268,19 +277,45 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
      * The text widget's inline label (may be null).
      * @return The inline label.
      */
-    public String inlineLabel()
+    public String label()
     {
-        return this.inlineLabel.getValue();
+        return this.label.getValue();
     }
 
 
     /**
      * Set the inline label.
-     * @param inlineLabel The label.
+     * @param label The label.
      */
-    public void setInlineLabel(String inlineLabel)
+    public void setLabel(String label)
     {
-        this.inlineLabel.setValue(inlineLabel);
+        this.label.setValue(label);
+    }
+
+
+    // ** Label Position
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The position of the widget's label.
+     * @return The inline label text.
+     */
+    public InlineLabelPosition labelPosition()
+    {
+        return this.labelPosition.getValue();
+    }
+
+
+    /**
+     * Set the label position.
+     * @param labelPosition The label position.
+     */
+    public void setLabelPosition(InlineLabelPosition labelPosition)
+    {
+        if (labelPosition != null)
+            this.labelPosition.setValue(labelPosition);
+        else
+            this.labelPosition.setValue(InlineLabelPosition.LEFT);
     }
 
 

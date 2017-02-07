@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.table.column;
 
 
+import com.kispoko.tome.sheet.widget.table.cell.Cell;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
@@ -38,6 +39,7 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     private PrimitiveFunctor<String>        name;
     private PrimitiveFunctor<String>        defaultValue;
     private PrimitiveFunctor<CellAlignment> alignment;
+    private PrimitiveFunctor<Boolean>       isBold;
     private PrimitiveFunctor<Integer>       width;
 
 
@@ -46,12 +48,13 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
 
     public TextColumn()
     {
-        this.id            = null;
+        this.id             = null;
 
-        this.name          = new PrimitiveFunctor<>(null, String.class);
-        this.defaultValue  = new PrimitiveFunctor<>(null, String.class);
-        this.alignment     = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.width         = new PrimitiveFunctor<>(null, Integer.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.defaultValue   = new PrimitiveFunctor<>(null, String.class);
+        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
+        this.width          = new PrimitiveFunctor<>(null, Integer.class);
     }
 
 
@@ -59,14 +62,19 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
                       String name,
                       String defaultValue,
                       CellAlignment alignment,
+                      Boolean isBold,
                       Integer width)
     {
-        this.id            = id;
+        this.id             = id;
 
-        this.name          = new PrimitiveFunctor<>(name, String.class);
-        this.defaultValue  = new PrimitiveFunctor<>(defaultValue, String.class);
-        this.alignment     = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-        this.width         = new PrimitiveFunctor<>(width, Integer.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.defaultValue   = new PrimitiveFunctor<>(defaultValue, String.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.isBold         = new PrimitiveFunctor<>(isBold, Boolean.class);
+        this.width          = new PrimitiveFunctor<>(width, Integer.class);
+
+        this.setAlignment(alignment);
+        this.setIsBold(isBold);
     }
 
 
@@ -83,10 +91,11 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
 
         String        name         = yaml.atKey("name").getString();
         String        defaultValue = yaml.atKey("default_value").getString();
-        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        Boolean       isBold       = yaml.atMaybeKey("is_bold").getBoolean();
         Integer       width        = yaml.atKey("width").getInteger();
 
-        return new TextColumn(id, name, defaultValue, alignment, width);
+        return new TextColumn(id, name, defaultValue, alignment, isBold, width);
     }
 
 
@@ -140,7 +149,8 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putString("default_value", this.defaultValue())
-                .putYaml("default_alignment", this.alignment())
+                .putYaml("alignment", this.alignment())
+                .putBoolean("is_bold", this.isBold())
                 .putInteger("width", this.width());
     }
 
@@ -179,6 +189,51 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
 
 
     // > State
+    // ------------------------------------------------------------------------------------------
+
+    // ** Alignment
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Set the alignment of the cells in the column.
+     * @param alignment The cell alignment. If null, defaults to CENTER.
+     */
+    public void setAlignment(CellAlignment alignment)
+    {
+        if (alignment != null)
+            this.alignment.setValue(alignment);
+        else
+            this.alignment.setValue(CellAlignment.CENTER);
+    }
+
+
+    // ** Is Bold
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * True if every cell in this column should have bold text.
+     * @return Is Bold?
+     */
+    public Boolean isBold()
+    {
+        return this.isBold.getValue();
+    }
+
+
+    /**
+     * Set the boldness of the cells in the column.
+     * @param isBold True if bold. If null, defaults to false.
+     */
+    public void setIsBold(Boolean isBold)
+    {
+        if (isBold != null)
+            this.isBold.setValue(isBold);
+        else
+            this.isBold.setValue(false);
+    }
+
+
+    // ** Default Value
     // ------------------------------------------------------------------------------------------
 
     /**

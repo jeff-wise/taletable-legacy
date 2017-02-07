@@ -38,6 +38,7 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
     private PrimitiveFunctor<String>        name;
     private PrimitiveFunctor<Integer>       defaultValue;
     private PrimitiveFunctor<CellAlignment> alignment;
+    private PrimitiveFunctor<Boolean>       isBold;
     private PrimitiveFunctor<Integer>       width;
 
 
@@ -51,6 +52,7 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
         this.name         = new PrimitiveFunctor<>(null, String.class);
         this.defaultValue = new PrimitiveFunctor<>(null, Integer.class);
         this.alignment    = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.isBold       = new PrimitiveFunctor<>(null, Boolean.class);
         this.width        = new PrimitiveFunctor<>(null, Integer.class);
     }
 
@@ -59,6 +61,7 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
                         String name,
                         Integer defaultValue,
                         CellAlignment alignment,
+                        Boolean isBold,
                         Integer width)
     {
         this.id           = id;
@@ -66,7 +69,11 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
         this.name         = new PrimitiveFunctor<>(name, String.class);
         this.defaultValue = new PrimitiveFunctor<>(defaultValue, Integer.class);
         this.alignment    = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.isBold       = new PrimitiveFunctor<>(isBold, Boolean.class);
         this.width        = new PrimitiveFunctor<>(width, Integer.class);
+
+        this.setAlignment(alignment);
+        this.setIsBold(isBold);
     }
 
 
@@ -83,10 +90,11 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
 
         String        name         = yaml.atKey("name").getString();
         Integer       defaultValue = yaml.atKey("default_value").getInteger();
-        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("default_alignment"));
+        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("alignment"));
+        Boolean       isBold       = yaml.atMaybeKey("is_bold").getBoolean();
         Integer       width        = yaml.atKey("width").getInteger();
 
-        return new NumberColumn(id, name, defaultValue, alignment, width);
+        return new NumberColumn(id, name, defaultValue, alignment, isBold, width);
     }
 
 
@@ -140,7 +148,8 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putInteger("default_value", this.defaultValue())
-                .putYaml("default_alignment", this.alignment())
+                .putYaml("alignment", this.alignment())
+                .putBoolean("is_bold", this.isBold())
                 .putInteger("width", this.width());
     }
 
@@ -181,6 +190,43 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Aligment
+    // ------------------------------------------------------------------------------------------
+
+    public void setAlignment(CellAlignment alignment)
+    {
+        if (alignment != null)
+            this.alignment.setValue(alignment);
+        else
+            this.alignment.setValue(CellAlignment.CENTER);
+    }
+
+
+    // ** Is Bold
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * True if the text of the number cells in the column is bold.
+     * @return Is bold?
+     */
+    public Boolean isBold()
+    {
+        return this.isBold.getValue();
+    }
+
+
+    public void setIsBold(Boolean isbold)
+    {
+        if (isbold != null)
+            this.isBold.setValue(isbold);
+        else
+            this.isBold.setValue(false);
+    }
+
+
+    // ** Default Value
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Get the default column value. Cells with null values are given this value (if this value
      * is not null).
@@ -190,7 +236,5 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
     {
         return this.defaultValue.getValue();
     }
-
-
 
 }

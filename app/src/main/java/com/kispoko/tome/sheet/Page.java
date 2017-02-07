@@ -231,8 +231,6 @@ public class Page implements Model, ToYaml, Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.bottom   = R.dimen.page_padding_bottom;
-
         return layout.linearLayout(context);
     }
 
