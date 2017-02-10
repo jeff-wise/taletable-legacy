@@ -2,8 +2,11 @@
 package com.kispoko.tome.engine.summation;
 
 
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.summation.term.TermSummary;
 import com.kispoko.tome.engine.summation.term.TermType;
 import com.kispoko.tome.engine.summation.term.TermUnion;
+import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
@@ -144,7 +147,7 @@ public class Summation implements Model, Serializable
      * @throws VariableException
      */
     public Integer value()
-           throws VariableException
+           throws SummationException
     {
         return sum();
     }
@@ -155,7 +158,6 @@ public class Summation implements Model, Serializable
      * @return The value string.
      */
     public String valueString()
-           throws VariableException
     {
         if (this.hasDiceRoll())
         {
@@ -164,11 +166,15 @@ public class Summation implements Model, Serializable
 
             for (TermUnion termUnion : this.terms())
             {
-                if (termUnion.type() == TermType.DICE_ROLL) {
-                    diceRolls.add(termUnion.diceRollTerm().diceRoll());
-
-                } else {
-                    modifier += termUnion.term().value();
+                try
+                {
+                    if (termUnion.type() == TermType.DICE_ROLL) {
+                        diceRolls.add(termUnion.diceRollTerm().diceRoll());
+                    } else {
+                        modifier += termUnion.term().value();
+                    }
+                } catch (SummationException exception) {
+                    ApplicationFailure.summation(exception);
                 }
             }
 
@@ -177,8 +183,15 @@ public class Summation implements Model, Serializable
         // Otherwise, just one number
         else
         {
-            return "+" + Integer.toString(this.value());
+            try {
+                return "+" + Integer.toString(this.value());
+            }
+            catch (SummationException exception) {
+                ApplicationFailure.summation(exception);
+            }
         }
+
+        return "";
     }
 
 
@@ -214,7 +227,7 @@ public class Summation implements Model, Serializable
                     term1Value = term1.term().value();
                     term2Value = term2.term().value();
                 }
-                catch (VariableException exception) {
+                catch (SummationException exception) {
                     return 0;
                 }
 
@@ -272,6 +285,27 @@ public class Summation implements Model, Serializable
     }
 
 
+    // > Summary
+    // ------------------------------------------------------------------------------------------
+
+    public List<TermSummary> summary()
+    {
+        List<TermSummary> summaries = new ArrayList<>();
+
+        for (TermUnion termUnion : this.terms())
+        {
+            try {
+                summaries.add(termUnion.term().summary());
+            }
+            catch (VariableException exception) {
+                continue;
+            }
+        }
+
+        return summaries;
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
@@ -299,12 +333,17 @@ public class Summation implements Model, Serializable
      * Evaluate the sum of this summation.
      */
     private Integer sum()
-            throws VariableException
     {
         Integer sum = 0;
 
-        for (TermUnion termUnion : this.terms.getValue()) {
-            sum += termUnion.term().value();
+        for (TermUnion termUnion : this.terms.getValue())
+        {
+            try {
+                sum += termUnion.term().value();
+            }
+            catch (SummationException exception) {
+                ApplicationFailure.summation(exception);
+            }
         }
 
         this.sum = sum;

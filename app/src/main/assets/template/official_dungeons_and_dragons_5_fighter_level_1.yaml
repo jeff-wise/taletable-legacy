@@ -1553,8 +1553,7 @@ profile:
             type: literal
             value: >
               My mentor was killed, and there was nothing I could do. He was a good, innocent man. I
-              have devoted my life to revenge, for myself and for others that have walked the same
-              path.
+              have devoted my life to revenge, for myself and for others that have matching scars.
     - name: Flaws
       label_type: secondary
       space_above: medium
@@ -2483,37 +2482,63 @@ profile:
     groups:
     - name: Proficiency Bonus
       show_name: false
-      space_above: medium_small
+      space_above: large
+      space_below: large
+      background: dark
       rows:
       - space_above: small
+        width: half
         widgets:
         - type: number
           data:
             format:
-              background: none
+              alignment: center
+              background: medium
               width: 1
           format:
             label: Proficiency Bonus
-            label_position: left
+            label_alignment: left
+            size: medium_small
+            tint: green
           value:
             type: literal
             name: proficiency_bonus
+            label: Proficiency Bonus
             value: 2
           value_prefix: '+'
-    - name: Combat Main
-      show_name: false
+    - name: Combat
       space_above: none
+      space_below: large
+      background: dark
       rows:
-      - space_above: small
+      - space_above: medium
         widgets:
         - type: number
           data:
             format:
+              background: medium
+              label_alignment: center
+              width: 1
+          format:
+            label: Hit Points
+            label_position: top
+            size: medium_large
+            tint: light
+          value:
+            name: hit_points
+            type: literal
+            value: 9
+        - type: number
+          data:
+            format:
+              background: medium
+              label_alignment: center
               width: 1
           format:
             label: Armor Class
             label_position: top
-            size: large
+            size: medium_large
+            tint: light
           value:
             name: armor_class
             type: summation
@@ -2531,35 +2556,19 @@ profile:
                   variable:
                     type: name
                     name: dexterity_modifier
-        - type: number
-          data:
-            format:
-              width: 1
-          format:
-            label: Hit Points
-            label_position: top
-            size: large
-          size: medium
-          value:
-            name: hit_points
-            type: literal
-            value: 9
-    - name: Combat Secondary
-      show_name: false
-      space_above: none
-      rows:
-      - space_above: none
+      - space_above: medium_large
         widgets:
         - type: number
           data:
             format:
-              background: none
+              background: dark
               label_alignment: center
               width: 1
           format:
             label: Initiative
             label_position: top
-            tint: medium_dark
+            size: medium_small
+            tint: dark
           value_prefix: '+'
           value:
             type: literal
@@ -2567,13 +2576,14 @@ profile:
         - type: number
           data:
             format:
-              background: none
+              background: dark
               label_alignment: center
               width: 1
           format:
             label: Speed
             label_position: top
-            tint: medium_dark
+            size: medium_small
+            tint: dark
           value:
             type: literal
             value: 30
@@ -2581,12 +2591,13 @@ profile:
         - type: text
           data:
             format:
-              background: none
+              background: dark
               width: 1
           format:
             label: Hit Dice
             label_position: top
-            tint: medium_dark
+            size: medium_small
+            tint: dark
           value:
             type: literal
             value: 1d8
@@ -2893,16 +2904,25 @@ encounter:
   pages:
   - label: Attacks
     groups:
-    - label: Longsword
+    - name: Weapons
+      space_above: medium
+      space_below: medium_large
+      divider: true
       rows:
-      - widgets:
+      - space_above: medium
+        widgets:
         - type: action
-          name: Attack
+          action: >
+            In the stance of the roaring tempest, I spin my longsword in wide, graceful arcs,
+            slashing at my opponent with glimmering steel.
+          action_highlight: longsword
+          action_name: Longsword Melee Attack
           data:
-            actions:
             format:
+              alignment: center
               width: 1
-          icon: melee_weapon_attack
+          format:
+            size: medium
           modifier:
             name: longsword_attack_bonus
             type: summation
@@ -2911,6 +2931,7 @@ encounter:
               - type: dice_roll
                 value:
                   type: literal
+                  name: Attack Dice
                   value:
                     type: d20
                     quantity: 1
@@ -2927,13 +2948,18 @@ encounter:
                   variable:
                     type: name
                     name: proficiency_bonus
+      - space_above: medium_small
+        widgets:
         - type: action
-          name: Damage
+          action: I strike, dealing damage.
+          action_highlight: damage
+          action_name: Longsword Melee Damage
           data:
-            actions:
             format:
+              alignment: center
               width: 1
-          icon: melee_weapon_attack
+          format:
+            size: medium
           modifier:
             name: longsword_attack_damage
             type: summation
@@ -2942,22 +2968,63 @@ encounter:
               - type: dice_roll
                 value:
                   type: variable
-                  variable: weapon_longsword_damage
+                  variable:
+                    type: name
+                    name: weapon_longsword_damage
               - type: integer
                 value:
                   type: variable
                   variable:
                     type: name
                     name: strength_modifier
-    - label: Heavy Crossbow
-      rows:
-      - widgets:
+      - space_above: medium_small
+        widgets:
         - type: action
-          name: Attack
+          action: I strike, dealing two-handed damage.
+          action_highlight: two-handed damage
+          action_name: Longsword Melee Damage
           data:
-            actions:
+            format:
+              alignment: center
+              width: 1
+          format:
+            size: medium
+          modifier:
+            name: longsword_attack_damage
+            type: summation
+            value:
+              terms:
+              - type: dice_roll
+                value:
+                  type: variable
+                  variable:
+                    type: name
+                    name: weapon_longsword_two_handed_damage
+              - type: integer
+                value:
+                  type: variable
+                  variable:
+                    type: name
+                    name: strength_modifier
+    - name: Heavy Crossbow
+      show_name: false
+      space_above: medium
+      space_below: medium
+      divider: true
+      rows:
+      - space_above: small
+        widgets:
+        - type: action
+          action: |
+            My muscles strain winding back the taut string of my heavy crossbow.
+            A violient thwack explodes in the ears of my allies. A bolt flies towards my opponents.
+          action_highlight: heavy crossbow
+          action_name: Heavy Crossbow Ranged Attack
+          data:
             format:
               width: 1
+          format:
+            hl_color: green
           modifier:
             name: heavy_crossbow_attack_bonus
             type: summation
@@ -2982,12 +3049,16 @@ encounter:
                   variable:
                     type: name
                     name: proficiency_bonus
+      - widgets:
         - type: action
-          name: Damage
+          action: The crossbow bolt pierces my opponent for damage.
+          action_highlight: damage
+          action_name: Heavy Crossbow Damage
           data:
-            actions:
             format:
               width: 1
+          format:
+            hl_color: green
           modifier:
             name: heavy_crossbow_attack_damage
             type: summation
@@ -2996,7 +3067,9 @@ encounter:
               - type: dice_roll
                 value:
                   type: variable
-                  variable: weapon_heavy_crossbow_damage
+                  variable:
+                    type: name
+                    name: weapon_heavy_crossbow_damage
               - type: integer
                 value:
                   type: variable
@@ -3007,9 +3080,10 @@ encounter:
       rows:
       - widgets:
         - type: action
-          name: Attack
+          action: Attack with dagger
+          action_highlight: dagger
+          action_name: Dagger Melee Attack
           data:
-            actions:
             format:
               width: 1
           modifier:
@@ -3037,12 +3111,12 @@ encounter:
                     type: name
                     name: proficiency_bonus
         - type: action
-          name: Damage
+          action: Damage with dagger
+          action_highlight: dagger
+          action_name: Dagger Melee Damage
           data:
-            actions:
             format:
               width: 1
-          icon: melee_weapon_attack
           modifier:
             name: dagger_attack_damage
             type: summation
@@ -3051,7 +3125,9 @@ encounter:
               - type: dice_roll
                 value:
                   type: variable
-                  variable: weapon_dagger_damage
+                  variable:
+                    type: name
+                    name: weapon_dagger_damage
               - type: integer
                 value:
                   type: variable

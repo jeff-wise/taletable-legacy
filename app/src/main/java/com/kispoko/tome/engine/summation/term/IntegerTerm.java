@@ -2,10 +2,13 @@
 package com.kispoko.tome.engine.summation.term;
 
 
+import com.kispoko.tome.engine.summation.SummationException;
+import com.kispoko.tome.engine.summation.error.SummationVariableError;
+import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
-import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
@@ -28,13 +31,14 @@ public class IntegerTerm extends Term implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                           id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<IntegerTermValue> termValue;
+    private ModelFunctor<IntegerTermValue>  termValue;
+    private PrimitiveFunctor<String>        name;
 
 
     // CONSTRUCTORS
@@ -42,28 +46,43 @@ public class IntegerTerm extends Term implements Serializable
 
     public IntegerTerm()
     {
-        this.id        = null;
+        this.id         = null;
 
-        this.termValue = ModelFunctor.empty(IntegerTermValue.class);
+        this.termValue  = ModelFunctor.empty(IntegerTermValue.class);
+        this.name       = new PrimitiveFunctor<>(null, String.class);
     }
 
 
-    public IntegerTerm(UUID id, IntegerTermValue termValue)
+    /**
+     * Create an Integer Term value
+     * @param id The model id.
+     * @param termValue The Integer Term Value.
+     * @param name The term name. Used mostly when the term value consists of multiple variables.
+     */
+    public IntegerTerm(UUID id, IntegerTermValue termValue, String name)
     {
-        this.id        = id;
+        this.id         = id;
 
-        this.termValue = ModelFunctor.full(termValue, IntegerTermValue.class);
+        this.termValue  = ModelFunctor.full(termValue, IntegerTermValue.class);
+        this.name       = new PrimitiveFunctor<>(name, String.class);
     }
 
 
+    /**
+     * Create an Integer Term from its Yaml representation.
+     * @param yaml The yaml parser.
+     * @return The Integer Term.
+     * @throws YamlParseException
+     */
     public static IntegerTerm fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         UUID             id        = UUID.randomUUID();
 
         IntegerTermValue termValue = IntegerTermValue.fromYaml(yaml.atKey("value"));
+        String           name      = yaml.atMaybeKey("name").getString();
 
-        return new IntegerTerm(id, termValue);
+        return new IntegerTerm(id, termValue, name);
     }
 
 
@@ -109,6 +128,16 @@ public class IntegerTerm extends Term implements Serializable
     // ------------------------------------------------------------------------------------------
 
     /**
+     * The Integer Term's name.
+     * @return The name.
+     */
+    private String name()
+    {
+        return this.name.getValue();
+    }
+
+
+    /**
      * The integer term's value.
      * @return The integer term value.
      */
@@ -126,9 +155,14 @@ public class IntegerTerm extends Term implements Serializable
      * @return The term value. Throws SummationException if the variable is invalid.
      */
     public Integer value()
-           throws VariableException
+           throws SummationException
     {
-        return termValue.getValue().value();
+        try {
+            return termValue().value();
+        }
+        catch (VariableException exception) {
+            throw SummationException.variable(new SummationVariableError(exception));
+        }
     }
 
 
@@ -156,9 +190,9 @@ public class IntegerTerm extends Term implements Serializable
      * A summary of the terms variables.
      * @return The list of 2-tuples (value, description) of each of the term's variables.
      */
-    public List<Tuple2<Integer,String>> summary()
+    public TermSummary summary()
     {
-        return this.termValue().summary();
+        return new TermSummary(this.name(), this.termValue().components());
     }
 
 }

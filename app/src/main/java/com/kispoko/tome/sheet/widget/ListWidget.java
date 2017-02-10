@@ -14,6 +14,7 @@ import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.TextValue;
 import com.kispoko.tome.engine.value.Value;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableType;
@@ -256,8 +257,8 @@ public class ListWidget extends Widget
             try {
                 itemValue = variableUnion.variable().valueString();
             }
-            catch (VariableException exception) {
-                ApplicationFailure.variable(exception);
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
             }
 
             // > Label

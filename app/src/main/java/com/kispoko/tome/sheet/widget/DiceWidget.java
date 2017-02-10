@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.mechanic.dice.DiceRoll;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -16,8 +14,6 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 
 import java.io.Serializable;
 import java.util.UUID;
-
-import static android.R.attr.action;
 
 
 /**

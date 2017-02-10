@@ -3,12 +3,13 @@ package com.kispoko.tome.engine.summation.term;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.DiceVariable;
 import com.kispoko.tome.engine.variable.VariableException;
+import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
 import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
+import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.exception.UnionException;
@@ -17,6 +18,7 @@ import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -24,6 +26,8 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -40,16 +44,18 @@ public class DiceRollTermValue implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                   id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<DiceRoll> diceRoll;
-    private PrimitiveFunctor<String> variableName;
+    private ModelFunctor<DiceRoll>          diceRoll;
+    private ModelFunctor<VariableReference> variableReference;
 
-    private PrimitiveFunctor<Kind> kind;
+    private PrimitiveFunctor<String>        name;
+
+    private PrimitiveFunctor<Kind>          kind;
 
 
     // CONSTRUCTORS
@@ -57,23 +63,27 @@ public class DiceRollTermValue implements Model, Serializable
 
     public DiceRollTermValue()
     {
-        this.id           = null;
+        this.id                 = null;
 
-        this.diceRoll     = ModelFunctor.empty(DiceRoll.class);
-        this.variableName = new PrimitiveFunctor<>(null, String.class);
+        this.diceRoll           = ModelFunctor.empty(DiceRoll.class);
+        this.variableReference  = ModelFunctor.empty(VariableReference.class);
 
-        this.kind         = new PrimitiveFunctor<>(null, Kind.class);
+        this.name               = new PrimitiveFunctor<>(null, String.class);
+
+        this.kind               = new PrimitiveFunctor<>(null, Kind.class);
     }
 
 
-    private DiceRollTermValue(UUID id, Object value, Kind kind)
+    private DiceRollTermValue(UUID id, Object value, Kind kind, String name)
     {
-        this.id           = id;
+        this.id                 = id;
 
-        this.diceRoll     = ModelFunctor.full(null, DiceRoll.class);
-        this.variableName = new PrimitiveFunctor<>(null, String.class);
+        this.diceRoll           = ModelFunctor.full(null, DiceRoll.class);
+        this.variableReference  = ModelFunctor.full(null, VariableReference.class);
 
-        this.kind         = new PrimitiveFunctor<>(kind, Kind.class);
+        this.name               = new PrimitiveFunctor<>(name, String.class);
+
+        this.kind               = new PrimitiveFunctor<>(kind, Kind.class);
 
         switch (kind)
         {
@@ -81,7 +91,7 @@ public class DiceRollTermValue implements Model, Serializable
                 this.diceRoll.setValue((DiceRoll) value);
                 break;
             case VARIABLE:
-                this.variableName.setValue((String) value);
+                this.variableReference.setValue((VariableReference) value);
                 break;
         }
     }
@@ -91,23 +101,24 @@ public class DiceRollTermValue implements Model, Serializable
      * Create the "dice roll" case.
      * @param id The Model id.
      * @param diceRoll The dice roll.
+     * @param name The term value name.
      * @return The "dice roll" variant.
      */
-    public static DiceRollTermValue asDiceRoll(UUID id, DiceRoll diceRoll)
+    public static DiceRollTermValue asDiceRoll(UUID id, DiceRoll diceRoll, String name)
     {
-        return new DiceRollTermValue(id, diceRoll, Kind.LITERAL);
+        return new DiceRollTermValue(id, diceRoll, Kind.LITERAL, name);
     }
 
 
     /**
      * Create the "variable" case.
      * @param id The Model id.
-     * @param variableName The variable name.
+     * @param variableReference The variable reference.
      * @return The "variable" variant.
      */
-    public static DiceRollTermValue asVariable(UUID id, String variableName)
+    public static DiceRollTermValue asVariable(UUID id, VariableReference variableReference)
     {
-        return new DiceRollTermValue(id, variableName, Kind.VARIABLE);
+        return new DiceRollTermValue(id, variableReference, Kind.VARIABLE, null);
     }
 
 
@@ -128,10 +139,12 @@ public class DiceRollTermValue implements Model, Serializable
         {
             case LITERAL:
                 DiceRoll diceRoll = DiceRoll.fromYaml(yaml.atKey("value"));
-                return DiceRollTermValue.asDiceRoll(id, diceRoll);
+                String   name     = yaml.atMaybeKey("name").getString();
+                return DiceRollTermValue.asDiceRoll(id, diceRoll, name);
             case VARIABLE:
-                String variableName = yaml.atKey("variable").getString();
-                return DiceRollTermValue.asVariable(id, variableName);
+                VariableReference variableReference =
+                        VariableReference.fromYaml(yaml.atKey("variable"));
+                return DiceRollTermValue.asVariable(id, variableReference);
         }
 
         return null;
@@ -186,31 +199,75 @@ public class DiceRollTermValue implements Model, Serializable
      * The term value kind.
      * @return The term value kind.
      */
-    private Kind kind()
+    public Kind kind()
     {
         return this.kind.getValue();
     }
 
 
-    // ** Variable Name
+    // ** CASE: Literal
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the name of the integer variable of the term. If the term is not a variable, then
-     * null is returned.
-     * @return The variable name, or null.
+     * The "literal" case.
+     * @return The dice roll.
      */
-    public String variableName()
+    public DiceRoll literal()
+    {
+        return this.diceRoll.getValue();
+    }
+
+
+    // ** CASE: Variable
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The variable case.
+     * @return The variable reference.
+     */
+    public VariableReference variable()
+    {
+        if (this.kind() != Kind.VARIABLE) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("variable", this.kind.toString())));
+        }
+
+        return this.variableReference.getValue();
+    }
+
+
+    // ** Name
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The term value name. Only applicable for literal values.
+     * @return The name.
+     */
+    public String name()
+    {
+        return this.name.getValue();
+    }
+
+
+    // > Components
+    // ------------------------------------------------------------------------------------------
+
+    public List<Tuple2<String,String>> components()
+           throws VariableException
     {
         switch (this.kind())
         {
             case LITERAL:
-                return null;
+                List<Tuple2<String,String>> components = new ArrayList<>();
+                String name = this.name() != null ? this.name() : "";
+                components.add(new Tuple2<>(name, this.literal().toString()));
+                return components;
             case VARIABLE:
-                return this.variableName.getValue();
+                return this.variableSummaries();
         }
 
-        return null;
+        return new ArrayList<>();
     }
 
 
@@ -221,7 +278,7 @@ public class DiceRollTermValue implements Model, Serializable
      * Get the value of the dice roll term. It is either a literal dice roll, or the value of an
      * dice roll variable.
      * @return The Dice Roll value.
-     * @throws SummationException
+     * @throws VariableException
      */
     public Integer value()
            throws VariableException
@@ -231,7 +288,10 @@ public class DiceRollTermValue implements Model, Serializable
             case LITERAL:
                 return this.diceRoll().roll();
             case VARIABLE:
-                return this.variableValue(this.variableName.getValue()).roll();
+                DiceRoll roll = this.variableValue();
+                if (roll == null)
+                    return null;
+                return roll.roll();
             default:
                 ApplicationFailure.union(
                         UnionException.unknownVariant(
@@ -252,9 +312,9 @@ public class DiceRollTermValue implements Model, Serializable
         switch (this.kind())
         {
             case LITERAL:
-                return this.diceRoll.getValue();
+                return this.literal();
             case VARIABLE:
-                return this.variableValue(this.variableName.getValue());
+                return this.variableValue();
             default:
                 ApplicationFailure.union(
                         UnionException.unknownVariant(
@@ -269,22 +329,18 @@ public class DiceRollTermValue implements Model, Serializable
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private DiceRoll variableValue(String variableName)
+    private DiceRoll variableValue()
             throws VariableException
     {
-        // > If variable does not exist, throw exception
-        if (!State.hasVariable(variableName)) {
-            throw VariableException.undefinedVariable(
-                    new UndefinedVariableError(variableName));
-        }
+        VariableUnion variableUnion = this.variable().variable();
 
-        // [1] Get the variable
-        VariableUnion variableUnion = State.variableWithName(variableName);
+        if (variableUnion == null)
+            return null;
 
         // > If variable is not a dice roll, throw exception
         if (!variableUnion.type().equals(VariableType.DICE)) {
             throw VariableException.unexpectedVariableType(
-                    new UnexpectedVariableTypeError(variableName,
+                    new UnexpectedVariableTypeError(this.variable().name(),
                                                     VariableType.DICE,
                                                     variableUnion.type()));
         }
@@ -292,6 +348,33 @@ public class DiceRollTermValue implements Model, Serializable
         DiceRoll variableValue = variableUnion.diceVariable().diceRoll();
 
         return variableValue;
+    }
+
+
+
+    private List<Tuple2<String,String>> variableSummaries()
+    {
+        List<Tuple2<String,String>> summaries = new ArrayList<>();
+
+        for (VariableUnion variableUnion : this.variable().variables())
+        {
+            // [1] If variable is not a number, throw exception
+            // ----------------------------------------------------------------------------------
+            if (variableUnion.type() != VariableType.DICE) {
+                ApplicationFailure.variable(
+                        VariableException.unexpectedVariableType(
+                                new UnexpectedVariableTypeError(variableUnion.variable().name(),
+                                        VariableType.DICE,
+                                        variableUnion.type())));
+                continue;
+            }
+
+            DiceVariable variable = variableUnion.diceVariable();
+
+            summaries.add(new Tuple2<>(variable.label(), variable.diceRoll().toString()));
+        }
+
+        return summaries;
     }
 
 

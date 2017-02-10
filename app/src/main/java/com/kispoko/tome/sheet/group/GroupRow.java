@@ -46,7 +46,7 @@ public class GroupRow implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>       index;
     private PrimitiveFunctor<RowAlignment>  alignment;
     private PrimitiveFunctor<RowWidth>      width;
-    private PrimitiveFunctor<Spacing>    spaceAbove;
+    private PrimitiveFunctor<Spacing>       spaceAbove;
     private CollectionFunctor<WidgetUnion>  widgets;
 
 

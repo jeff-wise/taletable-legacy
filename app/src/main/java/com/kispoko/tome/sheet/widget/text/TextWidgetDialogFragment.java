@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
@@ -24,16 +23,11 @@ import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.util.ui.EditTextBuilder;
 import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
-import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.util.ui.SheetDialog;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 
-import static android.R.attr.button;
-import static com.kispoko.tome.R.string.widget;
 
 
 /**
@@ -43,7 +37,6 @@ import static com.kispoko.tome.R.string.widget;
  */
 public class TextWidgetDialogFragment extends DialogFragment
 {
-
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------

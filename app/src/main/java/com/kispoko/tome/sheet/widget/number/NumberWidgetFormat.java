@@ -157,6 +157,10 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         YamlBuilder yaml = YamlBuilder.map();
 
         yaml.putYaml("size", this.size());
+        yaml.putYaml("tint", this.tint());
+        yaml.putString("label", this.label());
+        yaml.putYaml("label_position", this.labelPosition());
+        yaml.putYaml("style", this.style());
 
         return yaml;
     }

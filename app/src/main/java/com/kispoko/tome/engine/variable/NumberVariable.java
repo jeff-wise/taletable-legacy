@@ -2,22 +2,15 @@
 package com.kispoko.tome.engine.variable;
 
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.activity.NumberActivity;
-import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.activity.SummationActivity;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -29,6 +22,8 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
+
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -439,7 +434,7 @@ public class NumberVariable extends Variable
      * @throws VariableException
      */
     public String valueString()
-           throws VariableException
+           throws NullVariableException
     {
         switch (this.kind())
         {
@@ -448,7 +443,7 @@ public class NumberVariable extends Variable
             case PROGRAM:
                 return this.value().toString();
             case SUMMATION:
-                return this.summation.getValue().valueString();
+                return this.summation().valueString();
             default:
                 ApplicationFailure.union(
                         UnionException.unknownVariant(
@@ -528,7 +523,7 @@ public class NumberVariable extends Variable
      * @return The integer value.
      */
     public Integer value()
-           throws VariableException
+           throws NullVariableException
     {
         switch (this.kind.getValue())
         {
@@ -537,48 +532,16 @@ public class NumberVariable extends Variable
             case PROGRAM:
                 return this.reactiveValue.value();
             case SUMMATION:
-                return this.summation.getValue().value();
-        }
-
-        return null;
-    }
-
-
-
-    // > Edit Activity
-    // ------------------------------------------------------------------------------------------
-
-
-    /**
-     * Open the activity to edit this variable.
-     */
-    public void openEditActivity(String widgetName)
-    {
-        Context context = SheetManager.currentSheetContext();
-
-        switch (this.kind())
-        {
-            case SUMMATION:
-                Intent intent = new Intent(context, SummationActivity.class);
-                intent.putExtra("widget_name", widgetName);
-                intent.putExtra("summation", this.summation());
-                ((Activity) context).startActivityForResult(intent, SheetActivity.COMPONENT_EDIT);
-                break;
-            case LITERAL:
-                Integer variableValue;
                 try {
-                    variableValue = this.value();
+                    return this.summation().value();
                 }
-                catch (VariableException exception) {
-                    return;
+                catch (SummationException exception) {
+                    ApplicationFailure.summation(exception);
+                    throw new NullVariableException();
                 }
-                Intent numberIntent = new Intent(context, NumberActivity.class);
-                numberIntent.putExtra("widget_name", widgetName);
-                numberIntent.putExtra("value", variableValue);
-                ((Activity) context).startActivityForResult(numberIntent,
-                                                            SheetActivity.COMPONENT_EDIT);
-                break;
         }
+
+        throw new NullVariableException();
     }
 
 

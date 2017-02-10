@@ -55,7 +55,7 @@ public class SectionCard
 
         title.textId        = titleStringId;
         title.font          = Font.sansSerifFontBold(context);
-        title.color         = R.color.gold_5;
+        title.color         = R.color.gold_light;
         title.size          = R.dimen.section_card_title_text_size;
         //title.margin.bottom = R.dimen.section_card_title_margin_bottom;
 

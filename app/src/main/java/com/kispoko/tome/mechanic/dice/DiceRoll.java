@@ -226,10 +226,13 @@ public class DiceRoll implements Model, ToYaml, Serializable
 
         diceRoll.append(this.diceType().name().toLowerCase());
 
-        diceRoll.append(" +");
 
         if (this.modifier() > 0 && withModifier)
+        {
+            diceRoll.append(" +");
+
             diceRoll.append(this.modifier().toString());
+        }
 
         return diceRoll.toString();
     }

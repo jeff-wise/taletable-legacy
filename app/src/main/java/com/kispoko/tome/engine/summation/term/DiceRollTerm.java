@@ -2,10 +2,14 @@
 package com.kispoko.tome.engine.summation.term;
 
 
+import com.kispoko.tome.engine.summation.SummationException;
+import com.kispoko.tome.engine.summation.error.NullTermError;
+import com.kispoko.tome.engine.summation.error.SummationVariableError;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
@@ -28,7 +32,7 @@ public class DiceRollTerm extends Term implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                          id;
+    private UUID                            id;
 
 
     // > Functors
@@ -36,40 +40,49 @@ public class DiceRollTerm extends Term implements Serializable
 
     private ModelFunctor<DiceRollTermValue> termValue;
 
+    /**
+     * The name/description of the term.
+     */
+    private PrimitiveFunctor<String>        name;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
     public DiceRollTerm()
     {
-        this.id           = null;
+        this.id = null;
 
-        this.termValue    = ModelFunctor.empty(DiceRollTermValue.class);
+        this.termValue = ModelFunctor.empty(DiceRollTermValue.class);
+        this.name = new PrimitiveFunctor<>(null, String.class);
     }
 
 
-    public DiceRollTerm(UUID id, DiceRollTermValue diceRollTermValue)
+    public DiceRollTerm(UUID id, DiceRollTermValue diceRollTermValue, String name)
     {
-        this.id           = id;
+        this.id = id;
 
-        this.termValue    = ModelFunctor.full(diceRollTermValue, DiceRollTermValue.class);
+        this.termValue = ModelFunctor.full(diceRollTermValue, DiceRollTermValue.class);
+        this.name = new PrimitiveFunctor<>(name, String.class);
     }
 
 
     /**
      * Create a Dice Roll Term from its Yaml representation.
+     *
      * @param yaml The yaml parser.
      * @return The parsed Dice Roll Term.
      * @throws YamlParseException
      */
     public static DiceRollTerm fromYaml(YamlParser yaml)
-                  throws YamlParseException
+            throws YamlParseException
     {
-        UUID              id        = UUID.randomUUID();
+        UUID id = UUID.randomUUID();
 
         DiceRollTermValue termValue = DiceRollTermValue.fromYaml(yaml.atKey("value"));
+        String name = yaml.atMaybeKey("name").getString();
 
-        return new DiceRollTerm(id, termValue);
+        return new DiceRollTerm(id, termValue, name);
     }
 
 
@@ -84,6 +97,7 @@ public class DiceRollTerm extends Term implements Serializable
 
     /**
      * Get the model identifier.
+     *
      * @return The model UUID.
      */
     public UUID getId()
@@ -94,6 +108,7 @@ public class DiceRollTerm extends Term implements Serializable
 
     /**
      * Set the model identifier.
+     *
      * @param id The new model UUID.
      */
     public void setId(UUID id)
@@ -116,29 +131,54 @@ public class DiceRollTerm extends Term implements Serializable
 
     /**
      * Get the term value. The returned value is just the value of the referenced variable.
+     *
      * @return The term value. Throws SummationException if the variable is invalid.
      */
     public Integer value()
-           throws VariableException
+            throws SummationException
     {
-        return termValue.getValue().value();
+        try
+        {
+            Integer value = this.termValue().value();
+
+            if (value == null) {
+                throw SummationException.nullTerm(
+                        new NullTermError(this.name()));
+            }
+
+            return value;
+        }
+        catch (VariableException exception)
+        {
+            throw SummationException.variable(
+                    new SummationVariableError(exception));
+        }
     }
 
 
     /**
      * Get the variables that this term depends upon to calculate its value.
+     *
      * @return A list of variable names.
      */
     public List<VariableReference> variableDependencies()
     {
         List<VariableReference> variableReferences = new ArrayList<>();
 
-        String variableName = this.termValue.getValue().variableName();
-
-        if (variableName != null)
-            variableReferences.add(VariableReference.asByName(variableName));
+        if (this.termValue().kind() == DiceRollTermValue.Kind.VARIABLE) {
+            VariableReference variableReference = this.termValue().variable();
+            if (variableReference != null)
+                variableReferences.add(variableReference);
+        }
 
         return variableReferences;
+    }
+
+
+    public TermSummary summary()
+           throws VariableException
+    {
+        return new TermSummary(this.name(), this.termValue().components());
     }
 
 
@@ -160,9 +200,26 @@ public class DiceRollTerm extends Term implements Serializable
      * @return The Dice Roll.
      */
     public DiceRoll diceRoll()
-           throws VariableException
+           throws SummationException
     {
-        return this.termValue().diceRoll();
+        try
+        {
+            return this.termValue().diceRoll();
+        }
+        catch (VariableException exception)
+        {
+            throw SummationException.variable(new SummationVariableError(exception));
+        }
+    }
+
+
+    /**
+     * The name of the term.
+     * @return The term name.
+     */
+    public String name()
+    {
+        return this.name.getValue();
     }
 
 }

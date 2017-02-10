@@ -182,7 +182,7 @@
 
 
     <color name="gold_bright">#D4CF7C</color>
-    <color name="gold_light">#D4CF7C</color>
+    <color name="gold_light">#D9D297</color>
     <color name="gold_medium">#D4CF7C</color>
     <color name="gold_dark">#B0AC67</color>
 
@@ -190,16 +190,18 @@
     <!-- PURPLE -->
     <!--<color name="purple_hlx_5">#A08FC9</color>-->
     <color name="purple_hlx_5">#8A7AB2</color>
-    <color name="purple_bright">#8A7AB2</color>
-    <color name="purple_medium">#6D608C</color>
+    <!--<color name="purple_bright">#8A7AB2</color>-->
+    <color name="purple_light">#9789B5</color>
+    <color name="purple_medium">#716687</color>
 
 
     <!-- GREEN -->
 
     <color name="green_hlx_5">#ADE098</color>
     <color name="green_bright">#ADE098</color>
-
-    <color name="green_light">#90BA7E</color>
+    <!--<color name="green_light">#C1E0C6</color>-->
+    <color name="green_light">#C7E0CA</color>
+    <color name="green_medium">#AEC4B1</color>
 
 
     <color name="red_5">#A14746</color>
@@ -216,7 +218,6 @@
     <color name="red_soft">#D29494</color>
     <color name="red_medium">#8A6161</color>
     <color name="green_soft">#8FB07D</color>
-    <color name="green_medium">#85B08A</color>
     <color name="green_dark">#5B7050</color>
     <color name="blue_soft">#608FAE</color>
     <color name="blue_hard">#2C4C61</color>

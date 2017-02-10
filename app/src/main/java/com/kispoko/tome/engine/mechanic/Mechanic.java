@@ -44,6 +44,8 @@ public class Mechanic implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>            name;
     private PrimitiveFunctor<String>            label;
     private PrimitiveFunctor<String>            type;
+    private PrimitiveFunctor<String>            summary;
+    private PrimitiveFunctor<String>            description;
 
     /**
      * A requirement is the name of a boolean variable. If all the requiremnet variable values are

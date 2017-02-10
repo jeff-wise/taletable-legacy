@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.summation.Summation;
+import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.summation.term.TermUnion;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.util.UI;
@@ -179,7 +180,7 @@ public class SummationActivity extends AppCompatActivity
         try {
             totalString = summation.value().toString();
         }
-        catch (VariableException exception) {
+        catch (SummationException exception) {
             totalString = "N/A";
         }
 
@@ -216,10 +217,10 @@ public class SummationActivity extends AppCompatActivity
             switch (termUnion.type())
             {
                 case INTEGER:
-                    List<Tuple2<Integer,String>> termSummaries = termUnion.integerTerm().summary();
-                    for (Tuple2<Integer,String> summary : termSummaries) {
-                        layout.addView(integerTermLayout(summary.getItem1(), summary.getItem2()));
-                    }
+//                    List<Tuple2<Integer,String>> termSummaries = termUnion.integerTerm().summary();
+//                    for (Tuple2<Integer,String> summary : termSummaries) {
+//                        layout.addView(integerTermLayout(summary.getItem1(), summary.getItem2()));
+//                    }
                     break;
             }
         }

@@ -23,6 +23,7 @@ import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.program.ProgramValueUnion;
 import com.kispoko.tome.engine.program.statement.Parameter;
 import com.kispoko.tome.engine.program.statement.Statement;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.tuple.Tuple2;
@@ -130,8 +131,8 @@ public class Interpreter implements Serializable
                                 programValueUnion = ProgramValueUnion.asInteger(
                                                     variableUnion.numberVariable().value());
                             }
-                            catch (VariableException exception) {
-                                ApplicationFailure.variable(exception);
+                            catch (NullVariableException exception) {
+                                ApplicationFailure.nullVariable(exception);
                             }
                             break;
                         case BOOLEAN:

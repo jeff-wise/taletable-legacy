@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.summation.term;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.value;
 
 
 /**
@@ -51,6 +53,8 @@ public class IntegerTermValue implements Model, Serializable
     private PrimitiveFunctor<Integer>       integerValue;
     private ModelFunctor<VariableReference> variableReference;
 
+    private PrimitiveFunctor<String>        name;
+
     private PrimitiveFunctor<Kind>          kind;
 
 
@@ -64,16 +68,20 @@ public class IntegerTermValue implements Model, Serializable
         this.integerValue       = new PrimitiveFunctor<>(null, Integer.class);
         this.variableReference  = ModelFunctor.empty(VariableReference.class);
 
+        this.name               = new PrimitiveFunctor<>(null, String.class);
+
         this.kind               = new PrimitiveFunctor<>(null, Kind.class);
     }
 
 
-    private IntegerTermValue(UUID id, Object value, Kind kind)
+    private IntegerTermValue(UUID id, Object value, Kind kind, String name)
     {
         this.id                 = id;
 
         this.integerValue       = new PrimitiveFunctor<>(null, Integer.class);
         this.variableReference  = ModelFunctor.full(null, VariableReference.class);
+
+        this.name               = new PrimitiveFunctor<>(name, String.class);
 
         this.kind               = new PrimitiveFunctor<>(kind, Kind.class);
 
@@ -90,15 +98,28 @@ public class IntegerTermValue implements Model, Serializable
     }
 
 
-    private static IntegerTermValue asLiteral(UUID id, Integer value)
+    /**
+     * Create a "literal" integer term value.
+     * @param id The model id.
+     * @param value The integer value.
+     * @param name The term name.
+     * @return The Integer Term Value.
+     */
+    private static IntegerTermValue asLiteral(UUID id, Integer value, String name)
     {
-        return new IntegerTermValue(id, value, Kind.LITERAL);
+        return new IntegerTermValue(id, value, Kind.LITERAL, name);
     }
 
 
+    /**
+     * Create a "variable" integer term value.
+     * @param id The model id.
+     * @param variableReference The variable reference.
+     * @return The Integer Term Value.
+     */
     private static IntegerTermValue asVariable(UUID id, VariableReference variableReference)
     {
-        return new IntegerTermValue(id, variableReference, Kind.VARIABLE);
+        return new IntegerTermValue(id, variableReference, Kind.VARIABLE, null);
     }
 
 
@@ -119,7 +140,8 @@ public class IntegerTermValue implements Model, Serializable
         {
             case LITERAL:
                 Integer value = yaml.atKey("value").getInteger();
-                return IntegerTermValue.asLiteral(id, value);
+                String  name  = yaml.atMaybeKey("name").getString();
+                return IntegerTermValue.asLiteral(id, value, name);
             case VARIABLE:
                 VariableReference varRef = VariableReference.fromYaml(yaml.atKey("variable"));
                 return IntegerTermValue.asVariable(id, varRef);
@@ -170,7 +192,7 @@ public class IntegerTermValue implements Model, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Variable Reference
+    // ** Kind
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -182,6 +204,22 @@ public class IntegerTermValue implements Model, Serializable
         return this.kind.getValue();
     }
 
+
+    // ** Integer Value
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The "literal" case.
+     * @return
+     */
+    public Integer literal()
+    {
+        return this.integerValue.getValue();
+    }
+
+
+    // ** Variable Reference
+    // ------------------------------------------------------------------------------------------
 
     /**
      * The variable case.
@@ -196,6 +234,19 @@ public class IntegerTermValue implements Model, Serializable
         }
 
         return this.variableReference.getValue();
+    }
+
+
+    // ** Name
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The term value name (if a literal value). Variable's should have their own name.
+     * @return The literal value name.
+     */
+    public String name()
+    {
+        return this.name.getValue();
     }
 
 
@@ -243,15 +294,18 @@ public class IntegerTermValue implements Model, Serializable
     }
 
 
-    // > Label
+    // > Components
     // ------------------------------------------------------------------------------------------
 
-    public List<Tuple2<Integer,String>> summary()
+    public List<Tuple2<String,String>> components()
     {
         switch (this.kind())
         {
             case LITERAL:
-                return new ArrayList<>();
+                List<Tuple2<String,String>> components = new ArrayList<>();
+                String name = this.name() != null ? this.name() : "";
+                components.add(new Tuple2<>(name, this.literal().toString()));
+                return components;
             case VARIABLE:
                 return this.variableSummaries();
         }
@@ -282,7 +336,15 @@ public class IntegerTermValue implements Model, Serializable
             // [2] Add the variable's value to the sum.
             // ----------------------------------------------------------------------------------
 
-            Integer variableValue = variableUnion.numberVariable().value();
+
+            Integer variableValue = 0;
+            try {
+                variableValue = variableUnion.numberVariable().value();
+            }
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
+            }
+
             total += variableValue;
         }
 
@@ -290,9 +352,9 @@ public class IntegerTermValue implements Model, Serializable
     }
 
 
-    private List<Tuple2<Integer,String>> variableSummaries()
+    private List<Tuple2<String,String>> variableSummaries()
     {
-        List<Tuple2<Integer,String>> summaries = new ArrayList<>();
+        List<Tuple2<String,String>> summaries = new ArrayList<>();
 
         for (VariableUnion variableUnion : this.variableReference().variables())
         {
@@ -309,15 +371,13 @@ public class IntegerTermValue implements Model, Serializable
 
             NumberVariable variable = variableUnion.numberVariable();
 
-            Integer value = 0;
             try {
-                value = variable.value();
+                Integer value = variable.value();
+                summaries.add(new Tuple2<>(variable.label(), value.toString()));
             }
-            catch (VariableException exception) {
-                ApplicationFailure.variable(exception);
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
             }
-
-            summaries.add(new Tuple2<>(value, variable.label()));
         }
 
         return summaries;

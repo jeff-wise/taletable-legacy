@@ -122,7 +122,7 @@
 
     <!-- WIDGET: GENERAL -->
     <dimen name="text_size_large">6.2dp</dimen>
-    <dimen name="text_size_medium_large">5.5dp</dimen>
+    <dimen name="text_size_medium_large">5dp</dimen>
     <dimen name="text_size_medium">4.5dp</dimen>
     <dimen name="text_size_medium_small">4dp</dimen>
     <dimen name="text_size_small">3.4dp</dimen>
@@ -158,22 +158,6 @@
     <dimen name="widget_list_item_value_padding_left">3dp</dimen>
     <dimen name="widget_list_inline_label_margin_left">7dp</dimen>
 
-    <!-- WIDGET: ACTION DIALOG -->
-    <!--<dimen name="widget_action_dialog_title_text_size">4sp</dimen>-->
-    <!--<dimen name="widget_action_dialog_title_margin_bottom">15dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_heading_text_size">3.2dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_heading_margin_bottom">15dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_target_padding_horz">15dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_target_padding_top">15dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_target_padding_bottom">20dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_target_name_margin_bottom">3dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_target_type_text_size">2.6sp</dimen>-->
-    <!--<dimen name="widget_action_dialog_target_icon_margin_right">5dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_parents_padding_horz">15dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_parents_padding_top">15dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_parents_padding_bottom">15dp</dimen>-->
-    <!--<dimen name="widget_action_dialog_button_text_size">4.6sp</dimen>-->
-
 
     <!-- WIDGET: TEXT -->
     <dimen name="widget_text_quote_source_text_size">3sp</dimen>
@@ -191,14 +175,11 @@
     <dimen name="widget_image_choose_icon_margin_bottom">2dp</dimen>
 
 
-    <!-- WIDGET: ROLL  -->
-    <dimen name="widget_roll_icon_padding_right">6dp</dimen>
-    <dimen name="widget_roll_name_text_size">3sp</dimen>
-    <dimen name="widget_roll_modifier_layout_margin_vert">18dp</dimen>
-    <dimen name="widget_roll_modifier_layout_padding">7dp</dimen>
-    <dimen name="widget_roll_modifier_text_size">5sp</dimen>
-    <dimen name="widget_roll_modifier_text_padding_bottom">1dp</dimen>
-    <dimen name="widget_roll_header_layout_padding_vert">4dp</dimen>
+    <!-- WIDGET: ACTION  -->
+    <dimen name="widget_action_text_size_small">3.7sp</dimen>
+    <dimen name="widget_action_text_size_medium">4.3sp</dimen>
+    <dimen name="widget_action_text_size_large">4.8sp</dimen>
+
 
     <!-- WIDGET: TABLE -->
     <dimen name="comp_table_cell_padding">5dp</dimen>
@@ -464,6 +445,21 @@
 
     <!-- ACTIVITY: TABLE WIDGET -->
     <dimen name="column_list_item_type_text_size">3.3dp</dimen>
+
+
+
+    <!-- DIALOG: ROLL -->
+    <dimen name="dialog_roll_roll_button_roll_text_size">5.7sp</dimen>
+    <dimen name="dialog_roll_roll_button_icon_margin_right">4dp</dimen>
+    <dimen name="dialog_roll_roll_button_action_text_size">3.5sp</dimen>
+    <dimen name="dialog_roll_roll_button_padding_vert">20dp</dimen>
+    <dimen name="dialog_roll_roll_button_margin_horz">10dp</dimen>
+    <dimen name="dialog_roll_components_name_text_size">3.5sp</dimen>
+    <dimen name="dialog_roll_components_value_text_size">3.5sp</dimen>
+    <dimen name="dialog_roll_components_header_text_size">3.5sp</dimen>
+    <dimen name="dialog_roll_components_padding_horz">15dp</dimen>
+    <dimen name="dialog_roll_component_padding_vert">15dp</dimen>
+    <dimen name="dialog_roll_rolls_height">100dp</dimen>
 
 
     <!-- MANAGE SHEETS -->

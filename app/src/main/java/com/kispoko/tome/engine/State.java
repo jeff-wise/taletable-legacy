@@ -2,9 +2,11 @@
 package com.kispoko.tome.engine;
 
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.DiceVariable;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
@@ -286,8 +288,8 @@ public class State
                 tuple = new Tuple2<>(variableUnion.variable().label(),
                                      variableUnion.variable().valueString());
             }
-            catch (VariableException exception) {
-                // TODO Log?
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
             }
         }
 

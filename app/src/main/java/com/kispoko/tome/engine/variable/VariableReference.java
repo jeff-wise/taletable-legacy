@@ -5,13 +5,17 @@ package com.kispoko.tome.engine.variable;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
+import com.kispoko.tome.error.UnknownVariantError;
+import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -240,45 +244,43 @@ public class VariableReference implements Model, Serializable
         {
             case NAME:
                 Set<VariableUnion> variables = new HashSet<>();
-                variables.add( variableByName(this.name()) );
+                VariableUnion variableUnion = State.variableWithName(this.name());
+                if (variableUnion != null)
+                    variables.add(variableUnion);
                 return variables;
             case TAG:
-                return variablesByTag(this.tag());
+                return State.variablesWithTag(this.tag());
+            default:
+                ApplicationFailure.union(
+                        UnionException.unknownVariant(
+                                new UnknownVariantError(VariableReferenceType.class.getName())));
+                return new HashSet<>();
+        }
+    }
+
+
+    /**
+     * Special function when we assume that there are no references by tag being used, or there
+     * will only every be one variable with that tag.
+     * @return The referenced variable.
+     */
+    public VariableUnion variable()
+    {
+        switch (this.type())
+        {
+            case NAME:
+                return State.variableWithName(this.name());
+            case TAG:
+                Set<VariableUnion> variables = State.variablesWithTag(this.tag());
+
+                if (variables.size() == 0)
+                    return null;
+
+                List<VariableUnion> variableList = new ArrayList<>(variables);
+                return variableList.get(0);
         }
 
         return null;
-    }
-
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the variable with the given name from the state.
-     * @param variableName The variable name.
-     * @return The variable.
-     */
-    private VariableUnion variableByName(String variableName)
-    {
-        // > Ensure variable exists
-        if (!State.hasVariable(variableName)) {
-            ApplicationFailure.variable(
-                    VariableException.undefinedVariable(
-                            new UndefinedVariableError(variableName)));
-        }
-
-        // > Get the variable
-        return State.variableWithName(variableName);
-    }
-
-
-    /**
-     * Find all variables with the given tag.
-     * @return The variable list.
-     */
-    private Set<VariableUnion> variablesByTag(String tag)
-    {
-        return State.variablesWithTag(tag);
     }
 
 }

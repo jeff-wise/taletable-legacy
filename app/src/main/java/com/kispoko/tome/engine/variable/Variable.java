@@ -23,7 +23,7 @@ public abstract class Variable
     public abstract boolean                 isNamespaced();
     public abstract List<VariableReference> dependencies();
     public abstract List<String>            tags();
-    public abstract String                  valueString() throws VariableException;
+    public abstract String                  valueString() throws NullVariableException;
     public abstract void                    initialize();
 
 

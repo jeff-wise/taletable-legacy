@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget.util;
+package com.kispoko.tome.sheet.widget.action;
 
 
 import com.kispoko.tome.R;
@@ -16,54 +16,52 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Widget Text Tint
+ * Action Color
  */
-public enum WidgetTextTint implements ToYaml
+public enum ActionColor implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    LIGHT,
-    MEDIUM_LIGHT,
-    MEDIUM,
-    MEDIUM_DARK,
-    DARK,
-    VERY_DARK,
-    PURPLE,
-    GREEN;
+    BLUE,
+    GREEN,
+    PURPLE;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetTextTint fromString(String bgString)
+    public static ActionColor fromString(String colorString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetTextTint.class, bgString);
+        return EnumUtils.fromString(ActionColor.class, colorString);
     }
 
 
-    public static WidgetTextTint fromYaml(YamlParser yaml)
+    public static ActionColor fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        String bgString = yaml.getString();
+        if (yaml.isNull())
+            return null;
+
+        String colorString = yaml.getString();
         try {
-            return WidgetTextTint.fromString(bgString);
+            return ActionColor.fromString(colorString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(colorString));
         }
     }
 
 
-    public static WidgetTextTint fromSQLValue(SQLValue sqlValue)
+    public static ActionColor fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetTextTint tint = WidgetTextTint.fromString(enumString);
-            return tint;
+            ActionColor color = ActionColor.fromString(enumString);
+            return color;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -91,52 +89,14 @@ public enum WidgetTextTint implements ToYaml
     {
         switch (this)
         {
-            case LIGHT:
+            case BLUE:
                 return R.color.dark_blue_hlx_7;
-            case MEDIUM_LIGHT:
-                return R.color.dark_blue_hlx_9;
-            case MEDIUM:
-                return R.color.dark_blue_hl_1;
-            case MEDIUM_DARK:
-                return R.color.dark_blue_hl_3;
-            case DARK:
-                return R.color.dark_blue_hl_5;
-            case VERY_DARK:
-                return R.color.dark_blue_1;
             case PURPLE:
                 return R.color.purple_light;
             case GREEN:
                 return R.color.green_light;
+            default:
+                return R.color.dark_blue_hlx_7;
         }
-
-        return 0;
     }
-
-
-    public Integer labelResourceId()
-    {
-        switch (this)
-        {
-            case LIGHT:
-                return R.color.dark_blue_hl_2;
-            case MEDIUM_LIGHT:
-                return R.color.dark_blue_hl_4;
-            case MEDIUM:
-                return R.color.dark_blue_hl_6;
-            case MEDIUM_DARK:
-                return R.color.dark_blue_hl_8;
-            case DARK:
-                return R.color.dark_blue_1;
-            case VERY_DARK:
-                return R.color.dark_blue_3;
-            case PURPLE:
-                return R.color.purple_medium;
-            case GREEN:
-                return R.color.green_medium;
-        }
-
-        return 0;
-    }
-
-
 }

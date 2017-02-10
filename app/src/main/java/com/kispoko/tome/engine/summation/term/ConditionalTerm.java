@@ -2,9 +2,15 @@
 package com.kispoko.tome.engine.summation.term;
 
 
+import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.summation.SummationException;
+import com.kispoko.tome.engine.summation.error.SummationVariableError;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
+import com.kispoko.tome.sheet.Summary;
+import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
@@ -27,15 +33,17 @@ public class ConditionalTerm extends Term implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<BooleanTermValue> conditionalTermValue;
-    private ModelFunctor<IntegerTermValue> whenTrueTermValue;
-    private ModelFunctor<IntegerTermValue> whenFalseTermValue;
+    private ModelFunctor<BooleanTermValue>  conditionalTermValue;
+    private ModelFunctor<IntegerTermValue>  whenTrueTermValue;
+    private ModelFunctor<IntegerTermValue>  whenFalseTermValue;
+
+    private PrimitiveFunctor<String>        name;
 
 
     // CONSTRUCTORS
@@ -43,24 +51,29 @@ public class ConditionalTerm extends Term implements Serializable
 
     public ConditionalTerm()
     {
-        this.id                   = null;
+        this.id                     = null;
 
-        this.conditionalTermValue = ModelFunctor.empty(BooleanTermValue.class);
-        this.whenTrueTermValue    = ModelFunctor.empty(IntegerTermValue.class);
-        this.whenFalseTermValue   = ModelFunctor.empty(IntegerTermValue.class);
+        this.conditionalTermValue   = ModelFunctor.empty(BooleanTermValue.class);
+        this.whenTrueTermValue      = ModelFunctor.empty(IntegerTermValue.class);
+        this.whenFalseTermValue     = ModelFunctor.empty(IntegerTermValue.class);
+
+        this.name                   = new PrimitiveFunctor<>(null, String.class);
     }
 
 
     public ConditionalTerm(UUID id,
                            BooleanTermValue conditionalTermValue,
                            IntegerTermValue whenTrueTermValue,
-                           IntegerTermValue whenFalseTermValue)
+                           IntegerTermValue whenFalseTermValue,
+                           String name)
     {
         this.id                   = id;
 
         this.conditionalTermValue = ModelFunctor.full(conditionalTermValue, BooleanTermValue.class);
         this.whenTrueTermValue    = ModelFunctor.full(whenTrueTermValue, IntegerTermValue.class);
         this.whenFalseTermValue   = ModelFunctor.full(whenFalseTermValue, IntegerTermValue.class);
+
+        this.name                 = new PrimitiveFunctor<>(name, String.class);
     }
 
 
@@ -81,7 +94,10 @@ public class ConditionalTerm extends Term implements Serializable
         IntegerTermValue whenTrueTermValue    = IntegerTermValue.fromYaml(yaml.atKey("when_true"));
         IntegerTermValue whenFalseTermValue   = IntegerTermValue.fromYaml(yaml.atKey("when_false"));
 
-        return new ConditionalTerm(id, conditionalTermValue, whenTrueTermValue, whenFalseTermValue);
+        String           name                 = yaml.atMaybeKey("name").getString();
+
+        return new ConditionalTerm(id, conditionalTermValue,
+                                   whenTrueTermValue, whenFalseTermValue, name);
     }
 
 
@@ -157,6 +173,37 @@ public class ConditionalTerm extends Term implements Serializable
     }
 
 
+    /**
+     * The Conditional Term's name.
+     * @return The name.
+     */
+    public String name()
+    {
+        return this.name.getValue();
+    }
+
+
+    // > Term
+    // ------------------------------------------------------------------------------------------
+
+    public TermSummary summary()
+    {
+        List<Tuple2<String,String>> components = new ArrayList<>();
+
+        try {
+            if (conditionalTermValue().value())
+                components = whenTrueTermValue().components();
+            else
+                components = whenFalseTermValue().components();
+        }
+        catch (VariableException exception) {
+            ApplicationFailure.variable(exception);
+        }
+
+        return new TermSummary(this.name(), components);
+    }
+
+
     // > Value
     // ------------------------------------------------------------------------------------------
 
@@ -166,16 +213,24 @@ public class ConditionalTerm extends Term implements Serializable
      * @throws com.kispoko.tome.engine.variable.VariableException
      */
     public Integer value()
-           throws VariableException
+           throws SummationException
     {
-        Boolean cond = conditionalTermValue().value();
+        try
+        {
+            Boolean cond = conditionalTermValue().value();
 
-        if (cond) {
-            return whenTrueTermValue.getValue().value();
+            if (cond) {
+                return whenTrueTermValue().value();
+            }
+            else {
+                return whenFalseTermValue().value();
+            }
         }
-        else {
-            return whenFalseTermValue.getValue().value();
+        catch (VariableException exception)
+        {
+            throw SummationException.variable(new SummationVariableError(exception));
         }
+
     }
 
 

@@ -19,7 +19,6 @@ import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
@@ -36,8 +35,6 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 
 /**

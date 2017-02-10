@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
@@ -341,16 +342,13 @@ public class NumberWidget extends Widget
      */
     public Integer value()
     {
-        Integer integerValue = null;
-
         try {
-            integerValue = this.valueVariable().value();
+            return this.valueVariable().value();
         }
-        catch (VariableException exception) {
-            ApplicationFailure.variable(exception);
+        catch (NullVariableException exception) {
+            ApplicationFailure.nullVariable(exception);
+            return 0;
         }
-
-        return integerValue;
     }
 
 

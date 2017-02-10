@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.summation.SummationException;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableException;
@@ -241,18 +243,17 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
      */
     public Integer value()
     {
-        try
+        if (this.valueVariable() != null)
         {
-            if (this.valueVariable() != null)
+            try {
                 return this.valueVariable().value();
-            return null;
-        }
-        catch (VariableException exception)
-        {
-            ApplicationFailure.variable(exception);
+            }
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
+            }
         }
 
-        return null;
+        return 0;
     }
 
 

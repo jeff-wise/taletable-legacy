@@ -26,10 +26,10 @@ import com.kispoko.tome.sheet.group.RowAlignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.WidgetType;
-import com.kispoko.tome.sheet.widget.action.Action;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
+import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
@@ -207,6 +207,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(InlineLabelPosition.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(RowWidth.class))
         {
             return SQLValue.Type.TEXT;
@@ -232,10 +236,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         // TODO remove
-        else if (valueClass.isAssignableFrom(Action[].class))
-        {
-            return SQLValue.Type.TEXT;
-        }
         else if (valueClass.isAssignableFrom(ParameterType.class))
         {
             return SQLValue.Type.TEXT;
@@ -285,11 +285,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(ValueType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        // TODO remove
-        else if (valueClass.isAssignableFrom(Action.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -407,6 +402,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((CellAlignment) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
+        else if (this.getValue() instanceof InlineLabelPosition)
+        {
+            String enumString = ((InlineLabelPosition) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
         else if (this.getValue() instanceof RowAlignment)
         {
             String enumString = ((RowAlignment) this.getValue()).name().toLowerCase();
@@ -447,16 +447,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String arrayString = TextUtils.join("***", programValueTypeStrings);
             return SQLValue.newText(arrayString);
         }
-        else if (this.getValue() instanceof Action[])
-        {
-            Action[] actionArray = (Action[]) this.getValue();
-            List<String> actionStrings = new ArrayList<>();
-            for (int i = 0; i < actionArray.length; i++) {
-                actionStrings.add(actionArray[i].name().toLowerCase());
-            }
-            String arrayString = TextUtils.join("***", actionStrings);
-            return SQLValue.newText(arrayString);
-        }
         else if (this.getValue() instanceof ParameterType)
         {
             String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
@@ -485,16 +475,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
                 programValueTypeStrings.add(programValueTypeArray[i].name().toLowerCase());
             }
             String arrayString = TextUtils.join("***", programValueTypeStrings);
-            return SQLValue.newText(arrayString);
-        }
-        else if (this.getValue() instanceof Action[])
-        {
-            Action[] actionArray = (Action[]) this.getValue();
-            List<String> actionStrings = new ArrayList<>();
-            for (int i = 0; i < actionArray.length; i++) {
-                actionStrings.add(actionArray[i].name().toLowerCase());
-            }
-            String arrayString = TextUtils.join("***", actionStrings);
             return SQLValue.newText(arrayString);
         }
         else if (this.getValue() instanceof ParameterType)
@@ -561,11 +541,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             String enumString = ((InvocationParameterType)
                                             this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof Action)
-        {
-            String enumString = ((Action) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else
@@ -685,21 +660,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
                 this.setValue(null);
             }
         }
-        else if (this.valueClass.isAssignableFrom(Action[].class))
-        {
-            String arrayString = sqlValue.getText();
-            if (arrayString != null) {
-                String[] stringArray = TextUtils.split(arrayString, "\\*\\*\\*");
-                Action[] actions = new Action[stringArray.length];
-                for (int i = 0; i < stringArray.length; i++) {
-                    actions[i] = Action.fromSQLValue(SQLValue.newText(stringArray[i]));
-                }
-                this.setValue((A) actions);
-            }
-            else {
-                this.setValue(null);
-            }
-        }
         else if (this.valueClass.isAssignableFrom(SerialBitmap.class))
         {
             byte[] bitmapBlob = sqlValue.getBlob();
@@ -715,6 +675,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             CellAlignment cellAlignment = CellAlignment.fromSQLValue(sqlValue);
             this.setValue((A) cellAlignment);
+        }
+        else if (this.valueClass.isAssignableFrom(InlineLabelPosition.class))
+        {
+            InlineLabelPosition position = InlineLabelPosition.fromSQLValue(sqlValue);
+            this.setValue((A) position);
         }
         else if (this.valueClass.isAssignableFrom(RowAlignment.class))
         {
@@ -812,11 +777,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             ParameterType parameterType = ParameterType.fromSQLValue(sqlValue);
             this.setValue((A) parameterType);
-        }
-        else if (this.valueClass.isAssignableFrom(Action.class))
-        {
-            Action action = Action.fromSQLValue(sqlValue);
-            this.setValue((A) action);
         }
         else
         {

@@ -26,6 +26,7 @@ public enum WidgetBackground implements ToYaml
     NONE,
     EMPTY,
     LIGHT,
+    MEDIUM,
     DARK;
 
 
@@ -92,6 +93,8 @@ public enum WidgetBackground implements ToYaml
                 return R.drawable.bg_widget_empty;
             case LIGHT:
                 return R.drawable.bg_widget_light;
+            case MEDIUM:
+                return R.drawable.bg_widget_medium_small_corners_small;
             case DARK:
                 if (corners != null)
                 {
@@ -111,9 +114,9 @@ public enum WidgetBackground implements ToYaml
                 {
                     return R.drawable.bg_widget_dark_small_corners_small;
                 }
+            default:
+                return R.drawable.bg_widget_medium_small_corners_small;
         }
-
-        return 0;
     }
 
 
@@ -127,6 +130,24 @@ public enum WidgetBackground implements ToYaml
                 return R.drawable.bg_widget_empty;
             case LIGHT:
                 return R.drawable.bg_widget_light;
+            case MEDIUM:
+                switch (size)
+                {
+                    case VERY_SMALL:
+                        return R.drawable.bg_widget_medium_small_corners_small;
+                    case SMALL:
+                        return R.drawable.bg_widget_medium_small_corners_small;
+                    case MEDIUM_SMALL:
+                        return R.drawable.bg_widget_medium_small_corners_small;
+                    case MEDIUM:
+                        return R.drawable.bg_widget_medium_small_corners_small;
+                    case MEDIUM_LARGE:
+                        return R.drawable.bg_widget_medium_small_corners_medium;
+                    case LARGE:
+                        return R.drawable.bg_widget_medium_small_corners_medium;
+                    default:
+                        return R.drawable.bg_widget_medium_small_corners_small;
+                }
             case DARK:
                 if (corners != null)
                 {
@@ -142,9 +163,9 @@ public enum WidgetBackground implements ToYaml
                                 case MEDIUM_SMALL:
                                     return R.drawable.bg_widget_dark_small_corners_small;
                                 case MEDIUM:
-                                    return R.drawable.bg_widget_dark_small_corners_medium;
+                                    return R.drawable.bg_widget_dark_small_corners_small;
                                 case MEDIUM_LARGE:
-                                    return R.drawable.bg_widget_dark_small_corners_large;
+                                    return R.drawable.bg_widget_dark_small_corners_medium;
                                 case LARGE:
                                     return R.drawable.bg_widget_dark_small_corners_large;
                             }
@@ -160,9 +181,9 @@ public enum WidgetBackground implements ToYaml
                 {
                     return R.drawable.bg_widget_dark_small_corners_small;
                 }
+            default:
+                return R.drawable.bg_widget_medium_small_corners_small;
         }
-
-        return 0;
     }
 
 }

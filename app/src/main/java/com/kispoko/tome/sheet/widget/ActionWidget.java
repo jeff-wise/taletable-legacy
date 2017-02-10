@@ -3,23 +3,32 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.VariableException;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.action.Action;
+import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
+import com.kispoko.tome.sheet.widget.action.RollDialogFragment;
+import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -42,15 +51,18 @@ public class ActionWidget extends Widget implements Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                            id;
+    private UUID                                id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>        description;
-    private ModelFunctor<NumberVariable>    modifier;
-    private ModelFunctor<WidgetData>        widgetData;
+    private ModelFunctor<WidgetData>            widgetData;
+    private ModelFunctor<ActionWidgetFormat>    format;
+    private PrimitiveFunctor<String>            action;
+    private PrimitiveFunctor<String>            actionHighlight;
+    private PrimitiveFunctor<String>            actionName;
+    private ModelFunctor<NumberVariable>        modifier;
 
 
     // CONSTRUCTORS
@@ -58,24 +70,33 @@ public class ActionWidget extends Widget implements Serializable
 
     public ActionWidget()
     {
-        this.id = null;
+        this.id                 = null;
 
-        this.description  = new PrimitiveFunctor<>(null, String.class);
-        this.modifier     = ModelFunctor.empty(NumberVariable.class);
-        this.widgetData   = ModelFunctor.empty(WidgetData.class);
+        this.widgetData         = ModelFunctor.empty(WidgetData.class);
+        this.format             = ModelFunctor.empty(ActionWidgetFormat.class);
+        this.action             = new PrimitiveFunctor<>(null, String.class);
+        this.actionHighlight    = new PrimitiveFunctor<>(null, String.class);
+        this.actionName         = new PrimitiveFunctor<>(null, String.class);
+        this.modifier           = ModelFunctor.empty(NumberVariable.class);
     }
 
 
     public ActionWidget(UUID id,
-                        String description,
-                        NumberVariable modifier,
-                        WidgetData widgetData)
+                        WidgetData widgetData,
+                        ActionWidgetFormat format,
+                        String action,
+                        String actionHighlight,
+                        String actionName,
+                        NumberVariable modifier)
     {
-        this.id           = id;
+        this.id                 = id;
 
-        this.description  = new PrimitiveFunctor<>(description, String.class);
-        this.modifier     = ModelFunctor.full(modifier, NumberVariable.class);
-        this.widgetData   = ModelFunctor.full(widgetData, WidgetData.class);
+        this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
+        this.format             = ModelFunctor.full(format, ActionWidgetFormat.class);
+        this.action             = new PrimitiveFunctor<>(action, String.class);
+        this.actionHighlight    = new PrimitiveFunctor<>(actionHighlight, String.class);
+        this.actionName         = new PrimitiveFunctor<>(actionName, String.class);
+        this.modifier           = ModelFunctor.full(modifier, NumberVariable.class);
     }
 
 
@@ -88,13 +109,17 @@ public class ActionWidget extends Widget implements Serializable
     public static ActionWidget fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID           id           = UUID.randomUUID();
+        UUID               id              = UUID.randomUUID();
 
-        String         description  = yaml.atMaybeKey("description").getString();
-        NumberVariable modifier     = NumberVariable.fromYaml(yaml.atKey("modifier"));
-        WidgetData     widgetData   = WidgetData.fromYaml(yaml.atKey("data"));
+        String             description     = yaml.atKey("action").getString().trim();
+        String             actionHighlight = yaml.atKey("action_highlight").getString().trim();
+        String             actionName      = yaml.atKey("action_name").getString().trim();
+        NumberVariable     modifier        = NumberVariable.fromYaml(yaml.atKey("modifier"));
+        WidgetData         widgetData      = WidgetData.fromYaml(yaml.atKey("data"));
+        ActionWidgetFormat format          = ActionWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        return new ActionWidget(id, description, modifier, widgetData);
+        return new ActionWidget(id, widgetData, format, description,
+                                actionHighlight, actionName, modifier);
     }
 
 
@@ -147,9 +172,11 @@ public class ActionWidget extends Widget implements Serializable
     {
         YamlBuilder yaml = YamlBuilder.map();
 
-        yaml.putString("description", this.description());
+        yaml.putString("action", this.action());
+        yaml.putString("action_name", this.actionName());
         yaml.putYaml("modifier", this.modifierVariable());
         yaml.putYaml("data", this.data());
+        yaml.putYaml("format", this.format());
 
         return yaml;
     }
@@ -185,43 +212,7 @@ public class ActionWidget extends Widget implements Serializable
     @Override
     public View view(boolean rowHasLabel, Context context)
     {
-        // [2 A] Layouts
-        // --------------------------------------------------------------------------------------
-
-        LinearLayout layout            = this.layout(false, context);
-        LinearLayout contentLayout =
-                (LinearLayout) layout.findViewById(R.id.widget_content_layout);
-        // ((LinearLayout.LayoutParams) contentLayout.getLayoutParams()).gravity = Gravity.TOP;
-
-        LinearLayout rollWidgetLayout  = this.rollWidgetLayout(context);
-
-        LinearLayout headerLayout      = this.headerLayout(context);
-        LinearLayout descriptionLayout = this.descriptionLayout(context);
-        LinearLayout rollBonusLayout   = this.modifierLayout(context);
-
-        rollWidgetLayout.addView(headerLayout);
-
-        if (this.description() != null)
-            rollWidgetLayout.addView(descriptionLayout);
-
-        rollWidgetLayout.addView(rollBonusLayout);
-
-        contentLayout.addView(rollWidgetLayout);
-
-        // [2 A] Layouts
-        // --------------------------------------------------------------------------------------
-
-        return layout;
-    }
-
-
-    /**
-     * The text widget's editor view.
-     * @return The editor view.
-     */
-    public View editorView(Context context)
-    {
-        return new LinearLayout(context);
+        return this.widgetView(context);
     }
 
 
@@ -232,9 +223,29 @@ public class ActionWidget extends Widget implements Serializable
      * Get the roll description.
      * @return The roll description.
      */
-    public String description()
+    public String action()
     {
-        return this.description.getValue();
+        return this.action.getValue();
+    }
+
+
+    /**
+     * The action highlight.
+     * @return The action highlight.
+     */
+    public String actionHighlight()
+    {
+        return this.actionHighlight.getValue();
+    }
+
+
+    /**
+     * The action name.
+     * @return The action name.
+     */
+    public String actionName()
+    {
+        return this.actionName.getValue();
     }
 
 
@@ -249,6 +260,16 @@ public class ActionWidget extends Widget implements Serializable
 
 
     /**
+     * The action widget format.
+     * @return The Action Widget Format.
+     */
+    public ActionWidgetFormat format()
+    {
+        return this.format.getValue();
+    }
+
+
+    /**
      * Get the roll modifier value (the current value of the modifier number variable).
      * @return The roll modifier value integer.
      */
@@ -259,8 +280,9 @@ public class ActionWidget extends Widget implements Serializable
             try {
                 return this.modifierVariable().value();
             }
-            catch (VariableException exception) {
-                ApplicationFailure.variable(exception);
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
+                return 0;
             }
         }
 
@@ -277,8 +299,8 @@ public class ActionWidget extends Widget implements Serializable
         try {
             return this.modifierVariable().valueString();
         }
-        catch (VariableException exception) {
-            ApplicationFailure.variable(exception);
+        catch (NullVariableException exception) {
+            ApplicationFailure.nullVariable(exception);
             return "";
         }
     }
@@ -290,129 +312,139 @@ public class ActionWidget extends Widget implements Serializable
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    private LinearLayout rollWidgetLayout(Context context)
+    private View widgetView(Context context)
+    {
+        LinearLayout layout = this.widgetViewLayout(context);
+
+        layout.addView(actionView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout widgetViewLayout(final Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation      = LinearLayout.VERTICAL;
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout headerLayout(Context context)
-    {
-        // > Views
-        // --------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout    = new LinearLayoutBuilder();
-        TextViewBuilder     titleView = new TextViewBuilder();
-
-        // > Layout
-        // --------------------------------------------------------------------------------------
-
-        layout.orientation      = LinearLayout.HORIZONTAL;
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity          = Gravity.CENTER;
-        layout.backgroundColor  = R.color.dark_blue_4;
-        layout.padding.top      = R.dimen.widget_roll_header_layout_padding_vert;
-        layout.padding.bottom   = R.dimen.widget_roll_header_layout_padding_vert;
-
-        layout.child(titleView);
-
-        // > Title View
-        // --------------------------------------------------------------------------------------
-
-        titleView.width     = LinearLayout.LayoutParams.WRAP_CONTENT;
-        titleView.height    = LinearLayout.LayoutParams.WRAP_CONTENT;
-        // titleView.text      = this.rollName().toUpperCase();
-        titleView.size      = R.dimen.widget_roll_name_text_size;
-        titleView.color     = R.color.dark_blue_hl_4;
-        titleView.font      = Font.sansSerifFontRegular(context);
-
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout descriptionLayout(Context context)
-    {
-        // > Views
-        // --------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout  = new LinearLayoutBuilder();
-        TextViewBuilder description = new TextViewBuilder();
-
-        // > Layout
-        // --------------------------------------------------------------------------------------
-
-        layout.orientation      = LinearLayout.HORIZONTAL;
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.child(description);
-
-        // > Description
-        // --------------------------------------------------------------------------------------
-
-        description.width  = LinearLayout.LayoutParams.MATCH_PARENT;
-        description.height = LinearLayout.LayoutParams.MATCH_PARENT;
-        description.text   = this.description();
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout modifierLayout(Context context)
-    {
-        // > Views
-        // --------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout       = new LinearLayoutBuilder();
-        ImageViewBuilder    iconView     = new ImageViewBuilder();
-        TextViewBuilder     modifierView = new TextViewBuilder();
-
-        // > Layout
-        // --------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
+        layout.orientation          = LinearLayout.VERTICAL;
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.margin.top           = R.dimen.widget_roll_modifier_layout_margin_vert;
-        layout.margin.bottom        = R.dimen.widget_roll_modifier_layout_margin_vert;
-        layout.padding.left         = R.dimen.widget_roll_modifier_layout_padding;
-        layout.padding.right        = R.dimen.widget_roll_modifier_layout_padding;
-        layout.padding.top          = R.dimen.widget_roll_modifier_layout_padding;
-        layout.padding.bottom       = R.dimen.widget_roll_modifier_layout_padding;
-        layout.gravity              = Gravity.CENTER;
 
-        layout.child(iconView)
-         .child(modifierView);
-
-        // > Icon View
-        // --------------------------------------------------------------------------------------
-
-        iconView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        iconView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-        iconView.image          = R.drawable.ic_roll_widget;
-        iconView.padding.right  = R.dimen.widget_roll_icon_padding_right;
-
-        // > Modifier Text
-        // --------------------------------------------------------------------------------------
-
-        modifierView.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        modifierView.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-        modifierView.text           = this.modifierString();
-        modifierView.font           = Font.serifFontBold(context);
-        modifierView.size           = R.dimen.widget_roll_modifier_text_size;
-        modifierView.color          = R.color.dark_blue_hlx_5;
-        modifierView.padding.bottom = R.dimen.widget_roll_modifier_text_padding_bottom;
+        layout.onClick              = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onActionWidgetShortClick(context);
+            }
+        };
 
         return layout.linearLayout(context);
+    }
 
+
+    private TextView actionView(Context context)
+    {
+        TextView action = actionTextView(context);
+
+
+        SpannableStringBuilder builder = new SpannableStringBuilder(this.action());
+
+        int actionNameIndex = this.action().indexOf(this.actionHighlight());
+
+        ImageSpan diceRollIcon = this.actionImageSpan(context);
+
+        String imageSpace = "i" + "\u2006";
+        builder.insert(actionNameIndex, imageSpace);
+        builder.setSpan(diceRollIcon, actionNameIndex, actionNameIndex + 1, 0);
+
+        int actionNameEnd = actionNameIndex + 2 + this.actionHighlight().length();
+        builder.setSpan(this.actionHighlightSpan(context), actionNameIndex + 1, actionNameEnd, 0);
+
+        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+        builder.setSpan(boldSpan, actionNameIndex + 1, actionNameEnd, 0 );
+
+        action.setText(builder);
+
+        return action;
+    }
+
+
+    private TextView actionTextView(Context context)
+    {
+        TextViewBuilder action = new TextViewBuilder();
+
+        action.width           = LinearLayout.LayoutParams.MATCH_PARENT;
+        action.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        action.font            = Font.serifFontRegular(context);
+        action.color           = R.color.dark_blue_hl_5;
+        action.size            = this.format().size().resourceId();
+
+        switch (this.data().format().alignment())
+        {
+            case LEFT:
+                break;
+            case CENTER:
+                action.layoutGravity = Gravity.CENTER_HORIZONTAL;
+                action.gravity       = Gravity.CENTER_HORIZONTAL;
+                break;
+            case RIGHT:
+                break;
+        }
+
+        return action.textView(context);
+    }
+
+
+    private ForegroundColorSpan actionHighlightSpan(Context context)
+    {
+        int colorId = this.format().actionColor().resourceId();
+        return new ForegroundColorSpan(ContextCompat.getColor(context, colorId));
+    }
+
+
+    private ImageSpan actionImageSpan(Context context)
+    {
+        switch (this.format().actionColor())
+        {
+            case BLUE:
+                switch (this.format().size())
+                {
+                    case SMALL:
+                        return new ImageSpan(context, R.drawable.ic_roll_blue_l);
+                    case MEDIUM:
+                        return new ImageSpan(context, R.drawable.ic_roll_blue_m);
+                    case LARGE:
+                        return new ImageSpan(context, R.drawable.ic_roll_blue_l);
+                }
+            case GREEN:
+                switch (this.format().size())
+                {
+                    case SMALL:
+                        return new ImageSpan(context, R.drawable.ic_roll_green_m);
+                    case MEDIUM:
+                        return new ImageSpan(context, R.drawable.ic_roll_green_m);
+                    case LARGE:
+                        return new ImageSpan(context, R.drawable.ic_roll_green_m);
+                }
+            default:
+                return new ImageSpan(context, R.drawable.ic_roll_blue_l);
+        }
+    }
+
+
+    // > Clicks
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * On a short click, open the value editor.
+     */
+    private void onActionWidgetShortClick(Context context)
+    {
+        SheetActivity sheetActivity = (SheetActivity) context;
+
+        RollDialogFragment dialog =
+                RollDialogFragment.newInstance(this.actionName(), this.modifierVariable());
+        dialog.show(sheetActivity.getSupportFragmentManager(), "");
     }
 
 
