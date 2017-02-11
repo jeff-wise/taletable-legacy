@@ -47,6 +47,7 @@ public class MechanicIndex implements Model, ToYaml, Serializable
     private Map<String,Set<Mechanic>>   requirementToListeners;
 
     private Map<String,Mechanic>        mechanicsByName;
+    private Map<String,Set<Mechanic>>   mechanicsByCategory;
 
 
     // CONSTRUCTORS
@@ -183,6 +184,33 @@ public class MechanicIndex implements Model, ToYaml, Serializable
     }
 
 
+    /**
+     * Get all of the mechanics in a category.
+     * @param categoryName The category name.
+     * @param active If true, only returns mechanics that are currently active.
+     * @return The mechanic list.
+     */
+    public Set<Mechanic> mechanicsInCategory(String categoryName, Boolean active)
+    {
+        Set<Mechanic> mechanics = this.mechanicsByCategory.get(categoryName);
+
+        if (mechanics == null)
+            return new HashSet<>();
+
+        if (!active)
+            return mechanics;
+
+        Set<Mechanic> activeMechanics = new HashSet<>();
+
+        for (Mechanic mechanic : mechanics) {
+            if (mechanic.active())
+                activeMechanics.add(mechanic);
+        }
+
+        return activeMechanics;
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
@@ -211,6 +239,19 @@ public class MechanicIndex implements Model, ToYaml, Serializable
         this.mechanicsByName = new HashMap<>();
         for (Mechanic mechanic : this.mechanics()) {
             this.mechanicsByName.put(mechanic.name(), mechanic);
+        }
+
+        // Index mechanic categories
+        // --------------------------------------------------------------------------------------
+
+        this.mechanicsByCategory = new HashMap<>();
+        for (Mechanic mechanic : this.mechanics())
+        {
+            if (!this.mechanicsByCategory.containsKey(mechanic.type()))
+                this.mechanicsByCategory.put(mechanic.type(), new HashSet<Mechanic>());
+
+            Set<Mechanic> mechanics = this.mechanicsByCategory.get(mechanic.type());
+            mechanics.add(mechanic);
         }
 
     }

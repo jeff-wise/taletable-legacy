@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.kispoko.tome.R.string.column;
 
 
 /**
@@ -278,11 +277,11 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
         // > Font
         if (column.isBold()) {
             cellView.font   = Font.serifFontBold(context);
-            cellView.color  = R.color.dark_blue_hl_3;
+            cellView.color  = R.color.dark_blue_hl_4;
         }
         else {
             cellView.font   = Font.serifFontRegular(context);
-            cellView.color  = R.color.dark_blue_hl_1;
+            cellView.color  = R.color.dark_blue_hl_2;
         }
 
         if (this.value() != null)

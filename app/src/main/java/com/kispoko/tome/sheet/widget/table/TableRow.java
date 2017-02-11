@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget.table;
 
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
-import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;

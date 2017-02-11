@@ -30,7 +30,8 @@ public enum WidgetType implements ToYaml
     IMAGE,
     LIST,
     TABLE,
-    ACTION;
+    ACTION,
+    MECHANIC;
 
 
     // CONSTRUCTORS

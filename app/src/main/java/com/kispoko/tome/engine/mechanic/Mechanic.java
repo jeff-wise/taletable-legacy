@@ -43,9 +43,18 @@ public class Mechanic implements Model, ToYaml, Serializable
 
     private PrimitiveFunctor<String>            name;
     private PrimitiveFunctor<String>            label;
-    private PrimitiveFunctor<String>            type;
+
+    /**
+     * A short description of the mechanic. Displayed on the mechanic widget.
+     */
     private PrimitiveFunctor<String>            summary;
+
+    /**
+     * A long, complete description of the mechanic.
+     */
     private PrimitiveFunctor<String>            description;
+
+    private PrimitiveFunctor<String>            type;
 
     /**
      * A requirement is the name of a boolean variable. If all the requiremnet variable values are
@@ -67,12 +76,14 @@ public class Mechanic implements Model, ToYaml, Serializable
 
     public Mechanic()
     {
-        this.id           = null;
+        this.id             = null;
 
-        this.name         = new PrimitiveFunctor<>(null, String.class);
-        this.label        = new PrimitiveFunctor<>(null, String.class);
-        this.type         = new PrimitiveFunctor<>(null, String.class);
-        this.requirements = new PrimitiveFunctor<>(null, String[].class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.label          = new PrimitiveFunctor<>(null, String.class);
+        this.summary        = new PrimitiveFunctor<>(null, String.class);
+        this.description    = new PrimitiveFunctor<>(null, String.class);
+        this.type           = new PrimitiveFunctor<>(null, String.class);
+        this.requirements   = new PrimitiveFunctor<>(null, String[].class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
@@ -83,15 +94,19 @@ public class Mechanic implements Model, ToYaml, Serializable
     public Mechanic(UUID id,
                     String name,
                     String label,
+                    String summary,
+                    String description,
                     String type,
                     List<String> requirements,
                     List<VariableUnion> variables)
     {
-        this.id           = id;
+        this.id             = id;
 
-        this.name         = new PrimitiveFunctor<>(name, String.class);
-        this.label        = new PrimitiveFunctor<>(label, String.class);
-        this.type         = new PrimitiveFunctor<>(type, String.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.label          = new PrimitiveFunctor<>(label, String.class);
+        this.summary        = new PrimitiveFunctor<>(summary, String.class);
+        this.description    = new PrimitiveFunctor<>(description, String.class);
+        this.type           = new PrimitiveFunctor<>(type, String.class);
 
         String[] requirementsArray = new String[requirements.size()];
         requirements.toArray(requirementsArray);
@@ -115,23 +130,27 @@ public class Mechanic implements Model, ToYaml, Serializable
 
         String              name         = yaml.atKey("name").getString();
 
-        String              label        = yaml.atMaybeKey("label").getString();
-        if (label != null)  label = label.trim();
+        // TODO make sure trim is not used on maybe key
+        String              label        = yaml.atKey("label").getTrimmedString();
 
-        String              type         = yaml.atMaybeKey("type").getString();
+        String              summary      = yaml.atMaybeKey("summary").getTrimmedString();
+
+        String              description  = yaml.atMaybeKey("description").getTrimmedString();
+
+        String              type         = yaml.atMaybeKey("type").getTrimmedString();
 
         List<String>        requirements = yaml.atMaybeKey("requirements").getStringList();
 
-        List<VariableUnion> variables = yaml.atKey("variables").forEach(
+        List<VariableUnion> variables    = yaml.atMaybeKey("variables").forEach(
                                                         new YamlParser.ForEach<VariableUnion>()
         {
             @Override
             public VariableUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return VariableUnion.fromYaml(yaml);
             }
-        });
+        }, true);
 
-        return new Mechanic(id, name, label, type, requirements, variables);
+        return new Mechanic(id, name, label, summary, description, type, requirements, variables);
     }
 
 
@@ -187,6 +206,9 @@ public class Mechanic implements Model, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putString("name", this.name())
+                .putString("label", this.label())
+                .putString("summary", this.summary())
+                .putString("description", this.description())
                 .putString("type", this.type())
                 .putStringList("requirements", this.requirements())
                 .putList("variables", this.variables());
@@ -213,6 +235,26 @@ public class Mechanic implements Model, ToYaml, Serializable
     public String label()
     {
         return this.label.getValue();
+    }
+
+
+    /**
+     * The mechanic summary.
+     * @return The mechanic summary.
+     */
+    public String summary()
+    {
+        return this.summary.getValue();
+    }
+
+
+    /**
+     * The mechanic's description.
+     * @return The mechanic's description.
+     */
+    public String description()
+    {
+        return this.description.getValue();
     }
 
 
@@ -259,6 +301,19 @@ public class Mechanic implements Model, ToYaml, Serializable
     public Integer variableCount()
     {
         return this.variables().size();
+    }
+
+
+    // > Active
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * True if the mechanic is active.
+     * @return
+     */
+    public Boolean active()
+    {
+        return this.active;
     }
 
 

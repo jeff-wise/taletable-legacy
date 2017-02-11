@@ -217,6 +217,41 @@ public class Dictionary implements Model, ToYaml, Serializable
     }
 
 
+    /**
+     * Lookup a number value. Handles all of the errors that could occur. May return null, but will
+     * log an exception if it does.
+     * @param valueReference The number value reference.
+     * @return The Number Value.
+     */
+    public NumberValue numberValue(ValueReference valueReference)
+    {
+        ValueUnion valueUnion = this.lookup(valueReference.valueSetName(),
+                                            valueReference.valueName());
+
+        if (valueUnion == null) {
+            ApplicationFailure.value(
+                    ValueException.undefinedValue(
+                            new UndefinedValueError(valueReference.valueSetName(),
+                                                    valueReference.valueName())));
+            return null;
+        }
+
+
+        if (valueUnion.type() != ValueType.NUMBER) {
+            ApplicationFailure.value(
+                    ValueException.unexpectedValueType(
+                            new UnexpectedValueTypeError(
+                                    valueReference.valueSetName(),
+                                    valueReference.valueName(),
+                                    ValueType.NUMBER,
+                                    valueUnion.type())));
+            return null;
+        }
+
+        return valueUnion.numberValue();
+    }
+
+
     public Value value(ValueReference valueReference)
     {
         ValueUnion valueUnion = this.lookup(valueReference.valueSetName(),
@@ -228,7 +263,6 @@ public class Dictionary implements Model, ToYaml, Serializable
 
         return null;
     }
-
 
 
     // INTERNAL

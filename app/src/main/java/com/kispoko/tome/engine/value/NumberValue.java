@@ -2,6 +2,7 @@
 package com.kispoko.tome.engine.value;
 
 
+import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
@@ -197,6 +198,9 @@ public class NumberValue implements Value, Model, ToYaml, Serializable
     }
 
 
+    // > Variables
+    // ------------------------------------------------------------------------------------------
+
     /**
      * The text value's variables.
      * @return The list of variables.
@@ -206,5 +210,20 @@ public class NumberValue implements Value, Model, ToYaml, Serializable
         return this.variables.getValue();
     }
 
+
+    public void addToState()
+    {
+        for (VariableUnion variableUnion : this.variables()) {
+            State.addVariable(variableUnion);
+        }
+    }
+
+
+    public void removeFromState()
+    {
+        for (VariableUnion variableUnion : this.variables()) {
+            State.removeVariable(variableUnion.variable().name());
+        }
+    }
 
 }

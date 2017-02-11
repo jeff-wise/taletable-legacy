@@ -170,6 +170,18 @@ public class YamlParser
     }
 
 
+    public String getTrimmedString()
+           throws YamlParseException
+    {
+        String parsedString = this.getString();
+
+        if (parsedString != null)
+            return parsedString.trim();
+        else
+            return null;
+    }
+
+
     public Integer getInteger()
            throws YamlParseException
     {

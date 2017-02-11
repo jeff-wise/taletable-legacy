@@ -294,7 +294,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
         value.font              = Font.serifFontRegular(context);
         value.size              = R.dimen.widget_table_cell_text_size;
-        value.color             = R.color.dark_blue_hl_1;
+        value.color             = R.color.dark_blue_hl_2;
 
         return value.textView(context);
     }

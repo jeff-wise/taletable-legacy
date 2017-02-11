@@ -26,6 +26,7 @@ import com.kispoko.tome.sheet.group.RowAlignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.WidgetType;
+import com.kispoko.tome.sheet.widget.number.NumberWidgetStyle;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
@@ -168,6 +169,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(WidgetTextTint.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(NumberWidgetStyle.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -350,6 +355,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof WidgetTextTint)
         {
             String enumString = ((WidgetTextTint) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof NumberWidgetStyle)
+        {
+            String enumString = ((NumberWidgetStyle) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof WidgetCorners)
@@ -633,6 +643,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             WidgetTextTint tint = WidgetTextTint.fromSQLValue(sqlValue);
             this.setValue((A) tint);
+        }
+        else if (this.valueClass.isAssignableFrom(NumberWidgetStyle.class))
+        {
+            NumberWidgetStyle style = NumberWidgetStyle.fromSQLValue(sqlValue);
+            this.setValue((A) style);
         }
         else if (this.valueClass.isAssignableFrom(WidgetCorners.class))
         {

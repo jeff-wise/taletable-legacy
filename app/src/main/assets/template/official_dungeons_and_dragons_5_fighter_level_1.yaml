@@ -757,6 +757,140 @@ engine:
           type: d4
           quantity: 1
           modifier: 0
+  - name: race_human_ability_score_increase
+    label: Ability Score Increase
+    summary: Your ability scores each increase by 1.
+    description: Your ability scores each increase by 1.
+    type: race
+    requirements:
+    - is_race_human
+    variables:
+    - type: number
+      value:
+        name: human_ability_score_bonus
+        label: Human Ability Score bonus
+        type: literal
+        value: 1
+        tags:
+        - strength_bonus
+        - dexterity_bonus
+        - constitution_bonus
+        - intelligence_bonus
+        - wisdom_bonus
+        - charisma_bonus
+  - name: race_human_extra_language
+    label: Extra Language
+    summary: You know Common and one extra language of your choice.
+    description: >
+     You can speak, read, and write Common and one extra language of your choice. Humans typically
+     learn the languages of other peoples they deal with, including obscure dialects. They are fond
+     of sprinkling their speech with words borrowed from other tongues: Orc curses, Elvish musical
+     expressions, Dwarvish military phrases, and so on.
+    type: race
+    requirements:
+    - is_race_human
+  - name: class_fighter_fighting_style_archery
+    label: 'Fighting Style: Archery'
+    summary: +2 bonus on attacks with ranged weapons
+    description: You gain a +2 bonus to attack rolls you make with ranged weapons.
+    type: class
+    requirements:
+    - is_class_fighter
+    - has_fighting_style_archery
+    - is_level_one
+    variables:
+    - type: number
+      value:
+        type: literal
+        name: fighting_style_archery_attack_bonus
+        label: Archery Ranged Attack Bonus
+        value: 2
+        tags:
+        - attack_bonus_ranged_weapons
+  - name: class_fighter_fighting_style_defense
+    label: 'Fighting Style: Defense'
+    summary: +1 bonus to AC while wearing armor
+    description: While you are wearing armor, you gain a +1 bonus to AC
+    type: class
+    requirements:
+    - is_class_fighter
+    - has_fighting_style_defense
+    - is_level_one
+    variables:
+    - type: number
+      value:
+        type: literal
+        name: fighting_style_defense_armor_bonus
+        label: Defense Armor Bonus
+        value: 1
+        tags:
+        - armor_class_bonus
+  - name: class_fighter_fighting_style_dueling
+    label: 'Fighting Style: Dueling'
+    summary: +2 damage bonus when using only a one-handed weapon.
+    description: >
+      When you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus
+      to damage rolls with that weapon
+    type: class
+    requirements:
+    - is_class_fighter
+    - has_fighting_style_dueling
+    - is_level_one
+    variables:
+    - type: number
+      value:
+        type: literal
+        name: fighting_style_dueling_damage_bonus
+        label: Fighting Style Dueling Damage Bonus
+        value: 2
+        tags:
+        - melee_damage_bonus
+  - name: class_fighter_fighting_style_great_weapon_fighting
+    label: 'Fighting Style: Great Weapon Fighting'
+    summary: Reroll 1 or 2s when attacking with a two-handed weapon.
+    description: >
+      When you roll a 1 or 2 on a damage die for an attack you make with a melee weapon that you
+      are wielding with two hands, you can reroll the die and must use the new roll, even if the
+      new roll is a 1 or a 2. The weapon must have the two-handed or versatile property for you to
+      gain this benefit
+    type: class
+    requirements:
+    - is_class_fighter
+    - has_fighting_style_great_weapon_fighting
+    - is_level_one
+  - name: class_fighter_fighting_style_protection
+    label: 'Fighting Style: Protection'
+    summary: Use your shield to give allie's opponents disadvantage on attacks.
+    description: >
+      When a creature you can see attacks a target other than you that is within 5 feet of you,
+      you can use your reaction to impose disadvantage on the attack roll. You must be wielding a
+      shield
+    type: class
+    requirements:
+    - is_class_fighter
+    - has_fighting_style_protection
+    - is_level_one
+  - name: class_fighter_fighting_style_two_weapon_fighting
+    label: 'Fighting Style: Two-Weapon Fighting'
+    summary: Add your ability modifier to your off-hand attacks.
+    description: >
+      When you engage in two-weapon fighting, you can add your ability modifier.
+    type: class
+    requirements:
+    - is_class_fighter
+    - has_fighting_style_two_handed_weapon
+    - is_level_one
+  - name: class_fighter_second_wind
+    label: Second Wind
+    summary: Use a bonus action to regain 1d10 + fighter level hit points.
+    description: >
+      You have a limited well of stamina that you can draw on to protect yourself from harm. On
+      your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level.
+      Once you use this feature, you must finish a short or long rest before you can use it again
+    type: class
+    requirements:
+    - is_class_fighter
+    - is_level_one
   dictionary:
     sets:
     - name: class
@@ -769,50 +903,122 @@ engine:
         value:
           name: barbarian
           value: Barbarian
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_barbarian
+              value: true
       - type: text
         value:
           name: bard
           value: Bard
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_bard
+              value: true
       - type: text
         value:
           name: cleric
           value: Cleric
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_cleric
+              value: true
       - type: text
         value:
           name: druid
           value: Druid
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_druid
+              value: true
       - type: text
         value:
           name: fighter
           value: Fighter
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_fighter
+              value: true
       - type: text
         value:
           name: monk
           value: Monk
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_monk
+              value: true
       - type: text
         value:
           name: paladin
           value: Paladin
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_paladin
+              value: true
       - type: text
         value:
           name: ranger
           value: Ranger
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_ranger
+              value: true
       - type: text
         value:
           name: rogue
           value: Rogue
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_rogue
+              value: true
       - type: text
         value:
           name: sorceror
           value: Sorceror
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_sorceror
+              value: true
       - type: text
         value:
           name: warlock
           value: Warlock
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_warlock
+              value: true
       - type: text
         value:
           name: wizard
           value: Wizard
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_class_wizard
+              value: true
     - name: language
       label: Languages
       description: >
@@ -1159,6 +1365,239 @@ engine:
               type: literal
               name: has_shield
               value: true
+    - name: level
+      label: Levels
+      description: The levels a player may reach with experience.
+      values:
+      - type: number
+        value:
+          name: level_one
+          value: 1
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_one
+              value: true
+      - type: number
+        value:
+          name: level_two
+          value: 2
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_one
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_two
+              value: true
+      - type: number
+        value:
+          name: level_three
+          value: 3
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_one
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_two
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_three
+              value: true
+      - type: number
+        value:
+          name: level_four
+          value: 4
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_one
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_two
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_three
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_four
+              value: true
+      - type: number
+        value:
+          name: level_five
+          value: 5
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_one
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_two
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_three
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_four
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_five
+              value: true
+      - type: number
+        value:
+          name: level_six
+          value: 6
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_one
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_two
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_three
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_four
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_five
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: is_level_six
+              value: true
+    - name: race
+      label: Races
+      description: The different races a player may choose from.
+      values:
+      - type: text
+        value:
+          name: dragonborn
+          value: Dragonborn
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_dragonborn
+              value: true
+      - type: text
+        value:
+          name: dwarf
+          value: Dwarf
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_dwarf
+              value: true
+      - type: text
+        value:
+          name: elf
+          value: Elf
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_elf
+              value: true
+      - type: text
+        value:
+          name: gnome
+          value: Gnome
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_gnome
+              value: true
+      - type: text
+        value:
+          name: halfelf
+          value: Half-Elf
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_halfelf
+              value: true
+      - type: text
+        value:
+          name: halforc
+          value: Half-Orc
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_halforc
+              value: true
+      - type: text
+        value:
+          name: halfling
+          value: Halfling
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_halfling
+              value: true
+      - type: text
+        value:
+          name: human
+          value: Human
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_human
+              value: true
+      - type: text
+        value:
+          name: tiefling
+          value: Tiefling
+          variables:
+          - type: boolean
+            value:
+              type: literal
+              name: is_race_tiefling
+              value: true
 profile:
   pages:
   - label: Profile
@@ -1221,9 +1660,12 @@ profile:
           format:
             size: medium_small
           value:
-            type: literal
+            type: value
             name: level
-            value: 1
+            value_set: level
+            value:
+              set_name: level
+              value_name: level_one
         - type: text
           data:
             format:
@@ -1233,14 +1675,15 @@ profile:
           format:
             size: medium_small
           value:
-            type: literal
+            type: value
             name: race
-            value: Human
+            value_set: race
+            value:
+              set_name: race
+              value_name: human
         - type: text
           name: class
           data:
-            actions:
-            - edit
             format:
               name: Class
               width: 2
@@ -2482,8 +2925,8 @@ profile:
     groups:
     - name: Proficiency Bonus
       show_name: false
-      space_above: large
-      space_below: large
+      space_above: medium_large
+      space_below: medium_large
       background: dark
       rows:
       - space_above: small
@@ -2499,7 +2942,7 @@ profile:
             label: Proficiency Bonus
             label_alignment: left
             size: medium_small
-            tint: green
+            tint: green_medium_light
           value:
             type: literal
             name: proficiency_bonus
@@ -2601,6 +3044,18 @@ profile:
           value:
             type: literal
             value: 1d8
+    - name: Race Features
+      rows:
+      - space_above: medium
+        widgets:
+        - type: mechanic
+          category: race
+    - name: Class Features
+      rows:
+      - space_above: medium
+        widgets:
+        - type: mechanic
+          category: class
   - label: Inventory
     groups:
     - name: Weapons

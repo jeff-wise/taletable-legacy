@@ -5,12 +5,16 @@ package com.kispoko.tome.engine.variable;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.summation.SummationException;
+import com.kispoko.tome.engine.value.Dictionary;
+import com.kispoko.tome.engine.value.NumberValue;
+import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -22,8 +26,6 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
-
-import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,30 +48,31 @@ public class NumberVariable extends Variable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>    name;
-    private PrimitiveFunctor<String>    label;
+    private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<String>        label;
 
-    private PrimitiveFunctor<Integer>   literalValue;
-    private ModelFunctor<Invocation>    invocationValue;
-    private ModelFunctor<Summation>     summation;
+    private PrimitiveFunctor<Integer>       literalValue;
+    private ModelFunctor<Invocation>        invocationValue;
+    private ModelFunctor<ValueReference>    valueReference;
+    private ModelFunctor<Summation>         summation;
 
-    private PrimitiveFunctor<Kind>      kind;
+    private PrimitiveFunctor<Kind>          kind;
 
-    private PrimitiveFunctor<Boolean>   isNamespaced;
+    private PrimitiveFunctor<Boolean>       isNamespaced;
 
-    private PrimitiveFunctor<String[]>  tags;
+    private PrimitiveFunctor<String[]>      tags;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private ReactiveValue<Integer>      reactiveValue;
+    private ReactiveValue<Integer>          reactiveValue;
 
 
     // CONSTRUCTORS
@@ -86,6 +89,7 @@ public class NumberVariable extends Variable
 
         this.literalValue       = new PrimitiveFunctor<>(null, Integer.class);
         this.invocationValue    = ModelFunctor.empty(Invocation.class);
+        this.valueReference     = ModelFunctor.empty(ValueReference.class);
         this.summation          = ModelFunctor.empty(Summation.class);
 
         this.kind               = new PrimitiveFunctor<>(null, Kind.class);
@@ -120,8 +124,9 @@ public class NumberVariable extends Variable
         this.name                   = new PrimitiveFunctor<>(name, String.class);
         this.label                  = new PrimitiveFunctor<>(label, String.class);
 
-        this.literalValue = new PrimitiveFunctor<>(null, Integer.class);
+        this.literalValue           = new PrimitiveFunctor<>(null, Integer.class);
         this.invocationValue        = ModelFunctor.full(null, Invocation.class);
+        this.valueReference         = ModelFunctor.full(null, ValueReference.class);
         this.summation              = ModelFunctor.full(null, Summation.class);
 
         this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
@@ -146,6 +151,9 @@ public class NumberVariable extends Variable
                 break;
             case PROGRAM:
                 this.invocationValue.setValue((Invocation) value);
+                break;
+            case VALUE:
+                this.valueReference.setValue((ValueReference) value);
                 break;
             case SUMMATION:
                 this.summation.setValue((Summation) value);
@@ -206,6 +214,24 @@ public class NumberVariable extends Variable
 
 
     /**
+     * Create a "value" variable.
+     * @param id The Model id.
+     * @param valueReference The value reference.
+     * @return A new "value" variable.
+     */
+    public static NumberVariable asValue(UUID id,
+                                         String name,
+                                         String label,
+                                         ValueReference valueReference,
+                                         Boolean isNamespaced,
+                                         List<String> tags)
+    {
+        return new NumberVariable(id, name, label, valueReference, Kind.VALUE, isNamespaced, tags);
+    }
+
+
+
+    /**
      * Create the "summation" case.
      * @param id The Model id.
      * @param summation The summation.
@@ -249,12 +275,14 @@ public class NumberVariable extends Variable
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
                 return NumberVariable.asProgram(id, name, label, invocation, isNamespaced, tags);
+            case VALUE:
+                ValueReference valueReference = ValueReference.fromYaml(yaml.atKey("value"));
+                return NumberVariable.asValue(id, name, label, valueReference, isNamespaced, tags);
             case SUMMATION:
                 Summation summation = Summation.fromYaml(yaml.atKey("value"));
                 return NumberVariable.asSummation(id, name, label, summation, isNamespaced, tags);
         }
 
-        // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
         return null;
     }
 
@@ -318,6 +346,22 @@ public class NumberVariable extends Variable
     // ------------------------------------------------------------------------------------------
 
     /**
+     * The literal value case.
+     * @return The literal integer value.
+     */
+    public Integer literalValue()
+    {
+        if (this.kind() != Kind.LITERAL) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("literal", this.kind.name())));
+        }
+
+        return this.literalValue.getValue();
+    }
+
+
+    /**
      * The invocation case.
      * @return The invocation.
      */
@@ -331,6 +375,19 @@ public class NumberVariable extends Variable
 
         return this.invocationValue.getValue();
     }
+
+
+    public ValueReference valueReference()
+    {
+        if (this.kind() != Kind.PROGRAM) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("value", this.kind.name())));
+        }
+
+        return this.valueReference.getValue();
+    }
+
 
     /**
      * The summation case.
@@ -346,7 +403,6 @@ public class NumberVariable extends Variable
 
         return this.summation.getValue();
     }
-
 
 
     // > Variable
@@ -403,6 +459,8 @@ public class NumberVariable extends Variable
             case PROGRAM:
                 variableDependencies = this.invocation().variableDependencies();
                 break;
+            case VALUE:
+                break;
             case SUMMATION:
                 variableDependencies = this.summation().variableDependencies();
                 break;
@@ -441,6 +499,8 @@ public class NumberVariable extends Variable
             case LITERAL:
                 return this.value().toString();
             case PROGRAM:
+                return this.value().toString();
+            case VALUE:
                 return this.value().toString();
             case SUMMATION:
                 return this.summation().valueString();
@@ -482,14 +542,6 @@ public class NumberVariable extends Variable
     // ** Cases
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * The literal value case.
-     * @return The integer value.
-     */
-    public Integer literalValue()
-    {
-        return this.literalValue.getValue();
-    }
 
 
     // ** Value
@@ -511,6 +563,8 @@ public class NumberVariable extends Variable
                 // Do Nothing?
                 //this.reactiveValue.setValue(newValue);
                 break;
+            case VALUE:
+                break;
             case SUMMATION:
                 // Do Nothing?
                 break;
@@ -531,6 +585,10 @@ public class NumberVariable extends Variable
                 return this.literalValue.getValue();
             case PROGRAM:
                 return this.reactiveValue.value();
+            case VALUE:
+                Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+                NumberValue numberValue = dictionary.numberValue(this.valueReference());
+                return numberValue.value();
             case SUMMATION:
                 try {
                     return this.summation().value();
@@ -574,11 +632,21 @@ public class NumberVariable extends Variable
      */
     private void addToState()
     {
+        if (this.kind() != Kind.VALUE)
+            return;
+
+        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+        dictionary.numberValue(this.valueReference()).addToState();
     }
 
 
     private void removeFromState()
     {
+        if (this.kind() != Kind.VALUE)
+            return;
+
+        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+        dictionary.numberValue(this.valueReference()).removeFromState();
     }
 
 
@@ -593,6 +661,7 @@ public class NumberVariable extends Variable
 
         LITERAL,
         PROGRAM,
+        VALUE,
         SUMMATION;
 
 
@@ -654,6 +723,8 @@ public class NumberVariable extends Variable
                     return "Literal";
                 case PROGRAM:
                     return "Program";
+                case VALUE:
+                    return "Value";
                 case SUMMATION:
                     return "Summation";
             }

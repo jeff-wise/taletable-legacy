@@ -31,7 +31,8 @@ public enum WidgetTextTint implements ToYaml
     DARK,
     VERY_DARK,
     PURPLE,
-    GREEN;
+    GREEN,
+    GREEN_MEDIUM_LIGHT;
 
 
     // CONSTRUCTORS
@@ -107,6 +108,8 @@ public enum WidgetTextTint implements ToYaml
                 return R.color.purple_light;
             case GREEN:
                 return R.color.green_light;
+            case GREEN_MEDIUM_LIGHT:
+                return R.color.green_medium_light;
         }
 
         return 0;
@@ -118,9 +121,9 @@ public enum WidgetTextTint implements ToYaml
         switch (this)
         {
             case LIGHT:
-                return R.color.dark_blue_hl_2;
-            case MEDIUM_LIGHT:
                 return R.color.dark_blue_hl_4;
+            case MEDIUM_LIGHT:
+                return R.color.dark_blue_hl_5;
             case MEDIUM:
                 return R.color.dark_blue_hl_6;
             case MEDIUM_DARK:
@@ -132,6 +135,8 @@ public enum WidgetTextTint implements ToYaml
             case PURPLE:
                 return R.color.purple_medium;
             case GREEN:
+                return R.color.green_medium;
+            case GREEN_MEDIUM_LIGHT:
                 return R.color.green_medium;
         }
 

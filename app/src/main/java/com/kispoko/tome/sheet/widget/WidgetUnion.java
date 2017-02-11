@@ -14,7 +14,6 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -41,6 +40,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     private ModelFunctor<BooleanWidget>     booleanWidget;
     private ModelFunctor<ImageWidget>       imageWidget;
     private ModelFunctor<ListWidget>        listWidget;
+    private ModelFunctor<MechanicWidget>    mechanicWidget;
     private ModelFunctor<NumberWidget>      numberWidget;
     private ModelFunctor<TableWidget>       tableWidget;
     private ModelFunctor<TextWidget>        textWidget;
@@ -59,6 +59,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.booleanWidget  = ModelFunctor.empty(BooleanWidget.class);
         this.imageWidget    = ModelFunctor.empty(ImageWidget.class);
         this.listWidget     = ModelFunctor.empty(ListWidget.class);
+        this.mechanicWidget = ModelFunctor.empty(MechanicWidget.class);
         this.numberWidget   = ModelFunctor.empty(NumberWidget.class);
         this.tableWidget    = ModelFunctor.empty(TableWidget.class);
         this.textWidget     = ModelFunctor.empty(TextWidget.class);
@@ -75,6 +76,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.booleanWidget  = ModelFunctor.full(null, BooleanWidget.class);
         this.imageWidget    = ModelFunctor.full(null, ImageWidget.class);
         this.listWidget     = ModelFunctor.full(null, ListWidget.class);
+        this.mechanicWidget = ModelFunctor.full(null, MechanicWidget.class);
         this.numberWidget   = ModelFunctor.full(null, NumberWidget.class);
         this.tableWidget    = ModelFunctor.full(null, TableWidget.class);
         this.textWidget     = ModelFunctor.full(null, TextWidget.class);
@@ -94,6 +96,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case LIST:
                 this.listWidget.setValue((ListWidget) widget);
+                break;
+            case MECHANIC:
+                this.mechanicWidget.setValue((MechanicWidget) widget);
                 break;
             case NUMBER:
                 this.numberWidget.setValue((NumberWidget) widget);
@@ -152,6 +157,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public static WidgetUnion asList(UUID id, ListWidget listWidget)
     {
         return new WidgetUnion(id, listWidget, WidgetType.LIST);
+    }
+
+
+    /**
+     * Create the "mechanic" variant.
+     * @param mechanicWidget The mechanic widget.
+     * @return The "mechanic" Widget Union.
+     */
+    public static WidgetUnion asMechanic(UUID id, MechanicWidget mechanicWidget)
+    {
+        return new WidgetUnion(id, mechanicWidget, WidgetType.MECHANIC);
     }
 
 
@@ -218,6 +234,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case LIST:
                 ListWidget listWidget = ListWidget.fromYaml(yaml);
                 return WidgetUnion.asList(id, listWidget);
+            case MECHANIC:
+                MechanicWidget mechanicWidget = MechanicWidget.fromYaml(yaml);
+                return WidgetUnion.asMechanic(id, mechanicWidget);
             case NUMBER:
                 NumberWidget numberWidget = NumberWidget.fromYaml(yaml);
                 return WidgetUnion.asNumber(id, numberWidget);
@@ -300,6 +319,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case LIST:
                 widgetYaml = this.listWidget().toYaml();
                 break;
+            case MECHANIC:
+                widgetYaml = this.mechanicWidget().toYaml();
+                break;
             case NUMBER:
                 widgetYaml = this.numberWidget().toYaml();
                 break;
@@ -336,6 +358,8 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 return this.imageWidget();
             case LIST:
                 return this.listWidget();
+            case MECHANIC:
+                return this.mechanicWidget();
             case NUMBER:
                 return this.numberWidget();
             case TABLE:
@@ -408,6 +432,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public ListWidget listWidget()
     {
         return this.listWidget.getValue();
+    }
+
+
+    /**
+     * The "mechanic" case.
+     * @return The Mechanic Widget.
+     */
+    public MechanicWidget mechanicWidget()
+    {
+        return this.mechanicWidget.getValue();
     }
 
 
