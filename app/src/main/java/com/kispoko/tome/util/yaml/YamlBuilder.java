@@ -6,6 +6,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -238,6 +239,19 @@ public class YamlBuilder
     public YamlBuilder putBoolean(String key, Boolean value)
     {
         this.mapValue.put(key, value);
+        return this;
+    }
+
+
+    /**
+     * Add a key with a calendar value to the yaml map. The calendar value is converted to ms.
+     * @param key The key.
+     * @param value The Calendar value.
+     * @return The Yaml Builder.
+     */
+    public YamlBuilder putCalendar(String key, GregorianCalendar value)
+    {
+        this.mapValue.put(key, value.getTimeInMillis());
         return this;
     }
 

@@ -1089,22 +1089,28 @@ public class ModelLib
         {
             String columnName = modelValue.sqlColumnName();
 
-            UUID modelId = modelValue.getValue().getId();
-
-            if (modelValue.getValue() == null) {
-                throw DatabaseException.nullModel(
-                        new NullModelError(modelValue.getValue().getClass().getName()));
-            }
-
-            if (modelId == null) {
-                throw DatabaseException.nullModelId(
-                        new NullModelIdentifierError(modelValue.getValue().getClass().getName()));
-            }
+//            if (modelValue.getValue() == null) {
+//                throw DatabaseException.nullModel(
+//                        new NullModelError(modelValue.getValue().getClass().getName()));
+//            }
+//
 
             if (modelValue.isNull())
+            {
                 row.putNull(columnName);
+            }
             else
+            {
+                UUID modelId = modelValue.getValue().getId();
+
+                if (modelId == null) {
+                    throw DatabaseException.nullModelId(
+                            new NullModelIdentifierError(modelValue.getValue().getClass().getName()));
+                }
+
                 row.put(columnName, modelValue.getValue().getId().toString());
+            }
+
         }
 
 

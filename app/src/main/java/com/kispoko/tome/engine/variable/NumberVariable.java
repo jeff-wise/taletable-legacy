@@ -8,6 +8,8 @@ import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.NumberValue;
 import com.kispoko.tome.engine.value.ValueReference;
+import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
+import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
@@ -58,6 +60,7 @@ public class NumberVariable extends Variable
     private PrimitiveFunctor<String>        label;
 
     private PrimitiveFunctor<Integer>       literalValue;
+    private PrimitiveFunctor<String>        variableReference;
     private ModelFunctor<Invocation>        invocationValue;
     private ModelFunctor<ValueReference>    valueReference;
     private ModelFunctor<Summation>         summation;
@@ -88,6 +91,7 @@ public class NumberVariable extends Variable
         this.label              = new PrimitiveFunctor<>(null, String.class);
 
         this.literalValue       = new PrimitiveFunctor<>(null, Integer.class);
+        this.variableReference  = new PrimitiveFunctor<>(null, String.class);
         this.invocationValue    = ModelFunctor.empty(Invocation.class);
         this.valueReference     = ModelFunctor.empty(ValueReference.class);
         this.summation          = ModelFunctor.empty(Summation.class);
@@ -125,6 +129,7 @@ public class NumberVariable extends Variable
         this.label                  = new PrimitiveFunctor<>(label, String.class);
 
         this.literalValue           = new PrimitiveFunctor<>(null, Integer.class);
+        this.variableReference      = new PrimitiveFunctor<>(null, String.class);
         this.invocationValue        = ModelFunctor.full(null, Invocation.class);
         this.valueReference         = ModelFunctor.full(null, ValueReference.class);
         this.summation              = ModelFunctor.full(null, Summation.class);
@@ -148,6 +153,9 @@ public class NumberVariable extends Variable
         {
             case LITERAL:
                 this.literalValue.setValue((Integer) value);
+                break;
+            case VARIABLE:
+                this.variableReference.setValue((String) value);
                 break;
             case PROGRAM:
                 this.invocationValue.setValue((Invocation) value);
@@ -193,6 +201,25 @@ public class NumberVariable extends Variable
                                            Integer integerValue)
     {
         return new NumberVariable(id, null, null, integerValue, Kind.LITERAL, null, null);
+    }
+
+
+    /**
+     * Create a "variable" number.
+     * @param id The Model id.
+     * @param name The variable name
+     * @param variableName The variable name.
+     * @param tags The variable's tags.
+     * @return A new "literal" Integer Variable.
+     */
+    public static NumberVariable asVariable(UUID id,
+                                           String name,
+                                           String label,
+                                           String variableName,
+                                           Boolean isNamespaced,
+                                           List<String> tags)
+    {
+        return new NumberVariable(id, name, label, variableName, Kind.VARIABLE, isNamespaced, tags);
     }
 
 
@@ -272,6 +299,9 @@ public class NumberVariable extends Variable
             case LITERAL:
                 Integer integerValue  = yaml.atKey("value").getInteger();
                 return NumberVariable.asInteger(id, name, label, integerValue, isNamespaced, tags);
+            case VARIABLE:
+                String variableName = yaml.atKey("value").getString();
+                return NumberVariable.asVariable(id, name, label, variableName, isNamespaced, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
                 return NumberVariable.asProgram(id, name, label, invocation, isNamespaced, tags);
@@ -362,6 +392,22 @@ public class NumberVariable extends Variable
 
 
     /**
+     * The variable reference value.
+     * @return The variable reference.
+     */
+    public String variableReference()
+    {
+        if (this.kind() != Kind.VARIABLE) {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("variable", this.kind.name())));
+        }
+
+        return this.variableReference.getValue();
+    }
+
+
+    /**
      * The invocation case.
      * @return The invocation.
      */
@@ -379,7 +425,7 @@ public class NumberVariable extends Variable
 
     public ValueReference valueReference()
     {
-        if (this.kind() != Kind.PROGRAM) {
+        if (this.kind() != Kind.VALUE) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
                             new InvalidCaseError("value", this.kind.name())));
@@ -456,6 +502,8 @@ public class NumberVariable extends Variable
         {
             case LITERAL:
                 break;
+            case VARIABLE:
+                break;
             case PROGRAM:
                 variableDependencies = this.invocation().variableDependencies();
                 break;
@@ -497,6 +545,8 @@ public class NumberVariable extends Variable
         switch (this.kind())
         {
             case LITERAL:
+                return this.value().toString();
+            case VARIABLE:
                 return this.value().toString();
             case PROGRAM:
                 return this.value().toString();
@@ -559,6 +609,8 @@ public class NumberVariable extends Variable
                 this.literalValue.setValue(newValue);
                 this.onUpdate();
                 break;
+            case VARIABLE:
+                break;
             case PROGRAM:
                 // Do Nothing?
                 //this.reactiveValue.setValue(newValue);
@@ -583,6 +635,8 @@ public class NumberVariable extends Variable
         {
             case LITERAL:
                 return this.literalValue.getValue();
+            case VARIABLE:
+                return referencedVariableValue();
             case PROGRAM:
                 return this.reactiveValue.value();
             case VALUE:
@@ -600,6 +654,32 @@ public class NumberVariable extends Variable
         }
 
         throw new NullVariableException();
+    }
+
+
+    private Integer referencedVariableValue()
+            throws NullVariableException
+    {
+        if (!State.hasVariable(this.variableReference())) {
+            ApplicationFailure.variable(
+                    VariableException.undefinedVariable(
+                            new UndefinedVariableError(this.variableReference())));
+            throw new NullVariableException();
+        }
+
+        VariableUnion variableUnion = State.variableWithName(this.variableReference());
+
+        // Variable is wrong type, log error, and return as null variable exception
+        if (variableUnion.type() != VariableType.NUMBER) {
+            ApplicationFailure.variable(
+                    VariableException.unexpectedVariableType(
+                            new UnexpectedVariableTypeError(this.variableReference(),
+                                                            VariableType.NUMBER,
+                                                            variableUnion.type())));
+            throw new NullVariableException();
+        }
+
+        return variableUnion.numberVariable().value();
     }
 
 
@@ -660,6 +740,7 @@ public class NumberVariable extends Variable
         // ------------------------------------------------------------------------------------------
 
         LITERAL,
+        VARIABLE,
         PROGRAM,
         VALUE,
         SUMMATION;
@@ -721,6 +802,8 @@ public class NumberVariable extends Variable
             {
                 case LITERAL:
                     return "Literal";
+                case VARIABLE:
+                    return "Variable";
                 case PROGRAM:
                     return "Program";
                 case VALUE:

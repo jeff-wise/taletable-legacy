@@ -8,6 +8,7 @@ import com.kispoko.tome.util.yaml.error.UnexpectedTypeError;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -215,6 +216,25 @@ public class YamlParser
         }
 
         return booleanValue;
+    }
+
+
+    public GregorianCalendar getCalendar()
+           throws YamlParseException
+    {
+        if (this.yamlObject == null)
+            return null;
+
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+
+        try {
+            Long milliseconds = (Long) this.yamlObject;
+            gregorianCalendar.setTimeInMillis(milliseconds);
+        } catch (ClassCastException e) {
+            throw YamlParseException.unexpectedType(new UnexpectedTypeError(YamlObjectType.BOOLEAN));
+        }
+
+        return gregorianCalendar;
     }
 
 

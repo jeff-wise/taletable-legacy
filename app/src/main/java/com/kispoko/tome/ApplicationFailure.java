@@ -13,6 +13,7 @@ import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.engine.interpreter.InterpreterException;
 import com.kispoko.tome.engine.function.InvalidFunctionException;
+import com.kispoko.tome.sheet.SheetException;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
@@ -69,6 +70,12 @@ public class ApplicationFailure
 
 
     public static void summation(SummationException exception)
+    {
+        Log.d("***APP", exception.errorMessage(), exception);
+    }
+
+
+    public static void sheet(SheetException exception)
     {
         Log.d("***APP", exception.errorMessage(), exception);
     }

@@ -3,14 +3,12 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.sheet.ActionDialogFragment;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
@@ -94,19 +92,19 @@ public abstract class Widget implements Model, ToYaml, Serializable
             }
         };
 
-        layout.onLongClick         = new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                AppCompatActivity activity = (AppCompatActivity) context;
-                ActionDialogFragment actionDialogFragment =
-                        ActionDialogFragment.newInstance(widget);
-                actionDialogFragment.show(activity.getSupportFragmentManager(),
-                        actionDialogFragment.getTag());
-                return true;
-            }
-        };
+//        layout.onLongClick         = new View.OnLongClickListener()
+//        {
+//            @Override
+//            public boolean onLongClick(View v)
+//            {
+//                AppCompatActivity activity = (AppCompatActivity) context;
+//                ActionDialogFragment actionDialogFragment =
+//                        ActionDialogFragment.newInstance(widget);
+//                actionDialogFragment.show(activity.getSupportFragmentManager(),
+//                        actionDialogFragment.getTag());
+//                return true;
+//            }
+//        };
 
         layout.child(contentLayout);
 

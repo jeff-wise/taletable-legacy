@@ -18,6 +18,9 @@ public class Font
     private static Typeface sansSerifFontRegular;
     private static Typeface sansSerifFontBold;
 
+    private static Typeface cursiveRegular;
+    private static Typeface cursiveBold;
+
 
     public static Typeface serifFontRegular(Context context)
     {
@@ -53,5 +56,23 @@ public class Font
         return sansSerifFontRegular;
     }
 
+
+
+    public static Typeface cursiveRegular(Context context)
+    {
+        if (cursiveRegular == null)
+            cursiveRegular = Typeface.createFromAsset(context.getAssets(),
+                                                            "fonts/DancingScript-Regular.ttf");
+        return cursiveRegular;
+    }
+
+
+    public static Typeface cursiveBold(Context context)
+    {
+        if (cursiveBold == null)
+            cursiveBold = Typeface.createFromAsset(context.getAssets(),
+                                                   "fonts/DancingScript-Bold.ttf");
+        return cursiveBold;
+    }
 
 }

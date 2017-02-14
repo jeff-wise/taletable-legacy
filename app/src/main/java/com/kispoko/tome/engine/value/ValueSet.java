@@ -38,6 +38,7 @@ public class ValueSet implements Model, ToYaml, Serializable
 
     private PrimitiveFunctor<String>        name;
     private PrimitiveFunctor<String>        label;
+    private PrimitiveFunctor<String>        labelSingular;
     private PrimitiveFunctor<String>        description;
     private CollectionFunctor<ValueUnion>   values;
 
@@ -57,6 +58,7 @@ public class ValueSet implements Model, ToYaml, Serializable
 
         this.name           = new PrimitiveFunctor<>(null, String.class);
         this.label          = new PrimitiveFunctor<>(null, String.class);
+        this.labelSingular  = new PrimitiveFunctor<>(null, String.class);
         this.description    = new PrimitiveFunctor<>(null, String.class);
 
         List<Class<? extends ValueUnion>> valueClasses = new ArrayList<>();
@@ -68,6 +70,7 @@ public class ValueSet implements Model, ToYaml, Serializable
     public ValueSet(UUID id,
                     String name,
                     String label,
+                    String labeSingular,
                     String description,
                     List<ValueUnion> values)
     {
@@ -75,6 +78,7 @@ public class ValueSet implements Model, ToYaml, Serializable
 
         this.name           = new PrimitiveFunctor<>(name, String.class);
         this.label          = new PrimitiveFunctor<>(label, String.class);
+        this.labelSingular  = new PrimitiveFunctor<>(labeSingular, String.class);
         this.description    = new PrimitiveFunctor<>(description, String.class);
 
         List<Class<? extends ValueUnion>> valueClasses = new ArrayList<>();
@@ -94,15 +98,15 @@ public class ValueSet implements Model, ToYaml, Serializable
     public static ValueSet fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID             id          = UUID.randomUUID();
+        UUID             id             = UUID.randomUUID();
 
-        String           name        = yaml.atKey("name").getString();
+        String           name           = yaml.atKey("name").getString();
 
-        String           label       = yaml.atMaybeKey("label").getString();
-        if (label != null)  label = label.trim();
+        String           label          = yaml.atMaybeKey("label").getTrimmedString();
 
-        String           description = yaml.atMaybeKey("description").getString();
-        if (description != null)  description = description.trim();
+        String           labelSingular  = yaml.atMaybeKey("label_singular").getTrimmedString();
+
+        String           description = yaml.atMaybeKey("description").getTrimmedString();
 
         List<ValueUnion> values      = yaml.atKey("values").forEach(
                                             new YamlParser.ForEach<ValueUnion>()
@@ -113,7 +117,7 @@ public class ValueSet implements Model, ToYaml, Serializable
             }
         });
 
-        return new ValueSet(id, name, label, description, values);
+        return new ValueSet(id, name, label, labelSingular, description, values);
     }
 
 
@@ -190,6 +194,16 @@ public class ValueSet implements Model, ToYaml, Serializable
     public String label()
     {
         return this.label.getValue();
+    }
+
+
+    /**
+     * The value set singular label.
+     * @return The singular label.
+     */
+    public String labelSingular()
+    {
+        return this.labelSingular.getValue();
     }
 
 

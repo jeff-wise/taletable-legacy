@@ -26,6 +26,9 @@ import com.kispoko.tome.sheet.group.RowAlignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.WidgetType;
+import com.kispoko.tome.sheet.widget.action.ActionColor;
+import com.kispoko.tome.sheet.widget.action.ActionSize;
+import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetStyle;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
@@ -35,6 +38,7 @@ import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
+import com.kispoko.tome.sheet.widget.util.WidgetLabelAlignment;
 import com.kispoko.tome.sheet.widget.util.WidgetTextTint;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
@@ -52,6 +56,8 @@ import java.util.UUID;
 
 /**
  * Primitive Value
+ *
+ * TODO Generalize the enum serialization code here
  */
 public class PrimitiveFunctor<A> extends Functor<A>
                                implements Serializable
@@ -168,6 +174,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        else if (valueClass.isAssignableFrom(WidgetLabelAlignment.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(WidgetTextTint.class))
         {
             return SQLValue.Type.TEXT;
@@ -177,6 +187,14 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(WidgetCorners.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(ActionColor.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(ActionSize.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -240,7 +258,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        // TODO remove
         else if (valueClass.isAssignableFrom(ParameterType.class))
         {
             return SQLValue.Type.TEXT;
@@ -352,6 +369,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((WidgetBackground) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
+        else if (this.getValue() instanceof WidgetLabelAlignment)
+        {
+            String enumString = ((WidgetLabelAlignment) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
         else if (this.getValue() instanceof WidgetTextTint)
         {
             String enumString = ((WidgetTextTint) this.getValue()).name().toLowerCase();
@@ -365,6 +387,16 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof WidgetCorners)
         {
             String enumString = ((WidgetCorners) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof ActionColor)
+        {
+            String enumString = ((ActionColor) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof ActionSize)
+        {
+            String enumString = ((ActionSize) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof SerialBitmap)
@@ -639,6 +671,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
             WidgetBackground background = WidgetBackground.fromSQLValue(sqlValue);
             this.setValue((A) background);
         }
+        else if (this.valueClass.isAssignableFrom(WidgetLabelAlignment.class))
+        {
+            WidgetLabelAlignment alignment = WidgetLabelAlignment.fromSQLValue(sqlValue);
+            this.setValue((A) alignment);
+        }
         else if (this.valueClass.isAssignableFrom(WidgetTextTint.class))
         {
             WidgetTextTint tint = WidgetTextTint.fromSQLValue(sqlValue);
@@ -653,6 +690,16 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             WidgetCorners corners = WidgetCorners.fromSQLValue(sqlValue);
             this.setValue((A) corners);
+        }
+        else if (this.valueClass.isAssignableFrom(ActionColor.class))
+        {
+            ActionColor color = ActionColor.fromSQLValue(sqlValue);
+            this.setValue((A) color);
+        }
+        else if (this.valueClass.isAssignableFrom(ActionSize.class))
+        {
+            ActionSize size = ActionSize.fromSQLValue(sqlValue);
+            this.setValue((A) size);
         }
         else if (this.valueClass.isAssignableFrom(ProgramValueType.class))
         {

@@ -184,7 +184,7 @@ public class RollDialogFragment extends DialogFragment
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = R.dimen.dialog_roll_rolls_height;
 
-        layout.backgroundResource  = R.drawable.bg_dialog_header;
+        layout.backgroundResource  = R.drawable.bg_dialog_header_dark;
 
         layout.padding.left     = R.dimen.sheet_dialog_header_padding_horz;
         layout.padding.right    = R.dimen.sheet_dialog_header_padding_horz;

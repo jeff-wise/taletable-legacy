@@ -96,9 +96,9 @@ public class TextValue implements Value, Model, ToYaml, Serializable
     {
         UUID                id        = UUID.randomUUID();
 
-        String              name      = yaml.atMaybeKey("name").getString();
-        String              value     = yaml.atKey("value").getString();
-        String              summary   = yaml.atMaybeKey("summary").getString();
+        String              name      = yaml.atMaybeKey("name").getTrimmedString();
+        String              value     = yaml.atKey("value").getTrimmedString();
+        String              summary   = yaml.atMaybeKey("summary").getTrimmedString();
 
         List<VariableUnion> variables = yaml.atMaybeKey("variables")
                                             .forEach(new YamlParser.ForEach<VariableUnion>() {

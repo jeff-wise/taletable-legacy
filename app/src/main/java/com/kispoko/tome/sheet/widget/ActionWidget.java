@@ -40,7 +40,8 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 /**
  * Action Widget
  */
-public class ActionWidget extends Widget implements Serializable
+public class ActionWidget extends Widget
+                          implements Serializable
 {
 
     // PROPERTIES
@@ -374,7 +375,7 @@ public class ActionWidget extends Widget implements Serializable
         action.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         action.font            = Font.serifFontRegular(context);
-        action.color           = R.color.dark_blue_hl_5;
+        action.color           = R.color.dark_blue_hl_6;
         action.size            = this.format().size().resourceId();
 
         switch (this.data().format().alignment())

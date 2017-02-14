@@ -37,9 +37,11 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<ActionWidget>      actionWidget;
+    private ModelFunctor<AdderWidget>       adderWidget;
     private ModelFunctor<BooleanWidget>     booleanWidget;
     private ModelFunctor<ImageWidget>       imageWidget;
     private ModelFunctor<ListWidget>        listWidget;
+    private ModelFunctor<LogWidget>         logWidget;
     private ModelFunctor<MechanicWidget>    mechanicWidget;
     private ModelFunctor<NumberWidget>      numberWidget;
     private ModelFunctor<TableWidget>       tableWidget;
@@ -56,9 +58,11 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.id = null;
 
         this.actionWidget   = ModelFunctor.empty(ActionWidget.class);
+        this.adderWidget    = ModelFunctor.empty(AdderWidget.class);
         this.booleanWidget  = ModelFunctor.empty(BooleanWidget.class);
         this.imageWidget    = ModelFunctor.empty(ImageWidget.class);
         this.listWidget     = ModelFunctor.empty(ListWidget.class);
+        this.logWidget      = ModelFunctor.empty(LogWidget.class);
         this.mechanicWidget = ModelFunctor.empty(MechanicWidget.class);
         this.numberWidget   = ModelFunctor.empty(NumberWidget.class);
         this.tableWidget    = ModelFunctor.empty(TableWidget.class);
@@ -73,9 +77,11 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.id              = id;
 
         this.actionWidget   = ModelFunctor.full(null, ActionWidget.class);
+        this.adderWidget    = ModelFunctor.full(null, AdderWidget.class);
         this.booleanWidget  = ModelFunctor.full(null, BooleanWidget.class);
         this.imageWidget    = ModelFunctor.full(null, ImageWidget.class);
         this.listWidget     = ModelFunctor.full(null, ListWidget.class);
+        this.logWidget      = ModelFunctor.full(null, LogWidget.class);
         this.mechanicWidget = ModelFunctor.full(null, MechanicWidget.class);
         this.numberWidget   = ModelFunctor.full(null, NumberWidget.class);
         this.tableWidget    = ModelFunctor.full(null, TableWidget.class);
@@ -88,6 +94,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case ACTION:
                 this.actionWidget.setValue((ActionWidget) widget);
                 break;
+            case ADDER:
+                this.adderWidget.setValue((AdderWidget) widget);
+                break;
             case BOOLEAN:
                 this.booleanWidget.setValue((BooleanWidget) widget);
                 break;
@@ -96,6 +105,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case LIST:
                 this.listWidget.setValue((ListWidget) widget);
+                break;
+            case LOG:
+                this.logWidget.setValue((LogWidget) widget);
                 break;
             case MECHANIC:
                 this.mechanicWidget.setValue((MechanicWidget) widget);
@@ -124,6 +136,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public static WidgetUnion asAction(UUID id, ActionWidget actionWidget)
     {
         return new WidgetUnion(id, actionWidget, WidgetType.ACTION);
+    }
+
+
+    /**
+     * Create the "adder" variant.
+     * @param adderWidget The adder widget.
+     * @return The "adder" Widget Union.
+     */
+    public static WidgetUnion asAdder(UUID id, AdderWidget adderWidget)
+    {
+        return new WidgetUnion(id, adderWidget, WidgetType.ADDER);
     }
 
 
@@ -157,6 +180,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public static WidgetUnion asList(UUID id, ListWidget listWidget)
     {
         return new WidgetUnion(id, listWidget, WidgetType.LIST);
+    }
+
+
+    /**
+     * Create the "log" variant.
+     * @param logWidget The log widget.
+     * @return The "log" Widget Union.
+     */
+    public static WidgetUnion asLog(UUID id, LogWidget logWidget)
+    {
+        return new WidgetUnion(id, logWidget, WidgetType.LOG);
     }
 
 
@@ -223,28 +257,34 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         switch (type)
         {
             case ACTION:
-                ActionWidget actionWidget = ActionWidget.fromYaml(yaml);
+                ActionWidget actionWidget = ActionWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asAction(id, actionWidget);
+            case ADDER:
+                AdderWidget adderWidget = AdderWidget.fromYaml(yaml.atKey("widget"));
+                return WidgetUnion.asAdder(id, adderWidget);
             case BOOLEAN:
-                BooleanWidget booleanWidget = BooleanWidget.fromYaml(yaml);
+                BooleanWidget booleanWidget = BooleanWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asBoolean(id, booleanWidget);
             case IMAGE:
-                ImageWidget imageWidget = ImageWidget.fromYaml(yaml);
+                ImageWidget imageWidget = ImageWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asImage(id, imageWidget);
             case LIST:
-                ListWidget listWidget = ListWidget.fromYaml(yaml);
+                ListWidget listWidget = ListWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asList(id, listWidget);
+            case LOG:
+                LogWidget logWidget = LogWidget.fromYaml(yaml.atKey("widget"));
+                return WidgetUnion.asLog(id, logWidget);
             case MECHANIC:
-                MechanicWidget mechanicWidget = MechanicWidget.fromYaml(yaml);
+                MechanicWidget mechanicWidget = MechanicWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asMechanic(id, mechanicWidget);
             case NUMBER:
-                NumberWidget numberWidget = NumberWidget.fromYaml(yaml);
+                NumberWidget numberWidget = NumberWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asNumber(id, numberWidget);
             case TABLE:
-                TableWidget tableWidget = TableWidget.fromYaml(yaml);
+                TableWidget tableWidget = TableWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asTable(id, tableWidget);
             case TEXT:
-                TextWidget textWidget = TextWidget.fromYaml(yaml);
+                TextWidget textWidget = TextWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asText(id, textWidget);
             default:
                 ApplicationFailure.union(
@@ -303,12 +343,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
      */
     public YamlBuilder toYaml()
     {
-        YamlBuilder widgetYaml = null;
+        YamlBuilder unionYaml = YamlBuilder.map();
 
+        YamlBuilder widgetYaml = null;
         switch (this.type())
         {
             case ACTION:
                 widgetYaml = this.actionWidget().toYaml();
+                break;
+            case ADDER:
+                widgetYaml = this.adderWidget().toYaml();
                 break;
             case BOOLEAN:
                 widgetYaml = this.booleanWidget().toYaml();
@@ -318,6 +362,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case LIST:
                 widgetYaml = this.listWidget().toYaml();
+                break;
+            case LOG:
+                widgetYaml = this.logWidget().toYaml();
                 break;
             case MECHANIC:
                 widgetYaml = this.mechanicWidget().toYaml();
@@ -337,9 +384,10 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                                 new UnknownVariantError(WidgetType.class.getName())));
         }
 
-        widgetYaml.putYaml("type", this.type());
+        unionYaml.putYaml("type", this.type());
+        unionYaml.putYaml("widget", widgetYaml);
 
-        return widgetYaml;
+        return unionYaml;
     }
 
 
@@ -352,12 +400,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         {
             case ACTION:
                 return this.actionWidget();
+            case ADDER:
+                return this.adderWidget();
             case BOOLEAN:
                 return this.booleanWidget();
             case IMAGE:
                 return this.imageWidget();
             case LIST:
                 return this.listWidget();
+            case LOG:
+                return this.logWidget();
             case MECHANIC:
                 return this.mechanicWidget();
             case NUMBER:
@@ -406,6 +458,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
 
 
     /**
+     * The "adder" case.
+     * @return The Adder Widget.
+     */
+    public AdderWidget adderWidget()
+    {
+        return this.adderWidget.getValue();
+    }
+
+
+    /**
      * The "boolean" case.
      * @return The Boolean Widget.
      */
@@ -432,6 +494,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public ListWidget listWidget()
     {
         return this.listWidget.getValue();
+    }
+
+
+    /**
+     * The "log" case.
+     * @return The Log Widget.
+     */
+    public LogWidget logWidget()
+    {
+        return this.logWidget.getValue();
     }
 
 

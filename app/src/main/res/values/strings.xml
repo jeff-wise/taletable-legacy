@@ -27,6 +27,14 @@
     <string name="roll">Roll</string>
     <string name="rolls">Rolls</string>
 
+    <string name="reset">Reset</string>
+
+    <string name="edit">Edit</string>
+    <string name="choose">Choose</string>
+
+    <string name="edit_full_screen">Edit Full Screen</string>
+
+
 
 
     <!-- DIALOG -->
@@ -50,7 +58,10 @@
     <string name="widget_list">List Widget</string>
     <string name="widget_table">Table Widget</string>
     <string name="widget_action">Action Widget</string>
+    <string name="widget_adder">Adder Widget</string>
     <string name="widget_image">Image Widget</string>
+    <string name="widget_mechanic">Mechanic Widget</string>
+    <string name="widget_log">Log Widget</string>
 
     <string name="column">Column</string>
 

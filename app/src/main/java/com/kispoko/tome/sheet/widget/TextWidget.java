@@ -9,14 +9,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.activity.sheet.dialog.ChooseValueDialogFragment;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.value.Dictionary;
+import com.kispoko.tome.engine.value.ValueSet;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.NavigationDialogFragment;
+import com.kispoko.tome.sheet.SheetException;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.error.UndefinedValueSetError;
 import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
@@ -254,6 +260,7 @@ public class TextWidget extends Widget
     {
         this.valueVariable().setLiteralValue(stringValue);
 
+        // Update the text view, if it exists
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
                                     .findViewById(this.displayTextViewId);
@@ -644,12 +651,32 @@ public class TextWidget extends Widget
 
         switch (this.valueVariable().kind())
         {
+
+            // OPEN the Quick Text Edit Dialog
             case LITERAL:
-                TextWidgetDialogFragment dialog = TextWidgetDialogFragment.newInstance(this);
-                dialog.show(sheetActivity.getSupportFragmentManager(), "");
+                TextWidgetDialogFragment textDialog = TextWidgetDialogFragment.newInstance(this);
+                textDialog.show(sheetActivity.getSupportFragmentManager(), "");
                 break;
+
+            // OPEN the Choose Value Set Dialog
             case VALUE:
+                String valueSetName = this.valueVariable().valueSetName();
+                Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+                ValueSet valueSet = dictionary.lookup(valueSetName);
+
+                if (valueSet == null) {
+                    ApplicationFailure.sheet(
+                            SheetException.undefinedValueSet(
+                                    new UndefinedValueSetError("Text Widget", valueSetName)));
+                    break;
+                }
+
+                ChooseValueDialogFragment chooseDialog =
+                                            ChooseValueDialogFragment.newInstance(valueSet);
+                chooseDialog.show(sheetActivity.getSupportFragmentManager(), "");
+
                 break;
+
             case PROGRAM:
                 break;
         }

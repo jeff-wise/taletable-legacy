@@ -14,20 +14,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.sheet.widget.WidgetType;
+import com.kispoko.tome.util.ui.EditDialog;
 import com.kispoko.tome.util.ui.EditTextBuilder;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.SheetDialog;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 
+import static com.kispoko.tome.util.ui.EditDialog.footerView;
 
 
 /**
@@ -135,25 +134,28 @@ public class TextWidgetDialogFragment extends DialogFragment
         // > Header
         // -------------------------------------------------------------------------------------
 
-        String widgetName = this.textWidget.data().format().name();
-        String widgetType = context.getString(
-                                    WidgetType.TEXT.stringLabelResourceId()).toUpperCase();
-        layout.addView(SheetDialog.headerView(widgetName, widgetType, getContext()));
+        String headerString         = context.getString(R.string.edit) + " ";
 
-        // > Value
+        String label = this.textWidget.valueVariable().label();
+        if (label != null)
+            headerString += label;
+
+        layout.addView(EditDialog.headerView(headerString, context));
+
+        // > Input
         // -------------------------------------------------------------------------------------
 
-        layout.addView(valueView(context));
+        layout.addView(inputView(this.textWidget.value(), context));
 
-        // > Actions Row
+        // > Expand Button
         // -------------------------------------------------------------------------------------
 
-        layout.addView(SheetDialog.actionsView(context));
+        layout.addView(expandButtonView(context));
 
-        // > Footer View
+        // > Footer
         // -------------------------------------------------------------------------------------
 
-        layout.addView(footerView(context));
+        layout.addView(EditDialog.footerView(context));
 
         return layout;
     }
@@ -169,185 +171,35 @@ public class TextWidgetDialogFragment extends DialogFragment
 
         layout.backgroundResource   = R.drawable.bg_dialog;
 
-        layout.padding.bottom       = R.dimen.dialog_padding_bottom;
+        layout.padding.bottom       = R.dimen.dialog_edit_padding_vert;
+        layout.padding.top          = R.dimen.dialog_edit_padding_vert;
 
         return layout.linearLayout(context);
     }
 
 
-    private LinearLayout valueView(Context context)
+    private View inputView(String value, Context context)
     {
-        LinearLayout layout = valueViewLayout(context);
-
-        // > Edit View
-        layout.addView(valueEditView(context));
-
-        return layout;
-    }
-
-
-    private LinearLayout valueViewLayout(Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout valueEditView(Context context)
-    {
-        LinearLayout layout = valueEditViewLayout(context);
-
-        // > Input
-        layout.addView(this.valueInputView(this.textWidget.value(), context));
-
-        // > Expand Button
-        layout.addView(expandButtonView(context));
-
-        return layout;
-    }
-
-
-    private LinearLayout valueEditViewLayout(Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.backgroundColor      = R.color.dark_blue_9;
-
-        layout.margin.left          = R.dimen.dialog_padding_horz;
-        layout.margin.right         = R.dimen.dialog_padding_horz;
-
-        layout.margin.top           = R.dimen.sheet_dialog_body_margin_top;
-
-        layout.backgroundResource   = R.drawable.bg_edit_text;
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout valueInputView(String value, Context context)
-    {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        ImageViewBuilder    icon   = new ImageViewBuilder();
-        EditTextBuilder     input  = new EditTextBuilder();
-
-        // [2] Layout
-        // --------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.layoutGravity        = Gravity.CENTER_VERTICAL;
-        layout.gravity              = Gravity.CENTER_VERTICAL;
-        layout.weight               = 1.0f;
-
-        layout.child(icon)
-              .child(input);
-
-        // [3 A] Icon
-        // --------------------------------------------------------------------------------------
-
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.image                  = R.drawable.ic_form_text_field;
-
-        icon.margin.right           = R.dimen.field_icon_margin_right;
-
-        // [3 B] Input Text
-        // --------------------------------------------------------------------------------------
+        EditTextBuilder input  = new EditTextBuilder();
 
         input.width                 = LinearLayout.LayoutParams.MATCH_PARENT;
         input.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        input.font                  = Font.sansSerifFontRegular(context);
+        input.font                  = Font.serifFontRegular(context);
         input.color                 = R.color.dark_blue_hl_1;
         input.size                  = R.dimen.field_text_input_text_size;
         input.text                  = value;
 
-        input.backgroundResource    = R.drawable.bg_edit_text_no_style;
+        input.backgroundResource    = R.drawable.bg_edit_text;
 
-        return layout.linearLayout(context);
+        input.margin.left           = R.dimen.dialog_edit_padding_horz;
+        input.margin.right          = R.dimen.dialog_edit_padding_horz;
+
+        return input.editText(context);
     }
 
 
-    private ImageView expandButtonView(Context context)
-    {
-        ImageViewBuilder button = new ImageViewBuilder();
-
-        button.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        button.layoutGravity    = Gravity.CENTER;
-        button.weight           = 0f;
-
-        button.image            = R.drawable.ic_full_screen_text_edit;
-
-        return button.imageView(context);
-    }
-
-
-    private LinearLayout footerView(Context context)
-    {
-        LinearLayout layout = footerViewLayout(context);
-
-        // > Cancel Button
-        layout.addView(cancelButtonView(context));
-
-        // > Save Button
-        layout.addView(saveButtonView(context));
-
-        return layout;
-    }
-
-
-    private LinearLayout footerViewLayout(Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
-
-        layout.margin.left          = R.dimen.dialog_padding_horz;
-        layout.margin.right         = R.dimen.dialog_padding_horz;
-
-        layout.margin.top           = R.dimen.sheet_dialog_footer_margin_top;
-
-        return layout.linearLayout(context);
-    }
-
-
-    private TextView cancelButtonView(Context context)
-    {
-        TextViewBuilder button = new TextViewBuilder();
-
-        button.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        button.text             = getString(R.string.dialog_cancel).toUpperCase();
-        button.font             = Font.sansSerifFontBold(context);
-        button.color            = R.color.dark_blue_hl_6;
-        button.size             = R.dimen.sheet_dialog_footer_button_text_size;
-
-        button.margin.right     = R.dimen.sheet_dialog_footer_button_cancel_margin_right;
-
-        return button.textView(context);
-    }
-
-
-    private LinearLayout saveButtonView(Context context)
+    private LinearLayout expandButtonView(Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -359,11 +211,14 @@ public class TextWidgetDialogFragment extends DialogFragment
         // [2] Layout
         // -------------------------------------------------------------------------------------
 
+        layout.orientation          = LinearLayout.HORIZONTAL;
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.layoutGravity        = Gravity.CENTER_HORIZONTAL;
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
-        layout.margin.right         = R.dimen.sheet_dialog_footer_button_ok_margin_right;
+        layout.margin.top           = R.dimen.dialog_edit_text_expand_button_margin_top;
 
         layout.child(icon)
               .child(label);
@@ -371,23 +226,23 @@ public class TextWidgetDialogFragment extends DialogFragment
         // [3 A] Icon
         // -------------------------------------------------------------------------------------
 
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_dialog_save;
+        icon.image              = R.drawable.ic_full_screen_text_edit;
 
-        icon.margin.right           = R.dimen.sheet_dialog_footer_button_icon_margin_right;
+        icon.margin.right       = R.dimen.five_dp;
 
         // [3 B] Label
         // -------------------------------------------------------------------------------------
 
-        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.text                  = getString(R.string.save).toUpperCase();
-        label.color                 = R.color.green_light;
-        label.font                  = Font.sansSerifFontBold(context);
-        label.size                  = R.dimen.sheet_dialog_footer_button_text_size;
+        label.textId            = R.string.edit_full_screen;
+        label.font              = Font.serifFontRegular(context);
+        label.color             = R.color.dark_blue_1;
+        label.size              = R.dimen.dialog_edit_text_expand_button_text_size;
 
 
         return layout.linearLayout(context);

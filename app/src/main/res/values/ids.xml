@@ -93,6 +93,11 @@
     <item name="column_list_item_type" type="id"/>
 
 
+    <!-- CHOOSE VALUE DIALOG -->
+    <item name="choose_value_dialog_item_value" type="id"/>
+    <item name="choose_value_dialog_item_summary" type="id"/>
+
+
     <!-- SHEET SUMMARY LIST ITEM -->
     <item name="sheet_summary_list_item_layout" type="id"/>
     <item name="sheet_summary_list_item_date" type="id"/>

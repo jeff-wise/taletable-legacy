@@ -895,6 +895,7 @@ engine:
     sets:
     - name: class
       label: Classes
+      label_singular: Class
       description: >
         A class represents a character's primary profession or skillset. It defines who the
         character is and what they may do.
@@ -903,6 +904,9 @@ engine:
         value:
           name: barbarian
           value: Barbarian
+          summary: >
+            Outsiders, tribesmen, or outcasts, Barbarians come from the fringes of civilization.
+            They are feared warriors, fighting with ferocity and primal rage.
           variables:
           - type: boolean
             value:
@@ -912,6 +916,9 @@ engine:
       - type: text
         value:
           name: bard
+          summary: >
+            Bards are performers. They tell tales, sing songs, or perform tricks. Utilizing magical
+            powers, their performances can sometimes turn deadly if they so desire.
           value: Bard
           variables:
           - type: boolean
@@ -922,6 +929,9 @@ engine:
       - type: text
         value:
           name: cleric
+          summary: >
+            Clerics are priests, devoting themselves to a diety. In return, they gain access to
+            powerful magic, which they can use to heal, and sometimes destroy.
           value: Cleric
           variables:
           - type: boolean
@@ -932,6 +942,9 @@ engine:
       - type: text
         value:
           name: druid
+          summary: >
+            Nature is home to the Druid. She gains her power from the wilderness and has an affinty
+            with the creatures of the land.
           value: Druid
           variables:
           - type: boolean
@@ -942,6 +955,9 @@ engine:
       - type: text
         value:
           name: fighter
+          summary: >
+            Highly specialized in combat, fighters utilize their weapons with precision and possess
+            and experienced, strategical nuance in encounters.
           value: Fighter
           variables:
           - type: boolean
@@ -952,6 +968,9 @@ engine:
       - type: text
         value:
           name: monk
+          summary: >
+            Trained in a monstery, Monks are masters of combat that possess a practiced discipline.
+            They harness ki to boost their abilities and perform unnatural feats.
           value: Monk
           variables:
           - type: boolean
@@ -962,6 +981,9 @@ engine:
       - type: text
         value:
           name: paladin
+          summary: >
+            Paladins are divine warriors, knights fighting for a cause. They protect others and
+            fight passionately for what they believe is right.
           value: Paladin
           variables:
           - type: boolean
@@ -972,6 +994,10 @@ engine:
       - type: text
         value:
           name: ranger
+          summary: >
+            Independent fighters, skilled in hunting and stealth, Rangers can be found on the
+            outskirts of civilization leading adventurers to remote ruins or tracking dangerous
+            beasts.
           value: Ranger
           variables:
           - type: boolean
@@ -982,6 +1008,9 @@ engine:
       - type: text
         value:
           name: rogue
+          summary: >
+            Rogues are thieves and assassians, trained in stealth and deception. They rarely fight
+            head on, preferring to stick to the shadows and attack with advantage.
           value: Rogue
           variables:
           - type: boolean
@@ -992,6 +1021,9 @@ engine:
       - type: text
         value:
           name: sorceror
+          summary: >
+            Raw, magical energy flows through a Sorceror's veins. They are spellcasters with an
+            innate magical ability. Spells come natural to them, as well as the desire to use them.
           value: Sorceror
           variables:
           - type: boolean
@@ -1002,6 +1034,9 @@ engine:
       - type: text
         value:
           name: warlock
+          summary: >
+            Warlocks gain their powers from a pact with a powerful patron. They can cast spells,
+            but also have other magical abilities gained from service to their masters.
           value: Warlock
           variables:
           - type: boolean
@@ -1012,6 +1047,9 @@ engine:
       - type: text
         value:
           name: wizard
+          summary: >
+            Scholars of magic, wizards spend their days studying and researching the mysteries of
+            the world. Through these studies they gain an unrivaled prowess of spellcasting.
           value: Wizard
           variables:
           - type: boolean
@@ -1021,6 +1059,7 @@ engine:
               value: true
     - name: language
       label: Languages
+      label_singular: Language
       description: >
         The standard spoken languages.
       values:
@@ -1060,6 +1099,7 @@ engine:
           summary: Aga aga! Vata nara rinak!
     - name: skill
       label: Skills
+      label_singular: Skill
       description: >
         Skills are different actions that a player may perform related to a specific ability score.
       values:
@@ -1367,6 +1407,7 @@ engine:
               value: true
     - name: level
       label: Levels
+      label_singular: Level
       description: The levels a player may reach with experience.
       values:
       - type: number
@@ -1506,12 +1547,16 @@ engine:
               value: true
     - name: race
       label: Races
+      label_singular: Race
       description: The different races a player may choose from.
       values:
       - type: text
         value:
           name: dragonborn
           value: Dragonborn
+          summary: >
+            Draconic humanoids with tough, scaly skin. They stand tall and strong and, like their
+            formidable ancestors, are able to exhale bursts of destructive energy.
           variables:
           - type: boolean
             value:
@@ -1522,6 +1567,9 @@ engine:
         value:
           name: dwarf
           value: Dwarf
+          summary: >
+            Dwarves are stout and tough, known for their prodigious craftmenship. A hearty laugh
+            and a large, bushy beard are enough to identify a dwarf.
           variables:
           - type: boolean
             value:
@@ -1532,6 +1580,9 @@ engine:
         value:
           name: elf
           value: Elf
+          summary: >
+            Elves are diverse, but all are gifted with long lifespans. They have reputation for
+            being highly intelligent and gifted in the magical arts.
           variables:
           - type: boolean
             value:
@@ -1542,6 +1593,9 @@ engine:
         value:
           name: gnome
           value: Gnome
+          summary: >
+            Gnomes are often quaint creatures, working as farmers, miners, or craftsmen in the
+            country. Few know just how mischevious and magical they can be.
           variables:
           - type: boolean
             value:
@@ -1552,6 +1606,9 @@ engine:
         value:
           name: halfelf
           value: Half-Elf
+          summary: >
+            Half-elves possess many of the talents of elves, but often live in human society. They
+            tend to be good at almost anything and can be found anywhere.
           variables:
           - type: boolean
             value:
@@ -1562,6 +1619,10 @@ engine:
         value:
           name: halforc
           value: Half-Orc
+          summary: >
+            Half-orcs are often feared, sometimes hated. They tend to live in human society, but
+            are rarely accepted. They have orcish features, but can be as diverse in appearance and
+            personality as humans.
           variables:
           - type: boolean
             value:
@@ -1572,6 +1633,9 @@ engine:
         value:
           name: halfling
           value: Halfling
+          summary: >
+            Halflings are short humanoids, known for their good cheer and hospitality. Many
+            halfings are merchants, while take advantage of their size for a life of theivery.
           variables:
           - type: boolean
             value:
@@ -1582,6 +1646,10 @@ engine:
         value:
           name: human
           value: Human
+          summary: >
+            Humans appear somewhat ungifted alongside the other races, but they have an attitude of
+            perserverance that earns them respect from others. They can be found anywhere, and the
+            best of the best are often humans.
           variables:
           - type: boolean
             value:
@@ -1592,6 +1660,9 @@ engine:
         value:
           name: tiefling
           value: Tiefling
+          summary: >
+            Horns and tails identify a tiefling, a gift of their infernal ancestry. While not
+            inherently evil, they often find themselves in a life of crime.
           variables:
           - type: boolean
             value:
@@ -1608,42 +1679,46 @@ profile:
       - space_above: medium
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                background: none
+                bold: false
+                name: Name
             format:
-              background: none
-              bold: false
-              name: Name
-          format:
-            size: large
-          value:
-            name: name
-            label: Name
-            type: literal
-            value: Aladaisian Wineheart
+              size: large
+            value:
+              name: name
+              label: Name
+              type: literal
+              value: Aladaisian Wineheart
       - space_above: medium_large
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                background: none
             format:
-              background: none
-          format:
-            name: Summary
-            size: small
-            is_quote: true
-            quote_source: Letter to an Old Friend
-          value:
-            name: summary
-            type: literal
-            value: >
-              You learn to fight for you life; you learn to fight for others' lives; you learn what
-              life is.
+              name: Summary
+              size: small
+              is_quote: true
+              quote_source: Letter to an Old Friend
+            value:
+              name: summary
+              type: literal
+              label: Summary
+              value: >
+                You learn to fight for you life; you learn to fight for others' lives; you learn what
+                life is.
       - space_above: large
         widgets:
         - type: image
-          data:
-            format:
-              background: none
-              name: Picture
+          widget:
+            data:
+              format:
+                background: none
+                name: Picture
     - name: I am a
       space_above: medium_large
       space_below: medium_large
@@ -1651,128 +1726,136 @@ profile:
       - space_above: medium_small
         widgets:
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                label: level
+                name: Level
+                width: 1
+                background: dark
             format:
-              label: level
-              name: Level
-              width: 1
-              background: dark
-          format:
-            size: medium_small
-          value:
-            type: value
-            name: level
-            value_set: level
+              size: medium_small
             value:
-              set_name: level
-              value_name: level_one
+              type: value
+              name: level
+              value_set: level
+              value:
+                set_name: level
+                value_name: level_one
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                name: Race
+                width: 2
+                background: dark
             format:
-              name: Race
-              width: 2
-              background: dark
-          format:
-            size: medium_small
-          value:
-            type: value
-            name: race
-            value_set: race
+              size: medium_small
             value:
-              set_name: race
-              value_name: human
+              type: value
+              name: race
+              value_set: race
+              value:
+                set_name: race
+                value_name: human
         - type: text
-          name: class
-          data:
-            format:
-              name: Class
-              width: 2
-              background: dark
-          format:
-            size: medium_small
-          value:
-            type: value
+          widget:
             name: class
-            value_set: class
+            data:
+              format:
+                name: Class
+                width: 2
+                background: dark
+            format:
+              size: medium_small
             value:
-              set_name: class
-              value_name: fighter
+              type: value
+              name: class
+              value_set: class
+              value:
+                set_name: class
+                value_name: fighter
       - space_above: medium_small
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                background: dark
+                label: I pray to
+                name: Diety
+                width: 1
             format:
-              background: dark
-              label: I pray to
-              name: Diety
-              width: 1
-          format:
-            size: medium_small
-          value:
-            type: literal
-            value: Tritherion
+              size: medium_small
+            value:
+              type: literal
+              value: Tritherion
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                background: dark
+                label: and I am
+                name: Alignment
+                width: 1
             format:
-              background: dark
-              label: and I am
-              name: Alignment
-              width: 1
-          format:
-            size: medium_small
-          value:
-            type: literal
-            value: Chaotic Good
+              size: medium_small
+            value:
+              type: literal
+              value: Chaotic Good
       - space_above: medium
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                name: Quote to Green Eyes Lost
+                background: none
             format:
-              name: Quote to Green Eyes Lost
-              background: none
-          format:
-            size: small
-            is_quote: true
-            quote_source: Moon-lit conversation with Iliah Savayara
-            tint: dark
-          value:
-            type: literal
-            value: >
-              I never liked swords -- they destroy things. I wanted to build things. I became
-              a carpenter's apprentice and learned to construct things of marvel, until
-              one day he was destroyed by a sword. That day I learned something. The tallest trees
-              in the forest -- the formidable giants -- block the sunlight, keep smaller trees from
-              growing. I learned to build with the sword, by chopping down those who kept others
-              in the dark, and letting the good spring forth.
+              size: small
+              is_quote: true
+              quote_source: Moon-lit conversation with Iliah Savayara
+              tint: dark
+            value:
+              type: literal
+              value: >
+                I never liked swords -- they destroy things. I wanted to build things. I became
+                a carpenter's apprentice and learned to construct things of marvel, until
+                one day he was destroyed by a sword. That day I learned something. The tallest trees
+                in the forest -- the formidable giants -- block the sunlight, keep smaller trees from
+                growing. I learned to build with the sword, by chopping down those who kept others
+                in the dark, and letting the good spring forth.
       - space_above: medium
         widgets:
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                background: dark
+                label: My experience
+                name: Experience Points
+                width: 5
             format:
-              background: dark
-              label: My experience
-              name: Experience Points
-              width: 5
-          format:
-            size: medium
-            label: XP
-            label_position: left
-          value:
-            type: literal
-            value: 103
+              size: medium
+              label: XP
+              label_position: left
+            value:
+              type: literal
+              value: 103
         - type: boolean
-          data:
+          widget:
+            data:
+              format:
+                name: Inspiration
+                background: dark
+                width: 2
             format:
-              name: Inspiration
-              background: dark
-              width: 2
-          format:
-            size: very_small
-          on_text: You have inspiration!
-          off_text: No inspiration
-          value:
-            type: literal
-            value: true
+              size: very_small
+            on_text: You have inspiration!
+            off_text: No inspiration
+            value:
+              type: literal
+              value: true
     - name: My Body
       space_above: medium
       background: dark
@@ -1780,118 +1863,125 @@ profile:
       - space_above: medium_small
         widgets:
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                name: Age
+                width: 1
             format:
-              alignment: left
-              background: dark
-              name: Age
-              width: 1
-          format:
-            label: age
-            size: medium_small
-            tint: medium_dark
-          value:
-            type: literal
-            value: 41
+              label: age
+              size: medium_small
+              tint: medium_dark
+            value:
+              type: literal
+              value: 41
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                name: Height
+                width: 1
             format:
-              alignment: left
-              background: dark
-              name: Height
-              width: 1
-          format:
-            label: height
-            label_position: left
-            size: medium_small
-            tint: medium_dark
-          value:
-            type: literal
-            value: 5'11"
+              label: height
+              label_position: left
+              size: medium_small
+              tint: medium_dark
+            value:
+              type: literal
+              value: 5'11"
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                name: Weight
+                width: 1
             format:
-              alignment: left
-              background: dark
-              name: Weight
-              width: 1
-          format:
-            label: weight
-            label_position: left
+              label: weight
+              label_position: left
+              size: medium_small
+              tint: medium_dark
             size: medium_small
-            tint: medium_dark
-          size: medium_small
-          value:
-            type: literal
-            value: 167
+            value:
+              type: literal
+              value: 167
       - space_above: very_small
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                name: Eyes
+                width: 1
             format:
-              alignment: left
-              background: dark
-              name: Eyes
-              width: 1
-          format:
-            label: eyes
-            label_position: left
-            size: medium_small
-            tint: medium_dark
-          value:
-            type: literal
-            value: Blue
+              label: eyes
+              label_position: left
+              size: medium_small
+              tint: medium_dark
+            value:
+              type: literal
+              value: Blue
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                name: Skin
+                width: 1
             format:
-              alignment: left
-              background: dark
-              name: Skin
-              width: 1
-          format:
-            label: skin
-            label_position: left
-            size: medium_small
-            tint: medium_dark
-          value:
-            type: literal
-            value: Light
+              label: skin
+              label_position: left
+              size: medium_small
+              tint: medium_dark
+            value:
+              type: literal
+              value: Light
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                name: Hair
+                width: 1
             format:
-              alignment: left
-              background: dark
-              name: Hair
-              width: 1
-          format:
-            label: hair
-            label_position: left
-            size: medium_small
-            tint: medium_dark
-          value:
-            type: literal
-            value: Brown
+              label: hair
+              label_position: left
+              size: medium_small
+              tint: medium_dark
+            value:
+              type: literal
+              value: Brown
     - name: Languages
       space_above: medium
       rows:
       - space_above: small
         widgets:
         - type: list
-          format:
-            size: medium_small
-          values:
-          - type: text
-            value:
-              type: value
+          widget:
+            format:
+              size: medium_small
+            values:
+            - type: text
               value:
-                set_name: language
-                value_name: common
-          - type: text
-            value:
-              type: value
+                type: value
+                value:
+                  set_name: language
+                  value_name: common
+            - type: text
               value:
-                set_name: language
-                value_name: orc
+                type: value
+                value:
+                  set_name: language
+                  value_name: orc
     - name: Background
       space_above: medium
       rows:
@@ -1900,18 +1990,19 @@ profile:
         width: half
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                background: none
+                name: Background
+                width: 1
             format:
-              alignment: center
-              background: none
-              name: Background
-              width: 1
-          format:
-            size: medium_large
-            tint: medium_dark
-          value:
-            type: literal
-            value: The Hard Life
+              size: medium_large
+              tint: medium_dark
+            value:
+              type: literal
+              value: The Hard Life
     - name: Personality Traits
       label_type: secondary
       space_above: small
@@ -1920,39 +2011,41 @@ profile:
         width: indented
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: none
+                name: 'Personality Trait #1'
+                width: 1
             format:
-              alignment: left
-              background: none
-              name: 'Personality Trait #1'
-              width: 1
-          format:
-            size: small
-            tint: dark
-          value:
-            type: literal
-            value: >
-              I am cynical of society. Show me a fair king, a good committee, a man of pure faith,
-              and I give you every reason that you've been deceived.
+              size: small
+              tint: dark
+            value:
+              type: literal
+              value: >
+                I am cynical of society. Show me a fair king, a good committee, a man of pure faith,
+                and I give you every reason that you've been deceived.
       - space_above: medium_small
         width: indented
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: none
+                name: 'Personality Trait #1'
+                width: 1
             format:
-              alignment: left
-              background: none
-              name: 'Personality Trait #1'
-              width: 1
-          format:
-            size: small
-            tint: dark
-          value:
-            type: literal
-            value: >
-              I still remember those days, a boy running on dirty feet in ragged clothes devouring
-              a stolen loaf of bread -- starving, guilty, ashamed. I will always appreciate a bowl
-              of hot soup or the smallest gift from a stranger.
+              size: small
+              tint: dark
+            value:
+              type: literal
+              value: >
+                I still remember those days, a boy running on dirty feet in ragged clothes devouring
+                a stolen loaf of bread -- starving, guilty, ashamed. I will always appreciate a bowl
+                of hot soup or the smallest gift from a stranger.
     - name: Ideals
       label_type: secondary
       space_above: medium
@@ -1961,20 +2054,21 @@ profile:
         width: indented
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: none
+                name: Ideal
+                width: 1
             format:
-              alignment: left
-              background: none
-              name: Ideal
-              width: 1
-          format:
-            size: small
-            tint: dark
-          value:
-            type: literal
-            value: >
-              Equality. Those of all races and all backgrounds should be given the same opportunties
-              and equal respect.
+              size: small
+              tint: dark
+            value:
+              type: literal
+              value: >
+                Equality. Those of all races and all backgrounds should be given the same opportunties
+                and equal respect.
     - name: Bonds
       label_type: secondary
       space_above: medium
@@ -1983,20 +2077,21 @@ profile:
         width: indented
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: none
+                name: Bond
+                width: 1
             format:
-              alignment: left
-              background: none
-              name: Bond
-              width: 1
-          format:
-            size: small
-            tint: dark
-          value:
-            type: literal
-            value: >
-              My mentor was killed, and there was nothing I could do. He was a good, innocent man. I
-              have devoted my life to revenge, for myself and for others that have matching scars.
+              size: small
+              tint: dark
+            value:
+              type: literal
+              value: >
+                My mentor was killed, and there was nothing I could do. He was a good, innocent man. I
+                have devoted my life to revenge, for myself and for others that have matching scars.
     - name: Flaws
       label_type: secondary
       space_above: medium
@@ -2005,20 +2100,21 @@ profile:
         width: indented
         widgets:
         - type: text
-          data:
+          widget:
+            data:
+              format:
+                alignment: left
+                background: none
+                name: Flaw
+                width: 1
             format:
-              alignment: left
-              background: none
-              name: Flaw
-              width: 1
-          format:
-            size: small
-            tint: dark
-          value:
-            type: literal
-            value: >
-              I am willing to sacrifice myself to fight for the smallest injustice caused by those
-              with more wealth and power.
+              size: small
+              tint: dark
+            value:
+              type: literal
+              value: >
+                I am willing to sacrifice myself to fight for the smallest injustice caused by those
+                with more wealth and power.
   - label: Abilities
     groups:
     - space_above: medium_small
@@ -2031,898 +2127,1017 @@ profile:
         space_above: small
         widgets:
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                label: Strength
+                label_alignment: center
+                width: 1
             format:
-              alignment: center
-              label: Strength
-              label_alignment: center
-              width: 1
-          format:
-            style: purple_circle
-            tint: purple
-          value:
-            name: strength
-            type: literal
-            value: 16
+              style: purple_circle
+              tint: purple
+            value:
+              name: strength
+              type: literal
+              value: 16
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                label: Dexterity
+                label_alignment: center
+                width: 1
             format:
-              alignment: center
-              label: Dexterity
-              label_alignment: center
-              width: 1
-          format:
-            style: purple_circle
-            tint: purple
-          value:
-            name: dexterity
-            type: literal
-            value: 14
+              style: purple_circle
+              tint: purple
+            value:
+              name: dexterity
+              type: literal
+              value: 14
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                label: Constitution
+                label_alignment: center
+                width: 1
             format:
-              alignment: center
-              label: Constitution
-              label_alignment: center
-              width: 1
-          format:
-            style: purple_circle
-            tint: purple
-          value:
-            name: constitution
-            type: literal
-            value: 14
+              style: purple_circle
+              tint: purple
+            value:
+              name: constitution
+              type: literal
+              value: 14
       - space_above: very_small
         widgets:
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
             format:
-              alignment: center
-              background: empty
-              width: 1
-          format:
-            size: small
-            tint: very_dark
-          value:
-            name: strength_modifier
-            label: Strength Modifier
-            type: program
+              size: small
+              tint: very_dark
             value:
-              program: ability_modifier
-              parameters:
-              - type: reference
-                value: strength
-          value_prefix: '+'
+              name: strength_modifier
+              label: Strength Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: strength
+            value_prefix: '+'
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
             format:
-              alignment: center
-              background: empty
-              width: 1
-          format:
-            size: small
-            tint: very_dark
-          value:
-            name: dexterity_modifier
-            label: Dexterity Modifier
-            type: program
+              size: small
+              tint: very_dark
             value:
-              program: ability_modifier
-              parameters:
-              - type: reference
-                value: dexterity
-          value_prefix: '+'
+              name: dexterity_modifier
+              label: Dexterity Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: dexterity
+            value_prefix: '+'
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
             format:
-              alignment: center
-              background: empty
-              width: 1
-          format:
-            size: small
-            tint: very_dark
-          value:
-            name: constitution_modifier
-            label: Constitution Modifier
-            type: program
+              size: small
+              tint: very_dark
             value:
-              program: ability_modifier
-              parameters:
-              - type: reference
-                value: constitution
-          value_prefix: '+'
+              name: constitution_modifier
+              label: Constitution Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: constitution
+            value_prefix: '+'
       - width: full
         space_above: medium
         widgets:
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                label: Intelligence
+                label_alignment: center
+                width: 1
             format:
-              alignment: center
-              label: Intelligence
-              label_alignment: center
-              width: 1
-          format:
-            style: purple_circle
-            tint: purple
-          value:
-            name: intelligence
-            type: literal
-            value: 11
+              style: purple_circle
+              tint: purple
+            value:
+              name: intelligence
+              type: literal
+              value: 11
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                label: Wisdom
+                label_alignment: center
+                width: 1
             format:
-              alignment: center
-              label: Wisdom
-              label_alignment: center
-              width: 1
-          format:
-            style: purple_circle
-            tint: purple
-          value:
-            name: wisdom
-            type: literal
-            value: 11
+              style: purple_circle
+              tint: purple
+            value:
+              name: wisdom
+              type: literal
+              value: 11
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                label: Charisma
+                label_alignment: center
+                width: 1
             format:
-              alignment: center
-              label: Charisma
-              label_alignment: center
-              width: 1
-          format:
-            style: purple_circle
-            tint: purple
-          value:
-            name: charisma
-            type: literal
-            value: 13
+              style: purple_circle
+              tint: purple
+            value:
+              name: charisma
+              type: literal
+              value: 13
       - space_above: very_small
         widgets:
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
             format:
-              alignment: center
-              background: empty
-              width: 1
-          format:
-            size: small
-            tint: very_dark
-          value:
-            name: intelligence_modifier
-            label: Intelligence Modifier
-            type: program
+              size: small
+              tint: very_dark
             value:
-              program: ability_modifier
-              parameters:
-              - type: reference
-                value: intelligence
-          value_prefix: '+'
+              name: intelligence_modifier
+              label: Intelligence Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: intelligence
+            value_prefix: '+'
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
             format:
-              alignment: center
-              background: empty
-              width: 1
-          format:
-            size: small
-            tint: very_dark
-          value:
-            name: wisdom_modifier
-            label: Wisdom Modifier
-            type: program
+              size: small
+              tint: very_dark
             value:
-              program: ability_modifier
-              parameters:
-              - type: reference
-                value: wisdom
-          value_prefix: '+'
+              name: wisdom_modifier
+              label: Wisdom Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: wisdom
+            value_prefix: '+'
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
             format:
-              alignment: center
-              background: empty
-              width: 1
-          format:
-            size: small
-            tint: very_dark
-          value:
-            name: charisma_modifier
-            label: Charisma Modifier
-            type: program
+              size: small
+              tint: very_dark
             value:
-              program: ability_modifier
-              parameters:
-              - type: reference
-                value: charisma
-          value_prefix: '+'
+              name: charisma_modifier
+              label: Charisma Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: charisma
+            value_prefix: '+'
     - name: Saving Throws
       space_above: medium
       rows:
       - space_above: medium
         widgets:
         - type: number
-          data:
-            format:
-              background: none
-              label: Strength
-              label_alignment: center
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 5
+          widget:
+            data:
+              format:
+                background: none
+                label: Strength
+                label_alignment: center
+                width: 1
+            size: medium
+            value_prefix: '+'
+            value:
+              type: literal
+              value: 5
         - type: number
-          data:
-            format:
-              background: none
-              label: Dexterity
-              label_alignment: center
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 4
+          widget:
+            data:
+              format:
+                background: none
+                label: Dexterity
+                label_alignment: center
+                width: 1
+            size: medium
+            value_prefix: '+'
+            value:
+              type: literal
+              value: 4
         - type: number
-          data:
-            format:
-              background: none
-              label: Constitution
-              label_alignment: center
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 2
+          widget:
+            data:
+              format:
+                background: none
+                label: Constitution
+                label_alignment: center
+                width: 1
+            size: medium
+            value_prefix: '+'
+            value:
+              type: literal
+              value: 2
       - space_above: small
         widgets:
         - type: number
-          data:
-            format:
-              background: none
-              label: Intelligence
-              label_alignment: center
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 12
+          widget:
+            data:
+              format:
+                background: none
+                label: Intelligence
+                label_alignment: center
+                width: 1
+            size: medium
+            value_prefix: '+'
+            value:
+              type: literal
+              value: 12
         - type: number
-          data:
-            format:
-              background: none
-              label: Wisdom
-              label_alignment: center
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 8
+          widget:
+            data:
+              format:
+                background: none
+                label: Wisdom
+                label_alignment: center
+                width: 1
+            size: medium
+            value_prefix: '+'
+            value:
+              type: literal
+              value: 8
         - type: number
-          data:
-            format:
-              background: none
-              label: Charisma
-              label_alignment: center
-              width: 1
-          size: medium
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 1
+          widget:
+            data:
+              format:
+                background: none
+                label: Charisma
+                label_alignment: center
+                width: 1
+            size: medium
+            value_prefix: '+'
+            value:
+              type: literal
+              value: 1
     - name: Skills
       space_above: small
       rows:
       - space_above: small
         widgets:
         - type: table
-          data:
-            actions:
-            - edit
-            format:
-              label: Skills
-          columns:
-          - type: text
-            column:
-              name: NAME
-              default_value: skill
-              width: 3
-              alignment: left
-          - type: number
-            column:
-              name: MODIFIER
-              default_value: 0
-              width: 2
-              alignment: center
-          - type: boolean
-            column:
-              name: PROFICIENT?
-              default_value: false
-              width: 2
-              alignment: center
-          rows:
-          - cells:
-            - value:
-                type: literal
-                value: Acrobatics
-            - prefix: '+'
-              value:
-                name: acrobatics_bonus
-                type: summation
+          widget:
+            data:
+              actions:
+              - edit
+              format:
+                label: Skills
+            columns:
+            - type: text
+              column:
+                name: NAME
+                default_value: skill
+                width: 3
+                alignment: left
+            - type: number
+              column:
+                name: MODIFIER
+                default_value: 0
+                width: 2
+                alignment: center
+            - type: boolean
+              column:
+                name: PROFICIENT?
+                default_value: false
+                width: 2
+                alignment: center
+            rows:
+            - cells:
+              - value:
+                  type: literal
+                  value: Acrobatics
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: dexterity_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: acrobatics_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: acrobatics_is_proficient
-                type: literal
-                value: true
-          - cells:
-            - value:
-                type: literal
-                value: Animal Handling
-            - prefix: '+'
-              value:
-                name: animal_handling_bonus
-                type: summation
+                  name: acrobatics_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: dexterity_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: acrobatics_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: acrobatics_is_proficient
+                  type: literal
+                  value: true
+            - cells:
+              - value:
+                  type: literal
+                  value: Animal Handling
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: wisdom_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: animal_handling_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: animal_handling_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Arcana
-            - prefix: '+'
-              value:
-                name: arcana_bonus
-                type: summation
+                  name: animal_handling_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: wisdom_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: animal_handling_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: animal_handling_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Arcana
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: intelligence_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: arcana_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: arcana_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Athletics
-            - prefix: '+'
-              value:
-                name: athletics_bonus
-                type: summation
+                  name: arcana_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: intelligence_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: arcana_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: arcana_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Athletics
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: strength_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: athletics_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: athletics_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Deception
-            - prefix: '+'
-              value:
-                name: deception_bonus
-                type: summation
+                  name: athletics_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: strength_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: athletics_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: athletics_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Deception
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: charisma_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: deception_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: deception_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: History
-            - prefix: '+'
-              value:
-                name: history_bonus
-                type: summation
+                  name: deception_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: charisma_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: deception_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: deception_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: History
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: intelligence_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: history_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: history_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Insight
-            - prefix: '+'
-              value:
-                name: insight_bonus
-                type: summation
+                  name: history_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: intelligence_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: history_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: history_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Insight
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: wisdom_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: insight_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: insight_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Intimidation
-            - prefix: '+'
-              value:
-                name: intimidation_bonus
-                type: summation
+                  name: insight_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: wisdom_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: insight_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: insight_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Intimidation
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: charisma_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: intimidation_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: intimidation_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Investigation
-            - prefix: '+'
-              value:
-                name: investigation_bonus
-                type: summation
+                  name: intimidation_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: charisma_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: intimidation_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: intimidation_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Investigation
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: intelligence_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: investigation_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: investigation_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Medicine
-            - prefix: '+'
-              value:
-                name: medicine_bonus
-                type: summation
+                  name: investigation_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: intelligence_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: investigation_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: investigation_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Medicine
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: wisdom_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: medicine_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: medicine_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Nature
-            - prefix: '+'
-              value:
-                name: nature_bonus
-                type: summation
+                  name: medicine_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: wisdom_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: medicine_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: medicine_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Nature
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: intelligence_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: nature_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: nature_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Perception
-            - prefix: '+'
-              value:
-                name: perception_bonus
-                type: summation
+                  name: nature_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: intelligence_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: nature_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: nature_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Perception
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: wisdom_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: perception_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: perception_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Performance
-            - prefix: '+'
-              value:
-                name: performance_bonus
-                type: summation
+                  name: perception_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: wisdom_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: perception_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: perception_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Performance
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: charisma_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable:  performance_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: performance_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Persuasion
-            - prefix: '+'
-              value:
-                name: persuasion_bonus
-                type: summation
+                  name: performance_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: charisma_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable:  performance_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: performance_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Persuasion
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: charisma_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: persuasion_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: persuasion_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Religion
-            - prefix: '+'
-              value:
-                name: religion_bonus
-                type: summation
+                  name: persuasion_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: charisma_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: persuasion_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: persuasion_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Religion
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: intelligence_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: religion_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: religion_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Sleight of Hand
-            - prefix: '+'
-              value:
-                name: sleight_of_hand_bonus
-                type: summation
+                  name: religion_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: intelligence_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: religion_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: religion_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Sleight of Hand
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: dexterity_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: sleight_of_hand_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: sleight_of_hand_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Stealth
-            - prefix: '+'
-              value:
-                name: stealth_bonus
-                type: summation
+                  name: sleight_of_hand_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: dexterity_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: sleight_of_hand_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: sleight_of_hand_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Stealth
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: dexterity_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: stealth_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: stealth_is_proficient
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Survival
-            - prefix: '+'
-              value:
-                name: survival_bonus
-                type: summation
+                  name: stealth_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: dexterity_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: stealth_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: stealth_is_proficient
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Survival
+              - prefix: '+'
                 value:
-                  terms:
-                  - type: integer
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: wisdom_modifier
-                  - type: conditional
-                    conditional:
-                      type: variable
-                      variable: survival_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            - value:
-                name: survival_is_proficient
-                type: literal
-                value: false
+                  name: survival_bonus
+                  type: summation
+                  value:
+                    terms:
+                    - type: integer
+                      value:
+                        type: variable
+                        variable:
+                          type: name
+                          name: wisdom_modifier
+                    - type: conditional
+                      conditional:
+                        type: variable
+                        variable: survival_is_proficient
+                      when_true:
+                        type: variable
+                        variable:
+                          type: name
+                          name: proficiency_bonus
+                      when_false:
+                        type: literal
+                        value: 0
+              - value:
+                  name: survival_is_proficient
+                  type: literal
+                  value: false
   - label: Features
     groups:
+    - name: Combat
+      space_above: none
+      space_below: large
+      background: dark
+      rows:
+      - space_above: medium
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium
+                label_alignment: center
+                width: 1
+            format:
+              label: Hit Points
+              label_position: top
+              size: medium_large
+              tint: light
+            value:
+              name: hit_points
+              type: literal
+              value: 12
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium
+                label_alignment: center
+                width: 1
+            format:
+              label: Armor Class
+              label_position: top
+              size: medium_large
+              tint: light
+            value:
+              name: armor_class
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: tag
+                      tag: armor_class_bonus
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: dexterity_modifier
+      - space_above: medium_large
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: dark
+                label_alignment: center
+                width: 1
+            format:
+              label: Initiative
+              label_position: top
+              size: medium_small
+              tint: dark
+            value_prefix: '+'
+            value:
+              type: literal
+              value: 7
+        - type: number
+          widget:
+            data:
+              format:
+                background: dark
+                label_alignment: center
+                width: 1
+            format:
+              label: Speed
+              label_position: top
+              size: medium_small
+              tint: dark
+            value:
+              type: literal
+              value: 30
+            value_postfix: ' ft'
+        - type: text
+          widget:
+            data:
+              format:
+                background: dark
+                width: 1
+            format:
+              label: Hit Dice
+              label_position: top
+              size: medium_small
+              tint: dark
+            value:
+              type: literal
+              value: 1d8
     - name: Proficiency Bonus
       show_name: false
       space_above: medium_large
@@ -2933,129 +3148,37 @@ profile:
         width: half
         widgets:
         - type: number
-          data:
+          widget:
+            data:
+              format:
+                alignment: center
+                background: medium
+                width: 1
             format:
-              alignment: center
-              background: medium
-              width: 1
-          format:
-            label: Proficiency Bonus
-            label_alignment: left
-            size: medium_small
-            tint: green_medium_light
-          value:
-            type: literal
-            name: proficiency_bonus
-            label: Proficiency Bonus
-            value: 2
-          value_prefix: '+'
-    - name: Combat
-      space_above: none
-      space_below: large
-      background: dark
-      rows:
-      - space_above: medium
-        widgets:
-        - type: number
-          data:
-            format:
-              background: medium
-              label_alignment: center
-              width: 1
-          format:
-            label: Hit Points
-            label_position: top
-            size: medium_large
-            tint: light
-          value:
-            name: hit_points
-            type: literal
-            value: 9
-        - type: number
-          data:
-            format:
-              background: medium
-              label_alignment: center
-              width: 1
-          format:
-            label: Armor Class
-            label_position: top
-            size: medium_large
-            tint: light
-          value:
-            name: armor_class
-            type: summation
+              label: Proficiency Bonus
+              label_alignment: left
+              size: medium_small
+              tint: green_medium_light
             value:
-              terms:
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: tag
-                    tag: armor_class_bonus
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: dexterity_modifier
-      - space_above: medium_large
-        widgets:
-        - type: number
-          data:
-            format:
-              background: dark
-              label_alignment: center
-              width: 1
-          format:
-            label: Initiative
-            label_position: top
-            size: medium_small
-            tint: dark
-          value_prefix: '+'
-          value:
-            type: literal
-            value: 7
-        - type: number
-          data:
-            format:
-              background: dark
-              label_alignment: center
-              width: 1
-          format:
-            label: Speed
-            label_position: top
-            size: medium_small
-            tint: dark
-          value:
-            type: literal
-            value: 30
-          value_postfix: ' ft'
-        - type: text
-          data:
-            format:
-              background: dark
-              width: 1
-          format:
-            label: Hit Dice
-            label_position: top
-            size: medium_small
-            tint: dark
-          value:
-            type: literal
-            value: 1d8
+              type: literal
+              name: proficiency_bonus
+              label: Proficiency Bonus
+              value: 2
+            value_prefix: '+'
     - name: Race Features
       rows:
       - space_above: medium
         widgets:
         - type: mechanic
-          category: race
+          widget:
+            category: race
     - name: Class Features
       rows:
       - space_above: medium
         widgets:
         - type: mechanic
-          category: class
+          widget:
+            category: class
   - label: Inventory
     groups:
     - name: Weapons
@@ -3064,297 +3187,301 @@ profile:
       - space_above: medium_small
         widgets:
         - type: table
-          data:
-            format:
-              label: Weapons
-          columns:
-          - type: text
-            column:
-              name: NAME
-              default_value: weapon
-              width: 3
-              alignment: left
-          - type: number
-            column:
-              name: QUANTITY
-              default_value: 1
-              width: 2
-              alignment: center
-          - type: boolean
-            column:
-              name: EQUIPPED?
-              default_value: false
-              width: 2
-              alignment: center
-          rows:
-          - cells:
-            - value:
-                type: literal
-                value: Longsword
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-            - value:
-                name: equipped
-                type: literal
-                value: true
-          - cells:
-            - value:
-                type: literal
-                value: Heavy Crossbow
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-            - value:
-                name: equipped
-                type: literal
-                value: false
-          - cells:
-            - value:
-                type: literal
-                value: Dagger
-            - value:
-                name: quantity
-                type: literal
-                value: 2
-            - value:
-                name: equipped
-                type: literal
-                value: false
+          widget:
+            data:
+              format:
+                label: Weapons
+            columns:
+            - type: text
+              column:
+                name: NAME
+                default_value: weapon
+                width: 3
+                alignment: left
+            - type: number
+              column:
+                name: QUANTITY
+                default_value: 1
+                width: 2
+                alignment: center
+            - type: boolean
+              column:
+                name: EQUIPPED?
+                default_value: false
+                width: 2
+                alignment: center
+            rows:
+            - cells:
+              - value:
+                  type: literal
+                  value: Longsword
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+              - value:
+                  name: equipped
+                  type: literal
+                  value: true
+            - cells:
+              - value:
+                  type: literal
+                  value: Heavy Crossbow
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+              - value:
+                  name: equipped
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Dagger
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 2
+              - value:
+                  name: equipped
+                  type: literal
+                  value: false
     - name: Armor
       space_above: medium_large
       rows:
       - space_above: medium_small
         widgets:
         - type: table
-          data:
-            actions:
-            - edit
-            format:
-              label: Armor / Shields
-          columns:
-          - type: text
-            column:
-              name: NAME
-              default_value: armor
-              width: 3
-              alignment: left
-          - type: number
-            column:
-              name: QUANTITY
-              default_value: 1
-              width: 2
-              alignment: center
-          - type: boolean
-            column:
-              name: EQUIPPED?
-              default_value: false
-              width: 2
-              alignment: center
-          rows:
-          - cells:
-            - value:
-                type: value
-                value:
-                  set_name: armor
-                  value_name: scalemail
-                defines_namespace: true
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-            - value:
-                name: equipped
-                type: literal
-                value: true
-                namespaced: true
-          - cells:
-            - value:
-                type: value
-                value:
-                  set_name: shields
-                  value_name: shield
-                defines_namespace: true
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-            - value:
-                name: equipped
-                type: literal
-                value: true
-                namespaced: true
+          widget:
+            data:
+              actions:
+              - edit
+              format:
+                label: Armor / Shields
+            columns:
+            - type: text
+              column:
+                name: NAME
+                default_value: armor
+                width: 3
+                alignment: left
+            - type: number
+              column:
+                name: QUANTITY
+                default_value: 1
+                width: 2
+                alignment: center
+            - type: boolean
+              column:
+                name: EQUIPPED?
+                default_value: false
+                width: 2
+                alignment: center
+            rows:
+            - cells:
+              - value:
+                  type: value
+                  value:
+                    set_name: armor
+                    value_name: scalemail
+                  defines_namespace: true
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+              - value:
+                  name: equipped
+                  type: literal
+                  value: true
+                  namespaced: true
+            - cells:
+              - value:
+                  type: value
+                  value:
+                    set_name: shields
+                    value_name: shield
+                  defines_namespace: true
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+              - value:
+                  name: equipped
+                  type: literal
+                  value: true
+                  namespaced: true
     - name: Wealth
       space_above: medium_large
       rows:
       - widgets:
         - type: number
-          data:
-            actions:
-            - edit
-            format:
-              width: 1
-              label: Gold
-          size: medium
-          value:
-            name: wealth_gold
-            type: literal
-            value: 11
+          widget:
+            data:
+              actions:
+              - edit
+              format:
+                width: 1
+                label: Gold
+            size: medium
+            value:
+              name: wealth_gold
+              type: literal
+              value: 11
         - type: number
-          data:
-            actions:
-            - edit
-            format:
-              width: 1
-              label: Silver
-          size: medium
-          value:
-            name: wealth_silver
-            type: literal
-            value: 28
+          widget:
+            data:
+              actions:
+              - edit
+              format:
+                width: 1
+                label: Silver
+            size: medium
+            value:
+              name: wealth_silver
+              type: literal
+              value: 28
         - type: number
-          data:
-            actions:
-            - edit
-            format:
-              width: 1
-              label: Copper
-          size: medium
-          value:
-            name: wealth_copper
-            type: literal
-            value: 17
+          widget:
+            data:
+              actions:
+              - edit
+              format:
+                width: 1
+                label: Copper
+            size: medium
+            value:
+              name: wealth_copper
+              type: literal
+              value: 17
       - width: three_quarters
         widgets:
         - type: number
-          data:
-            actions:
-            - edit
-            format:
-              label: Platinum
-          size: medium
-          value:
-            name: wealth_platinum
-            type: literal
-            value: 0
+          widget:
+            data:
+              actions:
+              - edit
+              format:
+                label: Platinum
+            size: medium
+            value:
+              name: wealth_platinum
+              type: literal
+              value: 0
         - type: number
-          data:
-            actions:
-            - edit
-            format:
-              width: 1
-              label: Electrum
-          size: medium
-          value:
-            name: wealth_electrum
-            type: literal
-            value: 0
+          widget:
+            data:
+              format:
+                width: 1
+                label: Electrum
+            size: medium
+            value:
+              name: wealth_electrum
+              type: literal
+              value: 0
     - name: Gear
       space_above: medium_large
       rows:
       - widgets:
         - type: table
-          data:
-            actions:
-            - edit
-            format:
-              label: Gear
-          columns:
-          - type: text
-            column:
-              name: NAME
-              default_value: armor
-              width: 1
-              alignment: left
-          - type: number
-            column:
-              name: QUANTITY
-              default_value: 1
-              width: 1
-              alignment: center
-          rows:
-          - cells:
-            - value:
-                type: literal
-                value: Crossbow Bolt
-            - value:
-                name: quantity
-                type: literal
-                value: 20
-          - cells:
-            - value:
-                type: literal
-                value: Torch
-            - value:
-                name: quantity
-                type: literal
-                value: 3
-          - cells:
-            - value:
-                type: literal
-                value: Caltrops (Bag of 20)
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-          - cells:
-            - value:
-                type: literal
-                value: Hemp Rope (50 feet)
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-          - cells:
-            - value:
-                type: literal
-                value: Grappling Hook
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-          - cells:
-            - value:
-                type: literal
-                value: Crowbar
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-          - cells:
-            - value:
-                type: literal
-                value: Waterskin
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-          - cells:
-            - value:
-                type: literal
-                value: Vial
-            - value:
-                name: quantity
-                type: literal
-                value: 2
-          - cells:
-            - value:
-                type: literal
-                value: Manacles
-            - value:
-                name: quantity
-                type: literal
-                value: 1
-          - cells:
-            - value:
-                type: literal
-                value: Bedroll
-            - value:
-                name: quantity
-                type: literal
-                value: 1
+          widget:
+            data:
+              format:
+                label: Gear
+            columns:
+            - type: text
+              column:
+                name: NAME
+                default_value: armor
+                width: 1
+                alignment: left
+            - type: number
+              column:
+                name: QUANTITY
+                default_value: 1
+                width: 1
+                alignment: center
+            rows:
+            - cells:
+              - value:
+                  type: literal
+                  value: Crossbow Bolt
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 20
+            - cells:
+              - value:
+                  type: literal
+                  value: Torch
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 3
+            - cells:
+              - value:
+                  type: literal
+                  value: Caltrops (Bag of 20)
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+            - cells:
+              - value:
+                  type: literal
+                  value: Hemp Rope (50 feet)
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+            - cells:
+              - value:
+                  type: literal
+                  value: Grappling Hook
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+            - cells:
+              - value:
+                  type: literal
+                  value: Crowbar
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+            - cells:
+              - value:
+                  type: literal
+                  value: Waterskin
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+            - cells:
+              - value:
+                  type: literal
+                  value: Vial
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 2
+            - cells:
+              - value:
+                  type: literal
+                  value: Manacles
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+            - cells:
+              - value:
+                  type: literal
+                  value: Bedroll
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
 encounter:
   pages:
   - label: Attacks
@@ -3367,100 +3494,103 @@ encounter:
       - space_above: medium
         widgets:
         - type: action
-          action: >
-            In the stance of the roaring tempest, I spin my longsword in wide, graceful arcs,
-            slashing at my opponent with glimmering steel.
-          action_highlight: longsword
-          action_name: Longsword Melee Attack
-          data:
+          widget:
+            action: >
+              In the stance of the roaring tempest, I spin my longsword in wide, graceful arcs,
+              slashing at my opponent with glimmering steel.
+            action_highlight: longsword
+            action_name: Longsword Melee Attack
+            data:
+              format:
+                alignment: center
+                width: 1
             format:
-              alignment: center
-              width: 1
-          format:
-            size: medium
-          modifier:
-            name: longsword_attack_bonus
-            type: summation
-            value:
-              terms:
-              - type: dice_roll
-                value:
-                  type: literal
-                  name: Attack Dice
+              size: medium
+            modifier:
+              name: longsword_attack_bonus
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
                   value:
-                    type: d20
-                    quantity: 1
-                    modifier: 0
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: strength_modifier
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: proficiency_bonus
+                    type: literal
+                    name: Attack Dice
+                    value:
+                      type: d20
+                      quantity: 1
+                      modifier: 0
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: strength_modifier
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: proficiency_bonus
       - space_above: medium_small
         widgets:
         - type: action
-          action: I strike, dealing damage.
-          action_highlight: damage
-          action_name: Longsword Melee Damage
-          data:
+          widget:
+            action: I strike, dealing damage.
+            action_highlight: damage
+            action_name: Longsword Melee Damage
+            data:
+              format:
+                alignment: center
+                width: 1
             format:
-              alignment: center
-              width: 1
-          format:
-            size: medium
-          modifier:
-            name: longsword_attack_damage
-            type: summation
-            value:
-              terms:
-              - type: dice_roll
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: weapon_longsword_damage
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: strength_modifier
+              size: medium
+            modifier:
+              name: longsword_attack_damage
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: weapon_longsword_damage
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: strength_modifier
       - space_above: medium_small
         widgets:
         - type: action
-          action: I strike, dealing two-handed damage.
-          action_highlight: two-handed damage
-          action_name: Longsword Melee Damage
-          data:
+          widget:
+            action: I strike, dealing two-handed damage.
+            action_highlight: two-handed damage
+            action_name: Longsword Melee Damage
+            data:
+              format:
+                alignment: center
+                width: 1
             format:
-              alignment: center
-              width: 1
-          format:
-            size: medium
-          modifier:
-            name: longsword_attack_damage
-            type: summation
-            value:
-              terms:
-              - type: dice_roll
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: weapon_longsword_two_handed_damage
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: strength_modifier
+              size: medium
+            modifier:
+              name: longsword_attack_damage
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: weapon_longsword_two_handed_damage
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: strength_modifier
     - name: Heavy Crossbow
       show_name: false
       space_above: medium
@@ -3470,123 +3600,164 @@ encounter:
       - space_above: small
         widgets:
         - type: action
-          action: |
-            My muscles strain winding back the taut string of my heavy crossbow.
-            A violient thwack explodes in the ears of my allies. A bolt flies towards my opponents.
-          action_highlight: heavy crossbow
-          action_name: Heavy Crossbow Ranged Attack
-          data:
+          widget:
+            action: |
+              My muscles strain winding back the taut string of my heavy crossbow.
+              A violient thwack explodes in the ears of my allies. A bolt flies towards my opponents.
+            action_highlight: heavy crossbow
+            action_name: Heavy Crossbow Ranged Attack
+            data:
+              format:
+                width: 1
             format:
-              width: 1
-          format:
-            hl_color: green
-          modifier:
-            name: heavy_crossbow_attack_bonus
-            type: summation
-            value:
-              terms:
-              - type: dice_roll
-                value:
-                  type: literal
+              hl_color: green
+            modifier:
+              name: heavy_crossbow_attack_bonus
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
                   value:
-                    type: d20
-                    quantity: 1
-                    modifier: 0
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: dexterity_modifier
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: proficiency_bonus
+                    type: literal
+                    value:
+                      type: d20
+                      quantity: 1
+                      modifier: 0
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: dexterity_modifier
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: proficiency_bonus
       - widgets:
         - type: action
-          action: The crossbow bolt pierces my opponent for damage.
-          action_highlight: damage
-          action_name: Heavy Crossbow Damage
-          data:
+          widget:
+            action: The crossbow bolt pierces my opponent for damage.
+            action_highlight: damage
+            action_name: Heavy Crossbow Damage
+            data:
+              format:
+                width: 1
             format:
-              width: 1
-          format:
-            hl_color: green
-          modifier:
-            name: heavy_crossbow_attack_damage
-            type: summation
-            value:
-              terms:
-              - type: dice_roll
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: weapon_heavy_crossbow_damage
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: dexterity_modifier
+              hl_color: green
+            modifier:
+              name: heavy_crossbow_attack_damage
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: weapon_heavy_crossbow_damage
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: dexterity_modifier
     - label: Dagger (Melee)
       rows:
       - widgets:
         - type: action
-          action: Attack with dagger
-          action_highlight: dagger
-          action_name: Dagger Melee Attack
-          data:
-            format:
-              width: 1
-          modifier:
-            name: dagger_attack_bonus
-            type: summation
-            value:
-              terms:
-              - type: dice_roll
-                value:
-                  type: literal
+          widget:
+            action: Attack with dagger
+            action_highlight: dagger
+            action_name: Dagger Melee Attack
+            data:
+              format:
+                width: 1
+            modifier:
+              name: dagger_attack_bonus
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
                   value:
-                    type: d20
-                    quantity: 1
-                    modifier: 0
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: strength_modifier
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: proficiency_bonus
+                    type: literal
+                    value:
+                      type: d20
+                      quantity: 1
+                      modifier: 0
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: strength_modifier
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: proficiency_bonus
         - type: action
-          action: Damage with dagger
-          action_highlight: dagger
-          action_name: Dagger Melee Damage
-          data:
+          widget:
+            action: Damage with dagger
+            action_highlight: dagger
+            action_name: Dagger Melee Damage
+            data:
+              format:
+                width: 1
+            modifier:
+              name: dagger_attack_damage
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: weapon_dagger_damage
+                - type: integer
+                  value:
+                    type: variable
+                    variable:
+                      type: name
+                      name: strength_modifier
+                      pages:
+  - label: Status
+    groups:
+    - name: Hit Points
+      show_name: false
+      rows:
+      - space_above: medium
+        alignment: center
+        widgets:
+        - type: adder
+          widget:
             format:
-              width: 1
-          modifier:
-            name: dagger_attack_damage
-            type: summation
+              subtract_label: Lose
+              add_label: Heal
+              reset_label: Restore Full Health
             value:
-              terms:
-              - type: dice_roll
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: weapon_dagger_damage
-              - type: integer
-                value:
-                  type: variable
-                  variable:
-                    type: name
-                    name: strength_modifier
-
+              type: variable
+              value: hit_points
+            type: by_many
+  - label: Abilities
+    groups:
+campaign:
+  pages:
+  - label: History
+    groups:
+    - name: Campaign Log
+      rows:
+      - widgets:
+        - type: log
+          widget:
+            entries:
+            - title: An Old Friend
+              date: 1486802269966
+              author: Jonathon Smith
+              text: >
+                Yesterday I received a message from an old friend. It told me of a mission of great
+                importance. It seems that strange things are occurring in the gold kingdom. I am
+                needed. I must go immediately.

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.kispoko.tome.engine.State.variableWithName;
 
 
 /**
@@ -113,7 +112,7 @@ public class Sheet implements Model
 
         this.profileSection     = ModelFunctor.full(profileSection, Section.class);
         this.encounterSection   = ModelFunctor.full(encounterSection, Section.class);
-        this.campaignSection    = ModelFunctor.full(null, Section.class);
+        this.campaignSection    = ModelFunctor.full(campaignSection, Section.class);
 
         this.campaignName       = new PrimitiveFunctor<>(campaignName, String.class);
         this.game               = ModelFunctor.full(game, Game.class);
@@ -141,7 +140,9 @@ public class Sheet implements Model
         Section      profile          = Section.fromYaml(SectionType.PROFILE,
                                                          yaml.atKey("profile"));
         Section      encounter        = Section.fromYaml(SectionType.ENCOUNTER,
-                                                       yaml.atKey("encounter"));
+                                                        yaml.atKey("encounter"));
+        Section      campaign        = Section.fromYaml(SectionType.CAMPAIGN,
+                                                        yaml.atKey("campaign"));
 
         String       campaignName     = yaml.atKey("campaign_name").getString();
         Game         game             = Game.fromYaml(yaml.atKey("game"));
@@ -150,7 +151,7 @@ public class Sheet implements Model
         List<String> summaryVariables = yaml.atKey("summary_variables").getStringList();
 
         return new Sheet(id, game, campaignName, summaryVariables,
-                         rulesEngine, profile, encounter, null);
+                         rulesEngine, profile, encounter, campaign);
     }
 
 
@@ -198,6 +199,7 @@ public class Sheet implements Model
                 .putStringList("summary_variables", this.summaryVariables())
                 .putYaml("profile", this.profileSection())
                 .putYaml("encounter", this.encounterSection())
+                .putYaml("campaign", this.campaignSection())
                 .putYaml("engine", this.engine());
     }
 
@@ -251,8 +253,8 @@ public class Sheet implements Model
 
 
     /**
-     * Get the profileSection section.
-     * @return The profileSection section.
+     * The profile section
+     * @return The profile section.
      */
     public Section profileSection()
     {
@@ -261,12 +263,22 @@ public class Sheet implements Model
 
 
     /**
-     * Get the encounterSection section.
-     * @return The encounterSection section.
+     * The encounter section.
+     * @return The encounter section.
      */
     public Section encounterSection()
     {
         return this.encounterSection.getValue();
+    }
+
+
+    /**
+     * The campaign section.
+     * @return The campaign section.
+     */
+    public Section campaignSection()
+    {
+        return this.campaignSection.getValue();
     }
 
 

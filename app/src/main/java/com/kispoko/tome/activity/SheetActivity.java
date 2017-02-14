@@ -276,7 +276,7 @@ public class SheetActivity
                         SheetManager.currentSheet().encounterSection().render(pagePagerAdapter);
                         break;
                     case R.id.button_section_campaign:
-                        // Switch to page three
+                        SheetManager.currentSheet().campaignSection().render(pagePagerAdapter);
                         break;
                 }
                 return true;

@@ -5,7 +5,6 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -26,8 +25,12 @@ public class RecyclerViewBuilder
     public RecyclerView.Adapter         adapter;
 
     public Padding                      padding;
+    public Margins                      margin;
 
     public RecyclerView.ItemDecoration  divider;
+
+    public Integer                      backgroundColor;
+    public Integer                      backgroundResource;
 
 
     // CONSTRUCTORS
@@ -44,8 +47,12 @@ public class RecyclerViewBuilder
         this.adapter            = null;
 
         this.padding            = new Padding();
+        this.margin             = new Margins();
 
         this.divider            = null;
+
+        this.backgroundColor    = null;
+        this.backgroundResource = null;
     }
 
 
@@ -77,6 +84,18 @@ public class RecyclerViewBuilder
         if (this.divider != null)
             recyclerView.addItemDecoration(this.divider);
 
+        // > Background Color
+        // --------------------------------------------------------------------------------------
+
+        if (this.backgroundColor != null)
+            recyclerView.setBackgroundColor(this.backgroundColor);
+
+        // > Background Resource
+        // --------------------------------------------------------------------------------------
+
+        if (this.backgroundResource != null)
+            recyclerView.setBackgroundResource(this.backgroundResource);
+
         // > Padding
         // --------------------------------------------------------------------------------------
 
@@ -104,6 +123,11 @@ public class RecyclerViewBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+
+        // > Margins
+        // --------------------------------------------------------------------------------------
+
+        layoutParamsBuilder.setMargins(this.margin);
 
 
         switch (this.layoutType)

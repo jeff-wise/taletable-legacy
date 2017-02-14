@@ -2,7 +2,6 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
-import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -74,6 +73,7 @@ public class WidgetData implements Model, ToYaml, Serializable
     {
         WidgetData widgetData = new WidgetData();
 
+        widgetData.setId(UUID.randomUUID());
         widgetData.format.setValue(WidgetFormat.asDefault());
 
         return widgetData;

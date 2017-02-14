@@ -31,7 +31,9 @@ public enum WidgetType implements ToYaml
     LIST,
     TABLE,
     ACTION,
-    MECHANIC;
+    ADDER,
+    MECHANIC,
+    LOG;
 
 
     // CONSTRUCTORS
@@ -101,6 +103,12 @@ public enum WidgetType implements ToYaml
                 return R.string.widget_image;
             case ACTION:
                 return R.string.widget_action;
+            case ADDER:
+                return R.string.widget_adder;
+            case MECHANIC:
+                return R.string.widget_mechanic;
+            case LOG:
+                return R.string.widget_log;
         }
 
         return 0;
