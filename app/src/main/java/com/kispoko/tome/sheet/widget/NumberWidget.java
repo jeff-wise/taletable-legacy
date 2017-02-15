@@ -4,6 +4,10 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,12 +18,10 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
-import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
-import com.kispoko.tome.sheet.widget.number.NumberWidgetStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.util.Util;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.label;
 
 
 /**
@@ -49,37 +52,34 @@ public class NumberWidget extends Widget
 {
 
     // PROPERTIES
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Model
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private UUID                                id;
 
 
     // > Functors
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private ModelFunctor<WidgetData>            widgetData;
     private ModelFunctor<NumberWidgetFormat>    format;
     private ModelFunctor<NumberVariable>        valueVariable;
     private PrimitiveFunctor<String>            valuePrefix;
     private PrimitiveFunctor<String>            valuePostfix;
-    private ModelFunctor<TextVariable>          prefixVariable;
-    private ModelFunctor<TextVariable>          postfixVariable;
+    private PrimitiveFunctor<String>            description;
     private CollectionFunctor<VariableUnion>    variables;
 
 
     // > Internal
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private Integer                             valueViewId;
-    private Integer                             prefixViewId;
-    private Integer                             postfixViewId;
 
 
     // CONSTRUCTORS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public NumberWidget()
     {
@@ -90,16 +90,13 @@ public class NumberWidget extends Widget
         this.valueVariable      = ModelFunctor.empty(NumberVariable.class);
         this.valuePrefix        = new PrimitiveFunctor<>(null, String.class);
         this.valuePostfix       = new PrimitiveFunctor<>(null, String.class);
-        this.prefixVariable     = ModelFunctor.empty(TextVariable.class);
-        this.postfixVariable    = ModelFunctor.empty(TextVariable.class);
+        this.description        = new PrimitiveFunctor<>(null, String.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
         this.variables  = CollectionFunctor.empty(variableClasses);
 
         this.valueViewId    = null;
-        this.prefixViewId   = null;
-        this.postfixViewId  = null;
     }
 
 
@@ -109,8 +106,7 @@ public class NumberWidget extends Widget
                         NumberVariable valueVariable,
                         String valuePrefix,
                         String valuePostfix,
-                        TextVariable prefixVariable,
-                        TextVariable postfixVariable,
+                        String description,
                         List<VariableUnion> variables)
     {
         this.id                 = id;
@@ -120,16 +116,13 @@ public class NumberWidget extends Widget
         this.valueVariable      = ModelFunctor.full(valueVariable, NumberVariable.class);
         this.valuePrefix        = new PrimitiveFunctor<>(valuePrefix, String.class);
         this.valuePostfix       = new PrimitiveFunctor<>(valuePostfix, String.class);
-        this.prefixVariable     = ModelFunctor.full(prefixVariable, TextVariable.class);
-        this.postfixVariable    = ModelFunctor.full(postfixVariable, TextVariable.class);
+        this.description        = new PrimitiveFunctor<>(description, String.class);
 
         List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
         variableClasses.add(VariableUnion.class);
         this.variables  = CollectionFunctor.full(variables, variableClasses);
 
         this.valueViewId    = null;
-        this.prefixViewId   = null;
-        this.postfixViewId  = null;
     }
 
 
@@ -138,15 +131,14 @@ public class NumberWidget extends Widget
     {
         UUID               id            = UUID.randomUUID();
 
-        WidgetData         widgetData    = WidgetData.fromYaml(yaml.atKey("data"));
+        WidgetData         widgetData    = WidgetData.fromYaml(yaml.atMaybeKey("data"));
         NumberWidgetFormat format        = NumberWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
         NumberVariable     value         = NumberVariable.fromYaml(yaml.atKey("value"));
-        String             valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
-        String             valuePostfix  = yaml.atMaybeKey("value_postfix").getString();
-        TextVariable       prefix        = TextVariable.fromYaml(yaml.atMaybeKey("prefix"));
-        TextVariable       postfix       = TextVariable.fromYaml(yaml.atMaybeKey("postfix"));
+        String             valuePrefix   = yaml.atMaybeKey("value_prefix").getTrimmedString();
+        String             valuePostfix  = yaml.atMaybeKey("value_postfix").getTrimmedString();
+        String             description   = yaml.atMaybeKey("description").getTrimmedString();
 
-        List<VariableUnion> variables   = yaml.atMaybeKey("variables").forEach(
+        List<VariableUnion> variables    = yaml.atMaybeKey("variables").forEach(
                                                 new YamlParser.ForEach<VariableUnion>()
         {
             @Override
@@ -156,18 +148,18 @@ public class NumberWidget extends Widget
         }, true);
 
         return new NumberWidget(id, widgetData, format, value, valuePrefix, valuePostfix,
-                                prefix, postfix, variables);
+                                description, variables);
     }
 
 
     // API
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Model
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // ** Id
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public UUID getId()
     {
@@ -182,7 +174,7 @@ public class NumberWidget extends Widget
 
 
     // ** On Load
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * This method is called when the Number Widget is completely loaded for the first time.
@@ -191,7 +183,7 @@ public class NumberWidget extends Widget
 
 
     // > To Yaml
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public YamlBuilder toYaml()
     {
@@ -201,14 +193,13 @@ public class NumberWidget extends Widget
                 .putYaml("value", this.valueVariable())
                 .putString("value_prefix", this.valuePrefix())
                 .putString("value_postfix", this.valuePostfix())
-                .putYaml("prefix", this.prefixVariable())
-                .putYaml("postfix", this.postfixVariable())
+                .putString("description", this.description())
                 .putList("variables", this.variables());
     }
 
 
     // > Widget
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Initialize the text widget state.
@@ -218,10 +209,10 @@ public class NumberWidget extends Widget
     {
         // [1] Initialize variables with listeners to update the number widget views when the
         //     values of the variables change
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         // ** Value
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         if (!this.valueVariable.isNull()) {
             this.valueVariable().initialize();
@@ -239,46 +230,9 @@ public class NumberWidget extends Widget
             State.addVariable(this.valueVariable());
         }
 
-        // ** Prefix
-        // --------------------------------------------------------------------------------------
-
-        if (!this.prefixVariable.isNull()) {
-            this.prefixVariable().initialize();
-        }
-
-        if (!this.prefixVariable.isNull())
-        {
-            this.prefixVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onPrefixUpdate();
-                }
-            });
-
-            State.addVariable(this.prefixVariable());
-        }
-
-        // ** Postfix
-        // --------------------------------------------------------------------------------------
-
-        if (!this.postfixVariable.isNull()) {
-            this.postfixVariable().initialize();
-        }
-
-        if (!this.postfixVariable.isNull())
-        {
-            this.postfixVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
-                @Override
-                public void onUpdate() {
-                    onPostfixUpdate();
-                }
-            });
-
-            State.addVariable(this.postfixVariable());
-        }
 
         // [2] Initialize the helper variables
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         for (VariableUnion variableUnion : this.variables()) {
             State.addVariable(variableUnion);
@@ -306,10 +260,10 @@ public class NumberWidget extends Widget
 
 
     // > State
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // ** Format
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * The Number Widget Format.
@@ -322,7 +276,7 @@ public class NumberWidget extends Widget
 
 
     // ** Value
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Get the number widget's value variable.
@@ -398,8 +352,18 @@ public class NumberWidget extends Widget
     }
 
 
+    /**
+     * The number description.
+     * @return The description.
+     */
+    public String description()
+    {
+        return this.description.getValue();
+    }
+
+
     // ** Variables
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Get the text widget's helper variables.
@@ -411,65 +375,11 @@ public class NumberWidget extends Widget
     }
 
 
-    // ** Prefix
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the number widget's prefix variable.
-     * @return The text variable.
-     */
-    public TextVariable prefixVariable()
-    {
-        return this.prefixVariable.getValue();
-    }
-
-
-    /**
-     * Get the number widget's prefix value (from its prefix variable).
-     * @return The prefix (may be null).
-     */
-    public String prefix()
-    {
-        if (this.prefixVariable() != null)
-            return this.prefixVariable().value();
-        else
-            return null;
-    }
-
-
-    // ** Postfix
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the postfixVariable Text Variable. The postfixVariable contains any text that comes after
-     * the main value.
-     * @return The postfixVariable Text Variable.
-     */
-    public TextVariable postfixVariable()
-    {
-        return this.postfixVariable.getValue();
-    }
-
-
-    /**
-     * Get the number widget's postfixVariable value (from its postfixVariable variablbe).
-     * @return The postfixVariable (may be null).
-     */
-    public String postfix()
-    {
-        if (this.postfixVariable() != null)
-            return this.postfixVariable().value();
-        else
-            return null;
-    }
-
-
-
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Value Updates
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * When the text widget's value is updated.
@@ -493,45 +403,8 @@ public class NumberWidget extends Widget
     }
 
 
-    /**
-     * When the text widget's prefix is updated.
-     */
-    private void onPrefixUpdate()
-    {
-        if (this.prefixViewId != null && !this.prefixVariable.isNull())
-        {
-            Activity activity = (Activity) SheetManager.currentSheetContext();
-            TextView textView = (TextView) activity.findViewById(this.prefixViewId);
-
-            String prefixValue = this.prefix();
-
-            if (prefixValue != null)
-                textView.setText(prefixValue);
-        }
-    }
-
-
-    /**
-     * When the text widget's postfixVariable is updated.
-     */
-    private void onPostfixUpdate()
-    {
-        if (this.postfixViewId != null && !this.postfixVariable.isNull())
-        {
-            Activity activity = (Activity) SheetManager.currentSheetContext();
-            TextView textView = (TextView) activity.findViewById(this.postfixViewId);
-
-            String postfixValue = this.postfix();
-
-            // TODO why is textView null on hotswapping??
-            if (postfixValue != null && textView != null)
-                textView.setText(postfixValue);
-        }
-    }
-
-
     // > Views
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private View widgetView(boolean rowHasLabel, Context context)
     {
@@ -619,7 +492,7 @@ public class NumberWidget extends Widget
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text                  = this.format().label();
-        label.color                 = this.format().tint().labelResourceId();
+        label.color                 = this.format().labelStyle().color().resourceId();
         label.size                  = R.dimen.widget_label_text_size;
         label.font                  = Font.serifFontRegular(context);
 
@@ -653,9 +526,6 @@ public class NumberWidget extends Widget
         }
 
         layout.addView(valueTextView(context));
-
-        if (!this.postfixVariable.isNull())
-            layout.addView(valuePostfixview(context));
 
         return layout;
     }
@@ -713,15 +583,99 @@ public class NumberWidget extends Widget
                 break;
         }
 
-        if (this.format().style() == NumberWidgetStyle.PURPLE_CIRCLE)
-            value.backgroundResource = this.format().style().resourceId();
-
-        value.size          = this.format().size().resourceId();
         value.font          = Font.serifFontRegular(context);
-        value.color         = this.format().tint().resourceId();
-        value.text          = this.valueString();
+
+        if (this.description() != null)
+        {
+            value.color     = this.format().descriptionStyle().color().resourceId();
+            value.size      = this.format().descriptionStyle().size().resourceId();
+            value.textSpan  = this.valueSpannableString(context);
+        }
+        else
+        {
+            value.text      = this.valueString();
+            value.color     = this.format().valueStyle().color().resourceId();
+            value.size      = this.format().valueStyle().size().resourceId();
+
+            // > Font
+            if (this.format().labelStyle().isBold() && this.format().labelStyle().isItalic()) {
+                value.font  = Font.serifFontBoldItalic(context);
+            }
+            else if (this.format().labelStyle().isBold()) {
+                value.font  = Font.serifFontBold(context);
+            }
+            else if (this.format().labelStyle().isItalic()) {
+                value.font  = Font.serifFontItalic(context);
+            }
+            else {
+                value.font  = Font.serifFontRegular(context);
+            }
+        }
 
         return value.textView(context);
+    }
+
+
+    private SpannableStringBuilder valueSpannableString(Context context)
+    {
+        String valueString = this.valueString();
+        int valueStringLength = valueString.length();
+
+        // > Get value index and remove placeholder
+        int valueIndex = this.description().indexOf("<value>");
+
+        String descriptionString = this.description().replace("<value>", "");
+
+        SpannableStringBuilder builder = new SpannableStringBuilder(descriptionString);
+
+
+        // > Format Value
+        // (1) Insert number string
+        builder.insert(valueIndex, valueString);
+
+        // (2) Make the number bold
+        if (this.format().valueStyle().isBold() && this.format().valueStyle().isItalic()) {
+            StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
+            builder.setSpan(valueBoldItalicSpan, valueIndex, valueIndex + valueStringLength, 0 );
+        }
+        else if (this.format().valueStyle().isBold()) {
+            StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
+            builder.setSpan(valueBoldSpan, valueIndex, valueIndex + valueStringLength, 0 );
+        }
+        else if (this.format().valueStyle().isItalic()) {
+            StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
+            builder.setSpan(valueItalicSpan, valueIndex, valueIndex + valueStringLength, 0 );
+        }
+
+        // (3) Color the value
+        builder.setSpan(this.format().valueStyle().color().foregroundColorSpan(context),
+                        valueIndex, valueIndex + valueStringLength, 0);
+
+        // > Format Label
+        if (this.format().label() != null &&
+            this.format().labelPosition() == InlineLabelPosition.TEXT)
+        {
+            int labelIndex = descriptionString.indexOf(this.format().label());
+            int labelStringLength = this.format().label().length();
+
+            if (this.format().labelStyle().isBold() && this.format().labelStyle().isItalic()) {
+                StyleSpan labelBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
+                builder.setSpan(labelBoldItalicSpan, labelIndex, labelIndex + labelStringLength, 0);
+            }
+            else if (this.format().labelStyle().isBold()) {
+                StyleSpan labelBoldSpan = new StyleSpan(Typeface.BOLD);
+                builder.setSpan(labelBoldSpan, labelIndex, labelIndex + labelStringLength, 0);
+            }
+            else if (this.format().labelStyle().isItalic()) {
+                StyleSpan labelItalicSpan = new StyleSpan(Typeface.ITALIC);
+                builder.setSpan(labelItalicSpan, labelIndex, labelIndex + labelStringLength, 0);
+            }
+
+            builder.setSpan(this.format().labelStyle().color().foregroundColorSpan(context),
+                    labelIndex, labelIndex + labelStringLength, 0);
+        }
+
+        return builder;
     }
 
 
@@ -733,33 +687,27 @@ public class NumberWidget extends Widget
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text              = this.format().label();
-        label.font              = Font.serifFontRegular(context);
-        label.color             = this.format().tint().labelResourceId();
-        label.size              = this.format().size().labelResourceId();
+        label.color             = this.format().labelStyle().color().resourceId();
+        label.size              = this.format().labelStyle().size().resourceId();
+
+        // > Font
+        if (this.format().labelStyle().isBold() && this.format().labelStyle().isItalic()) {
+            label.font          = Font.serifFontBoldItalic(context);
+        }
+        else if (this.format().labelStyle().isBold()) {
+            label.font          = Font.serifFontBold(context);
+        }
+        else if (this.format().labelStyle().isItalic()) {
+            label.font          = Font.serifFontItalic(context);
+        }
+        else {
+            label.font          = Font.serifFontRegular(context);
+        }
+
 
         label.margin.right      = R.dimen.widget_label_inline_margin_right;
 
         return label.textView(context);
-    }
-
-
-    private TextView valuePostfixview(Context context)
-    {
-        TextViewBuilder postfix = new TextViewBuilder();
-
-        this.postfixViewId = Util.generateViewId();
-
-        postfix.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        postfix.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        postfix.id              = this.postfixViewId;
-
-        postfix.text            = this.postfix();
-        postfix.size            = this.format().size().resourceId();
-        postfix.font            = Font.serifFontRegular(context);
-        postfix.color           = R.color.dark_blue_hl_8;
-
-        return postfix.textView(context);
     }
 
 
@@ -777,10 +725,7 @@ public class NumberWidget extends Widget
         label.color             = R.color.dark_blue_hl_8;
         label.size              = R.dimen.widget_label_text_size;
 
-        if (this.format().style() == NumberWidgetStyle.PURPLE_CIRCLE)
-            label.margin.bottom     = R.dimen.widget_label_margin_bottom_circle;
-        else
-            label.margin.bottom     = R.dimen.widget_label_margin_bottom;
+        label.margin.bottom     = R.dimen.widget_label_margin_bottom;
 
         return label.textView(context);
     }

@@ -15,6 +15,8 @@ public class Font
 
     private static Typeface serifFontRegular;
     private static Typeface serifFontBold;
+    private static Typeface serifFontItalic;
+    private static Typeface serifFontBoldItalic;
     private static Typeface sansSerifFontRegular;
     private static Typeface sansSerifFontBold;
 
@@ -37,6 +39,24 @@ public class Font
             serifFontBold = Typeface.createFromAsset(context.getAssets(),
                                                     "fonts/Lora-Bold.ttf");
         return serifFontBold;
+    }
+
+
+    public static Typeface serifFontItalic(Context context)
+    {
+        if (serifFontItalic == null)
+            serifFontItalic = Typeface.createFromAsset(context.getAssets(),
+                                                    "fonts/Lora-Italic.ttf");
+        return serifFontItalic;
+    }
+
+
+    public static Typeface serifFontBoldItalic(Context context)
+    {
+        if (serifFontBoldItalic == null)
+            serifFontBoldItalic = Typeface.createFromAsset(context.getAssets(),
+                                                    "fonts/Lora-BoldItalic.ttf");
+        return serifFontBoldItalic;
     }
 
 

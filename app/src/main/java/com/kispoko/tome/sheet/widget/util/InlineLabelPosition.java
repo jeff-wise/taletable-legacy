@@ -24,7 +24,8 @@ public enum InlineLabelPosition implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     LEFT,
-    TOP;
+    TOP,
+    TEXT;
 
 
     // CONSTRUCTORS

@@ -123,10 +123,11 @@
     <!-- WIDGET: GENERAL -->
     <dimen name="text_size_large">6.2dp</dimen>
     <dimen name="text_size_medium_large">5dp</dimen>
-    <dimen name="text_size_medium">4.5dp</dimen>
-    <dimen name="text_size_medium_small">4dp</dimen>
-    <dimen name="text_size_small">3.4dp</dimen>
-    <dimen name="text_size_very_small">3dp</dimen>
+    <dimen name="text_size_medium">4.6dp</dimen>
+    <dimen name="text_size_medium_small">4.2dp</dimen>
+    <dimen name="text_size_small">3.7dp</dimen>
+    <dimen name="text_size_very_small">3.3dp</dimen>
+    <dimen name="text_size_super_small">3dp</dimen>
 
     <dimen name="label_size_large">5.3dp</dimen>
     <dimen name="label_size_medium_large">4.7dp</dimen>

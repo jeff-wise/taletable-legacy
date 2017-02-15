@@ -120,7 +120,7 @@ public enum WidgetBackground implements ToYaml
     }
 
 
-    public Integer resourceId(WidgetCorners corners, WidgetContentSize size)
+    public Integer resourceId(WidgetCorners corners, TextSize size)
     {
         switch (this)
         {

@@ -2119,59 +2119,35 @@ profile:
     groups:
     - space_above: medium_small
       background: dark
-      name: Ability Scores
+      name: Strength
       show_name: false
       space_below: medium
       rows:
-      - width: full
-        space_above: small
+      - space_above: small
         widgets:
         - type: number
           widget:
-            data:
-              format:
-                alignment: center
-                label: Strength
-                label_alignment: center
-                width: 1
+            description: >
+              Decades of fighting and training have made my muscles hard like granite. I may
+              appear lean, but with my strength of <value> I have surprised many an orc in combat.
             format:
-              style: purple_circle
-              tint: purple
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: strength
+              label_position: text
+              label_style:
+                color: light
+                is_bold: true
+                is_italic: true
+              value_style:
+                color: green_light
+                is_bold: true
             value:
               name: strength
               type: literal
               value: 16
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                label: Dexterity
-                label_alignment: center
-                width: 1
-            format:
-              style: purple_circle
-              tint: purple
-            value:
-              name: dexterity
-              type: literal
-              value: 14
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                label: Constitution
-                label_alignment: center
-                width: 1
-            format:
-              style: purple_circle
-              tint: purple
-            value:
-              name: constitution
-              type: literal
-              value: 14
-      - space_above: very_small
+      - space_above: small
         widgets:
         - type: number
           widget:
@@ -2181,8 +2157,16 @@ profile:
                 background: empty
                 width: 1
             format:
-              size: small
-              tint: very_dark
+              label: modifier
+              label_position: left
+              label_style:
+                color: super_dark
+                is_italic: false
+                size: medium_small
+              value_style:
+                color: super_dark
+                is_italic: false
+                size: medium_small
             value:
               name: strength_modifier
               label: Strength Modifier
@@ -2193,156 +2177,29 @@ profile:
                 - type: reference
                   value: strength
             value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                background: empty
-                width: 1
-            format:
-              size: small
-              tint: very_dark
-            value:
-              name: dexterity_modifier
-              label: Dexterity Modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: dexterity
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                background: empty
-                width: 1
-            format:
-              size: small
-              tint: very_dark
-            value:
-              name: constitution_modifier
-              label: Constitution Modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: constitution
-            value_prefix: '+'
-      - width: full
-        space_above: medium
+      - space_above: small
         widgets:
         - type: number
           widget:
-            data:
-              format:
-                alignment: center
-                label: Intelligence
-                label_alignment: center
-                width: 1
+            description: >
+              My saving throw is <value>.
             format:
-              style: purple_circle
-              tint: purple
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: saving throw
+              label_position: text
+              label_style:
+                color: light
+                is_bold: true
+                is_italic: true
+              value_style:
+                color: green_light
+                is_bold: true
             value:
-              name: intelligence
+              name: strength
               type: literal
-              value: 11
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                label: Wisdom
-                label_alignment: center
-                width: 1
-            format:
-              style: purple_circle
-              tint: purple
-            value:
-              name: wisdom
-              type: literal
-              value: 11
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                label: Charisma
-                label_alignment: center
-                width: 1
-            format:
-              style: purple_circle
-              tint: purple
-            value:
-              name: charisma
-              type: literal
-              value: 13
-      - space_above: very_small
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                background: empty
-                width: 1
-            format:
-              size: small
-              tint: very_dark
-            value:
-              name: intelligence_modifier
-              label: Intelligence Modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: intelligence
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                background: empty
-                width: 1
-            format:
-              size: small
-              tint: very_dark
-            value:
-              name: wisdom_modifier
-              label: Wisdom Modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: wisdom
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                background: empty
-                width: 1
-            format:
-              size: small
-              tint: very_dark
-            value:
-              name: charisma_modifier
-              label: Charisma Modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: charisma
-            value_prefix: '+'
+              value: 16
     - name: Saving Throws
       space_above: medium
       rows:

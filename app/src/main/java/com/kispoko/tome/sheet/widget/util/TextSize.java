@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget.number;
+package com.kispoko.tome.sheet.widget.util;
 
 
 import com.kispoko.tome.R;
@@ -9,59 +9,69 @@ import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 
 /**
- * Number Widget Style
+ * Widget Content Size
  */
-public enum NumberWidgetStyle implements ToYaml
+public enum TextSize implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    NONE,
-    PURPLE_CIRCLE,
-    GREEN_CIRCLE;
+    VERY_SMALL,
+    SMALL,
+    MEDIUM_SMALL,
+    MEDIUM,
+    MEDIUM_LARGE,
+    LARGE;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static NumberWidgetStyle fromString(String styleString)
+    public static TextSize fromString(String sizeString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(NumberWidgetStyle.class, styleString);
+        return EnumUtils.fromString(TextSize.class, sizeString);
     }
 
 
-    public static NumberWidgetStyle fromYaml(YamlParser yaml)
+    /**
+     * Creates a Size enum from its Yaml representation. If there is no Yaml representation
+     * (it is null), then use MEDIUM as a default size.
+     * @param yaml The Yaml parser.
+     * @return A new Size enum, with MEDIUM as the default.
+     * @throws YamlParseException
+     */
+    public static TextSize fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         if (yaml.isNull())
             return null;
 
-        String styleString = yaml.getString();
+        String sizeString = yaml.getString();
         try {
-            return NumberWidgetStyle.fromString(styleString);
+            return TextSize.fromString(sizeString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(styleString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(sizeString));
         }
     }
 
 
-    public static NumberWidgetStyle fromSQLValue(SQLValue sqlValue)
+    public static TextSize fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            NumberWidgetStyle style = NumberWidgetStyle.fromString(enumString);
-            return style;
+            TextSize size = TextSize.fromString(enumString);
+            return size;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -73,7 +83,7 @@ public enum NumberWidgetStyle implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The Widget Content Alignment's yaml string representation.
+     * The Widget Content Size's yaml string representation.
      * @return The Yaml Builder.
      */
     public YamlBuilder toYaml()
@@ -82,15 +92,25 @@ public enum NumberWidgetStyle implements ToYaml
     }
 
 
-    // RESOURCE ID
+    // API
     // ------------------------------------------------------------------------------------------
 
-    public Integer resourceId()
+    public int resourceId()
     {
         switch (this)
         {
-            case PURPLE_CIRCLE:
-                return R.drawable.bg_widget_purple_circle;
+            case VERY_SMALL:
+                return R.dimen.text_size_very_small;
+            case SMALL:
+                return R.dimen.text_size_small;
+            case MEDIUM_SMALL:
+                return R.dimen.text_size_medium_small;
+            case MEDIUM:
+                return R.dimen.text_size_medium;
+            case MEDIUM_LARGE:
+                return R.dimen.text_size_medium_large;
+            case LARGE:
+                return R.dimen.text_size_large;
         }
 
         return 0;

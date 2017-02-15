@@ -5,6 +5,7 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -39,6 +40,7 @@ public class TextViewBuilder implements ViewBuilder
     public String                   text;
     public Spanned                  textHtml;
     public Integer                  textId;
+    public SpannableStringBuilder   textSpan;
 
     public Padding                  padding;
     public Margins                  margin;
@@ -81,6 +83,7 @@ public class TextViewBuilder implements ViewBuilder
         this.text               = null;
         this.textHtml           = null;
         this.textId             = null;
+        this.textSpan           = null;
 
         this.padding            = new Padding();
         this.margin             = new Margins();
@@ -239,6 +242,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.textId != null)
             textView.setText(this.textId);
+
+        // > Text Span
+        // --------------------------------------------------------------------------------------
+
+        if (this.textSpan != null)
+            textView.setText(this.textSpan);
 
         // [2] Layout
         // --------------------------------------------------------------------------------------

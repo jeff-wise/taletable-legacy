@@ -25,21 +25,20 @@ import com.kispoko.tome.sheet.group.GroupLabelType;
 import com.kispoko.tome.sheet.group.RowAlignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
+import com.kispoko.tome.sheet.widget.AdderWidget;
 import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.sheet.widget.action.ActionColor;
 import com.kispoko.tome.sheet.widget.action.ActionSize;
-import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
-import com.kispoko.tome.sheet.widget.number.NumberWidgetStyle;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
+import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetLabelAlignment;
-import com.kispoko.tome.sheet.widget.util.WidgetTextTint;
+import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -49,6 +48,7 @@ import com.kispoko.tome.util.database.sql.SQLValue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -146,6 +146,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.INTEGER;
         }
+        else if (valueClass.isAssignableFrom(GregorianCalendar.class))
+        {
+            return SQLValue.Type.INTEGER;
+        }
         else if (valueClass.isAssignableFrom(Double.class))
         {
             return SQLValue.Type.REAL;
@@ -166,7 +170,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(WidgetContentSize.class))
+        else if (valueClass.isAssignableFrom(TextSize.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -178,11 +182,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(WidgetTextTint.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(NumberWidgetStyle.class))
+        else if (valueClass.isAssignableFrom(TextColor.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -195,6 +195,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(ActionSize.class))
+        {
+            return SQLValue.Type.TEXT;
+        }
+        else if (valueClass.isAssignableFrom(AdderWidget.Type.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -342,6 +346,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.newInteger((Long) this.getValue());
         }
+        else if (this.getValue() instanceof GregorianCalendar)
+        {
+            Long milliseconds = ((GregorianCalendar) this.getValue()).getTimeInMillis();
+            return SQLValue.newInteger(milliseconds);
+        }
         else if (this.getValue() instanceof Double)
         {
             return SQLValue.newReal((Double) this.getValue());
@@ -359,9 +368,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.newBlob((byte[]) this.getValue());
         }
-        else if (this.getValue() instanceof WidgetContentSize)
+        else if (this.getValue() instanceof TextSize)
         {
-            String enumString = ((WidgetContentSize) this.getValue()).name().toLowerCase();
+            String enumString = ((TextSize) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof WidgetBackground)
@@ -374,14 +383,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((WidgetLabelAlignment) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof WidgetTextTint)
+        else if (this.getValue() instanceof TextColor)
         {
-            String enumString = ((WidgetTextTint) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof NumberWidgetStyle)
-        {
-            String enumString = ((NumberWidgetStyle) this.getValue()).name().toLowerCase();
+            String enumString = ((TextColor) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof WidgetCorners)
@@ -397,6 +401,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof ActionSize)
         {
             String enumString = ((ActionSize) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
+        }
+        else if (this.getValue() instanceof AdderWidget.Type)
+        {
+            String enumString = ((AdderWidget.Type) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof SerialBitmap)
@@ -613,6 +622,12 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             this.setValue((A) sqlValue.getInteger());
         }
+        else if (this.valueClass.isAssignableFrom(GregorianCalendar.class))
+        {
+            GregorianCalendar gregorianCalendar = new GregorianCalendar();
+            gregorianCalendar.setTimeInMillis(sqlValue.getInteger());
+            this.setValue((A) gregorianCalendar);
+        }
         else if (this.valueClass.isAssignableFrom(Double.class))
         {
             this.setValue((A) sqlValue.getReal());
@@ -661,9 +676,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
                 this.setValue(null);
             }
         }
-        else if (this.valueClass.isAssignableFrom(WidgetContentSize.class))
+        else if (this.valueClass.isAssignableFrom(TextSize.class))
         {
-            WidgetContentSize size = WidgetContentSize.fromSQLValue(sqlValue);
+            TextSize size = TextSize.fromSQLValue(sqlValue);
             this.setValue((A) size);
         }
         else if (this.valueClass.isAssignableFrom(WidgetBackground.class))
@@ -676,15 +691,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
             WidgetLabelAlignment alignment = WidgetLabelAlignment.fromSQLValue(sqlValue);
             this.setValue((A) alignment);
         }
-        else if (this.valueClass.isAssignableFrom(WidgetTextTint.class))
+        else if (this.valueClass.isAssignableFrom(TextColor.class))
         {
-            WidgetTextTint tint = WidgetTextTint.fromSQLValue(sqlValue);
+            TextColor tint = TextColor.fromSQLValue(sqlValue);
             this.setValue((A) tint);
-        }
-        else if (this.valueClass.isAssignableFrom(NumberWidgetStyle.class))
-        {
-            NumberWidgetStyle style = NumberWidgetStyle.fromSQLValue(sqlValue);
-            this.setValue((A) style);
         }
         else if (this.valueClass.isAssignableFrom(WidgetCorners.class))
         {
@@ -700,6 +710,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             ActionSize size = ActionSize.fromSQLValue(sqlValue);
             this.setValue((A) size);
+        }
+        else if (this.valueClass.isAssignableFrom(AdderWidget.Type.class))
+        {
+            AdderWidget.Type type = AdderWidget.Type.fromSQLValue(sqlValue);
+            this.setValue((A) type);
         }
         else if (this.valueClass.isAssignableFrom(ProgramValueType.class))
         {

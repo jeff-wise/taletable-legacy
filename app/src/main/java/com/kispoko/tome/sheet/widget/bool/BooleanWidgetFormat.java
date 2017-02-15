@@ -2,8 +2,7 @@
 package com.kispoko.tome.sheet.widget.bool;
 
 
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
+import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -34,7 +33,7 @@ public class BooleanWidgetFormat implements Model, ToYaml, Serializable
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<WidgetContentSize> size;
+    private PrimitiveFunctor<TextSize> size;
 
 
     // CONSTRUCTORS
@@ -44,15 +43,15 @@ public class BooleanWidgetFormat implements Model, ToYaml, Serializable
     {
         this.id         = null;
 
-        this.size       = new PrimitiveFunctor<>(null, WidgetContentSize.class);
+        this.size       = new PrimitiveFunctor<>(null, TextSize.class);
     }
 
 
-    public BooleanWidgetFormat(UUID id, WidgetContentSize size)
+    public BooleanWidgetFormat(UUID id, TextSize size)
     {
         this.id         = id;
 
-        this.size       = new PrimitiveFunctor<>(size, WidgetContentSize.class);
+        this.size       = new PrimitiveFunctor<>(size, TextSize.class);
 
         this.setSize(size);
     }
@@ -72,7 +71,7 @@ public class BooleanWidgetFormat implements Model, ToYaml, Serializable
 
         UUID                id      = UUID.randomUUID();
 
-        WidgetContentSize   size    = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
+        TextSize size    = TextSize.fromYaml(yaml.atMaybeKey("size"));
 
         return new BooleanWidgetFormat(id, size);
     }
@@ -144,7 +143,7 @@ public class BooleanWidgetFormat implements Model, ToYaml, Serializable
      * The Boolean Widget's text size.
      * @return The Widget Content Size.
      */
-    public WidgetContentSize size()
+    public TextSize size()
     {
         return this.size.getValue();
     }
@@ -154,12 +153,12 @@ public class BooleanWidgetFormat implements Model, ToYaml, Serializable
      * Set the boolean widget's text size.
      * @param size The text size.
      */
-    public void setSize(WidgetContentSize size)
+    public void setSize(TextSize size)
     {
         if (size != null)
             this.size.setValue(size);
         else
-            this.size.setValue(WidgetContentSize.SMALL);
+            this.size.setValue(TextSize.SMALL);
     }
 
 

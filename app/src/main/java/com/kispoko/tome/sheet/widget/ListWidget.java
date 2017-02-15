@@ -303,10 +303,10 @@ public class ListWidget extends Widget
 
         LinearLayoutBuilder valueLayout = new LinearLayoutBuilder();
 
-        TextViewBuilder     item   = new TextViewBuilder();
-        TextViewBuilder     label  = new TextViewBuilder();
+        TextViewBuilder     item        = new TextViewBuilder();
+        TextViewBuilder     annotation  = new TextViewBuilder();
 
-        LinearLayoutBuilder divider = new LinearLayoutBuilder();
+        LinearLayoutBuilder divider     = new LinearLayoutBuilder();
 
         // [2] Layout
         // -------------------------------------------------------------------------------------
@@ -333,7 +333,7 @@ public class ListWidget extends Widget
         valueLayout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         valueLayout.child(item)
-                   .child(label);
+                   .child(annotation);
 
         // [4 A] Item
         // -------------------------------------------------------------------------------------
@@ -353,16 +353,16 @@ public class ListWidget extends Widget
         // [4 B] Inline Label
         // -------------------------------------------------------------------------------------
 
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        annotation.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        annotation.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.color             = R.color.dark_blue_hl_8;
-        label.size              = this.format().size().labelResourceId();
-        label.font              = Font.serifFontRegular(context);
+        annotation.color            = R.color.dark_blue_hl_8;
+        annotation.size             = this.format().annotationStyle().size().resourceId();
+        annotation.font             = Font.serifFontRegular(context);
 
-        label.text              = itemLabel;
+        annotation.text             = itemLabel;
 
-        label.margin.left       = R.dimen.widget_list_inline_label_margin_left;
+        annotation.margin.left      = R.dimen.widget_list_inline_label_margin_left;
 
         // [5] Divider
         // -------------------------------------------------------------------------------------

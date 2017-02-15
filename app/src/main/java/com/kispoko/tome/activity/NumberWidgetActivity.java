@@ -14,7 +14,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
+import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -156,7 +156,7 @@ public class NumberWidgetActivity extends AppCompatActivity
                 Form.field(
                         R.string.number_widget_field_size_label,
                         R.string.number_widget_field_size_description,
-                        Form.variantInput(WidgetContentSize.class,
+                        Form.variantInput(TextSize.class,
                                           this.numberWidget.format().size(),
                                           this),
                         this);
@@ -215,26 +215,6 @@ public class NumberWidgetActivity extends AppCompatActivity
                         Form.buttonInput(this.numberWidget.valuePostfix(), this),
                         this);
 
-        // > Prefix Variable Field
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout prefixVariableField =
-                Form.field(
-                        R.string.number_widget_field_prefix_label,
-                        R.string.number_widget_field_prefix_description,
-                        Form.buttonInput(this.numberWidget.prefix(), this),
-                        this);
-
-        // > Prefix Variable Field
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout postfixVariableField =
-                Form.field(
-                        R.string.number_widget_field_postfix_label,
-                        R.string.number_widget_field_postfix_description,
-                        Form.buttonInput(this.numberWidget.postfix(), this),
-                        this);
-
         // > Variables Field
         // -------------------------------------------------------------------------------------
 
@@ -266,8 +246,6 @@ public class NumberWidgetActivity extends AppCompatActivity
         layout.addView(Form.divider(this));
 
         layout.addView(valueVariableField);
-        layout.addView(prefixVariableField);
-        layout.addView(postfixVariableField);
 
         layout.addView(Form.divider(this));
 

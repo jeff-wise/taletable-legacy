@@ -2,6 +2,10 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.text.style.ForegroundColorSpan;
+
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
@@ -18,7 +22,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 /**
  * Widget Text Tint
  */
-public enum WidgetTextTint implements ToYaml
+public enum TextColor implements ToYaml
 {
 
     // VALUES
@@ -30,40 +34,44 @@ public enum WidgetTextTint implements ToYaml
     MEDIUM_DARK,
     DARK,
     VERY_DARK,
+    SUPER_DARK,
     PURPLE,
-    GREEN,
+    GREEN_LIGHT,
     GREEN_MEDIUM_LIGHT;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetTextTint fromString(String bgString)
+    public static TextColor fromString(String bgString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetTextTint.class, bgString);
+        return EnumUtils.fromString(TextColor.class, bgString);
     }
 
 
-    public static WidgetTextTint fromYaml(YamlParser yaml)
+    public static TextColor fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
+        if (yaml.isNull())
+            return null;
+
         String bgString = yaml.getString();
         try {
-            return WidgetTextTint.fromString(bgString);
+            return TextColor.fromString(bgString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
         }
     }
 
 
-    public static WidgetTextTint fromSQLValue(SQLValue sqlValue)
+    public static TextColor fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetTextTint tint = WidgetTextTint.fromString(enumString);
+            TextColor tint = TextColor.fromString(enumString);
             return tint;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
@@ -97,16 +105,18 @@ public enum WidgetTextTint implements ToYaml
             case MEDIUM_LIGHT:
                 return R.color.dark_blue_hlx_9;
             case MEDIUM:
-                return R.color.dark_blue_hl_1;
+                return R.color.dark_blue_hl_2;
             case MEDIUM_DARK:
-                return R.color.dark_blue_hl_3;
+                return R.color.dark_blue_hl_4;
             case DARK:
-                return R.color.dark_blue_hl_5;
+                return R.color.dark_blue_hl_6;
             case VERY_DARK:
+                return R.color.dark_blue_hl_8;
+            case SUPER_DARK:
                 return R.color.dark_blue_1;
             case PURPLE:
                 return R.color.purple_light;
-            case GREEN:
+            case GREEN_LIGHT:
                 return R.color.green_light;
             case GREEN_MEDIUM_LIGHT:
                 return R.color.green_medium_light;
@@ -116,31 +126,10 @@ public enum WidgetTextTint implements ToYaml
     }
 
 
-    public Integer labelResourceId()
+    public ForegroundColorSpan foregroundColorSpan(Context context)
     {
-        switch (this)
-        {
-            case LIGHT:
-                return R.color.dark_blue_hl_4;
-            case MEDIUM_LIGHT:
-                return R.color.dark_blue_hl_5;
-            case MEDIUM:
-                return R.color.dark_blue_hl_6;
-            case MEDIUM_DARK:
-                return R.color.dark_blue_hl_8;
-            case DARK:
-                return R.color.dark_blue_1;
-            case VERY_DARK:
-                return R.color.dark_blue_3;
-            case PURPLE:
-                return R.color.purple_medium;
-            case GREEN:
-                return R.color.green_medium;
-            case GREEN_MEDIUM_LIGHT:
-                return R.color.green_medium;
-        }
-
-        return 0;
+        int colorId = this.resourceId();
+        return new ForegroundColorSpan(ContextCompat.getColor(context, colorId));
     }
 
 

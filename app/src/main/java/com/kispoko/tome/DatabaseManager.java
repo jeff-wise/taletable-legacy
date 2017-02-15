@@ -50,18 +50,20 @@ import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.AdderWidget;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
-import com.kispoko.tome.sheet.widget.DiceWidget;
 import com.kispoko.tome.sheet.widget.ImageWidget;
 import com.kispoko.tome.sheet.widget.ListWidget;
 import com.kispoko.tome.sheet.widget.LogWidget;
+import com.kispoko.tome.sheet.widget.MechanicWidget;
 import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.sheet.widget.ActionWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
+import com.kispoko.tome.sheet.widget.adder.AdderWidgetFormat;
 import com.kispoko.tome.sheet.widget.bool.BooleanWidgetFormat;
 import com.kispoko.tome.sheet.widget.list.ListWidgetFormat;
+import com.kispoko.tome.sheet.widget.log.LogEntry;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.widget.table.TableRow;
 import com.kispoko.tome.sheet.widget.table.cell.BooleanCell;
@@ -73,6 +75,7 @@ import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.model.Model;
@@ -136,13 +139,17 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(TableWidget.class);
             modelClasses.add(ActionWidget.class);
             modelClasses.add(ActionWidgetFormat.class);
-            modelClasses.add(DiceWidget.class);
+            modelClasses.add(MechanicWidget.class);
             modelClasses.add(LogWidget.class);
+            modelClasses.add(LogEntry.class);
             modelClasses.add(AdderWidget.class);
+            modelClasses.add(AdderWidgetFormat.class);
 
             modelClasses.add(TableRow.class);
             modelClasses.add(WidgetData.class);
             modelClasses.add(WidgetFormat.class);
+
+            modelClasses.add(TextStyle.class);
 
             // ** Table Cell
             modelClasses.add(CellUnion.class);

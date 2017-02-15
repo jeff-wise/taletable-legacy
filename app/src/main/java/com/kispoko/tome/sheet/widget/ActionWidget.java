@@ -344,7 +344,6 @@ public class ActionWidget extends Widget
     {
         TextView action = actionTextView(context);
 
-
         SpannableStringBuilder builder = new SpannableStringBuilder(this.action());
 
         int actionNameIndex = this.action().indexOf(this.actionHighlight());

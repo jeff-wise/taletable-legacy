@@ -511,7 +511,7 @@ public class TextWidget extends Widget
         label.text                  = this.format().label();
         label.color                 = R.color.dark_blue_hl_6;
         label.font                  = Font.serifFontRegular(context);
-        label.size                  = this.format().size().labelResourceId();
+        label.size                  = this.format().labelStyle().size().resourceId();
 
         label.margin.right          = R.dimen.widget_label_inline_margin_right;
 
@@ -545,7 +545,7 @@ public class TextWidget extends Widget
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.text                  = this.format().label();
-        label.color                 = this.format().tint().labelResourceId();
+        label.color                 = this.format().labelStyle().color().resourceId();
         label.size                  = R.dimen.widget_label_text_size;
         label.font                  = Font.serifFontRegular(context);
 

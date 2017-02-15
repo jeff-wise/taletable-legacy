@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;

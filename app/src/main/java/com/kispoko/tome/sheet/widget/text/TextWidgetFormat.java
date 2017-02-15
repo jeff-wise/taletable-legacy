@@ -3,9 +3,11 @@ package com.kispoko.tome.sheet.widget.text;
 
 
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
-import com.kispoko.tome.sheet.widget.util.WidgetTextTint;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -36,12 +38,13 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<WidgetContentSize>     size;
-    private PrimitiveFunctor<WidgetTextTint>        tint;
+    private PrimitiveFunctor<TextSize>              size;
+    private PrimitiveFunctor<TextColor>             color;
     private PrimitiveFunctor<Boolean>               isQuote;
     private PrimitiveFunctor<String>                quoteSource;
     private PrimitiveFunctor<String>                label;
     private PrimitiveFunctor<InlineLabelPosition>   labelPosition;
+    private ModelFunctor<TextStyle>                 labelStyle;
 
 
     // CONSTRUCTORS
@@ -51,37 +54,41 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     {
         this.id             = null;
 
-        this.size           = new PrimitiveFunctor<>(null, WidgetContentSize.class);
-        this.tint           = new PrimitiveFunctor<>(null, WidgetTextTint.class);
+        this.size           = new PrimitiveFunctor<>(null, TextSize.class);
+        this.color          = new PrimitiveFunctor<>(null, TextColor.class);
         this.isQuote        = new PrimitiveFunctor<>(null, Boolean.class);
         this.quoteSource    = new PrimitiveFunctor<>(null, String.class);
         this.label          = new PrimitiveFunctor<>(null, String.class);
         this.labelPosition  = new PrimitiveFunctor<>(null, InlineLabelPosition.class);
+        this.labelStyle     = ModelFunctor.empty(TextStyle.class);
     }
 
 
     public TextWidgetFormat(UUID id,
-                            WidgetContentSize size,
-                            WidgetTextTint tint,
+                            TextSize size,
+                            TextColor color,
                             Boolean isQuote,
                             String quoteSource,
                             String label,
-                            InlineLabelPosition labelPosition)
+                            InlineLabelPosition labelPosition,
+                            TextStyle labelStyle)
     {
         this.id             = id;
 
-        this.size           = new PrimitiveFunctor<>(size, WidgetContentSize.class);
-        this.tint           = new PrimitiveFunctor<>(tint, WidgetTextTint.class);
+        this.size           = new PrimitiveFunctor<>(size, TextSize.class);
+        this.color          = new PrimitiveFunctor<>(color, TextColor.class);
         this.isQuote        = new PrimitiveFunctor<>(isQuote, Boolean.class);
         this.quoteSource    = new PrimitiveFunctor<>(quoteSource, String.class);
         this.label          = new PrimitiveFunctor<>(label, String.class);
         this.labelPosition  = new PrimitiveFunctor<>(labelPosition, InlineLabelPosition.class);
+        this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
 
         this.setIsQuote(isQuote);
         this.setSize(size);
         this.setQuoteSource(quoteSource);
-        this.setTint(tint);
+        this.setColor(color);
         this.setLabelPosition(labelPosition);
+        this.setLabelStyle(labelStyle);
     }
 
 
@@ -93,15 +100,19 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         UUID                id              = UUID.randomUUID();
 
-        WidgetContentSize   size            = WidgetContentSize.fromYaml(yaml.atMaybeKey("size"));
-        WidgetTextTint      tint            = WidgetTextTint.fromYaml(yaml.atMaybeKey("tint"));
+        TextSize            size            = TextSize.fromYaml(yaml.atMaybeKey("size"));
+        TextColor           tint            = TextColor.fromYaml(yaml.atMaybeKey("tint"));
         Boolean             isQuote         = yaml.atMaybeKey("is_quote").getBoolean();
         String              quoteSource     = yaml.atMaybeKey("quote_source").getString();
         String              label           = yaml.atMaybeKey("label").getString();
         InlineLabelPosition labelPosition   = InlineLabelPosition.fromYaml(
                                                         yaml.atMaybeKey("label_position"));
+        TextStyle           labelStyle      = TextStyle.fromYaml(
+                                                            yaml.atMaybeKey("label_style"),
+                                                            false);
 
-        return new TextWidgetFormat(id, size, tint, isQuote, quoteSource, label, labelPosition);
+        return new TextWidgetFormat(id, size, tint, isQuote, quoteSource, label,
+                                    labelPosition, labelStyle);
     }
 
 
@@ -111,11 +122,12 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         textWidgetFormat.setId(UUID.randomUUID());
         textWidgetFormat.setSize(null);
-        textWidgetFormat.setTint(null);
+        textWidgetFormat.setColor(null);
         textWidgetFormat.setIsQuote(null);
         textWidgetFormat.setQuoteSource(null);
         textWidgetFormat.setLabel(null);
         textWidgetFormat.setLabelPosition(null);
+        textWidgetFormat.setLabelStyle(null);
 
         return textWidgetFormat;
     }
@@ -177,7 +189,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
      * The Text Widget's text size.
      * @return The Widget Content Size.
      */
-    public WidgetContentSize size()
+    public TextSize size()
     {
         return this.size.getValue();
     }
@@ -187,12 +199,12 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
      * Set the text widget's text size.
      * @param size The text size.
      */
-    public void setSize(WidgetContentSize size)
+    public void setSize(TextSize size)
     {
         if (size != null)
             this.size.setValue(size);
         else
-            this.size.setValue(WidgetContentSize.MEDIUM);
+            this.size.setValue(TextSize.MEDIUM);
     }
 
 
@@ -203,18 +215,18 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
      * The text widget tint.
      * @return The tint.
      */
-    public WidgetTextTint tint()
+    public TextColor tint()
     {
-        return this.tint.getValue();
+        return this.color.getValue();
     }
 
 
-    public void setTint(WidgetTextTint tint)
+    public void setColor(TextColor color)
     {
-        if (tint != null)
-            this.tint.setValue(tint);
+        if (color != null)
+            this.color.setValue(color);
         else
-            this.tint.setValue(WidgetTextTint.MEDIUM);
+            this.color.setValue(TextColor.MEDIUM);
     }
 
 
@@ -316,6 +328,37 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
             this.labelPosition.setValue(labelPosition);
         else
             this.labelPosition.setValue(InlineLabelPosition.LEFT);
+    }
+
+
+    // ** Label Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The label style.
+     * @return The label style.
+     */
+    public TextStyle labelStyle()
+    {
+        return this.labelStyle.getValue();
+    }
+
+
+    /**
+     * Set the inline label style.
+     * @param labelStyle The inline label style.
+     */
+    public void setLabelStyle(TextStyle labelStyle)
+    {
+        if (labelStyle != null) {
+            this.labelStyle.setValue(labelStyle);
+        }
+        else {
+            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.MEDIUM,
+                                                        TextSize.MEDIUM_SMALL);
+            this.labelStyle.setValue(defaultLabelStyle);
+        }
     }
 
 

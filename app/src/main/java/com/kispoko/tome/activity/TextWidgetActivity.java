@@ -14,7 +14,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
-import com.kispoko.tome.sheet.widget.util.WidgetContentSize;
+import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -152,7 +152,7 @@ public class TextWidgetActivity extends AppCompatActivity
                 Form.field(
                         R.string.text_widget_field_size_label,
                         R.string.text_widget_field_size_description,
-                        Form.variantInput(WidgetContentSize.class,
+                        Form.variantInput(TextSize.class,
                                           this.textWidget.format().size(),
                                           this),
                         this);

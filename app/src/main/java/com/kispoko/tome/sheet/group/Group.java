@@ -455,7 +455,7 @@ public class Group implements Model, ToYaml, Serializable
             case PRIMARY:
                 labelView.size  = R.dimen.group_label_text_size;
                 labelView.color = R.color.gold_light;
-                labelView.font  = Font.serifFontBold(context);
+                labelView.font  = Font.serifFontRegular(context);
                 break;
             case SECONDARY:
                 labelView.size  = R.dimen.group_label_secondary_text_size;
