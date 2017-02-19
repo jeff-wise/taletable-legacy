@@ -3443,69 +3443,63 @@ profile:
                 default_value: weapon
                 width: 3
                 alignment: left
+                defines_namespace: true
             - type: number
               column:
                 name: QUANTITY
                 default_value: 1
                 width: 2
                 alignment: center
+                namespaced: true
             - type: boolean
               column:
                 name: EQUIPPED?
                 default_value: false
                 width: 2
                 alignment: center
+                namespaced: true
             rows:
             - cells:
               - value:
                   type: literal
                   value: Longsword
                   label: Longsword
-                  defines_namespace: true
               - value:
                   type: literal
                   name: quantity
                   label: Quantity
                   value: 1
-                  namespaced: true
               - value:
                   type: literal
                   name: equipped
                   label: Is Equipped?
                   value: true
-                  namespaced: true
             - cells:
               - value:
                   type: literal
                   value: Heavy Crossbow
                   label: Heavy Crossbow
-                  defines_namespace: true
               - value:
                   name: quantity
                   type: literal
                   value: 1
-                  namespaced: true
               - value:
                   name: equipped
                   type: literal
                   value: false
-                  namespaced: true
             - cells:
               - value:
                   type: literal
                   value: Dagger
                   label: Dagger
-                  defines_namespace: true
               - value:
                   name: quantity
                   type: literal
                   value: 2
-                  namespaced: true
               - value:
                   name: equipped
                   type: literal
                   value: false
-                  namespaced: true
     - name: Armor
       space_above: medium_large
       background: light
@@ -3527,18 +3521,21 @@ profile:
                 default_value: armor
                 width: 3
                 alignment: left
+                defines_namespace: true
             - type: number
               column:
                 name: QUANTITY
                 default_value: 1
                 width: 2
                 alignment: center
+                namespaced: true
             - type: boolean
               column:
                 name: EQUIPPED?
                 default_value: false
                 width: 2
                 alignment: center
+                namespaced: true
             rows:
             - cells:
               - value:
@@ -3546,7 +3543,6 @@ profile:
                   value:
                     set_name: armor
                     value_name: scalemail
-                  defines_namespace: true
               - value:
                   name: quantity
                   type: literal
@@ -3555,14 +3551,12 @@ profile:
                   name: equipped
                   type: literal
                   value: true
-                  namespaced: true
             - cells:
               - value:
                   type: value
                   value:
                     set_name: shields
                     value_name: shield
-                  defines_namespace: true
               - value:
                   name: quantity
                   type: literal
@@ -3571,7 +3565,6 @@ profile:
                   name: equipped
                   type: literal
                   value: true
-                  namespaced: true
     - name: Wealth
       space_above: medium_large
       rows:
@@ -3657,12 +3650,14 @@ profile:
                 default_value: armor
                 width: 1
                 alignment: left
+                defines_namespace: true
             - type: number
               column:
                 name: QUANTITY
                 default_value: 1
                 width: 1
                 alignment: center
+                namespaced: true
             rows:
             - cells:
               - value:

@@ -22,6 +22,7 @@ public abstract class Variable
     public abstract String                  label();
     public abstract void                    setLabel(String label);
     public abstract boolean                 isNamespaced();
+    public abstract void                    setIsNamespaced(Boolean isNamespaced);
     public abstract List<VariableReference> dependencies();
     public abstract List<String>            tags();
     public abstract String                  valueString() throws NullVariableException;

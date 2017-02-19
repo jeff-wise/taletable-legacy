@@ -2,7 +2,6 @@
 package com.kispoko.tome.sheet.widget.table.column;
 
 
-import com.kispoko.tome.sheet.widget.table.cell.Cell;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
@@ -42,19 +41,31 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     private PrimitiveFunctor<Boolean>       isBold;
     private PrimitiveFunctor<Integer>       width;
 
+    /**
+     * True if the cells in this column define a namespace over the column row.
+     */
+    private PrimitiveFunctor<Boolean>       definesNamespace;
+
+    /**
+     * True if the cells in this column are namespaced.
+     */
+    private PrimitiveFunctor<Boolean>       isNamespaced;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
     public TextColumn()
     {
-        this.id             = null;
+        this.id                 = null;
 
-        this.name           = new PrimitiveFunctor<>(null, String.class);
-        this.defaultValue   = new PrimitiveFunctor<>(null, String.class);
-        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
-        this.width          = new PrimitiveFunctor<>(null, Integer.class);
+        this.name               = new PrimitiveFunctor<>(null, String.class);
+        this.defaultValue       = new PrimitiveFunctor<>(null, String.class);
+        this.alignment          = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.isBold             = new PrimitiveFunctor<>(null, Boolean.class);
+        this.width              = new PrimitiveFunctor<>(null, Integer.class);
+        this.definesNamespace   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.isNamespaced       = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
 
@@ -63,18 +74,24 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
                       String defaultValue,
                       CellAlignment alignment,
                       Boolean isBold,
-                      Integer width)
+                      Integer width,
+                      Boolean definesNamespace,
+                      Boolean isNamespaced)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.name           = new PrimitiveFunctor<>(name, String.class);
-        this.defaultValue   = new PrimitiveFunctor<>(defaultValue, String.class);
-        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-        this.isBold         = new PrimitiveFunctor<>(isBold, Boolean.class);
-        this.width          = new PrimitiveFunctor<>(width, Integer.class);
+        this.name               = new PrimitiveFunctor<>(name, String.class);
+        this.defaultValue       = new PrimitiveFunctor<>(defaultValue, String.class);
+        this.alignment          = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.isBold             = new PrimitiveFunctor<>(isBold, Boolean.class);
+        this.width              = new PrimitiveFunctor<>(width, Integer.class);
+        this.definesNamespace   = new PrimitiveFunctor<>(definesNamespace, Boolean.class);
+        this.isNamespaced       = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
 
         this.setAlignment(alignment);
         this.setIsBold(isBold);
+        this.setDefinesNamespace(definesNamespace);
+        this.setIsNamespaced(isNamespaced);
     }
 
 
@@ -87,15 +104,18 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     public static TextColumn fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID          id           = UUID.randomUUID();
+        UUID          id                = UUID.randomUUID();
 
-        String        name         = yaml.atKey("name").getString();
-        String        defaultValue = yaml.atKey("default_value").getString();
-        CellAlignment alignment    = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
-        Boolean       isBold       = yaml.atMaybeKey("is_bold").getBoolean();
-        Integer       width        = yaml.atKey("width").getInteger();
+        String        name              = yaml.atKey("name").getString();
+        String        defaultValue      = yaml.atKey("default_value").getString();
+        CellAlignment alignment         = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        Boolean       isBold            = yaml.atMaybeKey("is_bold").getBoolean();
+        Integer       width             = yaml.atKey("width").getInteger();
+        Boolean       definesNamespace  = yaml.atMaybeKey("defines_namespace").getBoolean();
+        Boolean       isNamespaced      = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new TextColumn(id, name, defaultValue, alignment, isBold, width);
+        return new TextColumn(id, name, defaultValue, alignment, isBold, width,
+                              definesNamespace, isNamespaced);
     }
 
 
@@ -151,7 +171,9 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
                 .putString("default_value", this.defaultValue())
                 .putYaml("alignment", this.alignment())
                 .putBoolean("is_bold", this.isBold())
-                .putInteger("width", this.width());
+                .putInteger("width", this.width())
+                .putBoolean("defines_namespace", this.definesNamespace())
+                .putBoolean("namespaced", this.isNamespaced());
     }
 
 
@@ -244,6 +266,58 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     public String defaultValue()
     {
         return this.defaultValue.getValue();
+    }
+
+
+    // ** Defines Namespace
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * True if the cells in this column define a namespace over the column row.
+     * @return Defines namespace?
+     */
+    public Boolean definesNamespace()
+    {
+        return this.definesNamespace.getValue();
+    }
+
+
+    /**
+     * Set the defines namespace value. If null, defaults to false.
+     * @param definesNamespace True if this column defines a namespace.
+     */
+    public void setDefinesNamespace(Boolean definesNamespace)
+    {
+        if (definesNamespace != null)
+            this.definesNamespace.setValue(definesNamespace);
+        else
+            this.definesNamespace.setValue(false);
+    }
+
+
+    // ** Is Namespaced
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * True if the cells in this column are namespaced.
+     * @return Is namespaced?
+     */
+    public Boolean isNamespaced()
+    {
+        return this.isNamespaced.getValue();
+    }
+
+
+    /**
+     * Set to true if the column is namespaced.
+     * @param isNamespaced True if this column is namespaced.
+     */
+    public void setIsNamespaced(Boolean isNamespaced)
+    {
+        if (isNamespaced != null)
+            this.isNamespaced.setValue(isNamespaced);
+        else
+            this.isNamespaced.setValue(false);
     }
 
 }

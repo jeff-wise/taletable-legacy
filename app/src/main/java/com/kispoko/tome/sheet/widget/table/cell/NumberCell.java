@@ -197,7 +197,12 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
 
         this.widgetContainer = widgetContainer;
 
-        // [2] Initialize the value variable
+        // [2] Inherit column properties
+        // --------------------------------------------------------------------------------------
+
+        this.valueVariable().setIsNamespaced(column.isNamespaced());
+
+        // [3] Initialize the value variable
         // --------------------------------------------------------------------------------------
 
         // > If null, set default value

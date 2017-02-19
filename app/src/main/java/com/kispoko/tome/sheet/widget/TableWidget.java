@@ -497,7 +497,8 @@ public class TableWidget extends Widget
             TextColumn textColumn = new TextColumn(null, null, null,
                                                    column.alignment(),
                                                    false,
-                                                   column.width());
+                                                   column.width(),
+                                                   false, false);
             ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
 
             TextView headerCellView = (TextView) headerCell.view(columnUnion, context);

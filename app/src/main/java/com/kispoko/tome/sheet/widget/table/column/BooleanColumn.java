@@ -45,6 +45,11 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
     private PrimitiveFunctor<String>        trueText;
     private PrimitiveFunctor<String>        falseText;
 
+    /**
+     * True if the cells in this column are namespaced.
+     */
+    private PrimitiveFunctor<Boolean>       isNamespaced;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -62,6 +67,8 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
 
         this.trueText       = new PrimitiveFunctor<>(null, String.class);
         this.falseText      = new PrimitiveFunctor<>(null, String.class);
+
+        this.isNamespaced   = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
 
@@ -71,7 +78,8 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
                          CellAlignment alignment,
                          Integer width,
                          String trueText,
-                         String falseText)
+                         String falseText,
+                         Boolean isNamespaced)
     {
         this.id             = id;
 
@@ -85,8 +93,11 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
         this.trueText       = new PrimitiveFunctor<>(trueText, String.class);
         this.falseText      = new PrimitiveFunctor<>(falseText, String.class);
 
+        this.isNamespaced   = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
+
         this.setTrueText(trueText);
         this.setFalseText(falseText);
+        this.setIsNamespaced(isNamespaced);
     }
 
 
@@ -111,7 +122,10 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
         String        trueText     = yaml.atMaybeKey("true").getString();
         String        falseText    = yaml.atMaybeKey("false").getString();
 
-        return new BooleanColumn(id, name, defaultValue, alignment, width, trueText, falseText);
+        Boolean       isNamespaced = yaml.atMaybeKey("namespaced").getBoolean();
+
+        return new BooleanColumn(id, name, defaultValue, alignment, width,
+                                 trueText, falseText, isNamespaced);
     }
 
 
@@ -168,7 +182,8 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
                 .putYaml("alignment", this.alignment())
                 .putInteger("width", this.width())
                 .putString("true", this.trueText())
-                .putString("false", this.falseText());
+                .putString("false", this.falseText())
+                .putBoolean("namespaced", this.isNamespaced());
     }
 
 
@@ -274,7 +289,30 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
     }
 
 
+    // ** Is Namespaced
+    // ------------------------------------------------------------------------------------------
 
+    /**
+     * True if the cells in this column are namespaced.
+     * @return Is namespaced?
+     */
+    public Boolean isNamespaced()
+    {
+        return this.isNamespaced.getValue();
+    }
+
+
+    /**
+     * Set to true if the column is namespaced.
+     * @param isNamespaced True if this column is namespaced.
+     */
+    public void setIsNamespaced(Boolean isNamespaced)
+    {
+        if (isNamespaced != null)
+            this.isNamespaced.setValue(isNamespaced);
+        else
+            this.isNamespaced.setValue(false);
+    }
 
 
 }

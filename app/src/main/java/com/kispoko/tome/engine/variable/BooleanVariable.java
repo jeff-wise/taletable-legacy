@@ -321,6 +321,16 @@ public class BooleanVariable extends Variable
 
 
     @Override
+    public void setIsNamespaced(Boolean isNamespaced)
+    {
+        if (isNamespaced != null)
+            this.isNamespaced.setValue(isNamespaced);
+        else
+            this.isNamespaced.setValue(false);
+    }
+
+
+    @Override
     public List<VariableReference> dependencies()
     {
         List<VariableReference> variableDependencies = new ArrayList<>();

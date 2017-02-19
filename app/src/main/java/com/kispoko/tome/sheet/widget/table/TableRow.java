@@ -4,7 +4,9 @@ package com.kispoko.tome.sheet.widget.table;
 
 import com.kispoko.tome.engine.variable.Namespace;
 import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
+import com.kispoko.tome.sheet.widget.table.cell.TextCell;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
@@ -177,7 +179,8 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
 
     public void initialize(List<ColumnUnion> columns)
     {
-        // Initialize each cell
+        // [1] Initialize the cells
+        // --------------------------------------------------------------------------------------
         for (int i = 0; i < this.width(); i++)
         {
             CellUnion   cell = this.cellAtIndex(i);
@@ -196,6 +199,36 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
                     break;
             }
         }
+
+        // [2] Configure namespaces
+        // --------------------------------------------------------------------------------------
+
+        this.namespace              = null;
+
+        // > Index each namespaced variable
+        // --------------------------------------------------------------------------------------
+
+        this.namespacedVariables = new ArrayList<>();
+        for (CellUnion cellUnion : this.cells()) {
+            List<Variable> variables = cellUnion.cell().namespacedVariables();
+            this.namespacedVariables.addAll(variables);
+        }
+
+        // > Set the namespace if one is found
+        // --------------------------------------------------------------------------------------
+
+        for (CellUnion cellUnion : this.cells())
+        {
+            if (cellUnion.type() == CellType.TEXT)
+            {
+                TextCell textCell = cellUnion.textCell();
+                if (textCell.valueVariable().definesNamespace())
+                {
+                    this.setNamespace(textCell.valueVariable().namespace());
+                }
+            }
+        }
+
     }
 
 
@@ -249,19 +282,7 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
 
     private void initializeTableRow()
     {
-        // [1] Initialize namespace to null
-        // --------------------------------------------------------------------------------------
 
-        this.namespace              = null;
-
-        // [2] Index each namespaced variable
-        // --------------------------------------------------------------------------------------
-
-        this.namespacedVariables = new ArrayList<>();
-        for (CellUnion cellUnion : this.cells()) {
-            List<Variable> variables = cellUnion.cell().namespacedVariables();
-            this.namespacedVariables.addAll(variables);
-        }
     }
 
 }

@@ -138,10 +138,6 @@ public class TextVariable extends Variable
         // ** Value Set Name (if any)
         this.valueSetName           = new PrimitiveFunctor<>(valueSetName, String.class);
 
-        // ** Namespace
-        if (isNamespaced == null) isNamespaced = false;
-        if (definesNamespace == null) definesNamespace = false;
-
         this.isNamespaced           = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
         this.definesNamespace       = new PrimitiveFunctor<>(definesNamespace, Boolean.class);
 
@@ -170,6 +166,9 @@ public class TextVariable extends Variable
         }
 
         this.initializeTextVariable();
+
+        this.setDefinesNamespace(null);
+        this.setIsNamespaced(null);
     }
 
 
@@ -386,9 +385,13 @@ public class TextVariable extends Variable
     }
 
 
-    public boolean definesNamespace()
+    @Override
+    public void setIsNamespaced(Boolean isNamespaced)
     {
-        return this.definesNamespace.getValue();
+        if (isNamespaced != null)
+            this.isNamespaced.setValue(isNamespaced);
+        else
+            this.isNamespaced.setValue(false);
     }
 
 
@@ -473,6 +476,28 @@ public class TextVariable extends Variable
     public ValueReference valueReference()
     {
         return this.valueReference.getValue();
+    }
+
+
+    // ** Defines Namespace
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * True if this text variable defines a namespace.
+     * @return Defines namespace?
+     */
+    public boolean definesNamespace()
+    {
+        return this.definesNamespace.getValue();
+    }
+
+
+    public void setDefinesNamespace(Boolean definesNamespace)
+    {
+        if (definesNamespace != null)
+            this.definesNamespace.setValue(definesNamespace);
+        else
+            this.definesNamespace.setValue(false);
     }
 
 

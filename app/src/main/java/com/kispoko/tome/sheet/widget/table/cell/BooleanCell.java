@@ -179,7 +179,12 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
         this.widgetContainer = widgetContainer;
 
-        // [2] Initialize the value variable
+        // [2] Inherit column properites
+        // --------------------------------------------------------------------------------------
+
+        this.valueVariable().setIsNamespaced(column.isNamespaced());
+
+        // [3] Initialize the value variable
         // --------------------------------------------------------------------------------------
 
         if (this.valueVariable.isNull()) {
@@ -199,7 +204,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
         State.addVariable(this.valueVariable());
 
-        // [3] Save Column Data
+        // [4] Save Column Data
         // --------------------------------------------------------------------------------------
 
         this.trueText           = column.trueText();

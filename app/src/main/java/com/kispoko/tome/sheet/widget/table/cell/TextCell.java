@@ -70,10 +70,10 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
 
     public TextCell()
     {
-        this.id                 = null;
+        this.id             = null;
 
-        this.valueVariable = ModelFunctor.empty(TextVariable.class);
-        this.alignment          = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.valueVariable  = ModelFunctor.empty(TextVariable.class);
+        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
     }
 
 
@@ -176,7 +176,13 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
 
         this.widgetContainer = widgetContainer;
 
-        // [2] Initialize value variable
+        // [2] Inherit column properties
+        // --------------------------------------------------------------------------------------
+
+        this.valueVariable().setDefinesNamespace(column.definesNamespace());
+        this.valueVariable().setIsNamespaced(column.isNamespaced());
+
+        // [3] Initialize value variable
         // --------------------------------------------------------------------------------------
 
         // > If null, set default value
@@ -195,11 +201,6 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     });
 
         State.addVariable(this.valueVariable());
-
-        // [3] Configure namespace
-        // --------------------------------------------------------------------------------------
-
-        this.configureNamespace();
     }
 
 

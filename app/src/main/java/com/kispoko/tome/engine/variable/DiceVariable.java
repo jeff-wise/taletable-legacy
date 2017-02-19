@@ -180,6 +180,16 @@ public class DiceVariable extends Variable
     }
 
 
+    @Override
+    public void setIsNamespaced(Boolean isNamespaced)
+    {
+        if (isNamespaced != null)
+            this.isNamespaced.setValue(isNamespaced);
+        else
+            this.isNamespaced.setValue(false);
+    }
+
+
     public List<VariableReference> dependencies()
     {
         return new ArrayList<>();

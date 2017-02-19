@@ -40,6 +40,7 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
     private PrimitiveFunctor<CellAlignment> alignment;
     private PrimitiveFunctor<Boolean>       isBold;
     private PrimitiveFunctor<Integer>       width;
+    private PrimitiveFunctor<Boolean>       isNamespaced;
 
 
     // CONSTRUCTORS
@@ -54,6 +55,7 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
         this.alignment    = new PrimitiveFunctor<>(null, CellAlignment.class);
         this.isBold       = new PrimitiveFunctor<>(null, Boolean.class);
         this.width        = new PrimitiveFunctor<>(null, Integer.class);
+        this.isNamespaced = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
 
@@ -62,7 +64,8 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
                         Integer defaultValue,
                         CellAlignment alignment,
                         Boolean isBold,
-                        Integer width)
+                        Integer width,
+                        Boolean isNamespaced)
     {
         this.id           = id;
 
@@ -71,9 +74,11 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
         this.alignment    = new PrimitiveFunctor<>(alignment, CellAlignment.class);
         this.isBold       = new PrimitiveFunctor<>(isBold, Boolean.class);
         this.width        = new PrimitiveFunctor<>(width, Integer.class);
+        this.isNamespaced = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
 
         this.setAlignment(alignment);
         this.setIsBold(isBold);
+        this.setIsNamespaced(isNamespaced);
     }
 
 
@@ -93,8 +98,9 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
         CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("alignment"));
         Boolean       isBold       = yaml.atMaybeKey("is_bold").getBoolean();
         Integer       width        = yaml.atKey("width").getInteger();
+        Boolean       isNamespaced = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new NumberColumn(id, name, defaultValue, alignment, isBold, width);
+        return new NumberColumn(id, name, defaultValue, alignment, isBold, width, isNamespaced);
     }
 
 
@@ -150,7 +156,8 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
                 .putInteger("default_value", this.defaultValue())
                 .putYaml("alignment", this.alignment())
                 .putBoolean("is_bold", this.isBold())
-                .putInteger("width", this.width());
+                .putInteger("width", this.width())
+                .putBoolean("namespaced", this.isNamespaced());
     }
 
 
@@ -236,5 +243,32 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
     {
         return this.defaultValue.getValue();
     }
+
+
+    // ** Is Namespaced
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * True if the cells in this column are namespaced.
+     * @return Is namespaced?
+     */
+    public Boolean isNamespaced()
+    {
+        return this.isNamespaced.getValue();
+    }
+
+
+    /**
+     * Set to true if the column is namespaced.
+     * @param isNamespaced True if this column is namespaced.
+     */
+    public void setIsNamespaced(Boolean isNamespaced)
+    {
+        if (isNamespaced != null)
+            this.isNamespaced.setValue(isNamespaced);
+        else
+            this.isNamespaced.setValue(false);
+    }
+
 
 }
