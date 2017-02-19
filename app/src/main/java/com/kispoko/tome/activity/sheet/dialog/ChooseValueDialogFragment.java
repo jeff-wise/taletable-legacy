@@ -23,14 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.valueset.ValueListItemView;
-import com.kispoko.tome.activity.valueset.ValuesRecyclerViewAdapter;
 import com.kispoko.tome.engine.value.ValueSet;
 import com.kispoko.tome.engine.value.ValueUnion;
-import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
-import com.kispoko.tome.util.ui.EditDialog;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -40,7 +34,6 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 
 import java.util.List;
 
-import static android.R.attr.value;
 
 
 /**
@@ -48,7 +41,6 @@ import static android.R.attr.value;
  */
 public class ChooseValueDialogFragment extends DialogFragment
 {
-
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------

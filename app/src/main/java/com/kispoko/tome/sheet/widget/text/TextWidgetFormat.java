@@ -44,6 +44,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>                quoteSource;
     private PrimitiveFunctor<String>                label;
     private PrimitiveFunctor<InlineLabelPosition>   labelPosition;
+    private ModelFunctor<TextStyle>                 valueStyle;
     private ModelFunctor<TextStyle>                 labelStyle;
 
 
@@ -60,6 +61,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.quoteSource    = new PrimitiveFunctor<>(null, String.class);
         this.label          = new PrimitiveFunctor<>(null, String.class);
         this.labelPosition  = new PrimitiveFunctor<>(null, InlineLabelPosition.class);
+        this.valueStyle     = ModelFunctor.empty(TextStyle.class);
         this.labelStyle     = ModelFunctor.empty(TextStyle.class);
     }
 
@@ -71,6 +73,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                             String quoteSource,
                             String label,
                             InlineLabelPosition labelPosition,
+                            TextStyle valueStyle,
                             TextStyle labelStyle)
     {
         this.id             = id;
@@ -81,6 +84,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.quoteSource    = new PrimitiveFunctor<>(quoteSource, String.class);
         this.label          = new PrimitiveFunctor<>(label, String.class);
         this.labelPosition  = new PrimitiveFunctor<>(labelPosition, InlineLabelPosition.class);
+        this.valueStyle     = ModelFunctor.full(valueStyle, TextStyle.class);
         this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
 
         this.setIsQuote(isQuote);
@@ -88,6 +92,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.setQuoteSource(quoteSource);
         this.setColor(color);
         this.setLabelPosition(labelPosition);
+        this.setValueStyle(valueStyle);
         this.setLabelStyle(labelStyle);
     }
 
@@ -107,12 +112,15 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         String              label           = yaml.atMaybeKey("label").getString();
         InlineLabelPosition labelPosition   = InlineLabelPosition.fromYaml(
                                                         yaml.atMaybeKey("label_position"));
+        TextStyle           valueStyle      = TextStyle.fromYaml(
+                                                        yaml.atMaybeKey("value_style"),
+                                                        false);
         TextStyle           labelStyle      = TextStyle.fromYaml(
                                                             yaml.atMaybeKey("label_style"),
                                                             false);
 
         return new TextWidgetFormat(id, size, tint, isQuote, quoteSource, label,
-                                    labelPosition, labelStyle);
+                                    labelPosition, valueStyle, labelStyle);
     }
 
 
@@ -127,6 +135,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         textWidgetFormat.setQuoteSource(null);
         textWidgetFormat.setLabel(null);
         textWidgetFormat.setLabelPosition(null);
+        textWidgetFormat.setValueStyle(null);
         textWidgetFormat.setLabelStyle(null);
 
         return textWidgetFormat;
@@ -174,6 +183,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         yaml.putYaml("tint", this.tint());
         yaml.putBoolean("is_quote", this.isQuote());
         yaml.putString("quote_source", this.quoteSource());
+        yaml.putYaml("value_style", this.valueStyle());
+        yaml.putYaml("label_style", this.labelStyle());
 
         return yaml;
     }
@@ -328,6 +339,37 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
             this.labelPosition.setValue(labelPosition);
         else
             this.labelPosition.setValue(InlineLabelPosition.LEFT);
+    }
+
+
+    // ** Value Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The value style.
+     * @return The value style.
+     */
+    public TextStyle valueStyle()
+    {
+        return this.valueStyle.getValue();
+    }
+
+
+    /**
+     * Set the value style.
+     * @param valueStyle The valueStyle.
+     */
+    public void setValueStyle(TextStyle valueStyle)
+    {
+        if (valueStyle != null) {
+            this.valueStyle.setValue(valueStyle);
+        }
+        else {
+            TextStyle defaultValueStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.MEDIUM,
+                                                        TextSize.MEDIUM_SMALL);
+            this.valueStyle.setValue(defaultValueStyle);
+        }
     }
 
 

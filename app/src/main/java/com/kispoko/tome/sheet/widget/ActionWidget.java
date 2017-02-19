@@ -23,6 +23,7 @@ import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
 import com.kispoko.tome.sheet.widget.action.RollDialogFragment;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
@@ -185,7 +186,7 @@ public class ActionWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public void initialize()
+    public void initialize(GroupParent groupParent)
     {
         // [1] Add variable to state
         // --------------------------------------------------------------------------------------

@@ -1,8 +1,7 @@
 
-package com.kispoko.tome.sheet.widget;
+package com.kispoko.tome.activity.sheet.dialog;
 
 
-import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
@@ -16,55 +15,50 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Widget Type
+ * Arithmetic Dialog Type
  */
-public enum WidgetType implements ToYaml
+public enum ArithmeticDialogType implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    TEXT,
-    NUMBER,
-    BOOLEAN,
-    IMAGE,
-    LIST,
-    TABLE,
-    ACTION,
-    MECHANIC,
-    LOG;
+    INCREMENTAL;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetType fromString(String typeString)
+    public static ArithmeticDialogType fromString(String type)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetType.class, typeString);
+        return EnumUtils.fromString(ArithmeticDialogType.class, type);
     }
 
 
-    public static WidgetType fromYaml(YamlParser yaml)
+    public static ArithmeticDialogType fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
+        if (yaml.isNull())
+            return null;
+
         String typeString = yaml.getString();
         try {
-            return WidgetType.fromString(typeString);
+            return ArithmeticDialogType.fromString(typeString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 
 
-    public static WidgetType fromSQLValue(SQLValue sqlValue)
+    public static ArithmeticDialogType fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetType widgetType = WidgetType.fromString(enumString);
-            return widgetType;
+            ArithmeticDialogType type = ArithmeticDialogType.fromString(enumString);
+            return type;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -75,41 +69,13 @@ public enum WidgetType implements ToYaml
     // TO YAML
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * The Widget Text Tint's yaml string representation.
+     * @return The Yaml Builder.
+     */
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
     }
-
-
-    // LABEL
-    // ------------------------------------------------------------------------------------------
-
-    public int stringLabelResourceId()
-    {
-        switch (this)
-        {
-            case TEXT:
-                return R.string.widget_text;
-            case NUMBER:
-                return R.string.widget_number;
-            case BOOLEAN:
-                return R.string.widget_boolean;
-            case LIST:
-                return R.string.widget_list;
-            case TABLE:
-                return R.string.widget_table;
-            case IMAGE:
-                return R.string.widget_image;
-            case ACTION:
-                return R.string.widget_action;
-            case MECHANIC:
-                return R.string.widget_mechanic;
-            case LOG:
-                return R.string.widget_log;
-        }
-
-        return 0;
-    }
-
 
 }

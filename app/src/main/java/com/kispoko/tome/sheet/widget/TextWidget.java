@@ -23,6 +23,7 @@ import com.kispoko.tome.sheet.NavigationDialogFragment;
 import com.kispoko.tome.sheet.SheetException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.error.UndefinedValueSetError;
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
@@ -290,7 +291,8 @@ public class TextWidget extends Widget
     /**
      * Initialize the text widget.
      */
-    public void initialize()
+    @Override
+    public void initialize(GroupParent groupParent)
     {
         // [1] Initialize the value variable
         // --------------------------------------------------------------------------------------
@@ -471,9 +473,8 @@ public class TextWidget extends Widget
         value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         value.text                  = this.value();
-        value.size                  = this.format().size().resourceId();
-        value.color                 = this.format().tint().resourceId();
-
+        value.size                  = this.format().valueStyle().size().resourceId();
+        value.color                 = this.format().valueStyle().color().resourceId();
 
         // > Alignment
         // -------------------------------------------------------------------------------------
@@ -627,6 +628,8 @@ public class TextWidget extends Widget
 
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.layoutGravity     = this.data().format().labelAlignment().gravityConstant();
 
         label.text              = this.data().format().label();
         label.font              = Font.serifFontRegular(context);

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.log.LogEntry;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -149,7 +150,7 @@ public class LogWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public void initialize() { }
+    public void initialize(GroupParent groupParent) { }
 
 
     @Override

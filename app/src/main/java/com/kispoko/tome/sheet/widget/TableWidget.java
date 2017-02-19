@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.TextVariable;
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.table.TableRow;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static android.os.Build.VERSION_CODES.M;
 
 
 /**
@@ -61,6 +63,8 @@ public class TableWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     private TableRow                        headerRow;
+
+    private GroupParent                     groupParent;
 
 
     // CONSTRUCTORS
@@ -201,8 +205,10 @@ public class TableWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public void initialize()
+    public void initialize(GroupParent groupParent)
     {
+        this.groupParent = groupParent;
+
         for (TableRow tableRow : this.rows()) {
             tableRow.initialize(this.columns());
         }
@@ -391,12 +397,21 @@ public class TableWidget extends Widget
         tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT;
         tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT;
 
-        tableRow.backgroundResource = R.drawable.bg_table_row;
+        //tableRow.backgroundResource = R.drawable.bg_table_row;
 
-        tableRow.margin.top         = R.dimen.widget_table_row_margins_vert;
-        tableRow.margin.bottom      = R.dimen.widget_table_row_margins_vert;
+//        tableRow.margin.top         = R.dimen.widget_table_row_margins_vert;
+//        tableRow.margin.bottom      = R.dimen.widget_table_row_margins_vert;
+
+        tableRow.padding.top        = R.dimen.widget_table_row_padding_vert;
+        tableRow.padding.bottom     = R.dimen.widget_table_row_padding_vert;
+
+        tableRow.padding.left   = R.dimen.widget_table_row_padding_horz;
+        tableRow.padding.right  = R.dimen.widget_table_row_padding_horz;
 
         android.widget.TableRow tableRowView = tableRow.tableRow(context);
+
+//        if (android.os.Build.VERSION.SDK_INT >= 21)
+//            tableRowView.setElevation(6.0f);
 
         for (int i = 0; i < row.width(); i++)
         {
@@ -426,14 +441,34 @@ public class TableWidget extends Widget
     {
         TableLayoutBuilder layout = new TableLayoutBuilder();
 
-        layout.layoutType          = LayoutType.LINEAR;
-        layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.shrinkAllColumns    = true;
+        layout.layoutType           = LayoutType.LINEAR;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.shrinkAllColumns     = true;
 
-//        tableLayout.setDividerDrawable(
-//                ContextCompat.getDrawable(context, R.drawable.table_row_divider));
-//        tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        switch (this.data().format().background())
+        {
+            case NONE:
+                switch (this.groupParent.background())
+                {
+                    case LIGHT:
+                        layout.divider = R.drawable.table_row_divider_medium;
+                        break;
+                    case MEDIUM:
+                        layout.divider = R.drawable.table_row_divider_dark;
+                        break;
+                    case DARK:
+                        layout.divider = R.drawable.table_row_divider_medium;
+                        break;
+                }
+                break;
+            case LIGHT:
+                layout.divider = R.drawable.table_row_divider_light;
+                break;
+            case DARK:
+                layout.divider = R.drawable.table_row_divider_medium;
+                break;
+        }
 
         return layout.tableLayout(context);
     }
@@ -446,7 +481,7 @@ public class TableWidget extends Widget
 
         headerRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
         headerRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
-        //headerRow.padding.top    = R.dimen.widget_table_header_padding_vert;
+        headerRow.padding.top    = R.dimen.widget_table_header_padding_vert;
         headerRow.padding.bottom = R.dimen.widget_table_header_padding_vert;
         headerRow.padding.left   = R.dimen.widget_table_row_padding_horz;
         headerRow.padding.right  = R.dimen.widget_table_row_padding_horz;
@@ -470,7 +505,7 @@ public class TableWidget extends Widget
             float headerTextSize = (int) context.getResources()
                                                 .getDimension(R.dimen.widget_table_header_text_size);
             headerCellView.setTextSize(headerTextSize);
-            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_4));
+            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_6));
             headerCellView.setTypeface(Util.serifFontBold(context));
 
             headerRowView.addView(headerCellView);

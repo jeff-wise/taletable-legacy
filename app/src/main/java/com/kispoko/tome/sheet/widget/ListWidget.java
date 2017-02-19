@@ -20,6 +20,7 @@ import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.list.ListWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
@@ -165,7 +166,7 @@ public class ListWidget extends Widget
      * Initialize the text widget state.
      */
     @Override
-    public void initialize()
+    public void initialize(GroupParent groupParent)
     {
         // Initialize variables
         for (VariableUnion variableUnion : this.values())

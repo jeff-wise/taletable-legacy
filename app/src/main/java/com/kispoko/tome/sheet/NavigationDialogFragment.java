@@ -15,15 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.value.ValueUnion;
 import com.kispoko.tome.sheet.widget.WidgetType;
+import com.kispoko.tome.util.ui.AppDialog;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.SheetDialog;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 
 
@@ -154,7 +153,7 @@ public class NavigationDialogFragment extends DialogFragment
         // -------------------------------------------------------------------------------------
 
         String widgetTypeString = getString(this.widgetType.stringLabelResourceId()).toUpperCase();
-        layout.addView(SheetDialog.headerView(this.widgetName, widgetTypeString, getContext()));
+        layout.addView(AppDialog.headerView(this.widgetName, widgetTypeString, getContext()));
 
         // > Buttons
         // -------------------------------------------------------------------------------------

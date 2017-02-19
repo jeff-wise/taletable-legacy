@@ -15,6 +15,7 @@ import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.bool.BooleanWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
@@ -157,7 +158,7 @@ public class BooleanWidget extends Widget
      * Initialize the text widget state.
      */
     @Override
-    public void initialize()
+    public void initialize(GroupParent groupParent)
     {
         // > If the variable is non-null
         if (!this.valueVariable.isNull()) {

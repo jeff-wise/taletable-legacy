@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -202,7 +203,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
         // --------------------------------------------------------------------------------------
 
         this.trueText           = column.trueText();
-        this.falseText          = column.trueText();
+        this.falseText          = column.falseText();
     }
 
 
@@ -294,7 +295,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
         value.font              = Font.serifFontRegular(context);
         value.size              = R.dimen.widget_table_cell_text_size;
-        value.color             = R.color.dark_blue_hl_2;
+        value.color             = R.color.dark_blue_hl_1;
 
         return value.textView(context);
     }

@@ -10,12 +10,13 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.activity.sheet.dialog.ArithmeticDialogType;
+import com.kispoko.tome.activity.sheet.dialog.IncrementDialogFragment;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.Variable;
-import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.kispoko.tome.R.string.column;
 
 
 /**
@@ -51,22 +51,23 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                            id;
+    private UUID                                    id;
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<NumberVariable>    valueVariable;
-    private PrimitiveFunctor<CellAlignment> alignment;
-    private PrimitiveFunctor<String>        prefix;
+    private ModelFunctor<NumberVariable>            valueVariable;
+    private PrimitiveFunctor<CellAlignment>         alignment;
+    private PrimitiveFunctor<String>                valuePrefix;
+    private PrimitiveFunctor<ArithmeticDialogType>  editDialogType;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer                         valueViewId;
+    private Integer                                 valueViewId;
 
-    private WidgetContainer                 widgetContainer;
+    private WidgetContainer                         widgetContainer;
 
 
     // CONSTRUCTORS
@@ -78,36 +79,49 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
 
         this.valueVariable  = ModelFunctor.empty(NumberVariable.class);
         this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.prefix         = new PrimitiveFunctor<>(null, String.class);
+        this.valuePrefix    = new PrimitiveFunctor<>(null, String.class);
+        this.editDialogType = new PrimitiveFunctor<>(null, ArithmeticDialogType.class);
     }
 
 
     public NumberCell(UUID id,
                       NumberVariable valueVariable,
                       CellAlignment alignment,
-                      String prefix)
+                      String valuePrefix,
+                      ArithmeticDialogType editDialogType)
     {
         this.id             = id;
 
-        this.valueVariable = ModelFunctor.full(valueVariable, NumberVariable.class);
+        this.valueVariable  = ModelFunctor.full(valueVariable, NumberVariable.class);
 
         this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-        this.prefix         = new PrimitiveFunctor<>(prefix, String.class);
+        this.valuePrefix    = new PrimitiveFunctor<>(valuePrefix, String.class);
+        this.editDialogType = new PrimitiveFunctor<>(editDialogType, ArithmeticDialogType.class);
+
+        this.setEditDialogType(editDialogType);
 
         initializeNumberCell();
     }
 
 
+    /**
+     * Create a Number Cell from its Yaml representation.
+     * @param yaml The yaml parser.
+     * @return The parsed Number Cell.
+     * @throws YamlParseException
+     */
     public static NumberCell fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID           id        = UUID.randomUUID();
+        UUID                 id             = UUID.randomUUID();
 
-        NumberVariable value     = NumberVariable.fromYaml(yaml.atMaybeKey("value"));
-        CellAlignment  alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
-        String         prefix    = yaml.atMaybeKey("prefix").getString();
+        NumberVariable       value          = NumberVariable.fromYaml(yaml.atMaybeKey("value"));
+        CellAlignment        alignment      = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        String               prefix         = yaml.atMaybeKey("value_prefix").getString();
+        ArithmeticDialogType editDialogType = ArithmeticDialogType.fromYaml(
+                                                        yaml.atMaybeKey("edit_dialog_type"));
 
-        return new NumberCell(id, value, alignment, prefix);
+        return new NumberCell(id, value, alignment, prefix, editDialogType);
     }
 
 
@@ -164,7 +178,8 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         return YamlBuilder.map()
                 .putYaml("value", this.valueVariable())
                 .putYaml("alignment", this.alignment())
-                .putString("prefix", this.prefix());
+                .putString("value_prefix", this.prefix())
+                .putYaml("edit_dialog_type", this.editDialogType());
     }
 
 
@@ -269,7 +284,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         {
             String integerString = integerValue.toString();
 
-            if (!this.prefix.isNull())
+            if (!this.valuePrefix.isNull())
                 integerString = this.prefix() + " " + integerString;
 
             return integerString;
@@ -293,35 +308,55 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
 
 
     // ** Prefix
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public String prefix()
     {
-        return this.prefix.getValue();
+        return this.valuePrefix.getValue();
+    }
+
+
+    // ** Edit Dialog Type
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The type of edit dialog.
+     * @return The edit dialog type.
+     */
+    public ArithmeticDialogType editDialogType()
+    {
+        return this.editDialogType.getValue();
+    }
+
+
+    public void setEditDialogType(ArithmeticDialogType editDialogType)
+    {
+        if (editDialogType != null)
+            this.editDialogType.setValue(editDialogType);
+        else
+            this.editDialogType.setValue(ArithmeticDialogType.INCREMENTAL);
     }
 
 
     // > View
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
-    public View view(NumberColumn column)
+    public View view(NumberColumn column, final Context context)
     {
         // [1] Declarations
-        // ------------------------------------------------------------------------------------------
-
-        Context context = SheetManager.currentSheetContext();
+        // -------------------------------------------------------------------------------------
 
         TextViewBuilder cellView = new TextViewBuilder();
         this.valueViewId = Util.generateViewId();
 
         // [2] Cell View
-        // ------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         cellView.id         = this.valueViewId;
         cellView.layoutType = LayoutType.TABLE_ROW;
         cellView.width      = TableRow.LayoutParams.WRAP_CONTENT;
         cellView.height     = TableRow.LayoutParams.WRAP_CONTENT;
-        cellView.color      = R.color.dark_blue_hl_2;
+        cellView.color      = R.color.dark_blue_hl_1;
         cellView.size       = R.dimen.widget_table_cell_text_size;
 
         // > Font
@@ -337,7 +372,37 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
             cellView.text = Integer.toString(column.defaultValue());
 
 
+        cellView.onClick    = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNumberCellShortClick(context);
+            }
+        };
+
+
         return cellView.textView(context);
+    }
+
+
+    // > Clicks
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * On a short click, open the appropriate editor.
+     */
+    private void onNumberCellShortClick(Context context)
+    {
+        SheetActivity sheetActivity = (SheetActivity) context;
+
+        switch (this.editDialogType())
+        {
+            case INCREMENTAL:
+                IncrementDialogFragment incDialog =
+                        IncrementDialogFragment.newInstance(this.valueVariable().label(),
+                                                            this.value());
+                incDialog.show(sheetActivity.getSupportFragmentManager(), "");
+                break;
+        }
     }
 
 

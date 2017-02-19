@@ -4,8 +4,6 @@ package com.kispoko.tome.sheet.group;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -14,6 +12,7 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
+
 
 
 /**
@@ -25,8 +24,8 @@ public enum GroupBackground implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    NONE,
     LIGHT,
+    MEDIUM,
     DARK;
 
 
@@ -87,10 +86,10 @@ public enum GroupBackground implements ToYaml
     {
         switch (this)
         {
-            case NONE:
-                return null;
             case LIGHT:
                 return R.color.dark_blue_4;
+            case MEDIUM:
+                return R.color.dark_blue_5;
             case DARK:
                 return R.color.dark_blue_7;
         }

@@ -14,15 +14,17 @@ public class SerializationError
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private String className;
+    private String    className;
+    private Exception exception;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public SerializationError(String className)
+    public SerializationError(String className, Exception exception)
     {
         this.className = className;
+        this.exception = exception;
     }
 
 
@@ -31,7 +33,9 @@ public class SerializationError
 
     public String errorMessage()
     {
-        return "Serialization Exception: In class: " + this.className;
+        return "Serialization Exception: In class: " + "\n" +
+                "    Class: " + this.className + "\n" +
+                "    Exception:\n" + this.exception.getMessage();
     }
 
 }

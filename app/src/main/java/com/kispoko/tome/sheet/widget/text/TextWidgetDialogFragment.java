@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.TextWidget;
@@ -26,7 +25,8 @@ import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 
-import static com.kispoko.tome.util.ui.EditDialog.footerView;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -155,7 +155,9 @@ public class TextWidgetDialogFragment extends DialogFragment
         // > Footer
         // -------------------------------------------------------------------------------------
 
-        layout.addView(EditDialog.footerView(context));
+        List<String> secondaryButtonNames = new ArrayList<>();
+        secondaryButtonNames.add(context.getString(R.string.dialog_cancel));
+        layout.addView(EditDialog.footerView(secondaryButtonNames, false, context));
 
         return layout;
     }

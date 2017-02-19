@@ -18,8 +18,9 @@ public abstract class Variable
     // ------------------------------------------------------------------------------------------
 
     public abstract String                  name();
-    public abstract String                  label();
     public abstract void                    setName(String name);
+    public abstract String                  label();
+    public abstract void                    setLabel(String label);
     public abstract boolean                 isNamespaced();
     public abstract List<VariableReference> dependencies();
     public abstract List<String>            tags();
@@ -31,6 +32,9 @@ public abstract class Variable
     // ------------------------------------------------------------------------------------------
 
     private OnUpdateListener                onUpdateListener;
+
+    protected String                        originalName;
+    protected String                        originalLabel;
 
 
     // CONSTRUCTORS
@@ -71,6 +75,25 @@ public abstract class Variable
     {
         this.onUpdateListener = onUpdateListener;
     }
+
+
+    public void setNamespace(Namespace namespace)
+    {
+        // > Update name
+        String previousName = this.name();
+
+        String newName = namespace.name() + "." + this.originalName;
+        this.setName(newName);
+
+        // > Update label
+        String newLabel = namespace.label() + " " + this.originalLabel;
+        this.setLabel(newLabel);
+
+        // > Reindex variable
+        State.removeVariable(previousName);
+        State.addVariable(this);
+    }
+
 
 
     // ON UPDATE LISTENER

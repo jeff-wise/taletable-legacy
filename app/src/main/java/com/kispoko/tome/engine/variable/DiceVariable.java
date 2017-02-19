@@ -145,9 +145,17 @@ public class DiceVariable extends Variable
      * Get the variable name which is a unique identifier.
      * @return The variable name.
      */
+    @Override
     public String name()
     {
         return this.name.getValue();
+    }
+
+
+    @Override
+    public void setName(String name)
+    {
+        this.name.setValue(name);
     }
 
 
@@ -159,15 +167,9 @@ public class DiceVariable extends Variable
 
 
     @Override
-    public void setName(String name)
+    public void setLabel(String label)
     {
-        // > Set the name
-        String oldName = this.name();
-        this.name.setValue(name);
-
-        // > Reindex variable
-        State.removeVariable(oldName);
-        State.addVariable(this);
+        this.label.setValue(label);
     }
 
 

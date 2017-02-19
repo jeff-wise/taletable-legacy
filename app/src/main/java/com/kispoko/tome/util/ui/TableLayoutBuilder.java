@@ -5,8 +5,10 @@ package com.kispoko.tome.util.ui;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
+import com.kispoko.tome.R;
 
 
 /**
@@ -21,26 +23,28 @@ public class TableLayoutBuilder
     // > Layout State
     // ------------------------------------------------------------------------------------------
 
-    public Integer                 id;
+    public Integer                  id;
 
-    public Integer                 height;
-    public Integer                 width;
+    public Integer                  height;
+    public Integer                  width;
 
-    public LayoutType              layoutType;
+    public LayoutType               layoutType;
 
-    public Integer                 gravity;
-    public Integer                 layoutGravity;
+    public Integer                  gravity;
+    public Integer                  layoutGravity;
 
-    public Integer                 backgroundColor;
-    public Integer                 backgroundResource;
+    public Integer                  backgroundColor;
+    public Integer                  backgroundResource;
 
-    public Margins                 margin;
-    public Padding                 padding;
+    public Margins                  margin;
+    public Padding                  padding;
 
-    public Boolean                 shrinkAllColumns;
-    public Boolean                 stretchAllColumns;
+    public Boolean                  shrinkAllColumns;
+    public Boolean                  stretchAllColumns;
 
-    public View.OnClickListener    onClick;
+    public Integer                  divider;
+
+    public View.OnClickListener     onClick;
 
 
     // CONSTRUCTORS
@@ -66,6 +70,8 @@ public class TableLayoutBuilder
 
         this.shrinkAllColumns   = null;
         this.stretchAllColumns  = null;
+
+        this.divider            = null;
 
         this.onClick            = null;
     }
@@ -142,6 +148,14 @@ public class TableLayoutBuilder
 
         if (this.stretchAllColumns != null)
             tableLayout.setStretchAllColumns(this.stretchAllColumns);
+
+        // > Divider
+        // --------------------------------------------------------------------------------------
+
+        if (this.divider != null) {
+            tableLayout.setDividerDrawable(ContextCompat.getDrawable(context, this.divider));
+            tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        }
 
 
         // [2] Layout Parameters

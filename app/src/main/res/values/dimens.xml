@@ -69,6 +69,26 @@
     <dimen name="sheet_dialog_body_margin_top">22dp</dimen>
 
 
+    <!-- DIALOG: EDIT -->
+    <dimen name="dialog_edit_header_padding_top">10dp</dimen>
+    <dimen name="dialog_edit_header_padding_horz">10dp</dimen>
+    <dimen name="dialog_edit_footer_margin_bottom">15dp</dimen>
+
+    <dimen name="dialog_edit_padding_vert">20dp</dimen>
+    <dimen name="dialog_edit_padding_horz">15dp</dimen>
+    <dimen name="dialog_edit_header_text_size">4sp</dimen>
+    <dimen name="dialog_edit_footer_button_text_size">3.3sp</dimen>
+
+
+
+    <!-- INCREMENT DIALOG -->
+    <dimen name="dialog_increment_value_padding_top">25dp</dimen>
+    <dimen name="dialog_increment_value_padding_bottom">7dp</dimen>
+    <dimen name="dialog_increment_value_text_size">7sp</dimen>
+    <dimen name="dialog_increment_value_margin_horz">10dp</dimen>
+    <dimen name="dialog_increment_button_text_size">4.4sp</dimen>
+
+
     <!-- NAV DIALOG -->
     <dimen name="nav_dialog_button_margin_bottom">10dp</dimen>
     <dimen name="nav_dialog_button_text_size">4.1sp</dimen>
@@ -93,15 +113,16 @@
     <dimen name="group_background_padding_horz">11dp</dimen>
     <dimen name="group_background_padding_vert">12dp</dimen>
 
-    <dimen name="group_label_margin_left">3dp</dimen>
+    <dimen name="group_label_margin_left">10dp</dimen>
     <dimen name="group_label_text_size">4.4sp</dimen>
     <dimen name="group_label_secondary_text_size">3.7sp</dimen>
 
 
     <!-- GROUP: ROW -->
-    <dimen name="group_row_indented_padding">8dp</dimen>
-    <dimen name="group_row_three_quarters_padding">40dp</dimen>
-    <dimen name="group_row_half_padding">70dp</dimen>
+    <dimen name="group_row_full_padding">6dp</dimen>
+    <dimen name="group_row_indented_padding">15dp</dimen>
+    <dimen name="group_row_three_quarters_padding">45dp</dimen>
+    <dimen name="group_row_half_padding">75dp</dimen>
 
 
     <!-- SPACE ABOVE -->
@@ -183,23 +204,24 @@
 
 
     <!-- WIDGET: MECHANIC  -->
-    <dimen name="widget_mechanic_name_text_size">4.4sp</dimen>
-    <dimen name="widget_mechanic_description_text_size">3.8sp</dimen>
+    <dimen name="widget_mechanic_name_text_size">4.2sp</dimen>
+    <dimen name="widget_mechanic_description_text_size">3.7sp</dimen>
+    <dimen name="widget_mechanic_layout_margin_horz">4dp</dimen>
+    <dimen name="widget_mechanic_item_padding_horz">4dp</dimen>
+    <dimen name="widget_mechanic_item_margin_bottom">12dp</dimen>
+    <dimen name="widget_mechanic_item_name_margin_bottom">3dp</dimen>
+    <dimen name="widget_mechanic_item_description_margin_bottom">12dp</dimen>
 
 
     <!-- WIDGET: LOG  -->
     <dimen name="widget_log_entry_title_text_size">4.4sp</dimen>
+    <dimen name="widget_log_entry_title_margin_bottom">3dp</dimen>
     <dimen name="widget_log_entry_date_text_size">3.7sp</dimen>
+    <dimen name="widget_log_entry_date_margin_bottom">3dp</dimen>
     <dimen name="widget_log_entry_author_text_size">3.7sp</dimen>
     <dimen name="widget_log_entry_text_text_size">3.7sp</dimen>
-
-
-    <!-- WIDGET: ADDER  -->
-    <dimen name="widget_adder_mod_button_text_size">3.3sp</dimen>
-    <dimen name="widget_adder_value_text_size">7sp</dimen>
-    <dimen name="widget_adder_reset_button_text_size">3.7sp</dimen>
-    <dimen name="widget_adder_mod_button_margin">50dp</dimen>
-    <dimen name="widget_adder_footer_margin_top">10dp</dimen>
+    <dimen name="widget_log_entry_header_margin_bottom">6dp</dimen>
+    <dimen name="widget_log_entry_text_padding_horz">6dp</dimen>
 
 
     <!-- WIDGET: TABLE -->
@@ -211,7 +233,7 @@
     <dimen name="widget_table_row_padding_vert">22dp</dimen>
     <dimen name="widget_table_row_padding_horz">15dp</dimen>
     <dimen name="widget_table_row_margins_vert">2.5dp</dimen>
-    <dimen name="widget_table_header_padding_vert">10dp</dimen>
+    <dimen name="widget_table_header_padding_vert">20dp</dimen>
     <dimen name="comp_table_layout_padding">5dp</dimen>
 
     <dimen name="prefix_padding_left">4.2dp</dimen>
@@ -501,6 +523,9 @@
     <dimen name="five_dp">5dp</dimen>
     <dimen name="six_dp">6dp</dimen>
     <dimen name="seven_dp">7dp</dimen>
+    <dimen name="eight_dp">7dp</dimen>
+    <dimen name="nine_dp">7dp</dimen>
+    <dimen name="ten_dp">7dp</dimen>
 
 
     <!-- ACTIVITY: SECTIONS -->
@@ -514,13 +539,6 @@
     <dimen name="section_card_description_text_size">3sp</dimen>
     <dimen name="section_card_title_margin_bottom">10dp</dimen>
     <dimen name="section_card_icon_margin_bottom">10dp</dimen>
-
-
-    <!-- DIALOG: EDIT -->
-    <dimen name="dialog_edit_padding_vert">20dp</dimen>
-    <dimen name="dialog_edit_padding_horz">15dp</dimen>
-    <dimen name="dialog_edit_header_text_size">4sp</dimen>
-    <dimen name="dialog_edit_footer_button_text_size">3.3sp</dimen>
 
     <!-- DIALOG: EDIT TEXT -->
     <dimen name="dialog_edit_text_expand_button_text_size">3.3sp</dimen>

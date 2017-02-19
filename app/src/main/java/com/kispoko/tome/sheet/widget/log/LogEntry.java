@@ -24,6 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.UUID;
 
+import static android.R.attr.data;
 
 
 /**
@@ -247,6 +248,10 @@ public class LogEntry implements Model, ToYaml, Serializable
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.backgroundResource   = R.drawable.bg_log_header;
+
+        layout.margin.bottom        = R.dimen.widget_log_entry_header_margin_bottom;
+
         layout.child(title)
               .child(date)
               .child(author);
@@ -258,9 +263,11 @@ public class LogEntry implements Model, ToYaml, Serializable
         title.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         title.text                  = this.title();
-        title.font                  = Font.serifFontRegular(context);
+        title.font                  = Font.serifFontBold(context);
         title.color                 = R.color.dark_blue_hlx_7;
         title.size                  = R.dimen.widget_log_entry_title_text_size;
+
+        title.margin.bottom         = R.dimen.widget_log_entry_title_margin_bottom;
 
         // [3 B] Date
         // -------------------------------------------------------------------------------------
@@ -272,6 +279,8 @@ public class LogEntry implements Model, ToYaml, Serializable
         date.font                   = Font.serifFontRegular(context);
         date.color                  = R.color.dark_blue_hl_5;
         date.size                   = R.dimen.widget_log_entry_date_text_size;
+
+        date.margin.bottom          = R.dimen.widget_log_entry_date_margin_bottom;
 
         // [3 C] Author
         // -------------------------------------------------------------------------------------
@@ -300,6 +309,9 @@ public class LogEntry implements Model, ToYaml, Serializable
         text.font               = Font.serifFontRegular(context);
         text.color              = R.color.dark_blue_hl_8;
         text.size               = R.dimen.widget_log_entry_text_text_size;
+
+        text.padding.left       = R.dimen.widget_log_entry_text_padding_horz;
+        text.padding.right      = R.dimen.widget_log_entry_text_padding_horz;
 
         return text.textView(context);
     }

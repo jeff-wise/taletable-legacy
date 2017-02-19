@@ -2,8 +2,6 @@
 package com.kispoko.tome.sheet;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.campaign.Campaign;
 import com.kispoko.tome.campaign.CampaignIndex;

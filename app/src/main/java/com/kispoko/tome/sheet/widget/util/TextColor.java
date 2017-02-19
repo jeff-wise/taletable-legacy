@@ -28,6 +28,7 @@ public enum TextColor implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
+    VERY_LIGHT,
     LIGHT,
     MEDIUM_LIGHT,
     MEDIUM,
@@ -36,6 +37,9 @@ public enum TextColor implements ToYaml
     VERY_DARK,
     SUPER_DARK,
     PURPLE,
+    PURPLE_LIGHT,
+    PURPLE_VERY_LIGHT,
+    GREEN_VERY_LIGHT,
     GREEN_LIGHT,
     GREEN_MEDIUM_LIGHT;
 
@@ -100,6 +104,8 @@ public enum TextColor implements ToYaml
     {
         switch (this)
         {
+            case VERY_LIGHT:
+                return R.color.dark_blue_hlx_5;
             case LIGHT:
                 return R.color.dark_blue_hlx_7;
             case MEDIUM_LIGHT:
@@ -116,6 +122,12 @@ public enum TextColor implements ToYaml
                 return R.color.dark_blue_1;
             case PURPLE:
                 return R.color.purple_light;
+            case PURPLE_LIGHT:
+                return R.color.purple_light;
+            case PURPLE_VERY_LIGHT:
+                return R.color.purple_very_light;
+            case GREEN_VERY_LIGHT:
+                return R.color.green_very_light;
             case GREEN_LIGHT:
                 return R.color.green_light;
             case GREEN_MEDIUM_LIGHT:

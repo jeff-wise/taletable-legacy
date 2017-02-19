@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.SQL;
-import com.kispoko.tome.util.database.error.NullModelError;
 import com.kispoko.tome.util.database.error.NullModelIdentifierError;
 import com.kispoko.tome.util.database.error.SerializationError;
 import com.kispoko.tome.util.database.error.UninitializedFunctorError;
@@ -742,7 +741,7 @@ public class ModelLib
         catch (IllegalAccessException e)
         {
             throw DatabaseException.serialization(
-                    new SerializationError(model.getClass().getName()));
+                    new SerializationError(model.getClass().getName(), e));
         }
 
         return new Tuple3<>(primitiveValues, modelValues, collectionValues);
@@ -805,7 +804,7 @@ public class ModelLib
         }
         catch (Exception e) {
             throw DatabaseException.serialization(
-                    new SerializationError(classObject.getName()));
+                    new SerializationError(classObject.getName(), e));
         }
         return model;
     }

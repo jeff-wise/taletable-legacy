@@ -2,11 +2,14 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
+import com.kispoko.tome.engine.variable.Namespace;
+
+
 
 /**
  * Widget Container
  */
 public interface WidgetContainer
 {
-    void setNamespace(String namespace);
+    void setNamespace(Namespace namespace);
 }

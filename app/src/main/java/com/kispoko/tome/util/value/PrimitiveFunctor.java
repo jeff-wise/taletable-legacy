@@ -4,6 +4,7 @@ package com.kispoko.tome.util.value;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
 import com.kispoko.tome.engine.program.ProgramValueType;
@@ -25,7 +26,6 @@ import com.kispoko.tome.sheet.group.GroupLabelType;
 import com.kispoko.tome.sheet.group.RowAlignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
-import com.kispoko.tome.sheet.widget.AdderWidget;
 import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.sheet.widget.action.ActionColor;
 import com.kispoko.tome.sheet.widget.action.ActionSize;
@@ -104,26 +104,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
     }
 
 
-    // > State
-    // --------------------------------------------------------------------------------------
-
-    // ** On Update Listener
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * Set the update listener for the primitive value. Whenever the primitive value is updated,
-     * the listener is called with the updated value.
-     * @param onUpdateListener The PrimitiveValue OnUpdateListener instance.
-     */
-    /*
-    public void setOnUpdateListener(OnUpdateListener<A> onUpdateListener)
-    {
-        this.onUpdateListener = onUpdateListener;
-    }
-    */
-
-
-
     // > Helpers
     // --------------------------------------------------------------------------------------
 
@@ -166,6 +146,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.BLOB;
         }
+        else if (valueClass.isEnum())
+        {
+            return SQLValue.Type.TEXT;
+        }
         else if (valueClass.isAssignableFrom(DiceType.class))
         {
             return SQLValue.Type.TEXT;
@@ -195,10 +179,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(ActionSize.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(AdderWidget.Type.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -401,11 +381,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof ActionSize)
         {
             String enumString = ((ActionSize) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof AdderWidget.Type)
-        {
-            String enumString = ((AdderWidget.Type) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof SerialBitmap)
@@ -710,11 +685,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             ActionSize size = ActionSize.fromSQLValue(sqlValue);
             this.setValue((A) size);
-        }
-        else if (this.valueClass.isAssignableFrom(AdderWidget.Type.class))
-        {
-            AdderWidget.Type type = AdderWidget.Type.fromSQLValue(sqlValue);
-            this.setValue((A) type);
         }
         else if (this.valueClass.isAssignableFrom(ProgramValueType.class))
         {

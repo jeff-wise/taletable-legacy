@@ -6,8 +6,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,6 +21,7 @@ import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
@@ -41,7 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.label;
 
 
 /**
@@ -134,8 +134,8 @@ public class NumberWidget extends Widget
         WidgetData         widgetData    = WidgetData.fromYaml(yaml.atMaybeKey("data"));
         NumberWidgetFormat format        = NumberWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
         NumberVariable     value         = NumberVariable.fromYaml(yaml.atKey("value"));
-        String             valuePrefix   = yaml.atMaybeKey("value_prefix").getTrimmedString();
-        String             valuePostfix  = yaml.atMaybeKey("value_postfix").getTrimmedString();
+        String             valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
+        String             valuePostfix  = yaml.atMaybeKey("value_postfix").getString();
         String             description   = yaml.atMaybeKey("description").getTrimmedString();
 
         List<VariableUnion> variables    = yaml.atMaybeKey("variables").forEach(
@@ -205,7 +205,7 @@ public class NumberWidget extends Widget
      * Initialize the text widget state.
      */
     @Override
-    public void initialize()
+    public void initialize(GroupParent groupParent)
     {
         // [1] Initialize variables with listeners to update the number widget views when the
         //     values of the variables change
@@ -569,6 +569,7 @@ public class NumberWidget extends Widget
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+
         // > Gravity
         switch (this.data().format().alignment())
         {
@@ -583,10 +584,10 @@ public class NumberWidget extends Widget
                 break;
         }
 
-        value.font          = Font.serifFontRegular(context);
-
         if (this.description() != null)
         {
+            value.font          = Font.serifFontRegular(context);
+
             value.color     = this.format().descriptionStyle().color().resourceId();
             value.size      = this.format().descriptionStyle().size().resourceId();
             value.textSpan  = this.valueSpannableString(context);
@@ -598,13 +599,13 @@ public class NumberWidget extends Widget
             value.size      = this.format().valueStyle().size().resourceId();
 
             // > Font
-            if (this.format().labelStyle().isBold() && this.format().labelStyle().isItalic()) {
+            if (this.format().valueStyle().isBold() && this.format().valueStyle().isItalic()) {
                 value.font  = Font.serifFontBoldItalic(context);
             }
-            else if (this.format().labelStyle().isBold()) {
+            else if (this.format().valueStyle().isBold()) {
                 value.font  = Font.serifFontBold(context);
             }
-            else if (this.format().labelStyle().isItalic()) {
+            else if (this.format().valueStyle().isItalic()) {
                 value.font  = Font.serifFontItalic(context);
             }
             else {
@@ -624,55 +625,80 @@ public class NumberWidget extends Widget
         // > Get value index and remove placeholder
         int valueIndex = this.description().indexOf("<value>");
 
-        String descriptionString = this.description().replace("<value>", "");
+        StringBuilder stringBuilder = new StringBuilder(this.description().replace("<value>", ""));
 
-        SpannableStringBuilder builder = new SpannableStringBuilder(descriptionString);
+        SpannableStringBuilder builder = new SpannableStringBuilder(stringBuilder.toString());
 
+        if (valueIndex >= 0)
+        {
+            // > Format Value
+            // (1) Insert number string
+            builder.insert(valueIndex, valueString);
+            stringBuilder.insert(valueIndex, valueString);
 
-        // > Format Value
-        // (1) Insert number string
-        builder.insert(valueIndex, valueString);
+            // (2) Make the number bold
+            if (this.format().valueStyle().isBold() && this.format().valueStyle().isItalic()) {
+                StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
+                builder.setSpan(valueBoldItalicSpan, valueIndex, valueIndex + valueStringLength, 0);
+            }
+            else if (this.format().valueStyle().isBold()) {
+                StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
+                builder.setSpan(valueBoldSpan, valueIndex, valueIndex + valueStringLength, 0);
+            }
+            else if (this.format().valueStyle().isItalic()) {
+                StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
+                builder.setSpan(valueItalicSpan, valueIndex, valueIndex + valueStringLength, 0);
+            }
 
-        // (2) Make the number bold
-        if (this.format().valueStyle().isBold() && this.format().valueStyle().isItalic()) {
-            StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
-            builder.setSpan(valueBoldItalicSpan, valueIndex, valueIndex + valueStringLength, 0 );
+            // (3) Color the value
+            builder.setSpan(this.format().valueStyle().color().foregroundColorSpan(context),
+                            valueIndex, valueIndex + valueStringLength, 0);
+
+            // (4) Size
+            RelativeSizeSpan sizeSpan = this.format().valueStyle().size().relativeSizeSpan(
+                                                this.format().descriptionStyle().size(), context);
+            builder.setSpan(sizeSpan, valueIndex, valueIndex + valueStringLength, 0);
         }
-        else if (this.format().valueStyle().isBold()) {
-            StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
-            builder.setSpan(valueBoldSpan, valueIndex, valueIndex + valueStringLength, 0 );
-        }
-        else if (this.format().valueStyle().isItalic()) {
-            StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
-            builder.setSpan(valueItalicSpan, valueIndex, valueIndex + valueStringLength, 0 );
-        }
-
-        // (3) Color the value
-        builder.setSpan(this.format().valueStyle().color().foregroundColorSpan(context),
-                        valueIndex, valueIndex + valueStringLength, 0);
 
         // > Format Label
         if (this.format().label() != null &&
             this.format().labelPosition() == InlineLabelPosition.TEXT)
         {
-            int labelIndex = descriptionString.indexOf(this.format().label());
-            int labelStringLength = this.format().label().length();
+            int labelIndex = stringBuilder.indexOf(this.format().label());
 
-            if (this.format().labelStyle().isBold() && this.format().labelStyle().isItalic()) {
-                StyleSpan labelBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
-                builder.setSpan(labelBoldItalicSpan, labelIndex, labelIndex + labelStringLength, 0);
-            }
-            else if (this.format().labelStyle().isBold()) {
-                StyleSpan labelBoldSpan = new StyleSpan(Typeface.BOLD);
-                builder.setSpan(labelBoldSpan, labelIndex, labelIndex + labelStringLength, 0);
-            }
-            else if (this.format().labelStyle().isItalic()) {
-                StyleSpan labelItalicSpan = new StyleSpan(Typeface.ITALIC);
-                builder.setSpan(labelItalicSpan, labelIndex, labelIndex + labelStringLength, 0);
-            }
+            if (labelIndex >= 0)
+            {
+                int labelStringLength = this.format().label().length();
 
-            builder.setSpan(this.format().labelStyle().color().foregroundColorSpan(context),
-                    labelIndex, labelIndex + labelStringLength, 0);
+                // (1) Set Typeface
+                if (this.format().labelStyle().isBold() &&
+                    this.format().labelStyle().isItalic())
+                {
+                    StyleSpan labelBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
+                    builder.setSpan(labelBoldItalicSpan, labelIndex,
+                                    labelIndex + labelStringLength, 0);
+                }
+                else if (this.format().labelStyle().isBold())
+                {
+                    StyleSpan labelBoldSpan = new StyleSpan(Typeface.BOLD);
+                    builder.setSpan(labelBoldSpan, labelIndex, labelIndex + labelStringLength, 0);
+                }
+                else if (this.format().labelStyle().isItalic())
+                {
+                    StyleSpan labelItalicSpan = new StyleSpan(Typeface.ITALIC);
+                    builder.setSpan(labelItalicSpan, labelIndex, labelIndex + labelStringLength, 0);
+                }
+
+                // (2) Set Color
+                builder.setSpan(this.format().labelStyle().color().foregroundColorSpan(context),
+                                labelIndex, labelIndex + labelStringLength, 0);
+
+                // (3) Set Size
+                RelativeSizeSpan labelSizeSpan =
+                                this.format().labelStyle().size().relativeSizeSpan(
+                                            this.format().descriptionStyle().size(), context);
+                builder.setSpan(labelSizeSpan, labelIndex, labelIndex + labelStringLength, 0);
+            }
         }
 
         return builder;

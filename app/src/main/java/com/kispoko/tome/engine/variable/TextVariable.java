@@ -2,7 +2,6 @@
 package com.kispoko.tome.engine.variable;
 
 
-import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.exception.InvalidDataException;
@@ -360,6 +359,13 @@ public class TextVariable extends Variable
 
 
     @Override
+    public void setName(String name)
+    {
+        this.name.setValue(name);
+    }
+
+
+    @Override
     public String label()
     {
         return this.label.getValue();
@@ -367,15 +373,9 @@ public class TextVariable extends Variable
 
 
     @Override
-    public void setName(String name)
+    public void setLabel(String label)
     {
-        // > Set the name
-        String oldName = this.name();
-        this.name.setValue(name);
-
-        // > Reindex variable
-        State.removeVariable(oldName);
-        State.addVariable(this);
+        this.label.setValue(label);
     }
 
 
@@ -416,6 +416,13 @@ public class TextVariable extends Variable
     public String valueString()
     {
         return this.value();
+    }
+
+
+    @Override
+    public void initialize()
+    {
+        this.addToState();
     }
 
 
@@ -477,19 +484,19 @@ public class TextVariable extends Variable
      * concise form.
      * @return The variable identifier.
      */
-    public String identifier()
+    public Namespace namespace()
     {
         switch (this.kind())
         {
             case LITERAL:
-                return this.value();
+                return new Namespace(this.value(), this.label());
             case VALUE:
-                return this.valueReference().valueName();
+                return new Namespace(this.valueReference().valueName(), this.label());
             case PROGRAM:
-                return this.value();
+                return new Namespace(this.value(), this.label());
+            default:
+                return new Namespace(this.value(), this.label());
         }
-
-        return "";
     }
 
 
@@ -575,18 +582,6 @@ public class TextVariable extends Variable
     }
 
 
-    // ** Initialize
-    // ------------------------------------------------------------------------------------------
-
-    public void initialize()
-    {
-        // [1] Add any variables associated with the value to the state
-        // --------------------------------------------------------------------------------------
-
-        addToState();
-    }
-
-
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
@@ -605,6 +600,12 @@ public class TextVariable extends Variable
         else {
             this.reactiveValue = null;
         }
+
+
+        // [2] Save original name and label values in case namespaces changes multiple times
+        // --------------------------------------------------------------------------------------
+        this.originalName  = name();
+        this.originalLabel = label();
     }
 
 

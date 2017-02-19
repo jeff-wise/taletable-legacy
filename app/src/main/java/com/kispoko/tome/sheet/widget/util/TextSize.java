@@ -2,6 +2,11 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.style.RelativeSizeSpan;
+
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
@@ -114,6 +119,17 @@ public enum TextSize implements ToYaml
         }
 
         return 0;
+    }
+
+
+    public RelativeSizeSpan relativeSizeSpan(TextSize baseSize, Context context)
+    {
+        float baseSizePx = context.getResources().getDimension(baseSize.resourceId());
+        float thisSizePx = context.getResources().getDimension(this.resourceId());
+
+        float relativeSize = thisSizePx / baseSizePx;
+
+        return new RelativeSizeSpan(relativeSize);
     }
 
 }

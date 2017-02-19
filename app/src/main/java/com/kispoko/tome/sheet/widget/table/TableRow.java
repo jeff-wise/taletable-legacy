@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.table;
 
 
+import com.kispoko.tome.engine.variable.Namespace;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
@@ -32,20 +33,20 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private CollectionFunctor<CellUnion> cells;
+    private CollectionFunctor<CellUnion>    cells;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private String          namespace;
-    private List<Variable>  namespacedVariables;
+    private Namespace                       namespace;
+    private List<Variable>                  namespacedVariables;
 
 
     // CONSTRUCTORS
@@ -53,24 +54,20 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
 
     public TableRow()
     {
-        this.id = null;
+        this.id                     = null;
 
-        List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
-        cellClassList.add(CellUnion.class);
-        this.cells = CollectionFunctor.empty(cellClassList);
+        this.cells                  = CollectionFunctor.empty(CellUnion.class);
 
-        this.namespace = null;
-        this.namespacedVariables = new ArrayList<>();
+        this.namespace              = null;
+        this.namespacedVariables    = new ArrayList<>();
     }
 
 
     public TableRow(UUID id, List<CellUnion> cells)
     {
-        this.id = id;
+        this.id         = id;
 
-        List<Class<? extends CellUnion>> cellClassList = new ArrayList<>();
-        cellClassList.add(CellUnion.class);
-        this.cells = CollectionFunctor.full(cells, cellClassList);
+        this.cells      = CollectionFunctor.full(cells, CellUnion.class);
 
         this.initializeTableRow();
     }
@@ -161,15 +158,16 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
      * Set the container namespace.
      * @param namespace The namespace.
      */
-    public void setNamespace(String namespace)
+    @Override
+    public void setNamespace(Namespace namespace)
     {
         this.namespace = namespace;
 
         // > Update all namespaced variables
         for (Variable variable : this.namespacedVariables)
         {
-            String newName = this.namespace + "." + variable.name();
-            variable.setName(newName);
+            //String newName = this.namespace + "." + variable.name();
+            variable.setNamespace(this.namespace);
         }
     }
 

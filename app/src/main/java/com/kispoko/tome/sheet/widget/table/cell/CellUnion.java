@@ -320,7 +320,7 @@ public class CellUnion implements Model, ToYaml, Serializable
                 cellView = this.textCell().view(columnUnion.textColumn());
                 break;
             case NUMBER:
-                cellView = this.numberCell().view(columnUnion.numberColumn());
+                cellView = this.numberCell().view(columnUnion.numberColumn(), context);
                 break;
             case BOOLEAN:
                 cellView = this.booleanCell().view(context);

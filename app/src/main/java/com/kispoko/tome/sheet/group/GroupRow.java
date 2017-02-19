@@ -50,6 +50,12 @@ public class GroupRow implements Model, ToYaml, Serializable
     private CollectionFunctor<WidgetUnion>  widgets;
 
 
+    // > Internal
+    // -----------------------------------------------------------------------------------------
+
+    private GroupParent                     groupParent;
+
+
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -113,7 +119,7 @@ public class GroupRow implements Model, ToYaml, Serializable
             public WidgetUnion forEach(YamlParser yaml, int index) throws YamlParseException {
                 return WidgetUnion.fromYaml(yaml);
             }
-        });
+        }, true);
 
         return new GroupRow(id, index, widgets, alignment, width, separation);
     }
@@ -155,12 +161,14 @@ public class GroupRow implements Model, ToYaml, Serializable
     /**
      * Initialize the group row.
      */
-    public void initialize()
+    public void initialize(GroupParent groupParent)
     {
+        this.groupParent = groupParent;
+
         // Initialize each widget
         for (WidgetUnion widgetUnion : this.widgets())
         {
-            widgetUnion.widget().initialize();
+            widgetUnion.widget().initialize(groupParent);
         }
     }
 

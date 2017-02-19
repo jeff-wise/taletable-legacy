@@ -16,16 +16,16 @@ import com.kispoko.tome.R;
 /**
  * SheetDialog UI Components
  */
-public class SheetDialog
+public class AppDialog
 {
 
 
     public static LinearLayout headerView(String widgetName, String widgetType, Context context)
     {
-        LinearLayout layout = headerViewLayout(context);
+        LinearLayout layout = darkHeaderViewLayout(context);
 
         // > Label (You Clicked)
-        layout.addView(topRowView(context));
+        layout.addView(headerRowView(context.getString(R.string.you_clicked), context));
 
         // > Target
         layout.addView(targetView(widgetName, widgetType, context));
@@ -34,7 +34,7 @@ public class SheetDialog
     }
 
 
-    private static LinearLayout headerViewLayout(Context context)
+    public static LinearLayout darkHeaderViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -52,12 +52,12 @@ public class SheetDialog
     }
 
 
-    private static RelativeLayout topRowView(Context context)
+    public static RelativeLayout headerRowView(String headerString, Context context)
     {
         RelativeLayout layout = topRowViewLayout(context);
 
         // > Label
-        layout.addView(youClickedView(context));
+        layout.addView(youClickedView(headerString, context));
 
         // > Close Button
         layout.addView(closeButtonView(context));
@@ -79,7 +79,7 @@ public class SheetDialog
     }
 
 
-    private static TextView youClickedView(Context context)
+    private static TextView youClickedView(String headerString, Context context)
     {
         TextViewBuilder header = new TextViewBuilder();
 
@@ -87,7 +87,7 @@ public class SheetDialog
         header.width            = RelativeLayout.LayoutParams.WRAP_CONTENT;
         header.height           = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
-        header.textId           = R.string.you_clicked;
+        header.text             = headerString;
         header.font             = Font.serifFontRegular(context);
         header.color            = R.color.dark_blue_hl_9;
         header.size             = R.dimen.sheet_dialog_heading_text_size;

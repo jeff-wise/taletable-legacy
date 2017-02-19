@@ -37,7 +37,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<ActionWidget>      actionWidget;
-    private ModelFunctor<AdderWidget>       adderWidget;
     private ModelFunctor<BooleanWidget>     booleanWidget;
     private ModelFunctor<ImageWidget>       imageWidget;
     private ModelFunctor<ListWidget>        listWidget;
@@ -58,7 +57,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.id = null;
 
         this.actionWidget   = ModelFunctor.empty(ActionWidget.class);
-        this.adderWidget    = ModelFunctor.empty(AdderWidget.class);
         this.booleanWidget  = ModelFunctor.empty(BooleanWidget.class);
         this.imageWidget    = ModelFunctor.empty(ImageWidget.class);
         this.listWidget     = ModelFunctor.empty(ListWidget.class);
@@ -77,7 +75,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.id              = id;
 
         this.actionWidget   = ModelFunctor.full(null, ActionWidget.class);
-        this.adderWidget    = ModelFunctor.full(null, AdderWidget.class);
         this.booleanWidget  = ModelFunctor.full(null, BooleanWidget.class);
         this.imageWidget    = ModelFunctor.full(null, ImageWidget.class);
         this.listWidget     = ModelFunctor.full(null, ListWidget.class);
@@ -93,9 +90,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         {
             case ACTION:
                 this.actionWidget.setValue((ActionWidget) widget);
-                break;
-            case ADDER:
-                this.adderWidget.setValue((AdderWidget) widget);
                 break;
             case BOOLEAN:
                 this.booleanWidget.setValue((BooleanWidget) widget);
@@ -136,17 +130,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public static WidgetUnion asAction(UUID id, ActionWidget actionWidget)
     {
         return new WidgetUnion(id, actionWidget, WidgetType.ACTION);
-    }
-
-
-    /**
-     * Create the "adder" variant.
-     * @param adderWidget The adder widget.
-     * @return The "adder" Widget Union.
-     */
-    public static WidgetUnion asAdder(UUID id, AdderWidget adderWidget)
-    {
-        return new WidgetUnion(id, adderWidget, WidgetType.ADDER);
     }
 
 
@@ -259,9 +242,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case ACTION:
                 ActionWidget actionWidget = ActionWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asAction(id, actionWidget);
-            case ADDER:
-                AdderWidget adderWidget = AdderWidget.fromYaml(yaml.atKey("widget"));
-                return WidgetUnion.asAdder(id, adderWidget);
             case BOOLEAN:
                 BooleanWidget booleanWidget = BooleanWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asBoolean(id, booleanWidget);
@@ -351,9 +331,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case ACTION:
                 widgetYaml = this.actionWidget().toYaml();
                 break;
-            case ADDER:
-                widgetYaml = this.adderWidget().toYaml();
-                break;
             case BOOLEAN:
                 widgetYaml = this.booleanWidget().toYaml();
                 break;
@@ -400,8 +377,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         {
             case ACTION:
                 return this.actionWidget();
-            case ADDER:
-                return this.adderWidget();
             case BOOLEAN:
                 return this.booleanWidget();
             case IMAGE:
@@ -454,16 +429,6 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public ActionWidget actionWidget()
     {
         return this.actionWidget.getValue();
-    }
-
-
-    /**
-     * The "adder" case.
-     * @return The Adder Widget.
-     */
-    public AdderWidget adderWidget()
-    {
-        return this.adderWidget.getValue();
     }
 
 

@@ -27,6 +27,7 @@ public enum RowWidth implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
+    NO_PADDING,
     FULL,
     INDENTED,
     THREE_QUARTERS,
@@ -99,6 +100,8 @@ public enum RowWidth implements ToYaml
     {
         switch (this)
         {
+            case NO_PADDING:
+                return "No Padding";
             case FULL:
                 return "100%";
             case INDENTED:
@@ -120,8 +123,10 @@ public enum RowWidth implements ToYaml
     {
         switch (this)
         {
-            case FULL:
+            case NO_PADDING:
                 return R.dimen.zero_dp;
+            case FULL:
+                return R.dimen.group_row_full_padding;
             case INDENTED:
                 return R.dimen.group_row_indented_padding;
             case THREE_QUARTERS:

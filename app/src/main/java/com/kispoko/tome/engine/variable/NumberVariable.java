@@ -467,6 +467,13 @@ public class NumberVariable extends Variable
 
 
     @Override
+    public void setName(String name)
+    {
+        this.name.setValue(name);
+    }
+
+
+    @Override
     public String label()
     {
         return this.label.getValue();
@@ -474,15 +481,9 @@ public class NumberVariable extends Variable
 
 
     @Override
-    public void setName(String name)
+    public void setLabel(String label)
     {
-        // > Set the name
-        String oldName = this.name();
-        this.name.setValue(name);
-
-        // > Reindex variable
-        State.removeVariable(oldName);
-        State.addVariable(this);
+        this.label.setValue(label);
     }
 
 
@@ -564,9 +565,7 @@ public class NumberVariable extends Variable
     }
 
 
-    // > Initialize
-    // ------------------------------------------------------------------------------------------
-
+    @Override
     public void initialize()
     {
         this.addToState();
@@ -701,6 +700,11 @@ public class NumberVariable extends Variable
         else {
             this.reactiveValue = null;
         }
+
+        // [2] Save original name and label values in case namespaces changes multiple times
+        // --------------------------------------------------------------------------------------
+        this.originalName  = name();
+        this.originalLabel = label();
     }
 
 

@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.mechanic.Mechanic;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -23,6 +24,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
+import static android.R.attr.padding;
 
 
 /**
@@ -144,12 +146,11 @@ public class MechanicWidget extends Widget implements Serializable
     }
 
 
-
     // > Widget
     // -----------------------------------------------------------------------------------------
 
     @Override
-    public void initialize() { }
+    public void initialize(GroupParent groupParent) { }
 
 
     @Override
@@ -210,6 +211,9 @@ public class MechanicWidget extends Widget implements Serializable
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.margin.left          = R.dimen.widget_mechanic_layout_margin_horz;
+        layout.margin.right         = R.dimen.widget_mechanic_layout_margin_horz;
+
         return layout.linearLayout(context);
     }
 
@@ -222,6 +226,7 @@ public class MechanicWidget extends Widget implements Serializable
         LinearLayoutBuilder layout      = new LinearLayoutBuilder();
         TextViewBuilder     name        = new TextViewBuilder();
         TextViewBuilder     description = new TextViewBuilder();
+        LinearLayoutBuilder divider     = new LinearLayoutBuilder();
 
         // [2] Layout
         // -------------------------------------------------------------------------------------
@@ -230,8 +235,11 @@ public class MechanicWidget extends Widget implements Serializable
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.margin.bottom        = R.dimen.widget_mechanic_item_margin_bottom;
+
         layout.child(name)
-              .child(description);
+              .child(description)
+              .child(divider);
 
         // [3 A] Name
         // -------------------------------------------------------------------------------------
@@ -241,8 +249,13 @@ public class MechanicWidget extends Widget implements Serializable
 
         name.text                   = nameText;
         name.font                   = Font.serifFontRegular(context);
-        name.color                  = R.color.dark_blue_hl_5;
+        name.color                  = R.color.dark_blue_hl_1;
         name.size                   = R.dimen.widget_mechanic_name_text_size;
+
+        name.padding.left           = R.dimen.widget_mechanic_item_padding_horz;
+        name.padding.right          = R.dimen.widget_mechanic_item_padding_horz;
+
+        name.margin.bottom          = R.dimen.widget_mechanic_item_name_margin_bottom;
 
         // [3 B] Description
         // -------------------------------------------------------------------------------------
@@ -254,6 +267,20 @@ public class MechanicWidget extends Widget implements Serializable
         description.font            = Font.serifFontRegular(context);
         description.size            = R.dimen.widget_mechanic_description_text_size;
         description.color           = R.color.dark_blue_hl_8;
+
+        description.padding.left    = R.dimen.widget_mechanic_item_padding_horz;
+        description.padding.right   = R.dimen.widget_mechanic_item_padding_horz;
+
+        description.margin.bottom   = R.dimen.widget_mechanic_item_description_margin_bottom;
+
+        // [3 C] Divider
+        // -------------------------------------------------------------------------------------
+
+        divider.orientation          = LinearLayout.HORIZONTAL;
+        divider.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        divider.height               = R.dimen.one_dp;
+
+        divider.backgroundColor      = R.color.dark_blue_4;
 
 
         return layout.linearLayout(context);

@@ -2,7 +2,6 @@
 package com.kispoko.tome.engine.variable;
 
 
-import com.kispoko.tome.engine.State;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.util.EnumUtils;
@@ -110,6 +109,7 @@ public class BooleanVariable extends Variable
         this.name                   = new PrimitiveFunctor<>(name, String.class);
         this.label                  = new PrimitiveFunctor<>(label, String.class);
 
+
         this.literalValue           = new PrimitiveFunctor<>(null, Boolean.class);
         this.invocationValue        = ModelFunctor.full(null, Invocation.class);
 
@@ -139,7 +139,7 @@ public class BooleanVariable extends Variable
                 break;
         }
 
-        initialize();
+        initializeBooleanVariable();
     }
 
 
@@ -260,7 +260,7 @@ public class BooleanVariable extends Variable
 
     public void onLoad()
     {
-        initialize();
+        initializeBooleanVariable();
     }
 
 
@@ -293,6 +293,13 @@ public class BooleanVariable extends Variable
 
 
     @Override
+    public void setName(String name)
+    {
+        this.name.setValue(name);
+    }
+
+
+    @Override
     public String label()
     {
         return this.label.getValue();
@@ -300,15 +307,9 @@ public class BooleanVariable extends Variable
 
 
     @Override
-    public void setName(String name)
+    public void setLabel(String label)
     {
-        // > Set the name
-        String oldName = this.name();
-        this.name.setValue(name);
-
-        // > Reindex variable
-        State.removeVariable(oldName);
-        State.addVariable(this);
+        this.label.setValue(label);
     }
 
 
@@ -347,6 +348,14 @@ public class BooleanVariable extends Variable
         else
             return "False";
     }
+
+
+    @Override
+    public void initialize()
+    {
+        this.addToState();
+    }
+
 
 
     // > State
@@ -430,7 +439,7 @@ public class BooleanVariable extends Variable
     // > Initialize
     // ------------------------------------------------------------------------------------------
 
-    public void initialize()
+    public void initializeBooleanVariable()
     {
         // [1] Create reaction value (if program variable)
         // --------------------------------------------------------------------------------------
@@ -443,10 +452,11 @@ public class BooleanVariable extends Variable
             this.reactiveValue = null;
         }
 
-        // [2] Add any variables associated with the value to the state
-        // --------------------------------------------------------------------------------------
 
-        this.addToState();
+        // [2] Save original name and label values in case namespaces changes multiple times
+        // --------------------------------------------------------------------------------------
+        this.originalName  = name();
+        this.originalLabel = label();
     }
 
 

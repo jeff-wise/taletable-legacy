@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  * Group
  */
-public class Group implements Model, ToYaml, Serializable
+public class Group implements GroupParent, Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -49,7 +49,7 @@ public class Group implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Spacing>           spaceBelow;
     private PrimitiveFunctor<GroupBackground>   background;
     private PrimitiveFunctor<GroupLabelType>    labelType;
-    private PrimitiveFunctor<Boolean>           bottomBorder;
+    private PrimitiveFunctor<Boolean>           divider;
     private PrimitiveFunctor<Integer>           index;
     private CollectionFunctor<GroupRow>         rows;
 
@@ -67,7 +67,7 @@ public class Group implements Model, ToYaml, Serializable
         this.spaceBelow     = new PrimitiveFunctor<>(null, Spacing.class);
         this.background     = new PrimitiveFunctor<>(null, GroupBackground.class);
         this.labelType      = new PrimitiveFunctor<>(null, GroupLabelType.class);
-        this.bottomBorder   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.divider = new PrimitiveFunctor<>(null, Boolean.class);
         this.index          = new PrimitiveFunctor<>(null, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
@@ -83,7 +83,7 @@ public class Group implements Model, ToYaml, Serializable
                  Spacing spaceBelow,
                  GroupBackground background,
                  GroupLabelType labelType,
-                 Boolean bottomBorder,
+                 Boolean divider,
                  Integer index,
                  List<GroupRow> groupRows)
     {
@@ -95,7 +95,7 @@ public class Group implements Model, ToYaml, Serializable
         this.spaceBelow     = new PrimitiveFunctor<>(spaceBelow, Spacing.class);
         this.background     = new PrimitiveFunctor<>(background, GroupBackground.class);
         this.labelType      = new PrimitiveFunctor<>(labelType, GroupLabelType.class);
-        this.bottomBorder   = new PrimitiveFunctor<>(bottomBorder, Boolean.class);
+        this.divider = new PrimitiveFunctor<>(divider, Boolean.class);
         this.index          = new PrimitiveFunctor<>(index, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
@@ -107,7 +107,7 @@ public class Group implements Model, ToYaml, Serializable
         this.setSpaceBelow(spaceBelow);
         this.setBackground(background);
         this.setLabelType(labelType);
-        this.setBottomBorder(bottomBorder);
+        this.setDivider(divider);
     }
 
 
@@ -178,7 +178,7 @@ public class Group implements Model, ToYaml, Serializable
     {
         // Initialize each row
         for (GroupRow groupRow : this.rows()) {
-            groupRow.initialize();
+            groupRow.initialize(this);
         }
     }
 
@@ -300,7 +300,7 @@ public class Group implements Model, ToYaml, Serializable
         if (background != null)
             this.background.setValue(background);
         else
-            this.background.setValue(GroupBackground.NONE);
+            this.background.setValue(GroupBackground.MEDIUM);
     }
 
 
@@ -335,16 +335,16 @@ public class Group implements Model, ToYaml, Serializable
      */
     public Boolean bottomBorder()
     {
-        return this.bottomBorder.getValue();
+        return this.divider.getValue();
     }
 
 
-    public void setBottomBorder(Boolean bottomBorder)
+    public void setDivider(Boolean divider)
     {
-        if (bottomBorder != null)
-            this.bottomBorder.setValue(bottomBorder);
+        if (divider != null)
+            this.divider.setValue(divider);
         else
-            this.bottomBorder.setValue(false);
+            this.divider.setValue(false);
     }
 
 
@@ -389,7 +389,7 @@ public class Group implements Model, ToYaml, Serializable
         }
 
         if (this.bottomBorder())
-            layout.addView(bottomBorderView(context));
+            layout.addView(dividerView(context));
 
         return layout;
     }
@@ -415,11 +415,10 @@ public class Group implements Model, ToYaml, Serializable
             layout.padding.bottom   = this.spaceBelow().resourceId();
 
         // > Background
-        if (this.background() != GroupBackground.NONE)
-            layout.backgroundColor  = this.background().resourceId();
+        layout.backgroundColor  = this.background().resourceId();
 
-        layout.padding.left     = R.dimen.group_padding_horz;
-        layout.padding.right    = R.dimen.group_padding_horz;
+//        layout.padding.left     = R.dimen.group_padding_horz;
+//        layout.padding.right    = R.dimen.group_padding_horz;
 
         return layout.linearLayout(context);
     }
@@ -454,8 +453,8 @@ public class Group implements Model, ToYaml, Serializable
         {
             case PRIMARY:
                 labelView.size  = R.dimen.group_label_text_size;
-                labelView.color = R.color.gold_light;
-                labelView.font  = Font.serifFontRegular(context);
+                labelView.color = R.color.gold_very_light;
+                labelView.font  = Font.serifFontBold(context);
                 break;
             case SECONDARY:
                 labelView.size  = R.dimen.group_label_secondary_text_size;
@@ -469,15 +468,26 @@ public class Group implements Model, ToYaml, Serializable
     }
 
 
-    private LinearLayout bottomBorderView(Context context)
+    private LinearLayout dividerView(Context context)
     {
         LinearLayoutBuilder border = new LinearLayoutBuilder();
 
         border.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         border.height           = R.dimen.one_dp;
 
-        border.backgroundColor  = R.color.dark_blue_4;
-
+        // > Color
+        switch (this.background())
+        {
+            case LIGHT:
+                border.backgroundColor = R.color.dark_blue_4;
+                break;
+            case MEDIUM:
+                border.backgroundColor = R.color.dark_blue_4;
+                break;
+            case DARK:
+                border.backgroundColor = R.color.dark_blue_6;
+                break;
+        }
 
         border.margin.top   = this.spaceBelow().resourceId();
 

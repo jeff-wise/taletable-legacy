@@ -2117,16 +2117,20 @@ profile:
                 with more wealth and power.
   - label: Abilities
     groups:
-    - space_above: medium_small
+    - space_above: small
       background: dark
       name: Strength
       show_name: false
       space_below: medium
+      divider: true
       rows:
       - space_above: small
         widgets:
         - type: number
           widget:
+            data:
+              format:
+                background: empty
             description: >
               Decades of fighting and training have made my muscles hard like granite. I may
               appear lean, but with my strength of <value> I have surprised many an orc in combat.
@@ -2137,17 +2141,16 @@ profile:
               label: strength
               label_position: text
               label_style:
-                color: light
+                color: green_very_light
                 is_bold: true
-                is_italic: true
               value_style:
-                color: green_light
+                color: green_very_light
                 is_bold: true
             value:
               name: strength
               type: literal
               value: 16
-      - space_above: small
+      - space_above: medium_small
         widgets:
         - type: number
           widget:
@@ -2157,16 +2160,15 @@ profile:
                 background: empty
                 width: 1
             format:
-              label: modifier
-              label_position: left
-              label_style:
+              value_postfix_style:
                 color: super_dark
-                is_italic: false
+                is_italic: true
                 size: medium_small
               value_style:
                 color: super_dark
-                is_italic: false
+                is_italic: true
                 size: medium_small
+            value_postfix: ' modifier'
             value:
               name: strength_modifier
               label: Strength Modifier
@@ -2177,10 +2179,13 @@ profile:
                 - type: reference
                   value: strength
             value_prefix: '+'
-      - space_above: small
+      - space_above: medium_small
         widgets:
         - type: number
           widget:
+            data:
+              format:
+                background: empty
             description: >
               My saving throw is <value>.
             format:
@@ -2191,111 +2196,453 @@ profile:
               label_position: text
               label_style:
                 color: light
-                is_bold: true
-                is_italic: true
               value_style:
-                color: green_light
-                is_bold: true
+                color: light
             value:
-              name: strength
-              type: literal
-              value: 16
-    - name: Saving Throws
-      space_above: medium
-      rows:
-      - space_above: medium
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                background: none
-                label: Strength
-                label_alignment: center
-                width: 1
-            size: medium
-            value_prefix: '+'
-            value:
+              name: saving_throw_strength
               type: literal
               value: 5
-        - type: number
-          widget:
-            data:
-              format:
-                background: none
-                label: Dexterity
-                label_alignment: center
-                width: 1
-            size: medium
             value_prefix: '+'
-            value:
-              type: literal
-              value: 4
-        - type: number
-          widget:
-            data:
-              format:
-                background: none
-                label: Constitution
-                label_alignment: center
-                width: 1
-            size: medium
-            value_prefix: '+'
-            value:
-              type: literal
-              value: 2
+    - space_above: small
+      background: dark
+      name: Dexterity
+      show_name: false
+      space_below: medium
+      divider: true
+      rows:
       - space_above: small
         widgets:
         - type: number
           widget:
             data:
               format:
-                background: none
-                label: Intelligence
-                label_alignment: center
-                width: 1
-            size: medium
-            value_prefix: '+'
+                background: empty
+            description: >
+              To survive on the street, I learned to be quick and nimble, to approach every
+              situation with finesse. dexterity <value>
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: dexterity
+              label_position: text
+              label_style:
+                color: green_very_light
+                is_bold: true
+              value_style:
+                color: green_very_light
+                is_bold: true
             value:
+              name: dexterity
               type: literal
-              value: 12
+              value: 14
+      - space_above: medium_small
+        widgets:
         - type: number
           widget:
             data:
               format:
-                background: none
-                label: Wisdom
-                label_alignment: center
+                alignment: center
+                background: empty
                 width: 1
-            size: medium
-            value_prefix: '+'
+            format:
+              value_postfix_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+              value_style:
+                color: super_dark
+                is_italic: true
+                size: medium_small
+            value_postfix: ' modifier'
             value:
-              type: literal
-              value: 8
+              name: dexterity_modifier
+              label: Dexterity Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: dexterity
+            value_prefix: '+'
+      - space_above: medium_small
+        widgets:
         - type: number
           widget:
             data:
               format:
-                background: none
-                label: Charisma
-                label_alignment: center
-                width: 1
-            size: medium
-            value_prefix: '+'
+                background: empty
+            description: >
+              My saving throw is <value>.
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: saving throw
+              label_position: text
+              label_style:
+                color: light
+              value_style:
+                color: light
             value:
+              name: saving_throw_dexterity
               type: literal
-              value: 1
-    - name: Skills
-      space_above: small
+              value: 2
+            value_prefix: '+'
+    - space_above: small
+      background: dark
+      name: Constitution
+      show_name: false
+      space_below: medium
+      divider: true
       rows:
       - space_above: small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              constitution <value> I can take a hit, and I have the scars, mental and physical, to
+              prove it.
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: constitution
+              label_position: text
+              label_style:
+                color: green_very_light
+                is_bold: true
+              value_style:
+                color: green_very_light
+                is_bold: true
+            value:
+              name: constitution
+              type: literal
+              value: 14
+      - space_above: medium_small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
+            format:
+              value_postfix_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+              value_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+            value_postfix: ' modifier'
+            value:
+              name: constitution_modifier
+              label: Constitution Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: constitution
+            value_prefix: '+'
+      - space_above: medium_small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My saving throw is <value>.
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: saving throw
+              label_position: text
+              label_style:
+                color: light
+              value_style:
+                color: light
+            value:
+              name: saving_throw_constitution
+              type: literal
+              value: 4
+            value_prefix: '+'
+    - space_above: small
+      background: dark
+      name: Intelligence
+      show_name: false
+      space_below: medium
+      divider: true
+      rows:
+      - space_above: small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              I never studied anything serious, but people say I can be quick-witted when the need
+              arises. intelligence <value>
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: intelligence
+              label_position: text
+              label_style:
+                color: green_very_light
+                is_bold: true
+              value_style:
+                color: green_very_light
+                is_bold: true
+            value:
+              name: intelligence
+              type: literal
+              value: 11
+      - space_above: medium_small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
+            format:
+              value_postfix_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+              value_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+            value_postfix: ' modifier'
+            value:
+              name: intelligence_modifier
+              label: Intelligence Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: intelligence
+            value_prefix: '+'
+      - space_above: medium_small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My saving throw is <value>.
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: saving throw
+              label_position: text
+              label_style:
+                color: light
+              value_style:
+                color: light
+            value:
+              name: saving_throw_intelligence
+              type: literal
+              value: 0
+            value_prefix: '+'
+    - space_above: medium
+      background: dark
+      name: Wisdom
+      show_name: false
+      space_below: medium
+      divider: true
+      rows:
+      - space_above: small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              I've seen more years than most in my profession. My wisdom of <value> is the
+              experience of a street urchin, the life of a solider, and the memories of everything
+              I've lost.
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: wisdom
+              label_position: text
+              label_style:
+                color: green_very_light
+                is_bold: true
+              value_style:
+                color: green_very_light
+                is_bold: true
+            value:
+              name: wisdom
+              type: literal
+              value: 13
+      - space_above: medium_small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
+            format:
+              value_postfix_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+              value_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+            value_postfix: ' modifier'
+            value:
+              name: wisdom_modifier
+              label: Wisdom Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: wisdom
+            value_prefix: '+'
+      - space_above: medium_small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My saving throw is <value>.
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: saving throw
+              label_position: text
+              label_style:
+                color: light
+              value_style:
+                color: light
+            value:
+              name: saving_throw_wisdom
+              type: literal
+              value: 1
+            value_prefix: '+'
+    - space_above: small
+      background: dark
+      name: Charisma
+      show_name: false
+      space_below: medium
+      rows:
+      - space_above: small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              charisma <value> I've never been a charmer, but I get along with just about anyone I meet.
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: charisma
+              label_position: text
+              label_style:
+                color: green_very_light
+                is_bold: true
+              value_style:
+                color: green_very_light
+                is_bold: true
+            value:
+              name: charisma
+              type: literal
+              value: 13
+      - space_above: medium_small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                width: 1
+            format:
+              value_postfix_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+              value_style:
+                color: super_dark
+                size: medium_small
+                is_italic: true
+            value_postfix: ' modifier'
+            value:
+              name: charisma_modifier
+              label: Charisma Modifier
+              type: program
+              value:
+                program: ability_modifier
+                parameters:
+                - type: reference
+                  value: charisma
+            value_prefix: '+'
+      - space_above: medium_small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My saving throw is <value>.
+            format:
+              description_style:
+                color: very_dark
+                size: medium_small
+              label: saving throw
+              label_position: text
+              label_style:
+                color: light
+              value_style:
+                color: light
+            value:
+              name: saving_throw_charisma
+              type: literal
+              value: 1
+            value_prefix: '+'
+    - name: Skills
+      space_above: medium
+      rows:
+      - space_above: very_small
+        width: no_padding
         widgets:
         - type: table
           widget:
             data:
-              actions:
-              - edit
               format:
+                background: none
                 label: Skills
             columns:
             - type: text
@@ -2896,40 +3243,68 @@ profile:
   - label: Features
     groups:
     - name: Combat
+      show_name: false
       space_above: none
       space_below: large
       background: dark
       rows:
-      - space_above: medium
+      - space_above: large
+        width: indented
         widgets:
         - type: number
           widget:
             data:
               format:
-                background: medium
-                label_alignment: center
-                width: 1
+                alignment: left
+                background: empty
+            description: >
+              Hit Points  It'll take more than one hit to bring me down...  <value>
             format:
+              description_style:
+                color: very_dark
+                size: medium
               label: Hit Points
-              label_position: top
-              size: medium_large
-              tint: light
+              label_position: text
+              label_style:
+                color: light
+                is_bold: true
+                is_italic: true
+                size: medium
+              value_style:
+                color: purple_very_light
+                is_bold: true
+                size: medium_large
             value:
               name: hit_points
               type: literal
               value: 12
+      - space_above: large
+        width: indented
+        widgets:
         - type: number
           widget:
             data:
               format:
-                background: medium
-                label_alignment: center
-                width: 1
+                alignment: left
+                background: empty
+            description: >
+              Armor Class  My advice to all my students: "Don't get hit by an
+              orc battleaxe -- it sucks"  <value>
             format:
+              description_style:
+                color: very_dark
+                size: medium
               label: Armor Class
-              label_position: top
-              size: medium_large
-              tint: light
+              label_position: text
+              label_style:
+                color: light
+                is_bold: true
+                is_italic: true
+                size: medium
+              value_style:
+                color: purple_very_light
+                is_bold: true
+                size: medium_large
             value:
               name: armor_class
               type: summation
@@ -2947,36 +3322,56 @@ profile:
                     variable:
                       type: name
                       name: dexterity_modifier
+      - space_above: large
+        width: indented
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                alignment: left
+                background: empty
+            description: >
+              Initiative  Charge!  <value>
+            format:
+              description_style:
+                color: very_dark
+                size: medium
+              label: Initiative
+              label_position: text
+              label_style:
+                color: light
+                is_bold: true
+                is_italic: true
+                size: medium
+              value_style:
+                color: purple_very_light
+                is_bold: true
+                size: medium_large
+            value:
+              name: initiative
+              type: literal
+              value: 2
+            value_prefix: '+'
+    - name: Miscellaneous
+      show_name: false
+      space_above: none
+      space_below: large
+      rows:
       - space_above: medium_large
         widgets:
         - type: number
           widget:
             data:
               format:
-                background: dark
+                background: medium_dark
+                label: Speed
                 label_alignment: center
-                width: 1
+                width: 2
             format:
-              label: Initiative
-              label_position: top
-              size: medium_small
-              tint: dark
-            value_prefix: '+'
-            value:
-              type: literal
-              value: 7
-        - type: number
-          widget:
-            data:
-              format:
-                background: dark
-                label_alignment: center
-                width: 1
-            format:
-              label: Speed
-              label_position: top
-              size: medium_small
-              tint: dark
+              value_style:
+                size: medium_small
+                color: medium_dark
             value:
               type: literal
               value: 30
@@ -2985,53 +3380,44 @@ profile:
           widget:
             data:
               format:
-                background: dark
-                width: 1
+                background: medium_dark
+                label: Hit Dice
+                label_alignment: center
+                width: 2
             format:
-              label: Hit Dice
-              label_position: top
-              size: medium_small
-              tint: dark
+              value_style:
+                size: medium_small
+                color: medium_dark
             value:
               type: literal
               value: 1d8
-    - name: Proficiency Bonus
-      show_name: false
-      space_above: medium_large
-      space_below: medium_large
-      background: dark
-      rows:
-      - space_above: small
-        width: half
-        widgets:
         - type: number
           widget:
             data:
               format:
-                alignment: center
-                background: medium
-                width: 1
+                background: medium_dark
+                label: Proficiency Bonus
+                label_alignment: center
+                width: 3
             format:
-              label: Proficiency Bonus
-              label_alignment: left
-              size: medium_small
-              tint: green_medium_light
+              value_style:
+                size: medium_small
+                color: medium_dark
             value:
               type: literal
-              name: proficiency_bonus
-              label: Proficiency Bonus
               value: 2
             value_prefix: '+'
     - name: Race Features
+      space_above: none
       rows:
-      - space_above: medium
+      - space_above: medium_small
         widgets:
         - type: mechanic
           widget:
             category: race
     - name: Class Features
       rows:
-      - space_above: medium
+      - space_above: medium_small
         widgets:
         - type: mechanic
           widget:
@@ -3040,8 +3426,10 @@ profile:
     groups:
     - name: Weapons
       space_above: medium_large
+      background: light
       rows:
       - space_above: medium_small
+        width: no_padding
         widgets:
         - type: table
           widget:
@@ -3072,42 +3460,58 @@ profile:
               - value:
                   type: literal
                   value: Longsword
+                  label: Longsword
+                  defines_namespace: true
               - value:
+                  type: literal
                   name: quantity
-                  type: literal
+                  label: Quantity
                   value: 1
+                  namespaced: true
               - value:
-                  name: equipped
                   type: literal
+                  name: equipped
+                  label: Is Equipped?
                   value: true
+                  namespaced: true
             - cells:
               - value:
                   type: literal
                   value: Heavy Crossbow
+                  label: Heavy Crossbow
+                  defines_namespace: true
               - value:
                   name: quantity
                   type: literal
                   value: 1
+                  namespaced: true
               - value:
                   name: equipped
                   type: literal
                   value: false
+                  namespaced: true
             - cells:
               - value:
                   type: literal
                   value: Dagger
+                  label: Dagger
+                  defines_namespace: true
               - value:
                   name: quantity
                   type: literal
                   value: 2
+                  namespaced: true
               - value:
                   name: equipped
                   type: literal
                   value: false
+                  namespaced: true
     - name: Armor
       space_above: medium_large
+      background: light
       rows:
       - space_above: medium_small
+        width: no_padding
         widgets:
         - type: table
           widget:
@@ -3239,7 +3643,8 @@ profile:
     - name: Gear
       space_above: medium_large
       rows:
-      - widgets:
+      - width: no_padding
+        widgets:
         - type: table
           widget:
             data:
@@ -3589,23 +3994,14 @@ encounter:
       - space_above: medium
         alignment: center
         widgets:
-        - type: adder
-          widget:
-            format:
-              subtract_label: Lose
-              add_label: Heal
-              reset_label: Restore Full Health
-            value:
-              type: variable
-              value: hit_points
-            type: by_many
   - label: Abilities
     groups:
 campaign:
   pages:
-  - label: History
+  - label: Campaign Log
     groups:
     - name: Campaign Log
+      show_name: false
       rows:
       - widgets:
         - type: log

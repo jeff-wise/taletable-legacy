@@ -27,6 +27,7 @@ public enum WidgetBackground implements ToYaml
     EMPTY,
     LIGHT,
     MEDIUM,
+    MEDIUM_DARK,
     DARK;
 
 
@@ -95,6 +96,8 @@ public enum WidgetBackground implements ToYaml
                 return R.drawable.bg_widget_light;
             case MEDIUM:
                 return R.drawable.bg_widget_medium_small_corners_small;
+            case MEDIUM_DARK:
+                return R.drawable.bg_widget_medium_dark_small_corners_small;
             case DARK:
                 if (corners != null)
                 {
@@ -148,6 +151,8 @@ public enum WidgetBackground implements ToYaml
                     default:
                         return R.drawable.bg_widget_medium_small_corners_small;
                 }
+            case MEDIUM_DARK:
+                return R.drawable.bg_widget_medium_dark_small_corners_small;
             case DARK:
                 if (corners != null)
                 {

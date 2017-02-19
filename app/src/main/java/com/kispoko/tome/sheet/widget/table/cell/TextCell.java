@@ -277,11 +277,11 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
         // > Font
         if (column.isBold()) {
             cellView.font   = Font.serifFontBold(context);
-            cellView.color  = R.color.dark_blue_hl_4;
+            cellView.color  = R.color.dark_blue_hl_3;
         }
         else {
             cellView.font   = Font.serifFontRegular(context);
-            cellView.color  = R.color.dark_blue_hl_2;
+            cellView.color  = R.color.dark_blue_hl_1;
         }
 
         if (this.value() != null)
@@ -313,7 +313,7 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     private void configureNamespace()
     {
         if (this.valueVariable().definesNamespace()) {
-            this.widgetContainer.setNamespace(this.valueVariable().identifier());
+            this.widgetContainer.setNamespace(this.valueVariable().namespace());
         }
     }
 
