@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -37,6 +38,7 @@ public class TextStyle implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Boolean>       isBold;
     private PrimitiveFunctor<Boolean>       isItalic;
     private PrimitiveFunctor<Boolean>       isUnderlined;
+    private PrimitiveFunctor<Alignment>     alignment;
 
 
     // CONSTRUCTORS
@@ -51,6 +53,7 @@ public class TextStyle implements Model, ToYaml, Serializable
         this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
         this.isItalic       = new PrimitiveFunctor<>(null, Boolean.class);
         this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
     }
 
 
@@ -59,7 +62,8 @@ public class TextStyle implements Model, ToYaml, Serializable
                      TextSize size,
                      Boolean isBold,
                      Boolean isItalic,
-                     Boolean isUnderlined)
+                     Boolean isUnderlined,
+                     Alignment alignment)
     {
         this.id             = id;
 
@@ -68,12 +72,14 @@ public class TextStyle implements Model, ToYaml, Serializable
         this.isBold         = new PrimitiveFunctor<>(isBold, Boolean.class);
         this.isItalic       = new PrimitiveFunctor<>(isItalic, Boolean.class);
         this.isUnderlined   = new PrimitiveFunctor<>(isUnderlined, Boolean.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
 
         this.setColor(color);
         this.setSize(size);
         this.setIsBold(isBold);
         this.setIsItalic(isItalic);
         this.setIsUnderlined(isUnderlined);
+        this.setAlignment(alignment);
     }
 
 
@@ -88,12 +94,14 @@ public class TextStyle implements Model, ToYaml, Serializable
         this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
         this.isItalic       = new PrimitiveFunctor<>(null, Boolean.class);
         this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
 
         this.setColor(color);
         this.setSize(size);
         this.setIsBold(null);
         this.setIsItalic(null);
         this.setIsUnderlined(null);
+        this.setAlignment(null);
     }
 
 
@@ -134,8 +142,9 @@ public class TextStyle implements Model, ToYaml, Serializable
         Boolean   isBold        = yaml.atMaybeKey("is_bold").getBoolean();
         Boolean   isItalic      = yaml.atMaybeKey("is_italic").getBoolean();
         Boolean   isUnderlined  = yaml.atMaybeKey("is_underlined").getBoolean();
+        Alignment alignment     = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
 
-        return new TextStyle(id, color, size, isBold, isItalic, isUnderlined);
+        return new TextStyle(id, color, size, isBold, isItalic, isUnderlined, alignment);
     }
 
 
@@ -149,6 +158,7 @@ public class TextStyle implements Model, ToYaml, Serializable
         style.setIsBold(null);
         style.setIsItalic(null);
         style.setIsUnderlined(null);
+        style.setAlignment(null);
 
         return style;
     }
@@ -327,6 +337,32 @@ public class TextStyle implements Model, ToYaml, Serializable
             this.isItalic.setValue(isItalic);
         else
             this.isItalic.setValue(false);
+    }
+
+
+    // ** Alignment
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The alignment.
+     * @return The alignment.
+     */
+    public Alignment alignment()
+    {
+        return this.alignment.getValue();
+    }
+
+
+    /**
+     * Set the alignment. If null, defaults to LEFT.
+     * @param alignment The alignment.
+     */
+    public void setAlignment(Alignment alignment)
+    {
+        if (alignment != null)
+            this.alignment.setValue(alignment);
+        else
+            this.alignment.setValue(Alignment.LEFT);
     }
 
 }

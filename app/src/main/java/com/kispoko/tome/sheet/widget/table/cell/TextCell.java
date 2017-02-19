@@ -10,11 +10,13 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
@@ -57,6 +59,12 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     private PrimitiveFunctor<CellAlignment> alignment;
 
 
+    /**
+     * The text cell style. Often inherited from the text column.
+     */
+    private ModelFunctor<TextStyle>         style;
+
+
     // > Internal
     // ------------------------------------------------------------------------------------------
 
@@ -74,20 +82,28 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
 
         this.valueVariable  = ModelFunctor.empty(TextVariable.class);
         this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.style          = ModelFunctor.empty(TextStyle.class);
     }
 
 
     public TextCell(UUID id,
                     TextVariable valueVariable,
-                    CellAlignment alignment)
+                    CellAlignment alignment,
+                    TextStyle style)
     {
         // ** Id
-        this.id        = id;
+        this.id             = id;
 
         // ** Value
-        this.valueVariable = ModelFunctor.full(valueVariable, TextVariable.class);
+        this.valueVariable  = ModelFunctor.full(valueVariable, TextVariable.class);
 
-        this.alignment          = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        // ** Alignment
+        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+
+        // ** Style
+        this.style          = ModelFunctor.full(style, TextStyle.class);
+
+        this.setStyle(style);
 
         // > Initialize state
         this.initializeTextCell();
@@ -97,12 +113,13 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     public static TextCell fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID          id                = UUID.randomUUID();
+        UUID          id        = UUID.randomUUID();
 
-        TextVariable  value             = TextVariable.fromYaml(yaml.atMaybeKey("value"));
-        CellAlignment alignment         = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        TextVariable  value     = TextVariable.fromYaml(yaml.atMaybeKey("value"));
+        CellAlignment alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        TextStyle     style     = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
 
-        return new TextCell(id, value, alignment);
+        return new TextCell(id, value, alignment, style);
     }
 
 
@@ -158,7 +175,8 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putYaml("value", this.valueVariable())
-                .putYaml("alignment", this.alignment());
+                .putYaml("alignment", this.alignment())
+                .putYaml("style", this.style());
     }
 
 
@@ -181,6 +199,9 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
 
         this.valueVariable().setDefinesNamespace(column.definesNamespace());
         this.valueVariable().setIsNamespaced(column.isNamespaced());
+
+        if (column.defaultLabel() != null && this.valueVariable().label() == null)
+            this.valueVariable().setLabel(column.defaultLabel());
 
         // [3] Initialize value variable
         // --------------------------------------------------------------------------------------
@@ -243,6 +264,9 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     }
 
 
+    // ** Alignment
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Get the alignment of this cell.
      * @return The cell Alignment.
@@ -250,6 +274,37 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     public CellAlignment alignment()
     {
         return this.alignment.getValue();
+    }
+
+
+    // ** Style
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The text cell style. Often inherited from the column.
+     * @return The text cell Text Style.
+     */
+    public TextStyle style()
+    {
+        return this.style.getValue();
+    }
+
+
+    /**
+     * Set the text cell's text style. If null, a default style is provided.
+     * @param style The text style.
+     */
+    public void setStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.style.setValue(style);
+        }
+        else {
+            TextStyle defaultTextCellStyle = new TextStyle(UUID.randomUUID(),
+                                                             TextColor.MEDIUM,
+                                                             TextSize.MEDIUM_SMALL);
+            this.style.setValue(defaultTextCellStyle);
+        }
     }
 
 
@@ -276,7 +331,7 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
         cellView.size       = R.dimen.widget_table_cell_text_size;
 
         // > Font
-        if (column.isBold()) {
+        if (column.style().isBold()) {
             cellView.font   = Font.serifFontBold(context);
             cellView.color  = R.color.dark_blue_hl_3;
         }

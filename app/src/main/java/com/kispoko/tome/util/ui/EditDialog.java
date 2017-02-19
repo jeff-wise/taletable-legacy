@@ -98,6 +98,7 @@ public class EditDialog
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         layout.padding.top          = R.dimen.dialog_edit_header_padding_top;
+        layout.padding.bottom          = R.dimen.dialog_edit_header_padding_top;
         layout.padding.left         = R.dimen.dialog_edit_header_padding_horz;
         layout.padding.right        = R.dimen.dialog_edit_header_padding_horz;
 
@@ -139,7 +140,9 @@ public class EditDialog
     }
 
 
-    private static TextView headerTitleTextView(String headerString, boolean isDark, Context context)
+    private static TextView headerTitleTextView(String headerString,
+                                                boolean isDark,
+                                                Context context)
     {
         TextViewBuilder header = new TextViewBuilder();
 

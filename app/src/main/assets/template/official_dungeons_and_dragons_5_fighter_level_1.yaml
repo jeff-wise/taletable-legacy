@@ -2461,7 +2461,7 @@ profile:
               type: literal
               value: 0
             value_prefix: '+'
-    - space_above: medium
+    - space_above: small
       background: dark
       name: Wisdom
       show_name: false
@@ -2635,7 +2635,7 @@ profile:
     - name: Skills
       space_above: medium
       rows:
-      - space_above: very_small
+      - space_above: small
         width: no_padding
         widgets:
         - type: table
@@ -3247,6 +3247,7 @@ profile:
       space_above: none
       space_below: large
       background: dark
+      divider: true
       rows:
       - space_above: large
         width: indented
@@ -3353,13 +3354,34 @@ profile:
               type: literal
               value: 2
             value_prefix: '+'
-    - name: Miscellaneous
-      show_name: false
-      space_above: none
+    - name: Other Features
+      space_above: medium_large
       space_below: large
+      background: dark
+      label_style:
+        size: medium_small
+        color: medium
+        is_bold: true
+        alignment: center
       rows:
-      - space_above: medium_large
+      - space_above: medium
         widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium_dark
+                label: Proficiency Bonus
+                label_alignment: center
+                width: 3
+            format:
+              value_style:
+                size: medium_small
+                color: medium
+            value:
+              type: literal
+              value: 2
+            value_prefix: '+'
         - type: number
           widget:
             data:
@@ -3371,7 +3393,7 @@ profile:
             format:
               value_style:
                 size: medium_small
-                color: medium_dark
+                color: medium
             value:
               type: literal
               value: 30
@@ -3387,28 +3409,12 @@ profile:
             format:
               value_style:
                 size: medium_small
-                color: medium_dark
+                color: medium
             value:
               type: literal
               value: 1d8
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                label: Proficiency Bonus
-                label_alignment: center
-                width: 3
-            format:
-              value_style:
-                size: medium_small
-                color: medium_dark
-            value:
-              type: literal
-              value: 2
-            value_prefix: '+'
     - name: Race Features
-      space_above: none
+      space_above: medium_large
       rows:
       - space_above: medium_small
         widgets:
@@ -3448,6 +3454,7 @@ profile:
               column:
                 name: QUANTITY
                 default_value: 1
+                default_label: Quantity
                 width: 2
                 alignment: center
                 namespaced: true
@@ -3526,6 +3533,7 @@ profile:
               column:
                 name: QUANTITY
                 default_value: 1
+                default_label: Quantity
                 width: 2
                 alignment: center
                 namespaced: true
@@ -3655,6 +3663,7 @@ profile:
               column:
                 name: QUANTITY
                 default_value: 1
+                default_label: Quantity
                 width: 1
                 alignment: center
                 namespaced: true

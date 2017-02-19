@@ -4,8 +4,8 @@ package com.kispoko.tome.util.value;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.kispoko.tome.activity.sheet.dialog.ArithmeticDialogType;
 import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
 import com.kispoko.tome.engine.program.ProgramValueType;
 import com.kispoko.tome.engine.program.statement.ParameterType;
@@ -22,8 +22,7 @@ import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.group.GroupBackground;
-import com.kispoko.tome.sheet.group.GroupLabelType;
-import com.kispoko.tome.sheet.group.RowAlignment;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.WidgetType;
@@ -34,10 +33,8 @@ import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
-import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
-import com.kispoko.tome.sheet.widget.util.WidgetLabelAlignment;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
@@ -107,6 +104,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
     // > Helpers
     // --------------------------------------------------------------------------------------
 
+    // TODO delete all enum cases
     /**
      * Determine the SQL representation of this value based on its class.
      * @return
@@ -162,10 +160,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(WidgetLabelAlignment.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
         else if (valueClass.isAssignableFrom(TextColor.class))
         {
             return SQLValue.Type.TEXT;
@@ -190,10 +184,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(WidgetContentAlignment.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
         else if (valueClass.isAssignableFrom(CellType.class))
         {
             return SQLValue.Type.TEXT;
@@ -210,7 +200,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(RowAlignment.class))
+        else if (valueClass.isAssignableFrom(Alignment.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -223,10 +213,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             return SQLValue.Type.TEXT;
         }
         else if (valueClass.isAssignableFrom(GroupBackground.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(GroupLabelType.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -358,9 +344,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((WidgetBackground) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof WidgetLabelAlignment)
+        else if (this.getValue() instanceof Alignment)
         {
-            String enumString = ((WidgetLabelAlignment) this.getValue()).name().toLowerCase();
+            String enumString = ((Alignment) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof TextColor)
@@ -403,9 +389,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((DiceType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof WidgetContentAlignment)
+        else if (this.getValue() instanceof ArithmeticDialogType)
         {
-            String enumString = ((WidgetContentAlignment) this.getValue()).name().toLowerCase();
+            String enumString = ((ArithmeticDialogType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof CellType)
@@ -433,9 +419,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((InlineLabelPosition) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof RowAlignment)
+        else if (this.getValue() instanceof Alignment)
         {
-            String enumString = ((RowAlignment) this.getValue()).name().toLowerCase();
+            String enumString = ((Alignment) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof RowWidth)
@@ -446,11 +432,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof GroupBackground)
         {
             String enumString = ((GroupBackground) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof GroupLabelType)
-        {
-            String enumString = ((GroupLabelType) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof Spacing)
@@ -661,9 +642,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             WidgetBackground background = WidgetBackground.fromSQLValue(sqlValue);
             this.setValue((A) background);
         }
-        else if (this.valueClass.isAssignableFrom(WidgetLabelAlignment.class))
+        else if (this.valueClass.isAssignableFrom(Alignment.class))
         {
-            WidgetLabelAlignment alignment = WidgetLabelAlignment.fromSQLValue(sqlValue);
+            Alignment alignment = Alignment.fromSQLValue(sqlValue);
             this.setValue((A) alignment);
         }
         else if (this.valueClass.isAssignableFrom(TextColor.class))
@@ -728,9 +709,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             InlineLabelPosition position = InlineLabelPosition.fromSQLValue(sqlValue);
             this.setValue((A) position);
         }
-        else if (this.valueClass.isAssignableFrom(RowAlignment.class))
+        else if (this.valueClass.isAssignableFrom(Alignment.class))
         {
-            RowAlignment alignment = RowAlignment.fromSQLValue(sqlValue);
+            Alignment alignment = Alignment.fromSQLValue(sqlValue);
             this.setValue((A) alignment);
         }
         else if (this.valueClass.isAssignableFrom(RowWidth.class))
@@ -742,11 +723,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             GroupBackground background = GroupBackground.fromSQLValue(sqlValue);
             this.setValue((A) background);
-        }
-        else if (this.valueClass.isAssignableFrom(GroupLabelType.class))
-        {
-            GroupLabelType groupLabelType = GroupLabelType.fromSQLValue(sqlValue);
-            this.setValue((A) groupLabelType);
         }
         else if (this.valueClass.isAssignableFrom(Spacing.class))
         {
@@ -814,11 +790,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             InvocationParameterType invocationParameterType =
                     InvocationParameterType.fromSQLValue(sqlValue);
             this.setValue((A) invocationParameterType);
-        }
-        else if (this.valueClass.isAssignableFrom(WidgetContentAlignment.class))
-        {
-            WidgetContentAlignment alignment = WidgetContentAlignment.fromSQLValue(sqlValue);
-            this.setValue((A) alignment);
         }
         else if (this.valueClass.isAssignableFrom(ParameterType.class))
         {

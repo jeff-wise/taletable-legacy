@@ -25,7 +25,9 @@ public enum GroupBackground implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     LIGHT,
+    MEDIUM_LIGHT,
     MEDIUM,
+    MEDIUM_DARK,
     DARK;
 
 
@@ -87,9 +89,13 @@ public enum GroupBackground implements ToYaml
         switch (this)
         {
             case LIGHT:
+                return R.color.dark_blue_3;
+            case MEDIUM_LIGHT:
                 return R.color.dark_blue_4;
             case MEDIUM:
                 return R.color.dark_blue_5;
+            case MEDIUM_DARK:
+                return R.color.dark_blue_6;
             case DARK:
                 return R.color.dark_blue_7;
         }

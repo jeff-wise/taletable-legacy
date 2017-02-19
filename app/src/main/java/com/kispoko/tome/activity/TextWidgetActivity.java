@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.ui.Form;
@@ -164,7 +164,7 @@ public class TextWidgetActivity extends AppCompatActivity
                 Form.field(
                         R.string.text_widget_field_alignment_label,
                         R.string.text_widget_field_alignment_description,
-                        Form.variantInput(WidgetContentAlignment.class,
+                        Form.variantInput(Alignment.class,
                                           this.textWidget.data().format().alignment(),
                                           this),
                         this);

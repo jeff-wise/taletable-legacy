@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.group.GroupRow;
-import com.kispoko.tome.sheet.group.RowAlignment;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -82,7 +82,7 @@ public class DataFragment extends Fragment
                 Form.field(
                     R.string.group_row_field_alignment_label,
                     R.string.group_row_field_alignment_description,
-                    Form.variantInput(RowAlignment.class,
+                    Form.variantInput(Alignment.class,
                                       this.groupRow.alignment(),
                                       getContext()),
                     getContext());

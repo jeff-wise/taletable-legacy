@@ -83,11 +83,19 @@ public abstract class Variable
         // > Update name
         String previousName = this.name();
 
-        String newName = namespace.name() + "." + this.originalName;
+        String newName;
+        if (this.originalName != null)
+            newName = namespace.name() + "." + this.originalName;
+        else
+            newName = namespace.name();
         this.setName(newName);
 
         // > Update label
-        String newLabel = namespace.label() + " " + this.originalLabel;
+        String newLabel;
+        if (this.originalLabel != null)
+            newLabel = namespace.label() + " " + this.originalLabel;
+        else
+            newLabel = namespace.label();
         this.setLabel(newLabel);
 
         // > Reindex variable

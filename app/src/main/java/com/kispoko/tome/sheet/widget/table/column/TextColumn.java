@@ -3,7 +3,11 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -37,8 +41,14 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
 
     private PrimitiveFunctor<String>        name;
     private PrimitiveFunctor<String>        defaultValue;
+    private PrimitiveFunctor<String>        defaultLabel;
     private PrimitiveFunctor<CellAlignment> alignment;
-    private PrimitiveFunctor<Boolean>       isBold;
+
+    /**
+     * The column's text style. Any style elements defined are applied to each cell in the column.
+     */
+    private ModelFunctor<TextStyle>         style;
+
     private PrimitiveFunctor<Integer>       width;
 
     /**
@@ -61,8 +71,9 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
 
         this.name               = new PrimitiveFunctor<>(null, String.class);
         this.defaultValue       = new PrimitiveFunctor<>(null, String.class);
+        this.defaultLabel       = new PrimitiveFunctor<>(null, String.class);
         this.alignment          = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.isBold             = new PrimitiveFunctor<>(null, Boolean.class);
+        this.style              = ModelFunctor.empty(TextStyle.class);
         this.width              = new PrimitiveFunctor<>(null, Integer.class);
         this.definesNamespace   = new PrimitiveFunctor<>(null, Boolean.class);
         this.isNamespaced       = new PrimitiveFunctor<>(null, Boolean.class);
@@ -72,8 +83,9 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     public TextColumn(UUID id,
                       String name,
                       String defaultValue,
+                      String defaultLabel,
                       CellAlignment alignment,
-                      Boolean isBold,
+                      TextStyle style,
                       Integer width,
                       Boolean definesNamespace,
                       Boolean isNamespaced)
@@ -82,14 +94,15 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
 
         this.name               = new PrimitiveFunctor<>(name, String.class);
         this.defaultValue       = new PrimitiveFunctor<>(defaultValue, String.class);
+        this.defaultLabel       = new PrimitiveFunctor<>(defaultLabel, String.class);
         this.alignment          = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-        this.isBold             = new PrimitiveFunctor<>(isBold, Boolean.class);
+        this.style              = ModelFunctor.full(style, TextStyle.class);
         this.width              = new PrimitiveFunctor<>(width, Integer.class);
         this.definesNamespace   = new PrimitiveFunctor<>(definesNamespace, Boolean.class);
         this.isNamespaced       = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
 
         this.setAlignment(alignment);
-        this.setIsBold(isBold);
+        this.setStyle(style);
         this.setDefinesNamespace(definesNamespace);
         this.setIsNamespaced(isNamespaced);
     }
@@ -108,13 +121,14 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
 
         String        name              = yaml.atKey("name").getString();
         String        defaultValue      = yaml.atKey("default_value").getString();
+        String        defaultLabel      = yaml.atMaybeKey("default_label").getString();
         CellAlignment alignment         = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
-        Boolean       isBold            = yaml.atMaybeKey("is_bold").getBoolean();
+        TextStyle     style             = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
         Integer       width             = yaml.atKey("width").getInteger();
         Boolean       definesNamespace  = yaml.atMaybeKey("defines_namespace").getBoolean();
         Boolean       isNamespaced      = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new TextColumn(id, name, defaultValue, alignment, isBold, width,
+        return new TextColumn(id, name, defaultValue, defaultLabel, alignment, style, width,
                               definesNamespace, isNamespaced);
     }
 
@@ -169,8 +183,9 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putString("default_value", this.defaultValue())
+                .putString("default_label", this.defaultLabel())
                 .putYaml("alignment", this.alignment())
-                .putBoolean("is_bold", this.isBold())
+                .putYaml("style", this.style())
                 .putInteger("width", this.width())
                 .putBoolean("defines_namespace", this.definesNamespace())
                 .putBoolean("namespaced", this.isNamespaced());
@@ -229,29 +244,34 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     }
 
 
-    // ** Is Bold
+    // ** Style
     // ------------------------------------------------------------------------------------------
 
     /**
-     * True if every cell in this column should have bold text.
+     * The column's text style. Any style elements defined are applied to each cell in the column.
      * @return Is Bold?
      */
-    public Boolean isBold()
+    public TextStyle style()
     {
-        return this.isBold.getValue();
+        return this.style.getValue();
     }
 
 
     /**
-     * Set the boldness of the cells in the column.
-     * @param isBold True if bold. If null, defaults to false.
+     * Set the column's default text style.
+     * @param style The text style.
      */
-    public void setIsBold(Boolean isBold)
+    public void setStyle(TextStyle style)
     {
-        if (isBold != null)
-            this.isBold.setValue(isBold);
-        else
-            this.isBold.setValue(false);
+        if (style != null) {
+            this.style.setValue(style);
+        }
+        else {
+            TextStyle defaultTextColumnStyle = new TextStyle(UUID.randomUUID(),
+                                                             TextColor.MEDIUM,
+                                                             TextSize.MEDIUM_SMALL);
+            this.style.setValue(defaultTextColumnStyle);
+        }
     }
 
 
@@ -266,6 +286,20 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     public String defaultValue()
     {
         return this.defaultValue.getValue();
+    }
+
+
+    // ** Default Label
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The default column label. Variables in this column will get this label, if their label is
+     * null (and this is not null).
+     * @return The default value.
+     */
+    public String defaultLabel()
+    {
+        return this.defaultLabel.getValue();
     }
 
 

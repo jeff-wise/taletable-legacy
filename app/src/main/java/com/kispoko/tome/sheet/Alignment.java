@@ -1,6 +1,8 @@
 
-package com.kispoko.tome.sheet.widget.util;
+package com.kispoko.tome.sheet;
 
+
+import android.view.Gravity;
 
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
@@ -12,12 +14,15 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 /**
- * Widget Content Alignment
+ * Row Alignment
  */
-public enum WidgetContentAlignment implements ToYaml
+public enum Alignment implements ToYaml
 {
 
     // VALUES
@@ -31,32 +36,35 @@ public enum WidgetContentAlignment implements ToYaml
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetContentAlignment fromString(String alignmentString)
+    public static Alignment fromString(String alignmentString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetContentAlignment.class, alignmentString);
+        return EnumUtils.fromString(Alignment.class, alignmentString);
     }
 
 
-    public static WidgetContentAlignment fromYaml(YamlParser yaml)
+    public static Alignment fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
+        if (yaml.isNull())
+            return null;
+
         String alignmentString = yaml.getString();
         try {
-            return WidgetContentAlignment.fromString(alignmentString);
+            return Alignment.fromString(alignmentString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(alignmentString));
         }
     }
 
 
-    public static WidgetContentAlignment fromSQLValue(SQLValue sqlValue)
+    public static Alignment fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetContentAlignment alignment = WidgetContentAlignment.fromString(enumString);
+            Alignment alignment = Alignment.fromString(enumString);
             return alignment;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
@@ -68,12 +76,49 @@ public enum WidgetContentAlignment implements ToYaml
     // TO YAML
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * The Widget Content Alignment's yaml string representation.
-     * @return The Yaml Builder.
-     */
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
     }
+
+
+    // TO STRING
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString()
+    {
+        switch (this)
+        {
+            case LEFT:
+                return "Left";
+            case CENTER:
+                return "Center";
+            case RIGHT:
+                return "Right";
+        }
+
+        return "";
+    }
+
+
+    // GRAVITY CONSTANT
+    // ------------------------------------------------------------------------------------------
+
+    public int gravityConstant()
+    {
+        switch (this)
+        {
+            case LEFT:
+                return Gravity.START;
+            case CENTER:
+                return Gravity.CENTER_HORIZONTAL;
+            case RIGHT:
+                return Gravity.END;
+            default:
+                return Gravity.START;
+        }
+    }
+
+
 }

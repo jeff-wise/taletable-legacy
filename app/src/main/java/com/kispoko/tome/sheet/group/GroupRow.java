@@ -5,6 +5,7 @@ package com.kispoko.tome.sheet.group;
 import android.content.Context;
 import android.widget.LinearLayout;
 
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
@@ -44,7 +45,7 @@ public class GroupRow implements Model, ToYaml, Serializable
     // -----------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<Integer>       index;
-    private PrimitiveFunctor<RowAlignment>  alignment;
+    private PrimitiveFunctor<Alignment>  alignment;
     private PrimitiveFunctor<RowWidth>      width;
     private PrimitiveFunctor<Spacing>       spaceAbove;
     private CollectionFunctor<WidgetUnion>  widgets;
@@ -64,7 +65,7 @@ public class GroupRow implements Model, ToYaml, Serializable
         this.id             = null;
 
         this.index          = new PrimitiveFunctor<>(null, Integer.class);
-        this.alignment      = new PrimitiveFunctor<>(null, RowAlignment.class);
+        this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
         this.width          = new PrimitiveFunctor<>(null, RowWidth.class);
         this.spaceAbove     = new PrimitiveFunctor<>(null, Spacing.class);
 
@@ -77,14 +78,14 @@ public class GroupRow implements Model, ToYaml, Serializable
     public GroupRow(UUID id,
                     Integer index,
                     List<WidgetUnion> widgets,
-                    RowAlignment alignment,
+                    Alignment alignment,
                     RowWidth width,
                     Spacing spaceAbove)
     {
         this.id             = id;
 
         this.index          = new PrimitiveFunctor<>(index, Integer.class);
-        this.alignment      = new PrimitiveFunctor<>(alignment, RowAlignment.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.width          = new PrimitiveFunctor<>(width, RowWidth.class);
         this.spaceAbove     = new PrimitiveFunctor<>(spaceAbove, Spacing.class);
 
@@ -109,7 +110,7 @@ public class GroupRow implements Model, ToYaml, Serializable
     {
         UUID         id             = UUID.randomUUID();
 
-        RowAlignment  alignment     = RowAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        Alignment alignment     = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
         RowWidth      width         = RowWidth.fromYaml(yaml.atMaybeKey("width"));
         Spacing separation       = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
 
@@ -216,18 +217,18 @@ public class GroupRow implements Model, ToYaml, Serializable
      * The row alignment.
      * @return The row alignment.
      */
-    public RowAlignment alignment()
+    public Alignment alignment()
     {
         return this.alignment.getValue();
     }
 
 
-    public void setAlignment(RowAlignment alignment)
+    public void setAlignment(Alignment alignment)
     {
         if (alignment != null)
             this.alignment.setValue(alignment);
         else
-            this.alignment.setValue(RowAlignment.CENTER);
+            this.alignment.setValue(Alignment.CENTER);
     }
 
 

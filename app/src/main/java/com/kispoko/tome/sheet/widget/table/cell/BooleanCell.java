@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -15,6 +14,9 @@ import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
@@ -55,6 +57,11 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     private ModelFunctor<BooleanVariable>   valueVariable;
     private PrimitiveFunctor<CellAlignment> alignment;
 
+    /**
+     * The boolean cell style. Often inherited from the column.
+     */
+    private ModelFunctor<TextStyle>         style;
+
 
     // > Internal
     // ------------------------------------------------------------------------------------------
@@ -72,25 +79,32 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
     public BooleanCell()
     {
-        this.id        = null;
+        this.id             = null;
 
-        this.valueVariable = ModelFunctor.empty(BooleanVariable.class);
-        this.alignment = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.valueVariable  = ModelFunctor.empty(BooleanVariable.class);
+        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.style          = ModelFunctor.empty(TextStyle.class);
     }
 
 
     public BooleanCell(UUID id,
                        BooleanVariable valueVariable,
-                       CellAlignment alignment)
+                       CellAlignment alignment,
+                       TextStyle style)
     {
         // ** Id
-        this.id        = id;
+        this.id             = id;
 
         // ** Value
-        this.valueVariable = ModelFunctor.full(valueVariable, BooleanVariable.class);
+        this.valueVariable  = ModelFunctor.full(valueVariable, BooleanVariable.class);
 
         // ** Alignment
-        this.alignment = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+
+        // ** Style
+        this.style          = ModelFunctor.full(style, TextStyle.class);
+
+        this.setStyle(style);
 
         initializeBooleanCell();
     }
@@ -103,8 +117,9 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
         BooleanVariable value     = BooleanVariable.fromYaml(yaml.atMaybeKey("value"));
         CellAlignment   alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        TextStyle       style     = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
 
-        return new BooleanCell(id, value, alignment);
+        return new BooleanCell(id, value, alignment, style);
     }
 
 
@@ -184,6 +199,9 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
         this.valueVariable().setIsNamespaced(column.isNamespaced());
 
+        if (column.defaultLabel() != null && this.valueVariable().label() == null)
+            this.valueVariable().setLabel(column.defaultLabel());
+
         // [3] Initialize the value variable
         // --------------------------------------------------------------------------------------
 
@@ -230,6 +248,9 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Value
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Get the boolean variable that contains the value of the boolean cell.
      * @return The Number Variable value.
@@ -248,6 +269,9 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     }
 
 
+    // ** Alignment
+    // ------------------------------------------------------------------------------------------
+
     /**
      * Get the alignment of this cell.
      * @return The cell Alignment.
@@ -255,6 +279,37 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     public CellAlignment alignment()
     {
         return this.alignment.getValue();
+    }
+
+
+    // ** Style
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The boolean cell style. Often inherited from the column.
+     * @return The text cell Text Style.
+     */
+    public TextStyle style()
+    {
+        return this.style.getValue();
+    }
+
+
+    /**
+     * Set the boolean cell's text style. If null, a default style is provided.
+     * @param style The text style.
+     */
+    public void setStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.style.setValue(style);
+        }
+        else {
+            TextStyle defaultBooleanCellStyle = new TextStyle(UUID.randomUUID(),
+                                                             TextColor.MEDIUM,
+                                                             TextSize.MEDIUM_SMALL);
+            this.style.setValue(defaultBooleanCellStyle);
+        }
     }
 
 

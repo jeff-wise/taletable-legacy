@@ -225,7 +225,7 @@ public class SheetActivity
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
 
         TextView titleView = (TextView) this.toolbar.findViewById(R.id.page_title);
-        titleView.setTypeface(Util.sansSerifFontBold(this));
+        titleView.setTypeface(Util.serifFontBold(this));
 
         //setSupportActionBar(this.toolbar);
     }

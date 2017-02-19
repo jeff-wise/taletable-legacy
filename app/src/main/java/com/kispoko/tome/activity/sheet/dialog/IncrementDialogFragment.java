@@ -24,7 +24,9 @@ import com.kispoko.tome.util.ui.AppDialog;
 import com.kispoko.tome.util.ui.EditDialog;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.util.ui.NumberPickerBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
+import com.shawnlin.numberpicker.NumberPicker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,10 +126,8 @@ public class IncrementDialogFragment extends DialogFragment
         // > Header
         layout.addView(headerView(context));
 
-        // > Value Editor
-        LinearLayout valueLayout = valueViewLayout(context);
-        valueLayout.addView(valueView(context));
-        layout.addView(valueLayout);
+        // > Value Choose
+        layout.addView(valueChooserView(context));
 
         // > Footer
         List<String> secondaryButtonNames = new ArrayList<>();
@@ -147,7 +147,7 @@ public class IncrementDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundResource   = R.drawable.bg_dialog;
+        layout.backgroundResource   = R.drawable.bg_dialog_dark;
 
         return layout.linearLayout(context);
     }
@@ -164,93 +164,56 @@ public class IncrementDialogFragment extends DialogFragment
     }
 
 
-    private LinearLayout valueViewLayout(Context context)
+    private LinearLayout valueChooserView(Context context)
+    {
+        LinearLayout layout = this.valueChooserViewLayout(context);
+
+        layout.addView(this.valuePickerView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout valueChooserViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.padding.top      = R.dimen.dialog_increment_value_padding_top;
-        layout.padding.bottom   = R.dimen.dialog_increment_value_padding_bottom;
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout valueView(Context context)
-    {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout    = new LinearLayoutBuilder();
-        TextViewBuilder     value     = new TextViewBuilder();
-        TextViewBuilder     decButton = new TextViewBuilder();
-        TextViewBuilder     incButton = new TextViewBuilder();
-
-        // [2] Declarations
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
+        layout.orientation          = LinearLayout.VERTICAL;
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER_VERTICAL;
 
-        layout.backgroundResource  = R.drawable.bg_dialog_inc_button;
+        layout.padding.top          = R.dimen.dialog_increment_value_padding_top;
+        layout.padding.bottom       = R.dimen.dialog_increment_value_padding_bottom;
 
-        layout.margin.left          = R.dimen.dialog_increment_value_margin_horz;
-        layout.margin.right          = R.dimen.dialog_increment_value_margin_horz;
-        layout.margin.top          = R.dimen.one_dp;
-        layout.margin.bottom          = R.dimen.one_dp;
+        layout.backgroundColor      = R.color.dark_blue_5;
 
-        layout.child(decButton)
-              .child(value)
-              .child(incButton);
-
-        // [3] Value
-        // -------------------------------------------------------------------------------------
-
-        value.width             = 0;
-        value.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        value.weight            = 1.0f;
-
-        value.gravity           = Gravity.CENTER_HORIZONTAL;
-
-        value.text              = this.variableValue.toString();
-        value.color             = R.color.dark_blue_hl_2;
-        value.font              = Font.serifFontRegular(context);
-        value.size              = R.dimen.dialog_increment_value_text_size;
-
-        // [4 A] Decrement Button
-        // -------------------------------------------------------------------------------------
-
-        decButton.width                 = 0;
-        decButton.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-        decButton.weight                = 1.0f;
-        decButton.gravity               = Gravity.CENTER_HORIZONTAL;
-
-        decButton.text                  = "- 1";
-        decButton.color                 = R.color.dark_blue_hl_8;
-        decButton.font                  = Font.serifFontBold(context);
-        decButton.size                  = R.dimen.dialog_increment_button_text_size;
-
-
-        // [4 B] Increment Button
-        // -------------------------------------------------------------------------------------
-
-        incButton.width                 = 0;
-        incButton.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-        incButton.weight                = 1.0f;
-        incButton.gravity               = Gravity.CENTER_HORIZONTAL;
-
-        incButton.text                  = "+ 1";
-        incButton.color                 = R.color.dark_blue_hl_8;
-        incButton.font                  = Font.serifFontBold(context);
-        incButton.size                  = R.dimen.dialog_increment_button_text_size;
-
+        layout.margin.bottom        = R.dimen.one_dp;
 
         return layout.linearLayout(context);
     }
 
+
+    private NumberPicker valuePickerView(Context context)
+    {
+        NumberPickerBuilder chooser = new NumberPickerBuilder();
+
+        chooser.width               = LinearLayout.LayoutParams.MATCH_PARENT;
+        chooser.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        chooser.orientation         = NumberPicker.HORIZONTAL;
+
+        chooser.minValue            = 0;
+        chooser.maxValue            = 100;
+
+        chooser.textSize            = R.dimen.dialog_increment_value_text_size;
+        chooser.textColor           = R.color.dark_blue_hl_1;
+        chooser.textFont            = Font.serifFontRegular(context);
+
+        chooser.dividerColor        = R.color.dark_blue_2;
+
+        chooser.wheelItemCount      = 5;
+
+        return chooser.numberPicker(context);
+    }
 
 }

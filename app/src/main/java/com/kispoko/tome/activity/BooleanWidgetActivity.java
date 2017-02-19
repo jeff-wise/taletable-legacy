@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
-import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.ui.Form;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -146,7 +146,7 @@ public class BooleanWidgetActivity extends AppCompatActivity
                 Form.field(
                         R.string.boolean_widget_field_alignment_label,
                         R.string.boolean_widget_field_alignment_description,
-                        Form.variantInput(WidgetContentAlignment.class,
+                        Form.variantInput(Alignment.class,
                                           this.booleanWidget.data().format().alignment(),
                                           this),
                         this);

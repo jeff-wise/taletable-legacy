@@ -5,8 +5,8 @@ android {
     buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "com.kispoko.tome"
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion 16
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -37,5 +37,6 @@ dependencies {
     compile 'com.android.support:support-v4:25.0.1'
     compile 'org.yaml:snakeyaml:1.17'
     compile 'org.apache.commons:commons-lang3:3.5'
+    compile 'com.shawnlin:number-picker:2.4.1'
     testCompile 'junit:junit:4.12'
 }

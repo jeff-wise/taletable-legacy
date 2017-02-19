@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.NumberWidget;
-import com.kispoko.tome.sheet.widget.util.WidgetContentAlignment;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.ui.Form;
@@ -168,7 +168,7 @@ public class NumberWidgetActivity extends AppCompatActivity
                 Form.field(
                         R.string.number_widget_field_alignment_label,
                         R.string.number_widget_field_alignment_description,
-                        Form.variantInput(WidgetContentAlignment.class,
+                        Form.variantInput(Alignment.class,
                                           this.numberWidget.data().format().alignment(),
                                           this),
                         this);

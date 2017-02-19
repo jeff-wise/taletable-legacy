@@ -290,38 +290,10 @@ public class TextViewBuilder implements ViewBuilder
         layoutParamsBuilder.setRules(this.rules);
 
 
-        switch (this.layoutType)
-        {
-            case LINEAR:
-                textView.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
-                break;
-            case RELATIVE:
-                textView.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
-                break;
-            case TABLE:
-                textView.setLayoutParams(layoutParamsBuilder.tableLayoutParams());
-                break;
-            case TABLE_ROW:
-                textView.setLayoutParams(layoutParamsBuilder.tableRowLayoutParams());
-                break;
-        }
+        textView.setLayoutParams(layoutParamsBuilder.layoutParams());
+
 
         return textView;
-    }
-
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    private boolean isLayoutConstant(Integer constant)
-    {
-        if (constant == LinearLayout.LayoutParams.MATCH_PARENT ||
-            constant == LinearLayout.LayoutParams.WRAP_CONTENT) {
-            return true;
-        }
-        else {
-            return false;
-        }
     }
 
 

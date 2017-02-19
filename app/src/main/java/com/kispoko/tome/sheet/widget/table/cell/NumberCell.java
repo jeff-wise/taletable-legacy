@@ -19,6 +19,9 @@ import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
@@ -32,11 +35,14 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
+import org.w3c.dom.Text;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.kispoko.tome.R.string.column;
 
 
 /**
@@ -58,6 +64,12 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
 
     private ModelFunctor<NumberVariable>            valueVariable;
     private PrimitiveFunctor<CellAlignment>         alignment;
+
+    /**
+     * The number cell style. Often inherited from the column.
+     */
+    private ModelFunctor<TextStyle>                 style;
+
     private PrimitiveFunctor<String>                valuePrefix;
     private PrimitiveFunctor<ArithmeticDialogType>  editDialogType;
 
@@ -79,6 +91,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
 
         this.valueVariable  = ModelFunctor.empty(NumberVariable.class);
         this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.style          = ModelFunctor.empty(TextStyle.class);
         this.valuePrefix    = new PrimitiveFunctor<>(null, String.class);
         this.editDialogType = new PrimitiveFunctor<>(null, ArithmeticDialogType.class);
     }
@@ -87,6 +100,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
     public NumberCell(UUID id,
                       NumberVariable valueVariable,
                       CellAlignment alignment,
+                      TextStyle style,
                       String valuePrefix,
                       ArithmeticDialogType editDialogType)
     {
@@ -95,10 +109,14 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         this.valueVariable  = ModelFunctor.full(valueVariable, NumberVariable.class);
 
         this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.style          = ModelFunctor.full(style, TextStyle.class);
+
         this.valuePrefix    = new PrimitiveFunctor<>(valuePrefix, String.class);
         this.editDialogType = new PrimitiveFunctor<>(editDialogType, ArithmeticDialogType.class);
 
         this.setEditDialogType(editDialogType);
+
+        this.setStyle(style);
 
         initializeNumberCell();
     }
@@ -117,11 +135,12 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
 
         NumberVariable       value          = NumberVariable.fromYaml(yaml.atMaybeKey("value"));
         CellAlignment        alignment      = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
+        TextStyle            style          = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
         String               prefix         = yaml.atMaybeKey("value_prefix").getString();
         ArithmeticDialogType editDialogType = ArithmeticDialogType.fromYaml(
                                                         yaml.atMaybeKey("edit_dialog_type"));
 
-        return new NumberCell(id, value, alignment, prefix, editDialogType);
+        return new NumberCell(id, value, alignment, style, prefix, editDialogType);
     }
 
 
@@ -178,6 +197,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         return YamlBuilder.map()
                 .putYaml("value", this.valueVariable())
                 .putYaml("alignment", this.alignment())
+                .putYaml("style", this.style())
                 .putString("value_prefix", this.prefix())
                 .putYaml("edit_dialog_type", this.editDialogType());
     }
@@ -201,6 +221,9 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         // --------------------------------------------------------------------------------------
 
         this.valueVariable().setIsNamespaced(column.isNamespaced());
+
+        if (column.defaultLabel() != null && this.valueVariable().label() == null)
+            this.valueVariable().setLabel(column.defaultLabel());
 
         // [3] Initialize the value variable
         // --------------------------------------------------------------------------------------
@@ -312,6 +335,37 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
     }
 
 
+    // ** Style
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The number cell style. Often inherited from the column.
+     * @return The text cell Text Style.
+     */
+    public TextStyle style()
+    {
+        return this.style.getValue();
+    }
+
+
+    /**
+     * Set the number cell's text style. If null, a default style is provided.
+     * @param style The text style.
+     */
+    public void setStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.style.setValue(style);
+        }
+        else {
+            TextStyle defaultNumberCellStyle = new TextStyle(UUID.randomUUID(),
+                                                             TextColor.MEDIUM,
+                                                             TextSize.MEDIUM_SMALL);
+            this.style.setValue(defaultNumberCellStyle);
+        }
+    }
+
+
     // ** Prefix
     // -----------------------------------------------------------------------------------------
 
@@ -365,7 +419,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         cellView.size       = R.dimen.widget_table_cell_text_size;
 
         // > Font
-        if (column.isBold())
+        if (column.style().isBold())
             cellView.font   = Font.serifFontBold(context);
         else
             cellView.font   = Font.serifFontRegular(context);

@@ -36,6 +36,7 @@ public enum TextColor implements ToYaml
     DARK,
     VERY_DARK,
     SUPER_DARK,
+    GOLD_VERY_LIGHT,
     PURPLE,
     PURPLE_LIGHT,
     PURPLE_VERY_LIGHT,
@@ -120,6 +121,8 @@ public enum TextColor implements ToYaml
                 return R.color.dark_blue_hl_8;
             case SUPER_DARK:
                 return R.color.dark_blue_1;
+            case GOLD_VERY_LIGHT:
+                return R.color.gold_very_light;
             case PURPLE:
                 return R.color.purple_light;
             case PURPLE_LIGHT:

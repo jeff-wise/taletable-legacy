@@ -363,9 +363,15 @@ public class BooleanVariable extends Variable
     @Override
     public void initialize()
     {
+        // [1] Add to state
+        // --------------------------------------------------------------------------------------
         this.addToState();
-    }
 
+        // [2] Save original name and label values in case namespaces changes multiple times
+        // --------------------------------------------------------------------------------------
+        this.originalName  = name();
+        this.originalLabel = label();
+    }
 
 
     // > State
@@ -462,11 +468,6 @@ public class BooleanVariable extends Variable
             this.reactiveValue = null;
         }
 
-
-        // [2] Save original name and label values in case namespaces changes multiple times
-        // --------------------------------------------------------------------------------------
-        this.originalName  = name();
-        this.originalLabel = label();
     }
 
 

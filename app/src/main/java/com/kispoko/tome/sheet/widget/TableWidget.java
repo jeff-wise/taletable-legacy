@@ -380,7 +380,7 @@ public class TableWidget extends Widget
                                                                columnUnion.column().name());
             TextCell headerCell = new TextCell(UUID.randomUUID(),
                                                headerCellValue,
-                                               columnUnion.column().alignment());
+                                               columnUnion.column().alignment(), null);
             CellUnion headerCellUnion = CellUnion.asText(null, headerCell);
             headerCells.add(headerCellUnion);
         }
@@ -452,13 +452,13 @@ public class TableWidget extends Widget
                 switch (this.groupParent.background())
                 {
                     case LIGHT:
-                        layout.divider = R.drawable.table_row_divider_medium;
+                        layout.divider = R.drawable.table_row_divider_light;
                         break;
                     case MEDIUM:
-                        layout.divider = R.drawable.table_row_divider_dark;
+                        layout.divider = R.drawable.table_row_divider_medium;
                         break;
                     case DARK:
-                        layout.divider = R.drawable.table_row_divider_medium;
+                        layout.divider = R.drawable.table_row_divider_dark;
                         break;
                 }
                 break;
@@ -494,9 +494,9 @@ public class TableWidget extends Widget
             CellUnion headerCell = this.headerRow.cellAtIndex(i);
 
             Column column = this.columnAtIndex(i).column();
-            TextColumn textColumn = new TextColumn(null, null, null,
+            TextColumn textColumn = new TextColumn(null, null, null, null,
                                                    column.alignment(),
-                                                   false,
+                                                   null,
                                                    column.width(),
                                                    false, false);
             ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);

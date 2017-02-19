@@ -54,7 +54,7 @@ public class UI
         actionBar.setDisplayShowTitleEnabled(false);
 
         TextView titleView = (TextView) activity.findViewById(R.id.page_title);
-        titleView.setTypeface(Util.sansSerifFontBold(activity));
+        titleView.setTypeface(Util.serifFontBold(activity));
     }
 
 }

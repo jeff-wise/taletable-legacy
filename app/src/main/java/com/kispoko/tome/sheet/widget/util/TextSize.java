@@ -3,8 +3,6 @@ package com.kispoko.tome.sheet.widget.util;
 
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
 import android.text.style.RelativeSizeSpan;
 
 import com.kispoko.tome.R;

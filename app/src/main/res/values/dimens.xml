@@ -80,13 +80,11 @@
     <dimen name="dialog_edit_footer_button_text_size">3.3sp</dimen>
 
 
-
     <!-- INCREMENT DIALOG -->
     <dimen name="dialog_increment_value_padding_top">25dp</dimen>
-    <dimen name="dialog_increment_value_padding_bottom">7dp</dimen>
-    <dimen name="dialog_increment_value_text_size">7sp</dimen>
+    <dimen name="dialog_increment_value_padding_bottom">25dp</dimen>
+    <dimen name="dialog_increment_value_text_size">20dp</dimen>
     <dimen name="dialog_increment_value_margin_horz">10dp</dimen>
-    <dimen name="dialog_increment_button_text_size">4.4sp</dimen>
 
 
     <!-- NAV DIALOG -->

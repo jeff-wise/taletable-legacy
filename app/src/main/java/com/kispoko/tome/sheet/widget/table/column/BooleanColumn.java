@@ -3,7 +3,11 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -38,9 +42,15 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
     private PrimitiveFunctor<String>        name;
 
     private PrimitiveFunctor<Boolean>       defaultValue;
+    private PrimitiveFunctor<String>        defaultLabel;
 
     private PrimitiveFunctor<CellAlignment> alignment;
     private PrimitiveFunctor<Integer>       width;
+
+    /**
+     * The column's text style. Any style elements defined are applied to each cell in the column.
+     */
+    private ModelFunctor<TextStyle>         style;
 
     private PrimitiveFunctor<String>        trueText;
     private PrimitiveFunctor<String>        falseText;
@@ -61,9 +71,11 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
         this.name           = new PrimitiveFunctor<>(null, String.class);
 
         this.defaultValue   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.defaultLabel   = new PrimitiveFunctor<>(null, String.class);
 
         this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
         this.width          = new PrimitiveFunctor<>(null, Integer.class);
+        this.style          = ModelFunctor.empty(TextStyle.class);
 
         this.trueText       = new PrimitiveFunctor<>(null, String.class);
         this.falseText      = new PrimitiveFunctor<>(null, String.class);
@@ -75,8 +87,10 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
     public BooleanColumn(UUID id,
                          String name,
                          Boolean defaultValue,
+                         String defaultLabel,
                          CellAlignment alignment,
                          Integer width,
+                         TextStyle style,
                          String trueText,
                          String falseText,
                          Boolean isNamespaced)
@@ -86,15 +100,18 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
         this.name           = new PrimitiveFunctor<>(name, String.class);
 
         this.defaultValue   = new PrimitiveFunctor<>(defaultValue, Boolean.class);
+        this.defaultLabel   = new PrimitiveFunctor<>(defaultLabel, String.class);
 
         this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
         this.width          = new PrimitiveFunctor<>(width, Integer.class);
+        this.style          = ModelFunctor.full(style, TextStyle.class);
 
         this.trueText       = new PrimitiveFunctor<>(trueText, String.class);
         this.falseText      = new PrimitiveFunctor<>(falseText, String.class);
 
         this.isNamespaced   = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
 
+        this.setStyle(style);
         this.setTrueText(trueText);
         this.setFalseText(falseText);
         this.setIsNamespaced(isNamespaced);
@@ -115,16 +132,18 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
         String        name         = yaml.atKey("name").getString();
 
         Boolean       defaultValue = yaml.atKey("default_value").getBoolean();
+        String        defaultLabel = yaml.atMaybeKey("default_label").getString();
 
         CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("alignment"));
         Integer       width        = yaml.atKey("width").getInteger();
+        TextStyle     style        = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
 
         String        trueText     = yaml.atMaybeKey("true").getString();
         String        falseText    = yaml.atMaybeKey("false").getString();
 
         Boolean       isNamespaced = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new BooleanColumn(id, name, defaultValue, alignment, width,
+        return new BooleanColumn(id, name, defaultValue, defaultLabel, alignment, width, style,
                                  trueText, falseText, isNamespaced);
     }
 
@@ -179,6 +198,7 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putBoolean("default_value", this.defaultValue())
+                .putString("default_label", this.defaultLabel())
                 .putYaml("alignment", this.alignment())
                 .putInteger("width", this.width())
                 .putString("true", this.trueText())
@@ -222,6 +242,38 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
 
     // > State
     // ------------------------------------------------------------------------------------------
+
+    // ** Style
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The column's text style. Any style elements defined are applied to each cell in the column.
+     * @return The column Text Style.
+     */
+    public TextStyle style()
+    {
+        return this.style.getValue();
+    }
+
+
+    /**
+     * Set the boolean column text style that is applied to all cells in the column. If the style is
+     * null, then a default style is created.
+     * @param style The text style.
+     */
+    public void setStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.style.setValue(style);
+        }
+        else {
+            TextStyle defaultBooleanColumnStyle = new TextStyle(UUID.randomUUID(),
+                                                                TextColor.MEDIUM,
+                                                                TextSize.MEDIUM_SMALL);
+            this.style.setValue(defaultBooleanColumnStyle);
+        }
+    }
+
 
     // ** True Text
     // ------------------------------------------------------------------------------------------
@@ -286,6 +338,20 @@ public class BooleanColumn implements Model, Column, ToYaml, Serializable
     public Boolean defaultValue()
     {
         return this.defaultValue.getValue();
+    }
+
+
+    // ** Default Label
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The default column label. Variables in this column will get this label, if their label is
+     * null (and this is not null).
+     * @return The default value.
+     */
+    public String defaultLabel()
+    {
+        return this.defaultLabel.getValue();
     }
 
 
