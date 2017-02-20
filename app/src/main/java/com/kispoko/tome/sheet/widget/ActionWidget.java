@@ -25,7 +25,7 @@ import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
-import com.kispoko.tome.sheet.widget.action.RollDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.RollDialogFragment;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;

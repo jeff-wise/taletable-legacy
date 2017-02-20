@@ -71,8 +71,8 @@
 
     <!-- DIALOG: EDIT -->
     <dimen name="dialog_edit_header_padding_top">10dp</dimen>
-    <dimen name="dialog_edit_header_padding_horz">10dp</dimen>
-    <dimen name="dialog_edit_footer_margin_bottom">15dp</dimen>
+    <dimen name="dialog_edit_header_padding_horz">11dp</dimen>
+    <dimen name="dialog_edit_footer_padding_vert">18dp</dimen>
 
     <dimen name="dialog_edit_padding_vert">20dp</dimen>
     <dimen name="dialog_edit_padding_horz">15dp</dimen>
@@ -91,7 +91,6 @@
     <dimen name="nav_dialog_button_margin_bottom">10dp</dimen>
     <dimen name="nav_dialog_button_text_size">4.1sp</dimen>
     <dimen name="nav_dialog_padding_bottom">5dp</dimen>
-
 
     <!-- DIALOG -->
     <dimen name="dialog_action_button_text_size">3.5sp</dimen>
@@ -494,12 +493,19 @@
     <dimen name="dialog_roll_roll_button_action_text_size">3.5sp</dimen>
     <dimen name="dialog_roll_roll_button_padding_vert">20dp</dimen>
     <dimen name="dialog_roll_roll_button_margin_horz">10dp</dimen>
-    <dimen name="dialog_roll_components_name_text_size">3.5sp</dimen>
-    <dimen name="dialog_roll_components_value_text_size">3.5sp</dimen>
-    <dimen name="dialog_roll_components_header_text_size">3.5sp</dimen>
-    <dimen name="dialog_roll_components_padding_horz">15dp</dimen>
-    <dimen name="dialog_roll_component_padding_vert">15dp</dimen>
+
+
     <dimen name="dialog_roll_rolls_height">100dp</dimen>
+
+
+    <!-- DIALOG: SUMMATION -->
+    <dimen name="dialog_summ_component_name_text_size">3.5sp</dimen>
+    <dimen name="dialog_summ_component_value_text_size">3.5sp</dimen>
+    <dimen name="dialog_summ_component_header_text_size">3.5sp</dimen>
+    <dimen name="dialog_summ_component_padding_right">15dp</dimen>
+    <dimen name="dialog_summ_component_padding_left">12dp</dimen>
+    <dimen name="dialog_summ_component_padding_vert">15dp</dimen>
+    <dimen name="dialog_summ_components_margin_top">10dp</dimen>
 
 
     <!-- MANAGE SHEETS -->

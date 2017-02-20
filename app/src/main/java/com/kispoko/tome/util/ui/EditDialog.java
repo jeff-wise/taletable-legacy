@@ -21,6 +21,15 @@ import java.util.List;
 public class EditDialog
 {
 
+    // TYPE
+    // -----------------------------------------------------------------------------------------
+
+    public enum Shade
+    {
+        LIGHT,
+        DARK
+    }
+
 
     // (DIALOG) LAYOUT
     // -----------------------------------------------------------------------------------------
@@ -43,18 +52,23 @@ public class EditDialog
     // -----------------------------------------------------------------------------------------
 
     // TODO remove?
-    public static LinearLayout viewLayout(Context context)
+    public static LinearLayout viewLayout(Shade shade, Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundResource   = R.drawable.bg_dialog;
-
-        layout.padding.bottom       = R.dimen.dialog_edit_padding_vert;
-        layout.padding.top          = R.dimen.dialog_edit_padding_vert;
+        switch (shade)
+        {
+            case LIGHT:
+                layout.backgroundResource = R.drawable.bg_dialog;
+                break;
+            case DARK:
+                layout.backgroundResource = R.drawable.bg_dialog_dark;
+                break;
+        }
 
         return layout.linearLayout(context);
     }
@@ -112,16 +126,16 @@ public class EditDialog
     // -----------------------------------------------------------------------------------------
 
     public static RelativeLayout headerTitleView(String headerString,
-                                                 boolean isDark,
+                                                 Shade shade,
                                                  Context context)
     {
         RelativeLayout layout = headerTitleViewLayout(context);
 
         // > Label
-        layout.addView(headerTitleTextView(headerString, isDark, context));
+        layout.addView(headerTitleTextView(headerString, shade, context));
 
         // > Close Button
-        layout.addView(closeButtonView(isDark, context));
+        layout.addView(closeButtonView(shade, context));
 
         return layout;
     }
@@ -141,7 +155,7 @@ public class EditDialog
 
 
     private static TextView headerTitleTextView(String headerString,
-                                                boolean isDark,
+                                                Shade shade,
                                                 Context context)
     {
         TextViewBuilder header = new TextViewBuilder();
@@ -156,12 +170,15 @@ public class EditDialog
         header.size             = R.dimen.sheet_dialog_heading_text_size;
 
         // > Color
-        if (isDark)
-            header.color            = R.color.dark_blue_hl_9;
-        else
-            header.color            = R.color.dark_blue_hl_5;
-
-        header.margin.top       = R.dimen.one_dp;
+        switch (shade)
+        {
+            case LIGHT:
+                header.color    = R.color.dark_blue_hl_5;
+                break;
+            case DARK:
+                header.color    = R.color.dark_blue_hl_9;
+                break;
+        }
 
         header.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
@@ -169,7 +186,7 @@ public class EditDialog
     }
 
 
-    private static ImageView closeButtonView(boolean isDark, Context context)
+    private static ImageView closeButtonView(Shade shade, Context context)
     {
         ImageViewBuilder button = new ImageViewBuilder();
 
@@ -178,10 +195,15 @@ public class EditDialog
         button.height               = RelativeLayout.LayoutParams.WRAP_CONTENT;
         button.layoutGravity        = Gravity.CENTER;
 
-        if (isDark)
-            button.image                = R.drawable.ic_dialog_close;
-        else
-            button.image                = R.drawable.ic_dialog_close_light;
+        switch (shade)
+        {
+            case LIGHT:
+                button.image        = R.drawable.ic_dialog_close_light;
+                break;
+            case DARK:
+                button.image        = R.drawable.ic_dialog_close;
+                break;
+        }
 
         button.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
@@ -193,24 +215,28 @@ public class EditDialog
     // -----------------------------------------------------------------------------------------
 
     public static LinearLayout footerView(List<String> secondaryButtons,
-                                          boolean isDark,
+                                          String mainButton,
+                                          int mainButtonIconId,
+                                          boolean mainButtonHighlighted,
+                                          Shade shade,
                                           Context context)
     {
-        LinearLayout layout = footerViewLayout(isDark, context);
+        LinearLayout layout = footerViewLayout(shade, context);
 
         // > Cancel Button
         for (String buttonLabel : secondaryButtons) {
-            layout.addView(secondaryButtonView(buttonLabel, context));
+            layout.addView(secondaryFooterButtonView(buttonLabel, context));
         }
 
         // > Save Button
-        layout.addView(saveButtonView(context));
+        layout.addView(mainFooterButtonView(mainButton, mainButtonIconId,
+                                            mainButtonHighlighted, context));
 
         return layout;
     }
 
 
-    private static LinearLayout footerViewLayout(boolean isDark, Context context)
+    private static LinearLayout footerViewLayout(Shade shade, Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -222,19 +248,24 @@ public class EditDialog
         layout.padding.left             = R.dimen.dialog_edit_padding_horz;
         layout.padding.right            = R.dimen.dialog_edit_padding_horz;
 
-        layout.padding.top              = R.dimen.dialog_edit_footer_margin_bottom;
-        layout.padding.bottom           = R.dimen.dialog_edit_footer_margin_bottom;
+        layout.padding.top              = R.dimen.dialog_edit_footer_padding_vert;
+        layout.padding.bottom           = R.dimen.dialog_edit_footer_padding_vert;
 
-        if (isDark)
-            layout.backgroundResource   = R.drawable.bg_dialog_footer_dark;
-        else
-            layout.backgroundResource   = R.drawable.bg_dialog_footer;
+        switch (shade)
+        {
+            case LIGHT:
+                layout.backgroundResource = R.drawable.bg_dialog_footer;
+                break;
+            case DARK:
+                layout.backgroundResource = R.drawable.bg_dialog_footer_dark;
+                break;
+        }
 
         return layout.linearLayout(context);
     }
 
 
-    private static TextView secondaryButtonView(String buttonLabel, Context context)
+    private static TextView secondaryFooterButtonView(String buttonLabel, Context context)
     {
         TextViewBuilder button = new TextViewBuilder();
 
@@ -252,7 +283,10 @@ public class EditDialog
     }
 
 
-    private static LinearLayout saveButtonView(Context context)
+    private static LinearLayout mainFooterButtonView(String buttonLabel,
+                                                     int iconId,
+                                                     boolean mainButtonHighlighted,
+                                                     Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -268,8 +302,6 @@ public class EditDialog
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
-        //layout.margin.right         = R.dimen.sheet_dialog_footer_button_ok_margin_right;
-
         layout.child(icon)
               .child(label);
 
@@ -279,7 +311,7 @@ public class EditDialog
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_dialog_save;
+        icon.image                  = iconId;
 
         icon.margin.right           = R.dimen.sheet_dialog_footer_button_icon_margin_right;
 
@@ -289,10 +321,16 @@ public class EditDialog
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.text                  = context.getString(R.string.save).toUpperCase();
-        label.color                 = R.color.green_medium;
+        label.text                  = buttonLabel.toUpperCase();
+
+
         label.font                  = Font.serifFontBold(context);
         label.size                  = R.dimen.dialog_edit_footer_button_text_size;
+
+        if (mainButtonHighlighted)
+            label.color             = R.color.green_medium;
+        else
+            label.color             = R.color.dark_blue_hl_6;
 
 
         return layout.linearLayout(context);

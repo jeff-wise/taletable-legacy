@@ -768,7 +768,7 @@ engine:
     - type: number
       value:
         name: human_ability_score_bonus
-        label: Human Ability Score bonus
+        label: Human Ability Score Bonus
         type: literal
         value: 1
         tags:
@@ -2148,8 +2148,23 @@ profile:
                 is_bold: true
             value:
               name: strength
-              type: literal
-              value: 16
+              label: Strength
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: literal
+                      name: Base Strength
+                      value: 15
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: tag
+                        tag: strength_bonus
       - space_above: medium_small
         widgets:
         - type: number
@@ -2675,23 +2690,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: dexterity_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: dexterity_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: acrobatics_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: acrobatics_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: acrobatics_is_proficient
                   type: literal
@@ -2707,23 +2724,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: wisdom_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: wisdom_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: animal_handling_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: animal_handling_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: animal_handling_is_proficient
                   type: literal
@@ -2739,23 +2758,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: intelligence_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: intelligence_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: arcana_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: arcana_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: arcana_is_proficient
                   type: literal
@@ -2771,23 +2792,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: strength_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: strength_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: athletics_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: athletics_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: athletics_is_proficient
                   type: literal
@@ -2803,23 +2826,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: charisma_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: charisma_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: deception_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: deception_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: deception_is_proficient
                   type: literal
@@ -2835,23 +2860,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: intelligence_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: intelligence_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: history_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: history_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: history_is_proficient
                   type: literal
@@ -2867,23 +2894,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: wisdom_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: wisdom_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: insight_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: insight_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: insight_is_proficient
                   type: literal
@@ -2899,23 +2928,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: charisma_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: charisma_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: intimidation_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: intimidation_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: intimidation_is_proficient
                   type: literal
@@ -2931,23 +2962,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: intelligence_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: intelligence_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: investigation_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: investigation_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: investigation_is_proficient
                   type: literal
@@ -2963,23 +2996,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: wisdom_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: wisdom_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: medicine_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: medicine_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: medicine_is_proficient
                   type: literal
@@ -2995,23 +3030,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: intelligence_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: intelligence_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: nature_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: nature_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: nature_is_proficient
                   type: literal
@@ -3027,23 +3064,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: wisdom_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: wisdom_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: perception_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: perception_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: perception_is_proficient
                   type: literal
@@ -3059,23 +3098,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: charisma_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: charisma_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable:  performance_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable:  performance_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: performance_is_proficient
                   type: literal
@@ -3091,23 +3132,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: charisma_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: charisma_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: persuasion_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: persuasion_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: persuasion_is_proficient
                   type: literal
@@ -3123,23 +3166,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: intelligence_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: intelligence_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: religion_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: religion_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: religion_is_proficient
                   type: literal
@@ -3155,23 +3200,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: dexterity_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: dexterity_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: sleight_of_hand_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: sleight_of_hand_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: sleight_of_hand_is_proficient
                   type: literal
@@ -3187,23 +3234,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: dexterity_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: dexterity_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: stealth_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: stealth_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: stealth_is_proficient
                   type: literal
@@ -3219,23 +3268,25 @@ profile:
                   value:
                     terms:
                     - type: integer
-                      value:
-                        type: variable
-                        variable:
-                          type: name
-                          name: wisdom_modifier
+                      term:
+                        value:
+                          type: variable
+                          variable:
+                            type: name
+                            name: wisdom_modifier
                     - type: conditional
-                      conditional:
-                        type: variable
-                        variable: survival_is_proficient
-                      when_true:
-                        type: variable
-                        variable:
-                          type: name
-                          name: proficiency_bonus
-                      when_false:
-                        type: literal
-                        value: 0
+                      term:
+                        conditional:
+                          type: variable
+                          variable: survival_is_proficient
+                        when_true:
+                          type: variable
+                          variable:
+                            type: name
+                            name: proficiency_bonus
+                        when_false:
+                          type: literal
+                          value: 0
               - value:
                   name: survival_is_proficient
                   type: literal
@@ -3312,17 +3363,19 @@ profile:
               value:
                 terms:
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: tag
-                      tag: armor_class_bonus
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: tag
+                        tag: armor_class_bonus
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: dexterity_modifier
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
       - space_above: large
         width: indented
         widgets:
@@ -3778,25 +3831,28 @@ encounter:
               value:
                 terms:
                 - type: dice_roll
-                  value:
-                    type: literal
-                    name: Attack Dice
+                  term:
                     value:
-                      type: d20
-                      quantity: 1
-                      modifier: 0
+                      type: literal
+                      name: Attack Dice
+                      value:
+                        type: d20
+                        quantity: 1
+                        modifier: 0
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: strength_modifier
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: strength_modifier
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: proficiency_bonus
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
       - space_above: medium_small
         widgets:
         - type: action
@@ -3816,17 +3872,19 @@ encounter:
               value:
                 terms:
                 - type: dice_roll
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: weapon_longsword_damage
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: weapon_longsword_damage
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: strength_modifier
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: strength_modifier
       - space_above: medium_small
         widgets:
         - type: action
@@ -3846,17 +3904,19 @@ encounter:
               value:
                 terms:
                 - type: dice_roll
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: weapon_longsword_two_handed_damage
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: weapon_longsword_two_handed_damage
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: strength_modifier
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: strength_modifier
     - name: Heavy Crossbow
       show_name: false
       space_above: medium
@@ -3883,24 +3943,27 @@ encounter:
               value:
                 terms:
                 - type: dice_roll
-                  value:
-                    type: literal
+                  term:
                     value:
-                      type: d20
-                      quantity: 1
-                      modifier: 0
+                      type: literal
+                      value:
+                        type: d20
+                        quantity: 1
+                        modifier: 0
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: dexterity_modifier
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: proficiency_bonus
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
       - widgets:
         - type: action
           widget:
@@ -3918,17 +3981,19 @@ encounter:
               value:
                 terms:
                 - type: dice_roll
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: weapon_heavy_crossbow_damage
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: weapon_heavy_crossbow_damage
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: dexterity_modifier
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
     - label: Dagger (Melee)
       rows:
       - widgets:
@@ -3946,24 +4011,27 @@ encounter:
               value:
                 terms:
                 - type: dice_roll
-                  value:
-                    type: literal
+                  term:
                     value:
-                      type: d20
-                      quantity: 1
-                      modifier: 0
+                      type: literal
+                      value:
+                        type: d20
+                        quantity: 1
+                        modifier: 0
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: strength_modifier
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: strength_modifier
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: proficiency_bonus
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
         - type: action
           widget:
             action: Damage with dagger
@@ -3978,18 +4046,19 @@ encounter:
               value:
                 terms:
                 - type: dice_roll
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: weapon_dagger_damage
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: weapon_dagger_damage
                 - type: integer
-                  value:
-                    type: variable
-                    variable:
-                      type: name
-                      name: strength_modifier
-                      pages:
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: strength_modifier
   - label: Status
     groups:
     - name: Hit Points

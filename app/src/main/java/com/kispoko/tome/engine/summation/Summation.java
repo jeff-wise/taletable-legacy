@@ -144,10 +144,8 @@ public class Summation implements Model, Serializable
      * Get the summation value.
      *
      * @return The sum.
-     * @throws VariableException
      */
     public Integer value()
-           throws SummationException
     {
         return sum();
     }
@@ -183,15 +181,8 @@ public class Summation implements Model, Serializable
         // Otherwise, just one number
         else
         {
-            try {
-                return "+" + Integer.toString(this.value());
-            }
-            catch (SummationException exception) {
-                ApplicationFailure.summation(exception);
-            }
+            return "+" + Integer.toString(this.value());
         }
-
-        return "";
     }
 
 

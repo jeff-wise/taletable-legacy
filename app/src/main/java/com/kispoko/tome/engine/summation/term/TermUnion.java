@@ -30,17 +30,17 @@ public class TermUnion implements Model, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<IntegerTerm> literalTerm;
-    private ModelFunctor<DiceRollTerm> diceRollTerm;
-    private ModelFunctor<ConditionalTerm> conditionalTerm;
+    private ModelFunctor<IntegerTerm>       literalTerm;
+    private ModelFunctor<DiceRollTerm>      diceRollTerm;
+    private ModelFunctor<ConditionalTerm>   conditionalTerm;
 
-    private PrimitiveFunctor<TermType> type;
+    private PrimitiveFunctor<TermType>      type;
 
 
     // CONSTRUCTORS
@@ -135,13 +135,13 @@ public class TermUnion implements Model, Serializable
         switch (type)
         {
             case INTEGER:
-                IntegerTerm integerTerm = IntegerTerm.fromYaml(yaml);
+                IntegerTerm integerTerm = IntegerTerm.fromYaml(yaml.atKey("term"));
                 return TermUnion.asInteger(id, integerTerm);
             case DICE_ROLL:
-                DiceRollTerm diceRollTerm = DiceRollTerm.fromYaml(yaml);
+                DiceRollTerm diceRollTerm = DiceRollTerm.fromYaml(yaml.atKey("term"));
                 return TermUnion.asDiceRoll(id, diceRollTerm);
             case CONDITIONAL:
-                ConditionalTerm conditionalTerm = ConditionalTerm.fromYaml(yaml);
+                ConditionalTerm conditionalTerm = ConditionalTerm.fromYaml(yaml.atKey("term"));
                 return TermUnion.asConditional(id, conditionalTerm);
         }
 

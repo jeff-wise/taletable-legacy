@@ -660,13 +660,7 @@ public class NumberVariable extends Variable
                 NumberValue numberValue = dictionary.numberValue(this.valueReference());
                 return numberValue.value();
             case SUMMATION:
-                try {
-                    return this.summation().value();
-                }
-                catch (SummationException exception) {
-                    ApplicationFailure.summation(exception);
-                    throw new NullVariableException();
-                }
+                return this.summation().value();
         }
 
         throw new NullVariableException();

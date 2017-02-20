@@ -157,7 +157,12 @@ public class TextWidgetDialogFragment extends DialogFragment
 
         List<String> secondaryButtonNames = new ArrayList<>();
         secondaryButtonNames.add(context.getString(R.string.dialog_cancel));
-        layout.addView(EditDialog.footerView(secondaryButtonNames, false, context));
+        layout.addView(EditDialog.footerView(secondaryButtonNames,
+                                             context.getString(R.string.save),
+                                             R.drawable.ic_dialog_footer_button_save,
+                                             true,
+                                             EditDialog.Shade.LIGHT,
+                                             context));
 
         return layout;
     }

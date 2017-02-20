@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget.action;
+package com.kispoko.tome.activity.sheet.dialog;
 
 
 import android.app.Dialog;
@@ -352,11 +352,11 @@ public class RollDialogFragment extends DialogFragment
         layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left             = R.dimen.dialog_roll_components_padding_horz;
-        layout.padding.right            = R.dimen.dialog_roll_components_padding_horz;
+        layout.padding.left             = R.dimen.dialog_summ_component_padding_left;
+        layout.padding.right            = R.dimen.dialog_summ_component_padding_right;
 
-        layout.padding.top              = R.dimen.dialog_roll_component_padding_vert;
-        layout.padding.bottom           = R.dimen.dialog_roll_component_padding_vert;
+        layout.padding.top              = R.dimen.dialog_summ_component_padding_vert;
+        layout.padding.bottom           = R.dimen.dialog_summ_component_padding_vert;
 
         layout.child(name)
               .child(value);
@@ -372,7 +372,7 @@ public class RollDialogFragment extends DialogFragment
 
         name.text                       = nameText;
         name.font                       = Font.serifFontRegular(context);
-        name.size                       = R.dimen.dialog_roll_components_name_text_size;
+        name.size                       = R.dimen.dialog_summ_component_name_text_size;
         name.color                      = R.color.dark_blue_hl_5;
 
         // [3 B] Value
@@ -386,7 +386,7 @@ public class RollDialogFragment extends DialogFragment
 
         value.text                      = valueText;
         value.font                      = Font.serifFontBold(context);
-        value.size                      = R.dimen.dialog_roll_components_value_text_size;
+        value.size                      = R.dimen.dialog_summ_component_value_text_size;
         value.color                     = R.color.dark_blue_hl_5;
 
 
@@ -404,7 +404,7 @@ public class RollDialogFragment extends DialogFragment
         header.text                 = headerText;
         header.font                 = Font.serifFontRegular(context);
         header.color                = R.color.dark_blue_hl_5;
-        header.size                 = R.dimen.dialog_roll_components_header_text_size;
+        header.size                 = R.dimen.dialog_summ_component_header_text_size;
 
         return header.textView(context);
     }

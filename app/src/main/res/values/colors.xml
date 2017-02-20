@@ -183,10 +183,10 @@
 
     <color name="gold_bright">#D4CF7C</color>
     <!--<color name="gold_light">#D9D297</color>-->
-    <color name="gold_light">#D9CE99</color>
     <color name="gold_very_light">#D4C8A4</color>
-    <color name="gold_medium_light">#D4C996</color>
-    <color name="gold_medium">#CCC290</color>
+    <color name="gold_light">#CCC09E</color>
+    <color name="gold_medium_light">#C4B998</color>
+    <color name="gold_medium">#BAB090</color>
     <color name="gold_dark">#B0AC67</color>
 
 
@@ -194,9 +194,10 @@
     <!--<color name="purple_hlx_5">#A08FC9</color>-->
     <color name="purple_hlx_5">#8A7AB2</color>
     <!--<color name="purple_bright">#8A7AB2</color>-->
-    <color name="purple_light">#ABA0C4</color>
     <color name="purple_very_light">#BDB1D9</color>
-    <color name="purple_medium">#716687</color>
+    <color name="purple_light">#ABA0C4</color>
+    <color name="purple_medium_light">#A096B8</color>
+    <color name="purple_medium">#958BAB</color>
 
 
     <!-- GREEN -->
@@ -224,41 +225,5 @@
     <color name="yellow_soft">#D9C984</color>
     <color name="yellow_hard">#D9C95F</color>
 
-    <color name="teal_800">#00695c</color>
-    <color name="red_a100">#ff8a80</color>
-    <color name="red_300">#e57373</color>
-    <color name="red_800">#c62828</color>
-    <color name="cyan_900">#006064</color>
-    <color name="teal_400">#26a69a</color>
-    <color name="blue_300">#64b5f6</color>
-    <color name="lightgreen_100">#dcedc8</color>
-    <color name="green_100">#c8e6c9</color>
-    <color name="green_200">#a5d6a7</color>
-    <color name="green_300">#81c784</color>
-    <color name="green_800">#2e7d32</color>
 
-
-    <color name="amber_100">#FFECB3</color>
-    <color name="amber_200">#ffe082</color>
-    <color name="amber_300">#ffd54f</color>
-    <color name="amber_500">#ffc107</color>
-    <color name="amber_600">#ffb300</color>
-    <color name="amber_800">#ff8f00</color>
-    <color name="amber_900">#ff6f00</color>
-    <color name="amber_a700">#ffab00</color>
-    <color name="amber_a200">#FFD740</color>
-    <color name="amber_a100">#FFE57F</color>
-
-
-
-    <!-- SPECIFIC -->
-
-
-    <!-- BOTTOM NAVIGATION -->
-    <!-- TABS -->
-    <color name="tab_accent">#cfd8dc</color>
-    <color name="tab_inactive">#607d8b</color>
-    <!-- BG -->
-    <color name="bottom_nav_bg">#37474F</color>
-    #37474f
 </resources>

@@ -176,13 +176,7 @@ public class SummationActivity extends AppCompatActivity
 
         TextViewBuilder total = new TextViewBuilder();
 
-        String totalString;
-        try {
-            totalString = summation.value().toString();
-        }
-        catch (SummationException exception) {
-            totalString = "N/A";
-        }
+        String totalString = summation.value().toString();
 
         // [2] Attributes
         // --------------------------------------------------------------------------------------

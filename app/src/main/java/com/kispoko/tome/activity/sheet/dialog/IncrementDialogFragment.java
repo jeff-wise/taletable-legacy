@@ -9,29 +9,22 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.util.ui.AppDialog;
 import com.kispoko.tome.util.ui.EditDialog;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.NumberPickerBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.shawnlin.numberpicker.NumberPicker;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.kispoko.tome.util.ui.EditDialog.viewLayout;
 
 
 /**
@@ -126,13 +119,18 @@ public class IncrementDialogFragment extends DialogFragment
         // > Header
         layout.addView(headerView(context));
 
-        // > Value Choose
+        // > Value Chooser
         layout.addView(valueChooserView(context));
 
         // > Footer
         List<String> secondaryButtonNames = new ArrayList<>();
         secondaryButtonNames.add(context.getString(R.string.advanced_editor));
-        LinearLayout footerView = EditDialog.footerView(secondaryButtonNames, false, context);
+        LinearLayout footerView = EditDialog.footerView(secondaryButtonNames,
+                                                        context.getString(R.string.save),
+                                                        R.drawable.ic_dialog_footer_button_save,
+                                                        true,
+                                                        EditDialog.Shade.LIGHT,
+                                                        context);
         layout.addView(footerView);
 
         return layout;
@@ -158,7 +156,8 @@ public class IncrementDialogFragment extends DialogFragment
         LinearLayout layout = EditDialog.headerViewLayout(context);
 
         // > Top Row
-        layout.addView(EditDialog.headerTitleView(this.variableName, false, context));
+        layout.addView(EditDialog.headerTitleView(this.variableName,
+                                                  EditDialog.Shade.LIGHT, context));
 
         return layout;
     }

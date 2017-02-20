@@ -15,7 +15,10 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.activity.sheet.dialog.SummationDialogFragment;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.Variable;
@@ -23,6 +26,7 @@ import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
+import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.util.Util;
@@ -531,7 +535,7 @@ public class NumberWidget extends Widget
     }
 
 
-    private LinearLayout valueMainViewLayout(Context context)
+    private LinearLayout valueMainViewLayout(final Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -553,6 +557,13 @@ public class NumberWidget extends Widget
                 layout.layoutGravity = Gravity.END  | Gravity.CENTER_VERTICAL;
                 break;
         }
+
+        layout.onClick              = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNumberWidgetShortClick(context);
+            }
+        };
 
         return layout.linearLayout(context);
     }
@@ -755,5 +766,34 @@ public class NumberWidget extends Widget
 
         return label.textView(context);
     }
+
+
+    // > Clicks
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * When the number widget is clicked once, open a quick edit/view dialog.
+     * @param context The context
+     */
+    private void onNumberWidgetShortClick(Context context)
+    {
+        SheetActivity sheetActivity = (SheetActivity) context;
+
+        switch (this.valueVariable().kind())
+        {
+
+            // OPEN the summation preview dialog
+            case SUMMATION:
+                Summation summation      = this.valueVariable().summation();
+                String    summationLabel = this.valueVariable().label();
+                SummationDialogFragment summationDialog =
+                                    SummationDialogFragment.newInstance(summation, summationLabel);
+                summationDialog.show(sheetActivity.getSupportFragmentManager(), "");
+                break;
+        }
+    }
+
+
+
 
 }
