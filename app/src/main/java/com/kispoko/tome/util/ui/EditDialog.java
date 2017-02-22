@@ -173,7 +173,7 @@ public class EditDialog
         switch (shade)
         {
             case LIGHT:
-                header.color    = R.color.dark_blue_hl_5;
+                header.color    = R.color.gold_medium;
                 break;
             case DARK:
                 header.color    = R.color.dark_blue_hl_9;
@@ -217,7 +217,6 @@ public class EditDialog
     public static LinearLayout footerView(List<String> secondaryButtons,
                                           String mainButton,
                                           int mainButtonIconId,
-                                          boolean mainButtonHighlighted,
                                           Shade shade,
                                           Context context)
     {
@@ -229,8 +228,7 @@ public class EditDialog
         }
 
         // > Save Button
-        layout.addView(mainFooterButtonView(mainButton, mainButtonIconId,
-                                            mainButtonHighlighted, context));
+        layout.addView(mainFooterButtonView(mainButton, mainButtonIconId, context));
 
         return layout;
     }
@@ -245,8 +243,8 @@ public class EditDialog
         layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.gravity                  = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
 
-        layout.padding.left             = R.dimen.dialog_edit_padding_horz;
-        layout.padding.right            = R.dimen.dialog_edit_padding_horz;
+        layout.padding.left             = R.dimen.dialog_edit_footer_padding_horz;
+        layout.padding.right            = R.dimen.dialog_edit_footer_padding_horz;
 
         layout.padding.top              = R.dimen.dialog_edit_footer_padding_vert;
         layout.padding.bottom           = R.dimen.dialog_edit_footer_padding_vert;
@@ -285,7 +283,6 @@ public class EditDialog
 
     private static LinearLayout mainFooterButtonView(String buttonLabel,
                                                      int iconId,
-                                                     boolean mainButtonHighlighted,
                                                      Context context)
     {
         // [1] Declarations
@@ -327,10 +324,7 @@ public class EditDialog
         label.font                  = Font.serifFontBold(context);
         label.size                  = R.dimen.dialog_edit_footer_button_text_size;
 
-        if (mainButtonHighlighted)
-            label.color             = R.color.green_medium;
-        else
-            label.color             = R.color.dark_blue_hl_6;
+        label.color                 = R.color.green_medium;
 
 
         return layout.linearLayout(context);

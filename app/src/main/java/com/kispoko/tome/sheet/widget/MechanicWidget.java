@@ -10,6 +10,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.mechanic.Mechanic;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -24,7 +25,6 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
-import static android.R.attr.padding;
 
 
 /**
@@ -68,6 +68,8 @@ public class MechanicWidget extends Widget implements Serializable
         this.mechanicCategory   = new PrimitiveFunctor<>(mechanicCategory, String.class);
 
         this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
+
+        this.initializeMechanicWidget();
     }
 
 
@@ -84,7 +86,7 @@ public class MechanicWidget extends Widget implements Serializable
 
         String      mechanicCategory = yaml.atKey("category").getTrimmedString();
 
-        WidgetData  widgetData       = WidgetData.fromYaml(yaml.atMaybeKey("data"));
+        WidgetData  widgetData       = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
 
         return new MechanicWidget(id, mechanicCategory, widgetData);
     }
@@ -125,7 +127,10 @@ public class MechanicWidget extends Widget implements Serializable
     /**
      * This method is called when the RulesEngine is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeMechanicWidget();
+    }
 
 
     // > Yaml
@@ -184,9 +189,29 @@ public class MechanicWidget extends Widget implements Serializable
     }
 
 
-    // > Views
+    // INTERNAL
     // -----------------------------------------------------------------------------------------
 
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeMechanicWidget()
+    {
+        // [1] Apply default format values
+        // -------------------------------------------------------------------------------------
+
+        // ** Width
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        // ** Background
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.NONE);
+    }
+
+
+    // > Views
+    // -----------------------------------------------------------------------------------------
 
     private View widgetView(Context context)
     {

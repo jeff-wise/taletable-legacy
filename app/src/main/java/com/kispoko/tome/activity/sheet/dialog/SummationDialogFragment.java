@@ -113,7 +113,9 @@ public class SummationDialogFragment extends DialogFragment
         LinearLayout layout = EditDialog.viewLayout(EditDialog.Shade.LIGHT, context);
 
         // > Header
-        layout.addView(headerView(context));
+        // layout.addView(headerView(context));
+
+        //layout.addView(SummationView.componentDividerView(context));
 
         // > Summation Components
         layout.addView(componentsView(context));
@@ -125,7 +127,6 @@ public class SummationDialogFragment extends DialogFragment
         LinearLayout footerView = EditDialog.footerView(new ArrayList<String>(),
                                                         context.getString(R.string.edit),
                                                         R.drawable.ic_dialog_footer_button_edit,
-                                                        false,
                                                         EditDialog.Shade.LIGHT,
                                                         context);
         layout.addView(footerView);
@@ -152,7 +153,7 @@ public class SummationDialogFragment extends DialogFragment
         LinearLayout layout = componentsViewLayout(context);
 
         // > Components
-        layout.addView(SummationView.componentsView(this.summation, context));
+        layout.addView(SummationView.componentsView(this.summationLabel, this.summation, context));
 
         return layout;
     }

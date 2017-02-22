@@ -160,7 +160,6 @@ public class TextWidgetDialogFragment extends DialogFragment
         layout.addView(EditDialog.footerView(secondaryButtonNames,
                                              context.getString(R.string.save),
                                              R.drawable.ic_dialog_footer_button_save,
-                                             true,
                                              EditDialog.Shade.LIGHT,
                                              context));
 

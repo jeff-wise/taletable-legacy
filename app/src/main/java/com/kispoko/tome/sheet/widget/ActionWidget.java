@@ -23,9 +23,11 @@ import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
 import com.kispoko.tome.activity.sheet.dialog.RollDialogFragment;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -97,6 +99,8 @@ public class ActionWidget extends Widget
         this.actionHighlight    = new PrimitiveFunctor<>(actionHighlight, String.class);
         this.actionName         = new PrimitiveFunctor<>(actionName, String.class);
         this.modifier           = ModelFunctor.full(modifier, NumberVariable.class);
+
+        this.initializeActionWidget();
     }
 
 
@@ -115,7 +119,7 @@ public class ActionWidget extends Widget
         String             actionHighlight = yaml.atKey("action_highlight").getString().trim();
         String             actionName      = yaml.atKey("action_name").getString().trim();
         NumberVariable     modifier        = NumberVariable.fromYaml(yaml.atKey("modifier"));
-        WidgetData         widgetData      = WidgetData.fromYaml(yaml.atKey("data"));
+        WidgetData         widgetData      = WidgetData.fromYaml(yaml.atKey("data"), false);
         ActionWidgetFormat format          = ActionWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
         return new ActionWidget(id, widgetData, format, description,
@@ -158,7 +162,10 @@ public class ActionWidget extends Widget
     /**
      * This method is called when the RulesEngine is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeActionWidget();
+    }
 
 
     // > Yaml
@@ -307,10 +314,29 @@ public class ActionWidget extends Widget
 
 
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeActionWidget()
+    {
+        // [1] Apply default formats
+        // -------------------------------------------------------------------------------------
+
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        if (this.data().format().alignment() == null)
+            this.data().format().setAlignment(Alignment.CENTER);
+
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.NONE);
+    }
+
 
     // > Views
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private View widgetView(Context context)
     {

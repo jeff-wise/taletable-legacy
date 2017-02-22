@@ -69,37 +69,6 @@
     <dimen name="sheet_dialog_body_margin_top">22dp</dimen>
 
 
-    <!-- DIALOG: EDIT -->
-    <dimen name="dialog_edit_header_padding_top">10dp</dimen>
-    <dimen name="dialog_edit_header_padding_horz">11dp</dimen>
-    <dimen name="dialog_edit_footer_padding_vert">18dp</dimen>
-
-    <dimen name="dialog_edit_padding_vert">20dp</dimen>
-    <dimen name="dialog_edit_padding_horz">15dp</dimen>
-    <dimen name="dialog_edit_header_text_size">4sp</dimen>
-    <dimen name="dialog_edit_footer_button_text_size">3.3sp</dimen>
-
-
-    <!-- INCREMENT DIALOG -->
-    <dimen name="dialog_increment_value_padding_top">25dp</dimen>
-    <dimen name="dialog_increment_value_padding_bottom">25dp</dimen>
-    <dimen name="dialog_increment_value_text_size">20dp</dimen>
-    <dimen name="dialog_increment_value_margin_horz">10dp</dimen>
-
-
-    <!-- NAV DIALOG -->
-    <dimen name="nav_dialog_button_margin_bottom">10dp</dimen>
-    <dimen name="nav_dialog_button_text_size">4.1sp</dimen>
-    <dimen name="nav_dialog_padding_bottom">5dp</dimen>
-
-    <!-- DIALOG -->
-    <dimen name="dialog_action_button_text_size">3.5sp</dimen>
-    <dimen name="dialog_visibility_button_margin_horz">4dp</dimen>
-    <dimen name="dialog_heading_text_size">3.2dp</dimen>
-    <dimen name="dialog_padding_horz">15dp</dimen>
-    <dimen name="dialog_padding_bottom">15dp</dimen>
-
-
     <!-- PAGE -->
     <dimen name="page_padding_bottom">20dp</dimen>
 
@@ -487,27 +456,6 @@
     <dimen name="column_list_item_type_text_size">3.3dp</dimen>
 
 
-    <!-- DIALOG: ROLL -->
-    <dimen name="dialog_roll_roll_button_roll_text_size">5.7sp</dimen>
-    <dimen name="dialog_roll_roll_button_icon_margin_right">4dp</dimen>
-    <dimen name="dialog_roll_roll_button_action_text_size">3.5sp</dimen>
-    <dimen name="dialog_roll_roll_button_padding_vert">20dp</dimen>
-    <dimen name="dialog_roll_roll_button_margin_horz">10dp</dimen>
-
-
-    <dimen name="dialog_roll_rolls_height">100dp</dimen>
-
-
-    <!-- DIALOG: SUMMATION -->
-    <dimen name="dialog_summ_component_name_text_size">3.5sp</dimen>
-    <dimen name="dialog_summ_component_value_text_size">3.5sp</dimen>
-    <dimen name="dialog_summ_component_header_text_size">3.5sp</dimen>
-    <dimen name="dialog_summ_component_padding_right">15dp</dimen>
-    <dimen name="dialog_summ_component_padding_left">12dp</dimen>
-    <dimen name="dialog_summ_component_padding_vert">15dp</dimen>
-    <dimen name="dialog_summ_components_margin_top">10dp</dimen>
-
-
     <!-- MANAGE SHEETS -->
     <dimen name="sheet_summary_list_item_padding_vert">16dp</dimen>
     <dimen name="sheet_summary_list_item_padding_horz">16dp</dimen>
@@ -543,6 +491,61 @@
     <dimen name="section_card_description_text_size">3sp</dimen>
     <dimen name="section_card_title_margin_bottom">10dp</dimen>
     <dimen name="section_card_icon_margin_bottom">10dp</dimen>
+
+    <!-- DIALOG: EDIT -->
+    <dimen name="dialog_edit_header_padding_top">10dp</dimen>
+    <dimen name="dialog_edit_header_padding_horz">11dp</dimen>
+    <dimen name="dialog_edit_footer_padding_vert">18dp</dimen>
+
+    <dimen name="dialog_edit_padding_vert">20dp</dimen>
+    <dimen name="dialog_edit_padding_horz">15dp</dimen>
+    <dimen name="dialog_edit_header_text_size">4sp</dimen>
+    <dimen name="dialog_edit_footer_button_text_size">3.3sp</dimen>
+    <dimen name="dialog_edit_footer_padding_horz">14dp</dimen>
+
+
+    <!-- DIALOG: ROLL -->
+    <dimen name="dialog_roll_roll_button_roll_text_size">5.7sp</dimen>
+    <dimen name="dialog_roll_roll_button_icon_margin_right">4dp</dimen>
+    <dimen name="dialog_roll_roll_button_action_text_size">3.5sp</dimen>
+    <dimen name="dialog_roll_roll_button_padding_vert">20dp</dimen>
+    <dimen name="dialog_roll_roll_button_margin_horz">10dp</dimen>
+
+
+    <dimen name="dialog_roll_rolls_height">100dp</dimen>
+
+
+    <!-- DIALOG: SUMMATION -->
+    <dimen name="dialog_summ_component_name_text_size">3.5sp</dimen>
+    <dimen name="dialog_summ_component_value_text_size">3.5sp</dimen>
+    <dimen name="dialog_summ_component_header_text_size">3.5sp</dimen>
+    <dimen name="dialog_summ_component_padding_right">14dp</dimen>
+    <dimen name="dialog_summ_component_padding_left">12dp</dimen>
+    <dimen name="dialog_summ_component_padding_vert">15dp</dimen>
+    <dimen name="dialog_summ_components_margin_top">10dp</dimen>
+
+
+
+    <!-- INCREMENT DIALOG -->
+    <dimen name="dialog_increment_value_padding_top">25dp</dimen>
+    <dimen name="dialog_increment_value_padding_bottom">25dp</dimen>
+    <dimen name="dialog_increment_value_text_size">20dp</dimen>
+    <dimen name="dialog_increment_value_margin_horz">10dp</dimen>
+
+
+    <!-- NAV DIALOG -->
+    <dimen name="nav_dialog_button_margin_bottom">10dp</dimen>
+    <dimen name="nav_dialog_button_text_size">4.1sp</dimen>
+    <dimen name="nav_dialog_padding_bottom">5dp</dimen>
+
+    <!-- DIALOG -->
+    <dimen name="dialog_action_button_text_size">3.5sp</dimen>
+    <dimen name="dialog_visibility_button_margin_horz">4dp</dimen>
+    <dimen name="dialog_heading_text_size">3.2dp</dimen>
+    <dimen name="dialog_padding_horz">15dp</dimen>
+    <dimen name="dialog_padding_bottom">15dp</dimen>
+
+
 
     <!-- DIALOG: EDIT TEXT -->
     <dimen name="dialog_edit_text_expand_button_text_size">3.3sp</dimen>

@@ -24,15 +24,16 @@ public enum WidgetType implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    TEXT,
-    NUMBER,
+    ACTION,
     BOOLEAN,
+    BUTTON,
     IMAGE,
     LIST,
-    TABLE,
-    ACTION,
+    LOG,
     MECHANIC,
-    LOG;
+    NUMBER,
+    TABLE,
+    TEXT;
 
 
     // CONSTRUCTORS
@@ -88,24 +89,24 @@ public enum WidgetType implements ToYaml
     {
         switch (this)
         {
-            case TEXT:
-                return R.string.widget_text;
-            case NUMBER:
-                return R.string.widget_number;
-            case BOOLEAN:
-                return R.string.widget_boolean;
-            case LIST:
-                return R.string.widget_list;
-            case TABLE:
-                return R.string.widget_table;
-            case IMAGE:
-                return R.string.widget_image;
             case ACTION:
                 return R.string.widget_action;
-            case MECHANIC:
-                return R.string.widget_mechanic;
+            case BOOLEAN:
+                return R.string.widget_boolean;
+            case IMAGE:
+                return R.string.widget_image;
+            case LIST:
+                return R.string.widget_list;
             case LOG:
                 return R.string.widget_log;
+            case MECHANIC:
+                return R.string.widget_mechanic;
+            case NUMBER:
+                return R.string.widget_number;
+            case TABLE:
+                return R.string.widget_table;
+            case TEXT:
+                return R.string.widget_text;
         }
 
         return 0;

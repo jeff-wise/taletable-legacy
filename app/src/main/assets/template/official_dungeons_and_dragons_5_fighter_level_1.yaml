@@ -965,6 +965,36 @@ engine:
               type: literal
               name: is_class_fighter
               value: true
+          - type: boolean
+            value:
+              type: literal
+              name: strength_saving_throw_is_proficient
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: dexterity_saving_throw_is_proficient
+              value: false
+          - type: boolean
+            value:
+              type: literal
+              name: constitution_saving_throw_is_proficient
+              value: true
+          - type: boolean
+            value:
+              type: literal
+              name: intelligence_saving_throw_is_proficient
+              value: false
+          - type: boolean
+            value:
+              type: literal
+              name: wisdom_saving_throw_is_proficient
+              value: false
+          - type: boolean
+            value:
+              type: literal
+              name: charisma_saving_throw_is_proficient
+              value: false
       - type: text
         value:
           name: monk
@@ -2215,8 +2245,30 @@ profile:
                 color: light
             value:
               name: saving_throw_strength
-              type: literal
-              value: 5
+              label: Strength Saving Throw
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: strength_modifier
+                - type: conditional
+                  term:
+                    conditional:
+                      type: variable
+                      variable: strength_saving_throw_is_proficient
+                    when_true:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
             value_prefix: '+'
     - space_above: small
       background: dark
@@ -2249,8 +2301,23 @@ profile:
                 is_bold: true
             value:
               name: dexterity
-              type: literal
-              value: 14
+              label: Dexterity
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: literal
+                      name: Base Dexterity
+                      value: 13
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: tag
+                        tag: dexterity_bonus
       - space_above: medium_small
         widgets:
         - type: number
@@ -2301,8 +2368,30 @@ profile:
                 color: light
             value:
               name: saving_throw_dexterity
-              type: literal
-              value: 2
+              label: Dexterity Saving Throw
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
+                - type: conditional
+                  term:
+                    conditional:
+                      type: variable
+                      variable: dexterity_saving_throw_is_proficient
+                    when_true:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
             value_prefix: '+'
     - space_above: small
       background: dark
@@ -2335,8 +2424,23 @@ profile:
                 is_bold: true
             value:
               name: constitution
-              type: literal
-              value: 14
+              label: Constitution
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: literal
+                      name: Base Constitution
+                      value: 13
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: tag
+                        tag: constitution_bonus
       - space_above: medium_small
         widgets:
         - type: number
@@ -2387,8 +2491,30 @@ profile:
                 color: light
             value:
               name: saving_throw_constitution
-              type: literal
-              value: 4
+              label: Constitution Saving Throw
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: constitution_modifier
+                - type: conditional
+                  term:
+                    conditional:
+                      type: variable
+                      variable: constitution_saving_throw_is_proficient
+                    when_true:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
             value_prefix: '+'
     - space_above: small
       background: dark
@@ -2421,8 +2547,23 @@ profile:
                 is_bold: true
             value:
               name: intelligence
-              type: literal
-              value: 11
+              label: Intelligence
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: literal
+                      name: Base Intelligence
+                      value: 10
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: tag
+                        tag: intelligence_bonus
       - space_above: medium_small
         widgets:
         - type: number
@@ -2473,8 +2614,30 @@ profile:
                 color: light
             value:
               name: saving_throw_intelligence
-              type: literal
-              value: 0
+              label: Intelligence Saving Throw
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: intelligence_modifier
+                - type: conditional
+                  term:
+                    conditional:
+                      type: variable
+                      variable: intelligence_saving_throw_is_proficient
+                    when_true:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
             value_prefix: '+'
     - space_above: small
       background: dark
@@ -2508,8 +2671,23 @@ profile:
                 is_bold: true
             value:
               name: wisdom
-              type: literal
-              value: 13
+              label: Wisdom
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: literal
+                      name: Base Wisdom
+                      value: 12
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: tag
+                        tag: wisdom_bonus
       - space_above: medium_small
         widgets:
         - type: number
@@ -2560,8 +2738,30 @@ profile:
                 color: light
             value:
               name: saving_throw_wisdom
-              type: literal
-              value: 1
+              label: Wisdom Saving Throw
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: wisdom_modifier
+                - type: conditional
+                  term:
+                    conditional:
+                      type: variable
+                      variable: wisdom_saving_throw_is_proficient
+                    when_true:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
             value_prefix: '+'
     - space_above: small
       background: dark
@@ -2592,8 +2792,23 @@ profile:
                 is_bold: true
             value:
               name: charisma
-              type: literal
-              value: 13
+              label: Charisma
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: literal
+                      name: Base Charisma
+                      value: 10
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: tag
+                        tag: charisma_bonus
       - space_above: medium_small
         widgets:
         - type: number
@@ -2644,11 +2859,33 @@ profile:
                 color: light
             value:
               name: saving_throw_charisma
-              type: literal
-              value: 1
+              label: Charisma Saving Throw
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: charisma_modifier
+                - type: conditional
+                  term:
+                    conditional:
+                      type: variable
+                      variable: charisma_saving_throw_is_proficient
+                    when_true:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+                    when_false:
+                      type: literal
+                      value: 0
             value_prefix: '+'
     - name: Skills
-      space_above: medium
+      space_above: medium_large
       rows:
       - space_above: small
         width: no_padding
@@ -2683,7 +2920,7 @@ profile:
               - value:
                   type: literal
                   value: Acrobatics
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: acrobatics_bonus
                   type: summation
@@ -2717,7 +2954,7 @@ profile:
               - value:
                   type: literal
                   value: Animal Handling
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: animal_handling_bonus
                   type: summation
@@ -2751,7 +2988,7 @@ profile:
               - value:
                   type: literal
                   value: Arcana
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: arcana_bonus
                   type: summation
@@ -2785,7 +3022,7 @@ profile:
               - value:
                   type: literal
                   value: Athletics
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: athletics_bonus
                   type: summation
@@ -2819,7 +3056,7 @@ profile:
               - value:
                   type: literal
                   value: Deception
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: deception_bonus
                   type: summation
@@ -2853,7 +3090,7 @@ profile:
               - value:
                   type: literal
                   value: History
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: history_bonus
                   type: summation
@@ -2887,7 +3124,7 @@ profile:
               - value:
                   type: literal
                   value: Insight
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: insight_bonus
                   type: summation
@@ -2921,7 +3158,7 @@ profile:
               - value:
                   type: literal
                   value: Intimidation
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: intimidation_bonus
                   type: summation
@@ -2955,7 +3192,7 @@ profile:
               - value:
                   type: literal
                   value: Investigation
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: investigation_bonus
                   type: summation
@@ -2989,7 +3226,7 @@ profile:
               - value:
                   type: literal
                   value: Medicine
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: medicine_bonus
                   type: summation
@@ -3023,7 +3260,7 @@ profile:
               - value:
                   type: literal
                   value: Nature
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: nature_bonus
                   type: summation
@@ -3057,7 +3294,7 @@ profile:
               - value:
                   type: literal
                   value: Perception
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: perception_bonus
                   type: summation
@@ -3091,7 +3328,7 @@ profile:
               - value:
                   type: literal
                   value: Performance
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: performance_bonus
                   type: summation
@@ -3125,7 +3362,7 @@ profile:
               - value:
                   type: literal
                   value: Persuasion
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: persuasion_bonus
                   type: summation
@@ -3159,7 +3396,7 @@ profile:
               - value:
                   type: literal
                   value: Religion
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: religion_bonus
                   type: summation
@@ -3193,7 +3430,7 @@ profile:
               - value:
                   type: literal
                   value: Sleight of Hand
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: sleight_of_hand_bonus
                   type: summation
@@ -3227,7 +3464,7 @@ profile:
               - value:
                   type: literal
                   value: Stealth
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: stealth_bonus
                   type: summation
@@ -3261,7 +3498,7 @@ profile:
               - value:
                   type: literal
                   value: Survival
-              - prefix: '+'
+              - value_prefix: '+'
                 value:
                   name: survival_bonus
                   type: summation
@@ -3432,6 +3669,8 @@ profile:
                 size: medium_small
                 color: medium
             value:
+              name: proficiency_bonus
+              label: Proficiency Bonus
               type: literal
               value: 2
             value_prefix: '+'
@@ -3494,6 +3733,7 @@ profile:
           widget:
             data:
               format:
+                background: none
                 label: Weapons
             columns:
             - type: text
@@ -3570,8 +3810,6 @@ profile:
         - type: table
           widget:
             data:
-              actions:
-              - edit
               format:
                 label: Armor / Shields
             columns:
@@ -3633,12 +3871,13 @@ profile:
         - type: number
           widget:
             data:
-              actions:
-              - edit
               format:
-                width: 1
+                background: medium_dark
                 label: Gold
-            size: medium
+                label_alignment: center
+            format:
+              value_style:
+                color: medium_light
             value:
               name: wealth_gold
               type: literal
@@ -3646,11 +3885,13 @@ profile:
         - type: number
           widget:
             data:
-              actions:
-              - edit
               format:
-                width: 1
+                background: medium_dark
                 label: Silver
+                label_alignment: center
+            format:
+              value_style:
+                color: medium_light
             size: medium
             value:
               name: wealth_silver
@@ -3659,12 +3900,13 @@ profile:
         - type: number
           widget:
             data:
-              actions:
-              - edit
               format:
-                width: 1
+                background: medium_dark
                 label: Copper
-            size: medium
+                label_alignment: center
+            format:
+              value_style:
+                color: medium_light
             value:
               name: wealth_copper
               type: literal
@@ -3674,11 +3916,13 @@ profile:
         - type: number
           widget:
             data:
-              actions:
-              - edit
               format:
+                background: medium_dark
                 label: Platinum
-            size: medium
+                label_alignment: center
+            format:
+              value_style:
+                color: medium_light
             value:
               name: wealth_platinum
               type: literal
@@ -3687,9 +3931,12 @@ profile:
           widget:
             data:
               format:
-                width: 1
+                background: medium_dark
                 label: Electrum
-            size: medium
+                label_alignment: center
+            format:
+              value_style:
+                color: medium_light
             value:
               name: wealth_electrum
               type: literal
@@ -4061,12 +4308,33 @@ encounter:
                         name: strength_modifier
   - label: Status
     groups:
-    - name: Hit Points
-      show_name: false
+    - name: Current Hit Points
+      background: light
       rows:
       - space_above: medium
         alignment: center
         widgets:
+        - type: button
+          widget:
+            label: Take X
+        - type: number
+          widget:
+            data:
+              format:
+                background: none
+            format:
+              value_style:
+                color: green_very_light
+                is_bold: true
+                size: large
+            value:
+              name: current_hit_points
+              label: Current Hit Points
+              type: variable
+              value: hit_points
+        - type: button
+          widget:
+            label: Heal X
   - label: Abilities
     groups:
 campaign:

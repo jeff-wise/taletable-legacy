@@ -23,10 +23,15 @@ import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
-import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.util.Util;
@@ -127,6 +132,8 @@ public class NumberWidget extends Widget
         this.variables  = CollectionFunctor.full(variables, variableClasses);
 
         this.valueViewId    = null;
+
+        this.initializeNumberWidget();
     }
 
 
@@ -135,7 +142,7 @@ public class NumberWidget extends Widget
     {
         UUID               id            = UUID.randomUUID();
 
-        WidgetData         widgetData    = WidgetData.fromYaml(yaml.atMaybeKey("data"));
+        WidgetData         widgetData    = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
         NumberWidgetFormat format        = NumberWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
         NumberVariable     value         = NumberVariable.fromYaml(yaml.atKey("value"));
         String             valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
@@ -183,7 +190,10 @@ public class NumberWidget extends Widget
     /**
      * This method is called when the Number Widget is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeNumberWidget();
+    }
 
 
     // > To Yaml
@@ -381,6 +391,42 @@ public class NumberWidget extends Widget
 
     // INTERNAL
     // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeNumberWidget()
+    {
+        // [1] Apply default format values
+        // -------------------------------------------------------------------------------------
+
+        // ** Width
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        // ** Alignment
+        if (this.data().format().alignment() == null)
+            this.data().format().setAlignment(Alignment.CENTER);
+
+        // ** Label Style
+        if (this.data().format().labelStyle() == null) {
+            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.DARK,
+                                                        TextSize.SMALL,
+                                                        Alignment.CENTER);
+            this.data().format().setLabelStyle(defaultLabelStyle);
+        }
+
+        // ** Background
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.DARK);
+
+        // ** Corners
+        if (this.data().format().corners() == null)
+            this.data().format().setCorners(WidgetCorners.SMALL);
+
+    }
+
 
     // > Value Updates
     // -----------------------------------------------------------------------------------------
@@ -755,7 +801,7 @@ public class NumberWidget extends Widget
         label.width             = LinearLayout.LayoutParams.MATCH_PARENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.gravity           = this.data().format().labelAlignment().gravityConstant();
+        label.gravity           = this.data().format().labelStyle().alignment().gravityConstant();
 
         label.text              = this.data().format().label();
         label.font              = Font.serifFontRegular(context);

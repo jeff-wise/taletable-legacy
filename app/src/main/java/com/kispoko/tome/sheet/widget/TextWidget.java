@@ -19,6 +19,7 @@ import com.kispoko.tome.engine.value.ValueSet;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.NavigationDialogFragment;
 import com.kispoko.tome.sheet.SheetException;
 import com.kispoko.tome.sheet.SheetManager;
@@ -27,6 +28,11 @@ import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
@@ -119,6 +125,8 @@ public class TextWidget extends Widget
         this.variables          = CollectionFunctor.full(variables, variableClasses);
 
         this.displayTextViewId  = null;
+
+        this.initializeTextWidget();
     }
 
 
@@ -133,7 +141,7 @@ public class TextWidget extends Widget
     {
         UUID             id         = UUID.randomUUID();
 
-        WidgetData       widgetData = WidgetData.fromYaml(yaml.atKey("data"));
+        WidgetData       widgetData = WidgetData.fromYaml(yaml.atKey("data"), false);
         TextWidgetFormat format     = TextWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
         TextVariable     value      = TextVariable.fromYaml(yaml.atKey("value"));
 
@@ -177,7 +185,10 @@ public class TextWidget extends Widget
     /**
      * This method is called when the Text Widget is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeTextWidget();
+    }
 
 
     // > To Yaml
@@ -314,7 +325,7 @@ public class TextWidget extends Widget
         }
 
         // [2] Initialize the helper variables
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         for (VariableUnion variableUnion : this.variables()) {
             State.addVariable(variableUnion);
@@ -324,7 +335,46 @@ public class TextWidget extends Widget
 
 
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeTextWidget()
+    {
+        // [1] Apply default format values
+        // -------------------------------------------------------------------------------------
+
+        // ** Width
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        // ** Alignment
+        if (this.data().format().alignment() == null)
+            this.data().format().setAlignment(Alignment.CENTER);
+
+        // ** Label Style
+        if (this.data().format().labelStyle() == null) {
+            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.DARK,
+                                                        TextSize.SMALL,
+                                                        Alignment.CENTER);
+            this.data().format().setLabelStyle(defaultLabelStyle);
+        }
+
+        // ** Background
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.DARK);
+
+        // ** Corners
+        if (this.data().format().corners() == null)
+            this.data().format().setCorners(WidgetCorners.SMALL);
+
+    }
+
+
+    // > Value Update
+    // -----------------------------------------------------------------------------------------
 
     /**
      * When the text widget's valueVariable is updated.
@@ -498,10 +548,18 @@ public class TextWidget extends Widget
         // ** Font
         // -------------------------------------------------------------------------------------
 
-        if (this.data().format().isBold())
-            value.font   = Font.serifFontBold(context);
-        else
-            value.font   = Font.serifFontRegular(context);
+        if (this.format().valueStyle().isBold() && this.format().valueStyle().isItalic()) {
+            value.font  = Font.serifFontBoldItalic(context);
+        }
+        else if (this.format().valueStyle().isBold()) {
+            value.font  = Font.serifFontBold(context);
+        }
+        else if (this.format().valueStyle().isItalic()) {
+            value.font  = Font.serifFontItalic(context);
+        }
+        else {
+            value.font  = Font.serifFontRegular(context);
+        }
 
         // [4] Label
         // -------------------------------------------------------------------------------------
@@ -629,7 +687,7 @@ public class TextWidget extends Widget
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.layoutGravity     = this.data().format().labelAlignment().gravityConstant();
+        label.layoutGravity     = this.data().format().labelStyle().alignment().gravityConstant();
 
         label.text              = this.data().format().label();
         label.font              = Font.serifFontRegular(context);

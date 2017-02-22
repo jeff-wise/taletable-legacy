@@ -14,8 +14,6 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
-import org.w3c.dom.Text;
-
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -47,6 +45,11 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
     private PrimitiveFunctor<CellAlignment> alignment;
 
     /**
+     * A prefix that is displayed before the values in the number column.
+     */
+    private PrimitiveFunctor<String>        valuePrefix;
+
+    /**
      * The column's text style. Any style elements defined are applied to each cell in the column.
      */
     private ModelFunctor<TextStyle>         style;
@@ -60,15 +63,16 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
 
     public NumberColumn()
     {
-        this.id           = null;
+        this.id             = null;
 
-        this.name         = new PrimitiveFunctor<>(null, String.class);
-        this.defaultValue = new PrimitiveFunctor<>(null, Integer.class);
-        this.defaultLabel = new PrimitiveFunctor<>(null, String.class);
-        this.alignment    = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.style        = ModelFunctor.empty(TextStyle.class);
-        this.width        = new PrimitiveFunctor<>(null, Integer.class);
-        this.isNamespaced = new PrimitiveFunctor<>(null, Boolean.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.defaultValue   = new PrimitiveFunctor<>(null, Integer.class);
+        this.defaultLabel   = new PrimitiveFunctor<>(null, String.class);
+        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
+        this.valuePrefix    = new PrimitiveFunctor<>(null, String.class);
+        this.style          = ModelFunctor.empty(TextStyle.class);
+        this.width          = new PrimitiveFunctor<>(null, Integer.class);
+        this.isNamespaced   = new PrimitiveFunctor<>(null, Boolean.class);
     }
 
 
@@ -77,19 +81,21 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
                         Integer defaultValue,
                         String defaultLabel,
                         CellAlignment alignment,
+                        String valuePrefix,
                         TextStyle style,
                         Integer width,
                         Boolean isNamespaced)
     {
-        this.id           = id;
+        this.id             = id;
 
-        this.name         = new PrimitiveFunctor<>(name, String.class);
-        this.defaultValue = new PrimitiveFunctor<>(defaultValue, Integer.class);
-        this.defaultLabel = new PrimitiveFunctor<>(defaultLabel, String.class);
-        this.alignment    = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-        this.style        = ModelFunctor.full(style, TextStyle.class);
-        this.width        = new PrimitiveFunctor<>(width, Integer.class);
-        this.isNamespaced = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.defaultValue   = new PrimitiveFunctor<>(defaultValue, Integer.class);
+        this.defaultLabel   = new PrimitiveFunctor<>(defaultLabel, String.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
+        this.valuePrefix    = new PrimitiveFunctor<>(valuePrefix, String.class);
+        this.style          = ModelFunctor.full(style, TextStyle.class);
+        this.width          = new PrimitiveFunctor<>(width, Integer.class);
+        this.isNamespaced   = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
 
         this.setAlignment(alignment);
         this.setStyle(style);
@@ -112,12 +118,13 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
         Integer       defaultValue = yaml.atKey("default_value").getInteger();
         String        defaultLabel = yaml.atMaybeKey("default_label").getString();
         CellAlignment alignment    = CellAlignment.fromYaml(yaml.atKey("alignment"));
+        String        valuePrefix  = yaml.atMaybeKey("value_prefix").getString();
         TextStyle     style        = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
         Integer       width        = yaml.atKey("width").getInteger();
         Boolean       isNamespaced = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new NumberColumn(id, name, defaultValue, defaultLabel, alignment, style,
-                                width, isNamespaced);
+        return new NumberColumn(id, name, defaultValue, defaultLabel, alignment, valuePrefix,
+                                style, width, isNamespaced);
     }
 
 
@@ -173,6 +180,7 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
                 .putInteger("default_value", this.defaultValue())
                 .putString("default_label", this.defaultLabel())
                 .putYaml("alignment", this.alignment())
+                .putString("value_prefix", this.valuePrefix())
                 .putYaml("style", this.style())
                 .putInteger("width", this.width())
                 .putBoolean("namespaced", this.isNamespaced());
@@ -224,6 +232,19 @@ public class NumberColumn implements Model, Column, ToYaml, Serializable
             this.alignment.setValue(alignment);
         else
             this.alignment.setValue(CellAlignment.CENTER);
+    }
+
+
+    // ** Value Prefix
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The number columns value prefix.
+     * @return The value prefix.
+     */
+    public String valuePrefix()
+    {
+        return this.valuePrefix.getValue();
     }
 
 

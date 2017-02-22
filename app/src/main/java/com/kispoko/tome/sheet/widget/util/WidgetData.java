@@ -55,7 +55,7 @@ public class WidgetData implements Model, ToYaml, Serializable
     }
 
 
-    public static WidgetData fromYaml(YamlParser yaml)
+    public static WidgetData fromYaml(YamlParser yaml, boolean useDefaultFormat)
                   throws YamlParseException
     {
         if (yaml.isNull())
@@ -63,7 +63,8 @@ public class WidgetData implements Model, ToYaml, Serializable
 
         UUID         id            = UUID.randomUUID();
 
-        WidgetFormat format        = WidgetFormat.fromYaml(yaml.atMaybeKey("format"));
+        WidgetFormat format        = WidgetFormat.fromYaml(yaml.atMaybeKey("format"),
+                                                           useDefaultFormat);
 
         return new WidgetData(id, format);
     }
@@ -131,6 +132,12 @@ public class WidgetData implements Model, ToYaml, Serializable
     public WidgetFormat format()
     {
         return this.format.getValue();
+    }
+
+
+    public void setWidgetFormat(WidgetFormat format)
+    {
+        this.format.setValue(format);
     }
 
 }

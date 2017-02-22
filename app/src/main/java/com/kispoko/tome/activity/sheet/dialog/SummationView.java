@@ -25,7 +25,9 @@ import com.kispoko.tome.util.ui.TextViewBuilder;
 public class SummationView
 {
 
-    public static LinearLayout componentsView(Summation summation, Context context)
+    public static LinearLayout componentsView(String summationLabel,
+                                              Summation summation,
+                                              Context context)
     {
         LinearLayout layout = componentsViewLayout(context);
 
@@ -35,7 +37,7 @@ public class SummationView
         }
 
         // > Total
-        layout.addView(totalView(summation.value().toString(), context));
+        layout.addView(totalView(summationLabel, summation.value().toString(), context));
 
         return layout;
     }
@@ -172,7 +174,7 @@ public class SummationView
     }
 
 
-    public static RelativeLayout totalView(String totalText, Context context)
+    public static RelativeLayout totalView(String totalLabel, String totalText, Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -187,6 +189,8 @@ public class SummationView
         layout.orientation              = LinearLayout.HORIZONTAL;
         layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.backgroundColor          = R.color.dark_blue_7;
 
         layout.padding.left             = R.dimen.dialog_summ_component_padding_left;
         layout.padding.right            = R.dimen.dialog_summ_component_padding_right;
@@ -206,10 +210,10 @@ public class SummationView
 
         label.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
-        label.textId                    = R.string.total;
+        label.text                      = totalLabel;
         label.font                      = Font.serifFontItalic(context);
         label.size                      = R.dimen.dialog_summ_component_name_text_size;
-        label.color                     = R.color.gold_light;
+        label.color                     = R.color.dark_blue_hlx_7;
 
         label.margin.left               = R.dimen.one_dp;
 
@@ -225,7 +229,7 @@ public class SummationView
         value.text                      = totalText;
         value.font                      = Font.serifFontBold(context);
         value.size                      = R.dimen.dialog_summ_component_value_text_size;
-        value.color                     = R.color.gold_light;
+        value.color                     = R.color.dark_blue_hlx_7;
 
 
         return layout.relativeLayout(context);

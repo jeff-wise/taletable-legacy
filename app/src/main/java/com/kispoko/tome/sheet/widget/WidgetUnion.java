@@ -38,6 +38,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
 
     private ModelFunctor<ActionWidget>      actionWidget;
     private ModelFunctor<BooleanWidget>     booleanWidget;
+    private ModelFunctor<ButtonWidget>      buttonWidget;
     private ModelFunctor<ImageWidget>       imageWidget;
     private ModelFunctor<ListWidget>        listWidget;
     private ModelFunctor<LogWidget>         logWidget;
@@ -58,6 +59,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
 
         this.actionWidget   = ModelFunctor.empty(ActionWidget.class);
         this.booleanWidget  = ModelFunctor.empty(BooleanWidget.class);
+        this.buttonWidget   = ModelFunctor.empty(ButtonWidget.class);
         this.imageWidget    = ModelFunctor.empty(ImageWidget.class);
         this.listWidget     = ModelFunctor.empty(ListWidget.class);
         this.logWidget      = ModelFunctor.empty(LogWidget.class);
@@ -76,6 +78,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
 
         this.actionWidget   = ModelFunctor.full(null, ActionWidget.class);
         this.booleanWidget  = ModelFunctor.full(null, BooleanWidget.class);
+        this.buttonWidget   = ModelFunctor.full(null, ButtonWidget.class);
         this.imageWidget    = ModelFunctor.full(null, ImageWidget.class);
         this.listWidget     = ModelFunctor.full(null, ListWidget.class);
         this.logWidget      = ModelFunctor.full(null, LogWidget.class);
@@ -93,6 +96,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case BOOLEAN:
                 this.booleanWidget.setValue((BooleanWidget) widget);
+                break;
+            case BUTTON:
+                this.buttonWidget.setValue((ButtonWidget) widget);
                 break;
             case IMAGE:
                 this.imageWidget.setValue((ImageWidget) widget);
@@ -141,6 +147,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public static WidgetUnion asBoolean(UUID id, BooleanWidget booleanWidget)
     {
         return new WidgetUnion(id, booleanWidget, WidgetType.BOOLEAN);
+    }
+
+
+    /**
+     * Create the "button" variant.
+     * @param buttonWidget The boolean widget.
+     * @return The "button" Widget Union.
+     */
+    public static WidgetUnion asButton(UUID id, ButtonWidget buttonWidget)
+    {
+        return new WidgetUnion(id, buttonWidget, WidgetType.BUTTON);
     }
 
 
@@ -245,6 +262,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case BOOLEAN:
                 BooleanWidget booleanWidget = BooleanWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asBoolean(id, booleanWidget);
+            case BUTTON:
+                ButtonWidget buttonWidget = ButtonWidget.fromYaml(yaml.atKey("widget"));
+                return WidgetUnion.asButton(id, buttonWidget);
             case IMAGE:
                 ImageWidget imageWidget = ImageWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asImage(id, imageWidget);
@@ -334,6 +354,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case BOOLEAN:
                 widgetYaml = this.booleanWidget().toYaml();
                 break;
+            case BUTTON:
+                widgetYaml = this.buttonWidget().toYaml();
+                break;
             case IMAGE:
                 widgetYaml = this.imageWidget().toYaml();
                 break;
@@ -379,6 +402,8 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 return this.actionWidget();
             case BOOLEAN:
                 return this.booleanWidget();
+            case BUTTON:
+                return this.buttonWidget();
             case IMAGE:
                 return this.imageWidget();
             case LIST:
@@ -439,6 +464,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public BooleanWidget booleanWidget()
     {
         return this.booleanWidget.getValue();
+    }
+
+
+    /**
+     * The "button" case.
+     * @return The Button Widget.
+     */
+    public ButtonWidget buttonWidget()
+    {
+        return this.buttonWidget.getValue();
     }
 
 

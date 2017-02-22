@@ -105,6 +105,26 @@ public class TextStyle implements Model, ToYaml, Serializable
     }
 
 
+    public TextStyle(UUID id,
+                     TextColor color,
+                     TextSize size,
+                     Alignment alignment)
+    {
+        this.id             = id;
+
+        this.color          = new PrimitiveFunctor<>(color, TextColor.class);
+        this.size           = new PrimitiveFunctor<>(size, TextSize.class);
+        this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
+        this.isItalic       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
+
+        this.setIsBold(null);
+        this.setIsItalic(null);
+        this.setIsUnderlined(null);
+    }
+
+
     /**
      * Create a Widget Text Style from its yaml representation. If the yaml is null, return a
      * default text style.

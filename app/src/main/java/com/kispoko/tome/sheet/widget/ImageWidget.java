@@ -18,8 +18,10 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
@@ -36,6 +38,7 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;
+
 
 
 /**
@@ -93,6 +96,8 @@ public class ImageWidget extends Widget
         else {
             this.bitmap     = new PrimitiveFunctor<>(null, SerialBitmap.class);
         }
+
+        this.initializeImageWidget();
     }
 
 
@@ -107,7 +112,7 @@ public class ImageWidget extends Widget
     {
         UUID       id         = UUID.randomUUID();
 
-        WidgetData widgetData = WidgetData.fromYaml(yaml.atKey("data"));
+        WidgetData widgetData = WidgetData.fromYaml(yaml.atKey("data"), false);
 
         return new ImageWidget(id, widgetData, null);
     }
@@ -161,7 +166,10 @@ public class ImageWidget extends Widget
     /**
      * This method is called when the Image Widget is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeImageWidget();
+    }
 
 
     // > To Yaml
@@ -258,10 +266,33 @@ public class ImageWidget extends Widget
 
 
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeImageWidget()
+    {
+        // [1] Set default format values
+        // -------------------------------------------------------------------------------------
+
+        // ** Width
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        // ** Alignment
+        if (this.data().format().alignment() == null)
+            this.data().format().setAlignment(Alignment.CENTER);
+
+        // ** Background
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.NONE);
+
+    }
+
 
     // > Choose Image SheetDialog
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private void chooseImageDialog()
     {

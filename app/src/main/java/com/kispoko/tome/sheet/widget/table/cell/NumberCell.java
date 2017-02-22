@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.kispoko.tome.R.string.character_counter_pattern;
 import static com.kispoko.tome.R.string.column;
 
 
@@ -198,7 +199,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
                 .putYaml("value", this.valueVariable())
                 .putYaml("alignment", this.alignment())
                 .putYaml("style", this.style())
-                .putString("value_prefix", this.prefix())
+                .putString("value_prefix", this.valuePrefix())
                 .putYaml("edit_dialog_type", this.editDialogType());
     }
 
@@ -224,6 +225,9 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
 
         if (column.defaultLabel() != null && this.valueVariable().label() == null)
             this.valueVariable().setLabel(column.defaultLabel());
+
+        if (column.valuePrefix() != null && this.valuePrefix() == null)
+            this.setValuePrefix(column.valuePrefix());
 
         // [3] Initialize the value variable
         // --------------------------------------------------------------------------------------
@@ -313,7 +317,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
             String integerString = integerValue.toString();
 
             if (!this.valuePrefix.isNull())
-                integerString = this.prefix() + " " + integerString;
+                integerString = this.valuePrefix() + integerString;
 
             return integerString;
         }
@@ -366,12 +370,18 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
     }
 
 
-    // ** Prefix
+    // ** Value Prefix
     // -----------------------------------------------------------------------------------------
 
-    public String prefix()
+    public String valuePrefix()
     {
         return this.valuePrefix.getValue();
+    }
+
+
+    public void setValuePrefix(String valuePrefix)
+    {
+        this.valuePrefix.setValue(valuePrefix);
     }
 
 

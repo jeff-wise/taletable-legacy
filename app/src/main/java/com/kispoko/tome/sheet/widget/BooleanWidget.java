@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,9 +13,15 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.bool.BooleanWidgetFormat;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -31,7 +36,6 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.R.attr.value;
 
 
 /**
@@ -102,6 +106,8 @@ public class BooleanWidget extends Widget
         this.offText        = new PrimitiveFunctor<>(offText, String.class);
 
         this.valueViewId    = null;
+
+        this.initializeBooleanWidget();
     }
 
 
@@ -110,7 +116,7 @@ public class BooleanWidget extends Widget
     {
         UUID                id         = UUID.randomUUID();
 
-        WidgetData          widgetData = WidgetData.fromYaml(yaml.atKey("data"));
+        WidgetData          widgetData = WidgetData.fromYaml(yaml.atKey("data"), false);
         BooleanWidgetFormat format     = BooleanWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
         BooleanVariable     value      = BooleanVariable.fromYaml(yaml.atKey("value"));
 
@@ -148,7 +154,10 @@ public class BooleanWidget extends Widget
     /**
      * This method is called when the Boolean Widget is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeBooleanWidget();
+    }
 
 
     // > Widget
@@ -294,10 +303,45 @@ public class BooleanWidget extends Widget
 
 
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeBooleanWidget()
+    {
+        // [1] Apply default format values
+        // -------------------------------------------------------------------------------------
+
+        // ** Width
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        // ** Content Alignment
+        if (this.data().format().alignment() == null)
+            this.data().format().setAlignment(Alignment.CENTER);
+
+        // ** Label Style
+        if (this.data().format().labelStyle() == null) {
+            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.DARK,
+                                                        TextSize.SMALL,
+                                                        Alignment.CENTER);
+            this.data().format().setLabelStyle(defaultLabelStyle);
+        }
+
+        // ** Background
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.DARK);
+
+        // ** Corners
+        if (this.data().format().corners() == null)
+            this.data().format().setCorners(WidgetCorners.SMALL);
+    }
+
 
     // > Views
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private LinearLayout viewLayout(boolean rowHasLabel, Context context)
     {

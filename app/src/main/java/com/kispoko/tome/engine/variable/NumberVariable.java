@@ -4,7 +4,6 @@ package com.kispoko.tome.engine.variable;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.NumberValue;
 import com.kispoko.tome.engine.value.ValueReference;

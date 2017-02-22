@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.log.LogEntry;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
@@ -63,6 +64,8 @@ public class LogWidget extends Widget
 
         this.entries            = CollectionFunctor.full(entries, LogEntry.class);
         this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
+
+        this.initializeLogWidget();
     }
 
 
@@ -84,7 +87,7 @@ public class LogWidget extends Widget
             }
         }, true);
 
-        WidgetData     data    = WidgetData.fromYaml(yaml.atMaybeKey("data"));
+        WidgetData     data    = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
 
         return new LogWidget(id, entries, data);
     }
@@ -125,7 +128,10 @@ public class LogWidget extends Widget
     /**
      * This method is called when the RulesEngine is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeLogWidget();
+    }
 
 
     // > Yaml
@@ -185,10 +191,28 @@ public class LogWidget extends Widget
 
 
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeLogWidget()
+    {
+        // [1] Apply default format values
+        // -------------------------------------------------------------------------------------
+
+        // ** Width
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        // ** Background
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.NONE);
+    }
+
 
     // > Views
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private View widgetView(Context context)
     {

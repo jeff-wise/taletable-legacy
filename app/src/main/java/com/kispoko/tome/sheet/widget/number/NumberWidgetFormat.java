@@ -87,6 +87,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.valuePostfixStyle      = ModelFunctor.full(valuePostfixStyle, TextStyle.class);
         this.labelStyle             = ModelFunctor.full(labelStyle, TextStyle.class);
 
+        // > Set defaults for null values
         this.setSize(size);
         this.setInlineLabelPosition(inlineLabelPosition);
         this.setDescriptionStyle(descriptionStyle);

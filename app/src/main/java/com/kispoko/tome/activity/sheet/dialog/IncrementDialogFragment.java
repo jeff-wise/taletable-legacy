@@ -128,7 +128,6 @@ public class IncrementDialogFragment extends DialogFragment
         LinearLayout footerView = EditDialog.footerView(secondaryButtonNames,
                                                         context.getString(R.string.save),
                                                         R.drawable.ic_dialog_footer_button_save,
-                                                        true,
                                                         EditDialog.Shade.LIGHT,
                                                         context);
         layout.addView(footerView);

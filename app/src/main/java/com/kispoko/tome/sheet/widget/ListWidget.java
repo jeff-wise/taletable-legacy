@@ -22,6 +22,7 @@ import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.list.ListWidgetFormat;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -37,8 +38,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.value;
-import static android.R.attr.width;
 
 
 /**
@@ -88,6 +87,8 @@ public class ListWidget extends Widget
         this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
         this.format     = ModelFunctor.full(format, ListWidgetFormat.class);
         this.values     = CollectionFunctor.full(values, VariableUnion.class);
+
+        this.initializeListWidget();
     }
 
 
@@ -102,7 +103,7 @@ public class ListWidget extends Widget
     {
         UUID                id         = UUID.randomUUID();
 
-        WidgetData          widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"));
+        WidgetData          widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
         ListWidgetFormat    format     = ListWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
         List<VariableUnion> values     = yaml.atMaybeKey("values").forEach(
@@ -145,7 +146,10 @@ public class ListWidget extends Widget
     /**
      * This method is called when the Number Widget is completely loaded for the first time.
      */
-    public void onLoad() { }
+    public void onLoad()
+    {
+        this.initializeListWidget();
+    }
 
 
     // > To Yaml
@@ -229,6 +233,27 @@ public class ListWidget extends Widget
     public ListWidgetFormat format()
     {
         return this.format.getValue();
+    }
+
+
+    // INTERNAL
+    // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeListWidget()
+    {
+        // [1] Set default format values
+        // -------------------------------------------------------------------------------------
+
+        // ** Width
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        // ** Background
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.NONE);
     }
 
 

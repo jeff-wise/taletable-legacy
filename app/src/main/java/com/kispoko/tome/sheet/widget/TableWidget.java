@@ -18,7 +18,9 @@ import com.kispoko.tome.sheet.widget.table.cell.TextCell;
 import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
+import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -34,8 +36,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static android.os.Build.VERSION_CODES.M;
 
 
 /**
@@ -103,7 +103,7 @@ public class TableWidget extends Widget
         rowClassList.add(TableRow.class);
         this.rows        = CollectionFunctor.full(rows, rowClassList);
 
-        initializeTable();
+        initializeTableWidget();
 
         // TODO validate that column types and cell types match
     }
@@ -121,7 +121,7 @@ public class TableWidget extends Widget
         UUID         id             = UUID.randomUUID();
 
         // ** Widget Data
-        WidgetData   widgetData     = WidgetData.fromYaml(yaml.atKey("data"));
+        WidgetData   widgetData     = WidgetData.fromYaml(yaml.atKey("data"), false);
 
         // ** Columns
         final List<ColumnUnion> columns
@@ -181,7 +181,7 @@ public class TableWidget extends Widget
      */
     public void onLoad()
     {
-        initializeTable();
+        initializeTableWidget();
     }
 
 
@@ -366,9 +366,22 @@ public class TableWidget extends Widget
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private void initializeTable()
+    private void initializeTableWidget()
     {
-        // [1] The header row is derived from the column information, so create it each time the
+        // [1] Apply default formats
+        // -------------------------------------------------------------------------------------
+
+        if (this.data().format().width() == null)
+            this.data().format().setWidth(1);
+
+        if (this.data().format().background() == null)
+            this.data().format().setBackground(WidgetBackground.NONE);
+
+
+//      if (this.data().format().background()vj)
+        //this.data().format().setBackground(WidgetBackground.NONE);
+
+        // [2] The header row is derived from the column information, so create it each time the
         //     table widget is instantiated
         // --------------------------------------------------------------------------------------
 
@@ -386,6 +399,8 @@ public class TableWidget extends Widget
         }
 
         this.headerRow = new TableRow(null, headerCells);
+
+
     }
 
 
