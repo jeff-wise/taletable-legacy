@@ -268,7 +268,7 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
         }
         else {
             TextStyle defaultTextColumnStyle = new TextStyle(UUID.randomUUID(),
-                                                             TextColor.MEDIUM,
+                                                             TextColor.THEME_MEDIUM,
                                                              TextSize.MEDIUM_SMALL);
             this.style.setValue(defaultTextColumnStyle);
         }

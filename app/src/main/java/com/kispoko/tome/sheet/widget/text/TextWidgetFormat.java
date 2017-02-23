@@ -237,7 +237,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         if (color != null)
             this.color.setValue(color);
         else
-            this.color.setValue(TextColor.MEDIUM);
+            this.color.setValue(TextColor.THEME_MEDIUM);
     }
 
 
@@ -366,7 +366,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         }
         else {
             TextStyle defaultValueStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.MEDIUM,
+                                                        TextColor.THEME_MEDIUM,
                                                         TextSize.MEDIUM_SMALL);
             this.valueStyle.setValue(defaultValueStyle);
         }
@@ -397,7 +397,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         }
         else {
             TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.MEDIUM,
+                                                        TextColor.THEME_MEDIUM,
                                                         TextSize.MEDIUM_SMALL);
             this.labelStyle.setValue(defaultLabelStyle);
         }

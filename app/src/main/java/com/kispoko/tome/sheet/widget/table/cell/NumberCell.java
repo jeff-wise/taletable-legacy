@@ -363,7 +363,7 @@ public class NumberCell implements Model, Cell, ToYaml, Serializable
         }
         else {
             TextStyle defaultNumberCellStyle = new TextStyle(UUID.randomUUID(),
-                                                             TextColor.MEDIUM,
+                                                             TextColor.THEME_MEDIUM,
                                                              TextSize.MEDIUM_SMALL);
             this.style.setValue(defaultNumberCellStyle);
         }

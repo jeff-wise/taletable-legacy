@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.group;
+package com.kispoko.tome.sheet.widget.button;
 
 
 import com.kispoko.tome.R;
@@ -16,51 +16,48 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Group Background
+ * Button Icon
  */
-public enum GroupBackground implements ToYaml
+public enum ButtonIcon implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    LIGHT,
-    MEDIUM_LIGHT,
-    MEDIUM,
-    MEDIUM_DARK,
-    DARK;
+    HEART_PLUS,
+    HEART_MINUS;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static GroupBackground fromString(String bgString)
+    public static ButtonIcon fromString(String iconString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(GroupBackground.class, bgString);
+        return EnumUtils.fromString(ButtonIcon.class, iconString);
     }
 
 
-    public static GroupBackground fromYaml(YamlParser yaml)
+    public static ButtonIcon fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        String bgString = yaml.getString();
+        String iconString = yaml.getString();
         try {
-            return GroupBackground.fromString(bgString);
+            return ButtonIcon.fromString(iconString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(iconString));
         }
     }
 
 
-    public static GroupBackground fromSQLValue(SQLValue sqlValue)
+    public static ButtonIcon fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            GroupBackground background = GroupBackground.fromString(enumString);
-            return background;
+            ButtonIcon icon = ButtonIcon.fromString(enumString);
+            return icon;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -71,10 +68,6 @@ public enum GroupBackground implements ToYaml
     // TO YAML
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * The Widget Content Alignment's yaml string representation.
-     * @return The Yaml Builder.
-     */
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
@@ -84,23 +77,18 @@ public enum GroupBackground implements ToYaml
     // RESOURCE ID
     // ------------------------------------------------------------------------------------------
 
-    public Integer resourceId()
+    public int resouceId()
     {
         switch (this)
         {
-            case LIGHT:
-                return R.color.dark_blue_3;
-            case MEDIUM_LIGHT:
-                return R.color.dark_blue_4;
-            case MEDIUM:
-                return R.color.dark_blue_5;
-            case MEDIUM_DARK:
-                return R.color.dark_blue_6;
-            case DARK:
-                return R.color.dark_blue_7;
+            case HEART_PLUS:
+                return R.drawable.ic_button_heart_plus;
+            case HEART_MINUS:
+                return R.drawable.ic_button_heart_minus;
+            default:
+                return R.drawable.ic_button_heart_plus;
         }
 
-        return 0;
     }
 
 

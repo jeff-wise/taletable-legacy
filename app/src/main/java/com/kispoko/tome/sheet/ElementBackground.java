@@ -2,67 +2,65 @@
 package com.kispoko.tome.sheet;
 
 
-import android.view.Gravity;
-
+import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 
 /**
- * Row Alignment
+ * Group Background
  */
-public enum Alignment implements ToYaml
+public enum ElementBackground implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    LEFT,
-    CENTER,
-    RIGHT;
+    LIGHT,
+    MEDIUM_LIGHT,
+    MEDIUM,
+    MEDIUM_DARK,
+    DARK;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static Alignment fromString(String alignmentString)
+    public static ElementBackground fromString(String bgString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(Alignment.class, alignmentString);
+        return EnumUtils.fromString(ElementBackground.class, bgString);
     }
 
 
-    public static Alignment fromYaml(YamlParser yaml)
+    public static ElementBackground fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        if (yaml.isNull())
-            return null;
-
-        String alignmentString = yaml.getString();
+        String bgString = yaml.getString();
         try {
-            return Alignment.fromString(alignmentString);
+            return ElementBackground.fromString(bgString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(alignmentString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
         }
     }
 
 
-    public static Alignment fromSQLValue(SQLValue sqlValue)
+    public static ElementBackground fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            Alignment alignment = Alignment.fromString(enumString);
-            return alignment;
+            ElementBackground background = ElementBackground.fromString(enumString);
+            return background;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -73,48 +71,36 @@ public enum Alignment implements ToYaml
     // TO YAML
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * The Widget Content Alignment's yaml string representation.
+     * @return The Yaml Builder.
+     */
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
     }
 
 
-    // TO STRING
+    // RESOURCE ID
     // ------------------------------------------------------------------------------------------
 
-    @Override
-    public String toString()
+    public Integer resourceId()
     {
         switch (this)
         {
-            case LEFT:
-                return "Left";
-            case CENTER:
-                return "Center";
-            case RIGHT:
-                return "Right";
+            case LIGHT:
+                return R.color.dark_blue_3;
+            case MEDIUM_LIGHT:
+                return R.color.dark_blue_4;
+            case MEDIUM:
+                return R.color.dark_blue_5;
+            case MEDIUM_DARK:
+                return R.color.dark_blue_6;
+            case DARK:
+                return R.color.dark_blue_7;
         }
 
-        return "";
-    }
-
-
-    // GRAVITY CONSTANT
-    // ------------------------------------------------------------------------------------------
-
-    public int gravityConstant()
-    {
-        switch (this)
-        {
-            case LEFT:
-                return Gravity.START;
-            case CENTER:
-                return Gravity.CENTER_HORIZONTAL;
-            case RIGHT:
-                return Gravity.END;
-            default:
-                return Gravity.START;
-        }
+        return 0;
     }
 
 

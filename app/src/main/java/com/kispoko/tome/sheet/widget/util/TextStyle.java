@@ -2,8 +2,12 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
+import android.content.Context;
+import android.graphics.Typeface;
+
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -13,6 +17,7 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.value;
 
 
 /**
@@ -252,7 +257,7 @@ public class TextStyle implements Model, ToYaml, Serializable
         if (color != null)
             this.color.setValue(color);
         else
-            this.color.setValue(TextColor.MEDIUM);
+            this.color.setValue(TextColor.THEME_MEDIUM);
     }
 
 
@@ -383,6 +388,27 @@ public class TextStyle implements Model, ToYaml, Serializable
             this.alignment.setValue(alignment);
         else
             this.alignment.setValue(Alignment.LEFT);
+    }
+
+
+    // > Typeface
+    // -----------------------------------------------------------------------------------------
+
+    public Typeface typeface(Context context)
+    {
+        // > Font
+        if (this.isBold() && this.isItalic()) {
+            return Font.serifFontBoldItalic(context);
+        }
+        else if (this.isBold()) {
+            return Font.serifFontBold(context);
+        }
+        else if (this.isItalic()) {
+            return Font.serifFontItalic(context);
+        }
+        else {
+            return Font.serifFontRegular(context);
+        }
     }
 
 }

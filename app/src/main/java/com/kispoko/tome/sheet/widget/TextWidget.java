@@ -356,7 +356,7 @@ public class TextWidget extends Widget
         // ** Label Style
         if (this.data().format().labelStyle() == null) {
             TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.DARK,
+                                                        TextColor.THEME_DARK,
                                                         TextSize.SMALL,
                                                         Alignment.CENTER);
             this.data().format().setLabelStyle(defaultLabelStyle);

@@ -411,7 +411,7 @@ public class NumberWidget extends Widget
         // ** Label Style
         if (this.data().format().labelStyle() == null) {
             TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.DARK,
+                                                        TextColor.THEME_DARK,
                                                         TextSize.SMALL,
                                                         Alignment.CENTER);
             this.data().format().setLabelStyle(defaultLabelStyle);
@@ -458,7 +458,7 @@ public class NumberWidget extends Widget
 
     private View widgetView(boolean rowHasLabel, Context context)
     {
-        LinearLayout layout = widgetViewLayout(rowHasLabel, context);
+        LinearLayout layout = this.layout(rowHasLabel, context);
 
         // > Label View
         if (this.data().format().label() != null) {
@@ -488,9 +488,8 @@ public class NumberWidget extends Widget
         layout.weight           = this.data().format().width().floatValue();
 
         if (this.data().format().label() == null && rowHasLabel) {
-            layout.padding.top      = R.dimen.widget_label_fill_padding;
+            layout.padding.top  = R.dimen.widget_label_fill_padding;
         }
-
 
         layout.margin.left      = R.dimen.widget_margin_horz;
         layout.margin.right     = R.dimen.widget_margin_horz;
@@ -773,20 +772,7 @@ public class NumberWidget extends Widget
         label.color             = this.format().labelStyle().color().resourceId();
         label.size              = this.format().labelStyle().size().resourceId();
 
-        // > Font
-        if (this.format().labelStyle().isBold() && this.format().labelStyle().isItalic()) {
-            label.font          = Font.serifFontBoldItalic(context);
-        }
-        else if (this.format().labelStyle().isBold()) {
-            label.font          = Font.serifFontBold(context);
-        }
-        else if (this.format().labelStyle().isItalic()) {
-            label.font          = Font.serifFontItalic(context);
-        }
-        else {
-            label.font          = Font.serifFontRegular(context);
-        }
-
+        label.font              = this.format().labelStyle().typeface(context);
 
         label.margin.right      = R.dimen.widget_label_inline_margin_right;
 

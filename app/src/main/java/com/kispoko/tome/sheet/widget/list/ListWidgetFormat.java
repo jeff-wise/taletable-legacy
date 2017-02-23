@@ -200,7 +200,7 @@ public class ListWidgetFormat implements Model, ToYaml, Serializable
         if (tint != null)
             this.tint.setValue(tint);
         else
-            this.tint.setValue(TextColor.MEDIUM);
+            this.tint.setValue(TextColor.THEME_MEDIUM);
     }
 
 
@@ -224,7 +224,7 @@ public class ListWidgetFormat implements Model, ToYaml, Serializable
         }
         else {
             TextStyle defaultAnnotationStyle = new TextStyle(UUID.randomUUID(),
-                                                             TextColor.MEDIUM_DARK,
+                                                             TextColor.THEME_MEDIUM_DARK,
                                                              TextSize.MEDIUM_SMALL);
             this.annotationStyle.setValue(defaultAnnotationStyle);
         }

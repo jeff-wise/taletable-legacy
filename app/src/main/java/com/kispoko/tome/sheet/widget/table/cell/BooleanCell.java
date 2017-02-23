@@ -306,7 +306,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
         }
         else {
             TextStyle defaultBooleanCellStyle = new TextStyle(UUID.randomUUID(),
-                                                             TextColor.MEDIUM,
+                                                             TextColor.THEME_MEDIUM,
                                                              TextSize.MEDIUM_SMALL);
             this.style.setValue(defaultBooleanCellStyle);
         }

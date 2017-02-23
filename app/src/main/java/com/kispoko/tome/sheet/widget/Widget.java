@@ -61,86 +61,21 @@ public abstract class Widget implements Model, ToYaml, Serializable
      *
      * @return A LinearLayout that represents the outer-most container of a component view.
      */
-    public LinearLayout layout(boolean readStyle, final Context context)
+    public LinearLayout layout(boolean rowHasLabel, final Context context)
     {
-        // [1 A] Declarations
-        // --------------------------------------------------------------------------------------
-
-        final Widget widget  = this;
-
-        String label = widget.data().format().label();
-        if (label != null)
-            label = label.toUpperCase();
-
-        // [1 B] Views
-        // --------------------------------------------------------------------------------------
-
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        LinearLayoutBuilder contentLayout = new LinearLayoutBuilder();
-        TextViewBuilder labelView = new TextViewBuilder();
 
-        // [2 A] Layout
-        // --------------------------------------------------------------------------------------
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = 0;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.weight           = this.data().format().width().floatValue();
 
-        layout.orientation         = LinearLayout.VERTICAL;
-
-        setWidgetBackgroundResource(layout);
-
-        layout.onClick             = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                widget.runPrimaryAction();
-            }
-        };
-
-//        layout.onLongClick         = new View.OnLongClickListener()
-//        {
-//            @Override
-//            public boolean onLongClick(View v)
-//            {
-//                AppCompatActivity activity = (AppCompatActivity) context;
-//                ActionDialogFragment actionDialogFragment =
-//                        ActionDialogFragment.newInstance(widget);
-//                actionDialogFragment.show(activity.getSupportFragmentManager(),
-//                        actionDialogFragment.getTag());
-//                return true;
-//            }
-//        };
-
-        layout.child(contentLayout);
-
-        if (label != null)
-            layout.child(labelView);
-
-        // [2 B] Content
-        // --------------------------------------------------------------------------------------
-
-        contentLayout.orientation         = LinearLayout.VERTICAL;
-        contentLayout.id                  = R.id.widget_content_layout;
-
-        if (readStyle)
-        {
-            contentLayout.layoutGravity       = Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL;
-            contentLayout.padding.top         = R.dimen.widget_content_read_padding_vert;
-            contentLayout.padding.bottom      = R.dimen.widget_content_read_padding_vert;
-            contentLayout.width               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        }
-        else
-        {
-            contentLayout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
+        if (this.data().format().label() == null && rowHasLabel) {
+            layout.padding.top  = R.dimen.widget_label_fill_padding;
         }
 
-        // [2 C] Label
-        // --------------------------------------------------------------------------------------
-
-        labelView.gravity         = Gravity.CENTER_HORIZONTAL;
-        labelView.text            = label;
-        labelView.size            = R.dimen.widget_label_text_size;
-        labelView.color           = R.color.dark_blue_hl_9;
-        labelView.font            = Font.sansSerifFontRegular(context);
-        labelView.backgroundColor = R.color.dark_blue_4;
-        labelView.padding.bottom  = R.dimen.widget_label_padding_vert;
-        labelView.padding.top     = R.dimen.widget_label_padding_vert;
+        layout.margin.left      = R.dimen.widget_margin_horz;
+        layout.margin.right     = R.dimen.widget_margin_horz;
 
         return layout.linearLayout(context);
     }

@@ -32,7 +32,11 @@ public enum TextSize implements ToYaml
     MEDIUM_SMALL,
     MEDIUM,
     MEDIUM_LARGE,
-    LARGE;
+    LARGE,
+    VERY_LARGE,
+    HUGE,
+    GARGANTUAN,
+    COLOSSAL;
 
 
     // CONSTRUCTORS
@@ -114,6 +118,14 @@ public enum TextSize implements ToYaml
                 return R.dimen.text_size_medium_large;
             case LARGE:
                 return R.dimen.text_size_large;
+            case VERY_LARGE:
+                return R.dimen.text_size_very_large;
+            case HUGE:
+                return R.dimen.text_size_huge;
+            case GARGANTUAN:
+                return R.dimen.text_size_gargantuan;
+            case COLOSSAL:
+                return R.dimen.text_size_colossal;
         }
 
         return 0;

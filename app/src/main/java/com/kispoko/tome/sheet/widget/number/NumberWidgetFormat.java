@@ -300,7 +300,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         }
         else {
             TextStyle defaultDescriptionStyle = new TextStyle(UUID.randomUUID(),
-                                                              TextColor.DARK,
+                                                              TextColor.THEME_DARK,
                                                               TextSize.MEDIUM_SMALL);
             this.descriptionStyle.setValue(defaultDescriptionStyle);
         }
@@ -328,7 +328,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         else {
             TextStyle defaultValueStyle =
                     new TextStyle(UUID.randomUUID(),
-                                        TextColor.LIGHT,
+                                        TextColor.THEME_LIGHT,
                                         TextSize.MEDIUM_SMALL);
             this.valueStyle.setValue(defaultValueStyle);
         }
@@ -356,7 +356,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         else {
             TextStyle defaultValuePrefixStyle =
                     new TextStyle(UUID.randomUUID(),
-                                        TextColor.LIGHT,
+                                        TextColor.THEME_LIGHT,
                                         TextSize.MEDIUM);
             this.valuePrefixStyle.setValue(defaultValuePrefixStyle);
         }
@@ -383,7 +383,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         }
         else {
             TextStyle defaultValuePostfixStyle = new TextStyle(UUID.randomUUID(),
-                                                               TextColor.LIGHT,
+                                                               TextColor.THEME_LIGHT,
                                                                TextSize.MEDIUM);
             this.valuePostfixStyle.setValue(defaultValuePostfixStyle);
         }
@@ -410,7 +410,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         }
         else {
             TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.VERY_DARK,
+                                                        TextColor.THEME_VERY_DARK,
                                                         TextSize.MEDIUM);
             this.labelStyle.setValue(defaultLabelStyle);
         }

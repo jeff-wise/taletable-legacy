@@ -1,68 +1,62 @@
 
-package com.kispoko.tome.sheet;
+package com.kispoko.tome.sheet.widget.button;
 
 
-import android.view.Gravity;
-
+import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 
 /**
- * Row Alignment
+ * Button Color
  */
-public enum Alignment implements ToYaml
+public enum ButtonColor implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    LEFT,
-    CENTER,
-    RIGHT;
+    THEME_MEDIUM;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static Alignment fromString(String alignmentString)
+    public static ButtonColor fromString(String colorString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(Alignment.class, alignmentString);
+        return EnumUtils.fromString(ButtonColor.class, colorString);
     }
 
 
-    public static Alignment fromYaml(YamlParser yaml)
+    public static ButtonColor fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        if (yaml.isNull())
-            return null;
-
-        String alignmentString = yaml.getString();
+        String colorString = yaml.getString();
         try {
-            return Alignment.fromString(alignmentString);
+            return ButtonColor.fromString(colorString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(alignmentString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(colorString));
         }
     }
 
 
-    public static Alignment fromSQLValue(SQLValue sqlValue)
+    public static ButtonColor fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            Alignment alignment = Alignment.fromString(enumString);
-            return alignment;
+            ButtonColor color = ButtonColor.fromString(enumString);
+            return color;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -79,43 +73,21 @@ public enum Alignment implements ToYaml
     }
 
 
-    // TO STRING
+    // RESOURCE ID
     // ------------------------------------------------------------------------------------------
 
-    @Override
-    public String toString()
+    public int resouceId()
     {
         switch (this)
         {
-            case LEFT:
-                return "Left";
-            case CENTER:
-                return "Center";
-            case RIGHT:
-                return "Right";
-        }
-
-        return "";
-    }
-
-
-    // GRAVITY CONSTANT
-    // ------------------------------------------------------------------------------------------
-
-    public int gravityConstant()
-    {
-        switch (this)
-        {
-            case LEFT:
-                return Gravity.START;
-            case CENTER:
-                return Gravity.CENTER_HORIZONTAL;
-            case RIGHT:
-                return Gravity.END;
+            case THEME_MEDIUM:
+                return R.color.dark_blue_1;
             default:
-                return Gravity.START;
+                return R.color.dark_blue_1;
         }
+
     }
+
 
 
 }

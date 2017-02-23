@@ -7,7 +7,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
@@ -21,7 +20,6 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -42,17 +40,18 @@ public class Page implements Model, ToYaml, Serializable
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                                id;
 
-    private PrimitiveFunctor<String>    name;
-    private PrimitiveFunctor<Integer>   index;
-    private CollectionFunctor<Group>    groups;
+    private PrimitiveFunctor<String>            name;
+    private PrimitiveFunctor<ElementBackground> background;
+    private PrimitiveFunctor<Integer>           index;
+    private CollectionFunctor<Group>            groups;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private int                         pageViewId;
+    private int                                 pageViewId;
 
 
     // CONSTRUCTORS
@@ -63,24 +62,28 @@ public class Page implements Model, ToYaml, Serializable
         this.id             = null;
 
         this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.background     = new PrimitiveFunctor<>(null, ElementBackground.class);
         this.index          = new PrimitiveFunctor<>(null, Integer.class);
 
-        List<Class<? extends Group>> groupClasses = new ArrayList<>();
-        groupClasses.add(Group.class);
-        this.groups         = CollectionFunctor.empty(groupClasses);
+        this.groups         = CollectionFunctor.empty(Group.class);
     }
 
 
-    public Page(UUID id, String name, Integer index, List<Group> groups)
+    public Page(UUID id,
+                String name,
+                ElementBackground background,
+                Integer index,
+                List<Group> groups)
     {
         this.id             = id;
 
         this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.background     = new PrimitiveFunctor<>(background, ElementBackground.class);
         this.index          = new PrimitiveFunctor<>(index, Integer.class);
 
-        List<Class<? extends Group>> groupClasses = new ArrayList<>();
-        groupClasses.add(Group.class);
-        this.groups         = CollectionFunctor.full(groups, groupClasses);
+        this.groups         = CollectionFunctor.full(groups, Group.class);
+
+        this.setBackground(background);
 
         this.initializePage();
     }
@@ -89,10 +92,11 @@ public class Page implements Model, ToYaml, Serializable
     public static Page fromYaml(YamlParser yaml, int pageIndex)
                   throws YamlParseException
     {
-        UUID       id     = UUID.randomUUID();
+        UUID                id          = UUID.randomUUID();
 
-        String     label  = yaml.atKey("label").getString();
-        Integer    index  = pageIndex;
+        String              name        = yaml.atKey("name").getString();
+        ElementBackground   background  = ElementBackground.fromYaml(yaml.atMaybeKey("background"));
+        Integer             index       = pageIndex;
 
         List<Group> groups = yaml.atKey("groups").forEach(new YamlParser.ForEach<Group>() {
             @Override
@@ -101,7 +105,7 @@ public class Page implements Model, ToYaml, Serializable
             }
         }, true);
 
-        return new Page(id, label, index, groups);
+        return new Page(id, name, background, index, groups);
     }
 
 
@@ -163,7 +167,8 @@ public class Page implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putString("label", this.name())
+                .putString("name", this.name())
+                .putYaml("background", this.background())
                 .putList("groups", this.groups());
     }
 
@@ -180,6 +185,28 @@ public class Page implements Model, ToYaml, Serializable
     public String name()
     {
         return this.name.getValue();
+    }
+
+
+    // ** Background
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The page background.
+     * @return The background.
+     */
+    public ElementBackground background()
+    {
+        return this.background.getValue();
+    }
+
+
+    public void setBackground(ElementBackground background)
+    {
+        if (background != null)
+            this.background.setValue(background);
+        else
+            this.background.setValue(ElementBackground.MEDIUM);
     }
 
 
@@ -229,7 +256,9 @@ public class Page implements Model, ToYaml, Serializable
 
         layout.orientation      = LinearLayout.VERTICAL;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        layout.backgroundColor  = this.background().resourceId();
 
         return layout.linearLayout(context);
     }

@@ -3,6 +3,9 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -44,6 +47,7 @@ public class LinearLayoutBuilder implements ViewBuilder
 
     public Integer                  backgroundColor;
     public Integer                  backgroundResource;
+    public Float                    elevation;
 
     public Margins                  margin;
     public Padding                  padding;
@@ -84,6 +88,7 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
+        this.elevation          = null;
 
         this.margin             = new Margins();
         this.padding            = new Padding();
@@ -197,8 +202,21 @@ public class LinearLayoutBuilder implements ViewBuilder
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
-        if (this.backgroundResource != null)
+        if (this.backgroundResource != null && this.backgroundColor != null) {
+            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
+            int      color      = ContextCompat.getColor(context, this.backgroundColor);
+            bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            linearLayout.setBackground(bgDrawable);
+        }
+        else if (this.backgroundResource != null) {
             linearLayout.setBackgroundResource(this.backgroundResource);
+        }
+
+        // > Elevation
+        // --------------------------------------------------------------------------------------
+
+        if (this.elevation != null && android.os.Build.VERSION.SDK_INT >= 21)
+            linearLayout.setElevation(this.elevation);
 
 
         // [2] Layout Parameters

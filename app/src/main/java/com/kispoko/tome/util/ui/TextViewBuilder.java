@@ -3,6 +3,7 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
@@ -48,6 +49,7 @@ public class TextViewBuilder implements ViewBuilder
     public Integer                  size;
     public Integer                  color;
     public Typeface                 font;
+    public Boolean                  underlined;
 
     public Integer                  backgroundColor;
     public Integer                  backgroundResource;
@@ -91,6 +93,7 @@ public class TextViewBuilder implements ViewBuilder
         this.size               = null;
         this.color              = null;
         this.font               = null;
+        this.underlined         = null;
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
@@ -200,6 +203,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.font != null)
             textView.setTypeface(this.font);
+
+        // > Underlined
+        // --------------------------------------------------------------------------------------
+
+        if (this.underlined != null && this.underlined)
+            textView.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
 
         // > Background Color
         // --------------------------------------------------------------------------------------

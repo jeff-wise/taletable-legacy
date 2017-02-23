@@ -339,7 +339,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         }
         else {
             TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.DARK,
+                                                        TextColor.THEME_DARK,
                                                         TextSize.VERY_SMALL);
             this.labelStyle.setValue(defaultLabelStyle);
         }

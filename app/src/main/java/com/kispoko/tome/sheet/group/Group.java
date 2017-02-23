@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.ElementBackground;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
@@ -52,7 +53,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     private PrimitiveFunctor<Boolean>           showName;
     private PrimitiveFunctor<Spacing>           spaceAbove;
     private PrimitiveFunctor<Spacing>           spaceBelow;
-    private PrimitiveFunctor<GroupBackground>   background;
+    private PrimitiveFunctor<ElementBackground>   background;
     private ModelFunctor<TextStyle>             labelStyle;
     private PrimitiveFunctor<Boolean>           divider;
     private PrimitiveFunctor<Integer>           index;
@@ -70,7 +71,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         this.showName       = new PrimitiveFunctor<>(null, Boolean.class);
         this.spaceAbove     = new PrimitiveFunctor<>(null, Spacing.class);
         this.spaceBelow     = new PrimitiveFunctor<>(null, Spacing.class);
-        this.background     = new PrimitiveFunctor<>(null, GroupBackground.class);
+        this.background     = new PrimitiveFunctor<>(null, ElementBackground.class);
         this.labelStyle     = ModelFunctor.empty(TextStyle.class);
         this.divider        = new PrimitiveFunctor<>(null, Boolean.class);
         this.index          = new PrimitiveFunctor<>(null, Integer.class);
@@ -84,7 +85,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
                  Boolean showName,
                  Spacing spaceAbove,
                  Spacing spaceBelow,
-                 GroupBackground background,
+                 ElementBackground background,
                  TextStyle labelStyle,
                  Boolean divider,
                  Integer index,
@@ -96,7 +97,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         this.showName       = new PrimitiveFunctor<>(showName, Boolean.class);
         this.spaceAbove     = new PrimitiveFunctor<>(spaceAbove, Spacing.class);
         this.spaceBelow     = new PrimitiveFunctor<>(spaceBelow, Spacing.class);
-        this.background     = new PrimitiveFunctor<>(background, GroupBackground.class);
+        this.background     = new PrimitiveFunctor<>(background, ElementBackground.class);
         this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
         this.divider        = new PrimitiveFunctor<>(divider, Boolean.class);
         this.index          = new PrimitiveFunctor<>(index, Integer.class);
@@ -124,7 +125,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         Boolean         showName        = yaml.atMaybeKey("show_name").getBoolean();
         Spacing         spaceAbove      = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
         Spacing         spaceBelow      = Spacing.fromYaml(yaml.atMaybeKey("space_below"));
-        GroupBackground background      = GroupBackground.fromYaml(yaml.atMaybeKey("background"));
+        ElementBackground background      = ElementBackground.fromYaml(yaml.atMaybeKey("background"));
         TextStyle       labelStyle      = TextStyle.fromYaml(yaml.atMaybeKey("label_style"), false);
         Boolean         bottomBorder = yaml.atMaybeKey("divider").getBoolean();
         Integer         index        = groupIndex;
@@ -292,18 +293,18 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
      * The group background color.
      * @return The Group Background.
      */
-    public GroupBackground background()
+    public ElementBackground background()
     {
         return this.background.getValue();
     }
 
 
-    public void setBackground(GroupBackground background)
+    public void setBackground(ElementBackground background)
     {
         if (background != null)
             this.background.setValue(background);
         else
-            this.background.setValue(GroupBackground.MEDIUM);
+            this.background.setValue(ElementBackground.MEDIUM);
     }
 
 
@@ -468,12 +469,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         label.text      = this.name();
         label.size      = this.labelStyle().size().resourceId();
         label.color     = this.labelStyle().color().resourceId();
-
-        // > Font
-        if (this.labelStyle().isBold())
-            label.font = Font.serifFontBold(context);
-        else
-            label.font = Font.serifFontRegular(context);
+        label.font      = this.labelStyle().typeface(context);
 
         return layout.linearLayout(context);
     }

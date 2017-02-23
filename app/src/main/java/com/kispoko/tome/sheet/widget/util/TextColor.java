@@ -28,18 +28,24 @@ public enum TextColor implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    VERY_LIGHT,
-    LIGHT,
-    MEDIUM_LIGHT,
-    MEDIUM,
-    MEDIUM_DARK,
-    DARK,
-    VERY_DARK,
-    SUPER_DARK,
+    THEME_VERY_LIGHT,
+    THEME_LIGHT,
+    THEME_MEDIUM_LIGHT,
+    THEME_MEDIUM,
+    THEME_MEDIUM_DARK,
+    THEME_DARK,
+    THEME_VERY_DARK,
+    THEME_SUPER_DARK,
     GOLD_VERY_LIGHT,
+    GOLD_LIGHT,
+    GOLD_MEDIUM_LIGHT,
+    GOLD_MEDIUM,
     PURPLE,
-    PURPLE_LIGHT,
     PURPLE_VERY_LIGHT,
+    PURPLE_LIGHT,
+    PURPLE_MEDIUM_LIGHT,
+    PURPLE_MEDIUM,
+    RED_LIGHT,
     GREEN_VERY_LIGHT,
     GREEN_LIGHT,
     GREEN_MEDIUM_LIGHT;
@@ -105,30 +111,42 @@ public enum TextColor implements ToYaml
     {
         switch (this)
         {
-            case VERY_LIGHT:
+            case THEME_VERY_LIGHT:
                 return R.color.dark_blue_hlx_5;
-            case LIGHT:
+            case THEME_LIGHT:
                 return R.color.dark_blue_hlx_7;
-            case MEDIUM_LIGHT:
+            case THEME_MEDIUM_LIGHT:
                 return R.color.dark_blue_hlx_9;
-            case MEDIUM:
+            case THEME_MEDIUM:
                 return R.color.dark_blue_hl_2;
-            case MEDIUM_DARK:
+            case THEME_MEDIUM_DARK:
                 return R.color.dark_blue_hl_4;
-            case DARK:
+            case THEME_DARK:
                 return R.color.dark_blue_hl_6;
-            case VERY_DARK:
+            case THEME_VERY_DARK:
                 return R.color.dark_blue_hl_8;
-            case SUPER_DARK:
+            case THEME_SUPER_DARK:
                 return R.color.dark_blue_1;
             case GOLD_VERY_LIGHT:
                 return R.color.gold_very_light;
+            case GOLD_LIGHT:
+                return R.color.gold_light;
+            case GOLD_MEDIUM_LIGHT:
+                return R.color.gold_medium_light;
+            case GOLD_MEDIUM:
+                return R.color.gold_medium;
             case PURPLE:
-                return R.color.purple_light;
-            case PURPLE_LIGHT:
                 return R.color.purple_light;
             case PURPLE_VERY_LIGHT:
                 return R.color.purple_very_light;
+            case PURPLE_LIGHT:
+                return R.color.purple_light;
+            case PURPLE_MEDIUM_LIGHT:
+                return R.color.purple_medium_light;
+            case PURPLE_MEDIUM:
+                return R.color.purple_medium;
+            case RED_LIGHT:
+                return R.color.red_light;
             case GREEN_VERY_LIGHT:
                 return R.color.green_very_light;
             case GREEN_LIGHT:

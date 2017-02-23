@@ -44,6 +44,8 @@ public class ImageViewBuilder implements ViewBuilder
     public Integer              backgroundColor;
     public Integer              backgroundResource;
 
+    public Integer              color;
+
     private List<Integer>       rules;
 
 
@@ -70,6 +72,8 @@ public class ImageViewBuilder implements ViewBuilder
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
+
+        this.color              = null;
 
         this.rules              = new ArrayList<>();
     }
@@ -144,6 +148,12 @@ public class ImageViewBuilder implements ViewBuilder
 
         if (this.backgroundResource != null)
             imageView.setBackgroundResource(this.backgroundResource);
+
+        // > Color
+        // --------------------------------------------------------------------------------------
+
+        if (this.color != null)
+            imageView.setColorFilter(ContextCompat.getColor(context, this.color));
 
         // > Adjust View Bounds
         // --------------------------------------------------------------------------------------

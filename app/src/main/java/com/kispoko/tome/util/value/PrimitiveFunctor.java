@@ -21,7 +21,7 @@ import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.SectionType;
-import com.kispoko.tome.sheet.group.GroupBackground;
+import com.kispoko.tome.sheet.ElementBackground;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.group.RowWidth;
@@ -212,7 +212,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(GroupBackground.class))
+        else if (valueClass.isAssignableFrom(ElementBackground.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -429,9 +429,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((RowWidth) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof GroupBackground)
+        else if (this.getValue() instanceof ElementBackground)
         {
-            String enumString = ((GroupBackground) this.getValue()).name().toLowerCase();
+            String enumString = ((ElementBackground) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof Spacing)
@@ -719,9 +719,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             RowWidth width = RowWidth.fromSQLValue(sqlValue);
             this.setValue((A) width);
         }
-        else if (this.valueClass.isAssignableFrom(GroupBackground.class))
+        else if (this.valueClass.isAssignableFrom(ElementBackground.class))
         {
-            GroupBackground background = GroupBackground.fromSQLValue(sqlValue);
+            ElementBackground background = ElementBackground.fromSQLValue(sqlValue);
             this.setValue((A) background);
         }
         else if (this.valueClass.isAssignableFrom(Spacing.class))
