@@ -4,6 +4,7 @@ package com.kispoko.tome.util.value;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.kispoko.tome.activity.sheet.dialog.ArithmeticDialogType;
 import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
@@ -49,6 +50,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.y;
 
 
 /**
@@ -333,6 +335,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof byte[])
         {
             return SQLValue.newBlob((byte[]) this.getValue());
+        }
+        else if (this.getValue().getClass().isEnum())
+        {
+            String enumString = ((Enum) this.getValue()).name().toLowerCase();
+            return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof TextSize)
         {

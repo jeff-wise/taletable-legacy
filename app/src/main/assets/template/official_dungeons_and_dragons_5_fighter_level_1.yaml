@@ -4344,35 +4344,47 @@ encounter:
       space_above: none
       rows:
       - space_above: medium_small
-        width: indented
         widgets:
         - type: button
           widget:
             data:
               format:
+                alignment: left
                 background: empty
+            description: <label>  Another scar, another wonderful memory...
             icon: heart_plus
+            label: Heal
             format:
+              description_position: right
+              description_style:
+                color: theme_dark
+                size: medium_small
               icon_color: gold_light
               label_style:
                 size: medium
                 is_bold: true
-                color: theme_medium
+                color: theme_medium_light
       - space_above: small
-        width: indented
         widgets:
         - type: button
           widget:
             data:
               format:
+                alignment: right
                 background: empty
+            description: Hello pain, my old friend  <label>
             icon: heart_minus
+            label: Hurt
             format:
+              description_position: left
+              description_style:
+                color: theme_dark
+                size: medium_small
               icon_color: red_light
               label_style:
                 size: medium
                 is_bold: true
-                color: theme_medium
+                color: theme_medium_light
   - name: Abilities
     groups:
 campaign:

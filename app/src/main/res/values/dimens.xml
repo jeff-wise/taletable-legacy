@@ -173,6 +173,10 @@
     <dimen name="widget_action_text_size_large">4.7sp</dimen>
 
 
+    <!-- WIDGET: BUTTON  -->
+    <dimen name="widget_button_description_margin_horz">10dp</dimen>
+
+
     <!-- WIDGET: MECHANIC  -->
     <dimen name="widget_mechanic_name_text_size">4.2sp</dimen>
     <dimen name="widget_mechanic_description_text_size">3.7sp</dimen>

@@ -139,7 +139,7 @@ public class SummationView
         value.text                      = valueText;
         value.font                      = Font.serifFontBold(context);
         value.size                      = R.dimen.dialog_summ_component_value_text_size;
-        value.color                     = R.color.dark_blue_hlx_9;
+        value.color                     = R.color.dark_blue_hl_8;
 
 
         return layout.relativeLayout(context);

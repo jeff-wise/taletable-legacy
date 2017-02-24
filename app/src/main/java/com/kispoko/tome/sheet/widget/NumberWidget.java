@@ -478,26 +478,6 @@ public class NumberWidget extends Widget
     }
 
 
-    private LinearLayout widgetViewLayout(boolean rowHasLabel, Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation      = LinearLayout.VERTICAL;
-        layout.width            = 0;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.weight           = this.data().format().width().floatValue();
-
-        if (this.data().format().label() == null && rowHasLabel) {
-            layout.padding.top  = R.dimen.widget_label_fill_padding;
-        }
-
-        layout.margin.left      = R.dimen.widget_margin_horz;
-        layout.margin.right     = R.dimen.widget_margin_horz;
-
-        return layout.linearLayout(context);
-    }
-
-
     private LinearLayout valueLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
@@ -653,20 +633,7 @@ public class NumberWidget extends Widget
             value.text      = this.valueString();
             value.color     = this.format().valueStyle().color().resourceId();
             value.size      = this.format().valueStyle().size().resourceId();
-
-            // > Font
-            if (this.format().valueStyle().isBold() && this.format().valueStyle().isItalic()) {
-                value.font  = Font.serifFontBoldItalic(context);
-            }
-            else if (this.format().valueStyle().isBold()) {
-                value.font  = Font.serifFontBold(context);
-            }
-            else if (this.format().valueStyle().isItalic()) {
-                value.font  = Font.serifFontItalic(context);
-            }
-            else {
-                value.font  = Font.serifFontRegular(context);
-            }
+            value.font      = this.format().valueStyle().typeface(context);
         }
 
         return value.textView(context);

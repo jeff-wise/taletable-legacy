@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,9 +15,11 @@ import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.button.ButtonIcon;
 import com.kispoko.tome.sheet.widget.button.ButtonWidgetFormat;
+import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.WidgetBackground;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.util.ui.FormattedString;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
@@ -27,6 +30,8 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -298,10 +303,48 @@ public class ButtonWidget extends Widget implements Serializable
     {
         LinearLayout layout = this.layout(rowHasLabel, context);
 
-        // > Label
+        // > Main View
+        layout.addView(mainView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout mainView(Context context)
+    {
+        LinearLayout layout = mainLayout(context);
+
+        // Description (left)
+        if (this.description() != null &&
+            this.format().descriptionPosition() == Position.LEFT) {
+            layout.addView(descriptionView(context));
+        }
+
+        // > Button
         layout.addView(buttonView(context));
 
-        return buttonView(context);
+        // Description (right)
+        if (this.description() != null &&
+            this.format().descriptionPosition() == Position.RIGHT) {
+            layout.addView(descriptionView(context));
+        }
+
+        return layout;
+    }
+
+
+    private LinearLayout mainLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.HORIZONTAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.gravity          = this.data().format().alignment().gravityConstant()
+                                    | Gravity.CENTER_VERTICAL;
+
+        return layout.linearLayout(context);
     }
 
 
@@ -330,8 +373,7 @@ public class ButtonWidget extends Widget implements Serializable
         layout.margin.left          = R.dimen.three_dp;
         layout.margin.right         = R.dimen.three_dp;
 
-
-        layout.gravity              = this.data().format().alignment().gravityConstant();
+        layout.gravity              = Gravity.CENTER;
 
         return layout.linearLayout(context);
     }
@@ -344,7 +386,7 @@ public class ButtonWidget extends Widget implements Serializable
         icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.layoutGravity  = Gravity.CENTER;
+        // icon.layoutGravity  = Gravity.CENTER;
 
         if (this.icon() != null)
             icon.image      = this.icon().resouceId();
@@ -355,48 +397,49 @@ public class ButtonWidget extends Widget implements Serializable
     }
 
 
-    /**
-     * The button label view. (The main button text).
-     * @param context The context.
-     * @return The label Text View.
-     */
-    private TextView labelTextView(Context context)
+    private TextView descriptionView(Context context)
     {
-        TextViewBuilder label = new TextViewBuilder();
+        TextViewBuilder description = new TextViewBuilder();
 
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.layoutGravity     = Gravity.CENTER_VERTICAL;
+        // > Description Text
+        String labelPlaceholder = context.getString(R.string.placeholder_label);
+        if (this.label() != null)
+        {
+            List<FormattedString.Span> spans = new ArrayList<>();
+            FormattedString.Span labelSpan = new FormattedString.Span(labelPlaceholder,
+                                                this.label(), this.format().labelStyle());
+            spans.add(labelSpan);
 
-//        label.gravity           = this.data().format().alignment().gravityConstant()
-//                                    | Gravity.CENTER_VERTICAL;
-//        label.layoutGravity           = this.data().format().alignment().gravityConstant()
-//                | Gravity.CENTER_VERTICAL;
-//        switch (this.data().format().alignment())
-//        {
-//            case LEFT:
-//                label.layoutGravity = Gravity.START | Gravity.CENTER_VERTICAL;
-//                break;
-//            case CENTER:
-//                label.layoutGravity = Gravity.CENTER;
-//                label.gravity = Gravity.CENTER;
-//                break;
-//            case RIGHT:
-//                label.layoutGravity = Gravity.END  | Gravity.CENTER_VERTICAL;
-//                break;
-//        }
+            description.textSpan = FormattedString.spannableStringBuilder(
+                                                        this.description(),
+                                                        this.format().descriptionStyle(),
+                                                        spans,
+                                                        context);
+        }
+        else
+        {
+            // If label is null, but there is still a <label> in the string, remove the <label>
+            description.text = this.description().replace(labelPlaceholder, "");
+        }
 
+        description.font    = this.format().descriptionStyle().typeface(context);
+        description.color   = this.format().descriptionStyle().color().resourceId();
+        description.size    = this.format().descriptionStyle().size().resourceId();
 
-        label.text              = this.label().toUpperCase();
-        label.color             = this.format().labelStyle().color().resourceId();
-        label.font              = this.format().labelStyle().typeface(context);
-        label.size              = this.format().labelStyle().size().resourceId();
+        switch (this.format().descriptionPosition())
+        {
+            case LEFT:
+                description.margin.right = R.dimen.widget_button_description_margin_horz;
+                break;
+            case RIGHT:
+                description.margin.left = R.dimen.widget_button_description_margin_horz;
+                break;
+        }
 
-        if (this.format().labelStyle().isUnderlined())
-            label.underlined    = true;
-
-        return label.textView(context);
+        return description.textView(context);
     }
 
 

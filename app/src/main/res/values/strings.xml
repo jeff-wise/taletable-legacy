@@ -39,6 +39,9 @@
     <string name="advanced_editor">Adv. Editor</string>
 
 
+    <string name="placeholder_label">&lt;label&gt;</string>
+
+
     <!-- DIALOG -->
     <!-- ==================================================================================== -->
 

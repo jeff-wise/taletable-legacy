@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.button;
 
 
+import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
@@ -38,6 +39,7 @@ public class ButtonWidgetFormat implements Model, ToYaml, Serializable
 
     private ModelFunctor<TextStyle>         labelStyle;
     private ModelFunctor<TextStyle>         descriptionStyle;
+    private PrimitiveFunctor<Position>      descriptionPosition;
     private PrimitiveFunctor<ButtonColor>   buttonColor;
     private PrimitiveFunctor<TextColor>     iconColor;
 
@@ -47,31 +49,35 @@ public class ButtonWidgetFormat implements Model, ToYaml, Serializable
 
     public ButtonWidgetFormat()
     {
-        this.id                 = null;
+        this.id                     = null;
 
-        this.labelStyle         = ModelFunctor.empty(TextStyle.class);
-        this.descriptionStyle   = ModelFunctor.empty(TextStyle.class);
-        this.buttonColor        = new PrimitiveFunctor<>(null, ButtonColor.class);
-        this.iconColor          = new PrimitiveFunctor<>(null, TextColor.class);
+        this.labelStyle             = ModelFunctor.empty(TextStyle.class);
+        this.descriptionStyle       = ModelFunctor.empty(TextStyle.class);
+        this.descriptionPosition    = new PrimitiveFunctor<>(null, Position.class);
+        this.buttonColor            = new PrimitiveFunctor<>(null, ButtonColor.class);
+        this.iconColor              = new PrimitiveFunctor<>(null, TextColor.class);
     }
 
 
     public ButtonWidgetFormat(UUID id,
                               TextStyle labelStyle,
                               TextStyle descriptionStyle,
+                              Position descriptionPosition,
                               ButtonColor buttonColor,
                               TextColor iconColor)
     {
-        this.id                 = id;
+        this.id                     = id;
 
-        this.labelStyle         = ModelFunctor.full(labelStyle, TextStyle.class);
-        this.descriptionStyle   = ModelFunctor.full(descriptionStyle, TextStyle.class);
-        this.buttonColor        = new PrimitiveFunctor<>(buttonColor, ButtonColor.class);
-        this.iconColor          = new PrimitiveFunctor<>(iconColor, TextColor.class);
+        this.labelStyle             = ModelFunctor.full(labelStyle, TextStyle.class);
+        this.descriptionStyle       = ModelFunctor.full(descriptionStyle, TextStyle.class);
+        this.descriptionPosition    = new PrimitiveFunctor<>(descriptionPosition, Position.class);
+        this.buttonColor            = new PrimitiveFunctor<>(buttonColor, ButtonColor.class);
+        this.iconColor              = new PrimitiveFunctor<>(iconColor, TextColor.class);
 
         // > Set defaults for null values
         this.setLabelStyle(labelStyle);
         this.setDescriptionStyle(descriptionStyle);
+        this.setDescriptionPosition(descriptionPosition);
         this.setButtonColor(buttonColor);
         this.setIconColor(iconColor);
     }
@@ -89,15 +95,18 @@ public class ButtonWidgetFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return ButtonWidgetFormat.asDefault();
 
-        UUID        id               = UUID.randomUUID();
+        UUID        id                  = UUID.randomUUID();
 
-        TextStyle   labelStyle       = TextStyle.fromYaml(yaml.atMaybeKey("label_style"), false);
-        TextStyle   descriptionStyle = TextStyle.fromYaml(yaml.atMaybeKey("description_style"),
-                                                         false);
-        ButtonColor buttonColor      = ButtonColor.fromYaml(yaml.atMaybeKey("color"));
-        TextColor   iconColor        = TextColor.fromYaml(yaml.atMaybeKey("icon_color"));
+        TextStyle   labelStyle          = TextStyle.fromYaml(yaml.atMaybeKey("label_style"), false);
+        TextStyle   descriptionStyle    = TextStyle.fromYaml(yaml.atMaybeKey("description_style"),
+                                                             false);
+        Position    descriptionPosition = Position.fromYaml(
+                                                        yaml.atMaybeKey("description_position"));
+        ButtonColor buttonColor         = ButtonColor.fromYaml(yaml.atMaybeKey("color"));
+        TextColor   iconColor           = TextColor.fromYaml(yaml.atMaybeKey("icon_color"));
 
-        return new ButtonWidgetFormat(id, labelStyle, descriptionStyle, buttonColor, iconColor);
+        return new ButtonWidgetFormat(id, labelStyle, descriptionStyle, descriptionPosition,
+                                      buttonColor, iconColor);
     }
 
 
@@ -112,6 +121,7 @@ public class ButtonWidgetFormat implements Model, ToYaml, Serializable
         format.setId(UUID.randomUUID());
         format.setLabelStyle(null);
         format.setDescriptionStyle(null);
+        format.setDescriptionPosition(null);
         format.setButtonColor(null);
         format.setIconColor(null);
 
@@ -216,6 +226,32 @@ public class ButtonWidgetFormat implements Model, ToYaml, Serializable
                                                               TextSize.MEDIUM_SMALL);
             this.descriptionStyle.setValue(defaultDescriptionStyle);
         }
+    }
+
+
+    // ** Description Position
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The position of the button's description relative to the button.
+     * @return The description position.
+     */
+    public Position descriptionPosition()
+    {
+        return this.descriptionPosition.getValue();
+    }
+
+
+    /**
+     * Set the description position. If null, defaults to appearing to the right of the button.
+     * @param position The position.
+     */
+    public void setDescriptionPosition(Position position)
+    {
+        if (position != null)
+            this.descriptionPosition.setValue(position);
+        else
+            this.descriptionPosition.setValue(Position.RIGHT);
     }
 
 
