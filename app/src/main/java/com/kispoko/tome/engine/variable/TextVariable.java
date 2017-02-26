@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.engine.value.Dictionary;
+import com.kispoko.tome.engine.value.TextValue;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
@@ -417,6 +418,7 @@ public class TextVariable extends Variable
 
     @Override
     public String valueString()
+           throws NullVariableException
     {
         return this.value();
     }
@@ -517,6 +519,7 @@ public class TextVariable extends Variable
      * @return The variable identifier.
      */
     public Namespace namespace()
+           throws NullVariableException
     {
         switch (this.kind())
         {
@@ -566,14 +569,20 @@ public class TextVariable extends Variable
     // ------------------------------------------------------------------------------------------
 
     public String value()
+           throws NullVariableException
     {
+        // TODO make sure result isn't null. if so provide nullvariable exception
         switch (this.kind.getValue())
         {
             case LITERAL:
                 return this.stringLiteral();
             case VALUE:
                 Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
-                return dictionary.textValue(this.valueReference()).value();
+                TextValue textValue = dictionary.textValue(this.valueReference());
+                if (textValue != null)
+                    return textValue.value();
+                else
+                    throw new NullVariableException();
             case PROGRAM:
                 return this.reactiveValue.value();
         }

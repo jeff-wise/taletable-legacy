@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,6 +32,10 @@ public class TextViewBuilder implements ViewBuilder
     public Integer                  height;
     public Integer                  width;
     public Float                    weight;
+
+    public Integer                  minEms;
+    public Integer                  maxEms;
+    public Integer                  ems;
 
     public Integer                  gravity;
     public Integer                  layoutGravity;
@@ -77,6 +80,10 @@ public class TextViewBuilder implements ViewBuilder
         this.height             = null;
         this.width              = null;
         this.weight             = null;
+
+        this.minEms             = null;
+        this.maxEms             = null;
+        this.ems                = null;
 
         this.gravity            = null;
         this.layoutGravity      = null;
@@ -153,6 +160,24 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.gravity != null)
             textView.setGravity(this.gravity);
+
+        // > Min Ems
+        // --------------------------------------------------------------------------------------
+
+        if (this.minEms != null)
+            textView.setMinEms(this.minEms);
+
+        // > Max Ems
+        // --------------------------------------------------------------------------------------
+
+        if (this.maxEms != null)
+            textView.setMaxEms(this.maxEms);
+
+        // > Max Ems
+        // --------------------------------------------------------------------------------------
+
+        if (this.ems != null)
+            textView.setEms(this.ems);
 
         // > Visibility
         // --------------------------------------------------------------------------------------

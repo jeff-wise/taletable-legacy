@@ -2,10 +2,12 @@
 package com.kispoko.tome.sheet;
 
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.campaign.Campaign;
 import com.kispoko.tome.campaign.CampaignIndex;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.game.Game;
@@ -344,8 +346,15 @@ public class Sheet implements Model
         // > Sheet Name
         String sheetName = "";
         VariableUnion nameVariable = State.variableWithName("name");
-        if (nameVariable != null && nameVariable.type() == VariableType.TEXT) {
-            sheetName = nameVariable.textVariable().value();
+        if (nameVariable != null && nameVariable.type() == VariableType.TEXT)
+        {
+            try {
+                sheetName = nameVariable.textVariable().value();
+            }
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
+                sheetName = "N/A";
+            }
         }
 
         // > Campaign Name

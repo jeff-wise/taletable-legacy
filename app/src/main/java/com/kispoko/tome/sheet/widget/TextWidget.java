@@ -16,6 +16,7 @@ import com.kispoko.tome.activity.sheet.dialog.ChooseValueDialogFragment;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
@@ -264,7 +265,13 @@ public class TextWidget extends Widget
      */
     public String value()
     {
-        return this.valueVariable().value();
+        try {
+            return this.valueVariable().value();
+        }
+        catch (NullVariableException exception) {
+            ApplicationFailure.nullVariable(exception);
+            return "N/A";
+        }
     }
 
 
@@ -276,7 +283,12 @@ public class TextWidget extends Widget
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
                                     .findViewById(this.displayTextViewId);
-            textView.setText(this.valueVariable().value());
+            try {
+                textView.setText(this.valueVariable().value());
+            }
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
+            }
         }
 
         this.valueVariable.save();
@@ -403,6 +415,7 @@ public class TextWidget extends Widget
      */
     private View widgetView(boolean rowHasLabel, Context context)
     {
+        // TODO check for nulls before doing anything here
         LinearLayout layout = viewLayout(rowHasLabel, context);
 
         // > Label View

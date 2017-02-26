@@ -153,9 +153,10 @@ public enum TextColor implements ToYaml
                 return R.color.green_light;
             case GREEN_MEDIUM_LIGHT:
                 return R.color.green_medium_light;
+            default:
+                return R.color.dark_blue_hl_5;
         }
 
-        return 0;
     }
 
 

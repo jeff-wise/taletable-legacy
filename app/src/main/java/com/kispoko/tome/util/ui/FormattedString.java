@@ -3,15 +3,25 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.ReplacementSpan;
 import android.text.style.StyleSpan;
 
+import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 
 import java.util.List;
 
+import static android.R.attr.width;
 
 
 /**
@@ -21,8 +31,8 @@ public class FormattedString
 {
 
 
+    // TODO Use absolute size span
     public static SpannableStringBuilder spannableStringBuilder(String text,
-                                                                TextStyle textStyle,
                                                                 List<Span> spans,
                                                                 Context context)
     {
@@ -67,10 +77,27 @@ public class FormattedString
 
             if (spanTextIndex >= 0) {
                 formatSpan(spanBuilder, spanTextIndex, spanTextLength,
-                           span.format(), textStyle, context);
+                           span.format(), span.baseTextSize(), context);
 
             }
 
+            // (3) Background
+            // ---------------------------------------------------------------------------------
+
+            if (span.backgroundStyle() != null)
+            {
+                switch (span.backgroundStyle())
+                {
+                    case ARROWS_VERTICAL:
+                        VerticalArrowsBackgroundSpan verticalArrowsBackgroundSpan =
+                            new VerticalArrowsBackgroundSpan(context,
+                                                             span.backgroundColor().resourceId(),
+                                                             span.format().color().resourceId());
+                        spanBuilder.setSpan(verticalArrowsBackgroundSpan,
+                                            spanTextIndex, spanTextIndex + spanTextLength, 0);
+                        break;
+                }
+            }
 
         }
 
@@ -82,7 +109,7 @@ public class FormattedString
                                    int spanStart,
                                    int spanLength,
                                    TextStyle spanStyle,
-                                   TextStyle textStyle,
+                                   TextSize baseTextSize,
                                    Context context)
     {
         // > Typeface
@@ -110,7 +137,7 @@ public class FormattedString
 
         // > Size
         // -------------------------------------------------------------------------------------
-        RelativeSizeSpan sizeSpan = spanStyle.size().relativeSizeSpan(textStyle.size(), context);
+        RelativeSizeSpan sizeSpan = spanStyle.size().relativeSizeSpan(baseTextSize, context);
         spanBuilder.setSpan(sizeSpan, spanStart, spanStart + spanLength, 0);
     }
 
@@ -125,19 +152,44 @@ public class FormattedString
         // PROPERTIES
         // -----------------------------------------------------------------------------------------
 
-        private String    placeholder;
-        private String    text;
-        private TextStyle format;
+        private String              placeholder;
+        private String              text;
+        private TextStyle           format;
+        private TextSize            baseTextSize;
+        private TextColor           backgroundColor;
+        private SpanBackgroundStyle backgroundStyle;
 
 
         // CONSTRUCTORS
         // -----------------------------------------------------------------------------------------
 
-        public Span(String placeholder, String text, TextStyle format)
+        public Span(String placeholder,
+                    String text,
+                    TextStyle format,
+                    TextSize baseTextSize,
+                    TextColor backgroundColor,
+                    SpanBackgroundStyle backgroundStyle)
         {
-            this.placeholder = placeholder;
-            this.text        = text;
-            this.format      = format;
+            this.placeholder     = placeholder;
+            this.text            = text;
+            this.format          = format;
+            this.baseTextSize    = baseTextSize;
+            this.backgroundColor = backgroundColor;
+            this.backgroundStyle = backgroundStyle;
+        }
+
+
+        public Span(String placeholder,
+                    String text,
+                    TextStyle format,
+                    TextSize baseTextSize)
+        {
+            this.placeholder     = placeholder;
+            this.text            = text;
+            this.format          = format;
+            this.baseTextSize    = baseTextSize;
+            this.backgroundColor = null;
+            this.backgroundStyle = null;
         }
 
 
@@ -159,6 +211,90 @@ public class FormattedString
         public TextStyle format()
         {
             return this.format;
+        }
+
+
+        public TextSize baseTextSize()
+        {
+            return this.baseTextSize;
+        }
+
+
+        public TextColor backgroundColor()
+        {
+            return this.backgroundColor;
+        }
+
+
+        public SpanBackgroundStyle backgroundStyle()
+        {
+            return this.backgroundStyle;
+        }
+
+    }
+
+
+    // SPAN BACKGROUND STYLE
+    // -----------------------------------------------------------------------------------------
+
+    public enum SpanBackgroundStyle
+    {
+        ARROWS_VERTICAL
+    }
+
+
+    public static class VerticalArrowsBackgroundSpan extends ReplacementSpan
+    {
+
+        private int CORNER_RADIUS = 8;
+        private int backgroundColor = 0;
+        private int textColor = 0;
+        private int chevronColor = 0;
+        private VectorDrawableCompat chevronUp;
+
+
+        public VerticalArrowsBackgroundSpan(Context context, int backgroundColor, int textColor)
+        {
+            super();
+
+            this.backgroundColor = ContextCompat.getColor(context, backgroundColor);
+            this.textColor       = ContextCompat.getColor(context, textColor);
+            this.chevronUp       = VectorDrawableCompat.create(context.getResources(),
+                                                               R.drawable.ic_option_chevron_up,
+                                                               null);
+            this.chevronColor    = ContextCompat.getColor(context, R.color.gold_light);
+        }
+
+
+        @Override
+        public void draw(Canvas canvas, CharSequence text,
+                         int start, int end, float x, int top, int y, int bottom, Paint paint)
+        {
+
+            RectF rect = new RectF(x, top, x + measureText(paint, text, start, end), bottom);
+            paint.setColor(this.backgroundColor);
+            canvas.drawRoundRect(rect, CORNER_RADIUS, CORNER_RADIUS, paint);
+            paint.setColor(this.textColor);
+            canvas.drawText(text, start, end, x, y, paint);
+
+
+            int intX = Float.valueOf(x).intValue();
+            this.chevronUp.setBounds(intX, top + (top - bottom), intX + 60, bottom);
+            this.chevronUp.draw(canvas);
+        }
+
+
+        @Override
+        public int getSize(Paint paint, CharSequence text, int start, int end,
+                           Paint.FontMetricsInt fm)
+        {
+            return Math.round(paint.measureText(text, start, end));
+        }
+
+
+        private float measureText(Paint paint, CharSequence text, int start, int end)
+        {
+            return paint.measureText(text, start, end);
         }
 
     }

@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget;
+package com.kispoko.tome.sheet.group;
 
 
 import com.kispoko.tome.R;
@@ -13,60 +13,56 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.kispoko.tome.sheet.group.RowWidth.HALF;
 
 
 /**
- * Widget Type
+ * Group Divider Type
  */
-public enum WidgetType implements ToYaml
+public enum DividerType implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    ACTION,
-    BOOLEAN,
-    BUTTON,
-    IMAGE,
-    LIST,
-    LOG,
-    MECHANIC,
-    NUMBER,
-    OPTION,
-    TABLE,
-    TEXT;
+    NONE,
+    LIGHT,
+    DARK;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static WidgetType fromString(String typeString)
+    public static DividerType fromString(String typeString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(WidgetType.class, typeString);
+        return EnumUtils.fromString(DividerType.class, typeString);
     }
 
 
-    public static WidgetType fromYaml(YamlParser yaml)
+    public static DividerType fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         String typeString = yaml.getString();
         try {
-            return WidgetType.fromString(typeString);
+            return DividerType.fromString(typeString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 
 
-    public static WidgetType fromSQLValue(SQLValue sqlValue)
+    public static DividerType fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            WidgetType widgetType = WidgetType.fromString(enumString);
-            return widgetType;
+            DividerType type = DividerType.fromString(enumString);
+            return type;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -80,39 +76,6 @@ public enum WidgetType implements ToYaml
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
-    }
-
-
-    // LABEL
-    // ------------------------------------------------------------------------------------------
-
-    public int stringLabelResourceId()
-    {
-        switch (this)
-        {
-            case ACTION:
-                return R.string.widget_action;
-            case BOOLEAN:
-                return R.string.widget_boolean;
-            case IMAGE:
-                return R.string.widget_image;
-            case LIST:
-                return R.string.widget_list;
-            case LOG:
-                return R.string.widget_log;
-            case MECHANIC:
-                return R.string.widget_mechanic;
-            case NUMBER:
-                return R.string.widget_number;
-            case OPTION:
-                return R.string.widget_option;
-            case TABLE:
-                return R.string.widget_table;
-            case TEXT:
-                return R.string.widget_text;
-        }
-
-        return 0;
     }
 
 

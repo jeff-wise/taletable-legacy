@@ -28,6 +28,7 @@ import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.campaign.CampaignIndex;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
@@ -191,8 +192,14 @@ public class SheetActivity
         this.characterName = "Sheet";
 
         TextVariable nameVariable = State.variableWithName("name").textVariable();
-        if (!nameVariable.isNull()) {
-            this.characterName = nameVariable.value();
+        if (!nameVariable.isNull())
+        {
+            try {
+                this.characterName = nameVariable.value();
+            }
+            catch (NullVariableException exception) {
+                this.characterName = "N/A";
+            }
         }
 
         TextView titleView = (TextView) findViewById(R.id.page_title);

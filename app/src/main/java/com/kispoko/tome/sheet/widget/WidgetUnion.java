@@ -44,6 +44,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     private ModelFunctor<LogWidget>         logWidget;
     private ModelFunctor<MechanicWidget>    mechanicWidget;
     private ModelFunctor<NumberWidget>      numberWidget;
+    private ModelFunctor<OptionWidget>      optionWidget;
     private ModelFunctor<TableWidget>       tableWidget;
     private ModelFunctor<TextWidget>        textWidget;
 
@@ -65,6 +66,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.logWidget      = ModelFunctor.empty(LogWidget.class);
         this.mechanicWidget = ModelFunctor.empty(MechanicWidget.class);
         this.numberWidget   = ModelFunctor.empty(NumberWidget.class);
+        this.optionWidget   = ModelFunctor.empty(OptionWidget.class);
         this.tableWidget    = ModelFunctor.empty(TableWidget.class);
         this.textWidget     = ModelFunctor.empty(TextWidget.class);
 
@@ -84,6 +86,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.logWidget      = ModelFunctor.full(null, LogWidget.class);
         this.mechanicWidget = ModelFunctor.full(null, MechanicWidget.class);
         this.numberWidget   = ModelFunctor.full(null, NumberWidget.class);
+        this.optionWidget   = ModelFunctor.full(null, OptionWidget.class);
         this.tableWidget    = ModelFunctor.full(null, TableWidget.class);
         this.textWidget     = ModelFunctor.full(null, TextWidget.class);
 
@@ -114,6 +117,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case NUMBER:
                 this.numberWidget.setValue((NumberWidget) widget);
+                break;
+            case OPTION:
+                this.optionWidget.setValue((OptionWidget) widget);
                 break;
             case TABLE:
                 this.tableWidget.setValue((TableWidget) widget);
@@ -217,6 +223,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
 
 
     /**
+     * Create the "option" variant.
+     * @param optionWidget The option widget.
+     * @return The "option" Widget Union.
+     */
+    public static WidgetUnion asOption(UUID id, OptionWidget optionWidget)
+    {
+        return new WidgetUnion(id, optionWidget, WidgetType.OPTION);
+    }
+
+
+    /**
      * Create the "table" variant.
      * @param tableWidget The table widget.
      * @return The "table" Widget Union.
@@ -280,6 +297,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case NUMBER:
                 NumberWidget numberWidget = NumberWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asNumber(id, numberWidget);
+            case OPTION:
+                OptionWidget optionWidget = OptionWidget.fromYaml(yaml.atKey("widget"));
+                return WidgetUnion.asOption(id, optionWidget);
             case TABLE:
                 TableWidget tableWidget = TableWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asTable(id, tableWidget);
@@ -372,6 +392,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case NUMBER:
                 widgetYaml = this.numberWidget().toYaml();
                 break;
+            case OPTION:
+                widgetYaml = this.optionWidget().toYaml();
+                break;
             case TABLE:
                 widgetYaml = this.tableWidget().toYaml();
                 break;
@@ -414,6 +437,8 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 return this.mechanicWidget();
             case NUMBER:
                 return this.numberWidget();
+            case OPTION:
+                return this.optionWidget();
             case TABLE:
                 return this.tableWidget();
             case TEXT:
@@ -524,6 +549,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public NumberWidget numberWidget()
     {
         return this.numberWidget.getValue();
+    }
+
+
+    /**
+     * The "option" case.
+     * @return The Option Widget.
+     */
+    public OptionWidget optionWidget()
+    {
+        return this.optionWidget.getValue();
     }
 
 

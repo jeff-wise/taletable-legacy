@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -409,13 +408,15 @@ public class ButtonWidget extends Widget implements Serializable
         if (this.label() != null)
         {
             List<FormattedString.Span> spans = new ArrayList<>();
-            FormattedString.Span labelSpan = new FormattedString.Span(labelPlaceholder,
-                                                this.label(), this.format().labelStyle());
+            FormattedString.Span labelSpan =
+                        new FormattedString.Span(labelPlaceholder,
+                                                 this.label(),
+                                                 this.format().labelStyle(),
+                                                 this.format().descriptionStyle().size());
             spans.add(labelSpan);
 
             description.textSpan = FormattedString.spannableStringBuilder(
                                                         this.description(),
-                                                        this.format().descriptionStyle(),
                                                         spans,
                                                         context);
         }

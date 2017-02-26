@@ -8,8 +8,11 @@ import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.Namespace;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.SheetManager;
@@ -259,8 +262,16 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     public String value()
     {
         if (valueVariable() != null)
-            return this.valueVariable().value();
-        return null;
+        {
+            try {
+                return this.valueVariable().value();
+            }
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
+            }
+        }
+
+        return "N/A";
     }
 
 
@@ -368,8 +379,15 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
      */
     private void configureNamespace()
     {
-        if (this.valueVariable().definesNamespace()) {
-            this.widgetContainer.setNamespace(this.valueVariable().namespace());
+        if (this.valueVariable().definesNamespace())
+        {
+            try {
+                Namespace namespace = this.valueVariable().namespace();
+                this.widgetContainer.setNamespace(namespace);
+            }
+            catch (NullVariableException exception) {
+                ApplicationFailure.nullVariable(exception);
+            }
         }
     }
 

@@ -270,6 +270,38 @@ public class ValueSet implements Model, ToYaml, Serializable
     }
 
 
+    // > Length of Longest Value String
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Return the size (in characters) of the value that has the longest string representation.
+     * @return The length.
+     */
+    public int lengthOfLongestValueString()
+    {
+        int longest = 0;
+
+        for (ValueUnion valueUnion : this.values())
+        {
+            int valueLength = 0;
+            switch (valueUnion.type())
+            {
+                case TEXT:
+                    valueLength = valueUnion.textValue().value().length();
+                    break;
+                case NUMBER:
+                    valueLength = valueUnion.numberValue().value().toString().length();
+                    break;
+            }
+
+            if (valueLength > longest)
+                longest = valueLength;
+        }
+
+        return longest;
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 

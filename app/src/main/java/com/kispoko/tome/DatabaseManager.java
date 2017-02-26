@@ -56,6 +56,7 @@ import com.kispoko.tome.sheet.widget.LogWidget;
 import com.kispoko.tome.sheet.widget.MechanicWidget;
 import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.sheet.widget.ActionWidget;
+import com.kispoko.tome.sheet.widget.OptionWidget;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
@@ -65,6 +66,7 @@ import com.kispoko.tome.sheet.widget.button.ButtonWidgetFormat;
 import com.kispoko.tome.sheet.widget.list.ListWidgetFormat;
 import com.kispoko.tome.sheet.widget.log.LogEntry;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
+import com.kispoko.tome.sheet.widget.option.OptionWidgetFormat;
 import com.kispoko.tome.sheet.widget.table.TableRow;
 import com.kispoko.tome.sheet.widget.table.cell.BooleanCell;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
@@ -144,6 +146,8 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(MechanicWidget.class);
             modelClasses.add(LogWidget.class);
             modelClasses.add(LogEntry.class);
+            modelClasses.add(OptionWidget.class);
+            modelClasses.add(OptionWidgetFormat.class);
 
             modelClasses.add(TableRow.class);
             modelClasses.add(WidgetData.class);

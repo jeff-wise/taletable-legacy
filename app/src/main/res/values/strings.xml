@@ -40,6 +40,7 @@
 
 
     <string name="placeholder_label">&lt;label&gt;</string>
+    <string name="placeholder_value">&lt;value&gt;</string>
 
 
     <!-- DIALOG -->
@@ -57,16 +58,16 @@
     <string name="widget_upper">WIDGET</string>
     <string name="widgets_upper">WIDGETS</string>
 
-    <string name="widget_text">Text Widget</string>
-    <string name="widget_number">Number Widget</string>
-    <string name="widget_boolean">Boolean Widget</string>
-    <string name="widget_list">List Widget</string>
-    <string name="widget_table">Table Widget</string>
     <string name="widget_action">Action Widget</string>
-    <string name="widget_adder">Adder Widget</string>
+    <string name="widget_boolean">Boolean Widget</string>
     <string name="widget_image">Image Widget</string>
-    <string name="widget_mechanic">Mechanic Widget</string>
+    <string name="widget_list">List Widget</string>
     <string name="widget_log">Log Widget</string>
+    <string name="widget_mechanic">Mechanic Widget</string>
+    <string name="widget_number">Number Widget</string>
+    <string name="widget_option">Image Widget</string>
+    <string name="widget_table">Table Widget</string>
+    <string name="widget_text">Text Widget</string>
 
     <string name="column">Column</string>
 

@@ -123,8 +123,13 @@ public class Interpreter implements Serializable
                     switch (variableUnion.type())
                     {
                         case TEXT:
-                            programValueUnion = ProgramValueUnion.asString(
-                                                    variableUnion.textVariable().value());
+                            try {
+                                programValueUnion = ProgramValueUnion.asString(
+                                        variableUnion.textVariable().value());
+                            }
+                            catch (NullVariableException exception) {
+                                ApplicationFailure.nullVariable(exception);
+                            }
                             break;
                         case NUMBER:
                             try {

@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.table;
 
 
 import com.kispoko.tome.engine.variable.Namespace;
+import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
@@ -224,7 +225,12 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
                 TextCell textCell = cellUnion.textCell();
                 if (textCell.valueVariable().definesNamespace())
                 {
-                    this.setNamespace(textCell.valueVariable().namespace());
+                    try {
+                        this.setNamespace(textCell.valueVariable().namespace());
+                    }
+                    catch (NullVariableException exception) {
+
+                    }
                 }
             }
         }

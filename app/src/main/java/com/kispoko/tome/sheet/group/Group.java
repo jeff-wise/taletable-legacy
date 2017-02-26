@@ -13,7 +13,6 @@ import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
@@ -53,9 +52,9 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     private PrimitiveFunctor<Boolean>           showName;
     private PrimitiveFunctor<Spacing>           spaceAbove;
     private PrimitiveFunctor<Spacing>           spaceBelow;
-    private PrimitiveFunctor<ElementBackground>   background;
+    private PrimitiveFunctor<ElementBackground> background;
     private ModelFunctor<TextStyle>             labelStyle;
-    private PrimitiveFunctor<Boolean>           divider;
+    private PrimitiveFunctor<DividerType>       dividerType;
     private PrimitiveFunctor<Integer>           index;
     private CollectionFunctor<GroupRow>         rows;
 
@@ -73,7 +72,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         this.spaceBelow     = new PrimitiveFunctor<>(null, Spacing.class);
         this.background     = new PrimitiveFunctor<>(null, ElementBackground.class);
         this.labelStyle     = ModelFunctor.empty(TextStyle.class);
-        this.divider        = new PrimitiveFunctor<>(null, Boolean.class);
+        this.dividerType    = new PrimitiveFunctor<>(null, DividerType.class);
         this.index          = new PrimitiveFunctor<>(null, Integer.class);
 
         this.rows       = CollectionFunctor.empty(GroupRow.class);
@@ -87,7 +86,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
                  Spacing spaceBelow,
                  ElementBackground background,
                  TextStyle labelStyle,
-                 Boolean divider,
+                 DividerType dividerType,
                  Integer index,
                  List<GroupRow> groupRows)
     {
@@ -99,7 +98,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         this.spaceBelow     = new PrimitiveFunctor<>(spaceBelow, Spacing.class);
         this.background     = new PrimitiveFunctor<>(background, ElementBackground.class);
         this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
-        this.divider        = new PrimitiveFunctor<>(divider, Boolean.class);
+        this.dividerType    = new PrimitiveFunctor<>(dividerType, DividerType.class);
         this.index          = new PrimitiveFunctor<>(index, Integer.class);
 
         List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
@@ -111,7 +110,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         this.setSpaceBelow(spaceBelow);
         this.setBackground(background);
         this.setLabelStyle(labelStyle);
-        this.setDivider(divider);
+        this.setDividerType(dividerType);
     }
 
 
@@ -119,16 +118,16 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     public static Group fromYaml(YamlParser yaml, int groupIndex)
             throws YamlParseException
     {
-        UUID            id              = UUID.randomUUID();
+        UUID              id          = UUID.randomUUID();
 
-        String          label           = yaml.atMaybeKey("name").getString();
-        Boolean         showName        = yaml.atMaybeKey("show_name").getBoolean();
-        Spacing         spaceAbove      = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
-        Spacing         spaceBelow      = Spacing.fromYaml(yaml.atMaybeKey("space_below"));
-        ElementBackground background      = ElementBackground.fromYaml(yaml.atMaybeKey("background"));
-        TextStyle       labelStyle      = TextStyle.fromYaml(yaml.atMaybeKey("label_style"), false);
-        Boolean         bottomBorder = yaml.atMaybeKey("divider").getBoolean();
-        Integer         index        = groupIndex;
+        String            label       = yaml.atMaybeKey("name").getString();
+        Boolean           showName    = yaml.atMaybeKey("show_name").getBoolean();
+        Spacing           spaceAbove  = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
+        Spacing           spaceBelow  = Spacing.fromYaml(yaml.atMaybeKey("space_below"));
+        ElementBackground background  = ElementBackground.fromYaml(yaml.atMaybeKey("background"));
+        TextStyle         labelStyle  = TextStyle.fromYaml(yaml.atMaybeKey("label_style"), false);
+        DividerType       dividerType = DividerType.fromYaml(yaml.atMaybeKey("divider"));
+        Integer           index       = groupIndex;
 
         List<GroupRow> groupRows = yaml.atKey("rows").forEach(new YamlParser.ForEach<GroupRow>() {
             @Override
@@ -138,7 +137,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         });
 
         return new Group(id, label, showName, spaceAbove, spaceBelow, background,
-                         labelStyle, bottomBorder, index, groupRows);
+                         labelStyle, dividerType, index, groupRows);
     }
 
 
@@ -199,7 +198,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
                 .putYaml("space_below", this.spaceBelow())
                 .putYaml("background", this.background())
                 .putYaml("label_style", this.labelStyle())
-                .putBoolean("divider", this.bottomBorder())
+                .putYaml("divider", this.dividerType())
                 .putList("rows", this.rows());
     }
 
@@ -351,18 +350,18 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
      * True if the group has a bottom border (functioning as a divider).
      * @return Bottom border?
      */
-    public Boolean bottomBorder()
+    public DividerType dividerType()
     {
-        return this.divider.getValue();
+        return this.dividerType.getValue();
     }
 
 
-    public void setDivider(Boolean divider)
+    public void setDividerType(DividerType dividerType)
     {
-        if (divider != null)
-            this.divider.setValue(divider);
+        if (dividerType != null)
+            this.dividerType.setValue(dividerType);
         else
-            this.divider.setValue(false);
+            this.dividerType.setValue(DividerType.NONE);
     }
 
 
@@ -406,7 +405,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
             layout.addView(groupRow.view(context));
         }
 
-        if (this.bottomBorder())
+        if (this.dividerType() != DividerType.NONE)
             layout.addView(dividerView(context));
 
         return layout;
@@ -429,7 +428,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
 
         layout.padding.top      = this.spaceAbove().resourceId();
 
-        if (!this.bottomBorder())
+        if (this.dividerType() == DividerType.NONE)
             layout.padding.bottom   = this.spaceBelow().resourceId();
 
         // > Background
@@ -486,13 +485,37 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         switch (this.background())
         {
             case LIGHT:
-                border.backgroundColor = R.color.dark_blue_4;
+                switch (this.dividerType())
+                {
+                    case LIGHT:
+                        border.backgroundColor = R.color.dark_blue_2;
+                        break;
+                    case DARK:
+                        border.backgroundColor = R.color.dark_blue_4;
+                        break;
+                }
                 break;
             case MEDIUM:
-                border.backgroundColor = R.color.dark_blue_4;
+                switch (this.dividerType())
+                {
+                    case LIGHT:
+                        border.backgroundColor = R.color.dark_blue_4;
+                        break;
+                    case DARK:
+                        border.backgroundColor = R.color.dark_blue_6;
+                        break;
+                }
                 break;
             case DARK:
-                border.backgroundColor = R.color.dark_blue_6;
+                switch (this.dividerType())
+                {
+                    case LIGHT:
+                        border.backgroundColor = R.color.dark_blue_6;
+                        break;
+                    case DARK:
+                        border.backgroundColor = R.color.dark_blue_8;
+                        break;
+                }
                 break;
         }
 

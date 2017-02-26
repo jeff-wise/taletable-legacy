@@ -893,6 +893,52 @@ engine:
     - is_level_one
   dictionary:
     sets:
+    - name: scarborn_mood
+      label: Scarborn's Moods
+      label_singular: Scarborn Mood
+      description: >
+        The possible moods Cirus Scarborn may be in.
+      values:
+      - type: text
+        value:
+          name: relaxed
+          value: relaxed
+      - type: text
+        value:
+          name: troubled
+          value: troubled
+      - type: text
+        value:
+          name: vindictive
+          value: vindictive
+      - type: text
+        value:
+          name: indignant
+          value: indignant
+      - type: text
+        value:
+          name: cheerful
+          value: cheerful
+      - type: text
+        value:
+          name: nostaligic
+          value: nostalgic
+      - type: text
+        value:
+          name: violent
+          value: violent
+      - type: text
+        value:
+          name: anxious
+          value: anxious
+      - type: text
+        value:
+          name: eager
+          value: eager
+      - type: text
+        value:
+          name: reluctant
+          value: reluctant
     - name: class
       label: Classes
       label_singular: Class
@@ -2152,7 +2198,7 @@ profile:
       name: Strength
       show_name: false
       space_below: medium
-      divider: true
+      divider: light
       rows:
       - space_above: small
         widgets:
@@ -2275,7 +2321,7 @@ profile:
       name: Dexterity
       show_name: false
       space_below: medium
-      divider: true
+      divider: light
       rows:
       - space_above: small
         widgets:
@@ -2398,7 +2444,7 @@ profile:
       name: Constitution
       show_name: false
       space_below: medium
-      divider: true
+      divider: light
       rows:
       - space_above: small
         widgets:
@@ -2521,7 +2567,7 @@ profile:
       name: Intelligence
       show_name: false
       space_below: medium
-      divider: true
+      divider: light
       rows:
       - space_above: small
         widgets:
@@ -2644,7 +2690,7 @@ profile:
       name: Wisdom
       show_name: false
       space_below: medium
-      divider: true
+      divider: light
       rows:
       - space_above: small
         widgets:
@@ -3535,7 +3581,7 @@ profile:
       space_above: none
       space_below: large
       background: dark
-      divider: true
+      divider: light
       rows:
       - space_above: large
         width: indented
@@ -4055,7 +4101,7 @@ encounter:
     - name: Weapons
       space_above: medium
       space_below: medium_large
-      divider: true
+      divider: light
       rows:
       - space_above: medium
         widgets:
@@ -4168,7 +4214,7 @@ encounter:
       show_name: false
       space_above: medium
       space_below: medium
-      divider: true
+      divider: light
       rows:
       - space_above: small
         widgets:
@@ -4309,6 +4355,36 @@ encounter:
   - name: Status
     background: light
     groups:
+    - name: Feelings
+      show_name: false
+      spacing_above: small
+      spacing_below: medium
+      divider: dark
+      rows:
+      - space_above: none
+        widgets:
+        - type: option
+          widget:
+            data:
+              format:
+                alignment: center
+            description: 'I am feeling '
+            format:
+              description_style:
+                color: theme_medium
+                size: medium_large
+              value_style:
+                color: theme_light
+                size: medium_large
+            view_type: arrows_vertical
+            value_type: text
+            value:
+              name: current_mood
+              label: Current Mood
+              type: value
+              value:
+                set_name: scarborn_mood
+                value_name: anxious
     - name: Current Hit Points
       space_above: medium_large
       background: medium

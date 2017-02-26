@@ -476,6 +476,7 @@
 
     <!-- GENERAL -->
     <dimen name="zero_dp">0dp</dimen>
+    <dimen name="half_dp">0.5dp</dimen>
     <dimen name="one_dp">1dp</dimen>
     <dimen name="two_dp">2dp</dimen>
     <dimen name="three_dp">3dp</dimen>
@@ -486,6 +487,12 @@
     <dimen name="eight_dp">7dp</dimen>
     <dimen name="nine_dp">7dp</dimen>
     <dimen name="ten_dp">7dp</dimen>
+
+    <dimen name="negative_one_dp">-1dp</dimen>
+    <dimen name="negative_two_dp">-2dp</dimen>
+    <dimen name="negative_three_dp">-3dp</dimen>
+    <dimen name="negative_four_dp">-4dp</dimen>
+    <dimen name="negative_five_dp">-5dp</dimen>
 
 
     <!-- ACTIVITY: SECTIONS -->
