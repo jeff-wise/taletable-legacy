@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -12,12 +11,10 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.group.GroupParent;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
@@ -83,7 +80,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
 
     private void setWidgetBackgroundResource(LinearLayoutBuilder layout)
     {
-        WidgetBackground background = this.data().format().background();
+        Background background = this.data().format().background();
 
         switch (background)
         {

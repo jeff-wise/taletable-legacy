@@ -317,23 +317,23 @@ public class CellUnion implements Model, ToYaml, Serializable
         switch (this.type.getValue())
         {
             case TEXT:
-                cellView = this.textCell().view(columnUnion.textColumn());
+                cellView = this.textCell().view(columnUnion.textColumn(), context);
                 break;
             case NUMBER:
                 cellView = this.numberCell().view(columnUnion.numberColumn(), context);
                 break;
             case BOOLEAN:
-                cellView = this.booleanCell().view(context);
+                cellView = this.booleanCell().view(columnUnion.booleanColumn(), context);
                 break;
         }
 
-        setCellViewAlignment(cellView, columnUnion);
-        setCellViewWidth(cellView, columnUnion);
+        //setCellViewAlignment(cellView, columnUnion);
+        //setCellViewWidth(cellView, columnUnion);
 
         return cellView;
     }
 
-
+/*
     private void setCellViewAlignment(View cellView, ColumnUnion columnUnion)
     {
         TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) cellView.getLayoutParams();
@@ -360,8 +360,10 @@ public class CellUnion implements Model, ToYaml, Serializable
         }
 
     }
+    */
 
 
+    /*
     private void setCellViewWidth(View cellView, ColumnUnion columnUnion)
     {
         TableRow.LayoutParams layoutParams = (TableRow.LayoutParams) cellView.getLayoutParams();
@@ -372,6 +374,7 @@ public class CellUnion implements Model, ToYaml, Serializable
             layoutParams.weight = width;
         }
     }
+    */
 
 
 }

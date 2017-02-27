@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.util.UI;
@@ -154,7 +155,7 @@ public class TextColumnActivity extends AppCompatActivity
                 Form.field(
                         R.string.text_column_field_alignment_label,
                         R.string.text_column_field_alignment_description,
-                        Form.variantInput(CellAlignment.class,
+                        Form.variantInput(Alignment.class,
                                           this.textColumn.alignment(),
                                           this),
                         this);

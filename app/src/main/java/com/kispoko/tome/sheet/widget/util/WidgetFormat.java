@@ -32,7 +32,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>           width;
     private PrimitiveFunctor<Alignment>         alignment;
     private ModelFunctor<TextStyle>             labelStyle;
-    private PrimitiveFunctor<WidgetBackground>  background;
+    private PrimitiveFunctor<Background>  background;
     private PrimitiveFunctor<WidgetCorners>     corners;
 
 
@@ -48,7 +48,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         this.width          = new PrimitiveFunctor<>(null, Integer.class);
         this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
         this.labelStyle     = ModelFunctor.empty(TextStyle.class);
-        this.background     = new PrimitiveFunctor<>(null, WidgetBackground.class);
+        this.background     = new PrimitiveFunctor<>(null, Background.class);
         this.corners        = new PrimitiveFunctor<>(null, WidgetCorners.class);
     }
 
@@ -59,7 +59,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
                         Integer width,
                         Alignment alignment,
                         TextStyle labelStyle,
-                        WidgetBackground background,
+                        Background background,
                         WidgetCorners corners)
     {
         this.id             = id;
@@ -69,7 +69,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         this.width          = new PrimitiveFunctor<>(width, Integer.class);
         this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
-        this.background     = new PrimitiveFunctor<>(background, WidgetBackground.class);
+        this.background     = new PrimitiveFunctor<>(background, Background.class);
         this.corners        = new PrimitiveFunctor<>(corners, WidgetCorners.class);
     }
 
@@ -117,7 +117,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         TextStyle           labelStyle     = TextStyle.fromYaml(
                                                             yaml.atMaybeKey("label_style"),
                                                             false);
-        WidgetBackground    background     = WidgetBackground.fromYaml(
+        Background background     = Background.fromYaml(
                                                                 yaml.atMaybeKey("background"));
         WidgetCorners       corners        = WidgetCorners.fromYaml(yaml.atMaybeKey("corners"));
 
@@ -274,18 +274,18 @@ public class WidgetFormat implements Model, ToYaml, Serializable
      * background will be.
      * @return The widget background value.
      */
-    public WidgetBackground background()
+    public Background background()
     {
         return this.background.getValue();
     }
 
 
-    public void setBackground(WidgetBackground background)
+    public void setBackground(Background background)
     {
         if (background != null)
             this.background.setValue(background);
         else
-            this.background.setValue(WidgetBackground.DARK);
+            this.background.setValue(Background.DARK);
     }
 
 

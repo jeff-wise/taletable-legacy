@@ -67,7 +67,7 @@ public class RelativeLayoutBuilder
         this.width              = null;
         this.weight             = null;
 
-        this.layoutType         = LayoutType.NONE;
+        this.layoutType         = LayoutType.LINEAR;
 
         this.gravity            = null;
         this.layoutGravity      = null;
@@ -160,11 +160,7 @@ public class RelativeLayoutBuilder
         // --------------------------------------------------------------------------------------
 
         LayoutParamsBuilder layoutParamsBuilder;
-
-        if (this.layoutType != LayoutType.NONE)
-            layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
-        else
-            layoutParamsBuilder = new LayoutParamsBuilder(LayoutType.LINEAR, context);
+        layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
 
 
         // > Width
@@ -213,17 +209,9 @@ public class RelativeLayoutBuilder
             relativeLayout.addView(childViewBuilder.view(context));
         }
 
-        switch (this.layoutType)
-        {
-            case LINEAR:
-                relativeLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
-                break;
-            case RELATIVE:
-                relativeLayout.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
-                break;
-            case NONE:
-                relativeLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
-        }
+
+        relativeLayout.setLayoutParams(layoutParamsBuilder.layoutParams());
+
 
         return relativeLayout;
     }

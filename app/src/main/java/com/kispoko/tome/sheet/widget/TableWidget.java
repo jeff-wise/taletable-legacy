@@ -3,11 +3,9 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.TextVariable;
@@ -18,10 +16,11 @@ import com.kispoko.tome.sheet.widget.table.cell.TextCell;
 import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.sheet.widget.util.WidgetFormat;
-import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TableLayoutBuilder;
@@ -36,6 +35,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 
 /**
@@ -375,11 +375,8 @@ public class TableWidget extends Widget
             this.data().format().setWidth(1);
 
         if (this.data().format().background() == null)
-            this.data().format().setBackground(WidgetBackground.NONE);
+            this.data().format().setBackground(Background.NONE);
 
-
-//      if (this.data().format().background()vj)
-        //this.data().format().setBackground(WidgetBackground.NONE);
 
         // [2] The header row is derived from the column information, so create it each time the
         //     table widget is instantiated
@@ -391,9 +388,14 @@ public class TableWidget extends Widget
         {
             TextVariable headerCellValue = TextVariable.asText(UUID.randomUUID(),
                                                                columnUnion.column().name());
+            TextStyle headerCellStyle = new TextStyle(UUID.randomUUID(),
+                                                      TextColor.THEME_DARK,
+                                                      TextSize.SUPER_SMALL);
+
             TextCell headerCell = new TextCell(UUID.randomUUID(),
                                                headerCellValue,
-                                               columnUnion.column().alignment(), null);
+                                               columnUnion.column().alignment(),
+                                               headerCellStyle);
             CellUnion headerCellUnion = CellUnion.asText(null, headerCell);
             headerCells.add(headerCellUnion);
         }
@@ -412,21 +414,13 @@ public class TableWidget extends Widget
         tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT;
         tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT;
 
-        //tableRow.backgroundResource = R.drawable.bg_table_row;
-
-//        tableRow.margin.top         = R.dimen.widget_table_row_margins_vert;
-//        tableRow.margin.bottom      = R.dimen.widget_table_row_margins_vert;
-
-        tableRow.padding.top        = R.dimen.widget_table_row_padding_vert;
-        tableRow.padding.bottom     = R.dimen.widget_table_row_padding_vert;
+//        tableRow.padding.top        = R.dimen.widget_table_row_padding_vert;
+//        tableRow.padding.bottom     = R.dimen.widget_table_row_padding_vert;
 
         tableRow.padding.left   = R.dimen.widget_table_row_padding_horz;
         tableRow.padding.right  = R.dimen.widget_table_row_padding_horz;
 
         android.widget.TableRow tableRowView = tableRow.tableRow(context);
-
-//        if (android.os.Build.VERSION.SDK_INT >= 21)
-//            tableRowView.setElevation(6.0f);
 
         for (int i = 0; i < row.width(); i++)
         {
@@ -446,7 +440,6 @@ public class TableWidget extends Widget
         layout.orientation         = LinearLayout.VERTICAL;
         layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        //layout.backgroundResource  = R.drawable.bg_widget_light;
 
         return layout.linearLayout(context);
     }
@@ -516,13 +509,7 @@ public class TableWidget extends Widget
                                                    false, false);
             ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
 
-            TextView headerCellView = (TextView) headerCell.view(columnUnion, context);
-
-            float headerTextSize = (int) context.getResources()
-                                                .getDimension(R.dimen.widget_table_header_text_size);
-            headerCellView.setTextSize(headerTextSize);
-            headerCellView.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_6));
-            headerCellView.setTypeface(Util.serifFontBold(context));
+            LinearLayout headerCellView = (LinearLayout) headerCell.view(columnUnion, context);
 
             headerRowView.addView(headerCellView);
         }

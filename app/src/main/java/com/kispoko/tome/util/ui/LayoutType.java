@@ -11,6 +11,5 @@ public enum LayoutType
     LINEAR,
     RELATIVE,
     TABLE,
-    TABLE_ROW,
-    NONE
+    TABLE_ROW;
 }

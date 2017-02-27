@@ -4,7 +4,10 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Icon;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -12,18 +15,17 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -39,7 +41,8 @@ import java.util.UUID;
 /**
  * Boolean CellUnion
  */
-public class BooleanCell implements Model, Cell, ToYaml, Serializable
+public class BooleanCell extends Cell
+                         implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -55,12 +58,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<BooleanVariable>   valueVariable;
-    private PrimitiveFunctor<CellAlignment> alignment;
-
-    /**
-     * The boolean cell style. Often inherited from the column.
-     */
-    private ModelFunctor<TextStyle>         style;
+    private ModelFunctor<BooleanCellFormat> format;
 
 
     // > Internal
@@ -82,15 +80,13 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
         this.id             = null;
 
         this.valueVariable  = ModelFunctor.empty(BooleanVariable.class);
-        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.style          = ModelFunctor.empty(TextStyle.class);
+        this.format         = ModelFunctor.empty(BooleanCellFormat.class);
     }
 
 
     public BooleanCell(UUID id,
                        BooleanVariable valueVariable,
-                       CellAlignment alignment,
-                       TextStyle style)
+                       BooleanCellFormat format)
     {
         // ** Id
         this.id             = id;
@@ -98,13 +94,8 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
         // ** Value
         this.valueVariable  = ModelFunctor.full(valueVariable, BooleanVariable.class);
 
-        // ** Alignment
-        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-
-        // ** Style
-        this.style          = ModelFunctor.full(style, TextStyle.class);
-
-        this.setStyle(style);
+        // ** Format
+        this.format         = ModelFunctor.full(format, BooleanCellFormat.class);
 
         initializeBooleanCell();
     }
@@ -113,13 +104,12 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     public static BooleanCell fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID            id        = UUID.randomUUID();
+        UUID              id     = UUID.randomUUID();
 
-        BooleanVariable value     = BooleanVariable.fromYaml(yaml.atMaybeKey("value"));
-        CellAlignment   alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
-        TextStyle       style     = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
+        BooleanVariable   value  = BooleanVariable.fromYaml(yaml.atMaybeKey("value"));
+        BooleanCellFormat format = BooleanCellFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        return new BooleanCell(id, value, alignment, style);
+        return new BooleanCell(id, value, format);
     }
 
 
@@ -176,12 +166,19 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putYaml("value", this.valueVariable())
-                .putYaml("alignment", this.alignment());
+                .putYaml("format", this.format());
     }
 
 
     // > Cell
     // ------------------------------------------------------------------------------------------
+
+    @Override
+    public Alignment alignment()
+    {
+        return this.format().alignment();
+    }
+
 
     /**
      * Set the cells widget container (which is the parent Table Row).
@@ -201,6 +198,7 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
 
         if (column.defaultLabel() != null && this.valueVariable().label() == null)
             this.valueVariable().setLabel(column.defaultLabel());
+
 
         // [3] Initialize the value variable
         // --------------------------------------------------------------------------------------
@@ -269,77 +267,121 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
     }
 
 
-    // ** Alignment
+    // ** Format
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the alignment of this cell.
-     * @return The cell Alignment.
+     * The cell's formatting options.
+     * @return The format.
      */
-    public CellAlignment alignment()
+    public BooleanCellFormat format()
     {
-        return this.alignment.getValue();
-    }
-
-
-    // ** Style
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The boolean cell style. Often inherited from the column.
-     * @return The text cell Text Style.
-     */
-    public TextStyle style()
-    {
-        return this.style.getValue();
-    }
-
-
-    /**
-     * Set the boolean cell's text style. If null, a default style is provided.
-     * @param style The text style.
-     */
-    public void setStyle(TextStyle style)
-    {
-        if (style != null) {
-            this.style.setValue(style);
-        }
-        else {
-            TextStyle defaultBooleanCellStyle = new TextStyle(UUID.randomUUID(),
-                                                             TextColor.THEME_MEDIUM,
-                                                             TextSize.MEDIUM_SMALL);
-            this.style.setValue(defaultBooleanCellStyle);
-        }
+        return this.format.getValue();
     }
 
 
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public View view(Context context)
+    public View view(BooleanColumn column, final Context context)
     {
-        final TextView valueView = valueView(context);
+        final LinearLayout valueView = valueView(column, context);
+
+        return valueView;
+    }
+
+
+    private LinearLayout valueView(BooleanColumn column, final Context context)
+    {
+        LinearLayout layout = this.layout(column, context);
+
+        if ((this.value() && this.format().showTrueIcon()) ||
+            (!this.value() && this.format().showFalseIcon()))
+        {
+            layout.addView(valueIconView(context));
+        }
+
+        // > Text View
+        // -------------------------------------------------------------------------------------
+
+        final TextView valueView = valueTextView(column, context);
+        layout.addView(valueView);
 
         valueView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                if (value()) {
+                if (value())
+                {
                     valueVariable().setValue(false);
                     valueView.setText(falseText);
-                } else {
+
+                    // No false style, but need to undo true style
+                    if (format().falseStyle() == null && format().trueStyle() != null) {
+                        format().style().styleTextView(valueView, context);
+                    }
+                    // Set false style
+                    else if (format().falseStyle() != null) {
+                        format().falseStyle().styleTextView(valueView, context);
+                    }
+                }
+                else
+                {
                     valueVariable().setValue(true);
                     valueView.setText(trueText);
+
+                    // No true style, but need to undo false style
+                    if (format().trueStyle() == null && format().falseStyle() != null) {
+                        format().style().styleTextView(valueView, context);
+                    }
+                    // Set true style
+                    else if (format().trueStyle() != null) {
+                        format().trueStyle().styleTextView(valueView, context);
+                    }
                 }
             }
         });
 
-        return valueView;
+
+        return layout;
     }
 
 
-    private TextView valueView(Context context)
+    private ImageView valueIconView(Context context)
+    {
+        ImageViewBuilder icon = new ImageViewBuilder();
+
+        icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        if (this.value())
+            icon.image      = R.drawable.ic_boolean_cell_true;
+        else
+            icon.image      = R.drawable.ic_boolean_cell_false;
+
+        icon.margin.right   = R.dimen.four_dp;
+
+        if (this.value() && this.format().trueStyle() != null) {
+            icon.color      = this.format().trueStyle().color().resourceId();
+        }
+        else if (!this.value() && this.format().falseStyle() != null) {
+            icon.color      = this.format().falseStyle().color().resourceId();
+        }
+        else {
+            icon.color      = this.format().style().color().resourceId();
+        }
+
+        return icon.imageView(context);
+    }
+
+
+    /**
+     * The cell's value text view.
+     * @param context The context.
+     * @return The value Text View.
+     */
+    private TextView valueTextView(BooleanColumn column, final Context context)
     {
         TextViewBuilder value = new TextViewBuilder();
 
@@ -353,9 +395,22 @@ public class BooleanCell implements Model, Cell, ToYaml, Serializable
         else
             value.text          = falseText;
 
-        value.font              = Font.serifFontRegular(context);
-        value.size              = R.dimen.widget_table_cell_text_size;
-        value.color             = R.color.dark_blue_hl_1;
+        // > Styles
+        // -------------------------------------------------------------------------------------
+
+        TextStyle defaultStyle  = this.format().resolveStyle(column.format().style());
+        TextStyle trueStyle     = this.format().resolveTrueStyle(column.format().trueStyle());
+        TextStyle falseStyle    = this.format().resolveFalseStyle(column.format().falseStyle());
+
+        if (this.value() && trueStyle != null) {
+            trueStyle.styleTextViewBuilder(value, context);
+        }
+        else if (!this.value() && falseStyle != null) {
+            falseStyle.styleTextViewBuilder(value, context);
+        }
+        else {
+            defaultStyle.styleTextViewBuilder(value, context);
+        }
 
         return value.textView(context);
     }

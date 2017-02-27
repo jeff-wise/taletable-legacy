@@ -204,16 +204,16 @@
     <dimen name="widget_table_title_padding_top">18dp</dimen>
     <dimen name="widget_table_title_text_size">3sp</dimen>
     <dimen name="widget_table_title_paddin_left">14dp</dimen>
-    <dimen name="widget_table_row_padding_vert">22dp</dimen>
+    <dimen name="widget_table_row_padding_vert">12dp</dimen>
     <dimen name="widget_table_row_padding_horz">15dp</dimen>
     <dimen name="widget_table_row_margins_vert">2.5dp</dimen>
-    <dimen name="widget_table_header_padding_vert">20dp</dimen>
+    <dimen name="widget_table_header_padding_vert">14dp</dimen>
     <dimen name="comp_table_layout_padding">5dp</dimen>
 
     <dimen name="prefix_padding_left">4.2dp</dimen>
 
     <!-- WIDGET: TABLE: CELL -->
-    <dimen name="widget_table_cell_text_size">3.6dp</dimen>
+    <dimen name="widget_table_cell_text_size">4.2dp</dimen>
 
 
     <!-- WIDGET: TEXT: EDITOR: FREE -->

@@ -3,9 +3,6 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
-import android.text.SpannableStringBuilder;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,7 +18,6 @@ import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
-import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
@@ -30,11 +26,9 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.option.OptionWidgetFormat;
 import com.kispoko.tome.sheet.widget.option.ViewType;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.ui.FormattedString;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
@@ -44,16 +38,8 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-
-import static android.R.attr.switchMinWidth;
-import static android.R.attr.textStyle;
-import static com.kispoko.tome.util.ui.FormattedString.spannableStringBuilder;
 
 
 /**
@@ -454,7 +440,7 @@ public class OptionWidget extends Widget implements Serializable
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(WidgetBackground.DARK);
+            this.data().format().setBackground(Background.DARK);
 
         // ** Corners
         if (this.data().format().corners() == null)

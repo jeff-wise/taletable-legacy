@@ -4,10 +4,13 @@ package com.kispoko.tome.sheet.widget.util;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
+import android.widget.TextView;
 
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -17,7 +20,6 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.R.attr.value;
 
 
 /**
@@ -40,8 +42,7 @@ public class TextStyle implements Model, ToYaml, Serializable
 
     private PrimitiveFunctor<TextColor>     color;
     private PrimitiveFunctor<TextSize>      size;
-    private PrimitiveFunctor<Boolean>       isBold;
-    private PrimitiveFunctor<Boolean>       isItalic;
+    private PrimitiveFunctor<TextFont>      font;
     private PrimitiveFunctor<Boolean>       isUnderlined;
     private PrimitiveFunctor<Alignment>     alignment;
 
@@ -55,8 +56,7 @@ public class TextStyle implements Model, ToYaml, Serializable
 
         this.color          = new PrimitiveFunctor<>(null, TextColor.class);
         this.size           = new PrimitiveFunctor<>(null, TextSize.class);
-        this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
-        this.isItalic       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.font           = new PrimitiveFunctor<>(null, TextFont.class);
         this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
         this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
     }
@@ -65,8 +65,7 @@ public class TextStyle implements Model, ToYaml, Serializable
     public TextStyle(UUID id,
                      TextColor color,
                      TextSize size,
-                     Boolean isBold,
-                     Boolean isItalic,
+                     TextFont font,
                      Boolean isUnderlined,
                      Alignment alignment)
     {
@@ -74,15 +73,13 @@ public class TextStyle implements Model, ToYaml, Serializable
 
         this.color          = new PrimitiveFunctor<>(color, TextColor.class);
         this.size           = new PrimitiveFunctor<>(size, TextSize.class);
-        this.isBold         = new PrimitiveFunctor<>(isBold, Boolean.class);
-        this.isItalic       = new PrimitiveFunctor<>(isItalic, Boolean.class);
+        this.font           = new PrimitiveFunctor<>(font, TextFont.class);
         this.isUnderlined   = new PrimitiveFunctor<>(isUnderlined, Boolean.class);
         this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
 
         this.setColor(color);
         this.setSize(size);
-        this.setIsBold(isBold);
-        this.setIsItalic(isItalic);
+        this.setFont(font);
         this.setIsUnderlined(isUnderlined);
         this.setAlignment(alignment);
     }
@@ -96,15 +93,13 @@ public class TextStyle implements Model, ToYaml, Serializable
 
         this.color          = new PrimitiveFunctor<>(color, TextColor.class);
         this.size           = new PrimitiveFunctor<>(size, TextSize.class);
-        this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
-        this.isItalic       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.font           = new PrimitiveFunctor<>(null, TextFont.class);
         this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
         this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
 
         this.setColor(color);
         this.setSize(size);
-        this.setIsBold(null);
-        this.setIsItalic(null);
+        this.setFont(null);
         this.setIsUnderlined(null);
         this.setAlignment(null);
     }
@@ -119,13 +114,11 @@ public class TextStyle implements Model, ToYaml, Serializable
 
         this.color          = new PrimitiveFunctor<>(color, TextColor.class);
         this.size           = new PrimitiveFunctor<>(size, TextSize.class);
-        this.isBold         = new PrimitiveFunctor<>(null, Boolean.class);
-        this.isItalic       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.font           = new PrimitiveFunctor<>(null, TextFont.class);
         this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
         this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
 
-        this.setIsBold(null);
-        this.setIsItalic(null);
+        this.setFont(null);
         this.setIsUnderlined(null);
     }
 
@@ -164,12 +157,11 @@ public class TextStyle implements Model, ToYaml, Serializable
 
         TextColor color         = TextColor.fromYaml(yaml.atMaybeKey("color"));
         TextSize  size          = TextSize.fromYaml(yaml.atMaybeKey("size"));
-        Boolean   isBold        = yaml.atMaybeKey("is_bold").getBoolean();
-        Boolean   isItalic      = yaml.atMaybeKey("is_italic").getBoolean();
+        TextFont  font          = TextFont.fromYaml(yaml.atMaybeKey("font"));
         Boolean   isUnderlined  = yaml.atMaybeKey("is_underlined").getBoolean();
         Alignment alignment     = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
 
-        return new TextStyle(id, color, size, isBold, isItalic, isUnderlined, alignment);
+        return new TextStyle(id, color, size, font, isUnderlined, alignment);
     }
 
 
@@ -180,8 +172,7 @@ public class TextStyle implements Model, ToYaml, Serializable
         style.setId(UUID.randomUUID());
         style.setColor(null);
         style.setSize(null);
-        style.setIsBold(null);
-        style.setIsItalic(null);
+        style.setFont(null);
         style.setIsUnderlined(null);
         style.setAlignment(null);
 
@@ -224,15 +215,12 @@ public class TextStyle implements Model, ToYaml, Serializable
 
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
-
-        yaml.putYaml("color", this.color());
-        yaml.putYaml("size", this.size());
-        yaml.putBoolean("is_bold", this.isBold());
-        yaml.putBoolean("is_italic", this.isItalic());
-        yaml.putBoolean("is_underlined", this.isUnderlined());
-
-        return yaml;
+        return YamlBuilder.map()
+                .putYaml("color", this.color())
+                .putYaml("size", this.size())
+                .putYaml("font", this.font())
+                .putBoolean("is_underlined", this.isUnderlined())
+                .putYaml("alignment", this.alignment());
     }
 
 
@@ -287,32 +275,6 @@ public class TextStyle implements Model, ToYaml, Serializable
     }
 
 
-    // ** Is Bold
-    // -----------------------------------------------------------------------------------------
-
-    /**
-     * True if the text should be bold.
-     * @return Is bold?
-     */
-    public Boolean isBold()
-    {
-        return this.isBold.getValue();
-    }
-
-
-    /**
-     * Set the next to be bold or non-bold. Defaults to non-bold if null.
-     * @param isBold Is bold?
-     */
-    public void setIsBold(Boolean isBold)
-    {
-        if (isBold != null)
-            this.isBold.setValue(isBold);
-        else
-            this.isBold.setValue(false);
-    }
-
-
     // ** Is Underlined
     // -----------------------------------------------------------------------------------------
 
@@ -339,29 +301,29 @@ public class TextStyle implements Model, ToYaml, Serializable
     }
 
 
-    // ** Is Italic
+    // ** Font
     // -----------------------------------------------------------------------------------------
 
     /**
-     * True if the text is italicized.
-     * @return Is italic?
+     * The font.
+     * @return The font.
      */
-    public Boolean isItalic()
+    public TextFont font()
     {
-        return this.isItalic.getValue();
+        return this.font.getValue();
     }
 
 
     /**
-     * Set the text to be italic or not.
-     * @param isItalic Is italic?
+     * Set the text font
+     * @param font The font.
      */
-    public void setIsItalic(Boolean isItalic)
+    public void setFont(TextFont font)
     {
-        if (isItalic != null)
-            this.isItalic.setValue(isItalic);
+        if (font != null)
+            this.font.setValue(font);
         else
-            this.isItalic.setValue(false);
+            this.font.setValue(TextFont.NORMAL);
     }
 
 
@@ -396,19 +358,59 @@ public class TextStyle implements Model, ToYaml, Serializable
 
     public Typeface typeface(Context context)
     {
-        // > Font
-        if (this.isBold() && this.isItalic()) {
-            return Font.serifFontBoldItalic(context);
+        switch (this.font())
+        {
+            case NORMAL:
+                return Font.serifFontRegular(context);
+            case BOLD:
+                return Font.serifFontBold(context);
+            case ITALIC:
+                return Font.serifFontItalic(context);
+            case BOLD_ITALIC:
+                return Font.serifFontBoldItalic(context);
+            default:
+                return Font.serifFontRegular(context);
         }
-        else if (this.isBold()) {
-            return Font.serifFontBold(context);
-        }
-        else if (this.isItalic()) {
-            return Font.serifFontItalic(context);
-        }
-        else {
-            return Font.serifFontRegular(context);
-        }
+    }
+
+
+    // > Style Text View
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Format a text view with this style.
+     * @param textView The text view.
+     */
+    public void styleTextView(TextView textView, Context context)
+    {
+        // ** Color
+        textView.setTextColor(ContextCompat.getColor(context, this.color().resourceId()));
+
+        // ** Size
+        textView.setTextSize(context.getResources().getDimension(this.size().resourceId()));
+
+        // ** Font
+        textView.setTypeface(this.typeface(context));
+    }
+
+
+    // > Style Text View Builder
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Set the text view builder style options to match this style.
+     * @param viewBuilder The Text View Builder.
+     */
+    public void styleTextViewBuilder(TextViewBuilder viewBuilder, Context context)
+    {
+        // ** Color
+        viewBuilder.color   = this.color().resourceId();
+
+        // ** Size
+        viewBuilder.size    = this.size().resourceId();
+
+        // ** Fton
+        viewBuilder.font    = this.typeface(context);
     }
 
 }

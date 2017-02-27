@@ -81,7 +81,7 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         this.visibility         = null;
 
-        this.layoutType         = LayoutType.NONE;
+        this.layoutType         = LayoutType.LINEAR;
 
         this.gravity            = null;
         this.layoutGravity      = null;
@@ -223,12 +223,7 @@ public class LinearLayoutBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         LayoutParamsBuilder layoutParamsBuilder;
-
-        if (this.layoutType != LayoutType.NONE)
-            layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
-        else
-            layoutParamsBuilder = new LayoutParamsBuilder(LayoutType.LINEAR, context);
-
+        layoutParamsBuilder = new LayoutParamsBuilder(this.layoutType, context);
 
         // > Width
         // --------------------------------------------------------------------------------------
@@ -267,6 +262,8 @@ public class LinearLayoutBuilder implements ViewBuilder
         layoutParamsBuilder.setRules(this.rules);
 
 
+        linearLayout.setLayoutParams(layoutParamsBuilder.layoutParams());
+
 
         // [3] Children
         // --------------------------------------------------------------------------------------
@@ -276,17 +273,6 @@ public class LinearLayoutBuilder implements ViewBuilder
             linearLayout.addView(childViewBuilder.view(context));
         }
 
-        switch (this.layoutType)
-        {
-            case LINEAR:
-                linearLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
-                break;
-            case RELATIVE:
-                linearLayout.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
-                break;
-            case NONE:
-                linearLayout.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
-        }
 
         return linearLayout;
     }

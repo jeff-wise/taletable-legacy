@@ -2218,10 +2218,10 @@ profile:
               label_position: text
               label_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
               value_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
             value:
               name: strength
               label: Strength
@@ -2253,11 +2253,11 @@ profile:
             format:
               value_postfix_style:
                 color: theme_super_dark
-                is_italic: true
+                font: italic
                 size: medium_small
               value_style:
                 color: theme_super_dark
-                is_italic: true
+                font: italic
                 size: medium_small
             value_postfix: ' modifier'
             value:
@@ -2341,10 +2341,10 @@ profile:
               label_position: text
               label_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
               value_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
             value:
               name: dexterity
               label: Dexterity
@@ -2377,10 +2377,10 @@ profile:
               value_postfix_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
               value_style:
                 color: theme_super_dark
-                is_italic: true
+                font: italic
                 size: medium_small
             value_postfix: ' modifier'
             value:
@@ -2464,10 +2464,10 @@ profile:
               label_position: text
               label_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
               value_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
             value:
               name: constitution
               label: Constitution
@@ -2500,11 +2500,11 @@ profile:
               value_postfix_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
               value_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
             value_postfix: ' modifier'
             value:
               name: constitution_modifier
@@ -2587,10 +2587,10 @@ profile:
               label_position: text
               label_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
               value_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
             value:
               name: intelligence
               label: Intelligence
@@ -2623,11 +2623,11 @@ profile:
               value_postfix_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
               value_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
             value_postfix: ' modifier'
             value:
               name: intelligence_modifier
@@ -2711,10 +2711,10 @@ profile:
               label_position: text
               label_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
               value_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
             value:
               name: wisdom
               label: Wisdom
@@ -2747,11 +2747,11 @@ profile:
               value_postfix_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
               value_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
             value_postfix: ' modifier'
             value:
               name: wisdom_modifier
@@ -2832,10 +2832,10 @@ profile:
               label_position: text
               label_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
               value_style:
                 color: green_very_light
-                is_bold: true
+                font: bold
             value:
               name: charisma
               label: Charisma
@@ -2868,11 +2868,11 @@ profile:
               value_postfix_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
               value_style:
                 color: theme_super_dark
                 size: medium_small
-                is_italic: true
+                font: italic
             value_postfix: ' modifier'
             value:
               name: charisma_modifier
@@ -2933,7 +2933,7 @@ profile:
     - name: Skills
       space_above: medium_large
       rows:
-      - space_above: small
+      - space_above: very_small
         width: no_padding
         widgets:
         - type: table
@@ -2949,18 +2949,31 @@ profile:
                 default_value: skill
                 width: 3
                 alignment: left
+                style:
+                  color: theme_medium
+                  size: medium_small
             - type: number
               column:
                 name: MODIFIER
                 default_value: 0
                 width: 2
                 alignment: center
+                style:
+                  color: theme_light
+                  font: bold
+                  size: medium_small
             - type: boolean
               column:
                 name: PROFICIENT?
                 default_value: false
                 width: 2
                 alignment: center
+                style:
+                  color: theme_medium
+                  size: medium_small
+                true_style:
+                  color: green_light
+                  size: medium_small
             rows:
             - cells:
               - value:
@@ -3097,7 +3110,7 @@ profile:
               - value:
                   name: athletics_is_proficient
                   type: literal
-                  value: false
+                  value: true
             - cells:
               - value:
                   type: literal
@@ -3602,12 +3615,11 @@ profile:
               label_position: text
               label_style:
                 color: theme_light
-                is_bold: true
-                is_italic: true
+                font: bold_italic
                 size: medium
               value_style:
                 color: purple_very_light
-                is_bold: true
+                font: bold
                 size: medium_large
             value:
               name: hit_points
@@ -3633,12 +3645,11 @@ profile:
               label_position: text
               label_style:
                 color: theme_light
-                is_bold: true
-                is_italic: true
+                font: bold_italic
                 size: medium
               value_style:
                 color: purple_very_light
-                is_bold: true
+                font: bold
                 size: medium_large
             value:
               name: armor_class
@@ -3678,12 +3689,11 @@ profile:
               label_position: text
               label_style:
                 color: theme_light
-                is_bold: true
-                is_italic: true
+                font: bold_italic
                 size: medium
               value_style:
                 color: purple_very_light
-                is_bold: true
+                font: bold
                 size: medium_large
             value:
               name: initiative
@@ -3697,7 +3707,7 @@ profile:
       label_style:
         size: medium_small
         color: theme_medium
-        is_bold: true
+        font: bold
         alignment: center
       rows:
       - space_above: medium
@@ -3768,148 +3778,6 @@ profile:
             category: class
   - name: Inventory
     groups:
-    - name: Weapons
-      space_above: medium_large
-      background: light
-      rows:
-      - space_above: medium_small
-        width: no_padding
-        widgets:
-        - type: table
-          widget:
-            data:
-              format:
-                background: none
-                label: Weapons
-            columns:
-            - type: text
-              column:
-                name: NAME
-                default_value: weapon
-                width: 3
-                alignment: left
-                defines_namespace: true
-            - type: number
-              column:
-                name: QUANTITY
-                default_value: 1
-                default_label: Quantity
-                width: 2
-                alignment: center
-                namespaced: true
-            - type: boolean
-              column:
-                name: EQUIPPED?
-                default_value: false
-                width: 2
-                alignment: center
-                namespaced: true
-            rows:
-            - cells:
-              - value:
-                  type: literal
-                  value: Longsword
-                  label: Longsword
-              - value:
-                  type: literal
-                  name: quantity
-                  label: Quantity
-                  value: 1
-              - value:
-                  type: literal
-                  name: equipped
-                  label: Is Equipped?
-                  value: true
-            - cells:
-              - value:
-                  type: literal
-                  value: Heavy Crossbow
-                  label: Heavy Crossbow
-              - value:
-                  name: quantity
-                  type: literal
-                  value: 1
-              - value:
-                  name: equipped
-                  type: literal
-                  value: false
-            - cells:
-              - value:
-                  type: literal
-                  value: Dagger
-                  label: Dagger
-              - value:
-                  name: quantity
-                  type: literal
-                  value: 2
-              - value:
-                  name: equipped
-                  type: literal
-                  value: false
-    - name: Armor
-      space_above: medium_large
-      background: light
-      rows:
-      - space_above: medium_small
-        width: no_padding
-        widgets:
-        - type: table
-          widget:
-            data:
-              format:
-                label: Armor / Shields
-            columns:
-            - type: text
-              column:
-                name: NAME
-                default_value: armor
-                width: 3
-                alignment: left
-                defines_namespace: true
-            - type: number
-              column:
-                name: QUANTITY
-                default_value: 1
-                default_label: Quantity
-                width: 2
-                alignment: center
-                namespaced: true
-            - type: boolean
-              column:
-                name: EQUIPPED?
-                default_value: false
-                width: 2
-                alignment: center
-                namespaced: true
-            rows:
-            - cells:
-              - value:
-                  type: value
-                  value:
-                    set_name: armor
-                    value_name: scalemail
-              - value:
-                  name: quantity
-                  type: literal
-                  value: 1
-              - value:
-                  name: equipped
-                  type: literal
-                  value: true
-            - cells:
-              - value:
-                  type: value
-                  value:
-                    set_name: shields
-                    value_name: shield
-              - value:
-                  name: quantity
-                  type: literal
-                  value: 1
-              - value:
-                  name: equipped
-                  type: literal
-                  value: true
     - name: Wealth
       space_above: medium_large
       rows:
@@ -3987,6 +3855,148 @@ profile:
               name: wealth_electrum
               type: literal
               value: 0
+    - name: Weapons
+      space_above: medium_large
+      background: medium
+      rows:
+      - space_above: medium_small
+        width: no_padding
+        widgets:
+        - type: table
+          widget:
+            data:
+              format:
+                background: none
+                label: Weapons
+            columns:
+            - type: text
+              column:
+                name: NAME
+                default_value: weapon
+                width: 3
+                alignment: left
+                defines_namespace: true
+            - type: number
+              column:
+                name: QUANTITY
+                default_value: 1
+                default_label: Quantity
+                width: 2
+                alignment: center
+                namespaced: true
+            - type: boolean
+              column:
+                name: EQUIPPED?
+                default_value: false
+                width: 2
+                alignment: center
+                namespaced: true
+            rows:
+            - cells:
+              - value:
+                  type: literal
+                  value: Longsword
+                  label: Longsword
+              - value:
+                  type: literal
+                  name: quantity
+                  label: Quantity
+                  value: 1
+              - value:
+                  type: literal
+                  name: equipped
+                  label: Is Equipped?
+                  value: true
+            - cells:
+              - value:
+                  type: literal
+                  value: Heavy Crossbow
+                  label: Heavy Crossbow
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+              - value:
+                  name: equipped
+                  type: literal
+                  value: false
+            - cells:
+              - value:
+                  type: literal
+                  value: Dagger
+                  label: Dagger
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 2
+              - value:
+                  name: equipped
+                  type: literal
+                  value: false
+    - name: Armor
+      space_above: medium_large
+      background: medium
+      rows:
+      - space_above: medium_small
+        width: no_padding
+        widgets:
+        - type: table
+          widget:
+            data:
+              format:
+                label: Armor / Shields
+            columns:
+            - type: text
+              column:
+                name: NAME
+                default_value: armor
+                width: 3
+                alignment: left
+                defines_namespace: true
+            - type: number
+              column:
+                name: QUANTITY
+                default_value: 1
+                default_label: Quantity
+                width: 2
+                alignment: center
+                namespaced: true
+            - type: boolean
+              column:
+                name: EQUIPPED?
+                default_value: false
+                width: 2
+                alignment: center
+                namespaced: true
+            rows:
+            - cells:
+              - value:
+                  type: value
+                  value:
+                    set_name: armor
+                    value_name: scalemail
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+              - value:
+                  name: equipped
+                  type: literal
+                  value: true
+            - cells:
+              - value:
+                  type: value
+                  value:
+                    set_name: shields
+                    value_name: shield
+              - value:
+                  name: quantity
+                  type: literal
+                  value: 1
+              - value:
+                  name: equipped
+                  type: literal
+                  value: true
     - name: Gear
       space_above: medium_large
       rows:
@@ -4391,8 +4401,7 @@ encounter:
       label_style:
         alignment: center
         color: theme_medium
-        is_bold: false
-        is_italic: true
+        font: italic
         size: medium_small
       rows:
       - space_above: small
@@ -4408,7 +4417,6 @@ encounter:
                 size: large
               value_style:
                 color: theme_light
-                is_bold: false
                 size: colossal
             value:
               name: current_hit_points
@@ -4438,7 +4446,7 @@ encounter:
               icon_color: gold_light
               label_style:
                 size: medium
-                is_bold: true
+                font: bold
                 color: theme_medium_light
       - space_above: small
         widgets:
@@ -4459,7 +4467,7 @@ encounter:
               icon_color: red_light
               label_style:
                 size: medium
-                is_bold: true
+                font: bold
                 color: theme_medium_light
   - name: Abilities
     groups:

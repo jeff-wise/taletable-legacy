@@ -4,7 +4,6 @@ package com.kispoko.tome.util.value;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.kispoko.tome.activity.sheet.dialog.ArithmeticDialogType;
 import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
@@ -33,7 +32,7 @@ import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.TextColor;
@@ -50,8 +49,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.y;
-
 
 /**
  * Primitive Value
@@ -66,6 +63,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
     // --------------------------------------------------------------------------------------
 
     private Class<A>            valueClass;
+
 
 
     // CONSTRUCTORS
@@ -150,6 +148,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        /*
         else if (valueClass.isAssignableFrom(DiceType.class))
         {
             return SQLValue.Type.TEXT;
@@ -158,7 +157,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(WidgetBackground.class))
+        else if (valueClass.isAssignableFrom(Background.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -178,6 +177,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        */
         else if (valueClass.isAssignableFrom(SerialBitmap.class))
         {
             return SQLValue.Type.BLOB;
@@ -186,6 +186,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        /*
         else if (valueClass.isAssignableFrom(CellType.class))
         {
             return SQLValue.Type.TEXT;
@@ -222,6 +223,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
+        */
         else if (valueClass.isAssignableFrom(ProgramValueType.class))
         {
             return SQLValue.Type.TEXT;
@@ -346,9 +348,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((TextSize) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof WidgetBackground)
+        else if (this.getValue() instanceof Background)
         {
-            String enumString = ((WidgetBackground) this.getValue()).name().toLowerCase();
+            String enumString = ((Background) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof Alignment)
@@ -644,9 +646,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             TextSize size = TextSize.fromSQLValue(sqlValue);
             this.setValue((A) size);
         }
-        else if (this.valueClass.isAssignableFrom(WidgetBackground.class))
+        else if (this.valueClass.isAssignableFrom(Background.class))
         {
-            WidgetBackground background = WidgetBackground.fromSQLValue(sqlValue);
+            Background background = Background.fromSQLValue(sqlValue);
             this.setValue((A) background);
         }
         else if (this.valueClass.isAssignableFrom(Alignment.class))

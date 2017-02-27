@@ -3,26 +3,22 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.engine.value.TextValue;
 import com.kispoko.tome.engine.value.Value;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
-import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.list.ListWidgetFormat;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -253,7 +249,7 @@ public class ListWidget extends Widget
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(WidgetBackground.NONE);
+            this.data().format().setBackground(Background.NONE);
     }
 
 

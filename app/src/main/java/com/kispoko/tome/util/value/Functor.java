@@ -21,13 +21,17 @@ public abstract class Functor<A> implements Serializable
 
     private   OnUpdateListener onUpdateListener;
 
+    private   boolean          isDefault;
+
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
     public Functor(A value)
     {
-        this.value            = value;
+        this.value      = value;
+
+        this.isDefault  = false;
     }
 
 
@@ -58,7 +62,29 @@ public abstract class Functor<A> implements Serializable
     }
 
 
-    // ** Value
+    // ** Is Default
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * If true, then the value in the functor is a default value (not set by user).
+     * @return Is default?
+     */
+    public boolean isDefault()
+    {
+        return this.isDefault;
+    }
+
+    /**
+     * Set whether or not the value in the functor is a default value.
+     * @param isDefault Is default?
+     */
+    public void setIsDefault(boolean isDefault)
+    {
+        this.isDefault = isDefault;
+    }
+
+
+    // ** Update Listener
     // --------------------------------------------------------------------------------------
 
     public void setOnUpdateListener(OnUpdateListener onUpdateListener)

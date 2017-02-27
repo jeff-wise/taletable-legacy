@@ -21,7 +21,6 @@ import com.kispoko.tome.sheet.widget.util.TextStyle;
 
 import java.util.List;
 
-import static android.R.attr.width;
 
 
 /**
@@ -114,20 +113,20 @@ public class FormattedString
     {
         // > Typeface
         // -------------------------------------------------------------------------------------
-        if (spanStyle.isBold() && spanStyle.isItalic())
+        switch (spanStyle.font())
         {
-            StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
-            spanBuilder.setSpan(valueBoldItalicSpan, spanStart, spanStart + spanLength, 0);
-        }
-        else if (spanStyle.isBold())
-        {
-            StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
-            spanBuilder.setSpan(valueBoldSpan, spanStart, spanStart + spanLength, 0);
-        }
-        else if (spanStyle.isItalic())
-        {
-            StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
-            spanBuilder.setSpan(valueItalicSpan, spanStart, spanStart + spanLength, 0);
+            case BOLD:
+                StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
+                spanBuilder.setSpan(valueBoldSpan, spanStart, spanStart + spanLength, 0);
+                break;
+            case ITALIC:
+                StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
+                spanBuilder.setSpan(valueItalicSpan, spanStart, spanStart + spanLength, 0);
+                break;
+            case BOLD_ITALIC:
+                StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
+                spanBuilder.setSpan(valueBoldItalicSpan, spanStart, spanStart + spanLength, 0);
+                break;
         }
 
         // > Color

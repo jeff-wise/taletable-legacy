@@ -20,7 +20,7 @@ import com.kispoko.tome.sheet.widget.bool.BooleanWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
@@ -332,7 +332,7 @@ public class BooleanWidget extends Widget
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(WidgetBackground.DARK);
+            this.data().format().setBackground(Background.DARK);
 
         // ** Corners
         if (this.data().format().corners() == null)

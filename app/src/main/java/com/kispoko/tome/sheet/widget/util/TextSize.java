@@ -27,6 +27,7 @@ public enum TextSize implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
+    SUPER_SMALL,
     VERY_SMALL,
     SMALL,
     MEDIUM_SMALL,
@@ -106,6 +107,8 @@ public enum TextSize implements ToYaml
     {
         switch (this)
         {
+            case SUPER_SMALL:
+                return R.dimen.text_size_super_small;
             case VERY_SMALL:
                 return R.dimen.text_size_very_small;
             case SMALL:

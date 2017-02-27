@@ -4,10 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Typeface;
-import android.text.SpannableStringBuilder;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -30,12 +26,13 @@ import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.FormattedString;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
@@ -419,7 +416,7 @@ public class NumberWidget extends Widget
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(WidgetBackground.DARK);
+            this.data().format().setBackground(Background.DARK);
 
         // ** Corners
         if (this.data().format().corners() == null)
@@ -626,7 +623,30 @@ public class NumberWidget extends Widget
 
             value.color     = this.format().descriptionStyle().color().resourceId();
             value.size      = this.format().descriptionStyle().size().resourceId();
-            value.textSpan  = this.valueSpannableString(context);
+
+
+            List<FormattedString.Span> spans = new ArrayList<>();
+
+            FormattedString.Span labelSpan =
+                    new FormattedString.Span(null,
+                                             this.format().label(),
+                                             this.format().labelStyle(),
+                                             this.format().descriptionStyle().size());
+
+            FormattedString.Span valueSpan =
+                    new FormattedString.Span(context.getString(R.string.placeholder_value),
+                                             this.valueString(),
+                                             this.format().valueStyle(),
+                                             this.format().descriptionStyle().size());
+
+            if (this.format().label() != null)
+                spans.add(labelSpan);
+
+            spans.add(valueSpan);
+
+            value.textSpan  = FormattedString.spannableStringBuilder(this.description(),
+                                                                     spans,
+                                                                     context);
         }
         else
         {
@@ -639,7 +659,7 @@ public class NumberWidget extends Widget
         return value.textView(context);
     }
 
-
+    /*
     private SpannableStringBuilder valueSpannableString(Context context)
     {
         String valueString = this.valueString();
@@ -726,6 +746,7 @@ public class NumberWidget extends Widget
 
         return builder;
     }
+    */
 
 
     private TextView valueLeftLabelView(Context context)

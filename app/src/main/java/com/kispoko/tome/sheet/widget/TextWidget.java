@@ -32,7 +32,7 @@ import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
@@ -376,7 +376,7 @@ public class TextWidget extends Widget
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(WidgetBackground.DARK);
+            this.data().format().setBackground(Background.DARK);
 
         // ** Corners
         if (this.data().format().corners() == null)
@@ -538,6 +538,7 @@ public class TextWidget extends Widget
         value.text                  = this.value();
         value.size                  = this.format().valueStyle().size().resourceId();
         value.color                 = this.format().valueStyle().color().resourceId();
+        value.font                  = this.format().valueStyle().typeface(context);
 
         // > Alignment
         // -------------------------------------------------------------------------------------
@@ -556,22 +557,6 @@ public class TextWidget extends Widget
                 layout.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
                 layout.layoutGravity = Gravity.END;
                 break;
-        }
-
-        // ** Font
-        // -------------------------------------------------------------------------------------
-
-        if (this.format().valueStyle().isBold() && this.format().valueStyle().isItalic()) {
-            value.font  = Font.serifFontBoldItalic(context);
-        }
-        else if (this.format().valueStyle().isBold()) {
-            value.font  = Font.serifFontBold(context);
-        }
-        else if (this.format().valueStyle().isItalic()) {
-            value.font  = Font.serifFontItalic(context);
-        }
-        else {
-            value.font  = Font.serifFontRegular(context);
         }
 
         // [4] Label

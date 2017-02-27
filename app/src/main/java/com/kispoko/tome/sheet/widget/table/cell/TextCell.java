@@ -4,30 +4,24 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.View;
-import android.widget.TableRow;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.Namespace;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -43,7 +37,8 @@ import java.util.UUID;
 /**
  * Text CellUnion
  */
-public class TextCell implements Model, Cell, ToYaml, Serializable
+public class TextCell extends Cell
+                      implements Model, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -59,13 +54,7 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<TextVariable>      valueVariable;
-    private PrimitiveFunctor<CellAlignment> alignment;
-
-
-    /**
-     * The text cell style. Often inherited from the text column.
-     */
-    private ModelFunctor<TextStyle>         style;
+    private ModelFunctor<TextCellFormat>    format;
 
 
     // > Internal
@@ -84,29 +73,18 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
         this.id             = null;
 
         this.valueVariable  = ModelFunctor.empty(TextVariable.class);
-        this.alignment      = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.style          = ModelFunctor.empty(TextStyle.class);
+        this.format         = ModelFunctor.empty(TextCellFormat.class);
     }
 
 
     public TextCell(UUID id,
                     TextVariable valueVariable,
-                    CellAlignment alignment,
-                    TextStyle style)
+                    TextCellFormat format)
     {
-        // ** Id
         this.id             = id;
 
-        // ** Value
         this.valueVariable  = ModelFunctor.full(valueVariable, TextVariable.class);
-
-        // ** Alignment
-        this.alignment      = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-
-        // ** Style
-        this.style          = ModelFunctor.full(style, TextStyle.class);
-
-        this.setStyle(style);
+        this.format         = ModelFunctor.full(format, TextCellFormat.class);
 
         // > Initialize state
         this.initializeTextCell();
@@ -116,13 +94,12 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     public static TextCell fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID          id        = UUID.randomUUID();
+        UUID           id     = UUID.randomUUID();
 
-        TextVariable  value     = TextVariable.fromYaml(yaml.atMaybeKey("value"));
-        CellAlignment alignment = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
-        TextStyle     style     = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
+        TextVariable   value  = TextVariable.fromYaml(yaml.atMaybeKey("value"));
+        TextCellFormat format = TextCellFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        return new TextCell(id, value, alignment, style);
+        return new TextCell(id, value, format);
     }
 
 
@@ -178,13 +155,19 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putYaml("value", this.valueVariable())
-                .putYaml("alignment", this.alignment())
-                .putYaml("style", this.style());
+                .putYaml("format", this.format());
     }
 
 
     // > Cell
     // ------------------------------------------------------------------------------------------
+
+    @Override
+    public Alignment alignment()
+    {
+        return this.format().alignment();
+    }
+
 
     /**
      * Set the cells widget container (which is the parent Table Row).
@@ -275,89 +258,55 @@ public class TextCell implements Model, Cell, ToYaml, Serializable
     }
 
 
-    // ** Alignment
+    // ** Format
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the alignment of this cell.
-     * @return The cell Alignment.
+     * The text cell formatting options.
+     * @return The format.
      */
-    public CellAlignment alignment()
+    public TextCellFormat format()
     {
-        return this.alignment.getValue();
-    }
-
-
-    // ** Style
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The text cell style. Often inherited from the column.
-     * @return The text cell Text Style.
-     */
-    public TextStyle style()
-    {
-        return this.style.getValue();
-    }
-
-
-    /**
-     * Set the text cell's text style. If null, a default style is provided.
-     * @param style The text style.
-     */
-    public void setStyle(TextStyle style)
-    {
-        if (style != null) {
-            this.style.setValue(style);
-        }
-        else {
-            TextStyle defaultTextCellStyle = new TextStyle(UUID.randomUUID(),
-                                                             TextColor.THEME_MEDIUM,
-                                                             TextSize.MEDIUM_SMALL);
-            this.style.setValue(defaultTextCellStyle);
-        }
+        return this.format.getValue();
     }
 
 
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public View view(TextColumn column)
+    public LinearLayout view(TextColumn column, Context context)
     {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
+        LinearLayout layout = this.layout(column, context);
 
-        Context context = SheetManager.currentSheetContext();
+        // > Text
+        layout.addView(valueTextView(column, context));
 
-        TextViewBuilder cellView = new TextViewBuilder();
+        return layout;
+    }
+
+
+    private TextView valueTextView(TextColumn column, Context context)
+    {
+        TextViewBuilder value = new TextViewBuilder();
         this.valueViewId = Util.generateViewId();
 
-        // [2] Cell View
-        // --------------------------------------------------------------------------------------
 
-        cellView.id         = this.valueViewId;
-        cellView.layoutType = LayoutType.TABLE_ROW;
-        cellView.width      = TableRow.LayoutParams.WRAP_CONTENT;
-        cellView.height     = TableRow.LayoutParams.WRAP_CONTENT;
-        cellView.size       = R.dimen.widget_table_cell_text_size;
+        value.id         = this.valueViewId;
+        value.width      = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height     = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        // > Font
-        if (column.style().isBold()) {
-            cellView.font   = Font.serifFontBold(context);
-            cellView.color  = R.color.dark_blue_hl_3;
-        }
-        else {
-            cellView.font   = Font.serifFontRegular(context);
-            cellView.color  = R.color.dark_blue_hl_1;
-        }
+        TextStyle valuestyle = this.format().resolveStyle(column.style());
+        valuestyle.styleTextViewBuilder(value, context);
 
+        // > Value
         if (this.value() != null)
-            cellView.text = this.value();
+            value.text = this.value();
         else
-            cellView.text = column.defaultValue();
+            value.text = column.defaultValue();
 
-        return cellView.textView(context);
+        return value.textView(context);
     }
+
 
 
     // INTERNAL

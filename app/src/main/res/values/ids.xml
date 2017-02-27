@@ -12,6 +12,8 @@
     <!-- COMPONENT: TEXT -->
     <item name="comp_text_editor_value" type="id"/>
 
+    <!-- WIDGET: TABLE: CELL: BOOLEAN-->
+    <item name="boolean_cell_text" type="id"/>
 
     <!-- VALUE SET ROW -->
     <item name="value_set_row_layout" type="id"/>

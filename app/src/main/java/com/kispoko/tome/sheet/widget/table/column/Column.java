@@ -2,7 +2,8 @@
 package com.kispoko.tome.sheet.widget.table.column;
 
 
-import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
+import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 
 
 
@@ -11,7 +12,8 @@ import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
  */
 public interface Column
 {
-    String name();
-    CellAlignment alignment();
-    Integer width();
+    String    name();
+    TextStyle style();
+    Alignment alignment();
+    Integer   width();
 }

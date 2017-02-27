@@ -10,6 +10,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.ElementBackground;
 import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextFont;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
@@ -333,8 +334,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
             TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
                                                         TextColor.GOLD_VERY_LIGHT,
                                                         TextSize.MEDIUM,
-                                                        true,
-                                                        false,
+                                                        TextFont.BOLD,
                                                         false,
                                                         Alignment.LEFT);
             this.labelStyle.setValue(defaultLabelStyle);

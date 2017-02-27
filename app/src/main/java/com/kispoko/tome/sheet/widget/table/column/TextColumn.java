@@ -2,9 +2,7 @@
 package com.kispoko.tome.sheet.widget.table.column;
 
 
-import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -17,6 +15,7 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.width;
 
 
 /**
@@ -42,14 +41,8 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     private PrimitiveFunctor<String>        name;
     private PrimitiveFunctor<String>        defaultValue;
     private PrimitiveFunctor<String>        defaultLabel;
-    private PrimitiveFunctor<CellAlignment> alignment;
 
-    /**
-     * The column's text style. Any style elements defined are applied to each cell in the column.
-     */
-    private ModelFunctor<TextStyle>         style;
-
-    private PrimitiveFunctor<Integer>       width;
+    private ModelFunctor<TextColumnFormat>  format;
 
     /**
      * True if the cells in this column define a namespace over the column row.
@@ -72,9 +65,7 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
         this.name               = new PrimitiveFunctor<>(null, String.class);
         this.defaultValue       = new PrimitiveFunctor<>(null, String.class);
         this.defaultLabel       = new PrimitiveFunctor<>(null, String.class);
-        this.alignment          = new PrimitiveFunctor<>(null, CellAlignment.class);
-        this.style              = ModelFunctor.empty(TextStyle.class);
-        this.width              = new PrimitiveFunctor<>(null, Integer.class);
+        this.format             = ModelFunctor.empty(TextColumnFormat.class);
         this.definesNamespace   = new PrimitiveFunctor<>(null, Boolean.class);
         this.isNamespaced       = new PrimitiveFunctor<>(null, Boolean.class);
     }
@@ -84,9 +75,7 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
                       String name,
                       String defaultValue,
                       String defaultLabel,
-                      CellAlignment alignment,
-                      TextStyle style,
-                      Integer width,
+                      TextColumnFormat format,
                       Boolean definesNamespace,
                       Boolean isNamespaced)
     {
@@ -95,14 +84,10 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
         this.name               = new PrimitiveFunctor<>(name, String.class);
         this.defaultValue       = new PrimitiveFunctor<>(defaultValue, String.class);
         this.defaultLabel       = new PrimitiveFunctor<>(defaultLabel, String.class);
-        this.alignment          = new PrimitiveFunctor<>(alignment, CellAlignment.class);
-        this.style              = ModelFunctor.full(style, TextStyle.class);
-        this.width              = new PrimitiveFunctor<>(width, Integer.class);
+        this.format             = ModelFunctor.empty(TextColumnFormat.class);
         this.definesNamespace   = new PrimitiveFunctor<>(definesNamespace, Boolean.class);
         this.isNamespaced       = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
 
-        this.setAlignment(alignment);
-        this.setStyle(style);
         this.setDefinesNamespace(definesNamespace);
         this.setIsNamespaced(isNamespaced);
     }
@@ -117,18 +102,16 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     public static TextColumn fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID          id                = UUID.randomUUID();
+        UUID             id                = UUID.randomUUID();
 
-        String        name              = yaml.atKey("name").getString();
-        String        defaultValue      = yaml.atKey("default_value").getString();
-        String        defaultLabel      = yaml.atMaybeKey("default_label").getString();
-        CellAlignment alignment         = CellAlignment.fromYaml(yaml.atMaybeKey("alignment"));
-        TextStyle     style             = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
-        Integer       width             = yaml.atKey("width").getInteger();
-        Boolean       definesNamespace  = yaml.atMaybeKey("defines_namespace").getBoolean();
-        Boolean       isNamespaced      = yaml.atMaybeKey("namespaced").getBoolean();
+        String           name              = yaml.atKey("name").getString();
+        String           defaultValue      = yaml.atKey("default_value").getString();
+        String           defaultLabel      = yaml.atMaybeKey("default_label").getString();
+        TextColumnFormat format            = TextColumnFormat.fromYaml(yaml.atMaybeKey("format"));
+        Boolean          definesNamespace  = yaml.atMaybeKey("defines_namespace").getBoolean();
+        Boolean          isNamespaced      = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new TextColumn(id, name, defaultValue, defaultLabel, alignment, style, width,
+        return new TextColumn(id, name, defaultValue, defaultLabel, format,
                               definesNamespace, isNamespaced);
     }
 
@@ -195,85 +178,36 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     // > Column
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * Get the column name.
-     * @return The column name.
-     */
+    @Override
     public String name()
     {
         return this.name.getValue();
     }
 
 
-    /**
-     * Get the alignment of this column. All cells in the column should have the same alignment.
-     * @return The column alignment.
-     */
-    public CellAlignment alignment()
+    @Override
+    public Alignment alignment()
     {
-        return this.alignment.getValue();
+        return this.format().alignment();
     }
 
 
-    /**
-     * Get the column width. All cells in the column should have the same width.
-     * @return The column width.
-     */
+    @Override
     public Integer width()
     {
-        return this.width.getValue();
+        return this.format().width();
+    }
+
+
+    @Override
+    public TextStyle style()
+    {
+        return this.format().style();
     }
 
 
     // > State
     // ------------------------------------------------------------------------------------------
-
-    // ** Alignment
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Set the alignment of the cells in the column.
-     * @param alignment The cell alignment. If null, defaults to CENTER.
-     */
-    public void setAlignment(CellAlignment alignment)
-    {
-        if (alignment != null)
-            this.alignment.setValue(alignment);
-        else
-            this.alignment.setValue(CellAlignment.CENTER);
-    }
-
-
-    // ** Style
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The column's text style. Any style elements defined are applied to each cell in the column.
-     * @return Is Bold?
-     */
-    public TextStyle style()
-    {
-        return this.style.getValue();
-    }
-
-
-    /**
-     * Set the column's default text style.
-     * @param style The text style.
-     */
-    public void setStyle(TextStyle style)
-    {
-        if (style != null) {
-            this.style.setValue(style);
-        }
-        else {
-            TextStyle defaultTextColumnStyle = new TextStyle(UUID.randomUUID(),
-                                                             TextColor.THEME_MEDIUM,
-                                                             TextSize.MEDIUM_SMALL);
-            this.style.setValue(defaultTextColumnStyle);
-        }
-    }
-
 
     // ** Default Value
     // ------------------------------------------------------------------------------------------
@@ -300,6 +234,19 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
     public String defaultLabel()
     {
         return this.defaultLabel.getValue();
+    }
+
+
+    // ** Format
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The text column format.
+     * @return The format.
+     */
+    public TextColumnFormat format()
+    {
+        return this.format.getValue();
     }
 
 

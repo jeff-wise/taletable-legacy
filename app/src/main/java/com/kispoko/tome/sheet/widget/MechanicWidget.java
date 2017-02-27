@@ -10,7 +10,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.mechanic.Mechanic;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
-import com.kispoko.tome.sheet.widget.util.WidgetBackground;
+import com.kispoko.tome.sheet.widget.util.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -206,7 +206,7 @@ public class MechanicWidget extends Widget implements Serializable
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(WidgetBackground.NONE);
+            this.data().format().setBackground(Background.NONE);
     }
 
 
