@@ -13,12 +13,17 @@
         <!--android:color="@color/sheet_light_border">-->
     <!--</stroke>-->
 
-    <padding
-        android:left="0dp"
-        android:top="12dp"
-        android:right="0dp"
-        android:bottom="12dp">
-    </padding>
+    <!--<padding-->
+        <!--android:left="0dp"-->
+        <!--android:top="12dp"-->
+        <!--android:right="0dp"-->
+        <!--android:bottom="12dp">-->
+    <!--</padding>-->
+
+    <size
+        android:height="37dp">
+    </size>
+
 
     <corners
         android:radius="3dp" >

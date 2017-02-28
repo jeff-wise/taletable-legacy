@@ -78,6 +78,7 @@
     <dimen name="group_padding_horz">7dp</dimen>
     <dimen name="group_background_padding_horz">11dp</dimen>
     <dimen name="group_background_padding_vert">12dp</dimen>
+    <dimen name="group_label_margins_horz">10dp</dimen>
 
     <dimen name="group_label_margin_left">10dp</dimen>
     <dimen name="group_label_text_size">4.4sp</dimen>
@@ -188,12 +189,16 @@
 
 
     <!-- WIDGET: LOG  -->
-    <dimen name="widget_log_entry_title_text_size">4.4sp</dimen>
-    <dimen name="widget_log_entry_title_margin_bottom">3dp</dimen>
-    <dimen name="widget_log_entry_date_text_size">3.7sp</dimen>
-    <dimen name="widget_log_entry_date_margin_bottom">3dp</dimen>
-    <dimen name="widget_log_entry_author_text_size">3.7sp</dimen>
+    <dimen name="widget_log_entry_layout_padding_horz">4.4dp</dimen>
+    <dimen name="widget_log_entry_layout_padding_vert">16dp</dimen>
+    <dimen name="widget_log_entry_title_text_size">5sp</dimen>
+    <dimen name="widget_log_entry_title_margin_bottom">6dp</dimen>
+    <dimen name="widget_log_entry_date_text_size">3.5sp</dimen>
+    <dimen name="widget_log_entry_date_margin_bottom">6dp</dimen>
+    <dimen name="widget_log_entry_author_text_size">3.5sp</dimen>
     <dimen name="widget_log_entry_text_text_size">3.7sp</dimen>
+    <dimen name="widget_log_entry_author_margin_bottom">6dp</dimen>
+    <dimen name="widget_log_entry_summary_text_size">3.7sp</dimen>
     <dimen name="widget_log_entry_header_margin_bottom">6dp</dimen>
     <dimen name="widget_log_entry_text_padding_horz">6dp</dimen>
 

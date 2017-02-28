@@ -26,7 +26,7 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.option.OptionWidgetFormat;
 import com.kispoko.tome.sheet.widget.option.ViewType;
-import com.kispoko.tome.sheet.widget.util.Background;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
@@ -40,6 +40,7 @@ import com.kispoko.tome.util.yaml.YamlParser;
 
 import java.io.Serializable;
 import java.util.UUID;
+
 
 
 /**

@@ -11,6 +11,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.table.column.Column;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
@@ -29,6 +30,7 @@ public abstract class Cell
 
     public abstract List<Variable> namespacedVariables();
     public abstract Alignment      alignment();
+    public abstract Background     background();
 
 
     // SHARED METHODS
@@ -53,6 +55,7 @@ public abstract class Cell
         layout.gravity          = cellAlignment.gravityConstant() | Gravity.CENTER_VERTICAL;
 
 
+        layout.backgroundColor      = this.background().colorId();
         layout.backgroundResource   = R.drawable.bg_cell;
 
 

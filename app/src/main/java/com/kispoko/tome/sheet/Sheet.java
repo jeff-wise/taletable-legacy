@@ -213,6 +213,7 @@ public class Sheet implements Model
 
         this.profileSection().initialize();
         this.encounterSection().initialize();
+        this.campaignSection().initialize();
 
         this.summary.setValue(sheetSummary());
         this.summary.save();

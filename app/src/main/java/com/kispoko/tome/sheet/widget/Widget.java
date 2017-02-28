@@ -11,7 +11,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.group.GroupParent;
-import com.kispoko.tome.sheet.widget.util.Background;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;

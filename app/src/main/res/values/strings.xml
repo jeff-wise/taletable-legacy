@@ -42,6 +42,8 @@
     <string name="placeholder_label">&lt;label&gt;</string>
     <string name="placeholder_value">&lt;value&gt;</string>
 
+    <string name="by">By</string>
+
 
     <!-- DIALOG -->
     <!-- ==================================================================================== -->

@@ -84,7 +84,7 @@ public class TextColumn implements Model, Column, ToYaml, Serializable
         this.name               = new PrimitiveFunctor<>(name, String.class);
         this.defaultValue       = new PrimitiveFunctor<>(defaultValue, String.class);
         this.defaultLabel       = new PrimitiveFunctor<>(defaultLabel, String.class);
-        this.format             = ModelFunctor.empty(TextColumnFormat.class);
+        this.format             = ModelFunctor.full(format, TextColumnFormat.class);
         this.definesNamespace   = new PrimitiveFunctor<>(definesNamespace, Boolean.class);
         this.isNamespaced       = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
 

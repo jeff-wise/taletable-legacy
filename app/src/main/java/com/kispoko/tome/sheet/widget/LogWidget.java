@@ -3,12 +3,14 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.log.LogEntry;
-import com.kispoko.tome.sheet.widget.util.Background;
+import com.kispoko.tome.sheet.widget.log.LogWidgetFormat;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
@@ -20,7 +22,6 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
-
 
 
 /**
@@ -36,14 +37,21 @@ public class LogWidget extends Widget
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                            id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private CollectionFunctor<LogEntry> entries;
-    private ModelFunctor<WidgetData>    widgetData;
+    private CollectionFunctor<LogEntry>     entries;
+    private ModelFunctor<LogWidgetFormat>   format;
+    private ModelFunctor<WidgetData>        widgetData;
+
+
+    // > Internal
+    // -----------------------------------------------------------------------------------------
+
+    private GroupParent                     groupParent;
 
 
     // CONSTRUCTORS
@@ -54,15 +62,20 @@ public class LogWidget extends Widget
         this.id                 = null;
 
         this.entries            = CollectionFunctor.empty(LogEntry.class);
+        this.format             = ModelFunctor.empty(LogWidgetFormat.class);
         this.widgetData         = ModelFunctor.empty(WidgetData.class);
     }
 
 
-    public LogWidget(UUID id, List<LogEntry> entries, WidgetData widgetData)
+    public LogWidget(UUID id,
+                     List<LogEntry> entries,
+                     LogWidgetFormat format,
+                     WidgetData widgetData)
     {
         this.id                 = id;
 
         this.entries            = CollectionFunctor.full(entries, LogEntry.class);
+        this.format             = ModelFunctor.full(format, LogWidgetFormat.class);
         this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
 
         this.initializeLogWidget();
@@ -87,9 +100,11 @@ public class LogWidget extends Widget
             }
         }, true);
 
+        LogWidgetFormat format = LogWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
+
         WidgetData     data    = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
 
-        return new LogWidget(id, entries, data);
+        return new LogWidget(id, entries, format, data);
     }
 
 
@@ -156,7 +171,11 @@ public class LogWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public void initialize(GroupParent groupParent) { }
+    public void initialize(GroupParent groupParent)
+    {
+        this.groupParent = groupParent;
+        Log.d("***LOGWIDGET", "initializing log widget");
+    }
 
 
     @Override
@@ -180,6 +199,9 @@ public class LogWidget extends Widget
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Entries
+    // ------------------------------------------------------------------------------------------
+
     /**
      * The log entries.
      * @return The entries.
@@ -187,6 +209,19 @@ public class LogWidget extends Widget
     public List<LogEntry> entries()
     {
         return this.entries.getValue();
+    }
+
+
+    // ** Format
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The log widget formatting options.
+     * @return The format.
+     */
+    public LogWidgetFormat format()
+    {
+        return this.format.getValue();
     }
 
 
@@ -219,7 +254,7 @@ public class LogWidget extends Widget
         LinearLayout layout = this.widgetViewLayout(context);
 
         for (LogEntry entry : this.entries()) {
-            layout.addView(entry.view(context));
+            layout.addView(entry.view(this.format().dividerType(), this.groupParent, context));
         }
 
         return layout;

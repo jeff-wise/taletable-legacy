@@ -11,15 +11,18 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.table.TableRow;
+import com.kispoko.tome.sheet.widget.table.TableWidgetFormat;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
+import com.kispoko.tome.sheet.widget.table.cell.TextCellFormat;
 import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
+import com.kispoko.tome.sheet.widget.table.column.TextColumnFormat;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
-import com.kispoko.tome.sheet.widget.util.Background;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -35,7 +38,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 
 
 /**
@@ -54,6 +56,7 @@ public class TableWidget extends Widget
     // > Functors
     // ------------------------------------------------------------------------------------------
 
+    private ModelFunctor<TableWidgetFormat> format;
     private ModelFunctor<WidgetData>        widgetData;
     private CollectionFunctor<ColumnUnion>  columns;
     private CollectionFunctor<TableRow>     rows;
@@ -74,6 +77,7 @@ public class TableWidget extends Widget
     {
         this.id         = null;
 
+        this.format     = ModelFunctor.empty(TableWidgetFormat.class);
         this.widgetData = ModelFunctor.empty(WidgetData.class);
 
         List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
@@ -87,12 +91,14 @@ public class TableWidget extends Widget
 
 
     public TableWidget(UUID id,
+                       TableWidgetFormat format,
                        WidgetData widgetData,
                        List<ColumnUnion> columns,
                        List<TableRow> rows)
     {
-        this.id = id;
+        this.id         = id;
 
+        this.format     = ModelFunctor.full(format, TableWidgetFormat.class);
         this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
 
         List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
@@ -118,10 +124,13 @@ public class TableWidget extends Widget
     public static TableWidget fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID         id             = UUID.randomUUID();
+        UUID              id      = UUID.randomUUID();
+
+        // ** Format
+        TableWidgetFormat format  = TableWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
         // ** Widget Data
-        WidgetData   widgetData     = WidgetData.fromYaml(yaml.atKey("data"), false);
+        WidgetData   widgetData   = WidgetData.fromYaml(yaml.atKey("data"), false);
 
         // ** Columns
         final List<ColumnUnion> columns
@@ -140,7 +149,7 @@ public class TableWidget extends Widget
             }
         });
 
-        return new TableWidget(id, widgetData, columns, rows);
+        return new TableWidget(id, format, widgetData, columns, rows);
     }
 
 
@@ -196,6 +205,7 @@ public class TableWidget extends Widget
     {
         return YamlBuilder.map()
                 .putYaml("data", this.data())
+                .putYaml("format", this.format())
                 .putList("columns", this.columns())
                 .putList("rows", this.rows());
     }
@@ -228,6 +238,19 @@ public class TableWidget extends Widget
 
     // > State
     // ------------------------------------------------------------------------------------------
+
+    // ** Format
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The table widget formatting options.
+     * @return The format.
+     */
+    public TableWidgetFormat format()
+    {
+        return this.format.getValue();
+    }
+
 
     // ** Width
     // ------------------------------------------------------------------------------------------
@@ -392,10 +415,13 @@ public class TableWidget extends Widget
                                                       TextColor.THEME_DARK,
                                                       TextSize.SUPER_SMALL);
 
+            TextCellFormat format = new TextCellFormat(UUID.randomUUID(),
+                                                       columnUnion.column().alignment(),
+                                                       Background.NONE,
+                                                       headerCellStyle);
             TextCell headerCell = new TextCell(UUID.randomUUID(),
                                                headerCellValue,
-                                               columnUnion.column().alignment(),
-                                               headerCellStyle);
+                                               format);
             CellUnion headerCellUnion = CellUnion.asText(null, headerCell);
             headerCells.add(headerCellUnion);
         }
@@ -413,9 +439,6 @@ public class TableWidget extends Widget
         tableRow.layoutType         = LayoutType.TABLE;
         tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT;
         tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT;
-
-//        tableRow.padding.top        = R.dimen.widget_table_row_padding_vert;
-//        tableRow.padding.bottom     = R.dimen.widget_table_row_padding_vert;
 
         tableRow.padding.left   = R.dimen.widget_table_row_padding_horz;
         tableRow.padding.right  = R.dimen.widget_table_row_padding_horz;
@@ -454,28 +477,31 @@ public class TableWidget extends Widget
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.shrinkAllColumns     = true;
 
-        switch (this.data().format().background())
+        if (this.format().showDividers())
         {
-            case NONE:
-                switch (this.groupParent.background())
-                {
-                    case LIGHT:
-                        layout.divider = R.drawable.table_row_divider_light;
-                        break;
-                    case MEDIUM:
-                        layout.divider = R.drawable.table_row_divider_medium;
-                        break;
-                    case DARK:
-                        layout.divider = R.drawable.table_row_divider_dark;
-                        break;
-                }
-                break;
-            case LIGHT:
-                layout.divider = R.drawable.table_row_divider_light;
-                break;
-            case DARK:
-                layout.divider = R.drawable.table_row_divider_medium;
-                break;
+            switch (this.data().format().background())
+            {
+                case NONE:
+                    switch (this.groupParent.background())
+                    {
+                        case LIGHT:
+                            layout.divider = R.drawable.table_row_divider_light;
+                            break;
+                        case MEDIUM:
+                            layout.divider = R.drawable.table_row_divider_medium;
+                            break;
+                        case DARK:
+                            layout.divider = R.drawable.table_row_divider_dark;
+                            break;
+                    }
+                    break;
+                case LIGHT:
+                    layout.divider = R.drawable.table_row_divider_light;
+                    break;
+                case DARK:
+                    layout.divider = R.drawable.table_row_divider_medium;
+                    break;
+            }
         }
 
         return layout.tableLayout(context);
@@ -489,8 +515,6 @@ public class TableWidget extends Widget
 
         headerRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
         headerRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
-        headerRow.padding.top    = R.dimen.widget_table_header_padding_vert;
-        headerRow.padding.bottom = R.dimen.widget_table_header_padding_vert;
         headerRow.padding.left   = R.dimen.widget_table_row_padding_horz;
         headerRow.padding.right  = R.dimen.widget_table_row_padding_horz;
 
@@ -502,10 +526,12 @@ public class TableWidget extends Widget
             CellUnion headerCell = this.headerRow.cellAtIndex(i);
 
             Column column = this.columnAtIndex(i).column();
-            TextColumn textColumn = new TextColumn(null, null, null, null,
-                                                   column.alignment(),
-                                                   null,
-                                                   column.width(),
+            TextColumnFormat format = new TextColumnFormat(UUID.randomUUID(),
+                                                           null,
+                                                           column.alignment(),
+                                                           column.width(),
+                                                           null);
+            TextColumn textColumn = new TextColumn(null, null, null, null, format,
                                                    false, false);
             ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
 

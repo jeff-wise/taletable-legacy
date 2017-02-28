@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -29,7 +30,7 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                            id;
 
 
     // > Functors
@@ -38,17 +39,22 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
     /**
      * The column's default text style.
      */
-    private ModelFunctor<TextStyle>     style;
+    private ModelFunctor<TextStyle>         style;
 
     /**
      * The column's default alignment.
      */
-    private PrimitiveFunctor<Alignment> alignment;
+    private PrimitiveFunctor<Alignment>     alignment;
 
     /**
      * The column's default width.
      */
-    private PrimitiveFunctor<Integer>   width;
+    private PrimitiveFunctor<Integer>       width;
+
+    /**
+     * The column's default cell background.
+     */
+    private PrimitiveFunctor<Background>    background;
 
 
     // CONSTRUCTORS
@@ -61,16 +67,22 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
         this.style      = ModelFunctor.empty(TextStyle.class);
         this.alignment  = new PrimitiveFunctor<>(null, Alignment.class);
         this.width      = new PrimitiveFunctor<>(null, Integer.class);
+        this.background = new PrimitiveFunctor<>(null, Background.class);
     }
 
 
-    public TextColumnFormat(UUID id, TextStyle style, Alignment alignment, Integer width)
+    public TextColumnFormat(UUID id,
+                            TextStyle style,
+                            Alignment alignment,
+                            Integer width,
+                            Background background)
     {
         this.id         = id;
 
         this.style      = ModelFunctor.full(style, TextStyle.class);
         this.alignment  = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.width      = new PrimitiveFunctor<>(width, Integer.class);
+        this.background = new PrimitiveFunctor<>(background, Background.class);
     }
 
 
@@ -87,13 +99,14 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return TextColumnFormat.asDefault();
 
-        UUID id             = UUID.randomUUID();
+        UUID       id         = UUID.randomUUID();
 
-        TextStyle style     = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
-        Alignment alignment = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
-        Integer width       = yaml.atKey("width").getInteger();
+        TextStyle  style      = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
+        Alignment  alignment  = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
+        Integer    width      = yaml.atKey("width").getInteger();
+        Background background = Background.fromYaml(yaml.atMaybeKey("background"));
 
-        return new TextColumnFormat(id, style, alignment, width);
+        return new TextColumnFormat(id, style, alignment, width, background);
     }
 
 
@@ -112,6 +125,7 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
         format.setStyle(null);
         format.setAlignment(null);
         format.setWidth(null);
+        format.setBackground(null);
 
         return format;
     }
@@ -155,7 +169,8 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
         return YamlBuilder.map()
                 .putYaml("style", this.style())
                 .putYaml("alignment", this.alignment())
-                .putInteger("width", this.width());
+                .putInteger("width", this.width())
+                .putYaml("background", this.background());
     }
 
 
@@ -236,6 +251,28 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
         this.width.setValue(width);
     }
 
+
+    // ** Background
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The text column default cell background.
+     * @return The Background.
+     */
+    public Background background()
+    {
+        return this.background.getValue();
+    }
+
+
+    /**
+     * Set the default cell background.
+     * @param background The background.
+     */
+    public void setBackground(Background background)
+    {
+        this.background.setValue(background);
+    }
 
 
 }

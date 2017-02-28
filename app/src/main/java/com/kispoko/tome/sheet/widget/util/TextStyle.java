@@ -323,7 +323,7 @@ public class TextStyle implements Model, ToYaml, Serializable
         if (font != null)
             this.font.setValue(font);
         else
-            this.font.setValue(TextFont.NORMAL);
+            this.font.setValue(TextFont.REGULAR);
     }
 
 
@@ -360,7 +360,7 @@ public class TextStyle implements Model, ToYaml, Serializable
     {
         switch (this.font())
         {
-            case NORMAL:
+            case REGULAR:
                 return Font.serifFontRegular(context);
             case BOLD:
                 return Font.serifFontBold(context);

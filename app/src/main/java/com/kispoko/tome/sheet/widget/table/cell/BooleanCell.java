@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Icon;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,7 +17,7 @@ import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
-import com.kispoko.tome.sheet.widget.table.column.Column;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
@@ -177,6 +176,13 @@ public class BooleanCell extends Cell
     public Alignment alignment()
     {
         return this.format().alignment();
+    }
+
+
+    @Override
+    public Background background()
+    {
+        return this.format().background();
     }
 
 

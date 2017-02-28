@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -46,6 +47,11 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>       width;
 
     /**
+     * The default background for cells in this column.
+     */
+    private PrimitiveFunctor<Background>    background;
+
+    /**
      * The default column text style.
      */
     private ModelFunctor<TextStyle>         style;
@@ -80,6 +86,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
 
         this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
         this.width          = new PrimitiveFunctor<>(null, Integer.class);
+        this.background     = new PrimitiveFunctor<>(null, Background.class);
 
         this.style          = ModelFunctor.empty(TextStyle.class);
         this.trueStyle      = ModelFunctor.empty(TextStyle.class);
@@ -93,6 +100,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
     public BooleanColumnFormat(UUID id,
                                Alignment alignment,
                                Integer width,
+                               Background background,
                                TextStyle style,
                                TextStyle trueStyle,
                                TextStyle falseStyle,
@@ -104,6 +112,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
 
         this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.width          = new PrimitiveFunctor<>(width, Integer.class);
+        this.background     = new PrimitiveFunctor<>(background, Background.class);
 
         this.style          = ModelFunctor.full(style, TextStyle.class);
         this.trueStyle      = ModelFunctor.full(trueStyle, TextStyle.class);
@@ -126,20 +135,21 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return BooleanColumnFormat.asDefault();
 
-        UUID      id            = UUID.randomUUID();
+        UUID       id            = UUID.randomUUID();
 
-        Alignment alignment     = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
-        Integer   width         = yaml.atMaybeKey("width").getInteger();
+        Alignment  alignment     = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
+        Integer    width         = yaml.atMaybeKey("width").getInteger();
+        Background background    = Background.fromYaml(yaml.atMaybeKey("background"));
 
-        TextStyle style         = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
-        TextStyle trueStyle     = TextStyle.fromYaml(yaml.atMaybeKey("true_style"), false);
-        TextStyle falseStyle    = TextStyle.fromYaml(yaml.atMaybeKey("false_style"), false);
+        TextStyle  style         = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
+        TextStyle  trueStyle     = TextStyle.fromYaml(yaml.atMaybeKey("true_style"), false);
+        TextStyle  falseStyle    = TextStyle.fromYaml(yaml.atMaybeKey("false_style"), false);
 
-        Boolean   showTrueIcon  = yaml.atMaybeKey("show_true_icon").getBoolean();
-        Boolean   showFalseIcon = yaml.atMaybeKey("show_false_icon").getBoolean();
+        Boolean    showTrueIcon  = yaml.atMaybeKey("show_true_icon").getBoolean();
+        Boolean    showFalseIcon = yaml.atMaybeKey("show_false_icon").getBoolean();
 
-        return new BooleanColumnFormat(id, alignment, width, style, trueStyle, falseStyle,
-                                       showTrueIcon, showFalseIcon);
+        return new BooleanColumnFormat(id, alignment, width, background, style,
+                                       trueStyle, falseStyle, showTrueIcon, showFalseIcon);
     }
 
 
@@ -155,6 +165,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
 
         format.setAlignment(null);
         format.setWidth(null);
+        format.setBackground(null);
 
         format.setStyle(null);
         format.setTrueStyle(null);
@@ -205,6 +216,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
         return YamlBuilder.map()
                 .putYaml("alignment", this.alignment())
                 .putInteger("width", this.width())
+                .putYaml("background", this.background())
                 .putYaml("style", this.style())
                 .putYaml("true_style", this.trueStyle())
                 .putYaml("false_style", this.falseStyle())
@@ -259,6 +271,29 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
     public void setWidth(Integer width)
     {
         this.width.setValue(width);
+    }
+
+
+    // ** Background
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The boolean column default cell background.
+     * @return The Background.
+     */
+    public Background background()
+    {
+        return this.background.getValue();
+    }
+
+
+    /**
+     * Set the default cell background.
+     * @param background The background.
+     */
+    public void setBackground(Background background)
+    {
+        this.background.setValue(background);
     }
 
 

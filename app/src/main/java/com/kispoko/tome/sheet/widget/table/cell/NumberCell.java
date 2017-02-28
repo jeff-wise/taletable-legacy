@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
@@ -188,6 +190,13 @@ public class NumberCell extends Cell
     }
 
 
+    @Override
+    public Background background()
+    {
+        return this.format().background();
+    }
+
+
     /**
      * Set the cells widget container (which is the parent Table Row).
      * @param widgetContainer The widget container.
@@ -286,7 +295,7 @@ public class NumberCell extends Cell
      * Get the cell's integer value as a string.
      * @return The cell's value as a string.
      */
-    public String valueString()
+    public String valueString(String columnValuePrefix)
     {
         Integer integerValue = this.value();
 
@@ -294,8 +303,9 @@ public class NumberCell extends Cell
         {
             String integerString = integerValue.toString();
 
-            if (this.format().valuePrefix() != null)
-                integerString = this.format().valuePrefix() + integerString;
+            String valuePrefix = this.format().resolveValuePrefix(columnValuePrefix);
+            if (valuePrefix != null)
+                integerString = valuePrefix + integerString;
 
             return integerString;
         }
@@ -366,7 +376,7 @@ public class NumberCell extends Cell
         valueStyle.styleTextViewBuilder(value, context);
 
         // > Value
-        String valueString = this.valueString();
+        String valueString = this.valueString(column.format().valuePrefix());
         if (valueString != null)
             value.text = valueString;
         else
@@ -441,7 +451,7 @@ public class NumberCell extends Cell
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
             if (this.value() != null && textView != null)
-                textView.setText(this.valueString());
+                textView.setText(this.valueString(null));
         }
     }
 

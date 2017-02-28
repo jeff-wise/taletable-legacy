@@ -47,6 +47,7 @@ import com.kispoko.tome.sheet.Summary;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.sheet.group.GroupFormat;
 import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
 import com.kispoko.tome.sheet.widget.ButtonWidget;
@@ -65,17 +66,25 @@ import com.kispoko.tome.sheet.widget.bool.BooleanWidgetFormat;
 import com.kispoko.tome.sheet.widget.button.ButtonWidgetFormat;
 import com.kispoko.tome.sheet.widget.list.ListWidgetFormat;
 import com.kispoko.tome.sheet.widget.log.LogEntry;
+import com.kispoko.tome.sheet.widget.log.LogWidgetFormat;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.widget.option.OptionWidgetFormat;
 import com.kispoko.tome.sheet.widget.table.TableRow;
+import com.kispoko.tome.sheet.widget.table.TableWidgetFormat;
 import com.kispoko.tome.sheet.widget.table.cell.BooleanCell;
+import com.kispoko.tome.sheet.widget.table.cell.BooleanCellFormat;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.cell.NumberCell;
+import com.kispoko.tome.sheet.widget.table.cell.NumberCellFormat;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
+import com.kispoko.tome.sheet.widget.table.cell.TextCellFormat;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
+import com.kispoko.tome.sheet.widget.table.column.BooleanColumnFormat;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
+import com.kispoko.tome.sheet.widget.table.column.NumberColumnFormat;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
+import com.kispoko.tome.sheet.widget.table.column.TextColumnFormat;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
@@ -122,6 +131,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(Section.class);
             modelClasses.add(Page.class);
             modelClasses.add(Group.class);
+            modelClasses.add(GroupFormat.class);
             modelClasses.add(GroupRow.class);
 
             // ** Game Mechanic
@@ -129,25 +139,28 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             // ** Widget
             modelClasses.add(WidgetUnion.class);
-            modelClasses.add(ButtonWidget.class);
-            modelClasses.add(ButtonWidgetFormat.class);
-            modelClasses.add(TextWidget.class);
-            modelClasses.add(TextWidgetFormat.class);
-            modelClasses.add(NumberWidget.class);
-            modelClasses.add(NumberWidgetFormat.class);
+
+            modelClasses.add(ActionWidget.class);
+            modelClasses.add(ActionWidgetFormat.class);
             modelClasses.add(BooleanWidget.class);
             modelClasses.add(BooleanWidgetFormat.class);
+            modelClasses.add(ButtonWidget.class);
+            modelClasses.add(ButtonWidgetFormat.class);
             modelClasses.add(ImageWidget.class);
             modelClasses.add(ListWidget.class);
             modelClasses.add(ListWidgetFormat.class);
-            modelClasses.add(TableWidget.class);
-            modelClasses.add(ActionWidget.class);
-            modelClasses.add(ActionWidgetFormat.class);
-            modelClasses.add(MechanicWidget.class);
             modelClasses.add(LogWidget.class);
+            modelClasses.add(LogWidgetFormat.class);
             modelClasses.add(LogEntry.class);
+            modelClasses.add(MechanicWidget.class);
+            modelClasses.add(NumberWidget.class);
+            modelClasses.add(NumberWidgetFormat.class);
             modelClasses.add(OptionWidget.class);
             modelClasses.add(OptionWidgetFormat.class);
+            modelClasses.add(TableWidget.class);
+            modelClasses.add(TableWidgetFormat.class);
+            modelClasses.add(TextWidget.class);
+            modelClasses.add(TextWidgetFormat.class);
 
             modelClasses.add(TableRow.class);
             modelClasses.add(WidgetData.class);
@@ -158,14 +171,20 @@ public class DatabaseManager extends SQLiteOpenHelper
             // ** Table Cell
             modelClasses.add(CellUnion.class);
             modelClasses.add(TextCell.class);
+            modelClasses.add(TextCellFormat.class);
             modelClasses.add(NumberCell.class);
+            modelClasses.add(NumberCellFormat.class);
             modelClasses.add(BooleanCell.class);
+            modelClasses.add(BooleanCellFormat.class);
 
             // ** Table Column
             modelClasses.add(ColumnUnion.class);
             modelClasses.add(BooleanColumn.class);
+            modelClasses.add(BooleanColumnFormat.class);
             modelClasses.add(NumberColumn.class);
+            modelClasses.add(NumberColumnFormat.class);
             modelClasses.add(TextColumn.class);
+            modelClasses.add(TextColumnFormat.class);
 
             // ** Mechanics
             modelClasses.add(Mechanic.class);

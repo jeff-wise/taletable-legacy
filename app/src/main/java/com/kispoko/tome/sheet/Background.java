@@ -1,9 +1,11 @@
 
-package com.kispoko.tome.sheet.widget.util;
+package com.kispoko.tome.sheet;
 
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -192,5 +194,26 @@ public enum Background implements ToYaml
                 return R.drawable.bg_widget_medium_small_corners_small;
         }
     }
+
+
+    public int colorId()
+    {
+        switch (this)
+        {
+            case LIGHT:
+                return R.color.dark_blue_3;
+            case MEDIUM_LIGHT:
+                return R.color.dark_blue_4;
+            case MEDIUM:
+                return R.color.dark_blue_5;
+            case MEDIUM_DARK:
+                return R.color.dark_blue_6;
+            case DARK:
+                return R.color.dark_blue_7;
+            default:
+                return R.color.dark_blue_5;
+        }
+    }
+
 
 }

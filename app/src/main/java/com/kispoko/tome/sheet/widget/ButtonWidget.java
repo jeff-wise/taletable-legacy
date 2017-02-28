@@ -15,7 +15,7 @@ import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.button.ButtonIcon;
 import com.kispoko.tome.sheet.widget.button.ButtonWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.Position;
-import com.kispoko.tome.sheet.widget.util.Background;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.FormattedString;

@@ -2,7 +2,9 @@
 package com.kispoko.tome.sheet.group;
 
 
-import com.kispoko.tome.sheet.ElementBackground;
+import com.kispoko.tome.sheet.Background;
+
+
 
 /**
  * Group Parent
@@ -12,5 +14,5 @@ import com.kispoko.tome.sheet.ElementBackground;
  */
 public interface GroupParent
 {
-    ElementBackground background();
+    Background background();
 }

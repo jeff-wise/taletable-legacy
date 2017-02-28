@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.util;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;

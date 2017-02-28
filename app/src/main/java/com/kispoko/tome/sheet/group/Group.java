@@ -7,12 +7,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.ElementBackground;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.TextFont;
-import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.TextStyle;
+import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
@@ -25,7 +21,6 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,21 +38,18 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                                id;
+    private UUID                        id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>            name;
-    private PrimitiveFunctor<Boolean>           showName;
-    private PrimitiveFunctor<Spacing>           spaceAbove;
-    private PrimitiveFunctor<Spacing>           spaceBelow;
-    private PrimitiveFunctor<ElementBackground> background;
-    private ModelFunctor<TextStyle>             labelStyle;
-    private PrimitiveFunctor<DividerType>       dividerType;
-    private PrimitiveFunctor<Integer>           index;
-    private CollectionFunctor<GroupRow>         rows;
+    private PrimitiveFunctor<String>    name;
+
+    private PrimitiveFunctor<Integer>   index;
+    private CollectionFunctor<GroupRow> rows;
+
+    private ModelFunctor<GroupFormat>   format;
 
 
     // CONSTRUCTORS
@@ -65,53 +57,31 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
 
     public Group()
     {
-        this.id             = null;
+        this.id         = null;
 
-        this.name           = new PrimitiveFunctor<>(null, String.class);
-        this.showName       = new PrimitiveFunctor<>(null, Boolean.class);
-        this.spaceAbove     = new PrimitiveFunctor<>(null, Spacing.class);
-        this.spaceBelow     = new PrimitiveFunctor<>(null, Spacing.class);
-        this.background     = new PrimitiveFunctor<>(null, ElementBackground.class);
-        this.labelStyle     = ModelFunctor.empty(TextStyle.class);
-        this.dividerType    = new PrimitiveFunctor<>(null, DividerType.class);
-        this.index          = new PrimitiveFunctor<>(null, Integer.class);
+        this.name       = new PrimitiveFunctor<>(null, String.class);
+        this.index      = new PrimitiveFunctor<>(null, Integer.class);
 
         this.rows       = CollectionFunctor.empty(GroupRow.class);
+
+        this.format     = ModelFunctor.empty(GroupFormat.class);
     }
 
 
     public Group(UUID id,
                  String name,
-                 Boolean showName,
-                 Spacing spaceAbove,
-                 Spacing spaceBelow,
-                 ElementBackground background,
-                 TextStyle labelStyle,
-                 DividerType dividerType,
                  Integer index,
-                 List<GroupRow> groupRows)
+                 List<GroupRow> groupRows,
+                 GroupFormat format)
     {
-        this.id             = id;
+        this.id         = id;
 
-        this.name           = new PrimitiveFunctor<>(name, String.class);
-        this.showName       = new PrimitiveFunctor<>(showName, Boolean.class);
-        this.spaceAbove     = new PrimitiveFunctor<>(spaceAbove, Spacing.class);
-        this.spaceBelow     = new PrimitiveFunctor<>(spaceBelow, Spacing.class);
-        this.background     = new PrimitiveFunctor<>(background, ElementBackground.class);
-        this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
-        this.dividerType    = new PrimitiveFunctor<>(dividerType, DividerType.class);
-        this.index          = new PrimitiveFunctor<>(index, Integer.class);
+        this.name       = new PrimitiveFunctor<>(name, String.class);
+        this.index      = new PrimitiveFunctor<>(index, Integer.class);
 
-        List<Class<? extends GroupRow>> rowClasses = new ArrayList<>();
-        rowClasses.add(GroupRow.class);
-        this.rows       = CollectionFunctor.full(groupRows, rowClasses);
+        this.rows       = CollectionFunctor.full(groupRows, GroupRow.class);
 
-        this.setShowName(showName);
-        this.setSpaceAbove(spaceAbove);
-        this.setSpaceBelow(spaceBelow);
-        this.setBackground(background);
-        this.setLabelStyle(labelStyle);
-        this.setDividerType(dividerType);
+        this.format     = ModelFunctor.full(format, GroupFormat.class);
     }
 
 
@@ -119,16 +89,10 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     public static Group fromYaml(YamlParser yaml, int groupIndex)
             throws YamlParseException
     {
-        UUID              id          = UUID.randomUUID();
+        UUID           id        = UUID.randomUUID();
 
-        String            label       = yaml.atMaybeKey("name").getString();
-        Boolean           showName    = yaml.atMaybeKey("show_name").getBoolean();
-        Spacing           spaceAbove  = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
-        Spacing           spaceBelow  = Spacing.fromYaml(yaml.atMaybeKey("space_below"));
-        ElementBackground background  = ElementBackground.fromYaml(yaml.atMaybeKey("background"));
-        TextStyle         labelStyle  = TextStyle.fromYaml(yaml.atMaybeKey("label_style"), false);
-        DividerType       dividerType = DividerType.fromYaml(yaml.atMaybeKey("divider"));
-        Integer           index       = groupIndex;
+        String         name      = yaml.atMaybeKey("name").getString();
+        Integer        index     = groupIndex;
 
         List<GroupRow> groupRows = yaml.atKey("rows").forEach(new YamlParser.ForEach<GroupRow>() {
             @Override
@@ -137,8 +101,9 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
             }
         });
 
-        return new Group(id, label, showName, spaceAbove, spaceBelow, background,
-                         labelStyle, dividerType, index, groupRows);
+        GroupFormat     format   = GroupFormat.fromYaml(yaml.atMaybeKey("format"));
+
+        return new Group(id, name, index, groupRows, format);
     }
 
 
@@ -193,175 +158,35 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putString("label", this.name())
-                .putBoolean("show_name", this.showName())
-                .putYaml("space_above", this.spaceAbove())
-                .putYaml("space_below", this.spaceBelow())
-                .putYaml("background", this.background())
-                .putYaml("label_style", this.labelStyle())
-                .putYaml("divider", this.dividerType())
-                .putList("rows", this.rows());
+                .putString("name", this.name())
+                .putList("rows", this.rows())
+                .putYaml("format", this.format());
     }
+
+
+    // > Group Parent
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public Background background()
+    {
+        return this.format().background();
+    }
+
 
     // > State
     // ------------------------------------------------------------------------------------------
 
-    // ** Label
+    // ** Name
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the group label.
-     *
+     * The group name.
      * @return The group label String.
      */
     public String name()
     {
         return this.name.getValue();
-    }
-
-
-    // ** Show Name
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * True if the group name is displayed in the sheet.
-     * @return Show name?
-     */
-    public Boolean showName()
-    {
-        return this.showName.getValue();
-    }
-
-
-    public void setShowName(Boolean showName)
-    {
-        if (showName != null)
-            this.showName.setValue(showName);
-        else
-            this.showName.setValue(true);
-    }
-
-
-    // ** Space Above
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The space above the group on the sheet.
-     * @return The Space Above.
-     */
-    public Spacing spaceAbove()
-    {
-        return this.spaceAbove.getValue();
-    }
-
-
-    public void setSpaceAbove(Spacing spaceAbove)
-    {
-        if (spaceAbove != null)
-            this.spaceAbove.setValue(spaceAbove);
-        else
-            this.spaceAbove.setValue(Spacing.SMALL);
-    }
-
-
-    // ** Space Below
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The space at the bottom of the group.
-     * @return The Space Above.
-     */
-    public Spacing spaceBelow()
-    {
-        return this.spaceBelow.getValue();
-    }
-
-
-    public void setSpaceBelow(Spacing spacing)
-    {
-        if (spacing != null)
-            this.spaceBelow.setValue(spacing);
-        else
-            this.spaceBelow.setValue(Spacing.SMALL);
-    }
-
-
-    // ** Group Background
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The group background color.
-     * @return The Group Background.
-     */
-    public ElementBackground background()
-    {
-        return this.background.getValue();
-    }
-
-
-    public void setBackground(ElementBackground background)
-    {
-        if (background != null)
-            this.background.setValue(background);
-        else
-            this.background.setValue(ElementBackground.MEDIUM);
-    }
-
-
-    // ** Label Style
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The group label style.
-     * @return The label Text Style.
-     */
-    public TextStyle labelStyle()
-    {
-        return this.labelStyle.getValue();
-    }
-
-
-    /**
-     * Set the group label style. If null, sets a default style.
-     * @param labelStyle The group label Text Style.
-     */
-    public void setLabelStyle(TextStyle labelStyle)
-    {
-        if (labelStyle != null) {
-            this.labelStyle.setValue(labelStyle);
-        }
-        else {
-            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.GOLD_VERY_LIGHT,
-                                                        TextSize.MEDIUM,
-                                                        TextFont.BOLD,
-                                                        false,
-                                                        Alignment.LEFT);
-            this.labelStyle.setValue(defaultLabelStyle);
-
-        }
-    }
-
-
-    // ** Bottom Border
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * True if the group has a bottom border (functioning as a divider).
-     * @return Bottom border?
-     */
-    public DividerType dividerType()
-    {
-        return this.dividerType.getValue();
-    }
-
-
-    public void setDividerType(DividerType dividerType)
-    {
-        if (dividerType != null)
-            this.dividerType.setValue(dividerType);
-        else
-            this.dividerType.setValue(DividerType.NONE);
     }
 
 
@@ -391,6 +216,19 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     }
 
 
+    // ** Format
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The group formatting options.
+     * @return The format.
+     */
+    public GroupFormat format()
+    {
+        return this.format.getValue();
+    }
+
+
     // > View
     // ------------------------------------------------------------------------------------------
 
@@ -398,14 +236,14 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     {
         LinearLayout layout = this.layout(context);
 
-        if (this.showName())
-            layout.addView(this.labelView(context));
+        if (this.format().showName())
+            layout.addView(this.nameView(context));
 
         for (GroupRow groupRow : this.rows()) {
             layout.addView(groupRow.view(context));
         }
 
-        if (this.dividerType() != DividerType.NONE)
+        if (this.format().dividerType() != DividerType.NONE)
             layout.addView(dividerView(context));
 
         return layout;
@@ -413,10 +251,10 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
 
 
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Views
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private LinearLayout layout(Context context)
     {
@@ -426,49 +264,56 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.top      = this.spaceAbove().resourceId();
+        layout.padding.top      = this.format().spaceAbove().resourceId();
 
-        if (this.dividerType() == DividerType.NONE)
-            layout.padding.bottom   = this.spaceBelow().resourceId();
+        if (this.format().dividerType() == DividerType.NONE)
+            layout.padding.bottom   = this.format().spaceBelow().resourceId();
 
         // > Background
-        layout.backgroundColor  = this.background().resourceId();
+        layout.backgroundColor  = this.background().colorId();
 
         return layout.linearLayout(context);
     }
 
 
-    private LinearLayout labelView(Context context)
+    private LinearLayout nameView(Context context)
     {
         // [1] Declarations
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        TextViewBuilder     label  = new TextViewBuilder();
+        TextViewBuilder     name  = new TextViewBuilder();
 
         // [2] Layout
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.gravity          = this.labelStyle().alignment().gravityConstant();
+        layout.gravity          = this.format().nameStyle().alignment().gravityConstant();
 
-        layout.margin.left      = R.dimen.group_label_margin_left;
+//        if (this.format().nameStyle().alignment() == Alignment.LEFT)
+//            layout.margin.left      = R.dimen.group_label_margin_left;
+//
+//        if (this.format().nameStyle().alignment() == Alignment.RIGHT)
 
-        layout.child(label);
+        layout.margin.left      = R.dimen.group_label_margins_horz;
+        layout.margin.right     = R.dimen.group_label_margins_horz;
+
+        layout.child(name);
 
         // [3] Label
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
-        label.width     = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height    = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.width     = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.height    = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.id        = R.id.widget_label;
-        label.text      = this.name();
-        label.size      = this.labelStyle().size().resourceId();
-        label.color     = this.labelStyle().color().resourceId();
-        label.font      = this.labelStyle().typeface(context);
+        name.gravity   = this.format().nameStyle().alignment().gravityConstant();
+
+        name.id        = R.id.widget_label;
+        name.text      = this.name();
+
+        this.format().nameStyle().styleTextViewBuilder(name, context);
 
         return layout.linearLayout(context);
     }
@@ -482,44 +327,10 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         border.height           = R.dimen.one_dp;
 
         // > Color
-        switch (this.background())
-        {
-            case LIGHT:
-                switch (this.dividerType())
-                {
-                    case LIGHT:
-                        border.backgroundColor = R.color.dark_blue_2;
-                        break;
-                    case DARK:
-                        border.backgroundColor = R.color.dark_blue_4;
-                        break;
-                }
-                break;
-            case MEDIUM:
-                switch (this.dividerType())
-                {
-                    case LIGHT:
-                        border.backgroundColor = R.color.dark_blue_4;
-                        break;
-                    case DARK:
-                        border.backgroundColor = R.color.dark_blue_6;
-                        break;
-                }
-                break;
-            case DARK:
-                switch (this.dividerType())
-                {
-                    case LIGHT:
-                        border.backgroundColor = R.color.dark_blue_6;
-                        break;
-                    case DARK:
-                        border.backgroundColor = R.color.dark_blue_8;
-                        break;
-                }
-                break;
-        }
+        border.backgroundColor  = this.format().dividerType()
+                                      .colorIdWithBackground(this.background());
 
-        border.margin.top   = this.spaceBelow().resourceId();
+        border.margin.top   = this.format().spaceBelow().resourceId();
 
         return border.linearLayout(context);
     }

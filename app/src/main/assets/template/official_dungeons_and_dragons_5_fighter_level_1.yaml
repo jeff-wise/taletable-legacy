@@ -1749,8 +1749,9 @@ profile:
   pages:
   - name: Profile
     groups:
-    - label: General
-      show_name: false
+    - name: General
+      format:
+        show_name: false
       rows:
       - space_above: medium
         widgets:
@@ -1796,8 +1797,9 @@ profile:
                 background: none
                 name: Picture
     - name: I am a
-      space_above: medium_large
-      space_below: medium_large
+      format:
+        space_above: medium_large
+        space_below: medium_large
       rows:
       - space_above: medium_small
         widgets:
@@ -1933,8 +1935,9 @@ profile:
               type: literal
               value: true
     - name: My Body
-      space_above: medium
-      background: dark
+      format:
+        background: dark
+        space_above: medium
       rows:
       - space_above: medium_small
         widgets:
@@ -2193,12 +2196,13 @@ profile:
                 with more wealth and power.
   - name: Abilities
     groups:
-    - space_above: small
-      background: dark
-      name: Strength
-      show_name: false
-      space_below: medium
-      divider: light
+    - name: Strength
+      format:
+        background: dark
+        divider: light
+        show_name: false
+        space_below: medium
+        space_above: small
       rows:
       - space_above: small
         widgets:
@@ -2931,7 +2935,8 @@ profile:
                       value: 0
             value_prefix: '+'
     - name: Skills
-      space_above: medium_large
+      format:
+        space_above: medium_large
       rows:
       - space_above: very_small
         width: no_padding
@@ -2942,38 +2947,44 @@ profile:
               format:
                 background: none
                 label: Skills
+            format:
+              show_dividers: false
             columns:
             - type: text
               column:
                 name: NAME
                 default_value: skill
-                width: 3
-                alignment: left
-                style:
-                  color: theme_medium
-                  size: medium_small
+                format:
+                  width: 3
+                  alignment: left
+                  style:
+                    color: theme_medium
+                    size: medium_small
             - type: number
               column:
                 name: MODIFIER
                 default_value: 0
-                width: 2
-                alignment: center
-                style:
-                  color: theme_light
-                  font: bold
-                  size: medium_small
+                format:
+                  width: 2
+                  alignment: center
+                  style:
+                    color: theme_light
+                    font: bold
+                    size: medium_small
+                  value_prefix: '+'
             - type: boolean
               column:
                 name: PROFICIENT?
                 default_value: false
-                width: 2
-                alignment: center
-                style:
-                  color: theme_medium
-                  size: medium_small
-                true_style:
-                  color: green_light
-                  size: medium_small
+                format:
+                  width: 2
+                  alignment: center
+                  style:
+                    color: theme_medium
+                    size: medium_small
+                  true_style:
+                    color: green_light
+                    size: medium_small
             rows:
             - cells:
               - value:
@@ -3590,11 +3601,12 @@ profile:
   - name: Features
     groups:
     - name: Combat
-      show_name: false
-      space_above: none
-      space_below: large
-      background: dark
-      divider: light
+      format:
+        background: dark
+        divider: light
+        show_name: false
+        space_above: none
+        space_below: large
       rows:
       - space_above: large
         width: indented
@@ -3701,14 +3713,15 @@ profile:
               value: 2
             value_prefix: '+'
     - name: Other Features
-      space_above: medium_large
-      space_below: large
-      background: dark
-      label_style:
-        size: medium_small
-        color: theme_medium
-        font: bold
-        alignment: center
+      format:
+        background: dark
+        name_style:
+          size: medium_small
+          color: theme_medium
+          font: bold
+          alignment: center
+        space_above: medium_large
+        space_below: large
       rows:
       - space_above: medium
         widgets:
@@ -3779,7 +3792,8 @@ profile:
   - name: Inventory
     groups:
     - name: Wealth
-      space_above: medium_large
+      format:
+        space_above: medium_large
       rows:
       - widgets:
         - type: number
@@ -3856,8 +3870,9 @@ profile:
               type: literal
               value: 0
     - name: Weapons
-      space_above: medium_large
-      background: medium
+      format:
+        background: medium
+        space_above: medium_large
       rows:
       - space_above: medium_small
         width: no_padding
@@ -3873,23 +3888,31 @@ profile:
               column:
                 name: NAME
                 default_value: weapon
-                width: 3
-                alignment: left
+                format:
+                  width: 3
+                  alignment: left
+                  style:
+                    color: theme_light
                 defines_namespace: true
             - type: number
               column:
                 name: QUANTITY
                 default_value: 1
                 default_label: Quantity
-                width: 2
-                alignment: center
+                format:
+                  width: 2
+                  alignment: center
                 namespaced: true
             - type: boolean
               column:
                 name: EQUIPPED?
                 default_value: false
-                width: 2
-                alignment: center
+                format:
+                  width: 2
+                  alignment: center
+                  true_style:
+                    font: italic
+                    color: green_light
                 namespaced: true
             rows:
             - cells:
@@ -3934,8 +3957,9 @@ profile:
                   type: literal
                   value: false
     - name: Armor
-      space_above: medium_large
-      background: medium
+      format:
+        background: medium
+        space_above: medium_large
       rows:
       - space_above: medium_small
         width: no_padding
@@ -3950,23 +3974,31 @@ profile:
               column:
                 name: NAME
                 default_value: armor
-                width: 3
-                alignment: left
+                format:
+                  alignment: left
+                  width: 3
+                  style:
+                    color: theme_light
                 defines_namespace: true
             - type: number
               column:
                 name: QUANTITY
                 default_value: 1
                 default_label: Quantity
-                width: 2
-                alignment: center
+                format:
+                  width: 2
+                  alignment: center
                 namespaced: true
             - type: boolean
               column:
                 name: EQUIPPED?
                 default_value: false
-                width: 2
-                alignment: center
+                format:
+                  width: 2
+                  alignment: center
+                  true_style:
+                    font: italic
+                    color: green_light
                 namespaced: true
             rows:
             - cells:
@@ -3998,7 +4030,8 @@ profile:
                   type: literal
                   value: true
     - name: Gear
-      space_above: medium_large
+      format:
+        space_above: medium_large
       rows:
       - width: no_padding
         widgets:
@@ -4012,16 +4045,18 @@ profile:
               column:
                 name: NAME
                 default_value: armor
-                width: 1
-                alignment: left
+                format:
+                  width: 1
+                  alignment: left
                 defines_namespace: true
             - type: number
               column:
                 name: QUANTITY
                 default_value: 1
                 default_label: Quantity
-                width: 1
-                alignment: center
+                format:
+                  width: 1
+                  alignment: center
                 namespaced: true
             rows:
             - cells:
@@ -4109,9 +4144,10 @@ encounter:
   - name: Attacks
     groups:
     - name: Weapons
-      space_above: medium
-      space_below: medium_large
-      divider: light
+      format:
+        divider: light
+        space_above: medium
+        space_below: medium_large
       rows:
       - space_above: medium
         widgets:
@@ -4221,10 +4257,11 @@ encounter:
                         type: name
                         name: strength_modifier
     - name: Heavy Crossbow
-      show_name: false
-      space_above: medium
-      space_below: medium
-      divider: light
+      format:
+        divider: light
+        show_name: false
+        space_above: medium
+        space_below: medium
       rows:
       - space_above: small
         widgets:
@@ -4297,7 +4334,9 @@ encounter:
                       variable:
                         type: name
                         name: dexterity_modifier
-    - label: Dagger (Melee)
+    - name: Dagger (Melee)
+      format:
+        show_name: false
       rows:
       - widgets:
         - type: action
@@ -4366,10 +4405,11 @@ encounter:
     background: light
     groups:
     - name: Feelings
-      show_name: false
-      spacing_above: small
-      spacing_below: medium
-      divider: dark
+      format:
+        divider: dark
+        show_name: false
+        spacing_above: small
+        spacing_below: medium
       rows:
       - space_above: none
         widgets:
@@ -4396,13 +4436,14 @@ encounter:
                 set_name: scarborn_mood
                 value_name: anxious
     - name: Current Hit Points
-      space_above: medium_large
-      background: medium
-      label_style:
-        alignment: center
-        color: theme_medium
-        font: italic
-        size: medium_small
+      format:
+        background: medium
+        name_style:
+          alignment: center
+          color: theme_medium
+          font: italic
+          size: medium_small
+        space_above: medium_large
       rows:
       - space_above: small
         width: half
@@ -4424,8 +4465,9 @@ encounter:
               type: literal
               value: 12
     - name: Hit Points Buttons
-      show_name: false
-      space_above: none
+      format:
+        show_name: false
+        space_above: none
       rows:
       - space_above: medium_small
         widgets:
@@ -4475,17 +4517,155 @@ campaign:
   pages:
   - name: Campaign Log
     groups:
-    - name: Campaign Log
-      show_name: false
+    - name: 'Part 2: Witnesses'
+      format:
+        space_above: very_large
+        name_style:
+          alignment: center
+          color: gold_very_light
+          font: regular
+          size: very_large
       rows:
-      - widgets:
+      - space_above: large
+        widgets:
         - type: log
           widget:
+            format:
+              divider: dark
             entries:
-            - title: An Old Friend
-              date: 1486802269966
-              author: Jonathon Smith
+            - title: The Way Back Home
+              date: 1491256800000
+              author: Amy Oxford
+              summary: >
+                We retrieve the Staff of Ages and return to the city of dragons. We are too late.
               text: >
                 Yesterday I received a message from an old friend. It told me of a mission of great
                 importance. It seems that strange things are occurring in the gold kingdom. I am
                 needed. I must go immediately.
+            - title: The Descent; Secrets of the Serpents; A Pretty Goblin
+              date: 1490652000000
+              author: Derek Smith
+              summary: >
+                We descend from the canopy to the understory. Elian is bitten by a flying serpent
+                and begins to grow scales. We meet a pretty goblin.
+              text: >
+                Yesterday I received a message from an old friend. It told me of a mission of great
+                importance. It seems that strange things are occurring in the gold kingdom. I am
+                needed. I must go immediately.
+            - title: The Cloud Canopy
+              date: 1490047200000
+              author: Amy Oxford
+              summary: >
+                We enter Yanara Forest to find the protector and the Staff of Ages.
+              text: >
+                Yesterday I received a message from an old friend. It told me of a mission of great
+                importance. It seems that strange things are occurring in the gold kingdom. I am
+                needed. I must go immediately.
+            - title: A Home Forgotten
+              date: 1489442400000
+              author: Derek Smith
+              summary: >
+                We go to Liladelly, kingdom of the elves to find the piece of missing prophecy as
+                well as a cure for the poison. While there, we find something much more interesting.
+              text: >
+                Yesterday I received a message from an old friend. It told me of a mission of great
+                importance. It seems that strange things are occurring in the gold kingdom. I am
+                needed. I must go immediately.
+            - title: The Broken Promise of the First Generation
+              date: 1488837600000
+              author: Derek Smith
+              summary: >
+                We speak to King Leonaran and learn about the Broken Promise of the First
+                Generation. While defending ourselves from assassins, we learn about Icarean Poison.
+              text: >
+                Yesterday I received a message from an old friend. It told me of a mission of great
+                importance. It seems that strange things are occurring in the gold kingdom. I am
+                needed. I must go immediately.
+    - name: 'Part 1: The Trial'
+      format:
+        space_above: very_large
+        name_style:
+          alignment: center
+          color: gold_very_light
+          font: regular
+          size: very_large
+      rows:
+      - space_above: large
+        widgets:
+        - type: log
+          widget:
+            format:
+              divider: dark
+            entries:
+            - title: Journey to Cyranus, City of Dragons
+              date: 1488248188691
+              author: Derek Smith
+              summary: >
+                We leave the small town of Trelot and travel to Cyranus. On the way we encounter
+                some strange bandits and learn more about where we are.
+              text: >
+                Yesterday I received a message from an old friend. It told me of a mission of great
+                importance. It seems that strange things are occurring in the gold kingdom. I am
+                needed. I must go immediately.
+            - title: The Custodian
+              date: 1487631600000
+              author: Derek Smith
+              summary: >
+                We go through the portal and find ourselves in a mysterious new world.
+              text: >
+                Our possessions were returned to us. We began the trial.
+
+                Reluctantly, we crossed the bridge over darkness towards the portal. Once at the
+                portal, we did as the priest told us, holding our breath and jumping in.
+
+                When we awoke, we were in a strange way, already awake. We were sitting in a tavern
+                together, mugs of ale on the table in front us, some of them only half full.
+            - title: The Trial of Shattered Worlds
+              date: 1487026800000
+              author: Derek Smith
+              summary: >
+                We find ourselves prisoners in a dark cell. We find a way out, but it's not what
+                we expected.
+              text: >
+                My last memory is four days ago, not including the cycle of feverish and
+                disturbing dreams I've had in that time spent uncouncious. In the dreams, I recall
+                a recurring theme of crystal. There was a crystal kingdom, with crystal buildings
+                and crystal people. It was beautiful, I remember, and somehow it felt increcibly
+                precious, almost divine. I was there as an outsider, perhaps a witness. For in
+                every dream this precious kingdom came to a sudden end. The earth began to shake.
+                Fragile, crystalline structures shattered, exploding in fragments across the
+                city. The sky began to glow red and ash fell, as if the heavens had dumped red, hot
+                coals onto the land. Creatures of pure black descended, their skin marbled with
+                lines of fire that burst from within them, smoking and hissing. They rode currents
+                of swirling ash like mounts and threw balls of fire at the city and the people.
+                What didn't shattered melted. The people and the buildings and the entire kingdom
+                became a formless shattered mass of crystal, stained black with ash.
+
+                I awoke in a room that was pitch black. I was not alone. In the darkness I met four
+                others. We were, it seemed, trapped together in a room. Only one of us was concious
+                during the trip here, and he told us that we were in the under city, far below the
+                main city above. In fact, few of us knew about the under city. Anyone could go
+                there, but few did willingly, and even if you did, there were well-known stories of
+                the horrible things that could happen to a traveler to the under city, from being
+                killed and robbed to becoming perpetually lost in the labrythine caverns of slums.
+
+                After some time spent understanding our situation, the topic of dreams came up. It
+                turns out that I was not alone in the strange dreams. No one else dreamt of a
+                crystal kingdom, but others had dreams of similarly surreal worlds that were
+                destroyed by invaders, but still of a different nature than the fire and ash
+                creatures I had seen. Still, it appeared very coincidental that we all dreamt of
+                strange worlds and their destruction.
+
+                We began to discuss the more relevant topic of why us five in particular had been
+                captured and imprisoned together. We also spoke of how we might escape, or what
+                fate might befall us. It was then the door to the prison cell opened.
+
+                Of course, we had no possessions and had been dressed in only basic clothing. A
+                figure in dark robes, perhaps a priest of some kind, spoke to us and told us to
+                follow him, to the Trial of Shattered Worlds. He had with him nearly a dozens
+                soldiers, dressed in black plate armor and wielding barbed swords. We had no choice
+                but to comply for the time being.
+
+                We were taken through a series of dimly-lit stone cooridors for few minutes until
+                we came to a large chamber that was brightly lit.
+

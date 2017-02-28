@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -55,6 +56,11 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
      */
     private PrimitiveFunctor<String>        valuePrefix;
 
+    /**
+     * The default background for cells in the number column.
+     */
+    private PrimitiveFunctor<Background>    background;
+
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -67,6 +73,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
         this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
         this.style          = ModelFunctor.empty(TextStyle.class);
         this.valuePrefix    = new PrimitiveFunctor<>(null, String.class);
+        this.background     = new PrimitiveFunctor<>(null, Background.class);
     }
 
 
@@ -74,7 +81,8 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
                               Integer width,
                               Alignment alignment,
                               TextStyle style,
-                              String valuePrefix)
+                              String valuePrefix,
+                              Background background)
     {
         this.id             = id;
 
@@ -82,6 +90,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
         this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.style          = ModelFunctor.full(style, TextStyle.class);
         this.valuePrefix    = new PrimitiveFunctor<>(valuePrefix, String.class);
+        this.background     = new PrimitiveFunctor<>(background, Background.class);
     }
 
 
@@ -97,14 +106,15 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return NumberColumnFormat.asDefault();
 
-        UUID      id          = UUID.randomUUID();
+        UUID       id          = UUID.randomUUID();
 
-        Integer   width       = yaml.atMaybeKey("width").getInteger();
-        Alignment alignment   = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
-        TextStyle style       = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
-        String    valuePrefix = yaml.atMaybeKey("value_prefix").getString();
+        Integer    width       = yaml.atMaybeKey("width").getInteger();
+        Alignment  alignment   = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
+        TextStyle  style       = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
+        String     valuePrefix = yaml.atMaybeKey("value_prefix").getString();
+        Background background  = Background.fromYaml(yaml.atMaybeKey("background"));
 
-        return new NumberColumnFormat(id, width, alignment, style, valuePrefix);
+        return new NumberColumnFormat(id, width, alignment, style, valuePrefix, background);
     }
 
 
@@ -123,6 +133,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
 
         format.setStyle(null);
         format.setValuePrefix(null);
+        format.setBackground(null);
 
         return format;
     }
@@ -167,6 +178,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
                 .putYaml("alignment", this.alignment())
                 .putInteger("width", this.width())
                 .putYaml("style", this.style())
+                .putYaml("background", this.background())
                 .putString("value_prefix", this.valuePrefix());
     }
 
@@ -240,6 +252,29 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
     public void setStyle(TextStyle style)
     {
         this.style.setValue(style);
+    }
+
+
+    // ** Background
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The number column default cell background.
+     * @return The Background.
+     */
+    public Background background()
+    {
+        return this.background.getValue();
+    }
+
+
+    /**
+     * Set the default cell background.
+     * @param background The background.
+     */
+    public void setBackground(Background background)
+    {
+        this.background.setValue(background);
     }
 
 

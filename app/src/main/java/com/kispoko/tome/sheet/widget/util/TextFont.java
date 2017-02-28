@@ -23,7 +23,7 @@ public enum TextFont implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    NORMAL,
+    REGULAR,
     BOLD,
     ITALIC,
     BOLD_ITALIC;

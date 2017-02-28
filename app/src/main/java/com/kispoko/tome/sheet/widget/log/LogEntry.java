@@ -3,11 +3,19 @@ package com.kispoko.tome.sheet.widget.log;
 
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.DividerType;
+import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -24,7 +32,6 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.UUID;
 
-import static android.R.attr.data;
 
 
 /**
@@ -48,6 +55,7 @@ public class LogEntry implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>            title;
     private PrimitiveFunctor<GregorianCalendar> date;
     private PrimitiveFunctor<String>            author;
+    private PrimitiveFunctor<String>            summary;
     private PrimitiveFunctor<String>            text;
 
 
@@ -61,17 +69,24 @@ public class LogEntry implements Model, ToYaml, Serializable
         this.title      = new PrimitiveFunctor<>(null, String.class);
         this.date       = new PrimitiveFunctor<>(null, GregorianCalendar.class);
         this.author     = new PrimitiveFunctor<>(null, String.class);
+        this.summary    = new PrimitiveFunctor<>(null, String.class);
         this.text       = new PrimitiveFunctor<>(null, String.class);
     }
 
 
-    public LogEntry(UUID id, String title, GregorianCalendar date, String author, String text)
+    public LogEntry(UUID id,
+                    String title,
+                    GregorianCalendar date,
+                    String author,
+                    String summary,
+                    String text)
     {
         this.id         = id;
 
         this.title      = new PrimitiveFunctor<>(title, String.class);
         this.date       = new PrimitiveFunctor<>(date, GregorianCalendar.class);
         this.author     = new PrimitiveFunctor<>(author, String.class);
+        this.summary    = new PrimitiveFunctor<>(summary, String.class);
         this.text       = new PrimitiveFunctor<>(text, String.class);
     }
 
@@ -84,9 +99,10 @@ public class LogEntry implements Model, ToYaml, Serializable
         String            title     = yaml.atKey("title").getTrimmedString();
         GregorianCalendar date      = yaml.atKey("date").getCalendar();
         String            author    = yaml.atKey("author").getTrimmedString();
+        String            summary   = yaml.atMaybeKey("summary").getTrimmedString();
         String            text      = yaml.atKey("text").getTrimmedString();
 
-        return new LogEntry(id, title, date, author, text);
+        return new LogEntry(id, title, date, author, summary, text);
     }
 
 
@@ -137,14 +153,12 @@ public class LogEntry implements Model, ToYaml, Serializable
      */
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
-
-        yaml.putString("title", this.title());
-        yaml.putCalendar("date", this.date());
-        yaml.putString("author", this.author());
-        yaml.putString("text", this.text());
-
-        return yaml;
+        return YamlBuilder.map()
+                .putString("title", this.title())
+                .putCalendar("date", this.date())
+                .putString("author", this.author())
+                .putString("summary", this.summary())
+                .putString("text", this.text());
     }
 
 
@@ -182,6 +196,16 @@ public class LogEntry implements Model, ToYaml, Serializable
 
 
     /**
+     * The entry summary. A short description displayed in the header.
+     * @return The summary.
+     */
+    public String summary()
+    {
+        return this.summary.getValue();
+    }
+
+
+    /**
      * The entry's text.
      * @return The text.
      */
@@ -194,16 +218,18 @@ public class LogEntry implements Model, ToYaml, Serializable
     // > View
     // -----------------------------------------------------------------------------------------
 
-    public View view(Context context)
+    public View view(DividerType dividerType, GroupParent groupParent, Context context)
     {
         LinearLayout layout = viewLayout(context);
+
+        // > Divider
+        layout.addView(dividerView(dividerType, groupParent.background(), context));
 
         // > Header
         layout.addView(headerView(context));
 
         // > Text
-        layout.addView(textView(context));
-
+        // layout.addView(textView(context));
 
         return layout;
     }
@@ -223,6 +249,11 @@ public class LogEntry implements Model, ToYaml, Serializable
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.padding.left         = R.dimen.widget_log_entry_layout_padding_horz;
+        layout.padding.right        = R.dimen.widget_log_entry_layout_padding_horz;
+
+        layout.padding.bottom       = R.dimen.widget_log_entry_layout_padding_vert;
+
         return layout.linearLayout(context);
     }
 
@@ -232,10 +263,11 @@ public class LogEntry implements Model, ToYaml, Serializable
         // [1] Declarations
         // -------------------------------------------------------------------------------------
 
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        TextViewBuilder     title  = new TextViewBuilder();
-        TextViewBuilder     date   = new TextViewBuilder();
-        TextViewBuilder     author = new TextViewBuilder();
+        LinearLayoutBuilder layout  = new LinearLayoutBuilder();
+        TextViewBuilder     title   = new TextViewBuilder();
+        TextViewBuilder     date    = new TextViewBuilder();
+        TextViewBuilder     author  = new TextViewBuilder();
+        TextViewBuilder     summary = new TextViewBuilder();
 
         // TODO other locales?
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE MMM dd, yyyy", Locale.US);
@@ -248,13 +280,10 @@ public class LogEntry implements Model, ToYaml, Serializable
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundResource   = R.drawable.bg_log_header;
-
-        layout.margin.bottom        = R.dimen.widget_log_entry_header_margin_bottom;
-
         layout.child(title)
               .child(date)
-              .child(author);
+              .child(author)
+              .child(summary);
 
         // [3 A] Title
         // -------------------------------------------------------------------------------------
@@ -263,8 +292,8 @@ public class LogEntry implements Model, ToYaml, Serializable
         title.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         title.text                  = this.title();
-        title.font                  = Font.serifFontBold(context);
-        title.color                 = R.color.dark_blue_hlx_7;
+        title.font                  = Font.serifFontRegular(context);
+        title.color                 = R.color.dark_blue_hlx_4;
         title.size                  = R.dimen.widget_log_entry_title_text_size;
 
         title.margin.bottom         = R.dimen.widget_log_entry_title_margin_bottom;
@@ -277,7 +306,7 @@ public class LogEntry implements Model, ToYaml, Serializable
 
         date.text                   = dateString;
         date.font                   = Font.serifFontRegular(context);
-        date.color                  = R.color.dark_blue_hl_5;
+        date.color                  = R.color.dark_blue_hl_8;
         date.size                   = R.dimen.widget_log_entry_date_text_size;
 
         date.margin.bottom          = R.dimen.widget_log_entry_date_margin_bottom;
@@ -288,13 +317,44 @@ public class LogEntry implements Model, ToYaml, Serializable
         author.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
         author.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        author.text                 = this.author();
+        author.textSpan             = this.authorSpan(context);
         author.font                 = Font.serifFontRegular(context);
-        author.color                = R.color.dark_blue_hl_8;
+        author.color                = R.color.dark_blue_hl_9;
         author.size                 = R.dimen.widget_log_entry_author_text_size;
+
+        author.margin.bottom        = R.dimen.widget_log_entry_author_margin_bottom;
+
+        // [3 D] Summary
+        // -------------------------------------------------------------------------------------
+
+        summary.width               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        summary.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        summary.text                = this.summary();
+        summary.font                = Font.serifFontItalic(context);
+        summary.color               = R.color.dark_blue_hl_5;
+        summary.size                = R.dimen.widget_log_entry_summary_text_size;
 
 
         return layout.linearLayout(context);
+    }
+
+
+    private SpannableStringBuilder authorSpan(Context context)
+    {
+        String authorString = context.getString(R.string.by) + " " + this.author();
+
+        SpannableStringBuilder spanBuilder = new SpannableStringBuilder(authorString);
+
+        StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
+        spanBuilder.setSpan(valueBoldSpan, 3, authorString.length(), 0);
+
+        int colorResourceId = R.color.dark_blue_hl_2;
+        int colorId = ContextCompat.getColor(context, colorResourceId);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(colorId);
+        spanBuilder.setSpan(colorSpan, 3, authorString.length(), 0);
+
+        return spanBuilder;
     }
 
 
@@ -315,4 +375,22 @@ public class LogEntry implements Model, ToYaml, Serializable
 
         return text.textView(context);
     }
+
+
+    private LinearLayout dividerView(DividerType dividerType,
+                                     Background background,
+                                     Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = R.dimen.one_dp;
+
+        layout.margin.bottom    = R.dimen.widget_log_entry_layout_padding_vert;
+
+        layout.backgroundColor  = dividerType.colorIdWithBackground(background);
+
+        return layout.linearLayout(context);
+    }
+
 }

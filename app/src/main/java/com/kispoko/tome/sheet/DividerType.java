@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.group;
+package com.kispoko.tome.sheet;
 
 
 import com.kispoko.tome.R;
@@ -13,10 +13,6 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.kispoko.tome.sheet.group.RowWidth.HALF;
 
 
 /**
@@ -30,7 +26,8 @@ public enum DividerType implements ToYaml
 
     NONE,
     LIGHT,
-    DARK;
+    DARK,
+    VERY_DARK;
 
 
     // CONSTRUCTORS
@@ -76,6 +73,69 @@ public enum DividerType implements ToYaml
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
+    }
+
+
+    // RESOURCES
+    // ------------------------------------------------------------------------------------------
+
+    // Color Id With Background
+    // ------------------------------------------------------------------------------------------
+
+    public int colorIdWithBackground(Background background)
+    {
+        switch (background)
+        {
+            case LIGHT:
+                switch (this)
+                {
+                    case LIGHT:
+                        return R.color.dark_blue_2;
+                    case DARK:
+                        return R.color.dark_blue_4;
+                }
+                break;
+            case MEDIUM_LIGHT:
+                switch (this)
+                {
+                    case LIGHT:
+                        return R.color.dark_blue_3;
+                    case DARK:
+                        return R.color.dark_blue_5;
+                }
+                break;
+            case MEDIUM:
+                switch (this)
+                {
+                    case LIGHT:
+                        return R.color.dark_blue_4;
+                    case DARK:
+                        return R.color.dark_blue_6;
+                    case VERY_DARK:
+                        return R.color.dark_blue_7;
+                }
+                break;
+            case MEDIUM_DARK:
+                switch (this)
+                {
+                    case LIGHT:
+                        return R.color.dark_blue_5;
+                    case DARK:
+                        return R.color.dark_blue_7;
+                }
+                break;
+            case DARK:
+                switch (this)
+                {
+                    case LIGHT:
+                        return R.color.dark_blue_6;
+                    case DARK:
+                        return R.color.dark_blue_8;
+                }
+                break;
+        }
+
+        return R.color.dark_blue_5;
     }
 
 
