@@ -67,9 +67,9 @@ public abstract class Widget implements Model, ToYaml, Serializable
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.weight           = this.data().format().width().floatValue();
 
-        if (this.data().format().label() == null && rowHasLabel) {
-            layout.padding.top  = R.dimen.widget_label_fill_padding;
-        }
+//        if (this.data().format().label() == null && rowHasLabel) {
+//            layout.padding.top  = R.dimen.widget_label_fill_padding;
+//        }
 
         layout.margin.left      = R.dimen.widget_margin_horz;
         layout.margin.right     = R.dimen.widget_margin_horz;

@@ -120,6 +120,31 @@ public class TextStyle implements Model, ToYaml, Serializable
 
         this.setFont(null);
         this.setIsUnderlined(null);
+        this.setAlignment(alignment);
+        this.setColor(color);
+        this.setSize(size);
+    }
+
+
+    public TextStyle(UUID id,
+                     TextColor color,
+                     TextSize size,
+                     TextFont font,
+                     Alignment alignment)
+    {
+        this.id             = id;
+
+        this.color          = new PrimitiveFunctor<>(color, TextColor.class);
+        this.size           = new PrimitiveFunctor<>(size, TextSize.class);
+        this.font           = new PrimitiveFunctor<>(font, TextFont.class);
+        this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
+
+        this.setColor(color);
+        this.setSize(size);
+        this.setFont(font);
+        this.setAlignment(alignment);
+        this.setIsUnderlined(null);
     }
 
 
@@ -133,7 +158,7 @@ public class TextStyle implements Model, ToYaml, Serializable
     public static TextStyle fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        return TextStyle.fromYaml(yaml, true);
+        return TextStyle.fromYaml(yaml, false);
     }
 
 

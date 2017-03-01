@@ -2,8 +2,9 @@
 package com.kispoko.tome.sheet.widget.number;
 
 
+import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
@@ -31,20 +32,26 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                                    id;
+    private UUID                        id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<TextSize>              size;
-    private PrimitiveFunctor<String>                inlineLabel;
-    private PrimitiveFunctor<InlineLabelPosition>   inlineLabelPosition;
-    private ModelFunctor<TextStyle>                 descriptionStyle;
-    private ModelFunctor<TextStyle>                 valueStyle;
-    private ModelFunctor<TextStyle>                 valuePrefixStyle;
-    private ModelFunctor<TextStyle>                 valuePostfixStyle;
-    private ModelFunctor<TextStyle>                 labelStyle;
+    private PrimitiveFunctor<String>    insideLabel;
+    private PrimitiveFunctor<Position>  insideLabelPosition;
+    private ModelFunctor<TextStyle>     insideLabelStyle;
+
+    private PrimitiveFunctor<String>    outsideLabel;
+    private PrimitiveFunctor<Position>  outsideLabelPosition;
+    private ModelFunctor<TextStyle>     outsideLabelStyle;
+
+    private ModelFunctor<TextStyle>     descriptionStyle;
+
+    private ModelFunctor<TextStyle>     valueStyle;
+
+    private ModelFunctor<TextStyle>     valuePrefixStyle;
+    private ModelFunctor<TextStyle>     valuePostfixStyle;
 
 
     // CONSTRUCTORS
@@ -54,47 +61,65 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     {
         this.id                     = null;
 
-        this.size                   = new PrimitiveFunctor<>(null, TextSize.class);
-        this.inlineLabel            = new PrimitiveFunctor<>(null, String.class);
-        this.inlineLabelPosition    = new PrimitiveFunctor<>(null, InlineLabelPosition.class);
+        this.insideLabel            = new PrimitiveFunctor<>(null, String.class);
+        this.insideLabelPosition    = new PrimitiveFunctor<>(null, Position.class);
+        this.insideLabelStyle       = ModelFunctor.empty(TextStyle.class);
+
+        this.outsideLabel            = new PrimitiveFunctor<>(null, String.class);
+        this.outsideLabelPosition    = new PrimitiveFunctor<>(null, Position.class);
+        this.outsideLabelStyle       = ModelFunctor.empty(TextStyle.class);
+
         this.descriptionStyle       = ModelFunctor.empty(TextStyle.class);
+
         this.valueStyle             = ModelFunctor.empty(TextStyle.class);
+
         this.valuePrefixStyle       = ModelFunctor.empty(TextStyle.class);
         this.valuePostfixStyle      = ModelFunctor.empty(TextStyle.class);
-        this.labelStyle             = ModelFunctor.empty(TextStyle.class);
     }
 
 
     public NumberWidgetFormat(UUID id,
-                              TextSize size,
-                              String inlineLabel,
-                              InlineLabelPosition inlineLabelPosition,
+                              String insideLabel,
+                              Position insideLabelPosition,
+                              TextStyle insideLabelStyle,
+                              String outsideLabel,
+                              Position outsideLabelPosition,
+                              TextStyle outsideLabelStyle,
                               TextStyle descriptionStyle,
                               TextStyle valueStyle,
                               TextStyle valuePrefixStyle,
-                              TextStyle valuePostfixStyle,
-                              TextStyle labelStyle)
+                              TextStyle valuePostfixStyle)
     {
         this.id                     = id;
 
-        this.size                   = new PrimitiveFunctor<>(size, TextSize.class);
-        this.inlineLabel            = new PrimitiveFunctor<>(inlineLabel, String.class);
-        this.inlineLabelPosition    = new PrimitiveFunctor<>(inlineLabelPosition,
-                                                             InlineLabelPosition.class);
+        this.insideLabel            = new PrimitiveFunctor<>(insideLabel, String.class);
+        this.insideLabelPosition    = new PrimitiveFunctor<>(insideLabelPosition, Position.class);
+        this.insideLabelStyle       = ModelFunctor.full(insideLabelStyle, TextStyle.class);
+
+        this.outsideLabel           = new PrimitiveFunctor<>(outsideLabel, String.class);
+        this.outsideLabelPosition   = new PrimitiveFunctor<>(outsideLabelPosition, Position.class);
+        this.outsideLabelStyle      = ModelFunctor.full(outsideLabelStyle, TextStyle.class);
+
         this.descriptionStyle       = ModelFunctor.full(descriptionStyle, TextStyle.class);
+
         this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
+
         this.valuePrefixStyle       = ModelFunctor.full(valuePrefixStyle, TextStyle.class);
         this.valuePostfixStyle      = ModelFunctor.full(valuePostfixStyle, TextStyle.class);
-        this.labelStyle             = ModelFunctor.full(labelStyle, TextStyle.class);
 
         // > Set defaults for null values
-        this.setSize(size);
-        this.setInlineLabelPosition(inlineLabelPosition);
+        this.setInsideLabelPosition(insideLabelPosition);
+        this.setInsideLabelStyle(insideLabelStyle);
+
+        this.setOutsideLabelPosition(outsideLabelPosition);
+        this.setOutsideLabelStyle(outsideLabelStyle);
+
         this.setDescriptionStyle(descriptionStyle);
+
         this.setValueStyle(valueStyle);
+
         this.setValuePrefixStyle(valuePrefixStyle);
         this.setValuePostfixStyle(valuePostfixStyle);
-        this.setLabelStyle(labelStyle);
     }
 
 
@@ -110,43 +135,54 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return NumberWidgetFormat.asDefault();
 
-        UUID                id                = UUID.randomUUID();
+        UUID      id                   = UUID.randomUUID();
 
-        TextSize size                         = TextSize.fromYaml(yaml.atMaybeKey("size"));
-        String              label             = yaml.atMaybeKey("label").getString();
-        InlineLabelPosition labelPosition     = InlineLabelPosition.fromYaml(
-                                                        yaml.atMaybeKey("label_position"));
-        TextStyle           descriptionStyle  = TextStyle.fromYaml(
-                                                        yaml.atMaybeKey("description_style"),
-                                                        false);
-        TextStyle           valueStyle        = TextStyle.fromYaml(
-                                                    yaml.atMaybeKey("value_style"), false);
-        TextStyle           valuePrefixStyle  = TextStyle.fromYaml(
-                                                    yaml.atMaybeKey("value_prefix_style"), false);
-        TextStyle           valuePostfixStyle = TextStyle.fromYaml(
-                                                    yaml.atMaybeKey("value_postfix_style"), false);
-        TextStyle           labelStyle        = TextStyle.fromYaml(
-                                                    yaml.atMaybeKey("label_style"), false);
+        String    insideLabel          = yaml.atMaybeKey("inside_label").getString();
+        Position  insideLabelPosition  = Position.fromYaml(
+                                                    yaml.atMaybeKey("inside_label_position"));
+        TextStyle insideLabelStyle     = TextStyle.fromYaml(yaml.atMaybeKey("inside_label_style"));
 
-        return new NumberWidgetFormat(id, size, label, labelPosition, descriptionStyle, valueStyle,
-                                      valuePrefixStyle, valuePostfixStyle, labelStyle);
+        String    outsideLabel         = yaml.atMaybeKey("outside_label").getString();
+        Position  outsideLabelPosition = Position.fromYaml(
+                                                    yaml.atMaybeKey("outside_label_position"));
+        TextStyle outsideLabelStyle    = TextStyle.fromYaml(yaml.atMaybeKey("outside_label_style"));
+
+        TextStyle descriptionStyle     = TextStyle.fromYaml(yaml.atMaybeKey("description_style"));
+        TextStyle valueStyle           = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
+        TextStyle valuePrefixStyle     = TextStyle.fromYaml(yaml.atMaybeKey("value_prefix_style"));
+        TextStyle valuePostfixStyle    = TextStyle.fromYaml(yaml.atMaybeKey("value_postfix_style"));
+
+        return new NumberWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
+                                      outsideLabel, outsideLabelPosition, outsideLabelStyle,
+                                      descriptionStyle, valueStyle, valuePrefixStyle,
+                                      valuePostfixStyle);
     }
 
 
+    /**
+     * A Number Widget Format with default values.
+     * @return The default Number Widget Format.
+     */
     private static NumberWidgetFormat asDefault()
     {
         NumberWidgetFormat numberWidgetFormat = new NumberWidgetFormat();
 
         numberWidgetFormat.setId(UUID.randomUUID());
 
-        numberWidgetFormat.setSize(null);
-        numberWidgetFormat.setInlineLabel(null);
-        numberWidgetFormat.setInlineLabelPosition(null);
+        numberWidgetFormat.setInsideLabel(null);
+        numberWidgetFormat.setInsideLabelPosition(null);
+        numberWidgetFormat.setInsideLabelStyle(null);
+
+        numberWidgetFormat.setOutsideLabel(null);
+        numberWidgetFormat.setOutsideLabelPosition(null);
+        numberWidgetFormat.setOutsideLabelStyle(null);
+
         numberWidgetFormat.setDescriptionStyle(null);
+
         numberWidgetFormat.setValueStyle(null);
+
         numberWidgetFormat.setValuePrefixStyle(null);
         numberWidgetFormat.setValuePostfixStyle(null);
-        numberWidgetFormat.setLabelStyle(null);
 
         return numberWidgetFormat;
     }
@@ -187,96 +223,183 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
+        return YamlBuilder.map()
 
-        yaml.putYaml("size", this.size());
-        yaml.putString("label", this.label());
-        yaml.putYaml("label_position", this.labelPosition());
-        yaml.putYaml("description_style", this.descriptionStyle());
-        yaml.putYaml("value_style", this.valueStyle());
-        yaml.putYaml("value_prefix_style", this.valuePrefixStyle());
-        yaml.putYaml("value_postfix_style", this.valuePostfixStyle());
-        yaml.putYaml("label_style", this.labelStyle());
+            .putString("inside_label", this.insideLabel())
+            .putYaml("inside_label_position", this.insideLabelPosition())
+            .putYaml("inside_label_style", this.insideLabelStyle())
 
-        return yaml;
+            .putString("outside_label", this.outsideLabel())
+            .putYaml("outside_label_position", this.outsideLabelPosition())
+            .putYaml("outside_label_style", this.outsideLabelStyle())
+
+            .putYaml("description_style", this.descriptionStyle())
+
+            .putYaml("value_style", this.valueStyle())
+
+            .putYaml("value_prefix_style", this.valuePrefixStyle())
+            .putYaml("value_postfix_style", this.valuePostfixStyle());
     }
 
 
     // > State
     // --------------------------------------------------------------------------------------
 
-    // ** Size
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The Number Widget's text size.
-     * @return The Widget Content Size.
-     */
-    public TextSize size()
-    {
-        return this.size.getValue();
-    }
-
-
-    /**
-     * Set the number widget's text size.
-     * @param size The text size.
-     */
-    public void setSize(TextSize size)
-    {
-        if (size != null)
-            this.size.setValue(size);
-        else
-            this.size.setValue(TextSize.MEDIUM);
-    }
-
-
-    // ** Label
+    // ** Inside Label
     // --------------------------------------------------------------------------------------
 
     /**
      * The inline label. May be null.
      * @return The label.
      */
-    public String label()
+    public String insideLabel()
     {
-        return this.inlineLabel.getValue();
+        return this.insideLabel.getValue();
     }
 
 
     /**
      * Set the label.
-     * @param inlineLabel The label.
+     * @param insideLabel The label.
      */
-    public void setInlineLabel(String inlineLabel)
+    public void setInsideLabel(String insideLabel)
     {
-        this.inlineLabel.setValue(inlineLabel);
+        this.insideLabel.setValue(insideLabel);
     }
 
 
-    // ** Label Position
+    // ** Inside Label Position
     // --------------------------------------------------------------------------------------
 
     /**
-     * The position of the widget's label.
+     * The position of the widget's inside label.
      * @return The inline label text.
      */
-    public InlineLabelPosition labelPosition()
+    public Position insideLabelPosition()
     {
-        return this.inlineLabelPosition.getValue();
+        return this.insideLabelPosition.getValue();
     }
 
 
     /**
      * Set the label position.
-     * @param inlineLabelPosition The label position.
+     * @param insideLabelPosition The label position.
      */
-    public void setInlineLabelPosition(InlineLabelPosition inlineLabelPosition)
+    public void setInsideLabelPosition(Position insideLabelPosition)
     {
-        if (inlineLabelPosition != null)
-            this.inlineLabelPosition.setValue(inlineLabelPosition);
+        if (insideLabelPosition != null)
+            this.insideLabelPosition.setValue(insideLabelPosition);
         else
-            this.inlineLabelPosition.setValue(InlineLabelPosition.LEFT);
+            this.insideLabelPosition.setValue(Position.LEFT);
+    }
+
+
+    // ** Inside Label Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The inside label style.
+     * @return The inside label style.
+     */
+    public TextStyle insideLabelStyle()
+    {
+        return this.insideLabelStyle.getValue();
+    }
+
+
+    public void setInsideLabelStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.insideLabelStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.THEME_VERY_DARK,
+                                                        TextSize.MEDIUM,
+                                                        Alignment.CENTER);
+            this.insideLabelStyle.setValue(defaultLabelStyle);
+        }
+    }
+
+
+    // ** Outside Label
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The outside label. May be null.
+     * @return The label.
+     */
+    public String outsideLabel()
+    {
+        return this.outsideLabel.getValue();
+    }
+
+
+    /**
+     * Set the outside label.
+     * @param label The label.
+     */
+    public void setOutsideLabel(String label)
+    {
+        this.outsideLabel.setValue(label);
+    }
+
+
+    // ** Outside Label Position
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The position of the widget's outside label.
+     * @return The outside label text.
+     */
+    public Position outsideLabelPosition()
+    {
+        return this.outsideLabelPosition.getValue();
+    }
+
+
+    /**
+     * Set the outside label position.
+     * @param position The label position.
+     */
+    public void setOutsideLabelPosition(Position position)
+    {
+        if (position != null)
+            this.outsideLabelPosition.setValue(position);
+        else
+            this.outsideLabelPosition.setValue(Position.LEFT);
+    }
+
+
+    // ** Outside Label Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The outside label style.
+     * @return The outside label style.
+     */
+    public TextStyle outsideLabelStyle()
+    {
+        return this.outsideLabelStyle.getValue();
+    }
+
+
+    /**
+     * Set the outside label style. If null, a default style is set.
+     * @param style The label style.
+     */
+    public void setOutsideLabelStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.outsideLabelStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.THEME_VERY_DARK,
+                                                        TextSize.MEDIUM,
+                                                        Alignment.CENTER);
+            this.outsideLabelStyle.setValue(defaultLabelStyle);
+        }
     }
 
 
@@ -328,8 +451,9 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         else {
             TextStyle defaultValueStyle =
                     new TextStyle(UUID.randomUUID(),
-                                        TextColor.THEME_LIGHT,
-                                        TextSize.MEDIUM_SMALL);
+                                  TextColor.THEME_LIGHT,
+                                  TextSize.MEDIUM_SMALL,
+                                  Alignment.CENTER);
             this.valueStyle.setValue(defaultValueStyle);
         }
     }
@@ -386,33 +510,6 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                                                                TextColor.THEME_LIGHT,
                                                                TextSize.MEDIUM);
             this.valuePostfixStyle.setValue(defaultValuePostfixStyle);
-        }
-    }
-
-
-    // ** Label Style
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The postfix style.
-     * @return The postfix style.
-     */
-    public TextStyle labelStyle()
-    {
-        return this.labelStyle.getValue();
-    }
-
-
-    public void setLabelStyle(TextStyle style)
-    {
-        if (style != null) {
-            this.labelStyle.setValue(style);
-        }
-        else {
-            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.THEME_VERY_DARK,
-                                                        TextSize.MEDIUM);
-            this.labelStyle.setValue(defaultLabelStyle);
         }
     }
 

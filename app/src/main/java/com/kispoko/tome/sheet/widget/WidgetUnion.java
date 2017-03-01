@@ -45,6 +45,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     private ModelFunctor<MechanicWidget>    mechanicWidget;
     private ModelFunctor<NumberWidget>      numberWidget;
     private ModelFunctor<OptionWidget>      optionWidget;
+    private ModelFunctor<QuoteWidget>       quoteWidget;
     private ModelFunctor<TableWidget>       tableWidget;
     private ModelFunctor<TextWidget>        textWidget;
 
@@ -67,6 +68,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.mechanicWidget = ModelFunctor.empty(MechanicWidget.class);
         this.numberWidget   = ModelFunctor.empty(NumberWidget.class);
         this.optionWidget   = ModelFunctor.empty(OptionWidget.class);
+        this.quoteWidget    = ModelFunctor.empty(QuoteWidget.class);
         this.tableWidget    = ModelFunctor.empty(TableWidget.class);
         this.textWidget     = ModelFunctor.empty(TextWidget.class);
 
@@ -87,6 +89,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.mechanicWidget = ModelFunctor.full(null, MechanicWidget.class);
         this.numberWidget   = ModelFunctor.full(null, NumberWidget.class);
         this.optionWidget   = ModelFunctor.full(null, OptionWidget.class);
+        this.quoteWidget    = ModelFunctor.full(null, QuoteWidget.class);
         this.tableWidget    = ModelFunctor.full(null, TableWidget.class);
         this.textWidget     = ModelFunctor.full(null, TextWidget.class);
 
@@ -120,6 +123,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case OPTION:
                 this.optionWidget.setValue((OptionWidget) widget);
+                break;
+            case QUOTE:
+                this.quoteWidget.setValue((QuoteWidget) widget);
                 break;
             case TABLE:
                 this.tableWidget.setValue((TableWidget) widget);
@@ -234,6 +240,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
 
 
     /**
+     * Create the "quote" variant.
+     * @param quoteWidget The quote widget.
+     * @return The "quote" Widget Union.
+     */
+    public static WidgetUnion asQuote(UUID id, QuoteWidget quoteWidget)
+    {
+        return new WidgetUnion(id, quoteWidget, WidgetType.QUOTE);
+    }
+
+
+    /**
      * Create the "table" variant.
      * @param tableWidget The table widget.
      * @return The "table" Widget Union.
@@ -300,6 +317,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case OPTION:
                 OptionWidget optionWidget = OptionWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asOption(id, optionWidget);
+            case QUOTE:
+                QuoteWidget quoteWidget = QuoteWidget.fromYaml(yaml.atKey("widget"));
+                return WidgetUnion.asQuote(id, quoteWidget);
             case TABLE:
                 TableWidget tableWidget = TableWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asTable(id, tableWidget);
@@ -395,6 +415,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case OPTION:
                 widgetYaml = this.optionWidget().toYaml();
                 break;
+            case QUOTE:
+                widgetYaml = this.quoteWidget().toYaml();
+                break;
             case TABLE:
                 widgetYaml = this.tableWidget().toYaml();
                 break;
@@ -439,6 +462,8 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 return this.numberWidget();
             case OPTION:
                 return this.optionWidget();
+            case QUOTE:
+                return this.quoteWidget();
             case TABLE:
                 return this.tableWidget();
             case TEXT:
@@ -559,6 +584,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public OptionWidget optionWidget()
     {
         return this.optionWidget.getValue();
+    }
+
+
+    /**
+     * The "quote" case.
+     * @return The Quote Widget.
+     */
+    public QuoteWidget quoteWidget()
+    {
+        return this.quoteWidget.getValue();
     }
 
 

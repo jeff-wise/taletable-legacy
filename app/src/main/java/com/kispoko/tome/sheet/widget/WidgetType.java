@@ -33,6 +33,7 @@ public enum WidgetType implements ToYaml
     MECHANIC,
     NUMBER,
     OPTION,
+    QUOTE,
     TABLE,
     TEXT;
 
@@ -106,6 +107,8 @@ public enum WidgetType implements ToYaml
                 return R.string.widget_number;
             case OPTION:
                 return R.string.widget_option;
+            case QUOTE:
+                return R.string.widget_quote;
             case TABLE:
                 return R.string.widget_table;
             case TEXT:

@@ -1,8 +1,6 @@
 
-package com.kispoko.tome.sheet.widget.util;
+package com.kispoko.tome.sheet.widget.quote;
 
-
-import android.widget.LinearLayout;
 
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.util.EnumUtils;
@@ -17,50 +15,47 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Position
+ * Quote View Type
  */
-public enum Position implements ToYaml
+public enum ViewType implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    LEFT,
-    TOP,
-    RIGHT,
-    BOTTOM;
+    SOURCE;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static Position fromString(String positionString)
+    public static ViewType fromString(String typeString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(Position.class, positionString);
+        return EnumUtils.fromString(ViewType.class, typeString);
     }
 
 
-    public static Position fromYaml(YamlParser yaml)
+    public static ViewType fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        String positionString = yaml.getString();
+        String typeString = yaml.getString();
         try {
-            return Position.fromString(positionString);
+            return ViewType.fromString(typeString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(positionString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
         }
     }
 
 
-    public static Position fromSQLValue(SQLValue sqlValue)
+    public static ViewType fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            Position position = Position.fromString(enumString);
-            return position;
+            ViewType type = ViewType.fromString(enumString);
+            return type;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -78,27 +73,6 @@ public enum Position implements ToYaml
     public YamlBuilder toYaml()
     {
         return YamlBuilder.string(this.name().toLowerCase());
-    }
-
-
-    // LAYOUT ORIENTATION
-    // ------------------------------------------------------------------------------------------
-
-    public int linearLayoutOrientation()
-    {
-        switch (this)
-        {
-            case LEFT:
-                return LinearLayout.HORIZONTAL;
-            case TOP:
-                return LinearLayout.VERTICAL;
-            case RIGHT:
-                return LinearLayout.HORIZONTAL;
-            case BOTTOM:
-                return LinearLayout.VERTICAL;
-            default:
-                return LinearLayout.HORIZONTAL;
-        }
     }
 
 

@@ -33,7 +33,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>           width;
     private PrimitiveFunctor<Alignment>         alignment;
     private ModelFunctor<TextStyle>             labelStyle;
-    private PrimitiveFunctor<Background>  background;
+    private PrimitiveFunctor<Background>        background;
     private PrimitiveFunctor<WidgetCorners>     corners;
 
 
@@ -118,7 +118,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         TextStyle           labelStyle     = TextStyle.fromYaml(
                                                             yaml.atMaybeKey("label_style"),
                                                             false);
-        Background background     = Background.fromYaml(
+        Background          background     = Background.fromYaml(
                                                                 yaml.atMaybeKey("background"));
         WidgetCorners       corners        = WidgetCorners.fromYaml(yaml.atMaybeKey("corners"));
 
@@ -345,6 +345,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
             this.labelStyle.setValue(defaultLabelStyle);
         }
     }
+
 
 }
 

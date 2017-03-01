@@ -174,7 +174,6 @@ public class LogWidget extends Widget
     public void initialize(GroupParent groupParent)
     {
         this.groupParent = groupParent;
-        Log.d("***LOGWIDGET", "initializing log widget");
     }
 
 

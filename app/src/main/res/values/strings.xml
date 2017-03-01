@@ -68,6 +68,7 @@
     <string name="widget_mechanic">Mechanic Widget</string>
     <string name="widget_number">Number Widget</string>
     <string name="widget_option">Image Widget</string>
+    <string name="widget_quote">Quote Widget</string>
     <string name="widget_table">Table Widget</string>
     <string name="widget_text">Text Widget</string>
 

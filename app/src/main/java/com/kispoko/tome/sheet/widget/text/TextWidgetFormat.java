@@ -2,7 +2,8 @@
 package com.kispoko.tome.sheet.widget.text;
 
 
-import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
+import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
@@ -13,7 +14,6 @@ import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
-
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -32,20 +32,25 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                                    id;
+    private UUID                        id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<TextSize>              size;
-    private PrimitiveFunctor<TextColor>             color;
-    private PrimitiveFunctor<Boolean>               isQuote;
-    private PrimitiveFunctor<String>                quoteSource;
-    private PrimitiveFunctor<String>                label;
-    private PrimitiveFunctor<InlineLabelPosition>   labelPosition;
-    private ModelFunctor<TextStyle>                 valueStyle;
-    private ModelFunctor<TextStyle>                 labelStyle;
+    private PrimitiveFunctor<String>    insideLabel;
+    private PrimitiveFunctor<Position>  insideLabelPosition;
+    private ModelFunctor<TextStyle>     insideLabelStyle;
+
+    private PrimitiveFunctor<String>    outsideLabel;
+    private PrimitiveFunctor<Position>  outsideLabelPosition;
+    private ModelFunctor<TextStyle>     outsideLabelStyle;
+
+    private ModelFunctor<TextStyle>     valueStyle;
+    private ModelFunctor<TextStyle>     descriptionStyle;
+
+    private PrimitiveFunctor<Boolean>   isQuote;
+    private PrimitiveFunctor<String>    quoteSource;
 
 
     // CONSTRUCTORS
@@ -53,47 +58,67 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
     public TextWidgetFormat()
     {
-        this.id             = null;
+        this.id                     = null;
 
-        this.size           = new PrimitiveFunctor<>(null, TextSize.class);
-        this.color          = new PrimitiveFunctor<>(null, TextColor.class);
-        this.isQuote        = new PrimitiveFunctor<>(null, Boolean.class);
-        this.quoteSource    = new PrimitiveFunctor<>(null, String.class);
-        this.label          = new PrimitiveFunctor<>(null, String.class);
-        this.labelPosition  = new PrimitiveFunctor<>(null, InlineLabelPosition.class);
-        this.valueStyle     = ModelFunctor.empty(TextStyle.class);
-        this.labelStyle     = ModelFunctor.empty(TextStyle.class);
+        this.insideLabel            = new PrimitiveFunctor<>(null, String.class);
+        this.insideLabelPosition    = new PrimitiveFunctor<>(null, Position.class);
+        this.insideLabelStyle       = ModelFunctor.empty(TextStyle.class);
+
+        this.outsideLabel           = new PrimitiveFunctor<>(null, String.class);
+        this.outsideLabelPosition   = new PrimitiveFunctor<>(null, Position.class);
+        this.outsideLabelStyle      = ModelFunctor.empty(TextStyle.class);
+
+        this.valueStyle             = ModelFunctor.empty(TextStyle.class);
+        this.descriptionStyle       = ModelFunctor.empty(TextStyle.class);
+
+        this.isQuote                = new PrimitiveFunctor<>(null, Boolean.class);
+        this.quoteSource            = new PrimitiveFunctor<>(null, String.class);
+
     }
 
 
     public TextWidgetFormat(UUID id,
-                            TextSize size,
-                            TextColor color,
-                            Boolean isQuote,
-                            String quoteSource,
-                            String label,
-                            InlineLabelPosition labelPosition,
+                            String insideLabel,
+                            Position insideLabelPosition,
+                            TextStyle insideLabelStyle,
+                            String outsideLabel,
+                            Position outsideLabelPosition,
+                            TextStyle outsideLabelStyle,
                             TextStyle valueStyle,
-                            TextStyle labelStyle)
+                            TextStyle descriptionStyle,
+                            Boolean isQuote,
+                            String quoteSource)
     {
-        this.id             = id;
+        this.id                     = id;
 
-        this.size           = new PrimitiveFunctor<>(size, TextSize.class);
-        this.color          = new PrimitiveFunctor<>(color, TextColor.class);
-        this.isQuote        = new PrimitiveFunctor<>(isQuote, Boolean.class);
-        this.quoteSource    = new PrimitiveFunctor<>(quoteSource, String.class);
-        this.label          = new PrimitiveFunctor<>(label, String.class);
-        this.labelPosition  = new PrimitiveFunctor<>(labelPosition, InlineLabelPosition.class);
-        this.valueStyle     = ModelFunctor.full(valueStyle, TextStyle.class);
-        this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
+        this.insideLabel            = new PrimitiveFunctor<>(insideLabel, String.class);
+        this.insideLabelPosition    = new PrimitiveFunctor<>(insideLabelPosition, Position.class);
+        this.insideLabelStyle       = ModelFunctor.full(insideLabelStyle, TextStyle.class);
+
+        this.outsideLabel           = new PrimitiveFunctor<>(outsideLabel, String.class);
+        this.outsideLabelPosition   = new PrimitiveFunctor<>(outsideLabelPosition, Position.class);
+        this.outsideLabelStyle      = ModelFunctor.full(outsideLabelStyle, TextStyle.class);
+
+        this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
+        this.descriptionStyle       = ModelFunctor.full(descriptionStyle, TextStyle.class);
+
+        this.isQuote                = new PrimitiveFunctor<>(isQuote, Boolean.class);
+        this.quoteSource            = new PrimitiveFunctor<>(quoteSource, String.class);
+
+        // > Ensure null values are given defaults
+        this.setInsideLabel(insideLabel);
+        this.setInsideLabelPosition(insideLabelPosition);
+        this.setInsideLabelStyle(insideLabelStyle);
+
+        this.setOutsideLabel(outsideLabel);
+        this.setOutsideLabelPosition(outsideLabelPosition);
+        this.setOutsideLabelStyle(outsideLabelStyle);
+
+        this.setValueStyle(valueStyle);
+        this.setDescriptionStyle(descriptionStyle);
 
         this.setIsQuote(isQuote);
-        this.setSize(size);
         this.setQuoteSource(quoteSource);
-        this.setColor(color);
-        this.setLabelPosition(labelPosition);
-        this.setValueStyle(valueStyle);
-        this.setLabelStyle(labelStyle);
     }
 
 
@@ -103,24 +128,27 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return TextWidgetFormat.asDefault();
 
-        UUID                id              = UUID.randomUUID();
+        UUID      id                   = UUID.randomUUID();
 
-        TextSize            size            = TextSize.fromYaml(yaml.atMaybeKey("size"));
-        TextColor           tint            = TextColor.fromYaml(yaml.atMaybeKey("tint"));
-        Boolean             isQuote         = yaml.atMaybeKey("is_quote").getBoolean();
-        String              quoteSource     = yaml.atMaybeKey("quote_source").getString();
-        String              label           = yaml.atMaybeKey("label").getString();
-        InlineLabelPosition labelPosition   = InlineLabelPosition.fromYaml(
-                                                        yaml.atMaybeKey("label_position"));
-        TextStyle           valueStyle      = TextStyle.fromYaml(
-                                                        yaml.atMaybeKey("value_style"),
-                                                        false);
-        TextStyle           labelStyle      = TextStyle.fromYaml(
-                                                            yaml.atMaybeKey("label_style"),
-                                                            false);
+        String    insideLabel          = yaml.atMaybeKey("inside_label").getString();
+        Position  insideLabelPosition  = Position.fromYaml(
+                                                    yaml.atMaybeKey("inside_label_position"));
+        TextStyle insideLabelStyle     = TextStyle.fromYaml(yaml.atMaybeKey("inside_label_style"));
 
-        return new TextWidgetFormat(id, size, tint, isQuote, quoteSource, label,
-                                    labelPosition, valueStyle, labelStyle);
+        String    outsideLabel         = yaml.atMaybeKey("outside_label").getString();
+        Position  outsideLabelPosition = Position.fromYaml(
+                                                    yaml.atMaybeKey("outside_label_position"));
+        TextStyle outsideLabelStyle    = TextStyle.fromYaml(yaml.atMaybeKey("outside_label_style"));
+
+        TextStyle valueStyle           = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
+        TextStyle descriptionStyle     = TextStyle.fromYaml(yaml.atMaybeKey("description_style"));
+
+        Boolean   isQuote              = yaml.atMaybeKey("is_quote").getBoolean();
+        String    quoteSource          = yaml.atMaybeKey("quote_source").getString();
+
+        return new TextWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
+                                    outsideLabel, outsideLabelPosition, outsideLabelStyle,
+                                    valueStyle, descriptionStyle, isQuote, quoteSource);
     }
 
 
@@ -129,14 +157,20 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         TextWidgetFormat textWidgetFormat = new TextWidgetFormat();
 
         textWidgetFormat.setId(UUID.randomUUID());
-        textWidgetFormat.setSize(null);
-        textWidgetFormat.setColor(null);
+
+        textWidgetFormat.setInsideLabel(null);
+        textWidgetFormat.setInsideLabelPosition(null);
+        textWidgetFormat.setInsideLabelStyle(null);
+
+        textWidgetFormat.setOutsideLabel(null);
+        textWidgetFormat.setOutsideLabelPosition(null);
+        textWidgetFormat.setOutsideLabelStyle(null);
+
+        textWidgetFormat.setValueStyle(null);
+        textWidgetFormat.setDescriptionStyle(null);
+
         textWidgetFormat.setIsQuote(null);
         textWidgetFormat.setQuoteSource(null);
-        textWidgetFormat.setLabel(null);
-        textWidgetFormat.setLabelPosition(null);
-        textWidgetFormat.setValueStyle(null);
-        textWidgetFormat.setLabelStyle(null);
 
         return textWidgetFormat;
     }
@@ -177,67 +211,236 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
-
-        yaml.putYaml("size", this.size());
-        yaml.putYaml("tint", this.tint());
-        yaml.putBoolean("is_quote", this.isQuote());
-        yaml.putString("quote_source", this.quoteSource());
-        yaml.putYaml("value_style", this.valueStyle());
-        yaml.putYaml("label_style", this.labelStyle());
-
-        return yaml;
+        return YamlBuilder.map()
+                .putString("inside_label", this.insideLabel())
+                .putYaml("inside_label_position", this.insideLabelPosition())
+                .putYaml("inside_label_style", this.insideLabelStyle())
+                .putString("outside_label", this.outsideLabel())
+                .putYaml("outside_label_position", this.outsideLabelPosition())
+                .putYaml("outside_label_style", this.outsideLabelStyle())
+                .putYaml("value_style", this.valueStyle())
+                .putYaml("description_style", this.descriptionStyle())
+                .putBoolean("is_quote", this.isQuote())
+                .putString("quote_source", this.quoteSource());
     }
 
 
     // > State
     // --------------------------------------------------------------------------------------
 
-    // ** Size
+    // ** Inside Label
     // --------------------------------------------------------------------------------------
 
     /**
-     * The Text Widget's text size.
-     * @return The Widget Content Size.
+     * The inline label. May be null.
+     * @return The label.
      */
-    public TextSize size()
+    public String insideLabel()
     {
-        return this.size.getValue();
+        return this.insideLabel.getValue();
     }
 
 
     /**
-     * Set the text widget's text size.
-     * @param size The text size.
+     * Set the label.
+     * @param insideLabel The label.
      */
-    public void setSize(TextSize size)
+    public void setInsideLabel(String insideLabel)
     {
-        if (size != null)
-            this.size.setValue(size);
-        else
-            this.size.setValue(TextSize.MEDIUM);
+        this.insideLabel.setValue(insideLabel);
     }
 
 
-    // ** Tint
+    // ** Inside Label Position
     // --------------------------------------------------------------------------------------
 
     /**
-     * The text widget tint.
-     * @return The tint.
+     * The position of the widget's inside label.
+     * @return The inline label text.
      */
-    public TextColor tint()
+    public Position insideLabelPosition()
     {
-        return this.color.getValue();
+        return this.insideLabelPosition.getValue();
     }
 
 
-    public void setColor(TextColor color)
+    /**
+     * Set the label position.
+     * @param insideLabelPosition The label position.
+     */
+    public void setInsideLabelPosition(Position insideLabelPosition)
     {
-        if (color != null)
-            this.color.setValue(color);
+        if (insideLabelPosition != null)
+            this.insideLabelPosition.setValue(insideLabelPosition);
         else
-            this.color.setValue(TextColor.THEME_MEDIUM);
+            this.insideLabelPosition.setValue(Position.LEFT);
+    }
+
+
+    // ** Inside Label Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The inside label style.
+     * @return The inside label style.
+     */
+    public TextStyle insideLabelStyle()
+    {
+        return this.insideLabelStyle.getValue();
+    }
+
+
+    public void setInsideLabelStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.insideLabelStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.THEME_VERY_DARK,
+                                                        TextSize.MEDIUM,
+                                                        Alignment.CENTER);
+            this.insideLabelStyle.setValue(defaultLabelStyle);
+        }
+    }
+
+
+    // ** Outside Label
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The outside label. May be null.
+     * @return The label.
+     */
+    public String outsideLabel()
+    {
+        return this.outsideLabel.getValue();
+    }
+
+
+    /**
+     * Set the outside label.
+     * @param label The label.
+     */
+    public void setOutsideLabel(String label)
+    {
+        this.outsideLabel.setValue(label);
+    }
+
+
+    // ** Outside Label Position
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The position of the widget's outside label.
+     * @return The outside label text.
+     */
+    public Position outsideLabelPosition()
+    {
+        return this.outsideLabelPosition.getValue();
+    }
+
+
+    /**
+     * Set the outside label position.
+     * @param position The label position.
+     */
+    public void setOutsideLabelPosition(Position position)
+    {
+        if (position != null)
+            this.outsideLabelPosition.setValue(position);
+        else
+            this.outsideLabelPosition.setValue(Position.LEFT);
+    }
+
+
+    // ** Outside Label Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The outside label style.
+     * @return The outside label style.
+     */
+    public TextStyle outsideLabelStyle()
+    {
+        return this.outsideLabelStyle.getValue();
+    }
+
+
+    /**
+     * Set the outside label style. If null, a default style is set.
+     * @param style The label style.
+     */
+    public void setOutsideLabelStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.outsideLabelStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.THEME_VERY_DARK,
+                                                        TextSize.MEDIUM,
+                                                        Alignment.CENTER);
+            this.outsideLabelStyle.setValue(defaultLabelStyle);
+        }
+    }
+
+
+    // ** Value Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The value style.
+     * @return The value style.
+     */
+    public TextStyle valueStyle()
+    {
+        return this.valueStyle.getValue();
+    }
+
+
+    /**
+     * Set the value style.
+     * @param valueStyle The valueStyle.
+     */
+    public void setValueStyle(TextStyle valueStyle)
+    {
+        if (valueStyle != null) {
+            this.valueStyle.setValue(valueStyle);
+        }
+        else {
+            TextStyle defaultValueStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.THEME_MEDIUM,
+                                                        TextSize.MEDIUM_SMALL);
+            this.valueStyle.setValue(defaultValueStyle);
+        }
+    }
+
+
+    // ** Description Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The description style.
+     * @return The description style.
+     */
+    public TextStyle descriptionStyle()
+    {
+        return this.descriptionStyle.getValue();
+    }
+
+
+    public void setDescriptionStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.descriptionStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultDescriptionStyle = new TextStyle(UUID.randomUUID(),
+                                                              TextColor.THEME_DARK,
+                                                              TextSize.MEDIUM_SMALL);
+            this.descriptionStyle.setValue(defaultDescriptionStyle);
+        }
     }
 
 
@@ -290,117 +493,6 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
             this.quoteSource.setValue(quoteSource);
         else
             this.quoteSource.setValue("");
-    }
-
-
-    // ** Inline Label
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The text widget's inline label (may be null).
-     * @return The inline label.
-     */
-    public String label()
-    {
-        return this.label.getValue();
-    }
-
-
-    /**
-     * Set the inline label.
-     * @param label The label.
-     */
-    public void setLabel(String label)
-    {
-        this.label.setValue(label);
-    }
-
-
-    // ** Label Position
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The position of the widget's label.
-     * @return The inline label text.
-     */
-    public InlineLabelPosition labelPosition()
-    {
-        return this.labelPosition.getValue();
-    }
-
-
-    /**
-     * Set the label position.
-     * @param labelPosition The label position.
-     */
-    public void setLabelPosition(InlineLabelPosition labelPosition)
-    {
-        if (labelPosition != null)
-            this.labelPosition.setValue(labelPosition);
-        else
-            this.labelPosition.setValue(InlineLabelPosition.LEFT);
-    }
-
-
-    // ** Value Style
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The value style.
-     * @return The value style.
-     */
-    public TextStyle valueStyle()
-    {
-        return this.valueStyle.getValue();
-    }
-
-
-    /**
-     * Set the value style.
-     * @param valueStyle The valueStyle.
-     */
-    public void setValueStyle(TextStyle valueStyle)
-    {
-        if (valueStyle != null) {
-            this.valueStyle.setValue(valueStyle);
-        }
-        else {
-            TextStyle defaultValueStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.THEME_MEDIUM,
-                                                        TextSize.MEDIUM_SMALL);
-            this.valueStyle.setValue(defaultValueStyle);
-        }
-    }
-
-
-    // ** Label Style
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The label style.
-     * @return The label style.
-     */
-    public TextStyle labelStyle()
-    {
-        return this.labelStyle.getValue();
-    }
-
-
-    /**
-     * Set the inline label style.
-     * @param labelStyle The inline label style.
-     */
-    public void setLabelStyle(TextStyle labelStyle)
-    {
-        if (labelStyle != null) {
-            this.labelStyle.setValue(labelStyle);
-        }
-        else {
-            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.THEME_MEDIUM,
-                                                        TextSize.MEDIUM_SMALL);
-            this.labelStyle.setValue(defaultLabelStyle);
-        }
     }
 
 

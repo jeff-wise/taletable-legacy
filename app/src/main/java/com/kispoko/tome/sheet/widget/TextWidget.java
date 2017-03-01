@@ -28,7 +28,7 @@ import com.kispoko.tome.sheet.error.UndefinedValueSetError;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
-import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
+import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
@@ -37,11 +37,13 @@ import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
+import com.kispoko.tome.util.ui.FormattedString;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
 import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
@@ -72,16 +74,18 @@ public class TextWidget extends Widget
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<WidgetData>            widgetData;
-    private ModelFunctor<TextWidgetFormat>      format;
     private ModelFunctor<TextVariable>          valueVariable;
+    private ModelFunctor<TextWidgetFormat>      format;
+    private PrimitiveFunctor<String>            description;
+
+    private ModelFunctor<WidgetData>            widgetData;
     private CollectionFunctor<VariableUnion>    variables;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Integer                             displayTextViewId;
+    private Integer                             valueViewId;
 
 
     // > Misc
@@ -97,35 +101,32 @@ public class TextWidget extends Widget
     {
         this.id                 = null;
 
-        this.widgetData         = ModelFunctor.empty(WidgetData.class);
-        this.format             = ModelFunctor.empty(TextWidgetFormat.class);
         this.valueVariable      = ModelFunctor.empty(TextVariable.class);
+        this.format             = ModelFunctor.empty(TextWidgetFormat.class);
+        this.description        = new PrimitiveFunctor<>(null, String.class);
 
-        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
-        variableClasses.add(VariableUnion.class);
-        this.variables          = CollectionFunctor.empty(variableClasses);
+        this.widgetData         = ModelFunctor.empty(WidgetData.class);
 
-        this.displayTextViewId  = null;
+        this.variables          = CollectionFunctor.empty(VariableUnion.class);
     }
 
 
     public TextWidget(UUID id,
-                      WidgetData widgetData,
-                      TextWidgetFormat format,
                       TextVariable valueVariable,
+                      TextWidgetFormat format,
+                      String description,
+                      WidgetData widgetData,
                       List<VariableUnion> variables)
     {
         this.id                 = id;
 
-        this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
-        this.format             = ModelFunctor.full(format, TextWidgetFormat.class);
         this.valueVariable      = ModelFunctor.full(valueVariable, TextVariable.class);
+        this.format             = ModelFunctor.full(format, TextWidgetFormat.class);
+        this.description        = new PrimitiveFunctor<>(description, String.class);
 
-        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
-        variableClasses.add(VariableUnion.class);
-        this.variables          = CollectionFunctor.full(variables, variableClasses);
+        this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
 
-        this.displayTextViewId  = null;
+        this.variables          = CollectionFunctor.full(variables, VariableUnion.class);
 
         this.initializeTextWidget();
     }
@@ -140,11 +141,13 @@ public class TextWidget extends Widget
     public static TextWidget fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID             id         = UUID.randomUUID();
+        UUID             id          = UUID.randomUUID();
 
-        WidgetData       widgetData = WidgetData.fromYaml(yaml.atKey("data"), false);
-        TextWidgetFormat format     = TextWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
-        TextVariable     value      = TextVariable.fromYaml(yaml.atKey("value"));
+        TextVariable     value       = TextVariable.fromYaml(yaml.atKey("value"));
+        TextWidgetFormat format      = TextWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
+        String           description = yaml.atMaybeKey("description").getTrimmedString();
+
+        WidgetData       widgetData  = WidgetData.fromYaml(yaml.atKey("data"), false);
 
         List<VariableUnion> variables  = yaml.atMaybeKey("variables").forEach(
                                                 new YamlParser.ForEach<VariableUnion>()
@@ -155,7 +158,7 @@ public class TextWidget extends Widget
             }
         }, true);
 
-        return new TextWidget(id, widgetData, format, value, variables);
+        return new TextWidget(id, value, format, description, widgetData, variables);
     }
 
 
@@ -282,7 +285,7 @@ public class TextWidget extends Widget
         // Update the text view, if it exists
         if (context != null) {
             TextView textView = (TextView) ((Activity) context)
-                                    .findViewById(this.displayTextViewId);
+                                    .findViewById(this.valueViewId);
             try {
                 textView.setText(this.valueVariable().value());
             }
@@ -292,6 +295,19 @@ public class TextWidget extends Widget
         }
 
         this.valueVariable.save();
+    }
+
+
+    // ** Description
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The description.
+     * @return The description.
+     */
+    public String description()
+    {
+        return this.description.getValue();
     }
 
 
@@ -365,15 +381,6 @@ public class TextWidget extends Widget
         if (this.data().format().alignment() == null)
             this.data().format().setAlignment(Alignment.CENTER);
 
-        // ** Label Style
-        if (this.data().format().labelStyle() == null) {
-            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.THEME_DARK,
-                                                        TextSize.SMALL,
-                                                        Alignment.CENTER);
-            this.data().format().setLabelStyle(defaultLabelStyle);
-        }
-
         // ** Background
         if (this.data().format().background() == null)
             this.data().format().setBackground(Background.DARK);
@@ -381,6 +388,9 @@ public class TextWidget extends Widget
         // ** Corners
         if (this.data().format().corners() == null)
             this.data().format().setCorners(WidgetCorners.SMALL);
+
+
+        this.valueViewId = null;
 
     }
 
@@ -393,10 +403,10 @@ public class TextWidget extends Widget
      */
     private void onValueUpdate()
     {
-        if (this.displayTextViewId != null && !this.valueVariable.isNull())
+        if (this.valueViewId != null && !this.valueVariable.isNull())
         {
             Activity activity = (Activity) SheetManager.currentSheetContext();
-            TextView textView = (TextView) activity.findViewById(this.displayTextViewId);
+            TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
             String value = this.value();
 
@@ -409,268 +419,224 @@ public class TextWidget extends Widget
     // > Views
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * The text widget's tile view.
-     * @return The tile view.
-     */
+
     private View widgetView(boolean rowHasLabel, Context context)
     {
-        // TODO check for nulls before doing anything here
-        LinearLayout layout = viewLayout(rowHasLabel, context);
+        LinearLayout layout = this.layout(rowHasLabel, context);
 
-        // > Label View
-        if (this.data().format().label() != null)
-            layout.addView(this.labelView(context));
-
-        // > Content
-        LinearLayout contentView = contentView(context);
-        layout.addView(contentView);
-
-        // ** Top Label View
-        if (this.format().label() != null &&
-            this.format().labelPosition() == InlineLabelPosition.TOP) {
-            contentView.addView(this.valueTopLabelView(context));
-        }
-
-        // ** Value View
-        contentView.addView(valueView(context));
-
-        // ** Quote View
-        if (this.format().isQuote())
-            contentView.addView(quoteView(context));
+        layout.addView(mainView(context));
 
         return layout;
     }
 
 
-    private LinearLayout viewLayout(boolean rowHasLabel, final Context context)
+    /**
+     * The outer-most view that holds the outside labels and the value view.
+     * @param context The context.
+     * @return The main view Linear Layout.
+     */
+    private LinearLayout mainView(Context context)
+    {
+        LinearLayout layout = mainLayout(context);
+
+        // > Outside Top/Left Label View
+        if (this.format().outsideLabel() != null) {
+            if (this.format().outsideLabelPosition() == Position.TOP ||
+                this.format().outsideLabelPosition() == Position.LEFT) {
+                layout.addView(this.outsideLabelView(context));
+            }
+        }
+
+        // > Value
+        layout.addView(this.valueMainView(context));
+
+        // > Outside Bottom/Right Label View
+        if (this.format().outsideLabel() != null) {
+            if (this.format().outsideLabelPosition() == Position.BOTTOM ||
+                this.format().outsideLabelPosition() == Position.RIGHT) {
+                layout.addView(this.outsideLabelView(context));
+            }
+        }
+
+        return layout;
+    }
+
+
+    private LinearLayout mainLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = 0;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.weight               = this.data().format().width().floatValue();
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        if (this.data().format().label() == null && rowHasLabel) {
-            layout.padding.top      = R.dimen.widget_label_fill_padding;
+        layout.orientation          = this.format().outsideLabelPosition()
+                                          .linearLayoutOrientation();
+
+        layout.gravity              = this.data().format().alignment().gravityConstant();
+
+        return layout.linearLayout(context);
+    }
+
+
+    /**
+     * The view that holds the value as well as the inside labels around the value.
+     * @param context The context.
+     * @return The value main view Linear Layout.
+     */
+    private LinearLayout valueMainView(Context context)
+    {
+        LinearLayout layout = valueMainViewLayout(context);
+
+        // > Inside Top/Left Label View
+        if (this.format().insideLabel() != null && this.description() == null) {
+            if (this.format().insideLabelPosition() == Position.TOP ||
+                this.format().insideLabelPosition() == Position.LEFT) {
+                layout.addView(this.insideLabelView(context));
+            }
         }
 
-        layout.margin.left          = R.dimen.widget_margin_horz;
-        layout.margin.right         = R.dimen.widget_margin_horz;
+        layout.addView(valueTextView(context));
 
-        layout.onClick          = new View.OnClickListener() {
+        // > Inside Bottom/Right Label View
+        if (this.format().insideLabel() != null && this.description() == null) {
+            if (this.format().insideLabelPosition() == Position.BOTTOM ||
+                this.format().insideLabelPosition() == Position.RIGHT) {
+                layout.addView(this.insideLabelView(context));
+            }
+        }
+
+        return layout;
+    }
+
+
+    private LinearLayout valueMainViewLayout(final Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = this.format().insideLabelPosition().linearLayoutOrientation();
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        layout.backgroundResource   = this.data().format().background()
+                                          .resourceId(this.data().format().corners(),
+                                                      this.format().valueStyle().size());
+
+        layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
+                                        | Gravity.CENTER_VERTICAL;
+
+        layout.onClick              = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onTextWidgetShortClick(context);
             }
         };
 
-        layout.onLongClick      = new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                onTextWidgetLongClick(context);
-                return false;
-            }
-        };
-
-        layout.hapticFeedback   = true;
-
-        if (this.format().isQuote()) {
-            layout.padding.left  = R.dimen.widget_text_layout_quote_padding_horz;
-            layout.padding.right = R.dimen.widget_text_layout_quote_padding_horz;
-        }
-
         return layout.linearLayout(context);
     }
 
 
-    private LinearLayout contentView(Context context)
+    private TextView valueTextView(Context context)
     {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        TextViewBuilder value = new TextViewBuilder();
 
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER_VERTICAL;
+        this.valueViewId   = Util.generateViewId();
 
-        layout.backgroundResource   = this.data().format().background()
-                                          .resourceId(this.data().format().corners());
+        value.id            = this.valueViewId;
 
-        return layout.linearLayout(context);
-    }
+        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        value.layoutGravity = this.format().valueStyle().alignment().gravityConstant()
+                                | Gravity.CENTER_VERTICAL;
+        value.gravity       = this.format().valueStyle().alignment().gravityConstant();
 
-    private LinearLayout valueView(Context context)
-    {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        TextViewBuilder     value  = new TextViewBuilder();
-        TextViewBuilder     label  = new TextViewBuilder();
-
-        this.displayTextViewId = Util.generateViewId();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER_VERTICAL;
-
-        if (this.format().label() != null &&
-                this.format().labelPosition() == InlineLabelPosition.LEFT) {
-            layout.child(label);
-        }
-
-        layout.child(value);
-
-        // [3] Value
-        // -------------------------------------------------------------------------------------
-
-        value.id                    = this.displayTextViewId;
-
-        value.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-        value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        value.text                  = this.value();
-        value.size                  = this.format().valueStyle().size().resourceId();
-        value.color                 = this.format().valueStyle().color().resourceId();
-        value.font                  = this.format().valueStyle().typeface(context);
-
-        // > Alignment
-        // -------------------------------------------------------------------------------------
-
-        switch (this.data().format().alignment())
+        if (this.description() != null)
         {
-            case LEFT:
-                layout.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
-                layout.layoutGravity = Gravity.START;
-                break;
-            case CENTER:
-                layout.gravity = Gravity.CENTER;
-                value.gravity = Gravity.CENTER_HORIZONTAL;
-                break;
-            case RIGHT:
-                layout.gravity = Gravity.END | Gravity.CENTER_VERTICAL;
-                layout.layoutGravity = Gravity.END;
-                break;
+            value.font          = Font.serifFontRegular(context);
+
+            value.color     = this.format().descriptionStyle().color().resourceId();
+            value.size      = this.format().descriptionStyle().size().resourceId();
+
+
+            List<FormattedString.Span> spans = new ArrayList<>();
+
+            FormattedString.Span labelSpan =
+                    new FormattedString.Span(null,
+                                             this.format().insideLabel(),
+                                             this.format().insideLabelStyle(),
+                                             this.format().descriptionStyle().size());
+
+            FormattedString.Span valueSpan =
+                    new FormattedString.Span(context.getString(R.string.placeholder_value),
+                                             this.value(),
+                                             this.format().valueStyle(),
+                                             this.format().descriptionStyle().size());
+
+            if (this.format().insideLabel() != null)
+                spans.add(labelSpan);
+
+            spans.add(valueSpan);
+
+            value.textSpan  = FormattedString.spannableStringBuilder(this.description(),
+                                                                     spans,
+                                                                     context);
         }
-
-        // [4] Label
-        // -------------------------------------------------------------------------------------
-
-        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.text                  = this.format().label();
-        label.color                 = R.color.dark_blue_hl_6;
-        label.font                  = Font.serifFontRegular(context);
-        label.size                  = this.format().labelStyle().size().resourceId();
-
-        label.margin.right          = R.dimen.widget_label_inline_margin_right;
-
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout valueTopLabelView(Context context)
-    {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        TextViewBuilder     label  = new TextViewBuilder();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER_HORIZONTAL;
-
-        layout.child(label);
-
-        // [3] Label
-        // -------------------------------------------------------------------------------------
-
-        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.text                  = this.format().label();
-        label.color                 = this.format().labelStyle().color().resourceId();
-        label.size                  = R.dimen.widget_label_text_size;
-        label.font                  = Font.serifFontRegular(context);
-
-        switch (this.format().size())
+        else
         {
-            case VERY_SMALL:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_small;
-            case SMALL:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_small;
-            case MEDIUM_SMALL:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_medium;
-            case MEDIUM:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_medium;
-            case MEDIUM_LARGE:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_large;
-            case LARGE:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_large;
+            value.text      = this.value();
+            value.color     = this.format().valueStyle().color().resourceId();
+            value.size      = this.format().valueStyle().size().resourceId();
+            value.font      = this.format().valueStyle().typeface(context);
         }
 
-        return layout.linearLayout(context);
+        return value.textView(context);
     }
 
 
-    private LinearLayout quoteView(Context context)
+    private TextView outsideLabelView(Context context)
     {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
+        TextViewBuilder label = new TextViewBuilder();
 
-        LinearLayoutBuilder layout      = new LinearLayoutBuilder();
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        ImageViewBuilder    icon        = new ImageViewBuilder();
-        TextViewBuilder     source      = new TextViewBuilder();
+        label.layoutGravity     = this.format().outsideLabelStyle().alignment().gravityConstant();
 
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
+        label.text              = this.format().outsideLabel();
 
-        layout.orientation     = LinearLayout.HORIZONTAL;
-        layout.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.layoutGravity   = Gravity.CENTER_HORIZONTAL;
-        layout.gravity         = Gravity.CENTER_VERTICAL;
+        this.format().outsideLabelStyle().styleTextViewBuilder(label, context);
 
-        layout.margin.top      = R.dimen.widget_text_quote_margin_top;
+        // > Format the label depending on its properties
 
-        layout.child(icon)
-              .child(source);
+        // > Alignment: LEFT
+        if (this.format().outsideLabelStyle().alignment() == Alignment.LEFT)
+            label.margin.left   = R.dimen.one_dp;
 
-        // [3 A] Icon
-        // -------------------------------------------------------------------------------------
+        // > Position: TOP
+        if (this.format().outsideLabelPosition() == Position.TOP)
+            label.margin.bottom = R.dimen.two_dp;
 
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.image                  = R.drawable.ic_quote;
-
-        // [3 B] Source
-        // -------------------------------------------------------------------------------------
-
-        source.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-        source.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        source.text                 = this.format().quoteSource();
-        source.font                 = Font.sansSerifFontRegular(context);
-        source.color                = R.color.dark_blue_hl_8;
-        source.size                 = R.dimen.widget_text_quote_source_text_size;
-
-        return layout.linearLayout(context);
+        return label.textView(context);
     }
+
+
+    private TextView insideLabelView(Context context)
+    {
+        TextViewBuilder label   = new TextViewBuilder();
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text              = this.format().insideLabel();
+
+        this.format().insideLabelStyle().styleTextViewBuilder(label, context);
+
+        label.margin.right      = R.dimen.widget_label_inline_margin_right;
+
+        return label.textView(context);
+    }
+
+
 
 
     /**

@@ -23,13 +23,10 @@ import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.TextStyle;
+import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.FormattedString;
@@ -401,22 +398,13 @@ public class NumberWidget extends Widget
         if (this.data().format().width() == null)
             this.data().format().setWidth(1);
 
-        // ** Alignment
-        if (this.data().format().alignment() == null)
-            this.data().format().setAlignment(Alignment.CENTER);
-
-        // ** Label Style
-        if (this.data().format().labelStyle() == null) {
-            TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
-                                                        TextColor.THEME_DARK,
-                                                        TextSize.SMALL,
-                                                        Alignment.CENTER);
-            this.data().format().setLabelStyle(defaultLabelStyle);
-        }
-
         // ** Background
         if (this.data().format().background() == null)
             this.data().format().setBackground(Background.DARK);
+
+        // ** Alignment
+        if (this.data().format().alignment() == null)
+            this.data().format().setAlignment(Alignment.CENTER);
 
         // ** Corners
         if (this.data().format().corners() == null)
@@ -457,101 +445,86 @@ public class NumberWidget extends Widget
     {
         LinearLayout layout = this.layout(rowHasLabel, context);
 
-        // > Label View
-        if (this.data().format().label() != null) {
-            layout.addView(this.labelView(context));
-        }
-
-        // > Value
-        LinearLayout valueLayout = valueLayout(context);
-        layout.addView(valueLayout);
-
-        if (this.format().labelPosition() == InlineLabelPosition.TOP)
-            valueLayout.addView(this.valueTopLabelView(context));
-
-        valueLayout.addView(this.valueMainView(context));
+        layout.addView(mainView(context));
 
         return layout;
     }
 
 
-    private LinearLayout valueLayout(Context context)
+    /**
+     * The outer-most view that holds the outside labels and the value view.
+     * @param context The context.
+     * @return The main view Linear Layout.
+     */
+    private LinearLayout mainView(Context context)
+    {
+        LinearLayout layout = mainLayout(context);
+
+        // > Outside Top/Left Label View
+        if (this.format().outsideLabel() != null) {
+            if (this.format().outsideLabelPosition() == Position.TOP ||
+                this.format().outsideLabelPosition() == Position.LEFT) {
+                layout.addView(this.outsideLabelView(context));
+            }
+        }
+
+        // > Value
+        layout.addView(this.valueMainView(context));
+
+        // > Outside Bottom/Right Label View
+        if (this.format().outsideLabel() != null) {
+            if (this.format().outsideLabelPosition() == Position.BOTTOM ||
+                this.format().outsideLabelPosition() == Position.RIGHT) {
+                layout.addView(this.outsideLabelView(context));
+            }
+        }
+
+        return layout;
+    }
+
+
+    private LinearLayout mainLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation          = LinearLayout.VERTICAL;
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        layout.gravity              = Gravity.CENTER_VERTICAL;
+        layout.orientation          = this.format().outsideLabelPosition()
+                                          .linearLayoutOrientation();
 
-        layout.backgroundResource   = this.data().format().background()
-                                          .resourceId(this.data().format().corners(),
-                                                      this.format().size());
-
-        return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout valueTopLabelView(Context context)
-    {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        TextViewBuilder     label  = new TextViewBuilder();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER_HORIZONTAL;
-
-        layout.child(label);
-
-        // [3] Label
-        // -------------------------------------------------------------------------------------
-
-        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.text                  = this.format().label();
-        label.color                 = this.format().labelStyle().color().resourceId();
-        label.size                  = R.dimen.widget_label_text_size;
-        label.font                  = Font.serifFontRegular(context);
-
-        switch (this.format().size())
-        {
-            case VERY_SMALL:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_small;
-            case SMALL:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_small;
-            case MEDIUM_SMALL:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_medium;
-            case MEDIUM:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_medium;
-            case MEDIUM_LARGE:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_large;
-            case LARGE:
-                label.margin.bottom = R.dimen.widget_label_inline_top_margin_bottom_large;
-        }
+        layout.gravity              = this.data().format().alignment().gravityConstant();
 
         return layout.linearLayout(context);
     }
 
 
+    /**
+     * The view that holds the value as well as the inside labels around the value.
+     * @param context The context.
+     * @return The value main view Linear Layout.
+     */
     private LinearLayout valueMainView(Context context)
     {
         LinearLayout layout = valueMainViewLayout(context);
 
-        if (this.format().label() != null &&
-            this.format().labelPosition() == InlineLabelPosition.LEFT) {
-            layout.addView(valueLeftLabelView(context));
+        // > Inside Top/Left Label View
+        if (this.format().insideLabel() != null && this.description() == null) {
+            if (this.format().insideLabelPosition() == Position.TOP ||
+                this.format().insideLabelPosition() == Position.LEFT) {
+                layout.addView(this.insideLabelView(context));
+            }
         }
 
         layout.addView(valueTextView(context));
+
+        // > Inside Bottom/Right Label View
+        if (this.format().insideLabel() != null && this.description() == null) {
+            if (this.format().insideLabelPosition() == Position.BOTTOM ||
+                this.format().insideLabelPosition() == Position.RIGHT) {
+                layout.addView(this.insideLabelView(context));
+            }
+        }
 
         return layout;
     }
@@ -561,24 +534,16 @@ public class NumberWidget extends Widget
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.orientation          = this.format().insideLabelPosition().linearLayoutOrientation();
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        // > Gravity
-        switch (this.data().format().alignment())
-        {
-            case LEFT:
-                layout.layoutGravity = Gravity.START | Gravity.CENTER_VERTICAL;
-                break;
-            case CENTER:
-                layout.layoutGravity = Gravity.CENTER;
-                layout.gravity = Gravity.CENTER;
-                break;
-            case RIGHT:
-                layout.layoutGravity = Gravity.END  | Gravity.CENTER_VERTICAL;
-                break;
-        }
+        layout.backgroundResource   = this.data().format().background()
+                                          .resourceId(this.data().format().corners(),
+                                                      this.format().valueStyle().size());
+
+        layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
+                                        | Gravity.CENTER_VERTICAL;
 
         layout.onClick              = new View.OnClickListener() {
             @Override
@@ -602,20 +567,9 @@ public class NumberWidget extends Widget
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-
-        // > Gravity
-        switch (this.data().format().alignment())
-        {
-            case LEFT:
-                value.gravity = Gravity.START;
-                break;
-            case CENTER:
-                value.gravity = Gravity.CENTER;
-                break;
-            case RIGHT:
-                value.gravity = Gravity.END;
-                break;
-        }
+        value.layoutGravity = this.format().valueStyle().alignment().gravityConstant()
+                                | Gravity.CENTER_VERTICAL;
+        value.gravity       = this.format().valueStyle().alignment().gravityConstant();
 
         if (this.description() != null)
         {
@@ -629,8 +583,8 @@ public class NumberWidget extends Widget
 
             FormattedString.Span labelSpan =
                     new FormattedString.Span(null,
-                                             this.format().label(),
-                                             this.format().labelStyle(),
+                                             this.format().insideLabel(),
+                                             this.format().insideLabelStyle(),
                                              this.format().descriptionStyle().size());
 
             FormattedString.Span valueSpan =
@@ -639,7 +593,7 @@ public class NumberWidget extends Widget
                                              this.format().valueStyle(),
                                              this.format().descriptionStyle().size());
 
-            if (this.format().label() != null)
+            if (this.format().insideLabel() != null)
                 spans.add(labelSpan);
 
             spans.add(valueSpan);
@@ -659,130 +613,46 @@ public class NumberWidget extends Widget
         return value.textView(context);
     }
 
-    /*
-    private SpannableStringBuilder valueSpannableString(Context context)
+
+    private TextView outsideLabelView(Context context)
     {
-        String valueString = this.valueString();
-        int valueStringLength = valueString.length();
+        TextViewBuilder label = new TextViewBuilder();
 
-        // > Get value index and remove placeholder
-        int valueIndex = this.description().indexOf("<value>");
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        StringBuilder stringBuilder = new StringBuilder(this.description().replace("<value>", ""));
+        label.layoutGravity     = this.format().outsideLabelStyle().alignment().gravityConstant();
 
-        SpannableStringBuilder builder = new SpannableStringBuilder(stringBuilder.toString());
+        label.text              = this.format().outsideLabel();
 
-        if (valueIndex >= 0)
-        {
-            // > Format Value
-            // (1) Insert number string
-            builder.insert(valueIndex, valueString);
-            stringBuilder.insert(valueIndex, valueString);
+        this.format().outsideLabelStyle().styleTextViewBuilder(label, context);
 
-            // (2) Make the number bold
-            if (this.format().valueStyle().isBold() && this.format().valueStyle().isItalic()) {
-                StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
-                builder.setSpan(valueBoldItalicSpan, valueIndex, valueIndex + valueStringLength, 0);
-            }
-            else if (this.format().valueStyle().isBold()) {
-                StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
-                builder.setSpan(valueBoldSpan, valueIndex, valueIndex + valueStringLength, 0);
-            }
-            else if (this.format().valueStyle().isItalic()) {
-                StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
-                builder.setSpan(valueItalicSpan, valueIndex, valueIndex + valueStringLength, 0);
-            }
+        // > Format the label depending on its properties
 
-            // (3) Color the value
-            builder.setSpan(this.format().valueStyle().color().foregroundColorSpan(context),
-                            valueIndex, valueIndex + valueStringLength, 0);
+        // > Alignment: LEFT
+        if (this.format().outsideLabelStyle().alignment() == Alignment.LEFT)
+            label.margin.left   = R.dimen.one_dp;
 
-            // (4) Size
-            RelativeSizeSpan sizeSpan = this.format().valueStyle().size().relativeSizeSpan(
-                                                this.format().descriptionStyle().size(), context);
-            builder.setSpan(sizeSpan, valueIndex, valueIndex + valueStringLength, 0);
-        }
+        // > Position: TOP
+        if (this.format().outsideLabelPosition() == Position.TOP)
+            label.margin.bottom = R.dimen.two_dp;
 
-        // > Format Label
-        if (this.format().label() != null &&
-            this.format().labelPosition() == InlineLabelPosition.TEXT)
-        {
-            int labelIndex = stringBuilder.indexOf(this.format().label());
-
-            if (labelIndex >= 0)
-            {
-                int labelStringLength = this.format().label().length();
-
-                // (1) Set Typeface
-                if (this.format().labelStyle().isBold() &&
-                    this.format().labelStyle().isItalic())
-                {
-                    StyleSpan labelBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
-                    builder.setSpan(labelBoldItalicSpan, labelIndex,
-                                    labelIndex + labelStringLength, 0);
-                }
-                else if (this.format().labelStyle().isBold())
-                {
-                    StyleSpan labelBoldSpan = new StyleSpan(Typeface.BOLD);
-                    builder.setSpan(labelBoldSpan, labelIndex, labelIndex + labelStringLength, 0);
-                }
-                else if (this.format().labelStyle().isItalic())
-                {
-                    StyleSpan labelItalicSpan = new StyleSpan(Typeface.ITALIC);
-                    builder.setSpan(labelItalicSpan, labelIndex, labelIndex + labelStringLength, 0);
-                }
-
-                // (2) Set Color
-                builder.setSpan(this.format().labelStyle().color().foregroundColorSpan(context),
-                                labelIndex, labelIndex + labelStringLength, 0);
-
-                // (3) Set Size
-                RelativeSizeSpan labelSizeSpan =
-                                this.format().labelStyle().size().relativeSizeSpan(
-                                            this.format().descriptionStyle().size(), context);
-                builder.setSpan(labelSizeSpan, labelIndex, labelIndex + labelStringLength, 0);
-            }
-        }
-
-        return builder;
+        return label.textView(context);
     }
-    */
 
 
-    private TextView valueLeftLabelView(Context context)
+    private TextView insideLabelView(Context context)
     {
         TextViewBuilder label   = new TextViewBuilder();
 
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.text              = this.format().label();
-        label.color             = this.format().labelStyle().color().resourceId();
-        label.size              = this.format().labelStyle().size().resourceId();
+        label.text              = this.format().insideLabel();
 
-        label.font              = this.format().labelStyle().typeface(context);
+        this.format().insideLabelStyle().styleTextViewBuilder(label, context);
 
         label.margin.right      = R.dimen.widget_label_inline_margin_right;
-
-        return label.textView(context);
-    }
-
-
-    private TextView labelView(Context context)
-    {
-        TextViewBuilder label = new TextViewBuilder();
-
-        label.width             = LinearLayout.LayoutParams.MATCH_PARENT;
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.gravity           = this.data().format().labelStyle().alignment().gravityConstant();
-
-        label.text              = this.data().format().label();
-        label.font              = Font.serifFontRegular(context);
-        label.color             = R.color.dark_blue_hl_8;
-        label.size              = R.dimen.widget_label_text_size;
-
-        label.margin.bottom     = R.dimen.widget_label_margin_bottom;
 
         return label.textView(context);
     }

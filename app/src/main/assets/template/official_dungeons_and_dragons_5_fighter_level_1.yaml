@@ -1807,12 +1807,16 @@ profile:
           widget:
             data:
               format:
-                label: level
                 name: Level
                 width: 1
                 background: dark
             format:
-              size: medium_small
+              outside_label: level
+              outside_label_position: top
+              outside_label_style:
+                alignment: left
+                color: theme_dark
+                size: very_small
             value:
               type: value
               name: level
@@ -1828,7 +1832,12 @@ profile:
                 width: 2
                 background: dark
             format:
-              size: medium_small
+              outside_label: race
+              outside_label_position: top
+              outside_label_style:
+                alignment: left
+                color: theme_medium
+                size: very_small
             value:
               type: value
               name: race
@@ -1845,7 +1854,12 @@ profile:
                 width: 2
                 background: dark
             format:
-              size: medium_small
+              outside_label: class
+              outside_label_position: top
+              outside_label_style:
+                alignment: left
+                color: theme_medium
+                size: very_small
             value:
               type: value
               name: class
@@ -1910,13 +1924,13 @@ profile:
             data:
               format:
                 background: dark
-                label: My experience
                 name: Experience Points
                 width: 5
             format:
               size: medium
-              label: XP
-              label_position: left
+              inside_label: XP
+              inside_label_position: left
+              outside_label: My experience
             value:
               type: literal
               value: 103
@@ -1950,9 +1964,9 @@ profile:
                 name: Age
                 width: 1
             format:
-              label: age
+              inside_label: age
               size: medium_small
-              tint: theme_medium_dark
+              color: theme_medium_dark
             value:
               type: literal
               value: 41
@@ -1981,10 +1995,10 @@ profile:
                 name: Weight
                 width: 1
             format:
-              label: weight
-              label_position: left
+              color: theme_medium_dark
+              inside_label: weight
+              inside_label_position: left
               size: medium_small
-              tint: theme_medium_dark
             size: medium_small
             value:
               type: literal
@@ -2218,9 +2232,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: strength
-              label_position: text
-              label_style:
+              inside_label: strength
+              inside_label_style:
                 color: green_very_light
                 font: bold
               value_style:
@@ -2287,9 +2300,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: saving throw
-              label_position: text
-              label_style:
+              inside_label: saving throw
+              inside_label_style:
                 color: theme_light
               value_style:
                 color: theme_light
@@ -2341,9 +2353,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: dexterity
-              label_position: text
-              label_style:
+              inside_label: dexterity
+              inside_label_style:
                 color: green_very_light
                 font: bold
               value_style:
@@ -2410,9 +2421,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: saving throw
-              label_position: text
-              label_style:
+              inside_label: saving throw
+              inside_label_style:
                 color: theme_light
               value_style:
                 color: theme_light
@@ -2464,9 +2474,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: constitution
-              label_position: text
-              label_style:
+              inside_label: constitution
+              inside_label_style:
                 color: green_very_light
                 font: bold
               value_style:
@@ -2533,9 +2542,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: saving throw
-              label_position: text
-              label_style:
+              inside_label: saving throw
+              inside_label_style:
                 color: theme_light
               value_style:
                 color: theme_light
@@ -2587,9 +2595,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: intelligence
-              label_position: text
-              label_style:
+              inside_label: intelligence
+              inside_label_style:
                 color: green_very_light
                 font: bold
               value_style:
@@ -2656,9 +2663,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: saving throw
-              label_position: text
-              label_style:
+              inside_label: saving throw
+              inside_label_style:
                 color: theme_light
               value_style:
                 color: theme_light
@@ -2711,9 +2717,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: wisdom
-              label_position: text
-              label_style:
+              inside_label: wisdom
+              inside_label_style:
                 color: green_very_light
                 font: bold
               value_style:
@@ -2780,9 +2785,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: saving throw
-              label_position: text
-              label_style:
+              inside_label: saving throw
+              inside_label_style:
                 color: theme_light
               value_style:
                 color: theme_light
@@ -2832,9 +2836,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: charisma
-              label_position: text
-              label_style:
+              inside_label: charisma
+              inside_label_style:
                 color: green_very_light
                 font: bold
               value_style:
@@ -2901,9 +2904,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium_small
-              label: saving throw
-              label_position: text
-              label_style:
+              inside_label: saving throw
+              inside_label_style:
                 color: theme_light
               value_style:
                 color: theme_light
@@ -3623,9 +3625,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium
-              label: Hit Points
-              label_position: text
-              label_style:
+              inside_label: Hit Points
+              inside_label_style:
                 color: theme_light
                 font: bold_italic
                 size: medium
@@ -3653,9 +3654,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium
-              label: Armor Class
-              label_position: text
-              label_style:
+              inside_label: Armor Class
+              inside_label_style:
                 color: theme_light
                 font: bold_italic
                 size: medium
@@ -3697,9 +3697,8 @@ profile:
               description_style:
                 color: theme_very_dark
                 size: medium
-              label: Initiative
-              label_position: text
-              label_style:
+              inside_label: Initiative
+              inside_label_style:
                 color: theme_light
                 font: bold_italic
                 size: medium
@@ -3730,10 +3729,10 @@ profile:
             data:
               format:
                 background: medium_dark
-                label: Proficiency Bonus
-                label_alignment: center
                 width: 3
             format:
+              outside_label: Proficiency Bonus
+              outside_label_alignment: center
               value_style:
                 size: medium_small
                 color: theme_medium
@@ -3748,10 +3747,10 @@ profile:
             data:
               format:
                 background: medium_dark
-                label: Speed
-                label_alignment: center
                 width: 2
             format:
+              outside_label: Speed
+              outside_label_alignment: center
               value_style:
                 size: medium_small
                 color: theme_medium
@@ -3801,9 +3800,9 @@ profile:
             data:
               format:
                 background: medium_dark
-                label: Gold
-                label_alignment: center
             format:
+              outside_label: Gold
+              outside_label_alignment: center
               value_style:
                 color: theme_medium_light
             value:
@@ -3815,9 +3814,9 @@ profile:
             data:
               format:
                 background: medium_dark
-                label: Silver
-                label_alignment: center
             format:
+              outside_label: Silver
+              outside_label_alignment: center
               value_style:
                 color: theme_medium_light
             size: medium
@@ -3830,9 +3829,9 @@ profile:
             data:
               format:
                 background: medium_dark
-                label: Copper
-                label_alignment: center
             format:
+              outside_label: Copper
+              outside_label_alignment: center
               value_style:
                 color: theme_medium_light
             value:
@@ -3846,9 +3845,9 @@ profile:
             data:
               format:
                 background: medium_dark
-                label: Platinum
-                label_alignment: center
             format:
+              outside_label: Platinum
+              outside_label_alignment: center
               value_style:
                 color: theme_medium_light
             value:
@@ -3860,9 +3859,9 @@ profile:
             data:
               format:
                 background: medium_dark
-                label: Electrum
-                label_alignment: center
             format:
+              outside_label: Electrum
+              outside_label_alignment: center
               value_style:
                 color: theme_medium_light
             value:
@@ -4446,7 +4445,6 @@ encounter:
         space_above: medium_large
       rows:
       - space_above: small
-        width: half
         widgets:
         - type: number
           widget:
@@ -4454,9 +4452,8 @@ encounter:
               format:
                 background: medium
             format:
-              label_style:
-                size: large
               value_style:
+                alignment: center
                 color: theme_light
                 size: colossal
             value:
@@ -4490,7 +4487,7 @@ encounter:
                 size: medium
                 font: bold
                 color: theme_medium_light
-      - space_above: small
+      - space_above: medium_small
         widgets:
         - type: button
           widget:
@@ -4511,6 +4508,26 @@ encounter:
                 size: medium
                 font: bold
                 color: theme_medium_light
+    - name: Temporary Hit Points
+      format:
+        show_name: false
+      rows:
+      - space_above: small
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                alignment: center
+                background: medium_dark
+            format:
+              outside_label: Temporarity Hit Points
+              outside_label_position: right
+            value:
+              name: temporary_hit_points
+              label: Temporary Hit Points
+              type: literal
+              value: 0
   - name: Abilities
     groups:
 campaign:
