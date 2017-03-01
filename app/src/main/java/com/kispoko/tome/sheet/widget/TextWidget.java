@@ -21,6 +21,7 @@ import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.NavigationDialogFragment;
 import com.kispoko.tome.sheet.SheetException;
 import com.kispoko.tome.sheet.SheetManager;
@@ -29,16 +30,11 @@ import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.Position;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.TextStyle;
-import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.FormattedString;
-import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
@@ -383,7 +379,7 @@ public class TextWidget extends Widget
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(Background.DARK);
+            this.data().format().setBackground(BackgroundColor.DARK);
 
         // ** Corners
         if (this.data().format().corners() == null)
@@ -418,7 +414,6 @@ public class TextWidget extends Widget
 
     // > Views
     // ------------------------------------------------------------------------------------------
-
 
     private View widgetView(boolean rowHasLabel, Context context)
     {
@@ -637,33 +632,6 @@ public class TextWidget extends Widget
     }
 
 
-
-
-    /**
-     * The text widget label view.
-     * @param context The context.
-     * @return The Text View.
-     */
-    private TextView labelView(Context context)
-    {
-        TextViewBuilder label = new TextViewBuilder();
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.layoutGravity     = this.data().format().labelStyle().alignment().gravityConstant();
-
-        label.text              = this.data().format().label();
-        label.font              = Font.serifFontRegular(context);
-        label.color             = R.color.dark_blue_hl_8;
-        label.size              = R.dimen.widget_label_text_size;
-
-        label.margin.bottom     = R.dimen.widget_label_margin_bottom;
-
-        return label.textView(context);
-    }
-
-
     // > Clicks
     // -----------------------------------------------------------------------------------------
 
@@ -721,14 +689,5 @@ public class TextWidget extends Widget
         actionDialogFragment.show(sheetActivity.getSupportFragmentManager(), "actions");
     }
 
-
-//                Activity editActivity = (Activity) context;
-//                String newValue = editText.getText().toString();
-//                EditResult editResult = new EditResult(EditResult.ResultType.TEXT_VALUE,
-//                                                       thisTextWidget.getId(), newValue);
-//                Intent resultIntent = new Intent();
-//                resultIntent.putExtra("RESULT", editResult);
-//                editActivity.setResult(Activity.RESULT_OK, resultIntent);
-//                editActivity.finish();
 
 }

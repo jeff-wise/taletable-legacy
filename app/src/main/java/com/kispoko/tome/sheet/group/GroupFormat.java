@@ -3,7 +3,7 @@ package com.kispoko.tome.sheet.group;
 
 
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextFont;
@@ -52,7 +52,7 @@ public class GroupFormat implements Model, ToYaml, Serializable
     /**
      * The background color of the group.
      */
-    private PrimitiveFunctor<Background>    background;
+    private PrimitiveFunctor<BackgroundColor>    background;
 
     /**
      * If true, displays the group name above its content.
@@ -80,7 +80,7 @@ public class GroupFormat implements Model, ToYaml, Serializable
         this.showName       = new PrimitiveFunctor<>(null, Boolean.class);
         this.spaceAbove     = new PrimitiveFunctor<>(null, Spacing.class);
         this.spaceBelow     = new PrimitiveFunctor<>(null, Spacing.class);
-        this.background     = new PrimitiveFunctor<>(null, Background.class);
+        this.background     = new PrimitiveFunctor<>(null, BackgroundColor.class);
         this.nameStyle      = ModelFunctor.empty(TextStyle.class);
         this.dividerType    = new PrimitiveFunctor<>(null, DividerType.class);
     }
@@ -89,7 +89,7 @@ public class GroupFormat implements Model, ToYaml, Serializable
     public GroupFormat(UUID id,
                        Spacing spaceAbove,
                        Spacing spaceBelow,
-                       Background background,
+                       BackgroundColor background,
                        Boolean showName,
                        TextStyle nameStyle,
                        DividerType dividerType)
@@ -98,7 +98,7 @@ public class GroupFormat implements Model, ToYaml, Serializable
 
         this.spaceAbove     = new PrimitiveFunctor<>(spaceAbove, Spacing.class);
         this.spaceBelow     = new PrimitiveFunctor<>(spaceBelow, Spacing.class);
-        this.background     = new PrimitiveFunctor<>(background, Background.class);
+        this.background     = new PrimitiveFunctor<>(background, BackgroundColor.class);
         this.showName       = new PrimitiveFunctor<>(showName, Boolean.class);
         this.nameStyle      = ModelFunctor.full(nameStyle, TextStyle.class);
         this.dividerType    = new PrimitiveFunctor<>(dividerType, DividerType.class);
@@ -125,7 +125,7 @@ public class GroupFormat implements Model, ToYaml, Serializable
 
         Spacing     spaceAbove  = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
         Spacing     spaceBelow  = Spacing.fromYaml(yaml.atMaybeKey("space_below"));
-        Background  background  = Background.fromYaml(yaml.atMaybeKey("background"));
+        BackgroundColor background  = BackgroundColor.fromYaml(yaml.atMaybeKey("background"));
         Boolean     showName    = yaml.atMaybeKey("show_name").getBoolean();
         TextStyle   nameStyle   = TextStyle.fromYaml(yaml.atMaybeKey("name_style"), false);
         DividerType dividerType = DividerType.fromYaml(yaml.atMaybeKey("divider"));
@@ -256,18 +256,18 @@ public class GroupFormat implements Model, ToYaml, Serializable
      * The group background color.
      * @return The Group Background.
      */
-    public Background background()
+    public BackgroundColor background()
     {
         return this.background.getValue();
     }
 
 
-    public void setBackground(Background background)
+    public void setBackground(BackgroundColor background)
     {
         if (background != null)
             this.background.setValue(background);
         else
-            this.background.setValue(Background.MEDIUM);
+            this.background.setValue(BackgroundColor.MEDIUM);
     }
 
 

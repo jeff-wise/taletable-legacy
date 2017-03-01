@@ -14,9 +14,9 @@ import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
-import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
@@ -171,7 +171,7 @@ public class TextCell extends Cell
 
 
     @Override
-    public Background background()
+    public BackgroundColor background()
     {
         return this.format().background();
     }

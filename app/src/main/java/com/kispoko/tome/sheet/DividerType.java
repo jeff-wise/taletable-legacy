@@ -82,7 +82,7 @@ public enum DividerType implements ToYaml
     // Color Id With Background
     // ------------------------------------------------------------------------------------------
 
-    public int colorIdWithBackground(Background background)
+    public int colorIdWithBackground(BackgroundColor background)
     {
         switch (background)
         {

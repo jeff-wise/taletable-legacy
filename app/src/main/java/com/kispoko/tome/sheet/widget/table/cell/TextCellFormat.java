@@ -3,7 +3,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
@@ -46,7 +46,7 @@ public class TextCellFormat implements Model, ToYaml, Serializable
     /**
      * The cell background color.
      */
-    private PrimitiveFunctor<Background>    background;
+    private PrimitiveFunctor<BackgroundColor>    background;
 
     /**
      * The cell value text style.
@@ -62,20 +62,20 @@ public class TextCellFormat implements Model, ToYaml, Serializable
         this.id         = null;
 
         this.alignment  = new PrimitiveFunctor<>(null, Alignment.class);
-        this.background = new PrimitiveFunctor<>(null, Background.class);
+        this.background = new PrimitiveFunctor<>(null, BackgroundColor.class);
         this.style      = ModelFunctor.empty(TextStyle.class);
     }
 
 
     public TextCellFormat(UUID id,
                           Alignment alignment,
-                          Background background,
+                          BackgroundColor background,
                           TextStyle style)
     {
         this.id         = id;
 
         this.alignment  = new PrimitiveFunctor<>(alignment, Alignment.class);
-        this.background = new PrimitiveFunctor<>(background, Background.class);
+        this.background = new PrimitiveFunctor<>(background, BackgroundColor.class);
         this.style      = ModelFunctor.full(style, TextStyle.class);
 
         this.setAlignment(alignment);
@@ -99,7 +99,7 @@ public class TextCellFormat implements Model, ToYaml, Serializable
         UUID       id         = UUID.randomUUID();
 
         Alignment  alignment  = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
-        Background background = Background.fromYaml(yaml.atMaybeKey("background"));
+        BackgroundColor background = BackgroundColor.fromYaml(yaml.atMaybeKey("background"));
         TextStyle  style      = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
 
         return new TextCellFormat(id, alignment, background, style);
@@ -222,7 +222,7 @@ public class TextCellFormat implements Model, ToYaml, Serializable
      * The cell background color.
      * @return The background.
      */
-    public Background background()
+    public BackgroundColor background()
     {
         return this.background.getValue();
     }
@@ -232,14 +232,14 @@ public class TextCellFormat implements Model, ToYaml, Serializable
      * Set the cell background color.
      * @param background The background.
      */
-    public void setBackground(Background background)
+    public void setBackground(BackgroundColor background)
     {
         if (background != null) {
             this.background.setValue(background);
             this.background.setIsDefault(false);
         }
         else {
-            this.background.setValue(Background.MEDIUM);
+            this.background.setValue(BackgroundColor.MEDIUM);
             this.background.setIsDefault(true);
         }
     }
@@ -250,7 +250,7 @@ public class TextCellFormat implements Model, ToYaml, Serializable
      * @param columnBackground The column background (could be null).
      * @return The appropriate background.
      */
-    public Background resolveBackground(Background columnBackground)
+    public BackgroundColor resolveBackground(BackgroundColor columnBackground)
     {
         if (columnBackground == null)
             return this.background();

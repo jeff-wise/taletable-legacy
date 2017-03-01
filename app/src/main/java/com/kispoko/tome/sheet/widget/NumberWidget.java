@@ -20,11 +20,11 @@ import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.Position;
-import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
@@ -400,7 +400,7 @@ public class NumberWidget extends Widget
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(Background.DARK);
+            this.data().format().setBackground(BackgroundColor.DARK);
 
         // ** Alignment
         if (this.data().format().alignment() == null)
@@ -493,7 +493,8 @@ public class NumberWidget extends Widget
         layout.orientation          = this.format().outsideLabelPosition()
                                           .linearLayoutOrientation();
 
-        layout.gravity              = this.data().format().alignment().gravityConstant();
+        layout.gravity              = this.data().format().alignment().gravityConstant()
+                                        | Gravity.CENTER_VERTICAL;
 
         return layout.linearLayout(context);
     }
@@ -535,15 +536,33 @@ public class NumberWidget extends Widget
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
         layout.orientation          = this.format().insideLabelPosition().linearLayoutOrientation();
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        layout.backgroundResource   = this.data().format().background()
-                                          .resourceId(this.data().format().corners(),
-                                                      this.format().valueStyle().size());
+        // > Width
+        //   If no padding is specified, the value (and its background) stretches to fill the
+        //   space. Otherwise it only stretches as far as the padding allows
+        // -------------------------------------------------------------------------------------
+        if (this.format().valuePaddingHorizontal() != null)
+            layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        else
+            layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+
+        layout.backgroundColor      = this.data().format().background().colorId();
+        layout.backgroundResource   = this.format().valueHeight()
+                                          .resourceId(this.data().format().corners());
 
         layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
                                         | Gravity.CENTER_VERTICAL;
+
+        // > Padding
+        // -------------------------------------------------------------------------------------
+        if (this.format().valuePaddingHorizontal() != null)
+        {
+            layout.padding.left     = this.format().valuePaddingHorizontal().resourceId();
+            layout.padding.right    = this.format().valuePaddingHorizontal().resourceId();
+        }
 
         layout.onClick              = new View.OnClickListener() {
             @Override
@@ -621,7 +640,8 @@ public class NumberWidget extends Widget
         label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.layoutGravity     = this.format().outsideLabelStyle().alignment().gravityConstant();
+        label.layoutGravity     = this.format().outsideLabelStyle().alignment().gravityConstant()
+                                    | Gravity.CENTER_VERTICAL;
 
         label.text              = this.format().outsideLabel();
 
@@ -636,6 +656,10 @@ public class NumberWidget extends Widget
         // > Position: TOP
         if (this.format().outsideLabelPosition() == Position.TOP)
             label.margin.bottom = R.dimen.two_dp;
+
+        // > Position: RIGHT
+        if (this.format().outsideLabelPosition() == Position.RIGHT)
+            label.margin.left = R.dimen.five_dp;
 
         return label.textView(context);
     }

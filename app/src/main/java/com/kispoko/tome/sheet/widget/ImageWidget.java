@@ -21,7 +21,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
@@ -286,7 +286,7 @@ public class ImageWidget extends Widget
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(Background.NONE);
+            this.data().format().setBackground(BackgroundColor.NONE);
 
     }
 

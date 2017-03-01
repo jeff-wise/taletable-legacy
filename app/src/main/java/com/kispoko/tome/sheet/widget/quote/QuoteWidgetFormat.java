@@ -55,10 +55,13 @@ public class QuoteWidgetFormat implements Model, ToYaml, Serializable
 
     public QuoteWidgetFormat(UUID id, TextStyle quoteStyle, TextStyle sourceStyle)
     {
-        this.id             = null;
+        this.id             = id;
 
         this.quoteStyle     = ModelFunctor.full(quoteStyle, TextStyle.class);
         this.sourceStyle    = ModelFunctor.full(sourceStyle, TextStyle.class);
+
+        this.setQuoteStyle(quoteStyle);
+        this.setSourceStyle(sourceStyle);
     }
 
 

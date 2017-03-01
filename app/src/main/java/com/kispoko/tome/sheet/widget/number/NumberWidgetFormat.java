@@ -3,6 +3,8 @@ package com.kispoko.tome.sheet.widget.number;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.widget.util.Height;
+import com.kispoko.tome.sheet.widget.util.Padding;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextColor;
@@ -49,6 +51,8 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     private ModelFunctor<TextStyle>     descriptionStyle;
 
     private ModelFunctor<TextStyle>     valueStyle;
+    private PrimitiveFunctor<Height>    valueHeight;
+    private PrimitiveFunctor<Padding>   valuePaddingHorizontal;
 
     private ModelFunctor<TextStyle>     valuePrefixStyle;
     private ModelFunctor<TextStyle>     valuePostfixStyle;
@@ -65,13 +69,15 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.insideLabelPosition    = new PrimitiveFunctor<>(null, Position.class);
         this.insideLabelStyle       = ModelFunctor.empty(TextStyle.class);
 
-        this.outsideLabel            = new PrimitiveFunctor<>(null, String.class);
-        this.outsideLabelPosition    = new PrimitiveFunctor<>(null, Position.class);
-        this.outsideLabelStyle       = ModelFunctor.empty(TextStyle.class);
+        this.outsideLabel           = new PrimitiveFunctor<>(null, String.class);
+        this.outsideLabelPosition   = new PrimitiveFunctor<>(null, Position.class);
+        this.outsideLabelStyle      = ModelFunctor.empty(TextStyle.class);
 
         this.descriptionStyle       = ModelFunctor.empty(TextStyle.class);
 
         this.valueStyle             = ModelFunctor.empty(TextStyle.class);
+        this.valueHeight            = new PrimitiveFunctor<>(null, Height.class);
+        this.valuePaddingHorizontal = new PrimitiveFunctor<>(null, Padding.class);
 
         this.valuePrefixStyle       = ModelFunctor.empty(TextStyle.class);
         this.valuePostfixStyle      = ModelFunctor.empty(TextStyle.class);
@@ -87,6 +93,8 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                               TextStyle outsideLabelStyle,
                               TextStyle descriptionStyle,
                               TextStyle valueStyle,
+                              Height valueHeight,
+                              Padding valuePaddingHorizontal,
                               TextStyle valuePrefixStyle,
                               TextStyle valuePostfixStyle)
     {
@@ -103,6 +111,8 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.descriptionStyle       = ModelFunctor.full(descriptionStyle, TextStyle.class);
 
         this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
+        this.valueHeight            = new PrimitiveFunctor<>(valueHeight, Height.class);
+        this.valuePaddingHorizontal = new PrimitiveFunctor<>(valuePaddingHorizontal, Padding.class);
 
         this.valuePrefixStyle       = ModelFunctor.full(valuePrefixStyle, TextStyle.class);
         this.valuePostfixStyle      = ModelFunctor.full(valuePostfixStyle, TextStyle.class);
@@ -117,6 +127,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.setDescriptionStyle(descriptionStyle);
 
         this.setValueStyle(valueStyle);
+        this.setValueHeight(valueHeight);
 
         this.setValuePrefixStyle(valuePrefixStyle);
         this.setValuePostfixStyle(valuePostfixStyle);
@@ -148,14 +159,19 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         TextStyle outsideLabelStyle    = TextStyle.fromYaml(yaml.atMaybeKey("outside_label_style"));
 
         TextStyle descriptionStyle     = TextStyle.fromYaml(yaml.atMaybeKey("description_style"));
+
         TextStyle valueStyle           = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
+        Height    valueHeight          = Height.fromYaml(yaml.atMaybeKey("value_height"));
+        Padding   valuePaddingHorz     = Padding.fromYaml(
+                                                    yaml.atMaybeKey("value_padding_horizontal"));
+
         TextStyle valuePrefixStyle     = TextStyle.fromYaml(yaml.atMaybeKey("value_prefix_style"));
         TextStyle valuePostfixStyle    = TextStyle.fromYaml(yaml.atMaybeKey("value_postfix_style"));
 
         return new NumberWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
                                       outsideLabel, outsideLabelPosition, outsideLabelStyle,
-                                      descriptionStyle, valueStyle, valuePrefixStyle,
-                                      valuePostfixStyle);
+                                      descriptionStyle, valueStyle, valueHeight, valuePaddingHorz,
+                                      valuePrefixStyle, valuePostfixStyle);
     }
 
 
@@ -180,6 +196,8 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         numberWidgetFormat.setDescriptionStyle(null);
 
         numberWidgetFormat.setValueStyle(null);
+        numberWidgetFormat.setValueHeight(null);
+        numberWidgetFormat.setValuePaddingHorizontal(null);
 
         numberWidgetFormat.setValuePrefixStyle(null);
         numberWidgetFormat.setValuePostfixStyle(null);
@@ -236,6 +254,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
             .putYaml("description_style", this.descriptionStyle())
 
             .putYaml("value_style", this.valueStyle())
+            .putYaml("value_padding_horizontal", this.valuePaddingHorizontal())
 
             .putYaml("value_prefix_style", this.valuePrefixStyle())
             .putYaml("value_postfix_style", this.valuePostfixStyle());
@@ -456,6 +475,55 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                                   Alignment.CENTER);
             this.valueStyle.setValue(defaultValueStyle);
         }
+    }
+
+
+    // ** Value Height
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The value height.
+     * @return The value height.
+     */
+    public Height valueHeight()
+    {
+        return this.valueHeight.getValue();
+    }
+
+
+    /**
+     * Set the value height. If null, sets the height to SMALL.
+     * @param height The height.
+     */
+    public void setValueHeight(Height height)
+    {
+        if (height != null)
+            this.valueHeight.setValue(height);
+        else
+            this.valueHeight.setValue(Height.SMALL);
+    }
+
+
+    // ** Value Padding Horizontal
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The horizontal padding around the value.
+     * @return The padding.
+     */
+    public Padding valuePaddingHorizontal()
+    {
+        return this.valuePaddingHorizontal.getValue();
+    }
+
+
+    /**
+     * Set the horizontal value padding.
+     * @param padding The padding.
+     */
+    public void setValuePaddingHorizontal(Padding padding)
+    {
+        this.valuePaddingHorizontal.setValue(padding);
     }
 
 

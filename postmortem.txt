@@ -49,3 +49,7 @@ it will be easy to fix. and almost easier to develop, because you can go iterati
 stupid data, smart methods.
 data should be simple, structured, explicit, compositional, well-typed, generic.
 
+always optimize everything. always keep everything clean. write DSLS for everything.
+
+everything that coudl have an error or take long to do, create a pattern for it.
+find optiml way, bput it in a function. 

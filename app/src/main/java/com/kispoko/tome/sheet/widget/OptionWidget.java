@@ -22,11 +22,11 @@ import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.option.OptionWidgetFormat;
 import com.kispoko.tome.sheet.widget.option.ViewType;
-import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
@@ -441,7 +441,7 @@ public class OptionWidget extends Widget implements Serializable
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(Background.DARK);
+            this.data().format().setBackground(BackgroundColor.DARK);
 
         // ** Corners
         if (this.data().format().corners() == null)

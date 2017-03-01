@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.util.model.Model;
@@ -378,7 +378,7 @@ public class LogEntry implements Model, ToYaml, Serializable
 
 
     private LinearLayout dividerView(DividerType dividerType,
-                                     Background background,
+                                     BackgroundColor background,
                                      Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();

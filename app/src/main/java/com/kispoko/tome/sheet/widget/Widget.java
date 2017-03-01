@@ -11,7 +11,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.group.GroupParent;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -80,7 +80,7 @@ public abstract class Widget implements Model, ToYaml, Serializable
 
     private void setWidgetBackgroundResource(LinearLayoutBuilder layout)
     {
-        Background background = this.data().format().background();
+        BackgroundColor background = this.data().format().background();
 
         switch (background)
         {

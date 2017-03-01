@@ -3,7 +3,7 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -49,7 +49,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
     /**
      * The default background for cells in this column.
      */
-    private PrimitiveFunctor<Background>    background;
+    private PrimitiveFunctor<BackgroundColor>    background;
 
     /**
      * The default column text style.
@@ -86,7 +86,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
 
         this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
         this.width          = new PrimitiveFunctor<>(null, Integer.class);
-        this.background     = new PrimitiveFunctor<>(null, Background.class);
+        this.background     = new PrimitiveFunctor<>(null, BackgroundColor.class);
 
         this.style          = ModelFunctor.empty(TextStyle.class);
         this.trueStyle      = ModelFunctor.empty(TextStyle.class);
@@ -100,7 +100,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
     public BooleanColumnFormat(UUID id,
                                Alignment alignment,
                                Integer width,
-                               Background background,
+                               BackgroundColor background,
                                TextStyle style,
                                TextStyle trueStyle,
                                TextStyle falseStyle,
@@ -112,7 +112,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
 
         this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.width          = new PrimitiveFunctor<>(width, Integer.class);
-        this.background     = new PrimitiveFunctor<>(background, Background.class);
+        this.background     = new PrimitiveFunctor<>(background, BackgroundColor.class);
 
         this.style          = ModelFunctor.full(style, TextStyle.class);
         this.trueStyle      = ModelFunctor.full(trueStyle, TextStyle.class);
@@ -139,7 +139,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
 
         Alignment  alignment     = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
         Integer    width         = yaml.atMaybeKey("width").getInteger();
-        Background background    = Background.fromYaml(yaml.atMaybeKey("background"));
+        BackgroundColor background    = BackgroundColor.fromYaml(yaml.atMaybeKey("background"));
 
         TextStyle  style         = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
         TextStyle  trueStyle     = TextStyle.fromYaml(yaml.atMaybeKey("true_style"), false);
@@ -281,7 +281,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
      * The boolean column default cell background.
      * @return The Background.
      */
-    public Background background()
+    public BackgroundColor background()
     {
         return this.background.getValue();
     }
@@ -291,7 +291,7 @@ public class BooleanColumnFormat implements Model, ToYaml, Serializable
      * Set the default cell background.
      * @param background The background.
      */
-    public void setBackground(Background background)
+    public void setBackground(BackgroundColor background)
     {
         this.background.setValue(background);
     }

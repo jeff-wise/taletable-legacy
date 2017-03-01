@@ -10,16 +10,12 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.quote.QuoteWidgetFormat;
 import com.kispoko.tome.sheet.widget.quote.ViewType;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
@@ -109,6 +105,8 @@ public class QuoteWidget extends Widget
         this.format     = ModelFunctor.full(format, QuoteWidgetFormat.class);
 
         this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
+
+        this.initializeQuoteWidget();
     }
 
 
@@ -124,7 +122,7 @@ public class QuoteWidget extends Widget
         UUID              id         = UUID.randomUUID();
 
         String            quote      = yaml.atKey("quote").getTrimmedString();
-        String            source     = yaml.atKey("source").getTrimmedString();
+        String            source     = yaml.atMaybeKey("source").getTrimmedString();
 
         ViewType          viewType   = ViewType.fromYaml(yaml.atMaybeKey("view_type"));
         QuoteWidgetFormat format     = QuoteWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
@@ -282,7 +280,7 @@ public class QuoteWidget extends Widget
 
         // ** Background
         if (this.data().format().background() == null)
-            this.data().format().setBackground(Background.NONE);
+            this.data().format().setBackground(BackgroundColor.NONE);
 
         // ** Corners
         if (this.data().format().corners() == null)
@@ -324,7 +322,7 @@ public class QuoteWidget extends Widget
 
         layout.orientation      = LinearLayout.VERTICAL;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         return layout.linearLayout(context);
     }
@@ -386,6 +384,7 @@ public class QuoteWidget extends Widget
         source.text                 = this.source();
 
         this.format().sourceStyle().styleTextViewBuilder(source, context);
+
 
         return layout.linearLayout(context);
     }

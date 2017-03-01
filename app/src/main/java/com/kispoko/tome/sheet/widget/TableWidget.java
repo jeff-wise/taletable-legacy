@@ -22,7 +22,7 @@ import com.kispoko.tome.sheet.widget.table.column.TextColumnFormat;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -398,7 +398,7 @@ public class TableWidget extends Widget
             this.data().format().setWidth(1);
 
         if (this.data().format().background() == null)
-            this.data().format().setBackground(Background.NONE);
+            this.data().format().setBackground(BackgroundColor.NONE);
 
 
         // [2] The header row is derived from the column information, so create it each time the
@@ -417,7 +417,7 @@ public class TableWidget extends Widget
 
             TextCellFormat format = new TextCellFormat(UUID.randomUUID(),
                                                        columnUnion.column().alignment(),
-                                                       Background.NONE,
+                                                       BackgroundColor.NONE,
                                                        headerCellStyle);
             TextCell headerCell = new TextCell(UUID.randomUUID(),
                                                headerCellValue,

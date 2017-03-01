@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -168,7 +168,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public Background background()
+    public BackgroundColor background()
     {
         return this.format().background();
     }

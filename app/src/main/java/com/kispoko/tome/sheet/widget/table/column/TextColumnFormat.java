@@ -3,7 +3,7 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -54,7 +54,7 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
     /**
      * The column's default cell background.
      */
-    private PrimitiveFunctor<Background>    background;
+    private PrimitiveFunctor<BackgroundColor>    background;
 
 
     // CONSTRUCTORS
@@ -67,7 +67,7 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
         this.style      = ModelFunctor.empty(TextStyle.class);
         this.alignment  = new PrimitiveFunctor<>(null, Alignment.class);
         this.width      = new PrimitiveFunctor<>(null, Integer.class);
-        this.background = new PrimitiveFunctor<>(null, Background.class);
+        this.background = new PrimitiveFunctor<>(null, BackgroundColor.class);
     }
 
 
@@ -75,14 +75,14 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
                             TextStyle style,
                             Alignment alignment,
                             Integer width,
-                            Background background)
+                            BackgroundColor background)
     {
         this.id         = id;
 
         this.style      = ModelFunctor.full(style, TextStyle.class);
         this.alignment  = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.width      = new PrimitiveFunctor<>(width, Integer.class);
-        this.background = new PrimitiveFunctor<>(background, Background.class);
+        this.background = new PrimitiveFunctor<>(background, BackgroundColor.class);
     }
 
 
@@ -104,7 +104,7 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
         TextStyle  style      = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
         Alignment  alignment  = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
         Integer    width      = yaml.atKey("width").getInteger();
-        Background background = Background.fromYaml(yaml.atMaybeKey("background"));
+        BackgroundColor background = BackgroundColor.fromYaml(yaml.atMaybeKey("background"));
 
         return new TextColumnFormat(id, style, alignment, width, background);
     }
@@ -259,7 +259,7 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
      * The text column default cell background.
      * @return The Background.
      */
-    public Background background()
+    public BackgroundColor background()
     {
         return this.background.getValue();
     }
@@ -269,7 +269,7 @@ public class TextColumnFormat implements Model, ToYaml, Serializable
      * Set the default cell background.
      * @param background The background.
      */
-    public void setBackground(Background background)
+    public void setBackground(BackgroundColor background)
     {
         this.background.setValue(background);
     }

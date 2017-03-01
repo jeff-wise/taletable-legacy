@@ -27,7 +27,7 @@ import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
 import com.kispoko.tome.activity.sheet.dialog.RollDialogFragment;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -331,7 +331,7 @@ public class ActionWidget extends Widget
             this.data().format().setAlignment(Alignment.CENTER);
 
         if (this.data().format().background() == null)
-            this.data().format().setBackground(Background.NONE);
+            this.data().format().setBackground(BackgroundColor.NONE);
     }
 
 

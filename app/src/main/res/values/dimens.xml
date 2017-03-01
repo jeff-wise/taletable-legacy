@@ -121,6 +121,14 @@
     <dimen name="text_size_very_small">3.3sp</dimen>
     <dimen name="text_size_super_small">3sp</dimen>
 
+    <dimen name="padding_very_small">10dp</dimen>
+    <dimen name="padding_small">15dp</dimen>
+    <dimen name="padding_medium_small">20dp</dimen>
+    <dimen name="padding_medium">25dp</dimen>
+    <dimen name="padding_medium_large">30dp</dimen>
+    <dimen name="padding_large">40dp</dimen>
+    <dimen name="padding_very_large">50dp</dimen>
+
     <dimen name="label_size_large">5.3dp</dimen>
     <dimen name="label_size_medium_large">4.7dp</dimen>
     <dimen name="label_size_medium">4.1dp</dimen>

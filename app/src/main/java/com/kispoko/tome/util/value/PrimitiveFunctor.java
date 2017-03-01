@@ -21,18 +21,15 @@ import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.SectionType;
-import com.kispoko.tome.sheet.ElementBackground;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.group.Spacing;
-import com.kispoko.tome.sheet.group.RowWidth;
 import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.sheet.widget.action.ActionColor;
 import com.kispoko.tome.sheet.widget.action.ActionSize;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
-import com.kispoko.tome.sheet.widget.util.InlineLabelPosition;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.TextColor;
@@ -186,44 +183,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        /*
-        else if (valueClass.isAssignableFrom(CellType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(SectionType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(ColumnType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(CellAlignment.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(Alignment.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(InlineLabelPosition.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(RowWidth.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(ElementBackground.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(Spacing.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        */
         else if (valueClass.isAssignableFrom(ProgramValueType.class))
         {
             return SQLValue.Type.TEXT;
@@ -348,9 +307,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((TextSize) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof Background)
+        else if (this.getValue() instanceof BackgroundColor)
         {
-            String enumString = ((Background) this.getValue()).name().toLowerCase();
+            String enumString = ((BackgroundColor) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof Alignment)
@@ -421,31 +380,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof CellAlignment)
         {
             String enumString = ((CellAlignment) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof InlineLabelPosition)
-        {
-            String enumString = ((InlineLabelPosition) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof Alignment)
-        {
-            String enumString = ((Alignment) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof RowWidth)
-        {
-            String enumString = ((RowWidth) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof ElementBackground)
-        {
-            String enumString = ((ElementBackground) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof Spacing)
-        {
-            String enumString = ((Spacing) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof ProgramValueType)
@@ -646,9 +580,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             TextSize size = TextSize.fromSQLValue(sqlValue);
             this.setValue((A) size);
         }
-        else if (this.valueClass.isAssignableFrom(Background.class))
+        else if (this.valueClass.isAssignableFrom(BackgroundColor.class))
         {
-            Background background = Background.fromSQLValue(sqlValue);
+            BackgroundColor background = BackgroundColor.fromSQLValue(sqlValue);
             this.setValue((A) background);
         }
         else if (this.valueClass.isAssignableFrom(Alignment.class))
@@ -707,36 +641,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             } else {
                 this.setValue(null);
             }
-        }
-        else if (this.valueClass.isAssignableFrom(CellAlignment.class))
-        {
-            CellAlignment cellAlignment = CellAlignment.fromSQLValue(sqlValue);
-            this.setValue((A) cellAlignment);
-        }
-        else if (this.valueClass.isAssignableFrom(InlineLabelPosition.class))
-        {
-            InlineLabelPosition position = InlineLabelPosition.fromSQLValue(sqlValue);
-            this.setValue((A) position);
-        }
-        else if (this.valueClass.isAssignableFrom(Alignment.class))
-        {
-            Alignment alignment = Alignment.fromSQLValue(sqlValue);
-            this.setValue((A) alignment);
-        }
-        else if (this.valueClass.isAssignableFrom(RowWidth.class))
-        {
-            RowWidth width = RowWidth.fromSQLValue(sqlValue);
-            this.setValue((A) width);
-        }
-        else if (this.valueClass.isAssignableFrom(ElementBackground.class))
-        {
-            ElementBackground background = ElementBackground.fromSQLValue(sqlValue);
-            this.setValue((A) background);
-        }
-        else if (this.valueClass.isAssignableFrom(Spacing.class))
-        {
-            Spacing separation = Spacing.fromSQLValue(sqlValue);
-            this.setValue((A) separation);
         }
         else if (this.valueClass.isAssignableFrom(VariableType.class))
         {

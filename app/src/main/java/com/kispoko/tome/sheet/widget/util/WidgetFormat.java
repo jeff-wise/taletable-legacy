@@ -3,7 +3,7 @@ package com.kispoko.tome.sheet.widget.util;
 
 
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
@@ -33,7 +33,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>           width;
     private PrimitiveFunctor<Alignment>         alignment;
     private ModelFunctor<TextStyle>             labelStyle;
-    private PrimitiveFunctor<Background>        background;
+    private PrimitiveFunctor<BackgroundColor>        background;
     private PrimitiveFunctor<WidgetCorners>     corners;
 
 
@@ -49,7 +49,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         this.width          = new PrimitiveFunctor<>(null, Integer.class);
         this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
         this.labelStyle     = ModelFunctor.empty(TextStyle.class);
-        this.background     = new PrimitiveFunctor<>(null, Background.class);
+        this.background     = new PrimitiveFunctor<>(null, BackgroundColor.class);
         this.corners        = new PrimitiveFunctor<>(null, WidgetCorners.class);
     }
 
@@ -60,7 +60,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
                         Integer width,
                         Alignment alignment,
                         TextStyle labelStyle,
-                        Background background,
+                        BackgroundColor background,
                         WidgetCorners corners)
     {
         this.id             = id;
@@ -70,7 +70,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         this.width          = new PrimitiveFunctor<>(width, Integer.class);
         this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
-        this.background     = new PrimitiveFunctor<>(background, Background.class);
+        this.background     = new PrimitiveFunctor<>(background, BackgroundColor.class);
         this.corners        = new PrimitiveFunctor<>(corners, WidgetCorners.class);
     }
 
@@ -118,7 +118,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         TextStyle           labelStyle     = TextStyle.fromYaml(
                                                             yaml.atMaybeKey("label_style"),
                                                             false);
-        Background          background     = Background.fromYaml(
+        BackgroundColor background     = BackgroundColor.fromYaml(
                                                                 yaml.atMaybeKey("background"));
         WidgetCorners       corners        = WidgetCorners.fromYaml(yaml.atMaybeKey("corners"));
 
@@ -275,18 +275,18 @@ public class WidgetFormat implements Model, ToYaml, Serializable
      * background will be.
      * @return The widget background value.
      */
-    public Background background()
+    public BackgroundColor background()
     {
         return this.background.getValue();
     }
 
 
-    public void setBackground(Background background)
+    public void setBackground(BackgroundColor background)
     {
         if (background != null)
             this.background.setValue(background);
         else
-            this.background.setValue(Background.DARK);
+            this.background.setValue(BackgroundColor.DARK);
     }
 
 

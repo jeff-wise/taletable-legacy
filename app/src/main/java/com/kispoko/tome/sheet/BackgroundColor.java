@@ -20,7 +20,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 /**
  * Widget Background
  */
-public enum Background implements ToYaml
+public enum BackgroundColor implements ToYaml
 {
 
     // VALUES
@@ -38,32 +38,32 @@ public enum Background implements ToYaml
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static Background fromString(String bgString)
+    public static BackgroundColor fromString(String bgString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(Background.class, bgString);
+        return EnumUtils.fromString(BackgroundColor.class, bgString);
     }
 
 
-    public static Background fromYaml(YamlParser yaml)
+    public static BackgroundColor fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         String bgString = yaml.getString();
         try {
-            return Background.fromString(bgString);
+            return BackgroundColor.fromString(bgString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
         }
     }
 
 
-    public static Background fromSQLValue(SQLValue sqlValue)
+    public static BackgroundColor fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            Background background = Background.fromString(enumString);
+            BackgroundColor background = BackgroundColor.fromString(enumString);
             return background;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
@@ -87,6 +87,7 @@ public enum Background implements ToYaml
 
     // RESOURCE ID
     // ------------------------------------------------------------------------------------------
+
 
     public Integer resourceId(WidgetCorners corners)
     {

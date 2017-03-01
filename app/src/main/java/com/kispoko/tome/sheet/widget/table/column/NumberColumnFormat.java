@@ -3,7 +3,7 @@ package com.kispoko.tome.sheet.widget.table.column;
 
 
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.Background;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -59,7 +59,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
     /**
      * The default background for cells in the number column.
      */
-    private PrimitiveFunctor<Background>    background;
+    private PrimitiveFunctor<BackgroundColor>    background;
 
 
     // CONSTRUCTORS
@@ -73,7 +73,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
         this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
         this.style          = ModelFunctor.empty(TextStyle.class);
         this.valuePrefix    = new PrimitiveFunctor<>(null, String.class);
-        this.background     = new PrimitiveFunctor<>(null, Background.class);
+        this.background     = new PrimitiveFunctor<>(null, BackgroundColor.class);
     }
 
 
@@ -82,7 +82,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
                               Alignment alignment,
                               TextStyle style,
                               String valuePrefix,
-                              Background background)
+                              BackgroundColor background)
     {
         this.id             = id;
 
@@ -90,7 +90,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
         this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
         this.style          = ModelFunctor.full(style, TextStyle.class);
         this.valuePrefix    = new PrimitiveFunctor<>(valuePrefix, String.class);
-        this.background     = new PrimitiveFunctor<>(background, Background.class);
+        this.background     = new PrimitiveFunctor<>(background, BackgroundColor.class);
     }
 
 
@@ -112,7 +112,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
         Alignment  alignment   = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
         TextStyle  style       = TextStyle.fromYaml(yaml.atMaybeKey("style"), false);
         String     valuePrefix = yaml.atMaybeKey("value_prefix").getString();
-        Background background  = Background.fromYaml(yaml.atMaybeKey("background"));
+        BackgroundColor background  = BackgroundColor.fromYaml(yaml.atMaybeKey("background"));
 
         return new NumberColumnFormat(id, width, alignment, style, valuePrefix, background);
     }
@@ -262,7 +262,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
      * The number column default cell background.
      * @return The Background.
      */
-    public Background background()
+    public BackgroundColor background()
     {
         return this.background.getValue();
     }
@@ -272,7 +272,7 @@ public class NumberColumnFormat implements Model, ToYaml, Serializable
      * Set the default cell background.
      * @param background The background.
      */
-    public void setBackground(Background background)
+    public void setBackground(BackgroundColor background)
     {
         this.background.setValue(background);
     }

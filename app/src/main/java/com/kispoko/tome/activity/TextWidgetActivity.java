@@ -153,7 +153,7 @@ public class TextWidgetActivity extends AppCompatActivity
                         R.string.text_widget_field_size_label,
                         R.string.text_widget_field_size_description,
                         Form.variantInput(TextSize.class,
-                                          this.textWidget.format().size(),
+                                          this.textWidget.format().valueStyle().size(),
                                           this),
                         this);
 

@@ -15,9 +15,9 @@ import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
-import com.kispoko.tome.sheet.Background;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
@@ -180,7 +180,7 @@ public class BooleanCell extends Cell
 
 
     @Override
-    public Background background()
+    public BackgroundColor background()
     {
         return this.format().background();
     }

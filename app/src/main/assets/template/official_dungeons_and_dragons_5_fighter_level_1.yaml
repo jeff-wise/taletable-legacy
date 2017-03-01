@@ -1828,9 +1828,9 @@ profile:
           widget:
             data:
               format:
+                background: dark
                 name: Race
                 width: 2
-                background: dark
             format:
               outside_label: race
               outside_label_position: top
@@ -1838,6 +1838,8 @@ profile:
                 alignment: left
                 color: theme_medium
                 size: very_small
+              value_style:
+                alignment: center
             value:
               type: value
               name: race
@@ -1860,6 +1862,8 @@ profile:
                 alignment: left
                 color: theme_medium
                 size: very_small
+              value_style:
+                alignment: center
             value:
               type: value
               name: class
@@ -1874,11 +1878,16 @@ profile:
             data:
               format:
                 background: dark
-                label: I pray to
                 name: Diety
-                width: 1
             format:
               size: medium_small
+              outside_label: I pray to
+              outside_label_position: top
+              outside_label_style:
+                alignment: left
+                color: theme_dark
+              value_style:
+                alignment: center
             value:
               type: literal
               value: Tritherion
@@ -1887,36 +1896,41 @@ profile:
             data:
               format:
                 background: dark
-                label: and I am
                 name: Alignment
-                width: 1
             format:
-              size: medium_small
+              outside_label: and I am
+              outside_label_position: top
+              outside_label_style:
+                alignment: left
+                color: theme_dark
+              value_style:
+                alignment: center
             value:
               type: literal
               value: Chaotic Good
       - space_above: medium
         widgets:
-        - type: text
+        - type: quote
           widget:
             data:
               format:
-                name: Quote to Green Eyes Lost
                 background: none
+                name: Quote to Green Eyes Lost
             format:
-              size: small
-              is_quote: true
-              quote_source: Moon-lit conversation with Iliah Savayara
-              tint: theme_dark
-            value:
-              type: literal
-              value: >
+              quote_style:
+                color: theme_dark
+                size: small
+              source_style:
+                color: theme_dark
+                size: very_small
+            quote: >
                 I never liked swords -- they destroy things. I wanted to build things. I became
                 a carpenter's apprentice and learned to construct things of marvel, until
                 one day he was destroyed by a sword. That day I learned something. The tallest trees
                 in the forest -- the formidable giants -- block the sunlight, keep smaller trees from
                 growing. I learned to build with the sword, by chopping down those who kept others
                 in the dark, and letting the good spring forth.
+            source: Moon-lit conversation with Iliah Savayara
       - space_above: medium
         widgets:
         - type: number
@@ -1965,8 +1979,9 @@ profile:
                 width: 1
             format:
               inside_label: age
-              size: medium_small
-              color: theme_medium_dark
+              value_style:
+                color: theme_medium_dark
+                size: medium_small
             value:
               type: literal
               value: 41
@@ -1979,10 +1994,11 @@ profile:
                 name: Height
                 width: 1
             format:
-              label: height
-              label_position: left
-              size: medium_small
-              tint: theme_medium_dark
+              inside_label: height
+              inside_label_position: left
+              value_style:
+                size: medium_small
+                color: theme_medium_dark
             value:
               type: literal
               value: 5'11"
@@ -1995,11 +2011,11 @@ profile:
                 name: Weight
                 width: 1
             format:
-              color: theme_medium_dark
               inside_label: weight
               inside_label_position: left
-              size: medium_small
-            size: medium_small
+              value_style:
+                color: theme_medium_dark
+                size: medium_small
             value:
               type: literal
               value: 167
@@ -2014,10 +2030,11 @@ profile:
                 name: Eyes
                 width: 1
             format:
-              label: eyes
-              label_position: left
-              size: medium_small
-              tint: theme_medium_dark
+              inside_label: eyes
+              inside_label_position: left
+              value_style:
+                size: medium_small
+                color: theme_medium_dark
             value:
               type: literal
               value: Blue
@@ -2030,10 +2047,11 @@ profile:
                 name: Skin
                 width: 1
             format:
-              label: skin
-              label_position: left
-              size: medium_small
-              tint: theme_medium_dark
+              inside_label: skin
+              inside_label_position: left
+              value_style:
+                size: medium_small
+                color: theme_medium_dark
             value:
               type: literal
               value: Light
@@ -2046,10 +2064,11 @@ profile:
                 name: Hair
                 width: 1
             format:
-              label: hair
-              label_position: left
-              size: medium_small
-              tint: theme_medium_dark
+              inside_label: hair
+              inside_label_position: left
+              value_style:
+                color: theme_medium_dark
+                size: medium_small
             value:
               type: literal
               value: Brown
@@ -2091,8 +2110,9 @@ profile:
                 name: Background
                 width: 1
             format:
-              size: medium_large
-              tint: theme_medium_dark
+              value_style:
+                size: medium_large
+                color: theme_medium_dark
             value:
               type: literal
               value: The Hard Life
@@ -2112,8 +2132,9 @@ profile:
                 name: 'Personality Trait #1'
                 width: 1
             format:
-              size: small
-              tint: theme_dark
+              value_style:
+                color: theme_dark
+                size: small
             value:
               type: literal
               value: >
@@ -2131,8 +2152,9 @@ profile:
                 name: 'Personality Trait #1'
                 width: 1
             format:
-              size: small
-              tint: theme_dark
+              value_style:
+                color: theme_dark
+                size: small
             value:
               type: literal
               value: >
@@ -2153,10 +2175,10 @@ profile:
                 alignment: left
                 background: none
                 name: Ideal
-                width: 1
             format:
-              size: small
-              tint: theme_dark
+              value_style:
+                color: theme_dark
+                size: small
             value:
               type: literal
               value: >
@@ -2176,10 +2198,10 @@ profile:
                 alignment: left
                 background: none
                 name: Bond
-                width: 1
             format:
-              size: small
-              tint: theme_dark
+              value_style:
+                color: theme_dark
+                size: small
             value:
               type: literal
               value: >
@@ -2199,10 +2221,10 @@ profile:
                 alignment: left
                 background: none
                 name: Flaw
-                width: 1
             format:
-              size: small
-              tint: theme_dark
+              value_style:
+                color: theme_dark
+                size: small
             value:
               type: literal
               value: >
@@ -4512,17 +4534,23 @@ encounter:
       format:
         show_name: false
       rows:
-      - space_above: small
+      - space_above: medium_small
         widgets:
         - type: number
           widget:
             data:
               format:
                 alignment: center
+                corners: medium
                 background: medium_dark
             format:
-              outside_label: Temporarity Hit Points
+              outside_label: '   Temporary Hit Points'
               outside_label_position: right
+              outside_label_style:
+                color: theme_medium
+                size: medium_small
+              value_padding_horizontal: medium_small
+              value_height: very_small
             value:
               name: temporary_hit_points
               label: Temporary Hit Points
