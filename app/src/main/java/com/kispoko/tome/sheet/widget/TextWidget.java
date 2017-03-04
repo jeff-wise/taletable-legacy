@@ -29,8 +29,8 @@ import com.kispoko.tome.sheet.error.UndefinedValueSetError;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.Position;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
@@ -383,7 +383,7 @@ public class TextWidget extends Widget
 
         // ** Corners
         if (this.data().format().corners() == null)
-            this.data().format().setCorners(WidgetCorners.SMALL);
+            this.data().format().setCorners(Corners.SMALL);
 
 
         this.valueViewId = null;

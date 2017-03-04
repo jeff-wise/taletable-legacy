@@ -21,7 +21,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/dark_blue_9"
+                android:background="@color/dark_blue_11"
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <TextView
@@ -38,7 +38,7 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/dark_blue_9"
+                android:background="@color/dark_blue_11"
                 app:tabGravity="fill"
                 app:tabMode="scrollable"
                 app:tabTextColor="@color/dark_blue_hl_8"
@@ -59,8 +59,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="6dp"
-                android:background="@color/dark_blue_9"
-                app:itemBackground="@color/dark_blue_9"
+                android:background="@color/dark_blue_11"
+                app:itemBackground="@color/dark_blue_11"
                 app:itemIconTint="@drawable/bottom_nav_colors"
                 app:itemTextColor="@drawable/bottom_nav_colors"
                 app:menu="@menu/bottom_navigation" />
@@ -76,6 +76,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/dark_blue_9" />
+        android:background="@color/dark_blue_11" />
 
 </android.support.v4.widget.DrawerLayout>

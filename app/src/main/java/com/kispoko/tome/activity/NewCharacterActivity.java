@@ -122,11 +122,11 @@ public class NewCharacterActivity extends AppCompatActivity
 
         // > If this is the first sheet, then we are not coming from another sheet, so no back
         //   button is provided
-        if (!this.firstSheet)
-        {
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+//        if (!this.firstSheet)
+//        {
+//            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//        }
 
         // > Set the title
         String title = "New Character"; // + this.widgetData.label();

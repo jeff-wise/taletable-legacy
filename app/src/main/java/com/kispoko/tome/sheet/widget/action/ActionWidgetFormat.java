@@ -2,7 +2,14 @@
 package com.kispoko.tome.sheet.widget.action;
 
 
+import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.group.Spacing;
+import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.sheet.widget.util.TextFont;
+import com.kispoko.tome.sheet.widget.util.TextSize;
+import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -26,14 +33,20 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                            id;
+    private UUID                        id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<ActionSize>    size;
-    private PrimitiveFunctor<ActionColor>   actionColor;
+    private ModelFunctor<TextStyle>     descriptionStyle;
+    private ModelFunctor<TextStyle>     actionStyle;
+
+    /**
+     * The horizontal padding around the content. If null, the widget will stretch to fill the
+     * parent's space.
+     */
+    private PrimitiveFunctor<Spacing>   paddingHorizontal;
 
 
     // CONSTRUCTORS
@@ -41,22 +54,29 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
 
     public ActionWidgetFormat()
     {
-        this.id             = null;
+        this.id                 = null;
 
-        this.size           = new PrimitiveFunctor<>(null, ActionSize.class);
-        this.actionColor    = new PrimitiveFunctor<>(null, ActionColor.class);
+        this.descriptionStyle   = ModelFunctor.empty(TextStyle.class);
+        this.actionStyle        = ModelFunctor.empty(TextStyle.class);
+
+        this.paddingHorizontal  = new PrimitiveFunctor<>(null, Spacing.class);
     }
 
 
-    public ActionWidgetFormat(UUID id, ActionSize size, ActionColor actionColor)
+    public ActionWidgetFormat(UUID id,
+                              TextStyle descriptionStyle,
+                              TextStyle actionStyle,
+                              Spacing paddingHorizontal)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.size           = new PrimitiveFunctor<>(size, ActionSize.class);
-        this.actionColor    = new PrimitiveFunctor<>(actionColor, ActionColor.class);
+        this.descriptionStyle   = ModelFunctor.full(descriptionStyle, TextStyle.class);
+        this.actionStyle        = ModelFunctor.full(actionStyle, TextStyle.class);
 
-        this.setSize(size);
-        this.setActionColor(actionColor);
+        this.paddingHorizontal  = new PrimitiveFunctor<>(paddingHorizontal, Spacing.class);
+
+        this.setDescriptionStyle(descriptionStyle);
+        this.setActionStyle(actionStyle);
     }
 
 
@@ -72,22 +92,28 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return ActionWidgetFormat.asDefault();
 
-        UUID id                  = UUID.randomUUID();
+        UUID      id                = UUID.randomUUID();
 
-        ActionSize   size        = ActionSize.fromYaml(yaml.atMaybeKey("size"));
-        ActionColor  actionColor = ActionColor.fromYaml(yaml.atMaybeKey("hl_color"));
+        TextStyle descriptionStyle  = TextStyle.fromYaml(yaml.atMaybeKey("description_stylel"));
+        TextStyle actionStyle       = TextStyle.fromYaml(yaml.atMaybeKey("action_style"));
 
-        return new ActionWidgetFormat(id, size, actionColor);
+        Spacing   paddingHorizontal = Spacing.fromYaml(yaml.atMaybeKey("padding_horizontal"));
+
+        return new ActionWidgetFormat(id, descriptionStyle, actionStyle, paddingHorizontal);
     }
 
 
+    /**
+     * Create an Action Widget Format with default values.
+     * @return The default Action Widget Format.
+     */
     private static ActionWidgetFormat asDefault()
     {
         ActionWidgetFormat format = new ActionWidgetFormat();
 
         format.setId(UUID.randomUUID());
-        format.setSize(null);
-        format.setActionColor(null);
+        format.setDescriptionStyle(null);
+        format.setActionStyle(null);
 
         return format;
     }
@@ -128,63 +154,88 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
 
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
-
-        yaml.putYaml("size", this.size());
-        yaml.putYaml("hl_color", this.actionColor());
-
-        return yaml;
+        return YamlBuilder.map()
+                .putYaml("action_style", this.actionStyle());
     }
 
 
     // > State
     // -----------------------------------------------------------------------------------------
 
-    // ** Size
-    // --------------------------------------------------------------------------------------
+    // ** Description Style
+    // -----------------------------------------------------------------------------------------
 
     /**
-     * The Action Widget's text size.
-     * @return The Widget Content Size.
+     * The description text style.
+     * @return The style
      */
-    public ActionSize size()
+    public TextStyle descriptionStyle()
     {
-        return this.size.getValue();
+        return this.descriptionStyle.getValue();
     }
 
 
     /**
-     * Set the action widget's text size.
-     * @param size The text size.
+     * Set the description text style. If null, a default style is set.
+     * @param style The style
      */
-    public void setSize(ActionSize size)
+    public void setDescriptionStyle(TextStyle style)
     {
-        if (size != null)
-            this.size.setValue(size);
-        else
-            this.size.setValue(ActionSize.MEDIUM);
+        if (style != null) {
+            this.descriptionStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultDescriptionStyle = new TextStyle(UUID.randomUUID(),
+                                                              TextColor.THEME_DARK,
+                                                              TextSize.MEDIUM_SMALL,
+                                                              TextFont.REGULAR);
+            this.descriptionStyle.setValue(defaultDescriptionStyle);
+        }
     }
 
 
-    // ** Tint
-    // --------------------------------------------------------------------------------------
+    // ** Action Style
+    // -----------------------------------------------------------------------------------------
 
     /**
-     * The action color.
-     * @return The tint.
+     * The action text style.
+     * @return The style
      */
-    public ActionColor actionColor()
+    public TextStyle actionStyle()
     {
-        return this.actionColor.getValue();
+        return this.actionStyle.getValue();
     }
 
 
-    public void setActionColor(ActionColor color)
+    /**
+     * Set the action text style. If null, a default style is set.
+     * @param style The style
+     */
+    public void setActionStyle(TextStyle style)
     {
-        if (color != null)
-            this.actionColor.setValue(color);
-        else
-            this.actionColor.setValue(ActionColor.BLUE);
+        if (style != null) {
+            this.actionStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultActionStyle = new TextStyle(UUID.randomUUID(),
+                                                         TextColor.THEME_VERY_LIGHT,
+                                                         TextSize.MEDIUM_SMALL,
+                                                         TextFont.BOLD);
+            this.actionStyle.setValue(defaultActionStyle);
+        }
+    }
+
+
+    // ** Padding Horizontal
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The horizontal padding.
+     * @return The spacing.
+     */
+    public Spacing paddingHorizontal()
+    {
+        return this.paddingHorizontal.getValue();
     }
 
 

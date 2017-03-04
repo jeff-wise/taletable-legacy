@@ -163,6 +163,28 @@ public class NumberValue implements Value, Model, ToYaml, Serializable
     }
 
 
+    // > Value
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The number value's summary (may be null). It is a short description of what the value
+     * represents.
+     * @return The summary.
+     */
+    @Override
+    public String summary()
+    {
+        return this.summary.getValue();
+    }
+
+
+    @Override
+    public String valueString()
+    {
+        return this.value().toString();
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -184,17 +206,6 @@ public class NumberValue implements Value, Model, ToYaml, Serializable
     public Integer value()
     {
         return this.value.getValue();
-    }
-
-
-    /**
-     * The number value's summary (may be null). It is a short description of what the value
-     * represents.
-     * @return The summary.
-     */
-    public String summary()
-    {
-        return this.summary.getValue();
     }
 
 

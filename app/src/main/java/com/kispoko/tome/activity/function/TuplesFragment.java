@@ -219,7 +219,7 @@ public class TuplesFragment extends Fragment
         cell.height                 = TableRow.LayoutParams.WRAP_CONTENT;
 
         cell.text                   = cellText;
-        cell.color                  = R.color.gold_5;
+        cell.color                  = R.color.gold_light;
         cell.size                   = R.dimen.function_tuples_header_cell_text_size;
 
         return cell.textView(context);

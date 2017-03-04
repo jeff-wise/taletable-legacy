@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget.util;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -92,7 +93,7 @@ public enum Height implements ToYaml
      * @param corners The corners measurement.
      * @return The drawable resource id i.e. bg_xxxx_xxx.xml
      */
-    public int resourceId(WidgetCorners corners)
+    public int resourceId(Corners corners)
     {
         switch (this)
         {

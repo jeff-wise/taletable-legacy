@@ -90,7 +90,7 @@ class StatementListItemView
         variable.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         variable.font               = Font.sansSerifFontBold(context);
-        variable.color              = R.color.gold_5;
+        variable.color              = R.color.gold_light;
         variable.size               = R.dimen.program_statements_card_variable_text_size;
 
         variable.margin.bottom      = R.dimen.program_statements_card_header_margin_bottom;
@@ -107,7 +107,7 @@ class StatementListItemView
         header.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         header.font               = Font.sansSerifFontBold(context);
-        header.color              = R.color.gold_5;
+        header.color              = R.color.gold_light;
         header.size               = R.dimen.program_statements_card_result_header_text_size;
         header.textId             = R.string.statement_result_header;
 

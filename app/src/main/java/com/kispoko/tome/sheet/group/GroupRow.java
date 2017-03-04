@@ -11,6 +11,7 @@ import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.width;
 
 
 /**
@@ -45,9 +47,7 @@ public class GroupRow implements Model, ToYaml, Serializable
     // -----------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<Integer>       index;
-    private PrimitiveFunctor<Alignment>  alignment;
-    private PrimitiveFunctor<RowWidth>      width;
-    private PrimitiveFunctor<Spacing>       spaceAbove;
+    private ModelFunctor<GroupRowFormat>    format;
     private CollectionFunctor<WidgetUnion>  widgets;
 
 
@@ -62,40 +62,24 @@ public class GroupRow implements Model, ToYaml, Serializable
 
     public GroupRow()
     {
-        this.id             = null;
+        this.id         = null;
 
-        this.index          = new PrimitiveFunctor<>(null, Integer.class);
-        this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
-        this.width          = new PrimitiveFunctor<>(null, RowWidth.class);
-        this.spaceAbove     = new PrimitiveFunctor<>(null, Spacing.class);
-
-        List<Class<? extends WidgetUnion>> widgetClasses = new ArrayList<>();
-        widgetClasses.add(WidgetUnion.class);
-        this.widgets       = CollectionFunctor.empty(widgetClasses);
+        this.index      = new PrimitiveFunctor<>(null, Integer.class);
+        this.format     = ModelFunctor.empty(GroupRowFormat.class);
+        this.widgets    = CollectionFunctor.empty(WidgetUnion.class);
     }
 
 
     public GroupRow(UUID id,
                     Integer index,
-                    List<WidgetUnion> widgets,
-                    Alignment alignment,
-                    RowWidth width,
-                    Spacing spaceAbove)
+                    GroupRowFormat format,
+                    List<WidgetUnion> widgets)
     {
-        this.id             = id;
+        this.id         = id;
 
-        this.index          = new PrimitiveFunctor<>(index, Integer.class);
-        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
-        this.width          = new PrimitiveFunctor<>(width, RowWidth.class);
-        this.spaceAbove     = new PrimitiveFunctor<>(spaceAbove, Spacing.class);
-
-        List<Class<? extends WidgetUnion>> widgetClasses = new ArrayList<>();
-        widgetClasses.add(WidgetUnion.class);
-        this.widgets        = CollectionFunctor.full(widgets, widgetClasses);
-
-        this.setAlignment(alignment);
-        this.setWidth(width);
-        this.setSpaceAbove(spaceAbove);
+        this.index      = new PrimitiveFunctor<>(index, Integer.class);
+        this.format     = ModelFunctor.full(format, GroupRowFormat.class);
+        this.widgets    = CollectionFunctor.full(widgets, WidgetUnion.class);
     }
 
 
@@ -108,11 +92,9 @@ public class GroupRow implements Model, ToYaml, Serializable
     public static GroupRow fromYaml(Integer index, YamlParser yaml)
                   throws YamlParseException
     {
-        UUID         id             = UUID.randomUUID();
+        UUID              id      = UUID.randomUUID();
 
-        Alignment alignment     = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
-        RowWidth      width         = RowWidth.fromYaml(yaml.atMaybeKey("width"));
-        Spacing separation       = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
+        GroupRowFormat    format  = GroupRowFormat.fromyaml(yaml.atMaybeKey("format"));
 
         List<WidgetUnion> widgets = yaml.atKey("widgets").forEach(
                                                 new YamlParser.ForEach<WidgetUnion>() {
@@ -122,7 +104,7 @@ public class GroupRow implements Model, ToYaml, Serializable
             }
         }, true);
 
-        return new GroupRow(id, index, widgets, alignment, width, separation);
+        return new GroupRow(id, index, format, widgets);
     }
 
 
@@ -180,9 +162,7 @@ public class GroupRow implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putYaml("alignment", this.alignment())
-                .putYaml("width", this.width())
-                .putYaml("space_above", this.spaceAbove())
+                .putYaml("format", this.format())
                 .putList("widgets", this.widgets());
     }
 
@@ -210,70 +190,13 @@ public class GroupRow implements Model, ToYaml, Serializable
     }
 
 
-    // ** Alignment
-    // ------------------------------------------------------------------------------------------
-
     /**
-     * The row alignment.
-     * @return The row alignment.
+     * The group row formatting options.
+     * @return The format.
      */
-    public Alignment alignment()
+    public GroupRowFormat format()
     {
-        return this.alignment.getValue();
-    }
-
-
-    public void setAlignment(Alignment alignment)
-    {
-        if (alignment != null)
-            this.alignment.setValue(alignment);
-        else
-            this.alignment.setValue(Alignment.CENTER);
-    }
-
-
-    // ** Width
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Get the width of the row. The width is a value between 1 and 100, and represents a
-     * percentage width of the screen that the row should span.
-     * @return The width.
-     */
-    public RowWidth width()
-    {
-        return this.width.getValue();
-    }
-
-
-    public void setWidth(RowWidth width)
-    {
-        if (width != null)
-            this.width.setValue(width);
-        else
-            this.width.setValue(RowWidth.FULL);
-    }
-
-
-    // ** Separation
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The row separation (the vertical row margins).
-     * @return The row separtaion.
-     */
-    public Spacing spaceAbove()
-    {
-        return this.spaceAbove.getValue();
-    }
-
-
-    public void setSpaceAbove(Spacing spaceAbove)
-    {
-        if (spaceAbove != null)
-            this.spaceAbove.setValue(spaceAbove);
-        else
-            this.spaceAbove.setValue(Spacing.MEDIUM);
+        return this.format.getValue();
     }
 
 
@@ -315,9 +238,9 @@ public class GroupRow implements Model, ToYaml, Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.margin.top       = this.spaceAbove().resourceId();
+        layout.margin.top       = this.format().marginTop().resourceId();
 
-        int paddingDimenId = this.width().resourceId();
+        int paddingDimenId      = this.format().width().resourceId();
         layout.padding.left     = paddingDimenId;
         layout.padding.right    = paddingDimenId;
 

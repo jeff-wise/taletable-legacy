@@ -25,6 +25,7 @@ public enum DividerType implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     NONE,
+    VERY_LIGHT,
     LIGHT,
     DARK,
     VERY_DARK;
@@ -90,24 +91,8 @@ public enum DividerType implements ToYaml
                 switch (this)
                 {
                     case LIGHT:
-                        return R.color.dark_blue_2;
-                    case DARK:
-                        return R.color.dark_blue_4;
-                }
-                break;
-            case MEDIUM_LIGHT:
-                switch (this)
-                {
-                    case LIGHT:
                         return R.color.dark_blue_3;
-                    case DARK:
-                        return R.color.dark_blue_5;
-                }
-                break;
-            case MEDIUM:
-                switch (this)
-                {
-                    case LIGHT:
+                    case VERY_LIGHT:
                         return R.color.dark_blue_4;
                     case DARK:
                         return R.color.dark_blue_6;
@@ -115,22 +100,56 @@ public enum DividerType implements ToYaml
                         return R.color.dark_blue_7;
                 }
                 break;
-            case MEDIUM_DARK:
+            case MEDIUM_LIGHT:
                 switch (this)
                 {
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_4;
                     case LIGHT:
                         return R.color.dark_blue_5;
                     case DARK:
                         return R.color.dark_blue_7;
+                    case VERY_DARK:
+                        return R.color.dark_blue_8;
+                }
+                break;
+            case MEDIUM:
+                switch (this)
+                {
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_5;
+                    case LIGHT:
+                        return R.color.dark_blue_6;
+                    case DARK:
+                        return R.color.dark_blue_7;
+                    case VERY_DARK:
+                        return R.color.dark_blue_8;
+                }
+                break;
+            case MEDIUM_DARK:
+                switch (this)
+                {
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_6;
+                    case LIGHT:
+                        return R.color.dark_blue_7;
+                    case DARK:
+                        return R.color.dark_blue_9;
+                    case VERY_DARK:
+                        return R.color.dark_blue_10;
                 }
                 break;
             case DARK:
                 switch (this)
                 {
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_7;
                     case LIGHT:
-                        return R.color.dark_blue_6;
-                    case DARK:
                         return R.color.dark_blue_8;
+                    case DARK:
+                        return R.color.dark_blue_10;
+                    case VERY_DARK:
+                        return R.color.dark_blue_11;
                 }
                 break;
         }

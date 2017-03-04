@@ -5,7 +5,6 @@ package com.kispoko.tome.sheet;
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -89,7 +88,7 @@ public enum BackgroundColor implements ToYaml
     // ------------------------------------------------------------------------------------------
 
 
-    public Integer resourceId(WidgetCorners corners)
+    public Integer resourceId(Corners corners)
     {
         switch (this)
         {
@@ -128,7 +127,7 @@ public enum BackgroundColor implements ToYaml
     }
 
 
-    public Integer resourceId(WidgetCorners corners, TextSize size)
+    public Integer resourceId(Corners corners, TextSize size)
     {
         switch (this)
         {
@@ -202,17 +201,17 @@ public enum BackgroundColor implements ToYaml
         switch (this)
         {
             case LIGHT:
-                return R.color.dark_blue_3;
+                return R.color.dark_blue_5;
             case MEDIUM_LIGHT:
-                return R.color.dark_blue_4;
-            case MEDIUM:
-                return R.color.dark_blue_5;
-            case MEDIUM_DARK:
                 return R.color.dark_blue_6;
-            case DARK:
+            case MEDIUM:
                 return R.color.dark_blue_7;
+            case MEDIUM_DARK:
+                return R.color.dark_blue_8;
+            case DARK:
+                return R.color.dark_blue_9;
             default:
-                return R.color.dark_blue_5;
+                return R.color.dark_blue_7;
         }
     }
 

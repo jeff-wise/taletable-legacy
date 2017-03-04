@@ -29,14 +29,15 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                    id;
+    private UUID                                id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private ModelFunctor<TextStyle> descriptionStyle;
-    private ModelFunctor<TextStyle> valueStyle;
+    private ModelFunctor<TextStyle>             descriptionStyle;
+    private ModelFunctor<TextStyle>             valueStyle;
+    private ModelFunctor<TextStyle>             valueItemStyle;
 
 
     // CONSTRUCTORS
@@ -48,18 +49,24 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
 
         this.descriptionStyle   = ModelFunctor.empty(TextStyle.class);
         this.valueStyle         = ModelFunctor.empty(TextStyle.class);
+        this.valueItemStyle     = ModelFunctor.empty(TextStyle.class);
     }
 
 
-    public OptionWidgetFormat(UUID id, TextStyle descriptionStyle, TextStyle valueStyle)
+    public OptionWidgetFormat(UUID id,
+                              TextStyle descriptionStyle,
+                              TextStyle valueStyle,
+                              TextStyle valueItemStyle)
     {
         this.id                 = id;
 
         this.descriptionStyle   = ModelFunctor.full(descriptionStyle, TextStyle.class);
         this.valueStyle         = ModelFunctor.full(valueStyle, TextStyle.class);
+        this.valueItemStyle     = ModelFunctor.full(valueItemStyle, TextStyle.class);
 
         this.setDescriptionStyle(descriptionStyle);
         this.setValueStyle(valueStyle);
+        this.setValueItemStyle(valueItemStyle);
     }
 
 
@@ -77,11 +84,11 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
 
         UUID      id                = UUID.randomUUID();
 
-        TextStyle descriptionStyle  = TextStyle.fromYaml(yaml.atMaybeKey("description_style"),
-                                                         false);
-        TextStyle valueStyle        = TextStyle.fromYaml(yaml.atMaybeKey("value_style"), false);
+        TextStyle descriptionStyle  = TextStyle.fromYaml(yaml.atMaybeKey("description_style"));
+        TextStyle valueStyle        = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
+        TextStyle valueItemStyle    = TextStyle.fromYaml(yaml.atMaybeKey("value_item_style"));
 
-        return new OptionWidgetFormat(id, descriptionStyle, valueStyle);
+        return new OptionWidgetFormat(id, descriptionStyle, valueStyle, valueItemStyle);
     }
 
 
@@ -96,6 +103,7 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
         format.setId(UUID.randomUUID());
         format.setDescriptionStyle(null);
         format.setValueStyle(null);
+        format.setValueItemStyle(null);
 
         return format;
     }
@@ -138,7 +146,8 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putYaml("description_style", this.descriptionStyle())
-                .putYaml("value_style", this.valueStyle());
+                .putYaml("value_style", this.valueStyle())
+                .putYaml("value_item_style", this.valueItemStyle());
     }
 
 
@@ -203,6 +212,37 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
                                                         TextColor.THEME_MEDIUM,
                                                         TextSize.MEDIUM_SMALL);
             this.valueStyle.setValue(defaultValueStyle);
+        }
+    }
+
+
+    // ** Value Item Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The value item style.
+     * @return The value item style.
+     */
+    public TextStyle valueItemStyle()
+    {
+        return this.valueItemStyle.getValue();
+    }
+
+
+    /**
+     * Set the value style. If null, a default is set.
+     * @param style The style
+     */
+    public void setValueItemStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.valueItemStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultValueItemStyle = new TextStyle(UUID.randomUUID(),
+                                                        TextColor.THEME_DARK,
+                                                        TextSize.MEDIUM_SMALL);
+            this.valueItemStyle.setValue(defaultValueItemStyle);
         }
     }
 

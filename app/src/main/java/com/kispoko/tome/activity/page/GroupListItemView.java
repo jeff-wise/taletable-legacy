@@ -88,7 +88,7 @@ public class GroupListItemView
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_list_item_drag;
+        // icon.image                  = R.drawable.ic_list_item_drag;
 
         icon.margin.right           = R.dimen.group_list_item_drag_margin_right;
 

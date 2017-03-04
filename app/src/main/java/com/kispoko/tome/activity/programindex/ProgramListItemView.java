@@ -67,7 +67,7 @@ public class ProgramListItemView
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         header.font                 = Font.sansSerifFontBold(context);
-        header.color                = R.color.gold_5;
+        header.color                = R.color.gold_light;
         header.size                 = R.dimen.program_list_item_header_text_size;
 
         header.margin.bottom        = R.dimen.program_list_item_header_margin_bottom;

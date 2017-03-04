@@ -183,7 +183,7 @@ public class DataFragment extends Fragment
 
         header.textId               = headerTextId;
         header.font                 = Font.sansSerifFontBold(context);
-        header.color                = R.color.gold_5;
+        header.color                = R.color.gold_light;
         header.size                 = R.dimen.value_set_data_input_header_text_size;
 
         header.margin.bottom        = R.dimen.value_set_data_input_header_margin_bottom;

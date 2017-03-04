@@ -76,7 +76,7 @@ public class Form
 
         header.textId               = headerTextId;
         header.font                 = Font.sansSerifFontBold(context);
-        header.color                = R.color.gold_5;
+        header.color                = R.color.gold_light;
         header.size                 = R.dimen.field_header_text_size;
 
         header.margin.bottom        = R.dimen.field_header_margin_bottom;

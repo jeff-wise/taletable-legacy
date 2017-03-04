@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.BackgroundColor;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -99,7 +100,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
             public GroupRow forEach(YamlParser yaml, int index) throws YamlParseException {
                 return GroupRow.fromYaml(index, yaml);
             }
-        });
+        }, true);
 
         GroupFormat     format   = GroupFormat.fromYaml(yaml.atMaybeKey("format"));
 
@@ -272,6 +273,21 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         // > Background
         layout.backgroundColor  = this.background().colorId();
 
+        // > Padding Horizontal
+        layout.margin.left      = this.format().paddingHorizontal().resourceId();
+        layout.margin.right     = this.format().paddingHorizontal().resourceId();
+
+        // > Margin Bottom
+        layout.margin.bottom    = this.format().marginBottom().resourceId();
+
+        // > Margin Top
+        layout.margin.top       = this.format().marginTop().resourceId();
+
+        // > Background
+        if (this.format().corners() != Corners.NONE) {
+            layout.backgroundResource = this.format().corners().resourceId();
+        }
+
         return layout.linearLayout(context);
     }
 
@@ -291,11 +307,6 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         layout.gravity          = this.format().nameStyle().alignment().gravityConstant();
-
-//        if (this.format().nameStyle().alignment() == Alignment.LEFT)
-//            layout.margin.left      = R.dimen.group_label_margin_left;
-//
-//        if (this.format().nameStyle().alignment() == Alignment.RIGHT)
 
         layout.margin.left      = R.dimen.group_label_margins_horz;
         layout.margin.right     = R.dimen.group_label_margins_horz;
@@ -321,18 +332,20 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
 
     private LinearLayout dividerView(Context context)
     {
-        LinearLayoutBuilder border = new LinearLayoutBuilder();
+        LinearLayoutBuilder divider = new LinearLayoutBuilder();
 
-        border.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        border.height           = R.dimen.one_dp;
+        divider.width           = LinearLayout.LayoutParams.MATCH_PARENT;
+        divider.height          = R.dimen.one_dp;
 
-        // > Color
-        border.backgroundColor  = this.format().dividerType()
+        divider.backgroundColor = this.format().dividerType()
                                       .colorIdWithBackground(this.background());
 
-        border.margin.top   = this.format().spaceBelow().resourceId();
+        divider.margin.top      = this.format().spaceBelow().resourceId();
 
-        return border.linearLayout(context);
+        divider.margin.left     = this.format().dividerPadding().resourceId();
+        divider.margin.right    = this.format().dividerPadding().resourceId();
+
+        return divider.linearLayout(context);
     }
 
 }

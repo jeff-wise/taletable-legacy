@@ -16,7 +16,7 @@ import com.kispoko.tome.sheet.widget.button.ButtonIcon;
 import com.kispoko.tome.sheet.widget.button.ButtonWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.BackgroundColor;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.FormattedString;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
@@ -290,7 +290,7 @@ public class ButtonWidget extends Widget implements Serializable
 
         // ** Corners
         if (this.data().format().corners() == null)
-            this.data().format().setCorners(WidgetCorners.SMALL);
+            this.data().format().setCorners(Corners.SMALL);
 
     }
 

@@ -86,7 +86,7 @@ public class ValueSetRowView
 
         header.id                   = R.id.value_set_row_header;
         header.size                 = R.dimen.dictionary_item_header_text_size;
-        header.color                = R.color.gold_5;
+        header.color                = R.color.gold_light;
         header.font                 = Font.sansSerifFontBold(context);
 
         header.margin.bottom        = R.dimen.dictionary_item_header_margin_bottom;

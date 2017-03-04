@@ -265,7 +265,7 @@ public class GamesActivity extends AppCompatActivity
 
         title.text          = titleString;
         title.size          = R.dimen.games_button_title_text_size;
-        title.color         = R.color.gold_6;
+        title.color         = R.color.gold_light;
         title.font          = Font.sansSerifFontBold(this);
         title.margin.bottom = R.dimen.games_button_title_margin_bottom;
 

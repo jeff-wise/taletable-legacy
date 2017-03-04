@@ -893,6 +893,28 @@ engine:
     - is_level_one
   dictionary:
     sets:
+    - name: physical_status
+      label: Physical Statuses
+      label_singular: Physical Status
+      description: >
+        The physical states.
+      values:
+      - type: text
+        value:
+          name: alive
+          value: alive
+      - type: text
+        value:
+          name: unconscious_stable
+          value: unconscious (stable)
+      - type: text
+        value:
+          name: unconscious_dying
+          value: unconscious (dead)
+      - type: text
+        value:
+          name: dead
+          value: dead
     - name: scarborn_mood
       label: Scarborn's Moods
       label_singular: Scarborn Mood
@@ -1753,7 +1775,8 @@ profile:
       format:
         show_name: false
       rows:
-      - space_above: medium
+      - format:
+          margin_top: medium
         widgets:
         - type: text
           widget:
@@ -1769,7 +1792,8 @@ profile:
               label: Name
               type: literal
               value: Aladaisian Wineheart
-      - space_above: medium_large
+      - format:
+          margin_top: medium_large
         widgets:
         - type: text
           widget:
@@ -1788,7 +1812,8 @@ profile:
               value: >
                 You learn to fight for you life; you learn to fight for others' lives; you learn what
                 life is.
-      - space_above: large
+      - format:
+          margin_top: large
         widgets:
         - type: image
           widget:
@@ -1801,7 +1826,8 @@ profile:
         space_above: medium_large
         space_below: medium_large
       rows:
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -1871,7 +1897,8 @@ profile:
               value:
                 set_name: class
                 value_name: fighter
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: text
           widget:
@@ -1908,7 +1935,8 @@ profile:
             value:
               type: literal
               value: Chaotic Good
-      - space_above: medium
+      - format:
+          margin_top: medium
         widgets:
         - type: quote
           widget:
@@ -1931,7 +1959,8 @@ profile:
                 growing. I learned to build with the sword, by chopping down those who kept others
                 in the dark, and letting the good spring forth.
             source: Moon-lit conversation with Iliah Savayara
-      - space_above: medium
+      - format:
+          margin_top: medium
         widgets:
         - type: number
           widget:
@@ -1967,7 +1996,8 @@ profile:
         background: dark
         space_above: medium
       rows:
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2019,7 +2049,8 @@ profile:
             value:
               type: literal
               value: 167
-      - space_above: very_small
+      - format:
+          margin_top: very_small
         widgets:
         - type: text
           widget:
@@ -2075,7 +2106,8 @@ profile:
     - name: Languages
       space_above: medium
       rows:
-      - space_above: small
+      - format:
+          margin_top: small
         widgets:
         - type: list
           widget:
@@ -2097,9 +2129,10 @@ profile:
     - name: Background
       space_above: medium
       rows:
-      - space_above: medium_small
-        alignment: center
-        width: half
+      - format:
+          alignment: center
+          margin_top: medium_small
+          width: half
         widgets:
         - type: text
           widget:
@@ -2120,8 +2153,9 @@ profile:
       label_type: secondary
       space_above: small
       rows:
-      - space_above: small
-        width: indented
+      - format:
+          margin_top: small
+          width: indented
         widgets:
         - type: text
           widget:
@@ -2140,8 +2174,9 @@ profile:
               value: >
                 I am cynical of society. Show me a fair king, a good committee, a man of pure faith,
                 and I give you every reason that you've been deceived.
-      - space_above: medium_small
-        width: indented
+      - format:
+          margin_top: medium_small
+          width: indented
         widgets:
         - type: text
           widget:
@@ -2165,8 +2200,9 @@ profile:
       label_type: secondary
       space_above: medium
       rows:
-      - space_above: small
-        width: indented
+      - format:
+          margin_top: small
+          width: indented
         widgets:
         - type: text
           widget:
@@ -2188,8 +2224,9 @@ profile:
       label_type: secondary
       space_above: medium
       rows:
-      - space_above: small
-        width: indented
+      - format:
+          margin_top: small
+          width: indented
         widgets:
         - type: text
           widget:
@@ -2211,8 +2248,9 @@ profile:
       label_type: secondary
       space_above: medium
       rows:
-      - space_above: small
-        width: indented
+      - format:
+          margin_top: small
+          width: indented
         widgets:
         - type: text
           widget:
@@ -2240,7 +2278,8 @@ profile:
         space_below: medium
         space_above: small
       rows:
-      - space_above: small
+      - format:
+          margin_top: small
         widgets:
         - type: number
           widget:
@@ -2280,7 +2319,8 @@ profile:
                       variable:
                         type: tag
                         tag: strength_bonus
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2309,7 +2349,8 @@ profile:
                 - type: reference
                   value: strength
             value_prefix: '+'
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2361,7 +2402,8 @@ profile:
       space_below: medium
       divider: light
       rows:
-      - space_above: small
+      - format:
+          margin_top: small
         widgets:
         - type: number
           widget:
@@ -2401,7 +2443,8 @@ profile:
                       variable:
                         type: tag
                         tag: dexterity_bonus
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2430,7 +2473,8 @@ profile:
                 - type: reference
                   value: dexterity
             value_prefix: '+'
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2482,7 +2526,8 @@ profile:
       space_below: medium
       divider: light
       rows:
-      - space_above: small
+      - format:
+          margin_top: small
         widgets:
         - type: number
           widget:
@@ -2522,7 +2567,8 @@ profile:
                       variable:
                         type: tag
                         tag: constitution_bonus
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2551,7 +2597,8 @@ profile:
                 - type: reference
                   value: constitution
             value_prefix: '+'
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2603,7 +2650,8 @@ profile:
       space_below: medium
       divider: light
       rows:
-      - space_above: small
+      - format:
+          margin_top: small
         widgets:
         - type: number
           widget:
@@ -2643,7 +2691,8 @@ profile:
                       variable:
                         type: tag
                         tag: intelligence_bonus
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2672,7 +2721,8 @@ profile:
                 - type: reference
                   value: intelligence
             value_prefix: '+'
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2724,7 +2774,8 @@ profile:
       space_below: medium
       divider: light
       rows:
-      - space_above: small
+      - formt:
+          margin_top: small
         widgets:
         - type: number
           widget:
@@ -2765,7 +2816,8 @@ profile:
                       variable:
                         type: tag
                         tag: wisdom_bonus
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2794,7 +2846,8 @@ profile:
                 - type: reference
                   value: wisdom
             value_prefix: '+'
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2845,7 +2898,8 @@ profile:
       show_name: false
       space_below: medium
       rows:
-      - space_above: small
+      - format:
+          margin_top: small
         widgets:
         - type: number
           widget:
@@ -2884,7 +2938,8 @@ profile:
                       variable:
                         type: tag
                         tag: charisma_bonus
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2913,7 +2968,8 @@ profile:
                 - type: reference
                   value: charisma
             value_prefix: '+'
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: number
           widget:
@@ -2962,8 +3018,9 @@ profile:
       format:
         space_above: medium_large
       rows:
-      - space_above: very_small
-        width: no_padding
+      - format:
+          margin_top: very_small
+          width: no_padding
         widgets:
         - type: table
           widget:
@@ -3632,8 +3689,9 @@ profile:
         space_above: none
         space_below: large
       rows:
-      - space_above: large
-        width: indented
+      - format:
+          margin_top: large
+          width: indented
         widgets:
         - type: number
           widget:
@@ -3660,8 +3718,9 @@ profile:
               name: hit_points
               type: literal
               value: 12
-      - space_above: large
-        width: indented
+      - format:
+          margin_top: large
+          width: indented
         widgets:
         - type: number
           widget:
@@ -3704,8 +3763,9 @@ profile:
                       variable:
                         type: name
                         name: dexterity_modifier
-      - space_above: large
-        width: indented
+      - format:
+          margin_top: large
+          width: indented
         widgets:
         - type: number
           widget:
@@ -3744,7 +3804,8 @@ profile:
         space_above: medium_large
         space_below: large
       rows:
-      - space_above: medium
+      - format:
+          margin_top: medium
         widgets:
         - type: number
           widget:
@@ -3798,14 +3859,16 @@ profile:
     - name: Race Features
       space_above: medium_large
       rows:
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: mechanic
           widget:
             category: race
     - name: Class Features
       rows:
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: mechanic
           widget:
@@ -3860,7 +3923,8 @@ profile:
               name: wealth_copper
               type: literal
               value: 17
-      - width: three_quarters
+      - format:
+          width: three_quarters
         widgets:
         - type: number
           widget:
@@ -3895,8 +3959,9 @@ profile:
         background: medium
         space_above: medium_large
       rows:
-      - space_above: medium_small
-        width: no_padding
+      - format:
+          margin_top: medium_small
+          width: no_padding
         widgets:
         - type: table
           widget:
@@ -3982,8 +4047,9 @@ profile:
         background: medium
         space_above: medium_large
       rows:
-      - space_above: medium_small
-        width: no_padding
+      - format:
+          margin_top: medium_small
+          width: no_padding
         widgets:
         - type: table
           widget:
@@ -4054,7 +4120,8 @@ profile:
       format:
         space_above: medium_large
       rows:
-      - width: no_padding
+      - format:
+          width: no_padding
         widgets:
         - type: table
           widget:
@@ -4163,18 +4230,73 @@ profile:
 encounter:
   pages:
   - name: Attacks
+    background: dark
     groups:
-    - name: Weapons
+    - name: Initiative
       format:
-        divider: light
-        space_above: medium
-        space_below: medium_large
+        background: medium
+        corners: small
+        margin_bottom: medium
+        margin_top: medium
+        padding_horizontal: small
+        show_name: false
+        space_above: small
+        space_below: medium_small
       rows:
-      - space_above: medium
+      - format:
+          margin_top: none
         widgets:
         - type: action
           widget:
-            action: >
+            description: Roll Initiative
+            action_highlight: Roll Initiative
+            action_name: Initiative
+            data:
+              format:
+                alignment: center
+                background: medium
+            format:
+              action_style:
+                color: green_very_light
+                font: bold
+                size: medium_large
+            modifier:
+              type: variable
+              label: Initiative
+              value: initiative
+      - format:
+          margin_top: very_small
+        widgets:
+        - type: quote
+          widget:
+            quote: >
+              The day that I'm not ready for a fight is the day that I'm dead.
+            format:
+              quote_style:
+                alignment: center
+                color: theme_dark
+                font: italic
+                size: medium_small
+    - name: Longsword
+      format:
+        background: medium
+        corners: small
+        padding_horizontal: small
+        margin_bottom: medium
+        show_name: false
+        space_above: medium
+        space_below: medium
+        name_style:
+          color: theme_medium
+          font: italic
+          size: medium_small
+      rows:
+      - format:
+          margin_top: none
+        widgets:
+        - type: action
+          widget:
+            description: >
               In the stance of the roaring tempest, I spin my longsword in wide, graceful arcs,
               slashing at my opponent with glimmering steel.
             action_highlight: longsword
@@ -4184,7 +4306,10 @@ encounter:
                 alignment: center
                 width: 1
             format:
-              size: medium
+              action_style:
+                color: gold_very_light
+                font: bold
+                size: medium_small
             modifier:
               name: longsword_attack_bonus
               type: summation
@@ -4213,19 +4338,23 @@ encounter:
                       variable:
                         type: name
                         name: proficiency_bonus
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: action
           widget:
-            action: I strike, dealing damage.
+            description: I strike, dealing damage.
             action_highlight: damage
             action_name: Longsword Melee Damage
             data:
               format:
                 alignment: center
+                background: empty
                 width: 1
             format:
-              size: medium
+              action_style:
+                color: theme_medium_light
+                size: medium_small
             modifier:
               name: longsword_attack_damage
               type: summation
@@ -4245,19 +4374,23 @@ encounter:
                       variable:
                         type: name
                         name: strength_modifier
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: action
           widget:
-            action: I strike, dealing two-handed damage.
+            description: I strike, dealing two-handed damage.
             action_highlight: two-handed damage
             action_name: Longsword Melee Damage
             data:
               format:
                 alignment: center
+                background: empty
                 width: 1
             format:
-              size: medium
+              action_style:
+                color: theme_medium_light
+                size: medium_small
             modifier:
               name: longsword_attack_damage
               type: summation
@@ -4279,16 +4412,25 @@ encounter:
                         name: strength_modifier
     - name: Heavy Crossbow
       format:
-        divider: light
-        show_name: false
         space_above: medium
         space_below: medium
       rows:
-      - space_above: small
+    - name: Heavy Crossbow
+      format:
+        show_name: false
+        space_above: medium
+        space_below: medium
+        name_style:
+          color: theme_medium
+          font: italic
+          size: medium_small
+      rows:
+      - format:
+          margin_top: medium_small
         widgets:
         - type: action
           widget:
-            action: |
+            description: |
               My muscles strain winding back the taut string of my heavy crossbow.
               A violient thwack explodes in the ears of my allies. A bolt flies towards my opponents.
             action_highlight: heavy crossbow
@@ -4297,7 +4439,8 @@ encounter:
               format:
                 width: 1
             format:
-              hl_color: green
+              action_style:
+                color: gold_light
             modifier:
               name: heavy_crossbow_attack_bonus
               type: summation
@@ -4328,7 +4471,7 @@ encounter:
       - widgets:
         - type: action
           widget:
-            action: The crossbow bolt pierces my opponent for damage.
+            description: The crossbow bolt pierces my opponent for damage.
             action_highlight: damage
             action_name: Heavy Crossbow Damage
             data:
@@ -4362,7 +4505,7 @@ encounter:
       - widgets:
         - type: action
           widget:
-            action: Attack with dagger
+            description: Attack with dagger
             action_highlight: dagger
             action_name: Dagger Melee Attack
             data:
@@ -4397,7 +4540,7 @@ encounter:
                         name: proficiency_bonus
         - type: action
           widget:
-            action: Damage with dagger
+            description: Damage with dagger
             action_highlight: dagger
             action_name: Dagger Melee Damage
             data:
@@ -4427,12 +4570,14 @@ encounter:
     groups:
     - name: Feelings
       format:
+        background: medium
         divider: dark
         show_name: false
         spacing_above: small
         spacing_below: medium
       rows:
-      - space_above: none
+      - format:
+          margin_top: none
         widgets:
         - type: option
           widget:
@@ -4445,8 +4590,10 @@ encounter:
                 color: theme_medium
                 size: medium_large
               value_style:
-                color: theme_light
-                size: medium_large
+                background_color: medium_dark
+                color: green_light
+                font: regular
+                eize: medium_large
             view_type: arrows_vertical
             value_type: text
             value:
@@ -4458,7 +4605,7 @@ encounter:
                 value_name: anxious
     - name: Current Hit Points
       format:
-        background: medium
+        background: dark
         name_style:
           alignment: center
           color: theme_medium
@@ -4466,13 +4613,14 @@ encounter:
           size: medium_small
         space_above: medium_large
       rows:
-      - space_above: small
+      - format:
+          margin_top: small
         widgets:
         - type: number
           widget:
             data:
               format:
-                background: medium
+                background: dark
             format:
               value_style:
                 alignment: center
@@ -4485,10 +4633,15 @@ encounter:
               value: 12
     - name: Hit Points Buttons
       format:
+        background: dark
         show_name: false
         space_above: none
+        space_below: medium
+        divider: light
+        divider_padding: small
       rows:
-      - space_above: medium_small
+      - format:
+          margin_top: medium_small
         widgets:
         - type: button
           widget:
@@ -4508,8 +4661,9 @@ encounter:
               label_style:
                 size: medium
                 font: bold
-                color: theme_medium_light
-      - space_above: medium_small
+                color: theme_light
+      - format:
+          margin_top: medium_small
         widgets:
         - type: button
           widget:
@@ -4529,12 +4683,15 @@ encounter:
               label_style:
                 size: medium
                 font: bold
-                color: theme_medium_light
+                color: theme_light
     - name: Temporary Hit Points
       format:
+        background: dark
         show_name: false
+        space_below: medium
       rows:
-      - space_above: medium_small
+      - format:
+          margin_top: small
         widgets:
         - type: number
           widget:
@@ -4547,17 +4704,216 @@ encounter:
               outside_label: '   Temporary Hit Points'
               outside_label_position: right
               outside_label_style:
-                color: theme_medium
-                size: medium_small
+                color: theme_medium_light
+                font: bold
+                size: medium
               value_padding_horizontal: medium_small
               value_height: very_small
+              value_style:
+                font: bold
+                color: theme_light
             value:
               name: temporary_hit_points
               label: Temporary Hit Points
               type: literal
               value: 0
+    - name: Status
+      format:
+        background: medium
+        show_name: false
+      rows:
+      - format:
+          margin_top: medium_small
+        widgets:
+        - type: option
+          widget:
+            data:
+              format:
+                alignment: center
+            format:
+              description_style:
+                color: theme_medium
+                size: medium
+              value_item_style:
+                color: theme_dark
+                size: medium
+              value_style:
+                color: theme_light
+                font: bold
+                size: medium
+            description: I am <value>.
+            view_type: expanded_slashes
+            value_type: text
+            value:
+              type: value
+              value:
+                set_name: physical_status
+                value_name: alive
   - name: Abilities
     groups:
+    - name: Dexterity
+      format:
+        background: dark
+        divider: light
+        divider_padding: medium_small
+        name_style:
+          alignment: center
+          font: italic
+          color: gold_very_light
+        space_above: medium
+      rows:
+    - name: Dexterity Saving Throw
+      format:
+        background: dark
+        show_name: false
+      rows:
+      - widgets:
+        - type: action
+          widget:
+            description: Saving Throw
+            action_highlight: Saving Throw
+            action_name: Dexterity Saving Throw
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              action_style:
+                color: green_light
+                font: bold
+                size: medium_small
+            modifier:
+              type: variable
+              label: Dexterity Saving Throw
+              value: saving_throw_dexterity
+    - name: Dexterity Skills
+      format:
+        background: dark
+        show_name: false
+      rows:
+      - format:
+          margin_top: small
+          width: three_quarters
+        widgets:
+        - type: action
+          widget:
+            description: Acrobatics Check
+            action_highlight: Acrobatics Check
+            action_name: Acrobatics Check
+            data:
+              format:
+                alignment: center
+                background: medium
+            format:
+              action_style:
+                color: theme_medium_light
+                size: medium_small
+            modifier:
+              type: variable
+              label: Acrobatics check
+              value: athletics_bonus
+      - format:
+          margin_top: small
+          width: three_quarters
+        widgets:
+        - type: action
+          widget:
+            description: Sleight of Hand Check
+            action_highlight: Sleight of Hand Check
+            action_name: Sleight Of Hand Check
+            data:
+              format:
+                alignment: center
+                background: medium
+            format:
+              action_style:
+                color: theme_medium_light
+                size: medium_small
+            modifier:
+              type: variable
+              label: Sleight of Hand check
+              value: sleight_of_hand_bonus
+      - format:
+          margin_top: small
+          width: three_quarters
+        widgets:
+        - type: action
+          widget:
+            description: Stealth Check
+            action_highlight: Stealth Check
+            action_name: Stealth Check
+            data:
+              format:
+                alignment: center
+                background: medium
+            format:
+              action_style:
+                color: theme_medium_light
+                size: medium_small
+            modifier:
+              type: variable
+              label: Stealth Check
+              value: stealth_bonus
+    - name: Dexterity Actions
+      format:
+        background: dark
+        show_name: false
+      rows:
+      - widgets:
+        - type: action
+          widget:
+            description: Using a rope, I secure a prisoner by binding his legs and arms.
+            action_highlight: secure a prisoner
+            action_name: Secure a Prisoner
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              action_style:
+                color: theme_medium_light
+                size: medium_small
+            modifier:
+              type: literal
+              label: Secure a Prisoner
+              value: 1
+      - widgets:
+        - type: action
+          widget:
+            description: Disable a Trap
+            action_highlight: Disable a Trap
+            action_name: Secure a Prisoner
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              action_style:
+                color: theme_medium_light
+                size: medium_small
+            modifier:
+              type: literal
+              label: Disable a Trap
+              value: 1
+      - widgets:
+        - type: action
+          widget:
+            description: >
+              When you're bored in the army during a long seige, you learn to juggle knives.
+            action_highlight: juggle knives
+            action_name: Juggle Knives
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              action_style:
+                color: theme_medium_light
+                size: medium_small
+            modifier:
+              type: literal
+              label: Juggle Knives
+              value: 1
 campaign:
   pages:
   - name: Campaign Log
@@ -4571,7 +4927,8 @@ campaign:
           font: regular
           size: very_large
       rows:
-      - space_above: large
+      - format:
+          margin_top: large
         widgets:
         - type: log
           widget:
@@ -4635,7 +4992,8 @@ campaign:
           font: regular
           size: very_large
       rows:
-      - space_above: large
+      - format:
+          margin_top: large
         widgets:
         - type: log
           widget:

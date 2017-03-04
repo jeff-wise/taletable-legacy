@@ -24,14 +24,12 @@ import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.widget.WidgetType;
-import com.kispoko.tome.sheet.widget.action.ActionColor;
-import com.kispoko.tome.sheet.widget.action.ActionSize;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.sheet.BackgroundColor;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
@@ -162,7 +160,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(WidgetCorners.class))
+        else if (valueClass.isAssignableFrom(Corners.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -322,19 +320,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((TextColor) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof WidgetCorners)
+        else if (this.getValue() instanceof Corners)
         {
-            String enumString = ((WidgetCorners) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof ActionColor)
-        {
-            String enumString = ((ActionColor) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof ActionSize)
-        {
-            String enumString = ((ActionSize) this.getValue()).name().toLowerCase();
+            String enumString = ((Corners) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof SerialBitmap)
@@ -595,20 +583,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
             TextColor tint = TextColor.fromSQLValue(sqlValue);
             this.setValue((A) tint);
         }
-        else if (this.valueClass.isAssignableFrom(WidgetCorners.class))
+        else if (this.valueClass.isAssignableFrom(Corners.class))
         {
-            WidgetCorners corners = WidgetCorners.fromSQLValue(sqlValue);
+            Corners corners = Corners.fromSQLValue(sqlValue);
             this.setValue((A) corners);
-        }
-        else if (this.valueClass.isAssignableFrom(ActionColor.class))
-        {
-            ActionColor color = ActionColor.fromSQLValue(sqlValue);
-            this.setValue((A) color);
-        }
-        else if (this.valueClass.isAssignableFrom(ActionSize.class))
-        {
-            ActionSize size = ActionSize.fromSQLValue(sqlValue);
-            this.setValue((A) size);
         }
         else if (this.valueClass.isAssignableFrom(ProgramValueType.class))
         {

@@ -3,9 +3,13 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StyleSpan;
@@ -29,7 +33,6 @@ import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
 import com.kispoko.tome.activity.sheet.dialog.RollDialogFragment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 import com.kispoko.tome.util.value.ModelFunctor;
@@ -61,7 +64,7 @@ public class ActionWidget extends Widget
 
     private ModelFunctor<WidgetData>            widgetData;
     private ModelFunctor<ActionWidgetFormat>    format;
-    private PrimitiveFunctor<String>            action;
+    private PrimitiveFunctor<String>            description;
     private PrimitiveFunctor<String>            actionHighlight;
     private PrimitiveFunctor<String>            actionName;
     private ModelFunctor<NumberVariable>        modifier;
@@ -76,7 +79,7 @@ public class ActionWidget extends Widget
 
         this.widgetData         = ModelFunctor.empty(WidgetData.class);
         this.format             = ModelFunctor.empty(ActionWidgetFormat.class);
-        this.action             = new PrimitiveFunctor<>(null, String.class);
+        this.description        = new PrimitiveFunctor<>(null, String.class);
         this.actionHighlight    = new PrimitiveFunctor<>(null, String.class);
         this.actionName         = new PrimitiveFunctor<>(null, String.class);
         this.modifier           = ModelFunctor.empty(NumberVariable.class);
@@ -86,7 +89,7 @@ public class ActionWidget extends Widget
     public ActionWidget(UUID id,
                         WidgetData widgetData,
                         ActionWidgetFormat format,
-                        String action,
+                        String description,
                         String actionHighlight,
                         String actionName,
                         NumberVariable modifier)
@@ -95,7 +98,7 @@ public class ActionWidget extends Widget
 
         this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
         this.format             = ModelFunctor.full(format, ActionWidgetFormat.class);
-        this.action             = new PrimitiveFunctor<>(action, String.class);
+        this.description        = new PrimitiveFunctor<>(description, String.class);
         this.actionHighlight    = new PrimitiveFunctor<>(actionHighlight, String.class);
         this.actionName         = new PrimitiveFunctor<>(actionName, String.class);
         this.modifier           = ModelFunctor.full(modifier, NumberVariable.class);
@@ -115,9 +118,9 @@ public class ActionWidget extends Widget
     {
         UUID               id              = UUID.randomUUID();
 
-        String             description     = yaml.atKey("action").getString().trim();
-        String             actionHighlight = yaml.atKey("action_highlight").getString().trim();
-        String             actionName      = yaml.atKey("action_name").getString().trim();
+        String             description     = yaml.atKey("description").getTrimmedString();
+        String             actionHighlight = yaml.atKey("action_highlight").getTrimmedString();
+        String             actionName      = yaml.atKey("action_name").getTrimmedString();
         NumberVariable     modifier        = NumberVariable.fromYaml(yaml.atKey("modifier"));
         WidgetData         widgetData      = WidgetData.fromYaml(yaml.atKey("data"), false);
         ActionWidgetFormat format          = ActionWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
@@ -219,7 +222,7 @@ public class ActionWidget extends Widget
     @Override
     public View view(boolean rowHasLabel, Context context)
     {
-        return this.widgetView(context);
+        return this.widgetView(rowHasLabel, context);
     }
 
 
@@ -232,7 +235,7 @@ public class ActionWidget extends Widget
      */
     public String action()
     {
-        return this.action.getValue();
+        return this.description.getValue();
     }
 
 
@@ -338,23 +341,53 @@ public class ActionWidget extends Widget
     // > Views
     // -----------------------------------------------------------------------------------------
 
-    private View widgetView(Context context)
+    private View widgetView(boolean rowHasLabel, Context context)
     {
-        LinearLayout layout = this.widgetViewLayout(context);
+        LinearLayout layout = this.layout(rowHasLabel, context);
 
-        layout.addView(actionView(context));
+        layout.addView(mainView(context));
 
         return layout;
     }
 
 
-    private LinearLayout widgetViewLayout(final Context context)
+    private LinearLayout mainView(Context context)
+    {
+        LinearLayout layout = mainViewLayout(context);
+
+        layout.addView(descriptionTextView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout mainViewLayout(final Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
         layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        // > Width
+        if (this.format().paddingHorizontal() != null)
+            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        else
+            layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.gravity              = Gravity.CENTER_VERTICAL;
+        layout.layoutGravity        = this.data().format().alignment().gravityConstant();
+
+        layout.backgroundResource   = this.data().format().background()
+                                          .resourceId(this.data().format().corners());
+
+        //layout.backgroundColor      = R.color.dark_blue_1;
+
+        // > Horizontal Padding
+        if (this.format().paddingHorizontal() != null) {
+            layout.padding.left     = this.format().paddingHorizontal().resourceId();
+            layout.padding.right    = this.format().paddingHorizontal().resourceId();
+        }
 
         layout.onClick              = new View.OnClickListener() {
             @Override
@@ -367,10 +400,37 @@ public class ActionWidget extends Widget
     }
 
 
-    private TextView actionView(Context context)
-    {
-        TextView action = actionTextView(context);
 
+    private TextView descriptionTextView(Context context)
+    {
+        TextViewBuilder description = new TextViewBuilder();
+
+        description.width       = LinearLayout.LayoutParams.MATCH_PARENT;
+        description.height      = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        description.textSpan    = descriptionSpannable(context);
+
+        this.format().descriptionStyle().styleTextViewBuilder(description, context);
+
+
+        switch (this.data().format().alignment())
+        {
+            case LEFT:
+                break;
+            case CENTER:
+                description.layoutGravity = Gravity.CENTER_HORIZONTAL;
+                description.gravity       = Gravity.CENTER_HORIZONTAL;
+                break;
+            case RIGHT:
+                break;
+        }
+
+        return description.textView(context);
+    }
+
+
+    private SpannableStringBuilder descriptionSpannable(Context context)
+    {
         SpannableStringBuilder builder = new SpannableStringBuilder(this.action());
 
         int actionNameIndex = this.action().indexOf(this.actionHighlight());
@@ -384,76 +444,73 @@ public class ActionWidget extends Widget
         int actionNameEnd = actionNameIndex + 2 + this.actionHighlight().length();
         builder.setSpan(this.actionHighlightSpan(context), actionNameIndex + 1, actionNameEnd, 0);
 
-        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-        builder.setSpan(boldSpan, actionNameIndex + 1, actionNameEnd, 0 );
+//        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+//        builder.setSpan(boldSpan, actionNameIndex + 1, actionNameEnd, 0 );
 
-        action.setText(builder);
+        int textSizeResourceId = this.format().actionStyle().size().resourceId();
+        int textSizePx = context.getResources().getDimensionPixelSize(textSizeResourceId);
+        AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(textSizePx, true);
+        builder.setSpan(sizeSpan, actionNameIndex + 1, actionNameEnd, 0);
 
-        return action;
-    }
-
-
-    private TextView actionTextView(Context context)
-    {
-        TextViewBuilder action = new TextViewBuilder();
-
-        action.width           = LinearLayout.LayoutParams.MATCH_PARENT;
-        action.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        action.font            = Font.serifFontRegular(context);
-        action.color           = R.color.dark_blue_hl_6;
-        action.size            = this.format().size().resourceId();
-
-        switch (this.data().format().alignment())
+        // > Typeface
+        // -------------------------------------------------------------------------------------
+        switch (this.format().actionStyle().font())
         {
-            case LEFT:
+            case BOLD:
+                StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
+                builder.setSpan(valueBoldSpan, actionNameIndex + 1, actionNameEnd, 0);
                 break;
-            case CENTER:
-                action.layoutGravity = Gravity.CENTER_HORIZONTAL;
-                action.gravity       = Gravity.CENTER_HORIZONTAL;
+            case ITALIC:
+                StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
+                builder.setSpan(valueItalicSpan, actionNameIndex + 1, actionNameEnd, 0);
                 break;
-            case RIGHT:
+            case BOLD_ITALIC:
+                StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
+                builder.setSpan(valueBoldItalicSpan, actionNameIndex + 1, actionNameEnd, 0);
                 break;
         }
 
-        return action.textView(context);
+        return builder;
     }
 
 
     private ForegroundColorSpan actionHighlightSpan(Context context)
     {
-        int colorId = this.format().actionColor().resourceId();
+        int colorId = this.format().actionStyle().color().resourceId();
         return new ForegroundColorSpan(ContextCompat.getColor(context, colorId));
     }
 
 
     private ImageSpan actionImageSpan(Context context)
     {
-        switch (this.format().actionColor())
+        Drawable diceDrawable = ContextCompat.getDrawable(context, R.drawable.ic_roll_blue_m);
+
+        int diceColorResourceId = this.format().actionStyle().color().resourceId();
+        int diceColor = ContextCompat.getColor(context, diceColorResourceId);
+
+        diceDrawable.setColorFilter(new PorterDuffColorFilter(diceColor, PorterDuff.Mode.SRC_IN));
+
+
+        int diceSizeId = 0;
+        switch (this.format().actionStyle().size())
         {
-            case BLUE:
-                switch (this.format().size())
-                {
-                    case SMALL:
-                        return new ImageSpan(context, R.drawable.ic_roll_blue_l);
-                    case MEDIUM:
-                        return new ImageSpan(context, R.drawable.ic_roll_blue_m);
-                    case LARGE:
-                        return new ImageSpan(context, R.drawable.ic_roll_blue_l);
-                }
-            case GREEN:
-                switch (this.format().size())
-                {
-                    case SMALL:
-                        return new ImageSpan(context, R.drawable.ic_roll_green_m);
-                    case MEDIUM:
-                        return new ImageSpan(context, R.drawable.ic_roll_green_m);
-                    case LARGE:
-                        return new ImageSpan(context, R.drawable.ic_roll_green_m);
-                }
-            default:
-                return new ImageSpan(context, R.drawable.ic_roll_blue_l);
+            case MEDIUM_SMALL:
+                diceSizeId = R.dimen.widget_action_dice_size_medium_small;
+                break;
+            case MEDIUM:
+                diceSizeId = R.dimen.widget_action_dice_size_medium;
+                break;
+            case MEDIUM_LARGE:
+                diceSizeId = R.dimen.widget_action_dice_size_medium_large;
+                break;
         }
+
+        Float width = context.getResources().getDimension(diceSizeId);
+        diceDrawable.setBounds(0, 0, width.intValue(), width.intValue());
+
+
+        return new ImageSpan(diceDrawable);
+
     }
 
 

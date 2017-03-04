@@ -3,6 +3,8 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,6 +16,7 @@ import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.engine.value.ValueSet;
 import com.kispoko.tome.engine.value.ValueType;
+import com.kispoko.tome.engine.value.ValueUnion;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
@@ -27,8 +30,9 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.option.OptionWidgetFormat;
 import com.kispoko.tome.sheet.widget.option.ViewType;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
+import com.kispoko.tome.util.ui.FormattedString;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
@@ -39,6 +43,10 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -74,6 +82,12 @@ public class OptionWidget extends Widget implements Serializable
     private PrimitiveFunctor<ValueType>         valueType;
     private ModelFunctor<TextVariable>          textVariable;
     private ModelFunctor<NumberVariable>        numberVariable;
+
+
+    // > Internal
+    // -----------------------------------------------------------------------------------------
+
+    private Map<String, Integer>                valueStringListIndexMap;
 
 
     // CONSTRUCTORS
@@ -445,7 +459,29 @@ public class OptionWidget extends Widget implements Serializable
 
         // ** Corners
         if (this.data().format().corners() == null)
-            this.data().format().setCorners(WidgetCorners.SMALL);
+            this.data().format().setCorners(Corners.SMALL);
+    }
+
+
+    // > Values
+    // -----------------------------------------------------------------------------------------
+
+    // TODO add null value exception
+    private List<String> valueStrings()
+    {
+        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+        ValueSet valueSet = dictionary.lookup(this.valueReference().valueSetName());
+
+        if (valueSet == null)
+            return new ArrayList<>();
+
+        List<String> valueStrings = new ArrayList<>();
+
+        for (ValueUnion valueUnion : valueSet.values()) {
+            valueStrings.add(valueUnion.value().valueString());
+        }
+
+        return valueStrings;
     }
 
 
@@ -460,6 +496,9 @@ public class OptionWidget extends Widget implements Serializable
         {
             case ARROWS_VERTICAL:
                 layout.addView(verticalArrowsView(context));
+                break;
+            case EXPANDED_SLASHES:
+                layout.addView(expandedSlashesView(context));
                 break;
         }
 
@@ -570,6 +609,7 @@ public class OptionWidget extends Widget implements Serializable
 
         value.gravity               = Gravity.CENTER_HORIZONTAL;
 
+        value.backgroundColor       = this.format().valueStyle().backgroundColor().colorId();
         value.backgroundResource    = R.drawable.bg_option_value;
 
         value.margin.left           = R.dimen.six_dp;
@@ -582,6 +622,121 @@ public class OptionWidget extends Widget implements Serializable
 
 
         return layout.linearLayout(context);
+    }
+
+
+    private TextView expandedSlashesView(Context context)
+    {
+        TextViewBuilder value = new TextViewBuilder();
+
+        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        value.gravity       = this.data().format().alignment().gravityConstant()
+                                | Gravity.CENTER_VERTICAL;
+
+        value.textSpan      = expandedSlashesSpannable(context);
+
+        this.format().descriptionStyle().styleTextViewBuilder(value, context);
+
+        return value.textView(context);
+    }
+
+
+    private SpannableStringBuilder expandedSlashesSpannable(Context context)
+    {
+        SpannableStringBuilder spanBuilder = new SpannableStringBuilder(this.description());
+
+        StringBuilder stringBuilder = new StringBuilder(this.description());
+
+        String placeholderString = context.getString(R.string.placeholder_value);
+        int placeholderIndex = this.description().indexOf(placeholderString);
+        int placeholderLength = placeholderString.length();
+
+        // IF the placeholder EXISTS in the text...
+        if (placeholderIndex >= 0)
+        {
+            String valueListString = valueListBySlashes();
+
+            // (1 A) Remove the placeholder string
+            spanBuilder.delete(placeholderIndex, placeholderIndex + placeholderLength);
+            stringBuilder.replace(placeholderIndex, placeholderIndex + placeholderLength, "");
+
+            // (1 B) Insert the text
+            spanBuilder.insert(placeholderIndex, valueListString);
+            stringBuilder.insert(placeholderIndex, valueListString);
+
+            // > Format value list item strings
+            for (String valueItemString : this.valueStrings())
+            {
+                int valueItemIndex = placeholderIndex +
+                                     this.valueStringListIndexMap.get(valueItemString);
+
+                Log.d("***OPTIONWIDGET", "value item string: " + valueItemString);
+                Log.d("***OPTIONWIDGET", "index: " + Integer.toString(valueItemIndex));
+
+                if (valueItemIndex >= 0) {
+                    FormattedString.formatSpan(spanBuilder,
+                                               valueItemIndex,
+                                               valueItemString.length(),
+                                               this.format().valueItemStyle(),
+                                               context);
+                }
+
+            }
+
+            // > Format value
+            String valueString = this.valueString();
+            int valueIndex = placeholderIndex + this.valueStringListIndexMap.get(valueString);
+
+            if (valueIndex >= 0)
+            {
+                FormattedString.formatSpan(spanBuilder,
+                                           valueIndex,
+                                           valueIndex + valueString.length() - 4,
+                                           this.format().valueStyle(),
+                                           context);
+            }
+
+        }
+
+        return spanBuilder;
+    }
+
+
+    private String valueListBySlashes()
+    {
+        StringBuilder valuesSB = new StringBuilder();
+
+        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+        ValueSet valueSet = dictionary.lookup(this.valueReference().valueSetName());
+
+        if (valueSet == null)
+            return "";
+
+        List<ValueUnion> values = valueSet.values();
+
+        this.valueStringListIndexMap = new HashMap<>();
+
+        int currentIndex = 0;
+        String sep = "";
+        for (ValueUnion valueUnion : values)
+        {
+            String valueString = valueUnion.value().valueString();
+
+            valuesSB.append(sep);
+
+            valuesSB.append(valueString);
+
+            this.valueStringListIndexMap.put(valueString, currentIndex);
+
+            sep = " / ";
+
+            currentIndex += valueString.length();
+            currentIndex += 3;
+        }
+
+        return valuesSB.toString().trim();
     }
 
 

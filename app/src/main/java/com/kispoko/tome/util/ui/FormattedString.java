@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ReplacementSpan;
 import android.text.style.StyleSpan;
@@ -76,7 +77,7 @@ public class FormattedString
 
             if (spanTextIndex >= 0) {
                 formatSpan(spanBuilder, spanTextIndex, spanTextLength,
-                           span.format(), span.baseTextSize(), context);
+                           span.format(), context);
 
             }
 
@@ -104,12 +105,11 @@ public class FormattedString
     }
 
 
-    private static void formatSpan(SpannableStringBuilder spanBuilder,
-                                   int spanStart,
-                                   int spanLength,
-                                   TextStyle spanStyle,
-                                   TextSize baseTextSize,
-                                   Context context)
+    public static void formatSpan(SpannableStringBuilder spanBuilder,
+                                  int spanStart,
+                                  int spanLength,
+                                  TextStyle spanStyle,
+                                  Context context)
     {
         // > Typeface
         // -------------------------------------------------------------------------------------
@@ -136,8 +136,14 @@ public class FormattedString
 
         // > Size
         // -------------------------------------------------------------------------------------
-        RelativeSizeSpan sizeSpan = spanStyle.size().relativeSizeSpan(baseTextSize, context);
+
+        int textSizeResourceId = spanStyle.size().resourceId();
+        int textSizePx = context.getResources().getDimensionPixelSize(textSizeResourceId);
+        AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(textSizePx, true);
         spanBuilder.setSpan(sizeSpan, spanStart, spanStart + spanLength, 0);
+
+        // RelativeSizeSpan sizeSpan = spanStyle.size().relativeSizeSpan(baseTextSize, context);
+//        spanBuilder.setSpan(sizeSpan, spanStart, spanStart + spanLength, 0);
     }
 
 

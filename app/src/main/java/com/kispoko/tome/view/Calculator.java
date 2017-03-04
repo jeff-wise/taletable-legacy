@@ -126,7 +126,7 @@ public class Calculator
 
         result.text                 = Integer.toString(startValue);
         result.font                 = Font.serifFontRegular(context);
-        result.color                = R.color.gold_4;
+        result.color                = R.color.gold_light;
         result.size                 = R.dimen.calculator_result_text_size;
 
         return layout.linearLayout(context);

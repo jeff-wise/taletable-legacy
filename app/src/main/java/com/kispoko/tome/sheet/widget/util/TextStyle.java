@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.TextViewBuilder;
@@ -34,17 +35,18 @@ public class TextStyle implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                            id;
+    private UUID                                id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<TextColor>     color;
-    private PrimitiveFunctor<TextSize>      size;
-    private PrimitiveFunctor<TextFont>      font;
-    private PrimitiveFunctor<Boolean>       isUnderlined;
-    private PrimitiveFunctor<Alignment>     alignment;
+    private PrimitiveFunctor<TextColor>         color;
+    private PrimitiveFunctor<TextSize>          size;
+    private PrimitiveFunctor<TextFont>          font;
+    private PrimitiveFunctor<Boolean>           isUnderlined;
+    private PrimitiveFunctor<Alignment>         alignment;
+    private PrimitiveFunctor<BackgroundColor>   backgroundColor;
 
 
     // CONSTRUCTORS
@@ -52,13 +54,14 @@ public class TextStyle implements Model, ToYaml, Serializable
 
     public TextStyle()
     {
-        this.id             = null;
+        this.id                 = null;
 
-        this.color          = new PrimitiveFunctor<>(null, TextColor.class);
-        this.size           = new PrimitiveFunctor<>(null, TextSize.class);
-        this.font           = new PrimitiveFunctor<>(null, TextFont.class);
-        this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
-        this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
+        this.color              = new PrimitiveFunctor<>(null, TextColor.class);
+        this.size               = new PrimitiveFunctor<>(null, TextSize.class);
+        this.font               = new PrimitiveFunctor<>(null, TextFont.class);
+        this.isUnderlined       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment          = new PrimitiveFunctor<>(null, Alignment.class);
+        this.backgroundColor    = new PrimitiveFunctor<>(null, BackgroundColor.class);
     }
 
 
@@ -67,21 +70,24 @@ public class TextStyle implements Model, ToYaml, Serializable
                      TextSize size,
                      TextFont font,
                      Boolean isUnderlined,
-                     Alignment alignment)
+                     Alignment alignment,
+                     BackgroundColor backgroundColor)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.color          = new PrimitiveFunctor<>(color, TextColor.class);
-        this.size           = new PrimitiveFunctor<>(size, TextSize.class);
-        this.font           = new PrimitiveFunctor<>(font, TextFont.class);
-        this.isUnderlined   = new PrimitiveFunctor<>(isUnderlined, Boolean.class);
-        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
+        this.color              = new PrimitiveFunctor<>(color, TextColor.class);
+        this.size               = new PrimitiveFunctor<>(size, TextSize.class);
+        this.font               = new PrimitiveFunctor<>(font, TextFont.class);
+        this.isUnderlined       = new PrimitiveFunctor<>(isUnderlined, Boolean.class);
+        this.alignment          = new PrimitiveFunctor<>(alignment, Alignment.class);
+        this.backgroundColor    = new PrimitiveFunctor<>(backgroundColor, BackgroundColor.class);
 
         this.setColor(color);
         this.setSize(size);
         this.setFont(font);
         this.setIsUnderlined(isUnderlined);
         this.setAlignment(alignment);
+        this.setBackgroundColor(backgroundColor);
     }
 
 
@@ -89,19 +95,21 @@ public class TextStyle implements Model, ToYaml, Serializable
                      TextColor color,
                      TextSize size)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.color          = new PrimitiveFunctor<>(color, TextColor.class);
-        this.size           = new PrimitiveFunctor<>(size, TextSize.class);
-        this.font           = new PrimitiveFunctor<>(null, TextFont.class);
-        this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
-        this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
+        this.color              = new PrimitiveFunctor<>(color, TextColor.class);
+        this.size               = new PrimitiveFunctor<>(size, TextSize.class);
+        this.font               = new PrimitiveFunctor<>(null, TextFont.class);
+        this.isUnderlined       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment          = new PrimitiveFunctor<>(null, Alignment.class);
+        this.backgroundColor    = new PrimitiveFunctor<>(null, BackgroundColor.class);
 
         this.setColor(color);
         this.setSize(size);
         this.setFont(null);
         this.setIsUnderlined(null);
         this.setAlignment(null);
+        this.setBackgroundColor(null);
     }
 
 
@@ -110,19 +118,44 @@ public class TextStyle implements Model, ToYaml, Serializable
                      TextSize size,
                      Alignment alignment)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.color          = new PrimitiveFunctor<>(color, TextColor.class);
-        this.size           = new PrimitiveFunctor<>(size, TextSize.class);
-        this.font           = new PrimitiveFunctor<>(null, TextFont.class);
-        this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
-        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
+        this.color              = new PrimitiveFunctor<>(color, TextColor.class);
+        this.size               = new PrimitiveFunctor<>(size, TextSize.class);
+        this.font               = new PrimitiveFunctor<>(null, TextFont.class);
+        this.isUnderlined       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment          = new PrimitiveFunctor<>(alignment, Alignment.class);
+        this.backgroundColor    = new PrimitiveFunctor<>(null, BackgroundColor.class);
 
+        this.setColor(color);
+        this.setSize(size);
         this.setFont(null);
         this.setIsUnderlined(null);
         this.setAlignment(alignment);
+        this.setBackgroundColor(null);
+    }
+
+
+    public TextStyle(UUID id,
+                     TextColor color,
+                     TextSize size,
+                     TextFont font)
+    {
+        this.id                 = id;
+
+        this.color              = new PrimitiveFunctor<>(color, TextColor.class);
+        this.size               = new PrimitiveFunctor<>(size, TextSize.class);
+        this.font               = new PrimitiveFunctor<>(font, TextFont.class);
+        this.isUnderlined       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment          = new PrimitiveFunctor<>(null, Alignment.class);
+        this.backgroundColor    = new PrimitiveFunctor<>(null, BackgroundColor.class);
+
         this.setColor(color);
         this.setSize(size);
+        this.setFont(font);
+        this.setIsUnderlined(null);
+        this.setAlignment(null);
+        this.setBackgroundColor(null);
     }
 
 
@@ -132,19 +165,21 @@ public class TextStyle implements Model, ToYaml, Serializable
                      TextFont font,
                      Alignment alignment)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.color          = new PrimitiveFunctor<>(color, TextColor.class);
-        this.size           = new PrimitiveFunctor<>(size, TextSize.class);
-        this.font           = new PrimitiveFunctor<>(font, TextFont.class);
-        this.isUnderlined   = new PrimitiveFunctor<>(null, Boolean.class);
-        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
+        this.color              = new PrimitiveFunctor<>(color, TextColor.class);
+        this.size               = new PrimitiveFunctor<>(size, TextSize.class);
+        this.font               = new PrimitiveFunctor<>(font, TextFont.class);
+        this.isUnderlined       = new PrimitiveFunctor<>(null, Boolean.class);
+        this.alignment          = new PrimitiveFunctor<>(alignment, Alignment.class);
+        this.backgroundColor    = new PrimitiveFunctor<>(null, BackgroundColor.class);
 
         this.setColor(color);
         this.setSize(size);
         this.setFont(font);
-        this.setAlignment(alignment);
         this.setIsUnderlined(null);
+        this.setAlignment(alignment);
+        this.setBackgroundColor(null);
     }
 
 
@@ -178,15 +213,17 @@ public class TextStyle implements Model, ToYaml, Serializable
         else if (yaml.isNull())
             return null;
 
-        UUID      id            = UUID.randomUUID();
+        UUID            id           = UUID.randomUUID();
 
-        TextColor color         = TextColor.fromYaml(yaml.atMaybeKey("color"));
-        TextSize  size          = TextSize.fromYaml(yaml.atMaybeKey("size"));
-        TextFont  font          = TextFont.fromYaml(yaml.atMaybeKey("font"));
-        Boolean   isUnderlined  = yaml.atMaybeKey("is_underlined").getBoolean();
-        Alignment alignment     = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
+        TextColor       color        = TextColor.fromYaml(yaml.atMaybeKey("color"));
+        TextSize        size         = TextSize.fromYaml(yaml.atMaybeKey("size"));
+        TextFont        font         = TextFont.fromYaml(yaml.atMaybeKey("font"));
+        Boolean         isUnderlined = yaml.atMaybeKey("is_underlined").getBoolean();
+        Alignment       alignment    = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
+        BackgroundColor bgColor      = BackgroundColor.fromYaml(
+                                                yaml.atMaybeKey("background_color"));
 
-        return new TextStyle(id, color, size, font, isUnderlined, alignment);
+        return new TextStyle(id, color, size, font, isUnderlined, alignment, bgColor);
     }
 
 
@@ -200,6 +237,7 @@ public class TextStyle implements Model, ToYaml, Serializable
         style.setFont(null);
         style.setIsUnderlined(null);
         style.setAlignment(null);
+        style.setBackgroundColor(null);
 
         return style;
     }
@@ -245,7 +283,8 @@ public class TextStyle implements Model, ToYaml, Serializable
                 .putYaml("size", this.size())
                 .putYaml("font", this.font())
                 .putBoolean("is_underlined", this.isUnderlined())
-                .putYaml("alignment", this.alignment());
+                .putYaml("alignment", this.alignment())
+                .putYaml("background_color", this.backgroundColor());
     }
 
 
@@ -375,6 +414,32 @@ public class TextStyle implements Model, ToYaml, Serializable
             this.alignment.setValue(alignment);
         else
             this.alignment.setValue(Alignment.LEFT);
+    }
+
+
+    // ** Background Color
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The background color.
+     * @return The background color.
+     */
+    public BackgroundColor backgroundColor()
+    {
+        return this.backgroundColor.getValue();
+    }
+
+
+    /**
+     * Set the background color. If null, defaults to MEDIUM.
+     * @param backgroundColor The background color.
+     */
+    public void setBackgroundColor(BackgroundColor backgroundColor)
+    {
+        if (backgroundColor != null)
+            this.backgroundColor.setValue(backgroundColor);
+        else
+            this.backgroundColor.setValue(BackgroundColor.MEDIUM);
     }
 
 

@@ -160,7 +160,7 @@ public class NewValueDialogFragment extends DialogFragment
         title.textId                = R.string.value_set_new_value_dialog_title;
         title.font                  = Font.sansSerifFontBold(context);
         title.size                  = R.dimen.value_set_new_value_dialog_title_text_size;
-        title.color                 = R.color.gold_5;
+        title.color                 = R.color.gold_light;
 
         title.margin.bottom         = R.dimen.value_set_new_value_dialog_title_margin_bottom;
 

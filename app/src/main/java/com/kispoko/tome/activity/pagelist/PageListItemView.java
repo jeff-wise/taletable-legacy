@@ -89,7 +89,7 @@ public class PageListItemView
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_list_item_drag;
+        // icon.image                  = R.drawable.ic_list_item_drag;
 
         icon.margin.right           = R.dimen.page_list_item_drag_margin_right;
 

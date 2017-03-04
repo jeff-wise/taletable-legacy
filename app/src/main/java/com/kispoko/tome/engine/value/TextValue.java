@@ -164,6 +164,25 @@ public class TextValue implements Value, Model, ToYaml, Serializable
     }
 
 
+    // > Value
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The text value's summary (a short description of what it represents).
+     */
+    public String summary()
+    {
+        return this.summary.getValue();
+    }
+
+
+    @Override
+    public String valueString()
+    {
+        return this.value();
+    }
+
+
     // > State
     // ------------------------------------------------------------------------------------------
 
@@ -184,15 +203,6 @@ public class TextValue implements Value, Model, ToYaml, Serializable
     public String value()
     {
         return this.value.getValue();
-    }
-
-
-    /**
-     * The text value's summary (a short description of what it represents).
-     */
-    public String summary()
-    {
-        return this.summary.getValue();
     }
 
 

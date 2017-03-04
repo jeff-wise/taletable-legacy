@@ -1,111 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
 
-    <!--<color label="colorPrimary">#3F51B5</color>-->
-    <!--<color label="colorPrimaryDark">#303F9F</color>-->
-    <!--<color label="colorAccent">#FF4081</color>-->
 
-    <!--<color name="theme_primary_dark">#263238</color>-->
-    <!--<color name="theme_primary">#37474F</color>-->
-    <!--<color name="theme_primary_light">#455a64</color>-->
-    <!--<color name="theme_light">#eceff1</color>-->
-    <!--<color name="theme_medium">#90a4ae</color>-->
-    <!--<color name="theme_accent">#CCCCCC</color>-->
+    <color name="primary">#1D2126</color>
 
-    <!--<color name="theme_blue_800">#0277bd</color>-->
-    <!--<color name="theme_blue_900">#0d47a1</color>-->
-
-    <!--<color name="theme_gray_500">#607d8b</color>-->
-
-
-    <!-- NEW -->
-    <!-- GENERAL -->
-    <!--<color name="primary">#2A2A2A</color>-->
-    <color name="primary">#21252B</color>
-    <color name="paper">#eceff1</color>
-    <color name="paper_dark">#EAEAEA</color>
-    <color name="sheet_light">#EDEDED</color>
-    <color name="sheet_medium_light">#E3E3E3</color>
-    <color name="sheet_medium">#D3D3D3</color>
-    <color name="sheet_medium_dark">#CACACA</color>
-    <color name="sheet_dark">#AAA</color>
-    <color name="sheet_light_border">#C2C2C2</color>
-
-    <!-- TEXT COLORS -->
-    <color name="text_dark">#333333</color>
-    <color name="text_medium_dark">#474747</color>
-    <color name="text_medium">#6F6F6F</color>
-    <color name="text_medium_light">#848484</color>
-    <color name="text_light">#9C9C9C</color>
-
-    <!-- MATERIAL DESIGN COLORS -->
-    <color name="bluegrey_50">#eceff1</color>
-    <color name="bluegrey_100">#cfd8dc</color>
-    <color name="bluegrey_200">#b0bec5</color>
-    <color name="bluegrey_300">#90a4ae</color>
-    <color name="bluegrey_400">#78909C</color>
-    <color name="bluegrey_500">#607d8b</color>
-    <color name="bluegrey_600">#546e7a</color>
-    <color name="bluegrey_700">#455a64</color>
-    <color name="bluegrey_800">#37474f</color>
-    <color name="bluegrey_850">#313F47</color>
-    <color name="bluegrey_900">#263238</color>
-
-    <color name="grey_50">#FCFCFC</color>
-    <color name="grey_100">#f5f5f5</color>
-    <color name="grey_200">#eeeeee</color>
-    <color name="grey_300">#e0e0e0</color>
-    <color name="grey_350">#CCCCCC</color>
-    <color name="grey_380">#C9C9C9</color>
-    <color name="grey_400">#bdbdbd</color>
-    <color name="grey_450">#aaaaaa</color>
-    <color name="grey_500">#9e9e9e</color>
-    <color name="grey_600">#888888</color>
-    <color name="grey_700">#636363</color>
-    <color name="grey_750">#494949</color>
-    <color name="grey_800">#454545</color>
-    <color name="grey_850">#3B3B3B</color>
-    <color name="grey_900">#313131</color>
-
-
-
-    <!-- APP COLOR SCHEME -->
-
-    <color name="light_grey_3">#ECECEC</color>
-    <color name="light_grey_4">#E6E6E6</color>
-    <color name="light_grey_5">#DEDEDE</color>
-    <color name="light_grey_6">#D6D6D6</color>
-    <color name="light_grey_7">#CDCDCD</color>
-    <color name="light_grey_8">#C7C7C7</color>
-    <color name="light_grey_9">#BFBFBF</color>
-
-    <color name="grey_1">#AFAFAF</color>
-    <color name="grey_2">#A8A8A8</color>
-    <color name="grey_3">#9D9D9D</color>
-    <color name="grey_4">#979797</color>
-    <color name="grey_5">#8E8E8E</color>
-    <color name="grey_6">#868686</color>
-    <color name="grey_7">#7D7D7D</color>
-    <color name="grey_8">#777777</color>
-
-    <color name="dark_grey_1">#656565</color>
-    <color name="dark_grey_2">#5C5C5C</color>
-    <color name="dark_grey_3">#555555</color>
-    <color name="dark_grey_4">#4C4C4C</color>
-    <color name="dark_grey_5">#474747</color>
-    <color name="dark_grey_6">#424242</color>
-    <color name="dark_grey_7">#3B3B3B</color>
-    <color name="dark_grey_8">#333333</color>
-    <color name="dark_grey_85">#2C2C2C</color>
-    <color name="dark_grey_9">#2A2A2A</color>
-
-    <color name="green_5000">#638753</color>
-
-    <!--<color name="dark_blue_5">#35414A</color>-->
-
-    <!--<color name="blue_5">#2E8899</color>-->
-    <!--<color name="blue_5">#268B9C</color>-->
-    <!--<color name="blue_5">#127891</color>-->
     <color name="blue_5">#057C8F</color>
     <color name="blue_6">#386078</color>
     <color name="blue_7">#386078</color>
@@ -115,6 +14,7 @@
     <color name="transparent">#00000000</color>
 
     <!-- DARK BLUE -->
+    <!-- ================================================================ -->
 
     <color name="dark_blue_hlx_2">#C2D9FF</color>
     <color name="dark_blue_hlx_3">#BAD1F5</color>
@@ -147,54 +47,22 @@
     <color name="dark_blue_10">#1F2329</color>
     <color name="dark_blue_11">#1D2126</color>
 
+
     <!-- GOLD -->
-
-    <color name="gold_hlx_1">#FFFA96</color>
-    <color name="gold_hlx_2">#FCF794</color>
-    <color name="gold_hlx_3">#FAF593</color>
-    <color name="gold_hlx_4">#F7F291</color>
-    <color name="gold_hlx_5">#F5F090</color>
-    <color name="gold_hlx_6">#F2ED8E</color>
-    <color name="gold_hlx_7">#F0EB8D</color>
-    <color name="gold_hlx_8">#EDE88B</color>
-    <color name="gold_hlx_9">#EBE68A</color>
-
-    <color name="gold_hl_1">#E8E388</color>
-    <color name="gold_hl_2">#E5E187</color>
-    <color name="gold_hl_3">#E3DE85</color>
-    <color name="gold_hl_4">#E0DC84</color>
-    <color name="gold_hl_5">#DED982</color>
-    <color name="gold_hl_6">#DBD781</color>
-    <color name="gold_hl_7">#D9D47F</color>
-    <color name="gold_hl_8">#D6D27E</color>
-    <color name="gold_hl_9">#D4CF7C</color>
-
-    <color name="gold_1">#D1CD7B</color>
-    <color name="gold_2">#CFCA79</color>
-    <color name="gold_3">#CCC878</color>
-    <color name="gold_4">#C9C576</color>
-
-    <color name="gold_5">#D4CF7C</color>
-    <color name="gold_6">#CCC878</color>
-
-    <color name="gold_7">#C9C576</color>
-    <color name="gold_8">#C7C375</color>
-    <color name="gold_9">#C4C073</color>
-
+    <!-- ================================================================ -->
 
     <color name="gold_bright">#D4CF7C</color>
-    <!--<color name="gold_light">#D9D297</color>-->
-    <color name="gold_very_light">#D4C8A4</color>
-    <color name="gold_light">#CCC09E</color>
+    <color name="gold_very_light">#F5EDD3</color>
+    <color name="gold_light">#E0DABA</color>
     <color name="gold_medium_light">#C4B998</color>
     <color name="gold_medium">#BAB090</color>
     <color name="gold_dark">#B0AC67</color>
 
 
     <!-- PURPLE -->
-    <!--<color name="purple_hlx_5">#A08FC9</color>-->
+    <!-- ================================================================ -->
+
     <color name="purple_hlx_5">#8A7AB2</color>
-    <!--<color name="purple_bright">#8A7AB2</color>-->
     <color name="purple_very_light">#BDB1D9</color>
     <color name="purple_light">#ABA0C4</color>
     <color name="purple_medium_light">#A096B8</color>
@@ -202,30 +70,20 @@
 
 
     <!-- GREEN -->
+    <!-- ================================================================ -->
+
     <color name="green_hlx_5">#ADE098</color>
     <color name="green_bright">#ADE098</color>
-    <!--<color name="green_light">#B3CFBE</color>-->
     <color name="green_very_light">#C5E5D7</color>
     <color name="green_light">#B4D1C4</color>
     <color name="green_medium_light">#A5BFB4</color>
     <color name="green_medium">#9AB2A8</color>
 
     <!-- RED -->
+    <!-- ================================================================ -->
 
     <color name="red_5">#A14746</color>
-    <!--<color name="red_light">#C79090</color>-->
     <color name="red_light">#C79696</color>
     <color name="red_medium_light">#B0827C</color>
-
-
-    <color name="red_soft">#D29494</color>
-    <color name="red_medium">#8A6161</color>
-    <color name="green_soft">#8FB07D</color>
-    <color name="green_dark">#5B7050</color>
-    <color name="blue_soft">#608FAE</color>
-    <color name="blue_hard">#2C4C61</color>
-    <color name="yellow_soft">#D9C984</color>
-    <color name="yellow_hard">#D9C95F</color>
-
 
 </resources>

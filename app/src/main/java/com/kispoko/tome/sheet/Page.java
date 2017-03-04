@@ -43,7 +43,7 @@ public class Page implements Model, ToYaml, Serializable
     private UUID                                id;
 
     private PrimitiveFunctor<String>            name;
-    private PrimitiveFunctor<ElementBackground> background;
+    private PrimitiveFunctor<BackgroundColor>   background;
     private PrimitiveFunctor<Integer>           index;
     private CollectionFunctor<Group>            groups;
 
@@ -62,7 +62,7 @@ public class Page implements Model, ToYaml, Serializable
         this.id             = null;
 
         this.name           = new PrimitiveFunctor<>(null, String.class);
-        this.background     = new PrimitiveFunctor<>(null, ElementBackground.class);
+        this.background     = new PrimitiveFunctor<>(null, BackgroundColor.class);
         this.index          = new PrimitiveFunctor<>(null, Integer.class);
 
         this.groups         = CollectionFunctor.empty(Group.class);
@@ -71,14 +71,14 @@ public class Page implements Model, ToYaml, Serializable
 
     public Page(UUID id,
                 String name,
-                ElementBackground background,
+                BackgroundColor background,
                 Integer index,
                 List<Group> groups)
     {
         this.id             = id;
 
         this.name           = new PrimitiveFunctor<>(name, String.class);
-        this.background     = new PrimitiveFunctor<>(background, ElementBackground.class);
+        this.background     = new PrimitiveFunctor<>(background, BackgroundColor.class);
         this.index          = new PrimitiveFunctor<>(index, Integer.class);
 
         this.groups         = CollectionFunctor.full(groups, Group.class);
@@ -92,13 +92,13 @@ public class Page implements Model, ToYaml, Serializable
     public static Page fromYaml(YamlParser yaml, int pageIndex)
                   throws YamlParseException
     {
-        UUID                id          = UUID.randomUUID();
+        UUID            id          = UUID.randomUUID();
 
-        String              name        = yaml.atKey("name").getString();
-        ElementBackground   background  = ElementBackground.fromYaml(yaml.atMaybeKey("background"));
-        Integer             index       = pageIndex;
+        String          name        = yaml.atKey("name").getString();
+        BackgroundColor background  = BackgroundColor.fromYaml(yaml.atMaybeKey("background"));
+        Integer             index   = pageIndex;
 
-        List<Group> groups = yaml.atKey("groups").forEach(new YamlParser.ForEach<Group>() {
+        List<Group>     groups      = yaml.atKey("groups").forEach(new YamlParser.ForEach<Group>() {
             @Override
             public Group forEach(YamlParser yaml, int index) throws YamlParseException {
                 return Group.fromYaml(yaml, index);
@@ -195,18 +195,18 @@ public class Page implements Model, ToYaml, Serializable
      * The page background.
      * @return The background.
      */
-    public ElementBackground background()
+    public BackgroundColor background()
     {
         return this.background.getValue();
     }
 
 
-    public void setBackground(ElementBackground background)
+    public void setBackground(BackgroundColor background)
     {
         if (background != null)
             this.background.setValue(background);
         else
-            this.background.setValue(ElementBackground.MEDIUM);
+            this.background.setValue(BackgroundColor.MEDIUM);
     }
 
 
@@ -258,7 +258,7 @@ public class Page implements Model, ToYaml, Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        layout.backgroundColor  = this.background().resourceId();
+        layout.backgroundColor  = this.background().colorId();
 
         return layout.linearLayout(context);
     }

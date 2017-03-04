@@ -4,7 +4,10 @@ package com.kispoko.tome.util.ui;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -244,8 +247,16 @@ public class TextViewBuilder implements ViewBuilder
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
-        if (this.backgroundResource != null)
+        if (this.backgroundResource != null && this.backgroundColor != null) {
+            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
+            int      color      = ContextCompat.getColor(context, this.backgroundColor);
+            bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            textView.setBackground(bgDrawable);
+        }
+        else if (this.backgroundResource != null) {
             textView.setBackgroundResource(this.backgroundResource);
+        }
+
 
         // > Drawable Top
         // --------------------------------------------------------------------------------------

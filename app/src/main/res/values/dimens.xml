@@ -121,13 +121,13 @@
     <dimen name="text_size_very_small">3.3sp</dimen>
     <dimen name="text_size_super_small">3sp</dimen>
 
-    <dimen name="padding_very_small">10dp</dimen>
-    <dimen name="padding_small">15dp</dimen>
-    <dimen name="padding_medium_small">20dp</dimen>
-    <dimen name="padding_medium">25dp</dimen>
-    <dimen name="padding_medium_large">30dp</dimen>
-    <dimen name="padding_large">40dp</dimen>
-    <dimen name="padding_very_large">50dp</dimen>
+    <dimen name="value_padding_very_small">10dp</dimen>
+    <dimen name="value_padding_small">15dp</dimen>
+    <dimen name="value_padding_medium_small">20dp</dimen>
+    <dimen name="value_padding_medium">25dp</dimen>
+    <dimen name="value_padding_medium_large">30dp</dimen>
+    <dimen name="value_padding_large">40dp</dimen>
+    <dimen name="value_padding_very_large">50dp</dimen>
 
     <dimen name="label_size_large">5.3dp</dimen>
     <dimen name="label_size_medium_large">4.7dp</dimen>
@@ -180,6 +180,13 @@
     <dimen name="widget_action_text_size_small">3.7sp</dimen>
     <dimen name="widget_action_text_size_medium">4.2sp</dimen>
     <dimen name="widget_action_text_size_large">4.7sp</dimen>
+
+    <dimen name="widget_action_dice_size_small">21dp</dimen>
+    <dimen name="widget_action_dice_size_medium_small">21dp</dimen>
+    <dimen name="widget_action_dice_size_medium">22dp</dimen>
+    <dimen name="widget_action_dice_size_medium_large">24dp</dimen>
+    <dimen name="widget_action_dice_size_large">24dp</dimen>
+    <dimen name="widget_action_dice_size_very_large">24dp</dimen>
 
 
     <!-- WIDGET: BUTTON  -->

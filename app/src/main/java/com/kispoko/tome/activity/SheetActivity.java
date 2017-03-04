@@ -690,7 +690,7 @@ public class SheetActivity
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_nav_sheet;
+        // icon.image                  = R.drawable.ic_nav_sheet;
 
         icon.padding.right          = R.dimen.nav_view_sheet_options_header_icon_margin_right;
 
@@ -701,7 +701,7 @@ public class SheetActivity
         label.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.textId               = R.string.nav_view_header_sheet;
-        label.color                = R.color.gold_5;
+        label.color                = R.color.gold_light;
         label.size                 = R.dimen.nav_view_sheet_options_header_text_size;
         label.font                 = Font.sansSerifFontRegular(this);
 
@@ -751,7 +751,7 @@ public class SheetActivity
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_nav_manage_sheets;
+        // icon.image                  = R.drawable.ic_nav_manage_sheets;
 
         icon.margin.right           = R.dimen.nav_view_manage_sheets_button_icon_margin_right;
 
@@ -764,7 +764,7 @@ public class SheetActivity
         label.textId                = R.string.button_manage_sheets;
         label.size                  = R.dimen.nav_view_manage_sheets_button_text_size;
         label.font                  = Font.sansSerifFontRegular(this);
-        label.color                 = R.color.gold_5;
+        label.color                 = R.color.gold_light;
 
 
         return layout.linearLayout(this);
@@ -840,7 +840,7 @@ public class SheetActivity
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_nav_tools;
+        // icon.image                  = R.drawable.ic_nav_tools;
 
         icon.margin.right           = R.dimen.nav_view_tools_header_icon_margin_right;
 
@@ -852,7 +852,7 @@ public class SheetActivity
 
         label.textId                = R.string.nav_view_header_tools;
         label.size                  = R.dimen.nav_view_tools_header_text_size;
-        label.color                 = R.color.gold_5;
+        label.color                 = R.color.gold_light;
         label.font                  = Font.sansSerifFontRegular(this);
 
         return layout.linearLayout(this);

@@ -24,8 +24,8 @@ import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.Position;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.Font;
@@ -408,7 +408,7 @@ public class NumberWidget extends Widget
 
         // ** Corners
         if (this.data().format().corners() == null)
-            this.data().format().setCorners(WidgetCorners.SMALL);
+            this.data().format().setCorners(Corners.SMALL);
 
     }
 
@@ -560,8 +560,10 @@ public class NumberWidget extends Widget
         // -------------------------------------------------------------------------------------
         if (this.format().valuePaddingHorizontal() != null)
         {
-            layout.padding.left     = this.format().valuePaddingHorizontal().resourceId();
-            layout.padding.right    = this.format().valuePaddingHorizontal().resourceId();
+            layout.padding.left     = this.format().valuePaddingHorizontal()
+                                          .valuePaddingResourceId();
+            layout.padding.right    = this.format().valuePaddingHorizontal()
+                                          .valuePaddingResourceId();
         }
 
         layout.onClick              = new View.OnClickListener() {

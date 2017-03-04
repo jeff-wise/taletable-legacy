@@ -111,4 +111,31 @@ public enum Spacing implements ToYaml
     }
 
 
+    public Integer valuePaddingResourceId()
+    {
+        switch (this)
+        {
+            case NONE:
+                return R.dimen.zero_dp;
+            case VERY_SMALL:
+                return R.dimen.value_padding_very_small;
+            case SMALL:
+                return R.dimen.value_padding_small;
+            case MEDIUM_SMALL:
+                return R.dimen.value_padding_medium_small;
+            case MEDIUM:
+                return R.dimen.value_padding_medium;
+            case MEDIUM_LARGE:
+                return R.dimen.value_padding_medium_large;
+            case LARGE:
+                return R.dimen.value_padding_large;
+            case VERY_LARGE:
+                return R.dimen.value_padding_very_large;
+        }
+
+        return 0;
+    }
+
+
+
 }

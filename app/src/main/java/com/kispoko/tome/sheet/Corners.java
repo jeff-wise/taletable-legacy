@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.sheet.widget.action;
+package com.kispoko.tome.sheet;
 
 
 import com.kispoko.tome.R;
@@ -16,52 +16,53 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * Action Color
+ * Widget Corners
+ *
+ * The corner radius of the widget background.
  */
-public enum ActionColor implements ToYaml
+public enum Corners implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    BLUE,
-    GREEN,
-    PURPLE;
+    NONE,
+    SMALL,
+    MEDIUM,
+    LARGE,
+    CIRCLE;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static ActionColor fromString(String colorString)
+    public static Corners fromString(String radius)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(ActionColor.class, colorString);
+        return EnumUtils.fromString(Corners.class, radius);
     }
 
 
-    public static ActionColor fromYaml(YamlParser yaml)
+    public static Corners fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        if (yaml.isNull())
-            return null;
-
-        String colorString = yaml.getString();
+        String bgString = yaml.getString();
         try {
-            return ActionColor.fromString(colorString);
+            return Corners.fromString(bgString);
         } catch (InvalidDataException e) {
-            throw YamlParseException.invalidEnum(new InvalidEnumError(colorString));
+            throw YamlParseException.invalidEnum(new InvalidEnumError(bgString));
         }
     }
 
 
-    public static ActionColor fromSQLValue(SQLValue sqlValue)
+    public static Corners fromSQLValue(SQLValue sqlValue)
                   throws DatabaseException
     {
         String enumString = "";
         try {
             enumString = sqlValue.getText();
-            ActionColor color = ActionColor.fromString(enumString);
-            return color;
+            Corners radius = Corners.fromString(enumString);
+            return radius;
         } catch (InvalidDataException e) {
             throw DatabaseException.invalidEnum(
                     new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
@@ -73,7 +74,7 @@ public enum ActionColor implements ToYaml
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The Widget Text Tint's yaml string representation.
+     * The Widget Content Alignment's yaml string representation.
      * @return The Yaml Builder.
      */
     public YamlBuilder toYaml()
@@ -85,18 +86,17 @@ public enum ActionColor implements ToYaml
     // RESOURCE ID
     // ------------------------------------------------------------------------------------------
 
-    public Integer resourceId()
+    public int resourceId()
     {
         switch (this)
         {
-            case BLUE:
-                return R.color.dark_blue_hlx_7;
-            case PURPLE:
-                return R.color.purple_light;
-            case GREEN:
-                return R.color.green_light;
+            case SMALL:
+                return R.drawable.bg_group_corners_small;
+            case MEDIUM:
+                return R.drawable.bg_group_corners_medium;
             default:
-                return R.color.dark_blue_hlx_7;
+                return R.drawable.bg_group_corners_small;
         }
     }
+
 }

@@ -14,7 +14,7 @@ import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.quote.QuoteWidgetFormat;
 import com.kispoko.tome.sheet.widget.quote.ViewType;
-import com.kispoko.tome.sheet.widget.util.WidgetCorners;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
@@ -284,7 +284,7 @@ public class QuoteWidget extends Widget
 
         // ** Corners
         if (this.data().format().corners() == null)
-            this.data().format().setCorners(WidgetCorners.SMALL);
+            this.data().format().setCorners(Corners.SMALL);
 
     }
 
@@ -310,7 +310,8 @@ public class QuoteWidget extends Widget
         layout.addView(quoteView(context));
 
         // > Source View
-        layout.addView(sourceView(context));
+        if (this.source() != null)
+            layout.addView(sourceView(context));
 
         return layout;
     }
@@ -336,6 +337,8 @@ public class QuoteWidget extends Widget
         quote.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         quote.text          = this.quote();
+
+        quote.gravity       = this.format().quoteStyle().alignment().gravityConstant();
 
         this.format().quoteStyle().styleTextViewBuilder(quote, context);
 

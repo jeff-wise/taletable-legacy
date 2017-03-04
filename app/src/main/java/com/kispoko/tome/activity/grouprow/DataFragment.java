@@ -83,7 +83,7 @@ public class DataFragment extends Fragment
                     R.string.group_row_field_alignment_label,
                     R.string.group_row_field_alignment_description,
                     Form.variantInput(Alignment.class,
-                                      this.groupRow.alignment(),
+                                      this.groupRow.format().alignment(),
                                       getContext()),
                     getContext());
 
@@ -93,7 +93,7 @@ public class DataFragment extends Fragment
                         R.string.group_row_field_width_label,
                         R.string.group_row_field_width_description,
                         Form.variantInput(RowWidth.class,
-                                          this.groupRow.width(),
+                                          this.groupRow.format().width(),
                                           getContext()),
                         getContext());
 

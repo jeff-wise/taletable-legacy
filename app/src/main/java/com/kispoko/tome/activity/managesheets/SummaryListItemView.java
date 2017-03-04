@@ -112,7 +112,7 @@ public class SummaryListItemView
 
         name.id                 = R.id.sheet_summary_list_item_name;
         name.font               = Font.sansSerifFontBold(context);
-        name.color              = R.color.gold_hl_9;
+        name.color              = R.color.gold_light;
         name.size               = R.dimen.sheet_summary_list_item_name_text_size;
 
         return name.textView(context);
