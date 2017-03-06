@@ -376,17 +376,26 @@ public class ActionWidget extends Widget
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         layout.gravity              = Gravity.CENTER_VERTICAL;
-        layout.layoutGravity        = this.data().format().alignment().gravityConstant();
+        layout.layoutGravity        = this.data().format().alignment().gravityConstant()
+                                        | Gravity.CENTER_VERTICAL;
 
-        layout.backgroundResource   = this.data().format().background()
-                                          .resourceId(this.data().format().corners());
 
-        //layout.backgroundColor      = R.color.dark_blue_1;
+        if (this.data().format().background() != BackgroundColor.EMPTY)
+        {
+            layout.backgroundColor      = this.data().format().background().colorId();
+
+            if (this.format().height() != null) {
+                layout.backgroundResource   = this.format().height()
+                                                  .resourceId(this.data().format().corners());
+            }
+        }
+
+        layout.marginSpacing        = this.data().format().margins();
 
         // > Horizontal Padding
         if (this.format().paddingHorizontal() != null) {
-            layout.padding.left     = this.format().paddingHorizontal().resourceId();
-            layout.padding.right    = this.format().paddingHorizontal().resourceId();
+            layout.padding.leftDp   = this.format().paddingHorizontal();
+            layout.padding.rightDp  = this.format().paddingHorizontal();
         }
 
         layout.onClick              = new View.OnClickListener() {
@@ -412,16 +421,19 @@ public class ActionWidget extends Widget
 
         this.format().descriptionStyle().styleTextViewBuilder(description, context);
 
-
         switch (this.data().format().alignment())
         {
             case LEFT:
+                description.layoutGravity = Gravity.LEFT;
+                description.gravity       = Gravity.LEFT;
                 break;
             case CENTER:
                 description.layoutGravity = Gravity.CENTER_HORIZONTAL;
                 description.gravity       = Gravity.CENTER_HORIZONTAL;
                 break;
             case RIGHT:
+                description.layoutGravity = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
+                description.gravity       = Gravity.RIGHT | Gravity.CENTER_VERTICAL;
                 break;
         }
 

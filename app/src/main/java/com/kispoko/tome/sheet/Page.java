@@ -4,9 +4,13 @@ package com.kispoko.tome.sheet;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
@@ -89,6 +93,13 @@ public class Page implements Model, ToYaml, Serializable
     }
 
 
+    /**
+     * Create a Page from its yaml representation.
+     * @param yaml The yaml parser.
+     * @param pageIndex The page index.
+     * @return The parsed Page.
+     * @throws YamlParseException
+     */
     public static Page fromYaml(YamlParser yaml, int pageIndex)
                   throws YamlParseException
     {

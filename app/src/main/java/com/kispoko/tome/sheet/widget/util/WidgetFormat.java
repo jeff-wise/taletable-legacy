@@ -5,6 +5,7 @@ package com.kispoko.tome.sheet.widget.util;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.Corners;
+import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
@@ -34,8 +35,10 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<Integer>           width;
     private PrimitiveFunctor<Alignment>         alignment;
     private ModelFunctor<TextStyle>             labelStyle;
-    private PrimitiveFunctor<BackgroundColor>        background;
-    private PrimitiveFunctor<Corners>     corners;
+    private PrimitiveFunctor<BackgroundColor>   background;
+    private PrimitiveFunctor<Corners>           corners;
+    private ModelFunctor<Spacing>               margins;
+    private PrimitiveFunctor<Integer>           elevation;
 
 
     // CONSTRUCTORS
@@ -52,6 +55,8 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         this.labelStyle     = ModelFunctor.empty(TextStyle.class);
         this.background     = new PrimitiveFunctor<>(null, BackgroundColor.class);
         this.corners        = new PrimitiveFunctor<>(null, Corners.class);
+        this.margins        = ModelFunctor.empty(Spacing.class);
+        this.elevation      = new PrimitiveFunctor<>(null, Integer.class);
     }
 
 
@@ -62,7 +67,9 @@ public class WidgetFormat implements Model, ToYaml, Serializable
                         Alignment alignment,
                         TextStyle labelStyle,
                         BackgroundColor background,
-                        Corners corners)
+                        Corners corners,
+                        Spacing margins,
+                        Integer elevation)
     {
         this.id             = id;
 
@@ -73,6 +80,15 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
         this.background     = new PrimitiveFunctor<>(background, BackgroundColor.class);
         this.corners        = new PrimitiveFunctor<>(corners, Corners.class);
+        this.margins        = ModelFunctor.full(margins, Spacing.class);
+        this.elevation      = new PrimitiveFunctor<>(elevation, Integer.class);
+
+        this.setWidth(width);
+        this.setAlignment(alignment);
+        this.setLabelStyle(labelStyle);
+        this.setBackground(background);
+        this.setCorners(corners);
+        this.setMargins(margins);
     }
 
 
@@ -90,6 +106,8 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         defaultFormat.setLabelStyle(null);
         defaultFormat.setBackground(null);
         defaultFormat.setCorners(null);
+        defaultFormat.setMargins(null);
+        defaultFormat.setElevation(null);
 
         return defaultFormat;
     }
@@ -109,21 +127,24 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         else if (yaml.isNull())
             return new WidgetFormat();
 
-        UUID                id             = UUID.randomUUID();
+        UUID            id           = UUID.randomUUID();
 
-        String              name           = yaml.atMaybeKey("name").getString();
-        String              label          = yaml.atMaybeKey("label").getTrimmedString();
+        String          name         = yaml.atMaybeKey("name").getString();
+        String          label        = yaml.atMaybeKey("label").getTrimmedString();
 
-        Integer             width          = yaml.atMaybeKey("width").getInteger();
-        Alignment           alignment      = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
-        TextStyle           labelStyle     = TextStyle.fromYaml(
+        Integer         width        = yaml.atMaybeKey("width").getInteger();
+        Alignment       alignment    = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
+        TextStyle       labelStyle   = TextStyle.fromYaml(
                                                             yaml.atMaybeKey("label_style"),
                                                             false);
-        BackgroundColor background     = BackgroundColor.fromYaml(
+        BackgroundColor background   = BackgroundColor.fromYaml(
                                                                 yaml.atMaybeKey("background"));
-        Corners corners        = Corners.fromYaml(yaml.atMaybeKey("corners"));
+        Corners         corners      = Corners.fromYaml(yaml.atMaybeKey("corners"));
+        Spacing         margins      = Spacing.fromYaml(yaml.atMaybeKey("margins"));
+        Integer         elevation    = yaml.atMaybeKey("elevation").getInteger();
 
-        return new WidgetFormat(id, name, label, width, alignment, labelStyle, background, corners);
+        return new WidgetFormat(id, name, label, width, alignment, labelStyle, background, corners,
+                                margins, elevation);
     }
 
 
@@ -171,6 +192,8 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         yaml.putYaml("label_style", this.labelStyle());
         yaml.putYaml("background", this.background());
         yaml.putYaml("corners", this.corners());
+        yaml.putYaml("margins", this.margins());
+        yaml.putInteger("elevation", this.elevation());
 
         return yaml;
     }
@@ -345,6 +368,55 @@ public class WidgetFormat implements Model, ToYaml, Serializable
                                                         TextSize.VERY_SMALL);
             this.labelStyle.setValue(defaultLabelStyle);
         }
+    }
+
+
+    // ** Margins
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The widget margins.
+     * @return The margins.
+     */
+    public Spacing margins()
+    {
+        return this.margins.getValue();
+    }
+
+
+    /**
+     * Set the widget margins. If null, sets the default margins.
+     * @param spacing The spacing.
+     */
+    public void setMargins(Spacing spacing)
+    {
+        if (spacing != null)
+            this.margins.setValue(spacing);
+        else
+            this.margins.setValue(Spacing.asDefault());
+    }
+
+
+    // ** Elevation
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The widget elevation. May be null.
+     * @return The elevation.
+     */
+    public Integer elevation()
+    {
+        return this.elevation.getValue();
+    }
+
+
+    /**
+     * Set the widget elevation.
+     * @param elevation The elevation
+     */
+    public void setElevation(Integer elevation)
+    {
+        this.elevation.setValue(elevation);
     }
 
 

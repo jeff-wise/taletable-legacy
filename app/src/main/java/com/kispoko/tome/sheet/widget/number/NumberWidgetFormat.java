@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet.widget.number;
 
 
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.group.Spacing;
 import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextSize;
@@ -52,7 +51,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
     private ModelFunctor<TextStyle>     valueStyle;
     private PrimitiveFunctor<Height>    valueHeight;
-    private PrimitiveFunctor<Spacing>   valuePaddingHorizontal;
+    private PrimitiveFunctor<Integer>   valuePaddingHorizontal;
 
     private ModelFunctor<TextStyle>     valuePrefixStyle;
     private ModelFunctor<TextStyle>     valuePostfixStyle;
@@ -77,7 +76,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         this.valueStyle             = ModelFunctor.empty(TextStyle.class);
         this.valueHeight            = new PrimitiveFunctor<>(null, Height.class);
-        this.valuePaddingHorizontal = new PrimitiveFunctor<>(null, Spacing.class);
+        this.valuePaddingHorizontal = new PrimitiveFunctor<>(null, Integer.class);
 
         this.valuePrefixStyle       = ModelFunctor.empty(TextStyle.class);
         this.valuePostfixStyle      = ModelFunctor.empty(TextStyle.class);
@@ -94,7 +93,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                               TextStyle descriptionStyle,
                               TextStyle valueStyle,
                               Height valueHeight,
-                              Spacing valuePaddingHorizontal,
+                              Integer valuePaddingHorizontal,
                               TextStyle valuePrefixStyle,
                               TextStyle valuePostfixStyle)
     {
@@ -112,7 +111,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
         this.valueHeight            = new PrimitiveFunctor<>(valueHeight, Height.class);
-        this.valuePaddingHorizontal = new PrimitiveFunctor<>(valuePaddingHorizontal, Spacing.class);
+        this.valuePaddingHorizontal = new PrimitiveFunctor<>(valuePaddingHorizontal, Integer.class);
 
         this.valuePrefixStyle       = ModelFunctor.full(valuePrefixStyle, TextStyle.class);
         this.valuePostfixStyle      = ModelFunctor.full(valuePostfixStyle, TextStyle.class);
@@ -162,8 +161,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         TextStyle valueStyle           = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
         Height    valueHeight          = Height.fromYaml(yaml.atMaybeKey("value_height"));
-        Spacing   valuePaddingHorz     = Spacing.fromYaml(
-                                                    yaml.atMaybeKey("value_padding_horizontal"));
+        Integer   valuePaddingHorz     = yaml.atMaybeKey("value_padding_horizontal").getInteger();
 
         TextStyle valuePrefixStyle     = TextStyle.fromYaml(yaml.atMaybeKey("value_prefix_style"));
         TextStyle valuePostfixStyle    = TextStyle.fromYaml(yaml.atMaybeKey("value_postfix_style"));
@@ -254,7 +252,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
             .putYaml("description_style", this.descriptionStyle())
 
             .putYaml("value_style", this.valueStyle())
-            .putYaml("value_padding_horizontal", this.valuePaddingHorizontal())
+            .putInteger("value_padding_horizontal", this.valuePaddingHorizontal())
 
             .putYaml("value_prefix_style", this.valuePrefixStyle())
             .putYaml("value_postfix_style", this.valuePostfixStyle());
@@ -511,7 +509,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
      * The horizontal padding around the value.
      * @return The padding.
      */
-    public Spacing valuePaddingHorizontal()
+    public Integer valuePaddingHorizontal()
     {
         return this.valuePaddingHorizontal.getValue();
     }
@@ -521,7 +519,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
      * Set the horizontal value padding.
      * @param padding The padding.
      */
-    public void setValuePaddingHorizontal(Spacing padding)
+    public void setValuePaddingHorizontal(Integer padding)
     {
         this.valuePaddingHorizontal.setValue(padding);
     }

@@ -167,7 +167,7 @@ public class AppDialog
         icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image              = R.drawable.ic_launch;
+        // icon.image              = R.drawable.ic_launch;
 
         icon.margin.right       = R.dimen.sheet_dialog_target_icon_margin_right;
 

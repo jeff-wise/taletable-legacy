@@ -232,9 +232,12 @@ public class SheetActivity
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
 
         TextView titleView = (TextView) this.toolbar.findViewById(R.id.page_title);
-        titleView.setTypeface(Util.serifFontBold(this));
+        titleView.setTypeface(Util.serifFontRegular(this));
 
         //setSupportActionBar(this.toolbar);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        UI.changeTabsFont(tabLayout, this);
     }
 
 

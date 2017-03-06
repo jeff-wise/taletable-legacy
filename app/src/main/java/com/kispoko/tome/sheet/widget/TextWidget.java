@@ -469,6 +469,8 @@ public class TextWidget extends Widget
 
         layout.gravity              = this.data().format().alignment().gravityConstant();
 
+        layout.marginSpacing        = this.data().format().margins();
+
         return layout.linearLayout(context);
     }
 
@@ -512,9 +514,9 @@ public class TextWidget extends Widget
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        layout.backgroundResource   = this.data().format().background()
-                                          .resourceId(this.data().format().corners(),
-                                                      this.format().valueStyle().size());
+        layout.backgroundColor      = this.data().format().background().colorId();
+        layout.backgroundResource   = this.format().valueHeight()
+                                          .resourceId(this.data().format().corners());
 
         layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
                                         | Gravity.CENTER_VERTICAL;

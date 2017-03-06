@@ -560,10 +560,8 @@ public class NumberWidget extends Widget
         // -------------------------------------------------------------------------------------
         if (this.format().valuePaddingHorizontal() != null)
         {
-            layout.padding.left     = this.format().valuePaddingHorizontal()
-                                          .valuePaddingResourceId();
-            layout.padding.right    = this.format().valuePaddingHorizontal()
-                                          .valuePaddingResourceId();
+            layout.padding.leftDp   = this.format().valuePaddingHorizontal();
+            layout.padding.rightDp  = this.format().valuePaddingHorizontal();
         }
 
         layout.onClick              = new View.OnClickListener() {

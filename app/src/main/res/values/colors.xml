@@ -51,9 +51,8 @@
     <!-- GOLD -->
     <!-- ================================================================ -->
 
-    <color name="gold_bright">#D4CF7C</color>
     <color name="gold_very_light">#F5EDD3</color>
-    <color name="gold_light">#E0DABA</color>
+    <color name="gold_light">#E3D7B4</color>
     <color name="gold_medium_light">#C4B998</color>
     <color name="gold_medium">#BAB090</color>
     <color name="gold_dark">#B0AC67</color>
@@ -78,6 +77,12 @@
     <color name="green_light">#B4D1C4</color>
     <color name="green_medium_light">#A5BFB4</color>
     <color name="green_medium">#9AB2A8</color>
+
+
+    <!-- BLUE -->
+    <!-- ================================================================ -->
+
+    <color name="blue_light">#CBEEFF</color>
 
     <!-- RED -->
     <!-- ================================================================ -->

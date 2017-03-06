@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 
+import com.kispoko.tome.sheet.Spacing;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +52,9 @@ public class LinearLayoutBuilder implements ViewBuilder
     public Float                    elevation;
 
     public Margins                  margin;
+    public Spacing                  marginSpacing;
     public Padding                  padding;
+    public Spacing                  paddingSpacing;
 
     public View.OnClickListener     onClick;
     public View.OnLongClickListener onLongClick;
@@ -92,6 +96,7 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         this.margin             = new Margins();
         this.padding            = new Padding();
+        this.paddingSpacing     = null;
 
         this.onClick            = null;
         this.onLongClick        = null;
@@ -162,6 +167,17 @@ public class LinearLayoutBuilder implements ViewBuilder
                                 this.padding.top(context),
                                 this.padding.right(context),
                                 this.padding.bottom(context));
+
+        // > Padding Spacing
+        // --------------------------------------------------------------------------------------
+
+        if (this.paddingSpacing != null)
+        {
+            linearLayout.setPadding(this.paddingSpacing.leftPx(),
+                                    this.paddingSpacing.topPx(),
+                                    this.paddingSpacing.rightPx(),
+                                    this.paddingSpacing.bottomPx());
+        }
 
         // > Gravity
         // --------------------------------------------------------------------------------------
@@ -253,7 +269,10 @@ public class LinearLayoutBuilder implements ViewBuilder
         // > Margins
         // --------------------------------------------------------------------------------------
 
-        layoutParamsBuilder.setMargins(this.margin);
+        if (this.marginSpacing != null)
+            layoutParamsBuilder.setMargins(this.marginSpacing);
+        else
+            layoutParamsBuilder.setMargins(this.margin);
 
 
         // > Rules (Relative Layout Only)

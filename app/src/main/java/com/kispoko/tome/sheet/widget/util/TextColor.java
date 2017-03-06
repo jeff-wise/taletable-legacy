@@ -46,6 +46,7 @@ public enum TextColor implements ToYaml
     PURPLE_MEDIUM_LIGHT,
     PURPLE_MEDIUM,
     RED_LIGHT,
+    BLUE_LIGHT,
     GREEN_VERY_LIGHT,
     GREEN_LIGHT,
     GREEN_MEDIUM_LIGHT;
@@ -147,6 +148,8 @@ public enum TextColor implements ToYaml
                 return R.color.purple_medium;
             case RED_LIGHT:
                 return R.color.red_light;
+            case BLUE_LIGHT:
+                return R.color.blue_light;
             case GREEN_VERY_LIGHT:
                 return R.color.green_very_light;
             case GREEN_LIGHT:

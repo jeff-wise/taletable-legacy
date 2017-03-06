@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -671,9 +670,6 @@ public class OptionWidget extends Widget implements Serializable
             {
                 int valueItemIndex = placeholderIndex +
                                      this.valueStringListIndexMap.get(valueItemString);
-
-                Log.d("***OPTIONWIDGET", "value item string: " + valueItemString);
-                Log.d("***OPTIONWIDGET", "index: " + Integer.toString(valueItemIndex));
 
                 if (valueItemIndex >= 0) {
                     FormattedString.formatSpan(spanBuilder,

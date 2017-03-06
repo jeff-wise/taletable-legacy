@@ -121,9 +121,9 @@ public enum DividerType implements ToYaml
                     case LIGHT:
                         return R.color.dark_blue_6;
                     case DARK:
-                        return R.color.dark_blue_7;
-                    case VERY_DARK:
                         return R.color.dark_blue_8;
+                    case VERY_DARK:
+                        return R.color.dark_blue_9;
                 }
                 break;
             case MEDIUM_DARK:

@@ -235,14 +235,9 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
 
     public View view(Context context)
     {
-        LinearLayout layout = this.layout(context);
+        LinearLayout layout = this.viewLayout(context);
 
-        if (this.format().showName())
-            layout.addView(this.nameView(context));
-
-        for (GroupRow groupRow : this.rows()) {
-            layout.addView(groupRow.view(context));
-        }
+        layout.addView(rowsView(context));
 
         if (this.format().dividerType() != DividerType.NONE)
             layout.addView(dividerView(context));
@@ -257,7 +252,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     // > Views
     // -----------------------------------------------------------------------------------------
 
-    private LinearLayout layout(Context context)
+    private LinearLayout viewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -265,66 +260,35 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.top      = this.format().spaceAbove().resourceId();
-
-        if (this.format().dividerType() == DividerType.NONE)
-            layout.padding.bottom   = this.format().spaceBelow().resourceId();
-
-        // > Background
-        layout.backgroundColor  = this.background().colorId();
-
-        // > Padding Horizontal
-        layout.margin.left      = this.format().paddingHorizontal().resourceId();
-        layout.margin.right     = this.format().paddingHorizontal().resourceId();
-
-        // > Margin Bottom
-        layout.margin.bottom    = this.format().marginBottom().resourceId();
-
-        // > Margin Top
-        layout.margin.top       = this.format().marginTop().resourceId();
-
-        // > Background
-        if (this.format().corners() != Corners.NONE) {
-            layout.backgroundResource = this.format().corners().resourceId();
-        }
+        layout.marginSpacing    = this.format().margins();
 
         return layout.linearLayout(context);
     }
 
 
-    private LinearLayout nameView(Context context)
+    private LinearLayout rowsView(Context context)
     {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
+        LinearLayout layout = rowsViewLayout(context);
 
+        for (GroupRow groupRow : this.rows()) {
+            layout.addView(groupRow.view(context));
+        }
+
+        return layout;
+    }
+
+    private LinearLayout rowsViewLayout(Context context)
+    {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        TextViewBuilder     name  = new TextViewBuilder();
 
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
+        layout.orientation      = LinearLayout.VERTICAL;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.gravity          = this.format().nameStyle().alignment().gravityConstant();
+        layout.paddingSpacing   = this.format().padding();
 
-        layout.margin.left      = R.dimen.group_label_margins_horz;
-        layout.margin.right     = R.dimen.group_label_margins_horz;
-
-        layout.child(name);
-
-        // [3] Label
-        // -------------------------------------------------------------------------------------
-
-        name.width     = LinearLayout.LayoutParams.WRAP_CONTENT;
-        name.height    = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        name.gravity   = this.format().nameStyle().alignment().gravityConstant();
-
-        name.id        = R.id.widget_label;
-        name.text      = this.name();
-
-        this.format().nameStyle().styleTextViewBuilder(name, context);
+        layout.backgroundColor  = this.background().colorId();
+        layout.backgroundResource = this.format().corners().resourceId();
 
         return layout.linearLayout(context);
     }
@@ -334,16 +298,14 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     {
         LinearLayoutBuilder divider = new LinearLayoutBuilder();
 
-        divider.width           = LinearLayout.LayoutParams.MATCH_PARENT;
-        divider.height          = R.dimen.one_dp;
+        divider.width               = LinearLayout.LayoutParams.MATCH_PARENT;
+        divider.height              = R.dimen.one_dp;
 
-        divider.backgroundColor = this.format().dividerType()
-                                      .colorIdWithBackground(this.background());
+        divider.backgroundColor     = this.format().dividerType()
+                                          .colorIdWithBackground(this.background());
 
-        divider.margin.top      = this.format().spaceBelow().resourceId();
-
-        divider.margin.left     = this.format().dividerPadding().resourceId();
-        divider.margin.right    = this.format().dividerPadding().resourceId();
+        divider.margin.leftDp       = this.format().dividerPadding();
+        divider.margin.rightDp      = this.format().dividerPadding();
 
         return divider.linearLayout(context);
     }

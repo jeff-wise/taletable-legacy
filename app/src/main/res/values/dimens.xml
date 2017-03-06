@@ -159,6 +159,9 @@
     <dimen name="widget_list_item_value_padding_left">3dp</dimen>
     <dimen name="widget_list_inline_label_margin_left">7dp</dimen>
 
+    <!-- WIDGET: EXPANDER -->
+    <dimen name="widget_expander_name_padding_bottom">15dp</dimen>
+
 
     <!-- WIDGET: TEXT -->
     <dimen name="widget_text_quote_source_text_size">3sp</dimen>

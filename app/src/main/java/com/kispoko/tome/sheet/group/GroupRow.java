@@ -5,7 +5,9 @@ package com.kispoko.tome.sheet.group;
 import android.content.Context;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.R;
+import com.kispoko.tome.sheet.BackgroundColor;
+import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
@@ -19,11 +21,9 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.width;
 
 
 /**
@@ -205,7 +205,41 @@ public class GroupRow implements Model, ToYaml, Serializable
 
     public LinearLayout view(Context context)
     {
-        LinearLayout layout = this.layout(context);
+        return mainView(context);
+    }
+
+
+    // > Views
+    // ------------------------------------------------------------------------------------------
+
+    private LinearLayout mainView(Context context)
+    {
+        LinearLayout layout = mainViewLayout(context);
+
+        layout.addView(widgetsView(context));
+
+        if (this.format().dividerType() != DividerType.NONE)
+            layout.addView(dividerView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout mainViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation  = LinearLayout.VERTICAL;
+        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout widgetsView(Context context)
+    {
+        LinearLayout layout = widgetsViewLayout(context);
 
         boolean rowHasTopLabel = false;
 
@@ -226,11 +260,7 @@ public class GroupRow implements Model, ToYaml, Serializable
         return layout;
     }
 
-
-    // > Views
-    // ------------------------------------------------------------------------------------------
-
-    private LinearLayout layout(Context context)
+    private LinearLayout widgetsViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -238,13 +268,27 @@ public class GroupRow implements Model, ToYaml, Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.margin.top       = this.format().marginTop().resourceId();
-
-        int paddingDimenId      = this.format().width().resourceId();
-        layout.padding.left     = paddingDimenId;
-        layout.padding.right    = paddingDimenId;
+        layout.marginSpacing    = this.format().margins();
 
         return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout dividerView(Context context)
+    {
+        LinearLayoutBuilder divider = new LinearLayoutBuilder();
+
+        divider.width       = LinearLayout.LayoutParams.MATCH_PARENT;
+        divider.height      = R.dimen.one_dp;
+
+        BackgroundColor backgroundColor = this.format().backgroundColor();
+        if (this.format().backgroundColor() == BackgroundColor.NONE)
+            backgroundColor = this.groupParent.background();
+
+        divider.backgroundColor = this.format().dividerType()
+                                      .colorIdWithBackground(backgroundColor);
+
+        return divider.linearLayout(context);
     }
 
 }

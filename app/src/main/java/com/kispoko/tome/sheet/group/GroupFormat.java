@@ -6,6 +6,7 @@ import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.DividerType;
+import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextFont;
 import com.kispoko.tome.sheet.widget.util.TextSize;
@@ -42,35 +43,19 @@ public class GroupFormat implements Model, ToYaml, Serializable
     // -----------------------------------------------------------------------------------------
 
     /**
-     * The padding at the top of the group.
-     */
-    private PrimitiveFunctor<Spacing>           paddingTop;
-
-    /**
-     * The padding at the bottom of the group.
-     */
-    private PrimitiveFunctor<Spacing>           paddingBottom;
-
-    /**
-     * The space to the left and the right of the group.
-     */
-    private PrimitiveFunctor<Spacing>           marginHorizontal;
-
-    /**
-     * Space above the group, but outside its background boundary.
-     */
-    private PrimitiveFunctor<Spacing>           marginTop;
-
-    /**
-     * Space below the group, but outside its background boundary.
-     */
-    private PrimitiveFunctor<Spacing>           marginBottom;
-
-    /**
      * The background color of the group.
      */
     private PrimitiveFunctor<BackgroundColor>   background;
 
+    /**
+     * The group margins.
+     */
+    private ModelFunctor<Spacing>               margins;
+
+    /**
+     * The group padding.
+     */
+    private ModelFunctor<Spacing>               padding;
 
     /**
      * The background corner size.
@@ -95,7 +80,7 @@ public class GroupFormat implements Model, ToYaml, Serializable
     /**
      * The space between the divider end and the page boundary.
      */
-    private PrimitiveFunctor<Spacing>           dividerPadding;
+    private PrimitiveFunctor<Integer>           dividerPadding;
 
 
 
@@ -107,51 +92,39 @@ public class GroupFormat implements Model, ToYaml, Serializable
         this.id                 = null;
 
         this.showName           = new PrimitiveFunctor<>(null, Boolean.class);
-        this.paddingTop         = new PrimitiveFunctor<>(null, Spacing.class);
-        this.paddingBottom      = new PrimitiveFunctor<>(null, Spacing.class);
-        this.marginHorizontal   = new PrimitiveFunctor<>(null, Spacing.class);
-        this.marginTop          = new PrimitiveFunctor<>(null, Spacing.class);
-        this.marginBottom       = new PrimitiveFunctor<>(null, Spacing.class);
         this.background         = new PrimitiveFunctor<>(null, BackgroundColor.class);
+        this.margins            = ModelFunctor.empty(Spacing.class);
+        this.padding            = ModelFunctor.empty(Spacing.class);
         this.corners            = new PrimitiveFunctor<>(null, Corners.class);
         this.nameStyle          = ModelFunctor.empty(TextStyle.class);
         this.dividerType        = new PrimitiveFunctor<>(null, DividerType.class);
-        this.dividerPadding     = new PrimitiveFunctor<>(null, Spacing.class);
+        this.dividerPadding     = new PrimitiveFunctor<>(null, Integer.class);
     }
 
 
     public GroupFormat(UUID id,
-                       Spacing paddingTop,
-                       Spacing paddingBottom,
-                       Spacing marginHorizontal,
-                       Spacing marginTop,
-                       Spacing marginBottom,
+                       Spacing margins,
+                       Spacing padding,
                        BackgroundColor background,
                        Corners corners,
                        Boolean showName,
                        TextStyle nameStyle,
                        DividerType dividerType,
-                       Spacing dividerPadding)
+                       Integer dividerPadding)
     {
         this.id                 = id;
 
-        this.paddingTop         = new PrimitiveFunctor<>(paddingTop, Spacing.class);
-        this.paddingBottom      = new PrimitiveFunctor<>(paddingBottom, Spacing.class);
-        this.marginHorizontal   = new PrimitiveFunctor<>(marginHorizontal, Spacing.class);
-        this.marginTop          = new PrimitiveFunctor<>(marginTop, Spacing.class);
-        this.marginBottom       = new PrimitiveFunctor<>(marginBottom, Spacing.class);
+        this.margins            = ModelFunctor.full(margins, Spacing.class);
+        this.padding            = ModelFunctor.full(padding, Spacing.class);
         this.background         = new PrimitiveFunctor<>(background, BackgroundColor.class);
         this.corners            = new PrimitiveFunctor<>(corners, Corners.class);
         this.showName           = new PrimitiveFunctor<>(showName, Boolean.class);
         this.nameStyle          = ModelFunctor.full(nameStyle, TextStyle.class);
         this.dividerType        = new PrimitiveFunctor<>(dividerType, DividerType.class);
-        this.dividerPadding     = new PrimitiveFunctor<>(dividerPadding, Spacing.class);
+        this.dividerPadding     = new PrimitiveFunctor<>(dividerPadding, Integer.class);
 
-        this.setPaddingTop(paddingTop);
-        this.setPaddingBottom(paddingBottom);
-        this.setMarginHorizontal(marginHorizontal);
-        this.setMarginBottom(marginBottom);
-        this.setMarginTop(marginTop);
+        this.setMargins(margins);
+        this.setPadding(padding);
         this.setBackground(background);
         this.setCorners(corners);
         this.setShowName(showName);
@@ -170,22 +143,21 @@ public class GroupFormat implements Model, ToYaml, Serializable
     public static GroupFormat fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
+        if (yaml.isNull())
+            return GroupFormat.asDefault();
+
         UUID            id                = UUID.randomUUID();
 
-        Spacing         spaceAbove        = Spacing.fromYaml(yaml.atMaybeKey("space_above"));
-        Spacing         spaceBelow        = Spacing.fromYaml(yaml.atMaybeKey("space_below"));
-        Spacing         paddingHorizontal = Spacing.fromYaml(yaml.atMaybeKey("padding_horizontal"));
-        Spacing         marginTop         = Spacing.fromYaml(yaml.atMaybeKey("margin_top"));
-        Spacing         marginBottom      = Spacing.fromYaml(yaml.atMaybeKey("margin_bottom"));
+        Spacing         margins           = Spacing.fromYaml(yaml.atMaybeKey("margins"));
+        Spacing         padding           = Spacing.fromYaml(yaml.atMaybeKey("padding"));
         BackgroundColor backgroundColor   = BackgroundColor.fromYaml(yaml.atMaybeKey("background"));
         Corners         corners           = Corners.fromYaml(yaml.atMaybeKey("corners"));
         Boolean         showName          = yaml.atMaybeKey("show_name").getBoolean();
         TextStyle       nameStyle         = TextStyle.fromYaml(yaml.atMaybeKey("name_style"));
         DividerType     dividerType       = DividerType.fromYaml(yaml.atMaybeKey("divider"));
-        Spacing         dividerPadding    = Spacing.fromYaml(yaml.atMaybeKey("divider_padding"));
+        Integer         dividerPadding    = yaml.atMaybeKey("divider_padding").getInteger();
 
-        return new GroupFormat(id, spaceAbove, spaceBelow, paddingHorizontal, marginTop,
-                               marginBottom, backgroundColor, corners, showName, nameStyle,
+        return new GroupFormat(id, margins, padding, backgroundColor, corners, showName, nameStyle,
                                dividerType, dividerPadding);
     }
 
@@ -200,11 +172,8 @@ public class GroupFormat implements Model, ToYaml, Serializable
 
         format.setId(UUID.randomUUID());
 
-        format.setPaddingTop(null);
-        format.setPaddingBottom(null);
-        format.setMarginHorizontal(null);
-        format.setMarginTop(null);
-        format.setMarginBottom(null);
+        format.setMargins(null);
+        format.setPadding(null);
         format.setBackground(null);
         format.setCorners(null);
         format.setShowName(null);
@@ -252,129 +221,69 @@ public class GroupFormat implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putYaml("space_above", this.spaceAbove())
-                .putYaml("space_below", this.spaceBelow())
-                .putYaml("padding_horizontal", this.paddingHorizontal())
-                .putYaml("margin_bottom", this.marginBottom())
+                .putYaml("margins", this.margins())
+                .putYaml("padding", this.padding())
                 .putYaml("background", this.background())
                 .putYaml("corners", this.corners())
                 .putBoolean("show_name", this.showName())
                 .putYaml("name_style", this.nameStyle())
                 .putYaml("divider", this.dividerType())
-                .putYaml("divider_padding", this.dividerPadding());
+                .putInteger("divider_padding", this.dividerPadding());
     }
 
 
     // > State
     // --------------------------------------------------------------------------------------
 
-    // ** Space Above
+    // ** Margins
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The space above the group on the sheet.
-     * @return The Space Above.
+     * The group row margins.
+     * @return The margins.
      */
-    public Spacing spaceAbove()
+    public Spacing margins()
     {
-        return this.paddingTop.getValue();
+        return this.margins.getValue();
     }
 
-
-    public void setPaddingTop(Spacing paddingTop)
-    {
-        if (paddingTop != null)
-            this.paddingTop.setValue(paddingTop);
-        else
-            this.paddingTop.setValue(Spacing.SMALL);
-    }
-
-
-    // ** Space Below
-    // ------------------------------------------------------------------------------------------
 
     /**
-     * The space at the bottom of the group.
-     * @return The Space Above.
+     * Set the group margins. If null, sets the default margins.
+     * @param spacing The spacing.
      */
-    public Spacing spaceBelow()
-    {
-        return this.paddingBottom.getValue();
-    }
-
-
-    public void setPaddingBottom(Spacing spacing)
+    public void setMargins(Spacing spacing)
     {
         if (spacing != null)
-            this.paddingBottom.setValue(spacing);
+            this.margins.setValue(spacing);
         else
-            this.paddingBottom.setValue(Spacing.SMALL);
+            this.margins.setValue(Spacing.asDefault());
     }
 
 
-    // ** Padding Horizontal
+    // ** Padding
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The space to the left and right of the group.
+     * The group row padding.
      * @return The padding.
      */
-    public Spacing paddingHorizontal()
+    public Spacing padding()
     {
-        return this.marginHorizontal.getValue();
+        return this.padding.getValue();
     }
 
-
-    public void setMarginHorizontal(Spacing padding)
-    {
-        if (padding != null)
-            this.marginHorizontal.setValue(padding);
-        else
-            this.marginHorizontal.setValue(Spacing.NONE);
-    }
-
-
-    // ** Margin Top
-    // ------------------------------------------------------------------------------------------
 
     /**
-     * The top margin.
-     * @return The margin.
+     * Set the group row padding. If null, sets the default padding.
+     * @param spacing The spacing.
      */
-    public Spacing marginTop()
+    public void setPadding(Spacing spacing)
     {
-        return this.marginTop.getValue();
-    }
-
-
-    public void setMarginTop(Spacing margin)
-    {
-        if (margin != null)
-            this.marginTop.setValue(margin);
+        if (spacing != null)
+            this.padding.setValue(spacing);
         else
-            this.marginTop.setValue(Spacing.NONE);
-    }
-
-
-    // ** Margin Bottom
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * The bottom margin.
-     * @return The margin..
-     */
-    public Spacing marginBottom()
-    {
-        return this.marginBottom.getValue();
-    }
-
-
-    public void setMarginBottom(Spacing margin)
-    {
-        if (margin != null)
-            this.marginBottom.setValue(margin);
-        else
-            this.marginBottom.setValue(Spacing.NONE);
+            this.padding.setValue(Spacing.asDefault());
     }
 
 
@@ -514,17 +423,17 @@ public class GroupFormat implements Model, ToYaml, Serializable
      * The divider padding.
      * @return The divider padding.
      */
-    public Spacing dividerPadding()
+    public Integer dividerPadding()
     {
         return this.dividerPadding.getValue();
     }
 
-    public void setDividerPadding(Spacing padding)
+    public void setDividerPadding(Integer padding)
     {
         if (padding != null)
             this.dividerPadding.setValue(padding);
         else
-            this.dividerPadding.setValue(Spacing.NONE);
+            this.dividerPadding.setValue(0);
     }
 
 

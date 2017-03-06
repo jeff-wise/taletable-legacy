@@ -9,6 +9,8 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import com.kispoko.tome.sheet.Spacing;
+
 import java.util.List;
 
 
@@ -234,6 +236,38 @@ public class LayoutParamsBuilder
                                                      margins.top(context),
                                                      margins.right(context),
                                                      margins.bottom(context));
+                break;
+        }
+    }
+
+
+    public void setMargins(Spacing spacing)
+    {
+        switch (this.layoutType)
+        {
+            case LINEAR:
+                this.linearLayoutParams.setMargins(spacing.leftPx(),
+                                                   spacing.topPx(),
+                                                   spacing.rightPx(),
+                                                   spacing.bottomPx());
+                break;
+            case RELATIVE:
+                this.relativeLayoutParams.setMargins(spacing.leftPx(),
+                                                     spacing.topPx(),
+                                                     spacing.rightPx(),
+                                                     spacing.bottomPx());
+                break;
+            case TABLE:
+                this.tableLayoutParams.setMargins(spacing.leftPx(),
+                                                  spacing.topPx(),
+                                                  spacing.rightPx(),
+                                                  spacing.bottomPx());
+                break;
+            case TABLE_ROW:
+                this.tableRowLayoutParams.setMargins(spacing.leftPx(),
+                                                     spacing.topPx(),
+                                                     spacing.rightPx(),
+                                                     spacing.bottomPx());
                 break;
         }
     }

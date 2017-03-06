@@ -2,8 +2,7 @@
 package com.kispoko.tome.sheet.widget.action;
 
 
-import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.group.Spacing;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextFont;
 import com.kispoko.tome.sheet.widget.util.TextSize;
@@ -46,7 +45,9 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
      * The horizontal padding around the content. If null, the widget will stretch to fill the
      * parent's space.
      */
-    private PrimitiveFunctor<Spacing>   paddingHorizontal;
+    private PrimitiveFunctor<Integer>   paddingHorizontal;
+
+    private PrimitiveFunctor<Height>    height;
 
 
     // CONSTRUCTORS
@@ -59,21 +60,26 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
         this.descriptionStyle   = ModelFunctor.empty(TextStyle.class);
         this.actionStyle        = ModelFunctor.empty(TextStyle.class);
 
-        this.paddingHorizontal  = new PrimitiveFunctor<>(null, Spacing.class);
+        this.paddingHorizontal  = new PrimitiveFunctor<>(null, Integer.class);
+
+        this.height             = new PrimitiveFunctor<>(null, Height.class);
     }
 
 
     public ActionWidgetFormat(UUID id,
                               TextStyle descriptionStyle,
                               TextStyle actionStyle,
-                              Spacing paddingHorizontal)
+                              Integer paddingHorizontal,
+                              Height height)
     {
         this.id                 = id;
 
         this.descriptionStyle   = ModelFunctor.full(descriptionStyle, TextStyle.class);
         this.actionStyle        = ModelFunctor.full(actionStyle, TextStyle.class);
 
-        this.paddingHorizontal  = new PrimitiveFunctor<>(paddingHorizontal, Spacing.class);
+        this.paddingHorizontal  = new PrimitiveFunctor<>(paddingHorizontal, Integer.class);
+
+        this.height             = new PrimitiveFunctor<>(height, Height.class);
 
         this.setDescriptionStyle(descriptionStyle);
         this.setActionStyle(actionStyle);
@@ -94,12 +100,14 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
 
         UUID      id                = UUID.randomUUID();
 
-        TextStyle descriptionStyle  = TextStyle.fromYaml(yaml.atMaybeKey("description_stylel"));
+        TextStyle descriptionStyle  = TextStyle.fromYaml(yaml.atMaybeKey("description_style"));
         TextStyle actionStyle       = TextStyle.fromYaml(yaml.atMaybeKey("action_style"));
 
-        Spacing   paddingHorizontal = Spacing.fromYaml(yaml.atMaybeKey("padding_horizontal"));
+        Integer   paddingHorizontal = yaml.atMaybeKey("padding_horizontal").getInteger();
 
-        return new ActionWidgetFormat(id, descriptionStyle, actionStyle, paddingHorizontal);
+        Height    height            = Height.fromYaml(yaml.atMaybeKey("height"));
+
+        return new ActionWidgetFormat(id, descriptionStyle, actionStyle, paddingHorizontal, height);
     }
 
 
@@ -155,7 +163,9 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putYaml("action_style", this.actionStyle());
+                .putYaml("action_style", this.actionStyle())
+                .putYaml("description_style", this.descriptionStyle())
+                .putInteger("padding_horizontal", this.paddingHorizontal());
     }
 
 
@@ -233,9 +243,32 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
      * The horizontal padding.
      * @return The spacing.
      */
-    public Spacing paddingHorizontal()
+    public Integer paddingHorizontal()
     {
         return this.paddingHorizontal.getValue();
+    }
+
+
+    // ** Height
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The height. May be null.
+     * @return The height.
+     */
+    public Height height()
+    {
+        return this.height.getValue();
+    }
+
+
+    /**
+     * Set the height.
+     * @param height The height.
+     */
+    public void setHeight(Height height)
+    {
+        this.height.setValue(height);
     }
 
 

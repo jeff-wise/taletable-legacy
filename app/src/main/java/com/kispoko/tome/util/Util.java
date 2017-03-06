@@ -3,9 +3,11 @@ package com.kispoko.tome.util;
 
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.util.DisplayMetrics;
 import android.widget.LinearLayout;
 
 import java.io.ByteArrayOutputStream;
@@ -126,6 +128,14 @@ public class Util
     // convert from byte array to bitmap
     public static Bitmap getImage(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
+    }
+
+
+    public static int dpToPixel(float dp)
+    {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
     }
 }
 

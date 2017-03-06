@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.text;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextColor;
@@ -47,6 +48,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     private ModelFunctor<TextStyle>     outsideLabelStyle;
 
     private ModelFunctor<TextStyle>     valueStyle;
+    private PrimitiveFunctor<Height>    valueHeight;
+
     private ModelFunctor<TextStyle>     descriptionStyle;
 
     private PrimitiveFunctor<Boolean>   isQuote;
@@ -69,6 +72,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.outsideLabelStyle      = ModelFunctor.empty(TextStyle.class);
 
         this.valueStyle             = ModelFunctor.empty(TextStyle.class);
+        this.valueHeight            = new PrimitiveFunctor<>(null, Height.class);
+
         this.descriptionStyle       = ModelFunctor.empty(TextStyle.class);
 
         this.isQuote                = new PrimitiveFunctor<>(null, Boolean.class);
@@ -85,6 +90,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                             Position outsideLabelPosition,
                             TextStyle outsideLabelStyle,
                             TextStyle valueStyle,
+                            Height valueHeight,
                             TextStyle descriptionStyle,
                             Boolean isQuote,
                             String quoteSource)
@@ -100,6 +106,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.outsideLabelStyle      = ModelFunctor.full(outsideLabelStyle, TextStyle.class);
 
         this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
+        this.valueHeight            = new PrimitiveFunctor<>(valueHeight, Height.class);
+
         this.descriptionStyle       = ModelFunctor.full(descriptionStyle, TextStyle.class);
 
         this.isQuote                = new PrimitiveFunctor<>(isQuote, Boolean.class);
@@ -115,6 +123,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.setOutsideLabelStyle(outsideLabelStyle);
 
         this.setValueStyle(valueStyle);
+        this.setValueHeight(valueHeight);
         this.setDescriptionStyle(descriptionStyle);
 
         this.setIsQuote(isQuote);
@@ -141,6 +150,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         TextStyle outsideLabelStyle    = TextStyle.fromYaml(yaml.atMaybeKey("outside_label_style"));
 
         TextStyle valueStyle           = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
+        Height    valueHeight          = Height.fromYaml(yaml.atMaybeKey("value_height"));
         TextStyle descriptionStyle     = TextStyle.fromYaml(yaml.atMaybeKey("description_style"));
 
         Boolean   isQuote              = yaml.atMaybeKey("is_quote").getBoolean();
@@ -148,7 +158,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         return new TextWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
                                     outsideLabel, outsideLabelPosition, outsideLabelStyle,
-                                    valueStyle, descriptionStyle, isQuote, quoteSource);
+                                    valueStyle, valueHeight, descriptionStyle,
+                                    isQuote, quoteSource);
     }
 
 
@@ -219,6 +230,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                 .putYaml("outside_label_position", this.outsideLabelPosition())
                 .putYaml("outside_label_style", this.outsideLabelStyle())
                 .putYaml("value_style", this.valueStyle())
+                .putYaml("value_height", this.valueHeight())
                 .putYaml("description_style", this.descriptionStyle())
                 .putBoolean("is_quote", this.isQuote())
                 .putString("quote_source", this.quoteSource());
@@ -414,6 +426,32 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                                                         TextSize.MEDIUM_SMALL);
             this.valueStyle.setValue(defaultValueStyle);
         }
+    }
+
+
+    // ** Value Height
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The value height.
+     * @return The value height.
+     */
+    public Height valueHeight()
+    {
+        return this.valueHeight.getValue();
+    }
+
+
+    /**
+     * Set the value height. If null, sets the height to SMALL.
+     * @param height The height.
+     */
+    public void setValueHeight(Height height)
+    {
+        if (height != null)
+            this.valueHeight.setValue(height);
+        else
+            this.valueHeight.setValue(Height.SMALL);
     }
 
 

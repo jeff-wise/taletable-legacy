@@ -1776,7 +1776,8 @@ profile:
         show_name: false
       rows:
       - format:
-          margin_top: medium
+          margins:
+            top: 20
         widgets:
         - type: text
           widget:
@@ -1793,7 +1794,8 @@ profile:
               type: literal
               value: Aladaisian Wineheart
       - format:
-          margin_top: medium_large
+          margins:
+            top: 25
         widgets:
         - type: text
           widget:
@@ -1813,7 +1815,8 @@ profile:
                 You learn to fight for you life; you learn to fight for others' lives; you learn what
                 life is.
       - format:
-          margin_top: large
+          margins:
+            top: 30
         widgets:
         - type: image
           widget:
@@ -1823,11 +1826,13 @@ profile:
                 name: Picture
     - name: I am a
       format:
-        space_above: medium_large
-        space_below: medium_large
+        padding:
+          top: 25
+          bottom: 25
       rows:
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -1898,7 +1903,8 @@ profile:
                 set_name: class
                 value_name: fighter
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: text
           widget:
@@ -1936,7 +1942,8 @@ profile:
               type: literal
               value: Chaotic Good
       - format:
-          margin_top: medium
+          margins:
+            top: 20
         widgets:
         - type: quote
           widget:
@@ -1960,7 +1967,8 @@ profile:
                 in the dark, and letting the good spring forth.
             source: Moon-lit conversation with Iliah Savayara
       - format:
-          margin_top: medium
+          margins:
+            top: 20
         widgets:
         - type: number
           widget:
@@ -1994,10 +2002,12 @@ profile:
     - name: My Body
       format:
         background: dark
-        space_above: medium
+        padding:
+          top: 20
       rows:
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2050,7 +2060,8 @@ profile:
               type: literal
               value: 167
       - format:
-          margin_top: very_small
+          margins:
+            top: 5
         widgets:
         - type: text
           widget:
@@ -2104,10 +2115,13 @@ profile:
               type: literal
               value: Brown
     - name: Languages
-      space_above: medium
+      format:
+        padding:
+          top: 20
       rows:
       - format:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: list
           widget:
@@ -2127,12 +2141,14 @@ profile:
                   set_name: language
                   value_name: orc
     - name: Background
-      space_above: medium
+      format:
+        padding:
+          top: 20
       rows:
       - format:
           alignment: center
-          margin_top: medium_small
-          width: half
+          margins:
+            top: 15
         widgets:
         - type: text
           widget:
@@ -2150,12 +2166,13 @@ profile:
               type: literal
               value: The Hard Life
     - name: Personality Traits
-      label_type: secondary
-      space_above: small
+      format:
+        padding:
+          top: 10
       rows:
       - format:
-          margin_top: small
-          width: indented
+          margins:
+            top: 10
         widgets:
         - type: text
           widget:
@@ -2175,8 +2192,8 @@ profile:
                 I am cynical of society. Show me a fair king, a good committee, a man of pure faith,
                 and I give you every reason that you've been deceived.
       - format:
-          margin_top: medium_small
-          width: indented
+          margins:
+            top: 15
         widgets:
         - type: text
           widget:
@@ -2197,12 +2214,13 @@ profile:
                 a stolen loaf of bread -- starving, guilty, ashamed. I will always appreciate a bowl
                 of hot soup or the smallest gift from a stranger.
     - name: Ideals
-      label_type: secondary
-      space_above: medium
+      format:
+        padding:
+          top: 20
       rows:
       - format:
-          margin_top: small
-          width: indented
+          margins:
+            top: 10
         widgets:
         - type: text
           widget:
@@ -2221,12 +2239,13 @@ profile:
                 Equality. Those of all races and all backgrounds should be given the same opportunties
                 and equal respect.
     - name: Bonds
-      label_type: secondary
-      space_above: medium
+      format:
+        padding:
+          top: 20
       rows:
       - format:
-          margin_top: small
-          width: indented
+          margins:
+            top: 10
         widgets:
         - type: text
           widget:
@@ -2245,12 +2264,13 @@ profile:
                 My mentor was killed, and there was nothing I could do. He was a good, innocent man. I
                 have devoted my life to revenge, for myself and for others that have matching scars.
     - name: Flaws
-      label_type: secondary
-      space_above: medium
+      format:
+        margins:
+          top: 20
       rows:
       - format:
-          margin_top: small
-          width: indented
+          margins:
+            top: 10
         widgets:
         - type: text
           widget:
@@ -2274,12 +2294,14 @@ profile:
       format:
         background: dark
         divider: light
+        padding:
+          bottom: 20
+          top: 10
         show_name: false
-        space_below: medium
-        space_above: small
       rows:
       - format:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: number
           widget:
@@ -2320,7 +2342,8 @@ profile:
                         type: tag
                         tag: strength_bonus
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2350,7 +2373,8 @@ profile:
                   value: strength
             value_prefix: '+'
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2395,15 +2419,18 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - space_above: small
-      background: dark
-      name: Dexterity
-      show_name: false
-      space_below: medium
-      divider: light
+    - name: Dexterity
+      format:
+        background: dark
+        divider: light
+        show_name: false
+        padding:
+          bottom: 20
+          top: 10
       rows:
       - format:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: number
           widget:
@@ -2444,7 +2471,8 @@ profile:
                         type: tag
                         tag: dexterity_bonus
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2474,7 +2502,8 @@ profile:
                   value: dexterity
             value_prefix: '+'
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2519,15 +2548,18 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - space_above: small
-      background: dark
-      name: Constitution
-      show_name: false
-      space_below: medium
-      divider: light
+    - name: Constitution
+      format:
+        background: dark
+        divider: light
+        padding:
+          bottom: 20
+          top: 10
+        show_name: false
       rows:
       - format:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: number
           widget:
@@ -2568,7 +2600,8 @@ profile:
                         type: tag
                         tag: constitution_bonus
       - format:
-          margin_top: medium_small
+          margins:
+           top: 15
         widgets:
         - type: number
           widget:
@@ -2598,7 +2631,8 @@ profile:
                   value: constitution
             value_prefix: '+'
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2643,15 +2677,18 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - space_above: small
-      background: dark
-      name: Intelligence
-      show_name: false
-      space_below: medium
-      divider: light
+    - name: Intelligence
+      format:
+        background: dark
+        divider: light
+        show_name: false
+        padding:
+          bottom: 20
+          top: 10
       rows:
       - format:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: number
           widget:
@@ -2692,7 +2729,8 @@ profile:
                         type: tag
                         tag: intelligence_bonus
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2722,7 +2760,8 @@ profile:
                   value: intelligence
             value_prefix: '+'
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2767,15 +2806,18 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - space_above: small
-      background: dark
-      name: Wisdom
-      show_name: false
-      space_below: medium
-      divider: light
+    - name: Wisdom
+      format:
+        background: dark
+        divider: light
+        padding:
+          bottom: 20
+          top: 10
+        show_name: false
       rows:
       - formt:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: number
           widget:
@@ -2817,7 +2859,8 @@ profile:
                         type: tag
                         tag: wisdom_bonus
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2847,7 +2890,8 @@ profile:
                   value: wisdom
             value_prefix: '+'
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2892,14 +2936,17 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - space_above: small
-      background: dark
-      name: Charisma
-      show_name: false
-      space_below: medium
+    - name: Charisma
+      format:
+        background: dark
+        padding:
+          bottom: 20
+          top: 10
+        show_name: false
       rows:
       - format:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: number
           widget:
@@ -2939,7 +2986,8 @@ profile:
                         type: tag
                         tag: charisma_bonus
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -2969,7 +3017,8 @@ profile:
                   value: charisma
             value_prefix: '+'
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: number
           widget:
@@ -3016,11 +3065,12 @@ profile:
             value_prefix: '+'
     - name: Skills
       format:
-        space_above: medium_large
+        padding:
+          top: 25
       rows:
       - format:
-          margin_top: very_small
-          width: no_padding
+          margins:
+            top: 5
         widgets:
         - type: table
           widget:
@@ -3685,13 +3735,13 @@ profile:
       format:
         background: dark
         divider: light
+        padding:
+          bottom: 20
         show_name: false
-        space_above: none
-        space_below: large
       rows:
       - format:
-          margin_top: large
-          width: indented
+          margins:
+            top: 30
         widgets:
         - type: number
           widget:
@@ -3719,8 +3769,8 @@ profile:
               type: literal
               value: 12
       - format:
-          margin_top: large
-          width: indented
+          margins:
+            top: 30
         widgets:
         - type: number
           widget:
@@ -3764,8 +3814,8 @@ profile:
                         type: name
                         name: dexterity_modifier
       - format:
-          margin_top: large
-          width: indented
+          margins:
+            top: 30
         widgets:
         - type: number
           widget:
@@ -3801,11 +3851,13 @@ profile:
           color: theme_medium
           font: bold
           alignment: center
-        space_above: medium_large
-        space_below: large
+        padding:
+          top: 25
+          bottom: 20
       rows:
       - format:
-          margin_top: medium
+          margins:
+            top: 20
         widgets:
         - type: number
           widget:
@@ -3857,10 +3909,13 @@ profile:
               type: literal
               value: 1d8
     - name: Race Features
-      space_above: medium_large
+      format:
+        padding:
+          top: 25
       rows:
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: mechanic
           widget:
@@ -3868,7 +3923,8 @@ profile:
     - name: Class Features
       rows:
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: mechanic
           widget:
@@ -3877,7 +3933,8 @@ profile:
     groups:
     - name: Wealth
       format:
-        space_above: medium_large
+        padding:
+          top: 25
       rows:
       - widgets:
         - type: number
@@ -3924,7 +3981,6 @@ profile:
               type: literal
               value: 17
       - format:
-          width: three_quarters
         widgets:
         - type: number
           widget:
@@ -3957,11 +4013,12 @@ profile:
     - name: Weapons
       format:
         background: medium
-        space_above: medium_large
+        padding:
+          top: 25
       rows:
       - format:
-          margin_top: medium_small
-          width: no_padding
+          margins:
+            top: 15
         widgets:
         - type: table
           widget:
@@ -4045,11 +4102,12 @@ profile:
     - name: Armor
       format:
         background: medium
-        space_above: medium_large
+        padding:
+          top: 25
       rows:
       - format:
-          margin_top: medium_small
-          width: no_padding
+          margins:
+            top: 15
         widgets:
         - type: table
           widget:
@@ -4118,10 +4176,10 @@ profile:
                   value: true
     - name: Gear
       format:
-        space_above: medium_large
+        padding:
+          top: 25
       rows:
       - format:
-          width: no_padding
         widgets:
         - type: table
           widget:
@@ -4236,15 +4294,19 @@ encounter:
       format:
         background: medium
         corners: small
-        margin_bottom: medium
-        margin_top: medium
-        padding_horizontal: small
+        margins:
+          bottom: 20
+          top: 20
+        padding:
+          left: 10
+          top: 10
+          right: 10
+          bottom: 15
         show_name: false
-        space_above: small
-        space_below: medium_small
       rows:
       - format:
-          margin_top: none
+          margins:
+            top: 0
         widgets:
         - type: action
           widget:
@@ -4265,7 +4327,8 @@ encounter:
               label: Initiative
               value: initiative
       - format:
-          margin_top: very_small
+          margins:
+            top: 5
         widgets:
         - type: quote
           widget:
@@ -4281,18 +4344,22 @@ encounter:
       format:
         background: medium
         corners: small
-        padding_horizontal: small
-        margin_bottom: medium
+        margins:
+          bottom: 20
         show_name: false
-        space_above: medium
-        space_below: medium
+        padding:
+          bottom: 20
+          top: 20
+          left: 10
+          right: 10
         name_style:
           color: theme_medium
           font: italic
           size: medium_small
       rows:
       - format:
-          margin_top: none
+          margins:
+            top: 0
         widgets:
         - type: action
           widget:
@@ -4339,7 +4406,8 @@ encounter:
                         type: name
                         name: proficiency_bonus
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: action
           widget:
@@ -4375,7 +4443,8 @@ encounter:
                         type: name
                         name: strength_modifier
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: action
           widget:
@@ -4412,21 +4481,24 @@ encounter:
                         name: strength_modifier
     - name: Heavy Crossbow
       format:
-        space_above: medium
-        space_below: medium
+        padding:
+          top: 20
+          bottom: 20
       rows:
     - name: Heavy Crossbow
       format:
         show_name: false
-        space_above: medium
-        space_below: medium
+        padding:
+          top: 20
+          bottom: 20
         name_style:
           color: theme_medium
           font: italic
           size: medium_small
       rows:
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: action
           widget:
@@ -4573,11 +4645,12 @@ encounter:
         background: medium
         divider: dark
         show_name: false
-        spacing_above: small
-        spacing_below: medium
+        spacing_above: 10
+        spacing_below: 20
       rows:
       - format:
-          margin_top: none
+          margins:
+            top: 0
         widgets:
         - type: option
           widget:
@@ -4611,10 +4684,12 @@ encounter:
           color: theme_medium
           font: italic
           size: medium_small
-        space_above: medium_large
+        padding:
+          top: 25
       rows:
       - format:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: number
           widget:
@@ -4634,14 +4709,15 @@ encounter:
     - name: Hit Points Buttons
       format:
         background: dark
-        show_name: false
-        space_above: none
-        space_below: medium
         divider: light
-        divider_padding: small
+        divider_padding: 10
+        padding:
+          bottom: 20
+        show_name: false
       rows:
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: button
           widget:
@@ -4663,7 +4739,8 @@ encounter:
                 font: bold
                 color: theme_light
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: button
           widget:
@@ -4688,10 +4765,11 @@ encounter:
       format:
         background: dark
         show_name: false
-        space_below: medium
+        space_below: 20
       rows:
       - format:
-          margin_top: small
+          margins:
+            top: 10
         widgets:
         - type: number
           widget:
@@ -4707,7 +4785,7 @@ encounter:
                 color: theme_medium_light
                 font: bold
                 size: medium
-              value_padding_horizontal: medium_small
+              value_padding_horizontal: 15
               value_height: very_small
               value_style:
                 font: bold
@@ -4723,7 +4801,8 @@ encounter:
         show_name: false
       rows:
       - format:
-          margin_top: medium_small
+          margins:
+            top: 15
         widgets:
         - type: option
           widget:
@@ -4751,26 +4830,186 @@ encounter:
                 value_name: alive
   - name: Abilities
     groups:
+    - name: Strength
+      format:
+        background: dark
+        padding:
+          top: 20
+          bottom: 0
+          left: 12
+          right: 12
+        show_name: false
+      rows:
+      - format:
+          margins:
+            top: 0
+          divider: very_light
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                margins:
+                  left: 3
+            format:
+              value_style:
+                color: green_light
+                font: bold
+                size: medium_small
+            value:
+              type: literal
+              value: Strength
+        - type: action
+          widget:
+            description: Check
+            action_highlight: Check
+            action_name: Strength Check
+            data:
+              format:
+                alignment: right
+                background: dark
+                margins:
+                  right: 5
+            format:
+              action_style:
+                color: theme_dark
+                font: bold
+                size: medium_small
+              height: small
+            modifier:
+              type: literal
+              label: Strength Check
+              value: 4
+      - format:
+          margins:
+            top: 25
+            bottom: 25
+        widgets:
+        - type: action
+          widget:
+            description: Make a Saving Throw
+            action_highlight: Saving Throw
+            action_name: Strength Saving Throw
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              action_style:
+                color: theme_medium_light
+                font: bold_italic
+                size: medium_small
+              description_style:
+                color: theme_dark
+                font: bold_italic
+                size: medium_small
+            modifier:
+              type: variable
+              label: Strength Saving Throw
+              value: saving_throw_strength
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Skills
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Actions
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
     - name: Dexterity
       format:
         background: dark
-        divider: light
-        divider_padding: medium_small
-        name_style:
-          alignment: center
-          font: italic
-          color: gold_very_light
-        space_above: medium
+        padding:
+          top: 20
+          bottom: 0
+          left: 12
+          right: 12
       rows:
-    - name: Dexterity Saving Throw
-      format:
-        background: dark
-        show_name: false
-      rows:
-      - widgets:
+      - format:
+          margins:
+            top: 0
+          divider: very_light
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                margins:
+                  left: 3
+            format:
+              value_style:
+                color: gold_light
+                font: bold
+                size: medium_small
+            value:
+              type: literal
+              value: Dexterity
         - type: action
           widget:
-            description: Saving Throw
+            description: Check
+            action_highlight: Check
+            action_name: Dexterity check
+            data:
+              format:
+                alignment: right
+                background: dark
+                margins:
+                  right: 5
+            format:
+              action_style:
+                color: theme_medium_dark
+                font: bold
+                size: medium_small
+              height: small
+            modifier:
+              type: literal
+              label: Dexterity Check
+              value: 4
+      - format:
+          margins:
+            top: 25
+            bottom: 25
+        widgets:
+        - type: action
+          widget:
+            description: Make a Saving Throw
             action_highlight: Saving Throw
             action_name: Dexterity Saving Throw
             data:
@@ -4779,92 +5018,372 @@ encounter:
                 background: empty
             format:
               action_style:
-                color: green_light
-                font: bold
+                color: theme_medium_light
+                font: bold_italic
+                size: medium_small
+              description_style:
+                color: theme_dark
+                font: bold_italic
                 size: medium_small
             modifier:
               type: variable
               label: Dexterity Saving Throw
               value: saving_throw_dexterity
-    - name: Dexterity Skills
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Skills
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+            groups:
+            - name: Dexterity Skills
+              format:
+                background: dark
+                show_name: false
+              rows:
+              - format:
+                  margins:
+                    top: 10
+                widgets:
+                - type: action
+                  widget:
+                    description: Acrobatics Check
+                    action_highlight: Acrobatics Check
+                    action_name: Acrobatics Check
+                    data:
+                      format:
+                        alignment: center
+                        background: medium
+                    format:
+                      action_style:
+                        color: theme_medium_light
+                        size: medium_small
+                    modifier:
+                      type: variable
+                      label: Acrobatics check
+                      value: athletics_bonus
+              - format:
+                  margins:
+                    top: 10
+                widgets:
+                - type: action
+                  widget:
+                    description: Sleight of Hand Check
+                    action_highlight: Sleight of Hand Check
+                    action_name: Sleight Of Hand Check
+                    data:
+                      format:
+                        alignment: center
+                        background: medium
+                    format:
+                      action_style:
+                        color: theme_medium_light
+                        size: medium_small
+                    modifier:
+                      type: variable
+                      label: Sleight of Hand check
+                      value: sleight_of_hand_bonus
+              - format:
+                  margins:
+                    top: 10
+                widgets:
+                - type: action
+                  widget:
+                    description: Stealth Check
+                    action_highlight: Stealth Check
+                    action_name: Stealth Check
+                    data:
+                      format:
+                        alignment: center
+                        background: medium
+                    format:
+                      action_style:
+                        color: theme_medium_light
+                        size: medium_small
+                    modifier:
+                      type: variable
+                      label: Stealth Check
+                      value: stealth_bonus
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Actions
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+            groups:
+            - name: Dexterity Actions
+              format:
+                background: dark
+                show_name: false
+              rows:
+              - widgets:
+                - type: action
+                  widget:
+                    description: Using a rope, I secure a prisoner by binding his legs and arms.
+                    action_highlight: secure a prisoner
+                    action_name: Secure a Prisoner
+                    data:
+                      format:
+                        alignment: center
+                        background: empty
+                    format:
+                      action_style:
+                        color: theme_medium_light
+                        size: medium_small
+                    modifier:
+                      type: literal
+                      label: Secure a Prisoner
+                      value: 1
+              - widgets:
+                - type: action
+                  widget:
+                    description: Disable a Trap
+                    action_highlight: Disable a Trap
+                    action_name: Secure a Prisoner
+                    data:
+                      format:
+                        alignment: center
+                        background: empty
+                    format:
+                      action_style:
+                        color: theme_medium_light
+                        size: medium_small
+                    modifier:
+                      type: literal
+                      label: Disable a Trap
+                      value: 1
+              - widgets:
+                - type: action
+                  widget:
+                    description: >
+                      When you're bored in the army during a long seige, you learn to juggle knives.
+                    action_highlight: juggle knives
+                    action_name: Juggle Knives
+                    data:
+                      format:
+                        alignment: center
+                        background: empty
+                    format:
+                      action_style:
+                        color: theme_medium_light
+                        size: medium_small
+                    modifier:
+                      type: literal
+                      label: Juggle Knives
+                      value: 1
+    - name: Constitution
       format:
         background: dark
+        padding:
+          top: 20
+          bottom: 0
+          left: 12
+          right: 12
         show_name: false
       rows:
       - format:
-          margin_top: small
-          width: three_quarters
+          margins:
+            top: 0
+          divider: very_light
         widgets:
-        - type: action
+        - type: text
           widget:
-            description: Acrobatics Check
-            action_highlight: Acrobatics Check
-            action_name: Acrobatics Check
             data:
               format:
-                alignment: center
-                background: medium
+                alignment: left
+                background: dark
+                margins:
+                  left: 3
+            format:
+              value_style:
+                color: green_light
+                font: bold
+                size: medium_small
+            value:
+              type: literal
+              value: Constitution
+        - type: action
+          widget:
+            description: Check
+            action_highlight: Check
+            action_name: Constitution Check
+            data:
+              format:
+                alignment: right
+                background: dark
+                margins:
+                  right: 5
             format:
               action_style:
-                color: theme_medium_light
+                color: theme_medium_dark
+                font: bold
                 size: medium_small
+              height: small
             modifier:
-              type: variable
-              label: Acrobatics check
-              value: athletics_bonus
+              type: literal
+              label: Constitution Check
+              value: 4
       - format:
-          margin_top: small
-          width: three_quarters
+          margins:
+            top: 25
+            bottom: 25
         widgets:
         - type: action
           widget:
-            description: Sleight of Hand Check
-            action_highlight: Sleight of Hand Check
-            action_name: Sleight Of Hand Check
+            description: Make a Saving Throw
+            action_highlight: Saving Throw
+            action_name: Constituiton Saving Throw
             data:
               format:
                 alignment: center
-                background: medium
+                background: empty
             format:
               action_style:
                 color: theme_medium_light
+                font: bold_italic
+                size: medium_small
+              description_style:
+                color: theme_dark
+                font: bold_italic
                 size: medium_small
             modifier:
               type: variable
-              label: Sleight of Hand check
-              value: sleight_of_hand_bonus
+              label: Constitution Saving Throw
+              value: saving_throw_constitution
       - format:
-          margin_top: small
-          width: three_quarters
+          margins:
+            bottom: 20
         widgets:
-        - type: action
+        - type: expander
           widget:
-            description: Stealth Check
-            action_highlight: Stealth Check
-            action_name: Stealth Check
+            name: Skills
             data:
               format:
-                alignment: center
                 background: medium
+                elevation: 3
             format:
-              action_style:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
                 color: theme_medium_light
+                font: regular
                 size: medium_small
-            modifier:
-              type: variable
-              label: Stealth Check
-              value: stealth_bonus
-    - name: Dexterity Actions
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Actions
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+    - name: Intelligence
       format:
         background: dark
+        padding:
+          top: 20
+          bottom: 0
+          left: 12
+          right: 12
         show_name: false
       rows:
-      - widgets:
+      - format:
+          margins:
+            top: 0
+          divider: very_light
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                margins:
+                  left: 3
+            format:
+              value_style:
+                color: gold_light
+                font: bold
+                size: medium_small
+            value:
+              type: literal
+              value: Intelligence
         - type: action
           widget:
-            description: Using a rope, I secure a prisoner by binding his legs and arms.
-            action_highlight: secure a prisoner
-            action_name: Secure a Prisoner
+            description: Check
+            action_highlight: Check
+            action_name: Intelligence Check
+            data:
+              format:
+                alignment: right
+                background: dark
+                margins:
+                  right: 5
+            format:
+              action_style:
+                color: theme_medium_dark
+                font: bold
+                size: medium_small
+              height: small
+            modifier:
+              type: literal
+              label: Intelligence Check
+              value: 4
+      - format:
+          margins:
+            top: 25
+            bottom: 25
+        widgets:
+        - type: action
+          widget:
+            description: Make a Saving Throw
+            action_highlight: Saving Throw
+            action_name: Intelligence Saving Throw
             data:
               format:
                 alignment: center
@@ -4872,17 +5391,120 @@ encounter:
             format:
               action_style:
                 color: theme_medium_light
+                font: bold_italic
+                size: medium_small
+              description_style:
+                color: theme_dark
+                font: bold_italic
                 size: medium_small
             modifier:
+              type: variable
+              label: Intelligence Saving Throw
+              value: saving_throw_intelligence
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Skills
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Actions
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+    - name: Wisdom
+      format:
+        background: dark
+        padding:
+          top: 20
+          bottom: 0
+          left: 12
+          right: 12
+        show_name: false
+      rows:
+      - format:
+          margins:
+            top: 0
+          divider: very_light
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                margins:
+                  left: 3
+            format:
+              value_style:
+                color: gold_light
+                font: bold
+                size: medium_small
+            value:
               type: literal
-              label: Secure a Prisoner
-              value: 1
-      - widgets:
+              value: Wisdom
         - type: action
           widget:
-            description: Disable a Trap
-            action_highlight: Disable a Trap
-            action_name: Secure a Prisoner
+            description: Check
+            action_highlight: Check
+            action_name: Wisdom Check
+            data:
+              format:
+                alignment: right
+                background: dark
+                margins:
+                  right: 5
+            format:
+              action_style:
+                color: theme_medium_dark
+                font: bold
+                size: medium_small
+              height: small
+            modifier:
+              type: literal
+              label: Wisdom Check
+              value: 4
+      - format:
+          margins:
+            top: 25
+            bottom: 25
+        widgets:
+        - type: action
+          widget:
+            description: Make a Saving Throw
+            action_highlight: Saving Throw
+            action_name: Wisdom Saving Throw
             data:
               format:
                 alignment: center
@@ -4890,18 +5512,120 @@ encounter:
             format:
               action_style:
                 color: theme_medium_light
+                font: bold_italic
+                size: medium_small
+              description_style:
+                color: theme_dark
+                font: bold_italic
                 size: medium_small
             modifier:
+              type: variable
+              label: Wisdom Saving Throw
+              value: saving_throw_wisdom
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Skills
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Actions
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+    - name: Charisma
+      format:
+        background: dark
+        padding:
+          top: 20
+          bottom: 0
+          left: 12
+          right: 12
+        show_name: false
+      rows:
+      - format:
+          margins:
+            top: 0
+          divider: very_light
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+                margins:
+                  left: 3
+            format:
+              value_style:
+                color: gold_light
+                font: bold
+                size: medium_small
+            value:
               type: literal
-              label: Disable a Trap
-              value: 1
-      - widgets:
+              value: Charisma
         - type: action
           widget:
-            description: >
-              When you're bored in the army during a long seige, you learn to juggle knives.
-            action_highlight: juggle knives
-            action_name: Juggle Knives
+            description: Check
+            action_highlight: Check
+            action_name: Charisma Check
+            data:
+              format:
+                alignment: right
+                background: dark
+                margins:
+                  right: 5
+            format:
+              action_style:
+                color: theme_medium_dark
+                font: bold
+                size: medium_small
+              height: small
+            modifier:
+              type: literal
+              label: Charisma Check
+              value: 4
+      - format:
+          margins:
+            top: 25
+            bottom: 25
+        widgets:
+        - type: action
+          widget:
+            description: Make a Saving Throw
+            action_highlight: Saving Throw
+            action_name: Charisma Saving Throw
             data:
               format:
                 alignment: center
@@ -4909,18 +5633,66 @@ encounter:
             format:
               action_style:
                 color: theme_medium_light
+                font: bold_italic
+                size: medium_small
+              description_style:
+                color: theme_dark
+                font: bold_italic
                 size: medium_small
             modifier:
-              type: literal
-              label: Juggle Knives
-              value: 1
+              type: variable
+              label: Charisma Saving Throw
+              value: saving_throw_charisma
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Skills
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
+      - format:
+          margins:
+            bottom: 20
+        widgets:
+        - type: expander
+          widget:
+            name: Actions
+            data:
+              format:
+                background: medium
+                elevation: 3
+            format:
+              header_padding:
+                left: 8
+                top: 12
+                right: 8
+                bottom: 12
+              name_style_closed:
+                color: theme_medium_light
+                font: regular
+                size: medium_small
 campaign:
   pages:
   - name: Campaign Log
     groups:
     - name: 'Part 2: Witnesses'
       format:
-        space_above: very_large
+        padding:
+          top: 30
         name_style:
           alignment: center
           color: gold_very_light
@@ -4928,7 +5700,8 @@ campaign:
           size: very_large
       rows:
       - format:
-          margin_top: large
+          margins:
+            top: 30
         widgets:
         - type: log
           widget:
@@ -4985,7 +5758,8 @@ campaign:
                 needed. I must go immediately.
     - name: 'Part 1: The Trial'
       format:
-        space_above: very_large
+        padding:
+          top: 30
         name_style:
           alignment: center
           color: gold_very_light
@@ -4993,7 +5767,8 @@ campaign:
           size: very_large
       rows:
       - format:
-          margin_top: large
+          margins:
+            top: 30
         widgets:
         - type: log
           widget:

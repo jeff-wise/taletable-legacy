@@ -23,7 +23,7 @@ public enum Height implements ToYaml
 {
 
     // VALUES
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     VERY_SMALL,
     SMALL,
@@ -35,7 +35,7 @@ public enum Height implements ToYaml
 
 
     // CONSTRUCTORS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public static Height fromString(String heightString)
                   throws InvalidDataException
@@ -86,7 +86,6 @@ public enum Height implements ToYaml
 
     // HEIGHT
     // ------------------------------------------------------------------------------------------
-
 
     /**
      * Get the drawable resource id of the background with this height and the specified corners.

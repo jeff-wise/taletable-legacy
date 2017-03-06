@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.sql.SQLValue;
@@ -90,6 +91,8 @@ public enum Corners implements ToYaml
     {
         switch (this)
         {
+            case NONE:
+                return R.drawable.bg_group_corners_none;
             case SMALL:
                 return R.drawable.bg_group_corners_small;
             case MEDIUM:
@@ -98,5 +101,6 @@ public enum Corners implements ToYaml
                 return R.drawable.bg_group_corners_small;
         }
     }
+
 
 }

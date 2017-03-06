@@ -39,15 +39,8 @@ public abstract class Widget implements Model, ToYaml, Serializable
     abstract public void initialize(GroupParent groupParent);
 
 
-
-    // METHODS
+    // > State
     // ------------------------------------------------------------------------------------------
-
-    public void runPrimaryAction()
-    {
-//        Action primaryAction = this.data().primaryAction();
-//        this.runAction(primaryAction);
-    }
 
 
     // > Views
@@ -65,14 +58,11 @@ public abstract class Widget implements Model, ToYaml, Serializable
         layout.orientation      = LinearLayout.VERTICAL;
         layout.width            = 0;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.weight           = this.data().format().width().floatValue();
 
-//        if (this.data().format().label() == null && rowHasLabel) {
-//            layout.padding.top  = R.dimen.widget_label_fill_padding;
-//        }
+        layout.weight       = this.data().format().width().floatValue();
 
-        layout.margin.left      = R.dimen.widget_margin_horz;
-        layout.margin.right     = R.dimen.widget_margin_horz;
+//        layout.margin.left      = R.dimen.widget_margin_horz;
+//        layout.margin.right     = R.dimen.widget_margin_horz;
 
         return layout.linearLayout(context);
     }

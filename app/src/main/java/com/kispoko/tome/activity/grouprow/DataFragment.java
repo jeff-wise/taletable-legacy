@@ -88,20 +88,20 @@ public class DataFragment extends Fragment
                     getContext());
 
         // > Width Field
-        LinearLayout widthField =
-                Form.field(
-                        R.string.group_row_field_width_label,
-                        R.string.group_row_field_width_description,
-                        Form.variantInput(RowWidth.class,
-                                          this.groupRow.format().width(),
-                                          getContext()),
-                        getContext());
+//        LinearLayout widthField =
+//                Form.field(
+//                        R.string.group_row_field_width_label,
+//                        R.string.group_row_field_width_description,
+//                        Form.variantInput(RowWidth.class,
+//                                          this.groupRow.format().width(),
+//                                          getContext()),
+//                        getContext());
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
         layout.addView(alignmentField);
-        layout.addView(widthField);
+        //layout.addView(widthField);
 
         return layout;
     }

@@ -49,8 +49,10 @@ import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.group.GroupFormat;
 import com.kispoko.tome.sheet.group.GroupRow;
+import com.kispoko.tome.sheet.group.GroupRowFormat;
 import com.kispoko.tome.sheet.widget.BooleanWidget;
 import com.kispoko.tome.sheet.widget.ButtonWidget;
+import com.kispoko.tome.sheet.widget.ExpanderWidget;
 import com.kispoko.tome.sheet.widget.ImageWidget;
 import com.kispoko.tome.sheet.widget.ListWidget;
 import com.kispoko.tome.sheet.widget.LogWidget;
@@ -65,6 +67,7 @@ import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
 import com.kispoko.tome.sheet.widget.bool.BooleanWidgetFormat;
 import com.kispoko.tome.sheet.widget.button.ButtonWidgetFormat;
+import com.kispoko.tome.sheet.widget.expander.ExpanderWidgetFormat;
 import com.kispoko.tome.sheet.widget.list.ListWidgetFormat;
 import com.kispoko.tome.sheet.widget.log.LogEntry;
 import com.kispoko.tome.sheet.widget.log.LogWidgetFormat;
@@ -135,6 +138,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(Group.class);
             modelClasses.add(GroupFormat.class);
             modelClasses.add(GroupRow.class);
+            modelClasses.add(GroupRowFormat.class);
 
             // ** Game Mechanic
             modelClasses.add(DiceRoll.class);
@@ -148,6 +152,8 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(BooleanWidgetFormat.class);
             modelClasses.add(ButtonWidget.class);
             modelClasses.add(ButtonWidgetFormat.class);
+            modelClasses.add(ExpanderWidget.class);
+            modelClasses.add(ExpanderWidgetFormat.class);
             modelClasses.add(ImageWidget.class);
             modelClasses.add(ListWidget.class);
             modelClasses.add(ListWidgetFormat.class);

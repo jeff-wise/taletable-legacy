@@ -27,6 +27,7 @@ public enum WidgetType implements ToYaml
     ACTION,
     BOOLEAN,
     BUTTON,
+    EXPANDER,
     IMAGE,
     LIST,
     LOG,
@@ -95,6 +96,8 @@ public enum WidgetType implements ToYaml
                 return R.string.widget_action;
             case BOOLEAN:
                 return R.string.widget_boolean;
+            case EXPANDER:
+                return R.string.widget_expander;
             case IMAGE:
                 return R.string.widget_image;
             case LIST:

@@ -39,6 +39,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     private ModelFunctor<ActionWidget>      actionWidget;
     private ModelFunctor<BooleanWidget>     booleanWidget;
     private ModelFunctor<ButtonWidget>      buttonWidget;
+    private ModelFunctor<ExpanderWidget>    expanderWidget;
     private ModelFunctor<ImageWidget>       imageWidget;
     private ModelFunctor<ListWidget>        listWidget;
     private ModelFunctor<LogWidget>         logWidget;
@@ -62,6 +63,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.actionWidget   = ModelFunctor.empty(ActionWidget.class);
         this.booleanWidget  = ModelFunctor.empty(BooleanWidget.class);
         this.buttonWidget   = ModelFunctor.empty(ButtonWidget.class);
+        this.expanderWidget = ModelFunctor.empty(ExpanderWidget.class);
         this.imageWidget    = ModelFunctor.empty(ImageWidget.class);
         this.listWidget     = ModelFunctor.empty(ListWidget.class);
         this.logWidget      = ModelFunctor.empty(LogWidget.class);
@@ -83,6 +85,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.actionWidget   = ModelFunctor.full(null, ActionWidget.class);
         this.booleanWidget  = ModelFunctor.full(null, BooleanWidget.class);
         this.buttonWidget   = ModelFunctor.full(null, ButtonWidget.class);
+        this.expanderWidget = ModelFunctor.full(null, ExpanderWidget.class);
         this.imageWidget    = ModelFunctor.full(null, ImageWidget.class);
         this.listWidget     = ModelFunctor.full(null, ListWidget.class);
         this.logWidget      = ModelFunctor.full(null, LogWidget.class);
@@ -105,6 +108,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case BUTTON:
                 this.buttonWidget.setValue((ButtonWidget) widget);
+                break;
+            case EXPANDER:
+                this.expanderWidget.setValue((ExpanderWidget) widget);
                 break;
             case IMAGE:
                 this.imageWidget.setValue((ImageWidget) widget);
@@ -170,6 +176,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public static WidgetUnion asButton(UUID id, ButtonWidget buttonWidget)
     {
         return new WidgetUnion(id, buttonWidget, WidgetType.BUTTON);
+    }
+
+
+    /**
+     * Create the "expander" variant.
+     * @param expanderWidget The expander widget.
+     * @return The "expander" Widget Union.
+     */
+    public static WidgetUnion asExpander(UUID id, ExpanderWidget expanderWidget)
+    {
+        return new WidgetUnion(id, expanderWidget, WidgetType.EXPANDER);
     }
 
 
@@ -299,6 +316,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case BUTTON:
                 ButtonWidget buttonWidget = ButtonWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asButton(id, buttonWidget);
+            case EXPANDER:
+                ExpanderWidget expanderWidget = ExpanderWidget.fromYaml(yaml.atKey("widget"));
+                return WidgetUnion.asExpander(id, expanderWidget);
             case IMAGE:
                 ImageWidget imageWidget = ImageWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asImage(id, imageWidget);
@@ -397,6 +417,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case BUTTON:
                 widgetYaml = this.buttonWidget().toYaml();
                 break;
+            case EXPANDER:
+                widgetYaml = this.expanderWidget().toYaml();
+                break;
             case IMAGE:
                 widgetYaml = this.imageWidget().toYaml();
                 break;
@@ -450,6 +473,8 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 return this.booleanWidget();
             case BUTTON:
                 return this.buttonWidget();
+            case EXPANDER:
+                return this.expanderWidget();
             case IMAGE:
                 return this.imageWidget();
             case LIST:
@@ -524,6 +549,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public ButtonWidget buttonWidget()
     {
         return this.buttonWidget.getValue();
+    }
+
+
+    /**
+     * The "expander" case.
+     * @return The Expander Widget.
+     */
+    public ExpanderWidget expanderWidget()
+    {
+        return this.expanderWidget.getValue();
     }
 
 

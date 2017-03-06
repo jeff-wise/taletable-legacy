@@ -3,7 +3,11 @@ package com.kispoko.tome.sheet.group;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.BackgroundColor;
+import com.kispoko.tome.sheet.DividerType;
+import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
@@ -13,6 +17,8 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.paddingBottom;
+import static android.R.attr.paddingTop;
 
 
 /**
@@ -27,16 +33,19 @@ public class GroupRowFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                                id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<Alignment> alignment;
-    private PrimitiveFunctor<RowWidth>  width;
-    private PrimitiveFunctor<Spacing>   marginTop;
-    private PrimitiveFunctor<Spacing>   marginBottom;
+    private PrimitiveFunctor<Alignment>         alignment;
+    private PrimitiveFunctor<BackgroundColor>   backgroundColor;
+
+    private ModelFunctor<Spacing>               margins;
+    private ModelFunctor<Spacing>               padding;
+
+    private PrimitiveFunctor<DividerType>       dividerType;
 
 
     // CONSTRUCTORS
@@ -44,32 +53,42 @@ public class GroupRowFormat implements Model, ToYaml, Serializable
 
     public GroupRowFormat()
     {
-        this.id             = null;
+        this.id                 = null;
 
-        this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
-        this.width          = new PrimitiveFunctor<>(null, RowWidth.class);
-        this.marginTop      = new PrimitiveFunctor<>(null, Spacing.class);
-        this.marginBottom   = new PrimitiveFunctor<>(null, Spacing.class);
+        this.alignment          = new PrimitiveFunctor<>(null, Alignment.class);
+        this.backgroundColor    = new PrimitiveFunctor<>(null, BackgroundColor.class);
+
+        this.margins            = ModelFunctor.empty(Spacing.class);
+        this.padding            = ModelFunctor.empty(Spacing.class);
+
+        this.dividerType        = new PrimitiveFunctor<>(null, DividerType.class);
     }
 
 
     public GroupRowFormat(UUID id,
                           Alignment alignment,
-                          RowWidth width,
-                          Spacing marginTop,
-                          Spacing marginBottom)
+                          BackgroundColor backgroundColor,
+                          Spacing margins,
+                          Spacing padding,
+                          DividerType dividerType)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
-        this.width          = new PrimitiveFunctor<>(width, RowWidth.class);
-        this.marginTop      = new PrimitiveFunctor<>(marginTop, Spacing.class);
-        this.marginBottom   = new PrimitiveFunctor<>(marginBottom, Spacing.class);
+        this.alignment          = new PrimitiveFunctor<>(alignment, Alignment.class);
+        this.backgroundColor    = new PrimitiveFunctor<>(backgroundColor, BackgroundColor.class);
+
+        this.margins            = ModelFunctor.full(margins, Spacing.class);
+        this.padding            = ModelFunctor.full(padding, Spacing.class);
+
+        this.dividerType        = new PrimitiveFunctor<>(dividerType, DividerType.class);
 
         this.setAlignment(alignment);
-        this.setWidth(width);
-        this.setMarginTop(marginTop);
-        this.setMarginBottom(marginBottom);
+        this.setBackgroundColor(backgroundColor);
+
+        this.setMargins(margins);
+        this.setPadding(padding);
+
+        this.setDividerType(dividerType);
     }
 
 
@@ -85,14 +104,17 @@ public class GroupRowFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return GroupRowFormat.asDefault();
 
-        UUID      id         = UUID.randomUUID();
+        UUID            id                = UUID.randomUUID();
 
-        Alignment alignment  = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
-        RowWidth  width      = RowWidth.fromYaml(yaml.atMaybeKey("width"));
-        Spacing   spaceAbove = Spacing.fromYaml(yaml.atMaybeKey("margin_top"));
-        Spacing   spaceBelow = Spacing.fromYaml(yaml.atMaybeKey("margin_bottom"));
+        Alignment       alignment         = Alignment.fromYaml(yaml.atMaybeKey("alignment"));
+        BackgroundColor backgroundColor   = BackgroundColor.fromYaml(yaml.atMaybeKey("background"));
 
-        return new GroupRowFormat(id, alignment, width, spaceAbove, spaceBelow);
+        Spacing         margins           = Spacing.fromYaml(yaml.atMaybeKey("margins"));
+        Spacing         padding           = Spacing.fromYaml(yaml.atMaybeKey("padding"));
+
+        DividerType     dividerType       = DividerType.fromYaml(yaml.atMaybeKey("divider"));
+
+        return new GroupRowFormat(id, alignment, backgroundColor, margins, padding, dividerType);
     }
 
 
@@ -107,9 +129,12 @@ public class GroupRowFormat implements Model, ToYaml, Serializable
         format.setId(UUID.randomUUID());
 
         format.setAlignment(null);
-        format.setWidth(null);
-        format.setMarginTop(null);
-        format.setMarginBottom(null);
+        format.setBackgroundColor(null);
+
+        format.setMargins(null);
+        format.setPadding(null);
+
+        format.setDividerType(null);
 
         return format;
     }
@@ -152,9 +177,10 @@ public class GroupRowFormat implements Model, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putYaml("alignment", this.alignment())
-                .putYaml("width", this.width())
-                .putYaml("margin_top", this.marginTop())
-                .putYaml("margin_bottom", this.marginBottom());
+                .putYaml("background", this.backgroundColor())
+                .putYaml("margins", this.margins())
+                .putYaml("padding", this.padding())
+                .putYaml("divider", this.dividerType());
     }
 
 
@@ -187,82 +213,107 @@ public class GroupRowFormat implements Model, ToYaml, Serializable
     }
 
 
-    // ** Width
+    // ** Background Color
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The background color
+     * @return The background color
+     */
+    public BackgroundColor backgroundColor()
+    {
+        return this.backgroundColor.getValue();
+    }
+
+
+    /**
+     * Set the background color. If null, defaults to NONE (transparent).
+     * @param backgroundColor The background color.
+     */
+    public void setBackgroundColor(BackgroundColor backgroundColor)
+    {
+        if (backgroundColor != null)
+            this.backgroundColor.setValue(backgroundColor);
+        else
+            this.backgroundColor.setValue(BackgroundColor.NONE);
+    }
+
+
+    // ** Margins
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The row width.
-     * @return The width.
+     * The group row margins.
+     * @return The margins.
      */
-    public RowWidth width()
+    public Spacing margins()
     {
-        return this.width.getValue();
+        return this.margins.getValue();
     }
 
 
     /**
-     * Set the row width. If null, defaults to FULL width.
-     * @param width The width.
+     * Set the group margins. If null, sets the default margins.
+     * @param spacing The spacing.
      */
-    public void setWidth(RowWidth width)
+    public void setMargins(Spacing spacing)
     {
-        if (width != null)
-            this.width.setValue(width);
+        if (spacing != null)
+            this.margins.setValue(spacing);
         else
-            this.width.setValue(RowWidth.FULL);
+            this.margins.setValue(Spacing.asDefault());
     }
 
 
-    // ** Space Above
+    // ** Padding
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The space above the row.
-     * @return The spacing.
+     * The group row padding.
+     * @return The padding.
      */
-    public Spacing marginTop()
+    public Spacing padding()
     {
-        return this.marginTop.getValue();
+        return this.padding.getValue();
     }
 
 
     /**
-     * Set the space above. If null, defaults to MEDIUM spacing.
-     * @param marginTop The space above.
+     * Set the group row padding. If null, sets the default padding.
+     * @param spacing The spacing.
      */
-    public void setMarginTop(Spacing marginTop)
+    public void setPadding(Spacing spacing)
     {
-        if (marginTop != null)
-            this.marginTop.setValue(marginTop);
+        if (spacing != null)
+            this.padding.setValue(spacing);
         else
-            this.marginTop.setValue(Spacing.MEDIUM);
+            this.padding.setValue(Spacing.asDefault());
     }
 
 
-    // ** Space Below
+    // ** Divider Type
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The space below the row.
-     * @return The spacing.
+     * The divider type.
+     * @return The divider type.
      */
-    public Spacing marginBottom()
+    public DividerType dividerType()
     {
-        return this.marginBottom.getValue();
+        return this.dividerType.getValue();
     }
 
 
     /**
-     * Set the space below. If null, defaults to MEDIUM spacing.
-     * @param marginBottom The space below.
+     * Set the divider type. If null, defaults to NONE (no divider).
+     * @param dividerType The divider type.
      */
-    public void setMarginBottom(Spacing marginBottom)
+    public void setDividerType(DividerType dividerType)
     {
-        if (marginBottom != null)
-            this.marginBottom.setValue(marginBottom);
+        if (dividerType != null)
+            this.dividerType.setValue(dividerType);
         else
-            this.marginBottom.setValue(Spacing.MEDIUM);
+            this.dividerType.setValue(DividerType.NONE);
     }
-
 
 }

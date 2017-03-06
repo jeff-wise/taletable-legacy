@@ -22,7 +22,7 @@ import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.group.Spacing;
+import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.sheet.widget.WidgetType;
 import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
@@ -393,11 +393,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof VariableType)
         {
             String enumString = ((VariableType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof Spacing)
-        {
-            String enumString = ((Spacing) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
         else if (this.getValue() instanceof ProgramValueType)
