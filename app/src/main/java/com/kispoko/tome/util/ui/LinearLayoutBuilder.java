@@ -37,6 +37,8 @@ public class LinearLayoutBuilder implements ViewBuilder
     public Integer                  id;
 
     public Integer                  height;
+    public Integer                  heightDp;
+
     public Integer                  width;
     public Float                    weight;
 
@@ -80,6 +82,8 @@ public class LinearLayoutBuilder implements ViewBuilder
         this.orientation        = null;
 
         this.height             = null;
+        this.heightDp           = null;
+
         this.width              = null;
         this.weight             = null;
 
@@ -253,6 +257,8 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+        else if (this.heightDp != null)
+            layoutParamsBuilder.setHeightDp(this.heightDp);
 
         // > Weight
         // --------------------------------------------------------------------------------------

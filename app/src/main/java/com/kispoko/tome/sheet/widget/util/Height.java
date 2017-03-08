@@ -25,6 +25,7 @@ public enum Height implements ToYaml
     // VALUES
     // -----------------------------------------------------------------------------------------
 
+    WRAP,
     VERY_SMALL,
     SMALL,
     MEDIUM_SMALL,
@@ -92,10 +93,12 @@ public enum Height implements ToYaml
      * @param corners The corners measurement.
      * @return The drawable resource id i.e. bg_xxxx_xxx.xml
      */
-    public int resourceId(Corners corners)
+    public Integer resourceId(Corners corners)
     {
         switch (this)
         {
+            case WRAP:
+                return null;
             case VERY_SMALL:
                 switch (corners)
                 {

@@ -1771,52 +1771,54 @@ profile:
   pages:
   - name: Profile
     groups:
-    - name: General
-      format:
-        show_name: false
+    - format:
+        background: medium
       rows:
       - format:
           margins:
-            top: 20
+            top: 30
         widgets:
         - type: text
           widget:
             data:
               format:
-                background: none
-                bold: false
+                background: empty
                 name: Name
             format:
-              size: large
+              value_style:
+                alignment: center
+                color: gold_light
+                font: regular
+                size: huge
             value:
               name: name
               label: Name
               type: literal
-              value: Aladaisian Wineheart
+              value: Cirus Scarborn
       - format:
           margins:
-            top: 25
+            top: 20
+            left: 20
+            right: 20
         widgets:
-        - type: text
+        - type: quote
           widget:
             data:
               format:
-                background: none
+                background: empty
             format:
-              name: Summary
-              size: small
-              is_quote: true
-              quote_source: Letter to an Old Friend
-            value:
-              name: summary
-              type: literal
-              label: Summary
-              value: >
-                You learn to fight for you life; you learn to fight for others' lives; you learn what
-                life is.
+              quote_style:
+                alignment: center
+                color: theme_medium_dark
+                font: italic
+                size: small
+            quote: >
+              You learn to fight for you life; you learn to fight for others' lives; you learn what
+              life is.
+            view_type:
       - format:
           margins:
-            top: 30
+            top: 35
         widgets:
         - type: image
           widget:
@@ -1824,30 +1826,42 @@ profile:
               format:
                 background: none
                 name: Picture
-    - name: I am a
-      format:
+    - format:
         padding:
-          top: 25
-          bottom: 25
+          top: 35
+          left: 7
+          right: 7
+          bottom: 35
+        divider: very_dark
       rows:
       - format:
           margins:
-            top: 15
+            top: 5
         widgets:
         - type: number
           widget:
             data:
               format:
                 name: Level
-                width: 1
                 background: dark
+                margins:
+                  left: 3
+                  right: 3
+                width: 3
             format:
               outside_label: level
               outside_label_position: top
               outside_label_style:
-                alignment: left
-                color: theme_dark
+                alignment: center
+                color: gold_light
+                font: italic
                 size: very_small
+              outside_label_margins:
+                bottom: 3
+              value_style:
+                alignment: center
+                color: theme_light
+                size: medium_small
             value:
               type: value
               name: level
@@ -1861,16 +1875,24 @@ profile:
               format:
                 background: dark
                 name: Race
-                width: 2
+                margins:
+                  left: 3
+                  right: 3
+                width: 5
             format:
               outside_label: race
               outside_label_position: top
               outside_label_style:
-                alignment: left
-                color: theme_medium
+                alignment: center
+                color: gold_light
+                font: italic
                 size: very_small
+              outside_label_margins:
+                bottom: 3
               value_style:
                 alignment: center
+                color: theme_light
+                size: medium_small
             value:
               type: value
               name: race
@@ -1883,18 +1905,26 @@ profile:
             name: class
             data:
               format:
-                name: Class
-                width: 2
                 background: dark
+                name: Class
+                margins:
+                  left: 3
+                  right: 3
+                width: 5
             format:
               outside_label: class
               outside_label_position: top
               outside_label_style:
-                alignment: left
-                color: theme_medium
+                alignment: center
+                color: gold_light
+                font: italic
                 size: very_small
+              outside_label_margins:
+                bottom: 3
               value_style:
                 alignment: center
+                color: theme_light
+                size: medium_small
             value:
               type: value
               name: class
@@ -1912,15 +1942,24 @@ profile:
               format:
                 background: dark
                 name: Diety
+                margins:
+                  left: 3
+                  right: 3
             format:
               size: medium_small
-              outside_label: I pray to
+              outside_label: diety
               outside_label_position: top
               outside_label_style:
-                alignment: left
-                color: theme_dark
+                alignment: center
+                color: gold_light
+                font: italic
+                size: very_small
+              outside_label_margins:
+                bottom: 3
               value_style:
                 alignment: center
+                color: theme_light
+                size: medium_small
             value:
               type: literal
               value: Tritherion
@@ -1930,33 +1969,75 @@ profile:
               format:
                 background: dark
                 name: Alignment
+                margins:
+                  left: 3
+                  right: 3
             format:
-              outside_label: and I am
+              outside_label: alignment
               outside_label_position: top
               outside_label_style:
-                alignment: left
-                color: theme_dark
+                alignment: center
+                color: gold_light
+                font: italic
+                size: very_small
+              outside_label_margins:
+                bottom: 3
               value_style:
                 alignment: center
+                color: theme_light
+                size: medium_small
             value:
               type: literal
               value: Chaotic Good
+    - format:
+        padding:
+          top: 15
+          left: 7
+          right: 7
+      rows:
       - format:
           margins:
-            top: 20
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+                name: Experience Points
+            description: I have <value> experience points.
+            format:
+              description_style:
+                color: theme_medium_light
+                size: medium_large
+              value_style:
+                color: purple_very_light
+                font: bold
+                size: large
+            value:
+              type: literal
+              value: 103
+      - format:
+          margins:
+            top: 10
+            bottom: 25
         widgets:
         - type: quote
           widget:
             data:
               format:
                 background: none
-                name: Quote to Green Eyes Lost
+                name: Quote
             format:
+              icon_color: theme_medium_dark
               quote_style:
-                color: theme_dark
+                alignment: center
+                color: theme_very_dark
+                font: italic
                 size: small
               source_style:
-                color: theme_dark
+                color: theme_very_dark
+                font: regular
                 size: very_small
             quote: >
                 I never liked swords -- they destroy things. I wanted to build things. I became
@@ -1965,49 +2046,37 @@ profile:
                 in the forest -- the formidable giants -- block the sunlight, keep smaller trees from
                 growing. I learned to build with the sword, by chopping down those who kept others
                 in the dark, and letting the good spring forth.
-            source: Moon-lit conversation with Iliah Savayara
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                background: dark
-                name: Experience Points
-                width: 5
-            format:
-              size: medium
-              inside_label: XP
-              inside_label_position: left
-              outside_label: My experience
-            value:
-              type: literal
-              value: 103
-        - type: boolean
-          widget:
-            data:
-              format:
-                name: Inspiration
-                background: dark
-                width: 2
-            format:
-              size: very_small
-            on_text: You have inspiration!
-            off_text: No inspiration
-            value:
-              type: literal
-              value: true
-    - name: My Body
-      format:
+            view_type: no_icon
+    - format:
         background: dark
         padding:
-          top: 20
+          top: 15
       rows:
       - format:
           margins:
-            top: 15
+            left: 10
+            right: 10
+            bottom: 10
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: dark
+            format:
+              value_height: wrap
+              value_style:
+                color: gold_light
+                font: italic
+                size: medium
+            value:
+              type: literal
+              value: My Body
+      - format:
+          margins:
+            left: 10
+            right: 10
         widgets:
         - type: number
           widget:
@@ -2020,7 +2089,7 @@ profile:
             format:
               inside_label: age
               value_style:
-                color: theme_medium_dark
+                color: theme_medium
                 size: medium_small
             value:
               type: literal
@@ -2038,7 +2107,7 @@ profile:
               inside_label_position: left
               value_style:
                 size: medium_small
-                color: theme_medium_dark
+                color: theme_medium
             value:
               type: literal
               value: 5'11"
@@ -2054,14 +2123,15 @@ profile:
               inside_label: weight
               inside_label_position: left
               value_style:
-                color: theme_medium_dark
+                color: theme_medium
                 size: medium_small
             value:
               type: literal
               value: 167
       - format:
           margins:
-            top: 5
+            left: 10
+            right: 10
         widgets:
         - type: text
           widget:
@@ -2076,7 +2146,7 @@ profile:
               inside_label_position: left
               value_style:
                 size: medium_small
-                color: theme_medium_dark
+                color: theme_medium
             value:
               type: literal
               value: Blue
@@ -2093,7 +2163,7 @@ profile:
               inside_label_position: left
               value_style:
                 size: medium_small
-                color: theme_medium_dark
+                color: theme_medium
             value:
               type: literal
               value: Light
@@ -2109,24 +2179,50 @@ profile:
               inside_label: hair
               inside_label_position: left
               value_style:
-                color: theme_medium_dark
+                color: theme_medium
                 size: medium_small
             value:
               type: literal
               value: Brown
     - name: Languages
       format:
-        padding:
+        margins:
           top: 20
+          left: 10
+          right: 10
       rows:
       - format:
           margins:
-            top: 10
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                color: gold_light
+                font: italic
+                size: medium
+            value:
+              type: literal
+              value: Languages
+      - format:
+          margins:
+            top: 5
         widgets:
         - type: list
           widget:
             format:
-              size: medium_small
+              annotation_style:
+                color: theme_dark
+                font: italic
+                size: small
+              value_style:
+                color: theme_light
+                size: medium_small
             values:
             - type: text
               value:
@@ -2140,10 +2236,9 @@ profile:
                 value:
                   set_name: language
                   value_name: orc
-    - name: Background
-      format:
-        padding:
-          top: 20
+    - format:
+        margins:
+          top: 25
       rows:
       - format:
           alignment: center
@@ -2155,21 +2250,51 @@ profile:
             data:
               format:
                 alignment: center
-                background: none
+                background: empty
                 name: Background
-                width: 1
             format:
-              value_style:
+              outside_label: Background
+              outside_label_style:
+                color: gold_light
+                font: italic
                 size: medium_large
-                color: theme_medium_dark
+              outside_label_margins:
+                right: 15
+              value_style:
+                font: bold
+                color: red_orange_light
+                size: medium_large
             value:
               type: literal
               value: The Hard Life
-    - name: Personality Traits
-      format:
+    - format:
+        background: medium
+        margins:
+          top: 30
         padding:
-          top: 10
+          left: 10
+          right: 10
       rows:
+      - format:
+          divider: very_light
+          padding:
+            bottom: 5
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                color: theme_medium_light
+                font: bold
+                size: medium_small
+            value:
+              type: literal
+              value: Personality Traits
       - format:
           margins:
             top: 10
@@ -2217,7 +2342,29 @@ profile:
       format:
         padding:
           top: 20
+          left: 10
+          right: 10
       rows:
+      - format:
+          divider: very_light
+          padding:
+            bottom: 5
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                color: theme_medium_light
+                font: bold
+                size: medium_small
+            value:
+              type: literal
+              value: Ideals
       - format:
           margins:
             top: 10
@@ -2240,9 +2387,31 @@ profile:
                 and equal respect.
     - name: Bonds
       format:
-        padding:
+        margins:
           top: 20
+          left: 10
+          right: 10
       rows:
+      - format:
+          divider: very_light
+          padding:
+            bottom: 5
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                color: theme_medium_light
+                font: bold
+                size: medium_small
+            value:
+              type: literal
+              value: Bonds
       - format:
           margins:
             top: 10
@@ -2267,7 +2436,30 @@ profile:
       format:
         margins:
           top: 20
+          left: 10
+          right: 10
+          bottom: 15
       rows:
+      - format:
+          divider: very_light
+          padding:
+            bottom: 5
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                color: theme_medium_light
+                font: bold
+                size: medium_small
+            value:
+              type: literal
+              value: Flaws
       - format:
           margins:
             top: 10
@@ -2290,18 +2482,17 @@ profile:
                 with more wealth and power.
   - name: Abilities
     groups:
-    - name: Strength
-      format:
-        background: dark
+    - format:
+        background: medium
         divider: light
         padding:
           bottom: 20
-          top: 10
-        show_name: false
+          left: 10
+          top: 20
+          right: 10
       rows:
       - format:
           margins:
-            top: 10
         widgets:
         - type: number
           widget:
@@ -2309,18 +2500,20 @@ profile:
               format:
                 background: empty
             description: >
-              Decades of fighting and training have made my muscles hard like granite. I may
-              appear lean, but with my strength of <value> I have surprised many an orc in combat.
+              Decades of fighting and training have hardened my muscles. I may appear lean, but
+              with my strength of <value> I have surprised many an orc in combat.
             format:
               description_style:
+                alignment: center
                 color: theme_very_dark
                 size: medium_small
               inside_label: strength
               inside_label_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
+              value_height: wrap
               value_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
             value:
               name: strength
@@ -2342,26 +2535,25 @@ profile:
                         type: tag
                         tag: strength_bonus
       - format:
-          margins:
-            top: 15
+          padding:
+            top: 20
         widgets:
         - type: number
           widget:
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_light
+                corners: medium
                 width: 1
             format:
-              value_postfix_style:
-                color: theme_super_dark
-                font: italic
-                size: medium_small
               value_style:
-                color: theme_super_dark
+                color: theme_medium_dark
                 font: italic
                 size: medium_small
-            value_postfix: ' modifier'
+              value_padding_horizontal: 15
+              value_height: very_small
+            value_postfix: ' mod'
             value:
               name: strength_modifier
               label: Strength Modifier
@@ -2374,7 +2566,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
@@ -2390,6 +2582,7 @@ profile:
               inside_label: saving throw
               inside_label_style:
                 color: theme_light
+              value_height: wrap
               value_style:
                 color: theme_light
             value:
@@ -2419,14 +2612,15 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - name: Dexterity
-      format:
-        background: dark
+    - format:
+        background: medium
         divider: light
         show_name: false
         padding:
           bottom: 20
           top: 10
+          left: 10
+          right: 10
       rows:
       - format:
           margins:
@@ -2438,18 +2632,20 @@ profile:
               format:
                 background: empty
             description: >
-              To survive on the street, I learned to be quick and nimble, to approach every
+              As an orphan suriving on the street, I learned to be nimble and how to approach every
               situation with finesse. dexterity <value>
             format:
               description_style:
+                alignment: center
                 color: theme_very_dark
                 size: medium_small
               inside_label: dexterity
               inside_label_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
+              value_height: wrap
               value_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
             value:
               name: dexterity
@@ -2472,25 +2668,23 @@ profile:
                         tag: dexterity_bonus
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_dark
+                corners: medium
                 width: 1
             format:
-              value_postfix_style:
-                color: theme_super_dark
-                size: medium_small
-                font: italic
               value_style:
-                color: theme_super_dark
+                color: theme_medium_dark
                 font: italic
                 size: medium_small
-            value_postfix: ' modifier'
+              value_padding_horizontal: 15
+            value_postfix: ' mod'
             value:
               name: dexterity_modifier
               label: Dexterity Modifier
@@ -2503,7 +2697,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
@@ -2519,6 +2713,7 @@ profile:
               inside_label: saving throw
               inside_label_style:
                 color: theme_light
+              value_height: wrap
               value_style:
                 color: theme_light
             value:
@@ -2548,9 +2743,8 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - name: Constitution
-      format:
-        background: dark
+    - format:
+        background: medium
         divider: light
         padding:
           bottom: 20
@@ -2571,14 +2765,16 @@ profile:
               prove it.
             format:
               description_style:
+                alignment: center
                 color: theme_very_dark
                 size: medium_small
               inside_label: constitution
               inside_label_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
+              value_height: wrap
               value_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
             value:
               name: constitution
@@ -2601,25 +2797,23 @@ profile:
                         tag: constitution_bonus
       - format:
           margins:
-           top: 15
+           top: 20
         widgets:
         - type: number
           widget:
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_dark
+                corners: medium
                 width: 1
             format:
-              value_postfix_style:
-                color: theme_super_dark
-                size: medium_small
-                font: italic
               value_style:
-                color: theme_super_dark
-                size: medium_small
+                color: theme_medium_dark
                 font: italic
-            value_postfix: ' modifier'
+                size: medium_small
+              value_padding_horizontal: 15
+            value_postfix: ' mod'
             value:
               name: constitution_modifier
               label: Constitution Modifier
@@ -2632,7 +2826,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
@@ -2648,6 +2842,7 @@ profile:
               inside_label: saving throw
               inside_label_style:
                 color: theme_light
+              value_height: wrap
               value_style:
                 color: theme_light
             value:
@@ -2677,11 +2872,9 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - name: Intelligence
-      format:
-        background: dark
+    - format:
+        background: medium
         divider: light
-        show_name: false
         padding:
           bottom: 20
           top: 10
@@ -2700,14 +2893,16 @@ profile:
               arises. intelligence <value>
             format:
               description_style:
+                alignment: center
                 color: theme_very_dark
                 size: medium_small
               inside_label: intelligence
               inside_label_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
+              value_height: wrap
               value_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
             value:
               name: intelligence
@@ -2730,25 +2925,23 @@ profile:
                         tag: intelligence_bonus
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_dark
+                corners: medium
                 width: 1
             format:
-              value_postfix_style:
-                color: theme_super_dark
-                size: medium_small
-                font: italic
               value_style:
-                color: theme_super_dark
-                size: medium_small
+                color: theme_medium_dark
                 font: italic
-            value_postfix: ' modifier'
+                size: medium_small
+              value_padding_horizontal: 15
+            value_postfix: ' mod'
             value:
               name: intelligence_modifier
               label: Intelligence Modifier
@@ -2761,7 +2954,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
@@ -2777,6 +2970,7 @@ profile:
               inside_label: saving throw
               inside_label_style:
                 color: theme_light
+              value_height: wrap
               value_style:
                 color: theme_light
             value:
@@ -2806,16 +3000,14 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - name: Wisdom
-      format:
-        background: dark
+    - format:
+        background: medium
         divider: light
         padding:
           bottom: 20
           top: 10
-        show_name: false
       rows:
-      - formt:
+      - format:
           margins:
             top: 10
         widgets:
@@ -2830,14 +3022,16 @@ profile:
               I've lost.
             format:
               description_style:
+                alignment: center
                 color: theme_very_dark
                 size: medium_small
               inside_label: wisdom
               inside_label_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
+              value_height: wrap
               value_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
             value:
               name: wisdom
@@ -2860,25 +3054,23 @@ profile:
                         tag: wisdom_bonus
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_dark
+                corners: medium
                 width: 1
             format:
-              value_postfix_style:
-                color: theme_super_dark
-                size: medium_small
-                font: italic
               value_style:
-                color: theme_super_dark
-                size: medium_small
+                color: theme_medium_dark
                 font: italic
-            value_postfix: ' modifier'
+                size: medium_small
+              value_padding_horizontal: 15
+            value_postfix: ' mod'
             value:
               name: wisdom_modifier
               label: Wisdom Modifier
@@ -2891,7 +3083,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
@@ -2907,6 +3099,7 @@ profile:
               inside_label: saving throw
               inside_label_style:
                 color: theme_light
+              value_height: wrap
               value_style:
                 color: theme_light
             value:
@@ -2936,13 +3129,11 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - name: Charisma
-      format:
-        background: dark
+    - format:
+        background: medium
         padding:
           bottom: 20
           top: 10
-        show_name: false
       rows:
       - format:
           margins:
@@ -2957,14 +3148,16 @@ profile:
               charisma <value> I've never been a charmer, but I get along with just about anyone I meet.
             format:
               description_style:
+                alignment: center
                 color: theme_very_dark
                 size: medium_small
               inside_label: charisma
               inside_label_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
+              value_height: wrap
               value_style:
-                color: green_very_light
+                color: gold_light
                 font: bold
             value:
               name: charisma
@@ -2987,25 +3180,23 @@ profile:
                         tag: charisma_bonus
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_dark
+                corners: medium
                 width: 1
             format:
-              value_postfix_style:
-                color: theme_super_dark
-                size: medium_small
-                font: italic
               value_style:
-                color: theme_super_dark
-                size: medium_small
+                color: theme_medium_dark
                 font: italic
-            value_postfix: ' modifier'
+                size: medium_small
+              value_padding_horizontal: 15
+            value_postfix: ' mod'
             value:
               name: charisma_modifier
               label: Charisma Modifier
@@ -3018,7 +3209,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: number
           widget:
@@ -3034,6 +3225,7 @@ profile:
               inside_label: saving throw
               inside_label_style:
                 color: theme_light
+              value_height: wrap
               value_style:
                 color: theme_light
             value:
@@ -4285,6 +4477,8 @@ profile:
                   name: quantity
                   type: literal
                   value: 1
+  - name: History
+    groups:
 encounter:
   pages:
   - name: Attacks

@@ -10,6 +10,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.kispoko.tome.sheet.Spacing;
+import com.kispoko.tome.util.Util;
 
 import java.util.List;
 
@@ -161,6 +162,35 @@ public class LayoutParamsBuilder
         }
         else {
             heightValue = (int) context.getResources().getDimension(height);
+        }
+
+        switch (this.layoutType)
+        {
+            case LINEAR:
+                this.linearLayoutParams.height = heightValue;
+                break;
+            case RELATIVE:
+                this.relativeLayoutParams.height = heightValue;
+                break;
+            case TABLE:
+                this.tableLayoutParams.height = heightValue;
+                break;
+            case TABLE_ROW:
+                this.tableRowLayoutParams.height = heightValue;
+                break;
+        }
+    }
+
+
+    public void setHeightDp(int heightDp)
+    {
+        int heightValue;
+
+        if (isLayoutConstant(heightDp)) {
+            heightValue = heightDp;
+        }
+        else {
+            heightValue = Util.dpToPixel(heightDp);
         }
 
         switch (this.layoutType)

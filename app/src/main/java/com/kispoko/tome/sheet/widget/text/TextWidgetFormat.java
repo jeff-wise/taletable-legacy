@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.text;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextSize;
@@ -46,6 +47,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>    outsideLabel;
     private PrimitiveFunctor<Position>  outsideLabelPosition;
     private ModelFunctor<TextStyle>     outsideLabelStyle;
+    private ModelFunctor<Spacing>       outsideLabelMargins;
 
     private ModelFunctor<TextStyle>     valueStyle;
     private PrimitiveFunctor<Height>    valueHeight;
@@ -70,6 +72,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.outsideLabel           = new PrimitiveFunctor<>(null, String.class);
         this.outsideLabelPosition   = new PrimitiveFunctor<>(null, Position.class);
         this.outsideLabelStyle      = ModelFunctor.empty(TextStyle.class);
+        this.outsideLabelMargins    = ModelFunctor.empty(Spacing.class);
 
         this.valueStyle             = ModelFunctor.empty(TextStyle.class);
         this.valueHeight            = new PrimitiveFunctor<>(null, Height.class);
@@ -89,6 +92,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                             String outsideLabel,
                             Position outsideLabelPosition,
                             TextStyle outsideLabelStyle,
+                            Spacing outsideLabelMargins,
                             TextStyle valueStyle,
                             Height valueHeight,
                             TextStyle descriptionStyle,
@@ -104,6 +108,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.outsideLabel           = new PrimitiveFunctor<>(outsideLabel, String.class);
         this.outsideLabelPosition   = new PrimitiveFunctor<>(outsideLabelPosition, Position.class);
         this.outsideLabelStyle      = ModelFunctor.full(outsideLabelStyle, TextStyle.class);
+        this.outsideLabelMargins    = ModelFunctor.full(outsideLabelMargins, Spacing.class);
 
         this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
         this.valueHeight            = new PrimitiveFunctor<>(valueHeight, Height.class);
@@ -121,6 +126,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         this.setOutsideLabel(outsideLabel);
         this.setOutsideLabelPosition(outsideLabelPosition);
         this.setOutsideLabelStyle(outsideLabelStyle);
+        this.setOutsideLabelMargins(outsideLabelMargins);
 
         this.setValueStyle(valueStyle);
         this.setValueHeight(valueHeight);
@@ -148,6 +154,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         Position  outsideLabelPosition = Position.fromYaml(
                                                     yaml.atMaybeKey("outside_label_position"));
         TextStyle outsideLabelStyle    = TextStyle.fromYaml(yaml.atMaybeKey("outside_label_style"));
+        Spacing   outsideLabelMargins  = Spacing.fromYaml(yaml.atMaybeKey("outside_label_margins"));
 
         TextStyle valueStyle           = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
         Height    valueHeight          = Height.fromYaml(yaml.atMaybeKey("value_height"));
@@ -158,7 +165,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         return new TextWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
                                     outsideLabel, outsideLabelPosition, outsideLabelStyle,
-                                    valueStyle, valueHeight, descriptionStyle,
+                                    outsideLabelMargins, valueStyle, valueHeight, descriptionStyle,
                                     isQuote, quoteSource);
     }
 
@@ -176,6 +183,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         textWidgetFormat.setOutsideLabel(null);
         textWidgetFormat.setOutsideLabelPosition(null);
         textWidgetFormat.setOutsideLabelStyle(null);
+        textWidgetFormat.setOutsideLabelMargins(null);
 
         textWidgetFormat.setValueStyle(null);
         textWidgetFormat.setDescriptionStyle(null);
@@ -229,6 +237,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                 .putString("outside_label", this.outsideLabel())
                 .putYaml("outside_label_position", this.outsideLabelPosition())
                 .putYaml("outside_label_style", this.outsideLabelStyle())
+                .putYaml("outside_label_margins", this.outsideLabelMargins())
                 .putYaml("value_style", this.valueStyle())
                 .putYaml("value_height", this.valueHeight())
                 .putYaml("description_style", this.descriptionStyle())
@@ -395,6 +404,32 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                                                         Alignment.CENTER);
             this.outsideLabelStyle.setValue(defaultLabelStyle);
         }
+    }
+
+
+    // ** Outside Label Margins
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The outside label margins.
+     * @return The outside label margins spacing.
+     */
+    public Spacing outsideLabelMargins()
+    {
+        return this.outsideLabelMargins.getValue();
+    }
+
+
+    /**
+     * Set the outside label margins. If null, sets defaults (all 0s).
+     * @param spacing The spacing.
+     */
+    public void setOutsideLabelMargins(Spacing spacing)
+    {
+        if (spacing != null)
+            this.outsideLabelMargins.setValue(spacing);
+        else
+            this.outsideLabelMargins.setValue(Spacing.asDefault());
     }
 
 

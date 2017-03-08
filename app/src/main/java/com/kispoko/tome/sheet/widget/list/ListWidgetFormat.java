@@ -18,6 +18,7 @@ import org.w3c.dom.Text;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.tint;
 
 
 /**
@@ -38,8 +39,7 @@ public class ListWidgetFormat implements Model, ToYaml, Serializable
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<TextSize>      size;
-    private PrimitiveFunctor<TextColor>     tint;
+    private ModelFunctor<TextStyle>         itemStyle;
     private ModelFunctor<TextStyle>         annotationStyle;
 
 
@@ -50,25 +50,21 @@ public class ListWidgetFormat implements Model, ToYaml, Serializable
     {
         this.id                 = null;
 
-        this.size               = new PrimitiveFunctor<>(null, TextSize.class);
-        this.tint               = new PrimitiveFunctor<>(null, TextColor.class);
+        this.itemStyle          = ModelFunctor.empty(TextStyle.class);
         this.annotationStyle    = ModelFunctor.empty(TextStyle.class);
     }
 
 
     public ListWidgetFormat(UUID id,
-                            TextSize size,
-                            TextColor tint,
+                            TextStyle itemStyle,
                             TextStyle annotationStyle)
     {
         this.id                 = id;
 
-        this.size               = new PrimitiveFunctor<>(size, TextSize.class);
-        this.tint               = new PrimitiveFunctor<>(tint, TextColor.class);
+        this.itemStyle          = ModelFunctor.full(itemStyle, TextStyle.class);
         this.annotationStyle    = ModelFunctor.full(annotationStyle, TextStyle.class);
 
-        this.setSize(size);
-        this.setTint(tint);
+        this.setItemStyle(itemStyle);
         this.setAnnotationStyle(annotationStyle);
     }
 
@@ -87,11 +83,10 @@ public class ListWidgetFormat implements Model, ToYaml, Serializable
 
         UUID      id              = UUID.randomUUID();
 
-        TextSize  size            = TextSize.fromYaml(yaml.atMaybeKey("size"));
-        TextColor tint            = TextColor.fromYaml(yaml.atMaybeKey("tint"));
-        TextStyle annotationStyle = TextStyle.fromYaml(yaml.atMaybeKey("annotation_style"), false);
+        TextStyle itemStyle       = TextStyle.fromYaml(yaml.atMaybeKey("item_style"));
+        TextStyle annotationStyle = TextStyle.fromYaml(yaml.atMaybeKey("annotation_style"));
 
-        return new ListWidgetFormat(id, size, tint, annotationStyle);
+        return new ListWidgetFormat(id, itemStyle, annotationStyle);
     }
 
 
@@ -100,8 +95,8 @@ public class ListWidgetFormat implements Model, ToYaml, Serializable
         ListWidgetFormat listWidgetFormat = new ListWidgetFormat();
 
         listWidgetFormat.setId(UUID.randomUUID());
-        listWidgetFormat.setSize(null);
-        listWidgetFormat.setTint(null);
+
+        listWidgetFormat.setItemStyle(null);
         listWidgetFormat.setAnnotationStyle(null);
 
         return listWidgetFormat;
@@ -143,64 +138,43 @@ public class ListWidgetFormat implements Model, ToYaml, Serializable
 
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
-
-        yaml.putYaml("size", this.size());
-        yaml.putYaml("tint", this.tint());
-        yaml.putYaml("annotation_style", this.annotationStyle());
-
-        return yaml;
+        return YamlBuilder.map()
+                .putYaml("item_style", this.itemStyle())
+                .putYaml("annotation_style", this.annotationStyle());
     }
 
 
     // > State
     // --------------------------------------------------------------------------------------
 
-    // ** Size
+    // ** Item Style
     // --------------------------------------------------------------------------------------
 
     /**
-     * The List Widget's item text size.
-     * @return The Widget Content Size.
+     * The item style.
+     * @return The item style.
      */
-    public TextSize size()
+    public TextStyle itemStyle()
     {
-        return this.size.getValue();
+        return this.itemStyle.getValue();
     }
 
 
     /**
-     * Set the list widget's item text size.
-     * @param size The text size.
+     * Set the item style. If null, sets a default style.
+     * @param style The style.
      */
-    public void setSize(TextSize size)
+    public void setItemStyle(TextStyle style)
     {
-        if (size != null)
-            this.size.setValue(size);
-        else
-            this.size.setValue(TextSize.MEDIUM);
-    }
-
-
-    // ** Tint
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The list widget item text tint.
-     * @return The tint.
-     */
-    public TextColor tint()
-    {
-        return this.tint.getValue();
-    }
-
-
-    public void setTint(TextColor tint)
-    {
-        if (tint != null)
-            this.tint.setValue(tint);
-        else
-            this.tint.setValue(TextColor.THEME_MEDIUM);
+        if (style != null) {
+            this.itemStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultItemStyle = new TextStyle(UUID.randomUUID(),
+                                                       TextColor.THEME_LIGHT,
+                                                       TextSize.MEDIUM_SMALL);
+            this.itemStyle.setValue(defaultItemStyle);
+        }
     }
 
 

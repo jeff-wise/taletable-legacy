@@ -14,6 +14,8 @@ import android.text.Spanned;
 import android.view.View;
 import android.widget.TextView;
 
+import com.kispoko.tome.sheet.Spacing;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,7 @@ public class TextViewBuilder implements ViewBuilder
 
     public Padding                  padding;
     public Margins                  margin;
+    public Spacing                  marginSpacing;
 
     public Integer                  size;
     public Integer                  color;
@@ -99,6 +102,7 @@ public class TextViewBuilder implements ViewBuilder
 
         this.padding            = new Padding();
         this.margin             = new Margins();
+        this.marginSpacing      = null;
 
         this.size               = null;
         this.color              = null;
@@ -327,7 +331,10 @@ public class TextViewBuilder implements ViewBuilder
         // > Margins
         // --------------------------------------------------------------------------------------
 
-        layoutParamsBuilder.setMargins(this.margin);
+        if (this.marginSpacing != null)
+            layoutParamsBuilder.setMargins(this.marginSpacing);
+        else
+            layoutParamsBuilder.setMargins(this.margin);
 
         // > Rules (Relative Layout Only)
         // --------------------------------------------------------------------------------------

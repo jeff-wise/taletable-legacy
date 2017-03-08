@@ -28,13 +28,13 @@
                     android:id="@+id/page_title"
                     android:layout_gravity="center"
                     android:textSize="20sp"
-                    android:textColor="@color/dark_blue_hl_1"
+                    android:textColor="@color/dark_blue_hlx_8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
             </android.support.v7.widget.Toolbar>
 
-            <android.support.design.widget.TabLayout
+            <com.kispoko.tome.util.ui.CustomTabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -42,9 +42,8 @@
                 app:tabGravity="fill"
                 app:tabMode="scrollable"
                 app:tabTextColor="@color/dark_blue_hl_8"
-                app:tabSelectedTextColor="@color/dark_blue_hl_1"
-                app:tabIndicatorColor="@color/dark_blue_hl_1"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                app:tabSelectedTextColor="@color/dark_blue_hlx_8"
+                app:tabIndicatorColor="@color/dark_blue_hl_1" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/page_pager"

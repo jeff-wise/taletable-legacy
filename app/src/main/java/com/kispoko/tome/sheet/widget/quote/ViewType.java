@@ -23,7 +23,9 @@ public enum ViewType implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    SOURCE;
+    SOURCE,
+    ICON_OVER_SOURCE,
+    NO_ICON;
 
 
     // CONSTRUCTORS

@@ -43,6 +43,7 @@ import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.sheet.Section;
+import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.sheet.Summary;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.Page;
@@ -139,6 +140,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(GroupFormat.class);
             modelClasses.add(GroupRow.class);
             modelClasses.add(GroupRowFormat.class);
+            modelClasses.add(Spacing.class);
 
             // ** Game Mechanic
             modelClasses.add(DiceRoll.class);

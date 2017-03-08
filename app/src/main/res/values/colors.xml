@@ -51,10 +51,10 @@
     <!-- GOLD -->
     <!-- ================================================================ -->
 
-    <color name="gold_very_light">#F5EDD3</color>
+    <color name="gold_very_light">#F0E3BE</color>
     <color name="gold_light">#E3D7B4</color>
-    <color name="gold_medium_light">#C4B998</color>
-    <color name="gold_medium">#BAB090</color>
+    <color name="gold_medium_light">#D9CDAC</color>
+    <color name="gold_medium">#CCC1A2</color>
     <color name="gold_dark">#B0AC67</color>
 
 
@@ -88,7 +88,14 @@
     <!-- ================================================================ -->
 
     <color name="red_5">#A14746</color>
-    <color name="red_light">#C79696</color>
+    <color name="red_light">#C7848A</color>
     <color name="red_medium_light">#B0827C</color>
+
+    <!-- RED ORANGE -->
+    <!-- ================================================================ -->
+
+    <!--<color name="red_orange_light">#C78572</color>-->
+    <!--<color name="red_orange_light">#C7846D</color>-->
+    <color name="red_orange_light">#C78F84</color>
 
 </resources>

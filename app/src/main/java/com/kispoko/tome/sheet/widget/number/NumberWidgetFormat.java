@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.number;
 
 
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextSize;
@@ -46,6 +47,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>    outsideLabel;
     private PrimitiveFunctor<Position>  outsideLabelPosition;
     private ModelFunctor<TextStyle>     outsideLabelStyle;
+    private ModelFunctor<Spacing>       outsideLabelMargins;
 
     private ModelFunctor<TextStyle>     descriptionStyle;
 
@@ -71,6 +73,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.outsideLabel           = new PrimitiveFunctor<>(null, String.class);
         this.outsideLabelPosition   = new PrimitiveFunctor<>(null, Position.class);
         this.outsideLabelStyle      = ModelFunctor.empty(TextStyle.class);
+        this.outsideLabelMargins    = ModelFunctor.empty(Spacing.class);
 
         this.descriptionStyle       = ModelFunctor.empty(TextStyle.class);
 
@@ -90,6 +93,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                               String outsideLabel,
                               Position outsideLabelPosition,
                               TextStyle outsideLabelStyle,
+                              Spacing outsideLabelMargins,
                               TextStyle descriptionStyle,
                               TextStyle valueStyle,
                               Height valueHeight,
@@ -106,6 +110,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.outsideLabel           = new PrimitiveFunctor<>(outsideLabel, String.class);
         this.outsideLabelPosition   = new PrimitiveFunctor<>(outsideLabelPosition, Position.class);
         this.outsideLabelStyle      = ModelFunctor.full(outsideLabelStyle, TextStyle.class);
+        this.outsideLabelMargins    = ModelFunctor.full(outsideLabelMargins, Spacing.class);
 
         this.descriptionStyle       = ModelFunctor.full(descriptionStyle, TextStyle.class);
 
@@ -122,6 +127,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         this.setOutsideLabelPosition(outsideLabelPosition);
         this.setOutsideLabelStyle(outsideLabelStyle);
+        this.setOutsideLabelMargins(outsideLabelMargins);
 
         this.setDescriptionStyle(descriptionStyle);
 
@@ -156,6 +162,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         Position  outsideLabelPosition = Position.fromYaml(
                                                     yaml.atMaybeKey("outside_label_position"));
         TextStyle outsideLabelStyle    = TextStyle.fromYaml(yaml.atMaybeKey("outside_label_style"));
+        Spacing   outsideLabelMargins  = Spacing.fromYaml(yaml.atMaybeKey("outside_label_margins"));
 
         TextStyle descriptionStyle     = TextStyle.fromYaml(yaml.atMaybeKey("description_style"));
 
@@ -168,8 +175,9 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         return new NumberWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
                                       outsideLabel, outsideLabelPosition, outsideLabelStyle,
-                                      descriptionStyle, valueStyle, valueHeight, valuePaddingHorz,
-                                      valuePrefixStyle, valuePostfixStyle);
+                                      outsideLabelMargins, descriptionStyle, valueStyle,
+                                      valueHeight, valuePaddingHorz, valuePrefixStyle,
+                                      valuePostfixStyle);
     }
 
 
@@ -190,6 +198,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         numberWidgetFormat.setOutsideLabel(null);
         numberWidgetFormat.setOutsideLabelPosition(null);
         numberWidgetFormat.setOutsideLabelStyle(null);
+        numberWidgetFormat.setOutsideLabelMargins(null);
 
         numberWidgetFormat.setDescriptionStyle(null);
 
@@ -417,6 +426,32 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                                                         Alignment.CENTER);
             this.outsideLabelStyle.setValue(defaultLabelStyle);
         }
+    }
+
+
+    // ** Outside Label Margins
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The outside label margins.
+     * @return The outside label margins spacing.
+     */
+    public Spacing outsideLabelMargins()
+    {
+        return this.outsideLabelMargins.getValue();
+    }
+
+
+    /**
+     * Set the outside label margins. If null, sets defaults (all 0s).
+     * @param spacing The spacing.
+     */
+    public void setOutsideLabelMargins(Spacing spacing)
+    {
+        if (spacing != null)
+            this.outsideLabelMargins.setValue(spacing);
+        else
+            this.outsideLabelMargins.setValue(Spacing.asDefault());
     }
 
 

@@ -299,7 +299,7 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         LinearLayoutBuilder divider = new LinearLayoutBuilder();
 
         divider.width               = LinearLayout.LayoutParams.MATCH_PARENT;
-        divider.height              = R.dimen.one_dp;
+        divider.heightDp            = this.format().dividerThickness();
 
         divider.backgroundColor     = this.format().dividerType()
                                           .colorIdWithBackground(this.background());

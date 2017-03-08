@@ -514,6 +514,9 @@ public class TextWidget extends Widget
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 
+        if (this.data().format().background() == BackgroundColor.EMPTY)
+            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
         layout.backgroundColor      = this.data().format().background().colorId();
         layout.backgroundResource   = this.format().valueHeight()
                                           .resourceId(this.data().format().corners());
@@ -606,12 +609,14 @@ public class TextWidget extends Widget
         // > Format the label depending on its properties
 
         // > Alignment: LEFT
-        if (this.format().outsideLabelStyle().alignment() == Alignment.LEFT)
-            label.margin.left   = R.dimen.one_dp;
+//        if (this.format().outsideLabelStyle().alignment() == Alignment.LEFT)
+//            label.margin.left   = R.dimen.one_dp;
 
         // > Position: TOP
-        if (this.format().outsideLabelPosition() == Position.TOP)
-            label.margin.bottom = R.dimen.two_dp;
+//        if (this.format().outsideLabelPosition() == Position.TOP)
+//            label.margin.bottom = R.dimen.two_dp;
+
+        label.marginSpacing     = this.format().outsideLabelMargins();
 
         return label.textView(context);
     }

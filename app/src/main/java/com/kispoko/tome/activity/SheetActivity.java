@@ -233,11 +233,6 @@ public class SheetActivity
 
         TextView titleView = (TextView) this.toolbar.findViewById(R.id.page_title);
         titleView.setTypeface(Util.serifFontRegular(this));
-
-        //setSupportActionBar(this.toolbar);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        UI.changeTabsFont(tabLayout, this);
     }
 
 

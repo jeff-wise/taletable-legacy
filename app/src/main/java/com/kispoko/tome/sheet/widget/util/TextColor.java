@@ -36,6 +36,11 @@ public enum TextColor implements ToYaml
     THEME_DARK,
     THEME_VERY_DARK,
     THEME_SUPER_DARK,
+    THEME_BACKGROUND_LIGHT,
+    THEME_BACKGROUND_MEDIUM_LIGHT,
+    THEME_BACKGROUND_MEDIUM,
+    THEME_BACKGROUND_MEDIUM_DARK,
+    THEME_BACKGROUND_DARK,
     GOLD_VERY_LIGHT,
     GOLD_LIGHT,
     GOLD_MEDIUM_LIGHT,
@@ -46,6 +51,7 @@ public enum TextColor implements ToYaml
     PURPLE_MEDIUM_LIGHT,
     PURPLE_MEDIUM,
     RED_LIGHT,
+    RED_ORANGE_LIGHT,
     BLUE_LIGHT,
     GREEN_VERY_LIGHT,
     GREEN_LIGHT,
@@ -128,6 +134,16 @@ public enum TextColor implements ToYaml
                 return R.color.dark_blue_hl_8;
             case THEME_SUPER_DARK:
                 return R.color.dark_blue_1;
+            case THEME_BACKGROUND_LIGHT:
+                return R.color.dark_blue_5;
+            case THEME_BACKGROUND_MEDIUM_LIGHT:
+                return R.color.dark_blue_6;
+            case THEME_BACKGROUND_MEDIUM:
+                return R.color.dark_blue_7;
+            case THEME_BACKGROUND_MEDIUM_DARK:
+                return R.color.dark_blue_8;
+            case THEME_BACKGROUND_DARK:
+                return R.color.dark_blue_9;
             case GOLD_VERY_LIGHT:
                 return R.color.gold_very_light;
             case GOLD_LIGHT:
@@ -148,6 +164,8 @@ public enum TextColor implements ToYaml
                 return R.color.purple_medium;
             case RED_LIGHT:
                 return R.color.red_light;
+            case RED_ORANGE_LIGHT:
+                return R.color.red_orange_light;
             case BLUE_LIGHT:
                 return R.color.blue_light;
             case GREEN_VERY_LIGHT:

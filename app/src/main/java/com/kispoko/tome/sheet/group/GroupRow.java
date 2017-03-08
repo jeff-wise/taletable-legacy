@@ -233,6 +233,8 @@ public class GroupRow implements Model, ToYaml, Serializable
         layout.width        = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.marginSpacing    = this.format().margins();
+
         return layout.linearLayout(context);
     }
 
@@ -268,7 +270,7 @@ public class GroupRow implements Model, ToYaml, Serializable
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.marginSpacing    = this.format().margins();
+        layout.paddingSpacing   = this.format().padding();
 
         return layout.linearLayout(context);
     }
@@ -282,7 +284,7 @@ public class GroupRow implements Model, ToYaml, Serializable
         divider.height      = R.dimen.one_dp;
 
         BackgroundColor backgroundColor = this.format().backgroundColor();
-        if (this.format().backgroundColor() == BackgroundColor.NONE)
+        if (this.format().backgroundColor() == BackgroundColor.EMPTY)
             backgroundColor = this.groupParent.background();
 
         divider.backgroundColor = this.format().dividerType()

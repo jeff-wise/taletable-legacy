@@ -496,6 +496,8 @@ public class NumberWidget extends Widget
         layout.gravity              = this.data().format().alignment().gravityConstant()
                                         | Gravity.CENTER_VERTICAL;
 
+        layout.marginSpacing        = this.data().format().margins();
+
         return layout.linearLayout(context);
     }
 
@@ -541,10 +543,13 @@ public class NumberWidget extends Widget
         //   If no padding is specified, the value (and its background) stretches to fill the
         //   space. Otherwise it only stretches as far as the padding allows
         // -------------------------------------------------------------------------------------
-        if (this.format().valuePaddingHorizontal() != null)
+        if (this.format().valuePaddingHorizontal() != null ||
+            this.data().format().background() == BackgroundColor.EMPTY) {
             layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-        else
+        }
+        else {
             layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        }
 
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
@@ -592,6 +597,10 @@ public class NumberWidget extends Widget
 
         if (this.description() != null)
         {
+            value.layoutGravity = this.format().descriptionStyle().alignment().gravityConstant()
+                                    | Gravity.CENTER_VERTICAL;
+            value.gravity       = this.format().descriptionStyle().alignment().gravityConstant();
+
             value.font          = Font.serifFontRegular(context);
 
             value.color     = this.format().descriptionStyle().color().resourceId();
@@ -650,16 +659,18 @@ public class NumberWidget extends Widget
         // > Format the label depending on its properties
 
         // > Alignment: LEFT
-        if (this.format().outsideLabelStyle().alignment() == Alignment.LEFT)
-            label.margin.left   = R.dimen.one_dp;
+//        if (this.format().outsideLabelStyle().alignment() == Alignment.LEFT)
+//            label.margin.left   = R.dimen.one_dp;
 
         // > Position: TOP
-        if (this.format().outsideLabelPosition() == Position.TOP)
-            label.margin.bottom = R.dimen.two_dp;
+//        if (this.format().outsideLabelPosition() == Position.TOP)
+//            label.margin.bottom = R.dimen.two_dp;
 
         // > Position: RIGHT
-        if (this.format().outsideLabelPosition() == Position.RIGHT)
-            label.margin.left = R.dimen.five_dp;
+//        if (this.format().outsideLabelPosition() == Position.RIGHT)
+//            label.margin.left = R.dimen.five_dp;
+
+        label.marginSpacing     = this.format().outsideLabelMargins();
 
         return label.textView(context);
     }

@@ -17,8 +17,6 @@ import com.kispoko.tome.util.yaml.YamlParser;
 import java.io.Serializable;
 import java.util.UUID;
 
-import static android.R.attr.paddingBottom;
-import static android.R.attr.paddingTop;
 
 
 /**
@@ -235,7 +233,7 @@ public class GroupRowFormat implements Model, ToYaml, Serializable
         if (backgroundColor != null)
             this.backgroundColor.setValue(backgroundColor);
         else
-            this.backgroundColor.setValue(BackgroundColor.NONE);
+            this.backgroundColor.setValue(BackgroundColor.EMPTY);
     }
 
 

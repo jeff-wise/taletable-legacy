@@ -337,11 +337,11 @@ public class ListWidget extends Widget
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.margin.left          = R.dimen.widget_list_item_margins_horz;
-        layout.margin.right         = R.dimen.widget_list_item_margins_horz;
+//        layout.margin.left          = R.dimen.widget_list_item_margins_horz;
+//        layout.margin.right         = R.dimen.widget_list_item_margins_horz;
 
-        layout.padding.left         = R.dimen.widget_list_item_padding_horz;
-        layout.padding.right        = R.dimen.widget_list_item_padding_horz;
+//        layout.padding.left         = R.dimen.widget_list_item_padding_horz;
+//        layout.padding.right        = R.dimen.widget_list_item_padding_horz;
 
         layout.child(valueLayout)
               .child(divider);
@@ -364,9 +364,8 @@ public class ListWidget extends Widget
         item.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         item.text               = itemValue;
-        item.font               = Font.serifFontRegular(context);
-        item.color              = this.format().tint().resourceId();
-        item.size               = this.format().size().resourceId();
+
+        this.format().itemStyle().styleTextViewBuilder(item, context);
 
         item.padding.left       = R.dimen.widget_list_item_value_padding_left;
         item.padding.top        = R.dimen.widget_list_item_padding_vert;
@@ -378,9 +377,7 @@ public class ListWidget extends Widget
         annotation.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
         annotation.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        annotation.color            = R.color.dark_blue_hl_8;
-        annotation.size             = this.format().annotationStyle().size().resourceId();
-        annotation.font             = Font.serifFontRegular(context);
+        this.format().annotationStyle().styleTextViewBuilder(annotation, context);
 
         annotation.text             = itemLabel;
 

@@ -9,6 +9,7 @@ import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParseException;
@@ -40,6 +41,8 @@ public class QuoteWidgetFormat implements Model, ToYaml, Serializable
     private ModelFunctor<TextStyle>     quoteStyle;
     private ModelFunctor<TextStyle>     sourceStyle;
 
+    private PrimitiveFunctor<TextColor> iconColor;
+
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -50,18 +53,26 @@ public class QuoteWidgetFormat implements Model, ToYaml, Serializable
 
         this.quoteStyle     = ModelFunctor.empty(TextStyle.class);
         this.sourceStyle    = ModelFunctor.empty(TextStyle.class);
+
+        this.iconColor      = new PrimitiveFunctor<>(null, TextColor.class);
     }
 
 
-    public QuoteWidgetFormat(UUID id, TextStyle quoteStyle, TextStyle sourceStyle)
+    public QuoteWidgetFormat(UUID id,
+                             TextStyle quoteStyle,
+                             TextStyle sourceStyle,
+                             TextColor iconColor)
     {
         this.id             = id;
 
         this.quoteStyle     = ModelFunctor.full(quoteStyle, TextStyle.class);
         this.sourceStyle    = ModelFunctor.full(sourceStyle, TextStyle.class);
 
+        this.iconColor      = new PrimitiveFunctor<>(iconColor, TextColor.class);
+
         this.setQuoteStyle(quoteStyle);
         this.setSourceStyle(sourceStyle);
+        this.setIconColor(iconColor);
     }
 
 
@@ -82,7 +93,9 @@ public class QuoteWidgetFormat implements Model, ToYaml, Serializable
         TextStyle quoteStyle  = TextStyle.fromYaml(yaml.atMaybeKey("quote_style"));
         TextStyle sourceStyle = TextStyle.fromYaml(yaml.atMaybeKey("source_style"));
 
-        return new QuoteWidgetFormat(id, quoteStyle, sourceStyle);
+        TextColor iconColor   = TextColor.fromYaml(yaml.atMaybeKey("icon_color"));
+
+        return new QuoteWidgetFormat(id, quoteStyle, sourceStyle, iconColor);
     }
 
 
@@ -98,6 +111,8 @@ public class QuoteWidgetFormat implements Model, ToYaml, Serializable
 
         format.setQuoteStyle(null);
         format.setSourceStyle(null);
+
+        format.setIconColor(null);
 
         return format;
     }
@@ -209,6 +224,32 @@ public class QuoteWidgetFormat implements Model, ToYaml, Serializable
                                                          Alignment.CENTER);
             this.sourceStyle.setValue(defaultSourceStyle);
         }
+    }
+
+
+    // ** Icon Color
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The icon color.
+     * @return The icon color.
+     */
+    public TextColor iconColor()
+    {
+        return this.iconColor.getValue();
+    }
+
+
+    /**
+     * Set the icon color. If null, the default color is THEME_DARK.
+     * @param color The icon color.
+     */
+    public void setIconColor(TextColor color)
+    {
+        if (color != null)
+            this.iconColor.setValue(color);
+        else
+            this.iconColor.setValue(TextColor.THEME_DARK);
     }
 
 

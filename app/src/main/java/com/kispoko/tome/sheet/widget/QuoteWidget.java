@@ -311,7 +311,20 @@ public class QuoteWidget extends Widget
 
         // > Source View
         if (this.source() != null)
-            layout.addView(sourceView(context));
+        {
+            switch (this.viewType())
+            {
+                case SOURCE:
+                    layout.addView(sourceHorizontalView(context));
+                    break;
+                case ICON_OVER_SOURCE:
+                    layout.addView(sourceVerticalView(context));
+                    break;
+                case NO_ICON:
+                    layout.addView(sourceNoIconView(context));
+                    break;
+            }
+        }
 
         return layout;
     }
@@ -346,7 +359,7 @@ public class QuoteWidget extends Widget
     }
 
 
-    private LinearLayout sourceView(Context context)
+    private LinearLayout sourceHorizontalView(Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -378,6 +391,8 @@ public class QuoteWidget extends Widget
 
         icon.image                  = R.drawable.ic_quote;
 
+        icon.color                  = this.format().iconColor().resourceId();
+
         // [3 B] Source
         // -------------------------------------------------------------------------------------
 
@@ -390,6 +405,77 @@ public class QuoteWidget extends Widget
 
 
         return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout sourceVerticalView(Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout  = new LinearLayoutBuilder();
+
+        ImageViewBuilder    icon    = new ImageViewBuilder();
+        TextViewBuilder     source  = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.orientation     = LinearLayout.VERTICAL;
+
+        layout.width           = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.gravity         = Gravity.CENTER;
+
+        layout.margin.top      = R.dimen.widget_text_quote_margin_top;
+
+        layout.child(icon)
+              .child(source);
+
+        // [3 A] Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image              = R.drawable.ic_quote_medium;
+
+        icon.color                  = this.format().iconColor().resourceId();
+
+        // [3 B] Source
+        // -------------------------------------------------------------------------------------
+
+        source.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        source.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        source.text             = this.source();
+
+        source.gravity          = Gravity.CENTER;
+
+        this.format().sourceStyle().styleTextViewBuilder(source, context);
+
+
+        return layout.linearLayout(context);
+    }
+
+
+    private TextView sourceNoIconView(Context context)
+    {
+        TextViewBuilder source = new TextViewBuilder();
+
+        source.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        source.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        source.text             = this.source();
+
+        source.gravity          = Gravity.CENTER;
+
+        source.margin.top       = R.dimen.seven_dp;
+
+        this.format().sourceStyle().styleTextViewBuilder(source, context);
+
+        return source.textView(context);
     }
 
 
