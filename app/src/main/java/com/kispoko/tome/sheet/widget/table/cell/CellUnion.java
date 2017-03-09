@@ -12,7 +12,10 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
+import com.kispoko.tome.sheet.widget.util.Height;
+import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
@@ -310,20 +313,20 @@ public class CellUnion implements Model, ToYaml, Serializable
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public View view(ColumnUnion columnUnion, Context context)
+    public View view(ColumnUnion columnUnion, TableRowFormat rowFormat, Context context)
     {
         View cellView = null;
 
         switch (this.type.getValue())
         {
             case TEXT:
-                cellView = this.textCell().view(columnUnion.textColumn(), context);
+                cellView = this.textCell().view(columnUnion.textColumn(), rowFormat, context);
                 break;
             case NUMBER:
-                cellView = this.numberCell().view(columnUnion.numberColumn(), context);
+                cellView = this.numberCell().view(columnUnion.numberColumn(), rowFormat, context);
                 break;
             case BOOLEAN:
-                cellView = this.booleanCell().view(columnUnion.booleanColumn(), context);
+                cellView = this.booleanCell().view(columnUnion.booleanColumn(), rowFormat, context);
                 break;
         }
 

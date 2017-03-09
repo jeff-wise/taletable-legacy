@@ -1860,7 +1860,7 @@ profile:
                 bottom: 3
               value_style:
                 alignment: center
-                color: theme_light
+                color: theme_medium_light
                 size: medium_small
             value:
               type: value
@@ -1891,7 +1891,7 @@ profile:
                 bottom: 3
               value_style:
                 alignment: center
-                color: theme_light
+                color: theme_medium_light
                 size: medium_small
             value:
               type: value
@@ -1923,7 +1923,7 @@ profile:
                 bottom: 3
               value_style:
                 alignment: center
-                color: theme_light
+                color: theme_medium_light
                 size: medium_small
             value:
               type: value
@@ -1958,7 +1958,7 @@ profile:
                 bottom: 3
               value_style:
                 alignment: center
-                color: theme_light
+                color: theme_medium_light
                 size: medium_small
             value:
               type: literal
@@ -1984,7 +1984,7 @@ profile:
                 bottom: 3
               value_style:
                 alignment: center
-                color: theme_light
+                color: theme_medium_light
                 size: medium_small
             value:
               type: literal
@@ -2081,7 +2081,7 @@ profile:
         - type: number
           widget:
             data:
-              format:
+              rormat:
                 alignment: left
                 background: dark
                 name: Age
@@ -2501,20 +2501,22 @@ profile:
                 background: empty
             description: >
               Decades of fighting and training have hardened my muscles. I may appear lean, but
-              with my strength of <value> I have surprised many an orc in combat.
+              with a Strength of <value> I have surprised many an orc in combat.
             format:
               description_style:
                 alignment: center
                 color: theme_very_dark
                 size: medium_small
-              inside_label: strength
+              inside_label: Strength
               inside_label_style:
                 color: gold_light
                 font: bold
+                size: medium_small
               value_height: wrap
               value_style:
                 color: gold_light
                 font: bold
+                size: medium_small
             value:
               name: strength
               label: Strength
@@ -2534,36 +2536,17 @@ profile:
                       variable:
                         type: tag
                         tag: strength_bonus
-      - format:
-          padding:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                background: medium_light
-                corners: medium
-                width: 1
-            format:
-              value_style:
-                color: theme_medium_dark
-                font: italic
-                size: medium_small
-              value_padding_horizontal: 15
-              value_height: very_small
-            value_postfix: ' mod'
-            value:
-              name: strength_modifier
-              label: Strength Modifier
-              type: program
+            variables:
+            - type: number
               value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: strength
-            value_prefix: '+'
+                name: strength_modifier
+                label: Strength Modifier
+                type: program
+                value:
+                  program: ability_modifier
+                  parameters:
+                  - type: reference
+                    value: strength
       - format:
           margins:
             top: 20
@@ -2578,13 +2561,15 @@ profile:
             format:
               description_style:
                 color: theme_very_dark
-                size: medium_small
+                size: small
               inside_label: saving throw
               inside_label_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
               value_height: wrap
               value_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
             value:
               name: saving_throw_strength
               label: Strength Saving Throw
@@ -2612,6 +2597,103 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
+      - format:
+          margins:
+            top: 10
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My strength check is <value>.
+            format:
+              description_style:
+                color: theme_very_dark
+                size: small
+              inside_label: strength check
+              inside_label_style:
+                color: purple_medium_dark
+                size: small
+              value_height: wrap
+              value_style:
+                color: purple_medium_dark
+                size: small
+            value:
+              name: check_strength
+              label: Strength Check
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: strength_modifier
+            value_prefix: '+'
+      - format:
+          margins:
+            top: 25
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium_dark
+                corners: medium
+                margins:
+                  left: 10
+                  right: 10
+            format:
+              inside_label: Carrying Capacity
+              inside_label_style:
+                alignment: center
+                color: theme_super_dark
+                size: super_small
+              inside_label_position: top
+              inside_label_margins:
+                bottom: 3
+              value_height: small
+              value_style:
+                alignment: center
+                color: theme_dark
+                size: medium_small
+            value:
+              name: carrying_capacity
+              label: Carrying Capacity
+              type: literal
+              value: 287
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium_dark
+                corners: medium
+                margins:
+                  left: 10
+                  right: 10
+            format:
+              inside_label: 'Push/Drag/Lift'
+              inside_label_style:
+                alignment: center
+                color: theme_super_dark
+                size: super_small
+              inside_label_position: top
+              inside_label_margins:
+                bottom: 3
+              value_height: small
+              value_style:
+                alignment: center
+                color: theme_dark
+                size: medium_small
+            value:
+              name: push_drag_lift
+              label: 'Push/Drag/Lift'
+              type: literal
+              value: 188
     - format:
         background: medium
         divider: light
@@ -2633,13 +2715,13 @@ profile:
                 background: empty
             description: >
               As an orphan suriving on the street, I learned to be nimble and how to approach every
-              situation with finesse. dexterity <value>
+              situation with finesse.  Dexterity <value>
             format:
               description_style:
                 alignment: center
                 color: theme_very_dark
                 size: medium_small
-              inside_label: dexterity
+              inside_label: Dexterity
               inside_label_style:
                 color: gold_light
                 font: bold
@@ -2666,35 +2748,17 @@ profile:
                       variable:
                         type: tag
                         tag: dexterity_bonus
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                background: medium_dark
-                corners: medium
-                width: 1
-            format:
-              value_style:
-                color: theme_medium_dark
-                font: italic
-                size: medium_small
-              value_padding_horizontal: 15
-            value_postfix: ' mod'
-            value:
-              name: dexterity_modifier
-              label: Dexterity Modifier
-              type: program
+            variables:
+            - type: number
               value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: dexterity
-            value_prefix: '+'
+                name: dexterity_modifier
+                label: Dexterity Modifier
+                type: program
+                value:
+                  program: ability_modifier
+                  parameters:
+                  - type: reference
+                    value: dexterity
       - format:
           margins:
             top: 20
@@ -2709,13 +2773,15 @@ profile:
             format:
               description_style:
                 color: theme_very_dark
-                size: medium_small
+                size: small
               inside_label: saving throw
               inside_label_style:
-                color: theme_light
+                color: purple_medium
+                size: small
               value_height: wrap
               value_style:
-                color: theme_light
+                color: purple_medium
+                size: small
             value:
               name: saving_throw_dexterity
               label: Dexterity Saving Throw
@@ -2743,6 +2809,43 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
+      - format:
+          margins:
+            top: 10
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My dexterity check is <value>.
+            format:
+              description_style:
+                color: theme_very_dark
+                size: small
+              inside_label: dexterity check
+              inside_label_style:
+                color: purple_medium_dark
+                size: small
+              value_height: wrap
+              value_style:
+                color: purple_medium_dark
+                size: small
+            value:
+              name: check_dexterity
+              label: Dexterity Check
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
+            value_prefix: '+'
     - format:
         background: medium
         divider: light
@@ -2761,14 +2864,14 @@ profile:
               format:
                 background: empty
             description: >
-              constitution <value> I can take a hit, and I have the scars, mental and physical, to
+              Constitution <value>  I can take a hit, and I have the scars, mental and physical, to
               prove it.
             format:
               description_style:
                 alignment: center
                 color: theme_very_dark
                 size: medium_small
-              inside_label: constitution
+              inside_label: Constitution
               inside_label_style:
                 color: gold_light
                 font: bold
@@ -2795,35 +2898,17 @@ profile:
                       variable:
                         type: tag
                         tag: constitution_bonus
-      - format:
-          margins:
-           top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                alignment: center
-                background: medium_dark
-                corners: medium
-                width: 1
-            format:
-              value_style:
-                color: theme_medium_dark
-                font: italic
-                size: medium_small
-              value_padding_horizontal: 15
-            value_postfix: ' mod'
-            value:
-              name: constitution_modifier
-              label: Constitution Modifier
-              type: program
+            variables:
+            - type: number
               value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: constitution
-            value_prefix: '+'
+                name: constitution_modifier
+                label: Constitution Modifier
+                type: program
+                value:
+                  program: ability_modifier
+                  parameters:
+                  - type: reference
+                    value: constitution
       - format:
           margins:
             top: 20
@@ -2838,13 +2923,15 @@ profile:
             format:
               description_style:
                 color: theme_very_dark
-                size: medium_small
+                size: small
               inside_label: saving throw
               inside_label_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
               value_height: wrap
               value_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
             value:
               name: saving_throw_constitution
               label: Constitution Saving Throw
@@ -2872,6 +2959,169 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
+      - format:
+          margins:
+            top: 10
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My constitution check is <value>.
+            format:
+              description_style:
+                color: theme_very_dark
+                size: small
+              inside_label: constitution check
+              inside_label_style:
+                color: purple_medium_dark
+                size: small
+              value_height: wrap
+              value_style:
+                color: purple_medium_dark
+                font: italic
+                size: small
+            value:
+              name: check_constitution
+              label: Constitution Check
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: constitution_modifier
+            value_prefix: '+'
+      - format:
+          margins:
+            top: 25
+            left: 7
+            right: 7
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium_dark
+                corners: medium
+                margins:
+                  left: 3
+                  right: 3
+                width: 4
+            format:
+              inside_label: Hours Functional w/o Sleep
+              inside_label_style:
+                alignment: center
+                color: theme_super_dark
+                size: super_small
+              inside_label_position: top
+              inside_label_margins:
+                bottom: 3
+              value_height: small
+              value_style:
+                alignment: center
+                color: theme_dark
+                size: medium_small
+            value:
+              label: Hours Functional Without Sleep
+              type: literal
+              value: 22
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium_dark
+                corners: medium
+                margins:
+                  left: 3
+                  right: 3
+                width: 3
+            format:
+              inside_label: Mins Can Hold Breath
+              inside_label_style:
+                alignment: center
+                color: theme_super_dark
+                size: super_small
+              inside_label_position: top
+              inside_label_margins:
+                bottom: 3
+              value_height: small
+              value_style:
+                alignment: center
+                color: theme_dark
+                size: medium_small
+            value:
+              label: Minutes Can Hold Breath
+              type: literal
+              value: 6
+      - format:
+          margins:
+            top: 10
+            left: 7
+            right: 7
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium_dark
+                corners: medium
+                margins:
+                  left: 3
+                  right: 3
+                width: 3
+            format:
+              inside_label: Ales to Intoxication
+              inside_label_style:
+                alignment: center
+                color: theme_super_dark
+                size: super_small
+              inside_label_position: top
+              inside_label_margins:
+                bottom: 3
+              value_height: small
+              value_style:
+                alignment: center
+                color: theme_dark
+                size: medium_small
+            value:
+              name: ales_before_intoxication
+              label: Ales Before Intoxication
+              type: literal
+              value: 7
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium_dark
+                corners: medium
+                margins:
+                  left: 3
+                  right: 3
+                width: 4
+            format:
+              inside_label: Bee Stings Before Passing Out
+              inside_label_style:
+                alignment: center
+                color: theme_super_dark
+                size: super_small
+              inside_label_position: top
+              inside_label_margins:
+                bottom: 3
+              value_height: small
+              value_style:
+                alignment: center
+                color: theme_dark
+                size: medium_small
+            value:
+              label: Bee Strings Before Passing Out
+              type: literal
+              value: 72
     - format:
         background: medium
         divider: light
@@ -2890,13 +3140,13 @@ profile:
                 background: empty
             description: >
               I never studied anything serious, but people say I can be quick-witted when the need
-              arises. intelligence <value>
+              arises.  Intelligence <value>
             format:
               description_style:
                 alignment: center
                 color: theme_very_dark
                 size: medium_small
-              inside_label: intelligence
+              inside_label: Intelligence
               inside_label_style:
                 color: gold_light
                 font: bold
@@ -2931,48 +3181,21 @@ profile:
           widget:
             data:
               format:
-                alignment: center
-                background: medium_dark
-                corners: medium
-                width: 1
-            format:
-              value_style:
-                color: theme_medium_dark
-                font: italic
-                size: medium_small
-              value_padding_horizontal: 15
-            value_postfix: ' mod'
-            value:
-              name: intelligence_modifier
-              label: Intelligence Modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: intelligence
-            value_prefix: '+'
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
                 background: empty
             description: >
               My saving throw is <value>.
             format:
               description_style:
                 color: theme_very_dark
-                size: medium_small
+                size: small
               inside_label: saving throw
               inside_label_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
               value_height: wrap
               value_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
             value:
               name: saving_throw_intelligence
               label: Intelligence Saving Throw
@@ -3000,6 +3223,43 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
+      - format:
+          margins:
+            top: 10
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My intelligence check is <value>.
+            format:
+              description_style:
+                color: theme_very_dark
+                size: small
+              inside_label: intelligence check
+              inside_label_style:
+                color: purple_medium_dark
+                size: small
+              value_height: wrap
+              value_style:
+                color: purple_medium_dark
+                size: small
+            value:
+              name: check_wisdom
+              label: Intelligence Check
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: intelligence_modifier
+            value_prefix: '+'
     - format:
         background: medium
         divider: light
@@ -3017,7 +3277,7 @@ profile:
               format:
                 background: empty
             description: >
-              I've seen more years than most in my profession. My wisdom of <value> is the
+              I've seen more years than most in my profession. My Wisdom of <value> is the
               experience of a street urchin, the life of a solider, and the memories of everything
               I've lost.
             format:
@@ -3025,7 +3285,7 @@ profile:
                 alignment: center
                 color: theme_very_dark
                 size: medium_small
-              inside_label: wisdom
+              inside_label: Wisdom
               inside_label_style:
                 color: gold_light
                 font: bold
@@ -3060,48 +3320,21 @@ profile:
           widget:
             data:
               format:
-                alignment: center
-                background: medium_dark
-                corners: medium
-                width: 1
-            format:
-              value_style:
-                color: theme_medium_dark
-                font: italic
-                size: medium_small
-              value_padding_horizontal: 15
-            value_postfix: ' mod'
-            value:
-              name: wisdom_modifier
-              label: Wisdom Modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: wisdom
-            value_prefix: '+'
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
                 background: empty
             description: >
               My saving throw is <value>.
             format:
               description_style:
                 color: theme_very_dark
-                size: medium_small
+                size: small
               inside_label: saving throw
               inside_label_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
               value_height: wrap
               value_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
             value:
               name: saving_throw_wisdom
               label: Wisdom Saving Throw
@@ -3129,8 +3362,46 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
+      - format:
+          margins:
+            top: 10
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My wisdom check is <value>.
+            format:
+              description_style:
+                color: theme_very_dark
+                size: small
+              inside_label: wisdom check
+              inside_label_style:
+                color: purple_medium_dark
+                size: small
+              value_height: wrap
+              value_style:
+                color: purple_medium_dark
+                size: small
+            value:
+              name: check_wisdom
+              label: Wisdom Check
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: wisdom_modifier
+            value_prefix: '+'
     - format:
         background: medium
+        divider: light
         padding:
           bottom: 20
           top: 10
@@ -3145,13 +3416,14 @@ profile:
               format:
                 background: empty
             description: >
-              charisma <value> I've never been a charmer, but I get along with just about anyone I meet.
+              Charisma <value>  When I talk, I find people listen. Maybe its my age. Maybe its my
+              scars...
             format:
               description_style:
                 alignment: center
                 color: theme_very_dark
                 size: medium_small
-              inside_label: charisma
+              inside_label: Charisma
               inside_label_style:
                 color: gold_light
                 font: bold
@@ -3186,48 +3458,21 @@ profile:
           widget:
             data:
               format:
-                alignment: center
-                background: medium_dark
-                corners: medium
-                width: 1
-            format:
-              value_style:
-                color: theme_medium_dark
-                font: italic
-                size: medium_small
-              value_padding_horizontal: 15
-            value_postfix: ' mod'
-            value:
-              name: charisma_modifier
-              label: Charisma Modifier
-              type: program
-              value:
-                program: ability_modifier
-                parameters:
-                - type: reference
-                  value: charisma
-            value_prefix: '+'
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
                 background: empty
             description: >
               My saving throw is <value>.
             format:
               description_style:
                 color: theme_very_dark
-                size: medium_small
+                size: small
               inside_label: saving throw
               inside_label_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
               value_height: wrap
               value_style:
-                color: theme_light
+                color: purple_medium_dark
+                size: small
             value:
               name: saving_throw_charisma
               label: Charisma Saving Throw
@@ -3255,14 +3500,132 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-    - name: Skills
-      format:
+      - format:
+          margins:
+            top: 10
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: empty
+            description: >
+              My charisma check is <value>.
+            format:
+              description_style:
+                color: theme_very_dark
+                size: small
+              inside_label: charisma check
+              inside_label_style:
+                color: purple_medium_dark
+                size: small
+              value_height: wrap
+              value_style:
+                color: purple_medium_dark
+                size: small
+            value:
+              name: check_charisma
+              label: Charisma Check
+              type: summation
+              value:
+                terms:
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: charisma_modifier
+            value_prefix: '+'
+      - format:
+          margins:
+            top: 25
+            left: 7
+            right: 7
+        widgets:
+        - type: number
+          widget:
+            data:
+              format:
+                background: medium_dark
+                corners: medium
+                margins:
+                  left: 3
+                  right: 3
+                width: 5
+            format:
+              inside_label: Captiviating War Stories
+              inside_label_style:
+                alignment: center
+                color: theme_super_dark
+                size: super_small
+              inside_label_position: top
+              inside_label_margins:
+                bottom: 3
+              value_height: small
+              value_style:
+                alignment: center
+                color: theme_dark
+                size: medium_small
+            value:
+              name: captivating_war_stories
+              label: Captivating War Stories
+              type: literal
+              value: 13
+        - type: text
+          widget:
+            data:
+              format:
+                background: medium_dark
+                corners: medium
+                margins:
+                  left: 3
+                  right: 3
+                width: 6
+            format:
+              inside_label: Beard Style
+              inside_label_style:
+                alignment: center
+                color: theme_super_dark
+                size: super_small
+              inside_label_position: top
+              inside_label_margins:
+                bottom: 4
+              value_height: small
+              value_style:
+                alignment: center
+                color: theme_dark
+                size: small
+            value:
+              label: Beard Style
+              type: literal
+              value: 'Short, Trimed Neatly'
+    - format:
         padding:
-          top: 25
+          top: 30
       rows:
       - format:
           margins:
-            top: 5
+            left: 10
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                background: medium
+            format:
+              value_height: wrap
+              value_style:
+                alignment: center
+                color: theme_light
+                font: italic
+                size: large
+            value:
+              type: literal
+              value: Skills
+      - format:
+          margins:
+            top: 15
         widgets:
         - type: table
           widget:
@@ -3271,7 +3634,7 @@ profile:
                 background: none
                 label: Skills
             format:
-              show_dividers: false
+              divider_type:
             columns:
             - type: text
               column:
@@ -3291,7 +3654,7 @@ profile:
                   width: 2
                   alignment: center
                   style:
-                    color: theme_light
+                    color: theme_medium_light
                     font: bold
                     size: medium_small
                   value_prefix: '+'
@@ -3307,6 +3670,7 @@ profile:
                     size: medium_small
                   true_style:
                     color: green_light
+                    font: italic
                     size: medium_small
             rows:
             - cells:
@@ -3923,17 +4287,17 @@ profile:
                   value: false
   - name: Features
     groups:
-    - name: Combat
-      format:
+    - format:
         background: dark
         divider: light
         padding:
+          top: 20
+          left: 10
+          right: 10
           bottom: 20
-        show_name: false
       rows:
       - format:
           margins:
-            top: 30
         widgets:
         - type: number
           widget:
@@ -4049,7 +4413,8 @@ profile:
       rows:
       - format:
           margins:
-            top: 20
+            left: 7
+            right: 7
         widgets:
         - type: number
           widget:
@@ -4057,12 +4422,20 @@ profile:
               format:
                 background: medium_dark
                 width: 3
+                margins:
+                  left: 3
+                  right: 3
             format:
               outside_label: Proficiency Bonus
-              outside_label_alignment: center
+              outside_label_style:
+                alignment: center
+                color: theme_dark
+                size: very_small
+              outside_label_position: top
               value_style:
-                size: medium_small
+                alignment: center
                 color: theme_medium
+                size: medium_small
             value:
               name: proficiency_bonus
               label: Proficiency Bonus
@@ -4075,12 +4448,20 @@ profile:
               format:
                 background: medium_dark
                 width: 2
+                margins:
+                  left: 3
+                  right: 3
             format:
               outside_label: Speed
-              outside_label_alignment: center
+              outside_label_style:
+                alignment: center
+                color: theme_dark
+                size: very_small
+              outside_label_position: top
               value_style:
-                size: medium_small
+                alignment: center
                 color: theme_medium
+                size: medium_small
             value:
               type: literal
               value: 30
@@ -4090,21 +4471,48 @@ profile:
             data:
               format:
                 background: medium_dark
-                label: Hit Dice
-                label_alignment: center
                 width: 2
+                margins:
+                  left: 3
+                  right: 3
             format:
+              outside_label: Hit Dice
+              outside_label_style:
+                alignment: center
+                color: theme_dark
+                size: very_small
+              outside_label_position: top
               value_style:
-                size: medium_small
+                alignment: center
                 color: theme_medium
+                size: medium_small
             value:
               type: literal
               value: 1d8
-    - name: Race Features
-      format:
+    - format:
         padding:
           top: 25
+          left: 10
+          right: 10
       rows:
+      - format:
+          margins:
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: medium
+            format:
+              value_height: wrap
+              value_style:
+                color: gold_light
+                font: italic
+                size: medium
+            value:
+              type: literal
+              value: Race Features
       - format:
           margins:
             top: 15
@@ -4112,8 +4520,30 @@ profile:
         - type: mechanic
           widget:
             category: race
-    - name: Class Features
+    - format:
+        margins:
+          top: 10
+          left: 10
+          right: 10
       rows:
+      - format:
+          margins:
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: medium
+            format:
+              value_height: wrap
+              value_style:
+                color: gold_light
+                font: italic
+                size: medium
+            value:
+              type: literal
+              value: Class Features
       - format:
           margins:
             top: 15
@@ -4127,17 +4557,30 @@ profile:
       format:
         padding:
           top: 25
+          left: 7
+          right: 7
       rows:
       - widgets:
         - type: number
           widget:
             data:
               format:
-                background: medium_dark
+                background: dark
+                margins:
+                  left: 3
+                  right: 3
             format:
               outside_label: Gold
-              outside_label_alignment: center
+              outside_label_position: top
+              outside_label_style:
+                alignment: center
+                color: gold_light
+                font: italic
+                size: super_small
+              outside_label_margins:
+                bottom: 3
               value_style:
+                alignment: center
                 color: theme_medium_light
             value:
               name: wealth_gold
@@ -4147,11 +4590,22 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: dark
+                margins:
+                  left: 3
+                  right: 3
             format:
               outside_label: Silver
-              outside_label_alignment: center
+              outside_label_position: top
+              outside_label_style:
+                alignment: center
+                color: gold_light
+                font: italic
+                size: super_small
+              outside_label_margins:
+                bottom: 3
               value_style:
+                alignment: center
                 color: theme_medium_light
             size: medium
             value:
@@ -4162,27 +4616,53 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: dark
+                margins:
+                  left: 3
+                  right: 3
             format:
               outside_label: Copper
-              outside_label_alignment: center
+              outside_label_position: top
+              outside_label_style:
+                alignment: center
+                color: gold_light
+                font: italic
+                size: super_small
+              outside_label_margins:
+                bottom: 3
               value_style:
+                alignment: center
                 color: theme_medium_light
             value:
               name: wealth_copper
               type: literal
               value: 17
       - format:
+          margins:
+            left: 40
+            right: 40
+            top: 10
         widgets:
         - type: number
           widget:
             data:
               format:
-                background: medium_dark
+                background: dark
+                margins:
+                  left: 3
+                  right: 3
             format:
               outside_label: Platinum
-              outside_label_alignment: center
+              outside_label_position: top
+              outside_label_style:
+                alignment: center
+                color: gold_light
+                font: italic
+                size: super_small
+              outside_label_margins:
+                bottom: 3
               value_style:
+                alignment: center
                 color: theme_medium_light
             value:
               name: wealth_platinum
@@ -4192,11 +4672,22 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: dark
+                margins:
+                  left: 3
+                  right: 3
             format:
               outside_label: Electrum
-              outside_label_alignment: center
+              outside_label_position: top
+              outside_label_style:
+                alignment: center
+                color: gold_light
+                font: italic
+                size: super_small
+              outside_label_margins:
+                bottom: 3
               value_style:
+                alignment: center
                 color: theme_medium_light
             value:
               name: wealth_electrum
@@ -4211,6 +4702,26 @@ profile:
       - format:
           margins:
             top: 15
+            left: 10
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                color: gold_light
+                font: italic
+                size: large
+            value:
+              type: literal
+              value: Weapons
+      - format:
+          margins:
+            top: 10
         widgets:
         - type: table
           widget:
@@ -4218,6 +4729,8 @@ profile:
               format:
                 background: none
                 label: Weapons
+            format:
+              cell_height: medium
             columns:
             - type: text
               column:
@@ -4227,7 +4740,7 @@ profile:
                   width: 3
                   alignment: left
                   style:
-                    color: theme_light
+                    color: theme_medium_light
                 defines_namespace: true
             - type: number
               column:
@@ -4300,12 +4813,35 @@ profile:
       - format:
           margins:
             top: 15
+            left: 10
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                color: gold_light
+                font: italic
+                size: large
+            value:
+              type: literal
+              value: Armor
+      - format:
+          margins:
+            top: 15
         widgets:
         - type: table
           widget:
             data:
               format:
+                background: none
                 label: Armor / Shields
+            format:
+              cell_height: medium
             columns:
             - type: text
               column:
@@ -4372,11 +4908,32 @@ profile:
           top: 25
       rows:
       - format:
+          margins:
+            top: 15
+            left: 10
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                color: gold_light
+                font: italic
+                size: large
+            value:
+              type: literal
+              value: Gear
+      - format:
         widgets:
         - type: table
           widget:
             data:
               format:
+                background: none
                 label: Gear
             columns:
             - type: text
@@ -4489,14 +5046,14 @@ encounter:
         background: medium
         corners: small
         margins:
-          bottom: 20
-          top: 20
-        padding:
           left: 10
-          top: 10
           right: 10
-          bottom: 15
-        show_name: false
+          top: 15
+        padding:
+          top: 10
+          bottom: 10
+          left: 10
+          right: 10
       rows:
       - format:
           margins:
@@ -4510,12 +5067,12 @@ encounter:
             data:
               format:
                 alignment: center
-                background: medium
+                background: empty
             format:
               action_style:
                 color: green_very_light
                 font: bold
-                size: medium_large
+                size: medium
             modifier:
               type: variable
               label: Initiative
@@ -4538,22 +5095,18 @@ encounter:
       format:
         background: medium
         corners: small
-        margins:
-          bottom: 20
         show_name: false
-        padding:
-          bottom: 20
-          top: 20
+        margins:
+          top: 15
           left: 10
           right: 10
-        name_style:
-          color: theme_medium
-          font: italic
-          size: medium_small
+        padding:
+          top: 15
+          bottom: 15
+          left: 5
+          right: 5
       rows:
       - format:
-          margins:
-            top: 0
         widgets:
         - type: action
           widget:
@@ -4565,12 +5118,14 @@ encounter:
             data:
               format:
                 alignment: center
-                width: 1
+                background: medium_light
             format:
               action_style:
                 color: gold_very_light
                 font: bold
                 size: medium_small
+              height: wrap
+              padding_vertical: 8
             modifier:
               name: longsword_attack_bonus
               type: summation
@@ -4601,7 +5156,7 @@ encounter:
                         name: proficiency_bonus
       - format:
           margins:
-            top: 15
+            top: 10
         widgets:
         - type: action
           widget:
@@ -4615,7 +5170,8 @@ encounter:
                 width: 1
             format:
               action_style:
-                color: theme_medium_light
+                color: theme_light
+                font: italic
                 size: medium_small
             modifier:
               name: longsword_attack_damage
@@ -4638,7 +5194,7 @@ encounter:
                         name: strength_modifier
       - format:
           margins:
-            top: 15
+            top: 10
         widgets:
         - type: action
           widget:
@@ -4652,7 +5208,8 @@ encounter:
                 width: 1
             format:
               action_style:
-                color: theme_medium_light
+                color: theme_light
+                font: italic
                 size: medium_small
             modifier:
               name: longsword_attack_damage
@@ -4673,40 +5230,40 @@ encounter:
                       variable:
                         type: name
                         name: strength_modifier
-    - name: Heavy Crossbow
-      format:
+    - format:
+        corners: small
+        margins:
+          top: 15
+          left: 10
+          right: 10
         padding:
-          top: 20
-          bottom: 20
-      rows:
-    - name: Heavy Crossbow
-      format:
-        show_name: false
-        padding:
-          top: 20
-          bottom: 20
-        name_style:
-          color: theme_medium
-          font: italic
-          size: medium_small
+          top: 15
+          bottom: 15
+          left: 5
+          right: 5
       rows:
       - format:
           margins:
-            top: 15
         widgets:
         - type: action
           widget:
-            description: |
-              My muscles strain winding back the taut string of my heavy crossbow.
-              A violient thwack explodes in the ears of my allies. A bolt flies towards my opponents.
+            description: >
+              My muscles strain winding back the taut string of my heavy crossbow. A violent
+              thwack sounds as a bolt flies toward my opponent.
             action_highlight: heavy crossbow
             action_name: Heavy Crossbow Ranged Attack
             data:
               format:
-                width: 1
+                alignment: center
+                background: medium_light
             format:
               action_style:
-                color: gold_light
+                color: gold_very_light
+                font: bold
+                size: medium_small
+              height: wrap
+              padding_horizontal: 5
+              padding_vertical: 8
             modifier:
               name: heavy_crossbow_attack_bonus
               type: summation
@@ -4734,7 +5291,10 @@ encounter:
                       variable:
                         type: name
                         name: proficiency_bonus
-      - widgets:
+      - format:
+          margins:
+            top: 15
+        widgets:
         - type: action
           widget:
             description: The crossbow bolt pierces my opponent for damage.
@@ -4742,9 +5302,12 @@ encounter:
             action_name: Heavy Crossbow Damage
             data:
               format:
-                width: 1
+                background: empty
             format:
-              hl_color: green
+              action_style:
+                color: theme_light
+                font: italic
+                size: medium_small
             modifier:
               name: heavy_crossbow_attack_damage
               type: summation
@@ -4764,21 +5327,69 @@ encounter:
                       variable:
                         type: name
                         name: dexterity_modifier
-    - name: Dagger (Melee)
-      format:
-        show_name: false
+    - format:
+        padding:
+          top: 15
+          bottom: 15
+        background: dark
       rows:
-      - widgets:
+      - format:
+          margins:
+            left: 12
+            right: 12
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                alignment: center
+                color: theme_very_dark
+                font: italic
+                size: small
+            value:
+              type: literal
+              value: >
+                Sometimes a situation calls for finesse. I've carried a dagger in my boot since I
+                was a theiving street urchin, getting myself into all sorts of trouble.
+    - format:
+        corners: small
+        margins:
+          left: 10
+          right: 10
+        padding:
+          top: 15
+          bottom: 15
+          left: 5
+          right: 5
+      rows:
+      - format:
+          margins:
+        widgets:
         - type: action
           widget:
-            description: Attack with dagger
-            action_highlight: dagger
+            description: >
+              I stab my dagger (melee) towards my opponent.
+            action_highlight: dagger (melee)
             action_name: Dagger Melee Attack
             data:
               format:
-                width: 1
+                alignment: center
+                background: medium_light
+            format:
+              action_style:
+                color: gold_medium_light
+                font: bold
+                size: medium_small
+              height: wrap
+              padding_horizontal: 5
+              padding_vertical: 8
             modifier:
-              name: dagger_attack_bonus
+              name: heavy_crossbow_attack_bonus
               type: summation
               value:
                 terms:
@@ -4796,7 +5407,7 @@ encounter:
                       type: variable
                       variable:
                         type: name
-                        name: strength_modifier
+                        name: dexterity_modifier
                 - type: integer
                   term:
                     value:
@@ -4804,16 +5415,25 @@ encounter:
                       variable:
                         type: name
                         name: proficiency_bonus
+      - format:
+          margins:
+            top: 15
+        widgets:
         - type: action
           widget:
-            description: Damage with dagger
-            action_highlight: dagger
-            action_name: Dagger Melee Damage
+            description: Strikes for damage.
+            action_highlight: damage
+            action_name: Heavy Crossbow Damage
             data:
               format:
-                width: 1
+                background: empty
+            format:
+              action_style:
+                color: theme_light
+                font: italic
+                size: medium_small
             modifier:
-              name: dagger_attack_damage
+              name: heavy_crossbow_attack_damage
               type: summation
               value:
                 terms:
@@ -4823,14 +5443,269 @@ encounter:
                       type: variable
                       variable:
                         type: name
-                        name: weapon_dagger_damage
+                        name: weapon_heavy_crossbow_damage
                 - type: integer
                   term:
                     value:
                       type: variable
                       variable:
                         type: name
-                        name: strength_modifier
+                        name: dexterity_modifier
+    - format:
+        corners: small
+        margins:
+          top: 15
+          left: 10
+          right: 10
+        padding:
+          top: 15
+          bottom: 15
+          left: 5
+          right: 5
+      rows:
+      - format:
+          margins:
+        widgets:
+        - type: action
+          widget:
+            description: >
+              I throw my dagger (ranged) end over end toward my opponent.
+            action_highlight: dagger (ranged)
+            action_name: Dagger Ranged Attack
+            data:
+              format:
+                alignment: center
+                background: medium_light
+            format:
+              action_style:
+                color: gold_medium_light
+                font: bold
+                size: medium_small
+              height: wrap
+              padding_horizontal: 5
+              padding_vertical: 8
+            modifier:
+              name: heavy_crossbow_attack_bonus
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  term:
+                    value:
+                      type: literal
+                      value:
+                        type: d20
+                        quantity: 1
+                        modifier: 0
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+      - format:
+          margins:
+            top: 15
+        widgets:
+        - type: action
+          widget:
+            description: Strikes for damage.
+            action_highlight: damage
+            action_name: Heavy Crossbow Damage
+            data:
+              format:
+                background: empty
+            format:
+              action_style:
+                color: theme_light
+                font: italic
+                size: medium_small
+            modifier:
+              name: heavy_crossbow_attack_damage
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: weapon_heavy_crossbow_damage
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
+    - format:
+        background: dark
+        margins:
+          top: 20
+          bottom: 20
+      rows:
+      - format:
+          margins:
+        widgets:
+        - type: action
+          widget:
+            description: >
+              I attempt to grapple my opponent.
+            action_highlight: grapple
+            action_name: Grapple
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              action_style:
+                color: gold_medium_light
+                font: bold
+                size: medium_small
+              height: wrap
+            modifier:
+              name: heavy_crossbow_attack_bonus
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  term:
+                    value:
+                      type: literal
+                      value:
+                        type: d20
+                        quantity: 1
+                        modifier: 0
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+    - format:
+        background: medium
+        padding:
+          top: 15
+          left: 10
+          right: 10
+      rows:
+      - format:
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                alignment: center
+                color: red_orange_light
+                font: italic
+                size: medium_large
+            value:
+              type: literal
+              value: 'Anything is a Weapon'
+      - format:
+          margins:
+        widgets:
+        - type: action
+          widget:
+            description: >
+              I punch my opponent with bare knuckles.
+            action_highlight: punch
+            action_name: Unarmed Attack
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              action_style:
+                color: gold_medium_light
+                font: bold
+                size: medium_small
+              height: wrap
+            modifier:
+              name: heavy_crossbow_attack_bonus
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  term:
+                    value:
+                      type: literal
+                      value:
+                        type: d20
+                        quantity: 1
+                        modifier: 0
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: proficiency_bonus
+      - format:
+          margins:
+            top: 15
+        widgets:
+        - type: action
+          widget:
+            description: Unarmed Damage
+            action_highlight: Unarmed Damage
+            action_name: Unarmed Damage
+            data:
+              format:
+                background: empty
+            format:
+              action_style:
+                color: theme_light
+                font: italic
+                size: medium_small
+            modifier:
+              name: heavy_crossbow_attack_damage
+              type: summation
+              value:
+                terms:
+                - type: dice_roll
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: weapon_heavy_crossbow_damage
+                - type: integer
+                  term:
+                    value:
+                      type: variable
+                      variable:
+                        type: name
+                        name: dexterity_modifier
   - name: Status
     background: light
     groups:

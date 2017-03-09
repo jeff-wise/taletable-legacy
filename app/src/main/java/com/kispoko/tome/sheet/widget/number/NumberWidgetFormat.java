@@ -43,6 +43,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     private PrimitiveFunctor<String>    insideLabel;
     private PrimitiveFunctor<Position>  insideLabelPosition;
     private ModelFunctor<TextStyle>     insideLabelStyle;
+    private ModelFunctor<Spacing>       insideLabelMargins;
 
     private PrimitiveFunctor<String>    outsideLabel;
     private PrimitiveFunctor<Position>  outsideLabelPosition;
@@ -69,6 +70,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.insideLabel            = new PrimitiveFunctor<>(null, String.class);
         this.insideLabelPosition    = new PrimitiveFunctor<>(null, Position.class);
         this.insideLabelStyle       = ModelFunctor.empty(TextStyle.class);
+        this.insideLabelMargins     = ModelFunctor.empty(Spacing.class);
 
         this.outsideLabel           = new PrimitiveFunctor<>(null, String.class);
         this.outsideLabelPosition   = new PrimitiveFunctor<>(null, Position.class);
@@ -90,6 +92,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                               String insideLabel,
                               Position insideLabelPosition,
                               TextStyle insideLabelStyle,
+                              Spacing insideLabelMargins,
                               String outsideLabel,
                               Position outsideLabelPosition,
                               TextStyle outsideLabelStyle,
@@ -106,6 +109,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.insideLabel            = new PrimitiveFunctor<>(insideLabel, String.class);
         this.insideLabelPosition    = new PrimitiveFunctor<>(insideLabelPosition, Position.class);
         this.insideLabelStyle       = ModelFunctor.full(insideLabelStyle, TextStyle.class);
+        this.insideLabelMargins     = ModelFunctor.full(insideLabelMargins, Spacing.class);
 
         this.outsideLabel           = new PrimitiveFunctor<>(outsideLabel, String.class);
         this.outsideLabelPosition   = new PrimitiveFunctor<>(outsideLabelPosition, Position.class);
@@ -124,6 +128,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         // > Set defaults for null values
         this.setInsideLabelPosition(insideLabelPosition);
         this.setInsideLabelStyle(insideLabelStyle);
+        this.setInsideLabelMargins(insideLabelMargins);
 
         this.setOutsideLabelPosition(outsideLabelPosition);
         this.setOutsideLabelStyle(outsideLabelStyle);
@@ -157,6 +162,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         Position  insideLabelPosition  = Position.fromYaml(
                                                     yaml.atMaybeKey("inside_label_position"));
         TextStyle insideLabelStyle     = TextStyle.fromYaml(yaml.atMaybeKey("inside_label_style"));
+        Spacing   insideLabelMargins   = Spacing.fromYaml(yaml.atMaybeKey("inside_label_margins"));
 
         String    outsideLabel         = yaml.atMaybeKey("outside_label").getString();
         Position  outsideLabelPosition = Position.fromYaml(
@@ -174,9 +180,9 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         TextStyle valuePostfixStyle    = TextStyle.fromYaml(yaml.atMaybeKey("value_postfix_style"));
 
         return new NumberWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
-                                      outsideLabel, outsideLabelPosition, outsideLabelStyle,
-                                      outsideLabelMargins, descriptionStyle, valueStyle,
-                                      valueHeight, valuePaddingHorz, valuePrefixStyle,
+                                      insideLabelMargins, outsideLabel, outsideLabelPosition,
+                                      outsideLabelStyle, outsideLabelMargins, descriptionStyle,
+                                      valueStyle, valueHeight, valuePaddingHorz, valuePrefixStyle,
                                       valuePostfixStyle);
     }
 
@@ -194,6 +200,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         numberWidgetFormat.setInsideLabel(null);
         numberWidgetFormat.setInsideLabelPosition(null);
         numberWidgetFormat.setInsideLabelStyle(null);
+        numberWidgetFormat.setInsideLabelMargins(null);
 
         numberWidgetFormat.setOutsideLabel(null);
         numberWidgetFormat.setOutsideLabelPosition(null);
@@ -253,6 +260,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
             .putString("inside_label", this.insideLabel())
             .putYaml("inside_label_position", this.insideLabelPosition())
             .putYaml("inside_label_style", this.insideLabelStyle())
+            .putYaml("inside_label_margins", this.insideLabelMargins())
 
             .putString("outside_label", this.outsideLabel())
             .putYaml("outside_label_position", this.outsideLabelPosition())
@@ -341,10 +349,36 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         else {
             TextStyle defaultLabelStyle = new TextStyle(UUID.randomUUID(),
                                                         TextColor.THEME_VERY_DARK,
-                                                        TextSize.MEDIUM,
+                                                        TextSize.MEDIUM_SMALL,
                                                         Alignment.CENTER);
             this.insideLabelStyle.setValue(defaultLabelStyle);
         }
+    }
+
+
+    // ** Inside Label Margins
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The inside label margins.
+     * @return The inside label margins spacing.
+     */
+    public Spacing insideLabelMargins()
+    {
+        return this.insideLabelMargins.getValue();
+    }
+
+
+    /**
+     * Set the inside label margins. If null, sets defaults (all 0s).
+     * @param spacing The spacing.
+     */
+    public void setInsideLabelMargins(Spacing spacing)
+    {
+        if (spacing != null)
+            this.insideLabelMargins.setValue(spacing);
+        else
+            this.insideLabelMargins.setValue(Spacing.asDefault());
     }
 
 

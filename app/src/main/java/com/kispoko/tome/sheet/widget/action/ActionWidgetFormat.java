@@ -47,6 +47,11 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
      */
     private PrimitiveFunctor<Integer>   paddingHorizontal;
 
+    /**
+     * Vertical padding around the content. Only applies when height is wrap.
+     */
+    private PrimitiveFunctor<Integer>   paddingVertical;
+
     private PrimitiveFunctor<Height>    height;
 
 
@@ -61,6 +66,7 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
         this.actionStyle        = ModelFunctor.empty(TextStyle.class);
 
         this.paddingHorizontal  = new PrimitiveFunctor<>(null, Integer.class);
+        this.paddingVertical    = new PrimitiveFunctor<>(null, Integer.class);
 
         this.height             = new PrimitiveFunctor<>(null, Height.class);
     }
@@ -70,6 +76,7 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
                               TextStyle descriptionStyle,
                               TextStyle actionStyle,
                               Integer paddingHorizontal,
+                              Integer paddingVertical,
                               Height height)
     {
         this.id                 = id;
@@ -78,6 +85,7 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
         this.actionStyle        = ModelFunctor.full(actionStyle, TextStyle.class);
 
         this.paddingHorizontal  = new PrimitiveFunctor<>(paddingHorizontal, Integer.class);
+        this.paddingVertical    = new PrimitiveFunctor<>(paddingVertical, Integer.class);
 
         this.height             = new PrimitiveFunctor<>(height, Height.class);
 
@@ -104,10 +112,12 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
         TextStyle actionStyle       = TextStyle.fromYaml(yaml.atMaybeKey("action_style"));
 
         Integer   paddingHorizontal = yaml.atMaybeKey("padding_horizontal").getInteger();
+        Integer   paddingVertical   = yaml.atMaybeKey("padding_vertical").getInteger();
 
         Height    height            = Height.fromYaml(yaml.atMaybeKey("height"));
 
-        return new ActionWidgetFormat(id, descriptionStyle, actionStyle, paddingHorizontal, height);
+        return new ActionWidgetFormat(id, descriptionStyle, actionStyle, paddingHorizontal,
+                                      paddingVertical, height);
     }
 
 
@@ -246,6 +256,19 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
     public Integer paddingHorizontal()
     {
         return this.paddingHorizontal.getValue();
+    }
+
+
+    // ** Padding Vertical
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The veritcal padding.
+     * @return The vertical padding.
+     */
+    public Integer paddingVertical()
+    {
+        return this.paddingVertical.getValue();
     }
 
 

@@ -18,6 +18,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 /**
  * Widget Background
+ * TODO merge widget data into widget format yaml
  */
 public enum BackgroundColor implements ToYaml
 {
@@ -196,10 +197,14 @@ public enum BackgroundColor implements ToYaml
     }
 
 
-    public int colorId()
+    public Integer colorId()
     {
         switch (this)
         {
+            case EMPTY:
+                return null;
+            case NONE:
+                return null;
             case LIGHT:
                 return R.color.dark_blue_5;
             case MEDIUM_LIGHT:

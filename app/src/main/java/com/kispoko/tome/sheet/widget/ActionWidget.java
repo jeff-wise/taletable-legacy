@@ -32,6 +32,7 @@ import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
 import com.kispoko.tome.activity.sheet.dialog.RollDialogFragment;
 import com.kispoko.tome.sheet.BackgroundColor;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
@@ -396,6 +397,13 @@ public class ActionWidget extends Widget
         if (this.format().paddingHorizontal() != null) {
             layout.padding.leftDp   = this.format().paddingHorizontal();
             layout.padding.rightDp  = this.format().paddingHorizontal();
+        }
+
+        // > Vertical Padding
+        if (this.format().height() == Height.WRAP &&
+            this.format().paddingVertical() != null) {
+            layout.padding.topDp    = this.format().paddingVertical();
+            layout.padding.bottomDp = this.format().paddingVertical();
         }
 
         layout.onClick              = new View.OnClickListener() {

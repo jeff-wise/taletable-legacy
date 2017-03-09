@@ -19,6 +19,7 @@ import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
@@ -351,9 +352,10 @@ public class NumberCell extends Cell
     // > View
     // -----------------------------------------------------------------------------------------
 
-    public LinearLayout view(NumberColumn column, final Context context)
+    public LinearLayout view(NumberColumn column, TableRowFormat format, final Context context)
     {
-        LinearLayout layout = this.layout(column, context);
+        TextStyle valueStyle = this.format().resolveStyle(column.style());
+        LinearLayout layout = this.layout(column, valueStyle.size(), format.cellHeight(), context);
 
         layout.addView(valueTextView(column, context));
 

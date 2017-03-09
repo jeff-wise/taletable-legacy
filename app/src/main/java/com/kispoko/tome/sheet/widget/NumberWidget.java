@@ -553,10 +553,14 @@ public class NumberWidget extends Widget
 
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        if (this.data().format().background() != BackgroundColor.EMPTY &&
+            this.data().format().background() != BackgroundColor.NONE)
+        {
+            layout.backgroundColor      = this.data().format().background().colorId();
 
-        layout.backgroundColor      = this.data().format().background().colorId();
-        layout.backgroundResource   = this.format().valueHeight()
-                                          .resourceId(this.data().format().corners());
+            layout.backgroundResource   = this.format().valueHeight()
+                                              .resourceId(this.data().format().corners());
+        }
 
         layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
                                         | Gravity.CENTER_VERTICAL;
@@ -685,9 +689,12 @@ public class NumberWidget extends Widget
 
         label.text              = this.format().insideLabel();
 
+        label.layoutGravity     = this.format().insideLabelStyle().alignment().gravityConstant()
+                                        | Gravity.CENTER_VERTICAL;
+
         this.format().insideLabelStyle().styleTextViewBuilder(label, context);
 
-        label.margin.right      = R.dimen.widget_label_inline_margin_right;
+        label.marginSpacing     = this.format().insideLabelMargins();
 
         return label.textView(context);
     }

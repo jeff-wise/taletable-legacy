@@ -2,6 +2,8 @@
 package com.kispoko.tome.sheet.widget.table;
 
 
+import com.kispoko.tome.sheet.DividerType;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -26,13 +28,14 @@ public class TableWidgetFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                                id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<Boolean>   showDividers;
+    private PrimitiveFunctor<DividerType>       dividerType;
+    private PrimitiveFunctor<Height>            cellHeight;
 
 
     // CONSTRUCTORS
@@ -42,15 +45,20 @@ public class TableWidgetFormat implements Model, ToYaml, Serializable
     {
         this.id             = null;
 
-        this.showDividers   = new PrimitiveFunctor<>(null, Boolean.class);
+        this.dividerType    = new PrimitiveFunctor<>(null, DividerType.class);
+        this.cellHeight     = new PrimitiveFunctor<>(null, Height.class);
     }
 
 
-    public TableWidgetFormat(UUID id, Boolean showDividers)
+    public TableWidgetFormat(UUID id, DividerType dividerType, Height cellHeight)
     {
         this.id             = id;
 
-        this.showDividers   = new PrimitiveFunctor<>(showDividers, Boolean.class);
+        this.dividerType    = new PrimitiveFunctor<>(dividerType, DividerType.class);
+        this.cellHeight     = new PrimitiveFunctor<>(cellHeight, Height.class);
+
+        this.setDividerType(dividerType);
+        this.setCellHeight(cellHeight);
     }
 
 
@@ -66,11 +74,12 @@ public class TableWidgetFormat implements Model, ToYaml, Serializable
         if (yaml.isNull())
             return TableWidgetFormat.asDefault();
 
-        UUID    id           = UUID.randomUUID();
+        UUID            id              = UUID.randomUUID();
 
-        Boolean showDividers = yaml.atMaybeKey("show_dividers").getBoolean();
+        DividerType     dividerType     = DividerType.fromYaml(yaml.atMaybeKey("divider_type"));
+        Height          cellHeight      = Height.fromYaml(yaml.atMaybeKey("cell_height"));
 
-        return new TableWidgetFormat(id, showDividers);
+        return new TableWidgetFormat(id, dividerType, cellHeight);
     }
 
 
@@ -83,7 +92,8 @@ public class TableWidgetFormat implements Model, ToYaml, Serializable
         TableWidgetFormat format = new TableWidgetFormat();
 
         format.setId(UUID.randomUUID());
-        format.setShowDividers(null);
+        format.setDividerType(null);
+        format.setCellHeight(null);
 
         return format;
     }
@@ -125,36 +135,60 @@ public class TableWidgetFormat implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putBoolean("show_dividers", this.showDividers());
+                .putYaml("divider_type", this.dividerType())
+                .putYaml("cell_height", this.cellHeight());
     }
 
 
     // > State
     // --------------------------------------------------------------------------------------
 
-    // ** Show Dividers
+    // ** Divider Type
     // --------------------------------------------------------------------------------------
 
     /**
-     * True if the table displays dividers between each row.
-     * @return Show dividers?
+     * The table row divider type.
+     * @return The divider type.
      */
-    public Boolean showDividers()
+    public DividerType dividerType()
     {
-        return this.showDividers.getValue();
+        return this.dividerType.getValue();
     }
 
 
     /**
-     * Set the show dividers value. If null, it defaults to true.
-     * @param showDividers Show dividers?
+     * Set the table row divider type. If null, defaults to light dividers.
+     * @param dividerType The divider type.
      */
-    public void setShowDividers(Boolean showDividers)
+    public void setDividerType(DividerType dividerType)
     {
-        if (showDividers != null)
-            this.showDividers.setValue(showDividers);
+        if (dividerType != null)
+            this.dividerType.setValue(dividerType);
         else
-            this.showDividers.setValue(true);
+            this.dividerType.setValue(DividerType.LIGHT);
+    }
+
+
+    // ** Cell Height
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The height of the cells in the table.
+     * @return The cell height.
+     */
+    public Height cellHeight()
+    {
+        return this.cellHeight.getValue();
+    }
+
+
+    /**
+     * Set the cell height.
+     * @param cellHeight The cell height.
+     */
+    public void setCellHeight(Height cellHeight)
+    {
+        this.cellHeight.setValue(cellHeight);
     }
 
 }

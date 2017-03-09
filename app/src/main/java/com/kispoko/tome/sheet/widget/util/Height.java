@@ -98,7 +98,7 @@ public enum Height implements ToYaml
         switch (this)
         {
             case WRAP:
-                return null;
+                return R.drawable.bg_widget_wrap_corners_small;
             case VERY_SMALL:
                 switch (corners)
                 {
@@ -124,6 +124,20 @@ public enum Height implements ToYaml
 
         }
 
+    }
+
+
+    public Integer cellBackgroundResourceId()
+    {
+        switch (this)
+        {
+            case MEDIUM_SMALL:
+                return R.drawable.bg_cell_medium_small;
+            case MEDIUM:
+                return R.drawable.bg_cell_medium;
+            default:
+                return R.drawable.bg_cell_medium;
+        }
     }
 
 }

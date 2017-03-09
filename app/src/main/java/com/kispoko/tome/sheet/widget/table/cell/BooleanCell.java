@@ -17,6 +17,7 @@ import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
@@ -289,17 +290,22 @@ public class BooleanCell extends Cell
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public View view(BooleanColumn column, final Context context)
+    public View view(BooleanColumn column, TableRowFormat rowFormat, final Context context)
     {
-        final LinearLayout valueView = valueView(column, context);
+        final LinearLayout valueView = valueView(column, rowFormat, context);
 
         return valueView;
     }
 
 
-    private LinearLayout valueView(BooleanColumn column, final Context context)
+    private LinearLayout valueView(BooleanColumn column,
+                                   TableRowFormat rowFormat,
+                                   final Context context)
     {
-        LinearLayout layout = this.layout(column, context);
+        TextStyle textStyle = this.format().resolveStyle(column.format().style());
+
+        LinearLayout layout = this.layout(column, textStyle.size(),
+                                          rowFormat.cellHeight(), context);
 
         if ((this.value() && this.format().showTrueIcon()) ||
             (!this.value() && this.format().showFalseIcon()))

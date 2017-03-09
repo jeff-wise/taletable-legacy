@@ -3,14 +3,20 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.TextVariable;
+import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.table.TableRow;
+import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.TableWidgetFormat;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
@@ -38,6 +44,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 
 
 /**
@@ -220,7 +227,7 @@ public class TableWidget extends Widget
         this.groupParent = groupParent;
 
         for (TableRow tableRow : this.rows()) {
-            tableRow.initialize(this.columns());
+            tableRow.initialize(this.columns(), this.format());
         }
     }
 
@@ -426,8 +433,9 @@ public class TableWidget extends Widget
             headerCells.add(headerCellUnion);
         }
 
-        this.headerRow = new TableRow(null, headerCells);
+        TableRowFormat headerRowFormat = new TableRowFormat(UUID.randomUUID(), null);
 
+        this.headerRow = new TableRow(null, headerCells, headerRowFormat);
 
     }
 
@@ -436,9 +444,9 @@ public class TableWidget extends Widget
     {
         TableRowBuilder tableRow = new TableRowBuilder();
 
-        tableRow.layoutType         = LayoutType.TABLE;
-        tableRow.width              = TableLayout.LayoutParams.MATCH_PARENT;
-        tableRow.height             = TableLayout.LayoutParams.WRAP_CONTENT;
+        tableRow.layoutType     = LayoutType.TABLE;
+        tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT;
+        tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT;
 
         tableRow.padding.left   = R.dimen.widget_table_row_padding_horz;
         tableRow.padding.right  = R.dimen.widget_table_row_padding_horz;
@@ -448,7 +456,7 @@ public class TableWidget extends Widget
         for (int i = 0; i < row.width(); i++)
         {
             CellUnion cell = row.cellAtIndex(i);
-            View cellView = cell.view(this.columnAtIndex(i), context);
+            View cellView = cell.view(this.columnAtIndex(i), row.format(), context);
             tableRowView.addView(cellView);
         }
 
@@ -477,32 +485,30 @@ public class TableWidget extends Widget
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.shrinkAllColumns     = true;
 
-        if (this.format().showDividers())
+        layout.backgroundColor      = this.data().format().background().colorId();
+
+        // > Set Divider
+        // -------------------------------------------------------------------------------------
+
+        if (this.format().dividerType() != DividerType.NONE)
         {
-            switch (this.data().format().background())
-            {
-                case NONE:
-                    switch (this.groupParent.background())
-                    {
-                        case LIGHT:
-                            layout.divider = R.drawable.table_row_divider_light;
-                            break;
-                        case MEDIUM:
-                            layout.divider = R.drawable.table_row_divider_medium;
-                            break;
-                        case DARK:
-                            layout.divider = R.drawable.table_row_divider_dark;
-                            break;
-                    }
-                    break;
-                case LIGHT:
-                    layout.divider = R.drawable.table_row_divider_light;
-                    break;
-                case DARK:
-                    layout.divider = R.drawable.table_row_divider_medium;
-                    break;
-            }
+            Drawable dividerDrawable = ContextCompat.getDrawable(context,
+                                                                 R.drawable.table_row_divider);
+
+            BackgroundColor backgroundColor = this.data().format().background();
+            if (this.data().format().background() == BackgroundColor.NONE)
+                backgroundColor = this.groupParent.background();
+
+            int colorResourceId = this.format().dividerType()
+                                      .colorIdWithBackground(backgroundColor);
+            int      color      = ContextCompat.getColor(context, colorResourceId);
+
+            dividerDrawable.setColorFilter(
+                                new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+
+            layout.divider = dividerDrawable;
         }
+
 
         return layout.tableLayout(context);
     }
@@ -535,7 +541,8 @@ public class TableWidget extends Widget
                                                    false, false);
             ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
 
-            LinearLayout headerCellView = (LinearLayout) headerCell.view(columnUnion, context);
+            LinearLayout headerCellView =
+                    (LinearLayout) headerCell.view(columnUnion, this.headerRow.format(), context);
 
             headerRowView.addView(headerCellView);
         }

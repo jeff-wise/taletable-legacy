@@ -16,6 +16,7 @@ import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
@@ -282,9 +283,12 @@ public class TextCell extends Cell
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayout view(TextColumn column, Context context)
+    public LinearLayout view(TextColumn column, TableRowFormat rowFormat, Context context)
     {
-        LinearLayout layout = this.layout(column, context);
+        TextStyle valuestyle = this.format().resolveStyle(column.style());
+
+        LinearLayout layout = this.layout(column, valuestyle.size(),
+                                          rowFormat.cellHeight(), context);
 
         // > Text
         layout.addView(valueTextView(column, context));

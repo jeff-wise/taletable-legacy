@@ -66,6 +66,7 @@
     <color name="purple_light">#ABA0C4</color>
     <color name="purple_medium_light">#A096B8</color>
     <color name="purple_medium">#9389A8</color>
+    <color name="purple_medium_dark">#867D99</color>
 
 
     <!-- GREEN -->
@@ -96,6 +97,6 @@
 
     <!--<color name="red_orange_light">#C78572</color>-->
     <!--<color name="red_orange_light">#C7846D</color>-->
-    <color name="red_orange_light">#C78F84</color>
+    <color name="red_orange_light">#C78F7E</color>
 
 </resources>

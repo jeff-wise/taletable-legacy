@@ -10,8 +10,11 @@ import android.widget.TableRow;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.BackgroundColor;
+import com.kispoko.tome.sheet.widget.util.Height;
+import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 
@@ -36,7 +39,10 @@ public abstract class Cell
     // SHARED METHODS
     // -----------------------------------------------------------------------------------------
 
-    protected LinearLayout layout(Column column, Context context)
+    protected LinearLayout layout(Column column,
+                                  TextSize textSize,
+                                  Height cellHeight,
+                                  Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -55,8 +61,36 @@ public abstract class Cell
         layout.gravity          = cellAlignment.gravityConstant() | Gravity.CENTER_VERTICAL;
 
 
+        if (cellHeight == null)
+        {
+            switch (textSize)
+            {
+                case VERY_SMALL:
+                    cellHeight = Height.VERY_SMALL;
+                    break;
+                case SMALL:
+                    cellHeight = Height.SMALL;
+                    break;
+                case MEDIUM_SMALL:
+                    cellHeight = Height.MEDIUM_SMALL;
+                    break;
+                case MEDIUM:
+                    cellHeight = Height.MEDIUM;
+                    break;
+                case MEDIUM_LARGE:
+                    cellHeight = Height.MEDIUM_LARGE;
+                    break;
+                case LARGE:
+                    cellHeight = Height.LARGE;
+                    break;
+                default:
+                    cellHeight = Height.MEDIUM_SMALL;
+            }
+
+        }
+
         layout.backgroundColor      = this.background().colorId();
-        layout.backgroundResource   = R.drawable.bg_cell;
+        layout.backgroundResource   = cellHeight.cellBackgroundResourceId();
 
 
         return layout.linearLayout(context);

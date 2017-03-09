@@ -3,6 +3,7 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -42,7 +43,7 @@ public class TableLayoutBuilder
     public Boolean                  shrinkAllColumns;
     public Boolean                  stretchAllColumns;
 
-    public Integer                  divider;
+    public Drawable                 divider;
 
     public View.OnClickListener     onClick;
 
@@ -153,7 +154,7 @@ public class TableLayoutBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.divider != null) {
-            tableLayout.setDividerDrawable(ContextCompat.getDrawable(context, this.divider));
+            tableLayout.setDividerDrawable(this.divider);
             tableLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         }
 

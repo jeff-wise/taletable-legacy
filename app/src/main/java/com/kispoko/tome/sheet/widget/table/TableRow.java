@@ -9,9 +9,11 @@ import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.value.ModelFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -43,6 +45,7 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
     // ------------------------------------------------------------------------------------------
 
     private CollectionFunctor<CellUnion>    cells;
+    private ModelFunctor<TableRowFormat>    format;
 
 
     // > Internal
@@ -60,17 +63,19 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
         this.id                     = null;
 
         this.cells                  = CollectionFunctor.empty(CellUnion.class);
+        this.format                 = ModelFunctor.empty(TableRowFormat.class);
 
         this.namespace              = null;
         this.namespacedVariables    = new ArrayList<>();
     }
 
 
-    public TableRow(UUID id, List<CellUnion> cells)
+    public TableRow(UUID id, List<CellUnion> cells, TableRowFormat format)
     {
         this.id         = id;
 
         this.cells      = CollectionFunctor.full(cells, CellUnion.class);
+        this.format     = ModelFunctor.full(format, TableRowFormat.class);
 
         this.initializeTableRow();
     }
@@ -96,7 +101,9 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
             }
         });
 
-        return new TableRow(id, cells);
+        TableRowFormat format = TableRowFormat.fromYaml(yaml.atMaybeKey("format"));
+
+        return new TableRow(id, cells, format);
     }
 
 
@@ -178,8 +185,13 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
     // > Initialize
     // ------------------------------------------------------------------------------------------
 
-    public void initialize(List<ColumnUnion> columns)
+    public void initialize(List<ColumnUnion> columns, TableWidgetFormat tableFormat)
     {
+        // [1] Apply default row/cell height
+        // --------------------------------------------------------------------------------------
+        if (tableFormat.cellHeight() != null && this.format().cellHeight() == null)
+            this.format().setCellHeight(tableFormat.cellHeight());
+
         // [1] Initialize the cells
         // --------------------------------------------------------------------------------------
         for (int i = 0; i < this.width(); i++)
@@ -248,6 +260,16 @@ public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
     public List<CellUnion> cells()
     {
         return this.cells.getValue();
+    }
+
+
+    /**
+     * The table row formatting options.
+     * @return The format.
+     */
+    public TableRowFormat format()
+    {
+        return this.format.getValue();
     }
 
 

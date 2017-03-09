@@ -158,4 +158,79 @@ public enum DividerType implements ToYaml
     }
 
 
+    public int tableRowResourceIdWithBackground(BackgroundColor background)
+    {
+        switch (background)
+        {
+            case LIGHT:
+                switch (this)
+                {
+                    case LIGHT:
+                        return R.color.dark_blue_3;
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_4;
+                    case DARK:
+                        return R.color.dark_blue_6;
+                    case VERY_DARK:
+                        return R.color.dark_blue_7;
+                }
+                break;
+            case MEDIUM_LIGHT:
+                switch (this)
+                {
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_4;
+                    case LIGHT:
+                        return R.color.dark_blue_5;
+                    case DARK:
+                        return R.color.dark_blue_7;
+                    case VERY_DARK:
+                        return R.color.dark_blue_8;
+                }
+                break;
+            case MEDIUM:
+                switch (this)
+                {
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_5;
+                    case LIGHT:
+                        return R.color.dark_blue_6;
+                    case DARK:
+                        return R.color.dark_blue_8;
+                    case VERY_DARK:
+                        return R.color.dark_blue_9;
+                }
+                break;
+            case MEDIUM_DARK:
+                switch (this)
+                {
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_6;
+                    case LIGHT:
+                        return R.color.dark_blue_7;
+                    case DARK:
+                        return R.color.dark_blue_9;
+                    case VERY_DARK:
+                        return R.color.dark_blue_10;
+                }
+                break;
+            case DARK:
+                switch (this)
+                {
+                    case VERY_LIGHT:
+                        return R.color.dark_blue_7;
+                    case LIGHT:
+                        return R.color.dark_blue_8;
+                    case DARK:
+                        return R.color.dark_blue_10;
+                    case VERY_DARK:
+                        return R.color.dark_blue_11;
+                }
+                break;
+        }
+
+        return R.color.dark_blue_5;
+    }
+
+
 }

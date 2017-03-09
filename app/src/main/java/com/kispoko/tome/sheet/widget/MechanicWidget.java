@@ -236,9 +236,6 @@ public class MechanicWidget extends Widget implements Serializable
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.margin.left          = R.dimen.widget_mechanic_layout_margin_horz;
-        layout.margin.right         = R.dimen.widget_mechanic_layout_margin_horz;
-
         return layout.linearLayout(context);
     }
 
