@@ -36,6 +36,7 @@ public enum WidgetType implements ToYaml
     OPTION,
     QUOTE,
     TABLE,
+    TAB,
     TEXT;
 
 
@@ -112,6 +113,8 @@ public enum WidgetType implements ToYaml
                 return R.string.widget_option;
             case QUOTE:
                 return R.string.widget_quote;
+            case TAB:
+                return R.string.widget_tab;
             case TABLE:
                 return R.string.widget_table;
             case TEXT:

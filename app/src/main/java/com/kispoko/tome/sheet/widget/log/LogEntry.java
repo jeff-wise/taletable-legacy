@@ -292,8 +292,8 @@ public class LogEntry implements Model, ToYaml, Serializable
         title.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         title.text                  = this.title();
-        title.font                  = Font.serifFontRegular(context);
-        title.color                 = R.color.dark_blue_hlx_4;
+        title.font                  = Font.serifFontBold(context);
+        title.color                 = R.color.dark_blue_hlx_6;
         title.size                  = R.dimen.widget_log_entry_title_text_size;
 
         title.margin.bottom         = R.dimen.widget_log_entry_title_margin_bottom;
@@ -306,7 +306,7 @@ public class LogEntry implements Model, ToYaml, Serializable
 
         date.text                   = dateString;
         date.font                   = Font.serifFontRegular(context);
-        date.color                  = R.color.dark_blue_hl_8;
+        date.color                  = R.color.dark_blue_hl_9;
         date.size                   = R.dimen.widget_log_entry_date_text_size;
 
         date.margin.bottom          = R.dimen.widget_log_entry_date_margin_bottom;
@@ -332,7 +332,7 @@ public class LogEntry implements Model, ToYaml, Serializable
 
         summary.text                = this.summary();
         summary.font                = Font.serifFontItalic(context);
-        summary.color               = R.color.dark_blue_hl_5;
+        summary.color               = R.color.dark_blue_hl_6;
         summary.size                = R.dimen.widget_log_entry_summary_text_size;
 
 
@@ -355,25 +355,6 @@ public class LogEntry implements Model, ToYaml, Serializable
         spanBuilder.setSpan(colorSpan, 3, authorString.length(), 0);
 
         return spanBuilder;
-    }
-
-
-    private TextView textView(Context context)
-    {
-        TextViewBuilder text = new TextViewBuilder();
-
-        text.width              = LinearLayout.LayoutParams.MATCH_PARENT;
-        text.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        text.text               = this.text();
-        text.font               = Font.serifFontRegular(context);
-        text.color              = R.color.dark_blue_hl_8;
-        text.size               = R.dimen.widget_log_entry_text_text_size;
-
-        text.padding.left       = R.dimen.widget_log_entry_text_padding_horz;
-        text.padding.right      = R.dimen.widget_log_entry_text_padding_horz;
-
-        return text.textView(context);
     }
 
 

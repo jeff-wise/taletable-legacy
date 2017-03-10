@@ -22,6 +22,7 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.SectionCard;
 
 
+
 /**
  * New Character Activity
  */
@@ -116,20 +117,17 @@ public class NewCharacterActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
         // > If this is the first sheet, then we are not coming from another sheet, so no back
         //   button is provided
-//        if (!this.firstSheet)
-//        {
-//            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
-//            actionBar.setDisplayHomeAsUpEnabled(true);
-//        }
+        if (!this.firstSheet) {
+            UI.initializeToolbar(this, true, true);
+        }
+        else {
+            UI.initializeToolbar(this, true, false);
+        }
 
         // > Set the title
-        String title = "New Character"; // + this.widgetData.label();
+        String title = "Create a New Character"; // + this.widgetData.label();
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(title);
     }
@@ -160,6 +158,7 @@ public class NewCharacterActivity extends AppCompatActivity
                 SectionCard.view(R.string.from_template,
                                  R.drawable.ic_new_character_template,
                                  R.string.from_template_description,
+                                 SectionCard.Color.GOLD,
                                  this);
 
         fromTemplateButton.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +176,7 @@ public class NewCharacterActivity extends AppCompatActivity
                 SectionCard.view(R.string.from_hub,
                                  R.drawable.ic_new_character_hub,
                                  R.string.from_hub_description,
+                                 SectionCard.Color.RED_ORANGE,
                                  this);
 
         // > From File Button
@@ -186,6 +186,7 @@ public class NewCharacterActivity extends AppCompatActivity
                 SectionCard.view(R.string.from_file,
                                  R.drawable.ic_new_character_file,
                                  R.string.from_file_description,
+                                 SectionCard.Color.RED,
                                  this);
 
         layout.addView(fromTemplateButton);
@@ -204,10 +205,11 @@ public class NewCharacterActivity extends AppCompatActivity
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.orientation      = LinearLayout.VERTICAL;
 
-        layout.backgroundColor  = R.color.dark_blue_5;
-        layout.padding.bottom   = R.dimen.new_character_layout_padding_bottom;
+        layout.backgroundColor  = R.color.dark_blue_11;
+        //layout.padding.bottom   = R.dimen.new_character_layout_padding_bottom;
         layout.padding.left     = R.dimen.new_character_layout_padding_horz;
         layout.padding.right    = R.dimen.new_character_layout_padding_horz;
+        layout.padding.top      = R.dimen.five_dp;
 
         return layout.linearLayout(this);
     }

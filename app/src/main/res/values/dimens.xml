@@ -209,14 +209,14 @@
     <!-- WIDGET: LOG  -->
     <dimen name="widget_log_entry_layout_padding_horz">4.4dp</dimen>
     <dimen name="widget_log_entry_layout_padding_vert">16dp</dimen>
-    <dimen name="widget_log_entry_title_text_size">5sp</dimen>
+    <dimen name="widget_log_entry_title_text_size">4.7sp</dimen>
     <dimen name="widget_log_entry_title_margin_bottom">6dp</dimen>
-    <dimen name="widget_log_entry_date_text_size">3.5sp</dimen>
+    <dimen name="widget_log_entry_date_text_size">3.3sp</dimen>
     <dimen name="widget_log_entry_date_margin_bottom">6dp</dimen>
     <dimen name="widget_log_entry_author_text_size">3.5sp</dimen>
     <dimen name="widget_log_entry_text_text_size">3.7sp</dimen>
     <dimen name="widget_log_entry_author_margin_bottom">6dp</dimen>
-    <dimen name="widget_log_entry_summary_text_size">3.7sp</dimen>
+    <dimen name="widget_log_entry_summary_text_size">3.5sp</dimen>
     <dimen name="widget_log_entry_header_margin_bottom">6dp</dimen>
     <dimen name="widget_log_entry_text_padding_horz">6dp</dimen>
 
@@ -525,7 +525,7 @@
 
     <!-- SECTION CARD-->
     <dimen name="section_card_margin_top">12dp</dimen>
-    <dimen name="section_card_title_text_size">3.7sp</dimen>
+    <dimen name="section_card_title_text_size">4.7sp</dimen>
     <dimen name="section_card_description_text_size">3sp</dimen>
     <dimen name="section_card_title_margin_bottom">10dp</dimen>
     <dimen name="section_card_icon_margin_bottom">10dp</dimen>

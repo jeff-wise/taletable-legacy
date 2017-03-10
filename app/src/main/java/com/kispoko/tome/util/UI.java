@@ -49,15 +49,36 @@ public class UI
 
     public static void initializeToolbar(AppCompatActivity activity)
     {
+        UI.initializeToolbar(activity, true, false);
+    }
+
+
+    public static void initializeToolbar(AppCompatActivity activity, boolean isbold)
+    {
+        UI.initializeToolbar(activity, true, isbold);
+    }
+
+
+    public static void initializeToolbar(AppCompatActivity activity,
+                                         boolean isBold,
+                                         boolean showIcon)
+    {
         Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);
         ActionBar actionBar = activity.getSupportActionBar();
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (showIcon) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         actionBar.setDisplayShowTitleEnabled(false);
 
         TextView titleView = (TextView) activity.findViewById(R.id.page_title);
-        titleView.setTypeface(Util.serifFontRegular(activity));
+
+        if (isBold)
+            titleView.setTypeface(Util.serifFontBold(activity));
+        else
+            titleView.setTypeface(Util.serifFontRegular(activity));
     }
 
 

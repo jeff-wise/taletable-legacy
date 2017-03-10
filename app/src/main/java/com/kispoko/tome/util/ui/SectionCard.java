@@ -3,6 +3,7 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -16,9 +17,19 @@ import com.kispoko.tome.R;
 public class SectionCard
 {
 
+
+    public enum Color
+    {
+        GOLD,
+        RED_ORANGE,
+        RED;
+    }
+
+
     public static RelativeLayout view(int titleStringId,
                                       int iconId,
                                       int descriptionStringId,
+                                      Color color,
                                       Context context)
     {
         // [1] Declarations
@@ -40,7 +51,7 @@ public class SectionCard
 
         layout.backgroundResource   = R.drawable.bg_section_card;
 
-        layout.margin.top           = R.dimen.section_card_margin_top;
+        layout.margin.bottom        = R.dimen.section_card_margin_top;
 
         layout.child(title)
               .child(icon)
@@ -54,10 +65,25 @@ public class SectionCard
         title.height        = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         title.textId        = titleStringId;
-        title.font          = Font.sansSerifFontBold(context);
-        title.color         = R.color.gold_light;
+        title.font          = Font.serifFontItalic(context);
         title.size          = R.dimen.section_card_title_text_size;
-        //title.margin.bottom = R.dimen.section_card_title_margin_bottom;
+        title.color         = R.color.gold_light;
+
+//        // > Title Color
+//        switch (color)
+//        {
+//            case GOLD:
+//                title.color = R.color.gold_medium_light;
+//                break;
+//            case RED_ORANGE:
+//                title.color = R.color.red_orange_light;
+//                break;
+//            case RED:
+//                title.color = R.color.red_light;
+//                break;
+//            default:
+//                title.color = R.color.gold_medium_light;
+//        }
 
         title.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
@@ -69,7 +95,21 @@ public class SectionCard
         icon.height         = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         icon.image          = iconId;
-        //icon.margin.bottom  = R.dimen.section_card_icon_margin_bottom;
+
+//        switch (color)
+//        {
+//            case GOLD:
+//                icon.color = R.color.gold_medium_dark;
+//                break;
+//            case RED_ORANGE:
+//                icon.color = R.color.red_orange_light;
+//                break;
+//            case RED:
+//                icon.color = R.color.red_light;
+//                break;
+//            default:
+//                icon.color = R.color.gold_medium_light;
+//        }
 
         icon.addRule(RelativeLayout.CENTER_IN_PARENT);
 
@@ -81,9 +121,26 @@ public class SectionCard
         description.height          = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         description.textId          = descriptionStringId;
-        description.color           = R.color.dark_blue_hl_8;
         description.size            = R.dimen.section_card_description_text_size;
-        description.font            = Font.sansSerifFontRegular(context);
+        description.font            = Font.serifFontRegular(context);
+
+        description.gravity         = Gravity.CENTER_HORIZONTAL;
+        description.color           = R.color.dark_blue_hl_8;
+
+//        switch (color)
+//        {
+//            case GOLD:
+//                description.color   = R.color.gold_medium_dark;
+//                break;
+//            case RED_ORANGE:
+//                description.color   = R.color.red_orange_light;
+//                break;
+//            case RED:
+//                description.color   = R.color.red_light;
+//                break;
+//            default:
+//                description.color   = R.color.gold_medium_light;
+//        }
 
         description.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 

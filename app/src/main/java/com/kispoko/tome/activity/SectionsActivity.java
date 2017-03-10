@@ -120,6 +120,7 @@ public class SectionsActivity extends AppCompatActivity
                 SectionCard.view(R.string.sections_button_profile_label,
                                  R.drawable.ic_sections_profile,
                                  R.string.sections_button_profile_description,
+                                 SectionCard.Color.GOLD,
                                  this);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +139,7 @@ public class SectionsActivity extends AppCompatActivity
                 SectionCard.view(R.string.sections_button_encounter_label,
                                  R.drawable.ic_sections_encounter,
                                  R.string.sections_button_encounter_description,
+                                 SectionCard.Color.GOLD,
                                  this);
 
         // [1 C] Campaign Button
@@ -147,6 +149,7 @@ public class SectionsActivity extends AppCompatActivity
                 SectionCard.view(R.string.sections_button_campaign_label,
                                  R.drawable.ic_sections_campaign,
                                  R.string.sections_button_campaign_description,
+                                 SectionCard.Color.GOLD,
                                  this);
 
         // [2] Build Layout

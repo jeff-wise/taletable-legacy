@@ -122,6 +122,15 @@
     <item name="dialog_info_button" type="id"/>
 
 
+    <!-- WIDGET: TAB -->
+    <item name="tab_one" type="id"/>
+    <item name="tab_two" type="id"/>
+    <item name="tab_three" type="id"/>
+    <item name="tab_four" type="id"/>
+    <item name="tab_five" type="id"/>
+    <item name="tab_six" type="id"/>
+
+
     <item name="type_list_item_name" type="id"/>
     <item name="type_list_item_icon" type="id"/>
 

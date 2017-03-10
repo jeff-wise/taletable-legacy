@@ -47,6 +47,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     private ModelFunctor<NumberWidget>      numberWidget;
     private ModelFunctor<OptionWidget>      optionWidget;
     private ModelFunctor<QuoteWidget>       quoteWidget;
+    private ModelFunctor<TabWidget>         tabWidget;
     private ModelFunctor<TableWidget>       tableWidget;
     private ModelFunctor<TextWidget>        textWidget;
 
@@ -71,6 +72,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.numberWidget   = ModelFunctor.empty(NumberWidget.class);
         this.optionWidget   = ModelFunctor.empty(OptionWidget.class);
         this.quoteWidget    = ModelFunctor.empty(QuoteWidget.class);
+        this.tabWidget      = ModelFunctor.empty(TabWidget.class);
         this.tableWidget    = ModelFunctor.empty(TableWidget.class);
         this.textWidget     = ModelFunctor.empty(TextWidget.class);
 
@@ -93,6 +95,7 @@ public class WidgetUnion implements Model, ToYaml, Serializable
         this.numberWidget   = ModelFunctor.full(null, NumberWidget.class);
         this.optionWidget   = ModelFunctor.full(null, OptionWidget.class);
         this.quoteWidget    = ModelFunctor.full(null, QuoteWidget.class);
+        this.tabWidget      = ModelFunctor.full(null, TabWidget.class);
         this.tableWidget    = ModelFunctor.full(null, TableWidget.class);
         this.textWidget     = ModelFunctor.full(null, TextWidget.class);
 
@@ -132,6 +135,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 break;
             case QUOTE:
                 this.quoteWidget.setValue((QuoteWidget) widget);
+                break;
+            case TAB:
+                this.tabWidget.setValue((TabWidget) widget);
                 break;
             case TABLE:
                 this.tableWidget.setValue((TableWidget) widget);
@@ -268,6 +274,17 @@ public class WidgetUnion implements Model, ToYaml, Serializable
 
 
     /**
+     * Create the "tab" variant.
+     * @param tabWidget The tab widget.
+     * @return The "tab" Widget Union.
+     */
+    public static WidgetUnion asTab(UUID id, TabWidget tabWidget)
+    {
+        return new WidgetUnion(id, tabWidget, WidgetType.TAB);
+    }
+
+
+    /**
      * Create the "table" variant.
      * @param tableWidget The table widget.
      * @return The "table" Widget Union.
@@ -340,6 +357,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case QUOTE:
                 QuoteWidget quoteWidget = QuoteWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asQuote(id, quoteWidget);
+            case TAB:
+                TabWidget tabWidget = TabWidget.fromYaml(yaml.atKey("widget"));
+                return WidgetUnion.asTab(id, tabWidget);
             case TABLE:
                 TableWidget tableWidget = TableWidget.fromYaml(yaml.atKey("widget"));
                 return WidgetUnion.asTable(id, tableWidget);
@@ -441,6 +461,9 @@ public class WidgetUnion implements Model, ToYaml, Serializable
             case QUOTE:
                 widgetYaml = this.quoteWidget().toYaml();
                 break;
+            case TAB:
+                widgetYaml = this.tabWidget().toYaml();
+                break;
             case TABLE:
                 widgetYaml = this.tableWidget().toYaml();
                 break;
@@ -489,6 +512,8 @@ public class WidgetUnion implements Model, ToYaml, Serializable
                 return this.optionWidget();
             case QUOTE:
                 return this.quoteWidget();
+            case TAB:
+                return this.tabWidget();
             case TABLE:
                 return this.tableWidget();
             case TEXT:
@@ -629,6 +654,16 @@ public class WidgetUnion implements Model, ToYaml, Serializable
     public QuoteWidget quoteWidget()
     {
         return this.quoteWidget.getValue();
+    }
+
+
+    /**
+     * The "tab" case.
+     * @return The Tab Widget.
+     */
+    public TabWidget tabWidget()
+    {
+        return this.tabWidget.getValue();
     }
 
 

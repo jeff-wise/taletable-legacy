@@ -55,7 +55,9 @@
     <color name="gold_light">#E3D7B4</color>
     <color name="gold_medium_light">#D9CDAC</color>
     <color name="gold_medium">#CCC1A2</color>
-    <color name="gold_dark">#B0AC67</color>
+    <color name="gold_medium_dark">#BFB598</color>
+    <color name="gold_dark">#B2A98E</color>
+    <color name="gold_very_dark">#A39B81</color>
 
 
     <!-- PURPLE -->
@@ -95,8 +97,8 @@
     <!-- RED ORANGE -->
     <!-- ================================================================ -->
 
-    <!--<color name="red_orange_light">#C78572</color>-->
-    <!--<color name="red_orange_light">#C7846D</color>-->
-    <color name="red_orange_light">#C78F7E</color>
+    <!-- cool but more orangy -->
+    <!--<color name="red_orange_light">#C7886B</color>-->
+    <color name="red_orange_light">#C78D6D</color>
 
 </resources>

@@ -3,6 +3,9 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -146,15 +149,23 @@ public class RelativeLayoutBuilder
         // > Background Color
         // --------------------------------------------------------------------------------------
 
-        if (this.backgroundColor != null)
-            relativeLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+        if (this.backgroundColor != null) {
+            relativeLayout.setBackgroundColor(
+                    ContextCompat.getColor(context, this.backgroundColor));
+        }
 
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
-        if (this.backgroundResource != null)
+        if (this.backgroundResource != null && this.backgroundColor != null) {
+            Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
+            int      color      = ContextCompat.getColor(context, this.backgroundColor);
+            bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            relativeLayout.setBackground(bgDrawable);
+        }
+        else if (this.backgroundResource != null) {
             relativeLayout.setBackgroundResource(this.backgroundResource);
-
+        }
 
         // [2] Layout Parameters
         // --------------------------------------------------------------------------------------

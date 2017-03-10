@@ -605,11 +605,7 @@ public class NumberWidget extends Widget
                                     | Gravity.CENTER_VERTICAL;
             value.gravity       = this.format().descriptionStyle().alignment().gravityConstant();
 
-            value.font          = Font.serifFontRegular(context);
-
-            value.color     = this.format().descriptionStyle().color().resourceId();
-            value.size      = this.format().descriptionStyle().size().resourceId();
-
+            this.format().descriptionStyle().styleTextViewBuilder(value, context);
 
             List<FormattedString.Span> spans = new ArrayList<>();
 

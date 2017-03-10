@@ -11,7 +11,6 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
-import android.text.style.RelativeSizeSpan;
 import android.text.style.ReplacementSpan;
 import android.text.style.StyleSpan;
 
@@ -113,6 +112,7 @@ public class FormattedString
     {
         // > Typeface
         // -------------------------------------------------------------------------------------
+
         switch (spanStyle.font())
         {
             case BOLD:

@@ -68,26 +68,6 @@ public abstract class Widget implements Model, ToYaml, Serializable
     }
 
 
-    private void setWidgetBackgroundResource(LinearLayoutBuilder layout)
-    {
-        BackgroundColor background = this.data().format().background();
-
-        switch (background)
-        {
-            case NONE:
-                // DO NOTHING
-                break;
-            case LIGHT:
-                layout.backgroundResource = R.drawable.bg_widget_light;
-                break;
-            case DARK:
-                layout.backgroundResource = R.drawable.bg_widget_dark_large_corners;
-                break;
-        }
-
-    }
-
-
     // STATIC METHODS
     // ------------------------------------------------------------------------------------------
 

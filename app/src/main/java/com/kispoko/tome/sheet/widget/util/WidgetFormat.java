@@ -310,7 +310,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         if (background != null)
             this.background.setValue(background);
         else
-            this.background.setValue(BackgroundColor.DARK);
+            this.background.setValue(BackgroundColor.NONE);
     }
 
 
