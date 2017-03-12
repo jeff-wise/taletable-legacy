@@ -1831,8 +1831,7 @@ profile:
           top: 35
           left: 7
           right: 7
-          bottom: 35
-        divider: very_dark
+          bottom: 15
       rows:
       - format:
           margins:
@@ -2564,11 +2563,11 @@ profile:
                 size: small
               inside_label: saving throw
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: saving_throw_strength
@@ -2614,11 +2613,11 @@ profile:
                 size: small
               inside_label: strength check
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: check_strength
@@ -2776,11 +2775,11 @@ profile:
                 size: small
               inside_label: saving throw
               inside_label_style:
-                color: purple_medium
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium
+                color: theme_medium_light
                 size: small
             value:
               name: saving_throw_dexterity
@@ -2826,11 +2825,11 @@ profile:
                 size: small
               inside_label: dexterity check
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: check_dexterity
@@ -2926,11 +2925,11 @@ profile:
                 size: small
               inside_label: saving throw
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: saving_throw_constitution
@@ -2976,12 +2975,11 @@ profile:
                 size: small
               inside_label: constitution check
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
-                font: italic
+                color: theme_medium_light
                 size: small
             value:
               name: check_constitution
@@ -3190,11 +3188,11 @@ profile:
                 size: small
               inside_label: saving throw
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: saving_throw_intelligence
@@ -3240,11 +3238,11 @@ profile:
                 size: small
               inside_label: intelligence check
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: check_wisdom
@@ -3329,11 +3327,11 @@ profile:
                 size: small
               inside_label: saving throw
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: saving_throw_wisdom
@@ -3379,11 +3377,11 @@ profile:
                 size: small
               inside_label: wisdom check
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: check_wisdom
@@ -3409,6 +3407,8 @@ profile:
       - format:
           margins:
             top: 10
+            left: 10
+            right: 10
         widgets:
         - type: number
           widget:
@@ -3467,11 +3467,11 @@ profile:
                 size: small
               inside_label: saving throw
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: saving_throw_charisma
@@ -3517,11 +3517,11 @@ profile:
                 size: small
               inside_label: charisma check
               inside_label_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
               value_height: wrap
               value_style:
-                color: purple_medium_dark
+                color: theme_medium_light
                 size: small
             value:
               name: check_charisma
@@ -4290,10 +4290,10 @@ profile:
     - format:
         background: dark
         divider: light
+        divider_padding: 10
         padding:
           top: 20
           bottom: 20
-        margins:
           left: 20
           right: 20
       rows:
@@ -4315,11 +4315,11 @@ profile:
                 size: medium
               inside_label: Hit Points
               inside_label_style:
-                color: gold_light
+                color: gold_medium_light
                 font: bold
-                size: medium_large
+                size: medium
               value_style:
-                color: theme_light
+                color: theme_very_light
                 font: bold
                 size: medium_large
             value:
@@ -4346,11 +4346,11 @@ profile:
                 size: medium
               inside_label: Armor Class
               inside_label_style:
-                color: gold_light
+                color: gold_medium_light
                 font: bold
-                size: medium_large
+                size: medium
               value_style:
-                color: theme_light
+                color: theme_very_light
                 font: bold
                 size: medium_large
             value:
@@ -4391,11 +4391,11 @@ profile:
                 size: medium
               inside_label: Initiative
               inside_label_style:
-                color: gold_light
+                color: gold_medium_light
                 font: bold
-                size: medium_large
+                size: medium
               value_style:
-                color: theme_light
+                color: theme_very_light
                 font: bold
                 size: medium_large
             value:
@@ -4433,7 +4433,7 @@ profile:
               outside_label: Proficiency Bonus
               outside_label_style:
                 alignment: center
-                color: gold_medium
+                color: theme_medium_dark
                 font: italic
                 size: very_small
               outside_label_position: top
@@ -4441,7 +4441,7 @@ profile:
                 bottom: 3
               value_style:
                 alignment: center
-                color: theme_medium_light
+                color: theme_light
                 size: medium_small
             value:
               name: proficiency_bonus
@@ -4462,7 +4462,7 @@ profile:
               outside_label: Speed
               outside_label_style:
                 alignment: center
-                color: gold_medium
+                color: theme_medium_dark
                 font: italic
                 size: very_small
               outside_label_position: top
@@ -4470,7 +4470,7 @@ profile:
                 bottom: 3
               value_style:
                 alignment: center
-                color: theme_medium_light
+                color: theme_light
                 size: medium_small
             value:
               type: literal
@@ -4489,7 +4489,7 @@ profile:
               outside_label: Hit Dice
               outside_label_style:
                 alignment: center
-                color: gold_medium
+                color: theme_medium_dark
                 font: italic
                 size: very_small
               outside_label_position: top
@@ -4497,7 +4497,7 @@ profile:
                 bottom: 3
               value_style:
                 alignment: center
-                color: theme_medium_light
+                color: theme_light
                 size: medium_small
             value:
               type: literal
@@ -5639,7 +5639,7 @@ encounter:
                 size: medium_large
             value:
               type: literal
-              value: 'Anything is a weapon...'
+              value: 'ANYTHING IS A WEAPON...'
     - format:
         background: medium
         padding:
@@ -6115,7 +6115,7 @@ encounter:
                 set_name: physical_status
                 value_name: alive
   - name: Abilities
-    background: dark
+    background: medium
     groups:
     - format:
         background: dark
@@ -6124,8 +6124,8 @@ encounter:
       rows:
       - format:
           margins:
-            top: 15
-            bottom: 15
+            top: 18
+            bottom: 18
         widgets:
         - type: text
           widget:
@@ -6154,6 +6154,7 @@ encounter:
                 margins:
                   left: 10
                   right: 13
+            default_selected: 2
             format:
               tab_default_text_style:
                 color: theme_very_dark
@@ -6182,78 +6183,97 @@ encounter:
                   widgets:
             - name: DEX
               groups:
-              - name: Dexterity Actions
-                format:
-                  background: dark
-                  show_name: false
+              - format:
+                  background: medium
+                  divider: light
+                  divider_padding: 10
+                  padding:
+                    top: 25
+                    bottom: 25
                 rows:
-                - widgets:
+                - format:
+                  widgets:
                   - type: action
                     widget:
-                      description: Using a rope, I secure a prisoner by binding his legs and arms.
-                      action_highlight: secure a prisoner
-                      action_name: Secure a Prisoner
+                      description: Saving Throw
+                      action_highlight: Saving Throw
+                      action_name: Dexterity Saving Throw
                       data:
                         format:
                           alignment: center
-                          background: empty
+                          background: light
+                          corners: medium
+                          margins:
+                            left: 10
+                            right: 10
                       format:
                         action_style:
                           color: theme_medium_light
-                          size: medium_small
+                          size: small
+                        height: medium_small
                       modifier:
                         type: literal
                         label: Secure a Prisoner
                         value: 1
-                - widgets:
                   - type: action
                     widget:
-                      description: Disable a Trap
-                      action_highlight: Disable a Trap
+                      description: Dexterity Check
+                      action_highlight: Dexterity Check
                       action_name: Secure a Prisoner
                       data:
                         format:
                           alignment: center
-                          background: empty
+                          background: light
+                          corners: medium
+                          margins:
+                            left: 10
+                            right: 10
                       format:
                         action_style:
                           color: theme_medium_light
-                          size: medium_small
+                          size: small
+                        height: medium_small
                       modifier:
                         type: literal
-                        label: Disable a Trap
+                        label: Secure a Prisoner
                         value: 1
-                - widgets:
-                  - type: action
+              - format:
+                  background: medium
+                  divider: light
+                  divider_padding: 10
+                  padding:
+                    top: 25
+                    bottom: 30
+                    left: 10
+                    right: 10
+                rows:
+                - format:
+                  widgets:
+                  - type: text
                     widget:
-                      description: >
-                        When you're bored in the army during a long seige, you learn to juggle knives.
-                      action_highlight: juggle knives
-                      action_name: Juggle Knives
                       data:
                         format:
                           alignment: center
                           background: empty
                       format:
-                        action_style:
-                          color: theme_medium_light
+                        value_height: wrap
+                        value_style:
+                          alignment: center
+                          color: gold_light
+                          font: regular
                           size: medium_small
-                      modifier:
+                      value:
                         type: literal
-                        label: Juggle Knives
-                        value: 1
-              - name: Dexterity Skills
-                format:
-                  background: dark
-                  show_name: false
-                rows:
+                        value: SKILLS
                 - format:
                     margins:
-                      top: 10
+                      top: 15
                   widgets:
                   - type: action
                     widget:
-                      description: Acrobatics Check
+                      description: |-
+                        My graceful years are far behind me.
+                        Acrobatics Check
                       action_highlight: Acrobatics Check
                       action_name: Acrobatics Check
                       data:
@@ -6262,19 +6282,26 @@ encounter:
                           background: medium
                       format:
                         action_style:
-                          color: theme_medium_light
+                          color: theme_light
+                          font: bold
                           size: medium_small
+                        description_style:
+                          color: theme_very_dark
+                          size: small
                       modifier:
                         type: variable
                         label: Acrobatics check
                         value: athletics_bonus
                 - format:
                     margins:
-                      top: 10
+                      top: 15
                   widgets:
                   - type: action
                     widget:
-                      description: Sleight of Hand Check
+                      description: "I once stole a lord's coin pouch with dozens of gold pieces, \
+                        switching it for a pouch of equally hefty copper pieces. I returned to \
+                        the lair and revealed my prize...a pouch of copper pieces. \
+                        \nSleight of Hand Check"
                       action_highlight: Sleight of Hand Check
                       action_name: Sleight Of Hand Check
                       data:
@@ -6283,19 +6310,24 @@ encounter:
                           background: medium
                       format:
                         action_style:
-                          color: theme_medium_light
+                          color: theme_light
+                          font: bold
                           size: medium_small
+                        description_style:
+                          color: theme_very_dark
+                          size: small
                       modifier:
                         type: variable
                         label: Sleight of Hand check
                         value: sleight_of_hand_bonus
                 - format:
                     margins:
-                      top: 10
+                      top: 15
                   widgets:
                   - type: action
                     widget:
-                      description: Stealth Check
+                      description: "After I joined the military I lost patience for confrontation \
+                        that didn't begin with my sword in your face. \nStealth Check"
                       action_highlight: Stealth Check
                       action_name: Stealth Check
                       data:
@@ -6304,12 +6336,147 @@ encounter:
                           background: medium
                       format:
                         action_style:
-                          color: theme_medium_light
+                          color: theme_light
+                          font: bold
                           size: medium_small
+                        description_style:
+                          color: theme_very_dark
+                          size: small
                       modifier:
                         type: variable
                         label: Stealth Check
                         value: stealth_bonus
+              - format:
+                  padding:
+                    top: 25
+                    left: 10
+                    right: 10
+                    bottom: 20
+                rows:
+                - format:
+                    margins:
+                      bottom: 15
+                  widgets:
+                  - type: text
+                    widget:
+                      data:
+                        format:
+                          alignment: center
+                          background: empty
+                      format:
+                        value_height: wrap
+                        value_style:
+                          alignment: center
+                          color: gold_light
+                          font: regular
+                          size: medium_small
+                      value:
+                        type: literal
+                        value: ACTIONS
+                - format:
+                  widgets:
+                  - type: action
+                    widget:
+                      description: Using a rope, I Secure a Prisoner by binding his legs and arms.
+                      action_highlight: Secure a Prisoner
+                      action_name: Secure a Prisoner
+                      data:
+                        format:
+                          alignment: center
+                          background: empty
+                      format:
+                        action_style:
+                          color: theme_light
+                          size: medium_small
+                        description_style:
+                          color: theme_very_dark
+                          font: italic
+                          size: medium_small
+                      modifier:
+                        type: literal
+                        label: Secure a Prisoner
+                        value: 1
+                - format:
+                    margins:
+                      top: 20
+                  widgets:
+                  - type: action
+                    widget:
+                      description: |-
+                        I never liked surprises.
+                        Disable a Trap
+                      action_highlight: Disable a Trap
+                      action_name: Secure a Prisoner
+                      data:
+                        format:
+                          alignment: center
+                          background: empty
+                      format:
+                        action_style:
+                          color: theme_light
+                          size: medium_small
+                        description_style:
+                          color: theme_very_dark
+                          font: italic
+                          size: medium_small
+                      modifier:
+                        type: literal
+                        label: Disable a Trap
+                        value: 1
+                - format:
+                    margins:
+                      top: 20
+                  widgets:
+                  - type: action
+                    widget:
+                      description: >-
+                        Three months into a siege it feels like the boredom will kill you before
+                        the enemy does. That's when you learn to Juggle Knives.
+                      action_highlight: Juggle Knives
+                      action_name: Juggle Knives
+                      data:
+                        format:
+                          alignment: center
+                          background: empty
+                      format:
+                        action_style:
+                          color: theme_light
+                          size: medium_small
+                        description_style:
+                          color: theme_very_dark
+                          font: italic
+                          size: medium_small
+                      modifier:
+                        type: literal
+                        label: Juggle Knives
+                        value: 1
+                - format:
+                    margins:
+                      top: 20
+                  widgets:
+                  - type: action
+                    widget:
+                      description: |-
+                        Pick Lock. I never liked stealing, even when it was about survival. Still,
+                        and empty stomach is the best motivation I've ever known.
+                      action_highlight: Pick Lock
+                      action_name: Pick Lock
+                      data:
+                        format:
+                          alignment: center
+                          background: empty
+                      format:
+                        action_style:
+                          color: theme_light
+                          size: medium_small
+                        description_style:
+                          color: theme_very_dark
+                          font: italic
+                          size: medium_small
+                      modifier:
+                        type: literal
+                        label: Pick Lock
+                        value: 1
             - name: CON
               groups:
             - name: INT

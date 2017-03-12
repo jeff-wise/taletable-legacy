@@ -4,7 +4,6 @@ package com.kispoko.tome.sheet.widget;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.NestedScrollingChild;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -14,6 +13,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.Corners;
+import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.tab.Tab;
 import com.kispoko.tome.sheet.widget.tab.TabWidgetFormat;
@@ -62,6 +62,8 @@ public class TabWidget extends Widget implements Serializable
     // > Internal
     // -----------------------------------------------------------------------------------------
 
+    private Integer                         currentTabIndex;
+
     private GroupParent                     groupParent;
 
 
@@ -95,6 +97,8 @@ public class TabWidget extends Widget implements Serializable
         this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
 
         this.setDefaultSelected(defaultSelected);
+
+        this.initializeTabWidget();
     }
 
 
@@ -208,7 +212,7 @@ public class TabWidget extends Widget implements Serializable
     @Override
     public View view(boolean rowHasLabel, Context context)
     {
-        return this.tabBarView(context);
+        return this.widgetView(context);
     }
 
 
@@ -294,11 +298,40 @@ public class TabWidget extends Widget implements Serializable
 
         if (this.data().format().corners() == null)
             this.data().format().setCorners(Corners.NONE);
+
+        // [2] Current Tab Index
+        // -------------------------------------------------------------------------------------
+
+        this.currentTabIndex = this.defaultSelected();
     }
 
 
     // > Views
     // ------------------------------------------------------------------------------------------
+
+    private View widgetView(Context context)
+    {
+        LinearLayout layout = widgetViewLayout(context);
+
+        layout.addView(this.tabBarView(context));
+
+        layout.addView(this.groupsView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout widgetViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
 
     private View tabBarView(Context context)
     {
@@ -320,8 +353,8 @@ public class TabWidget extends Widget implements Serializable
         }
 
         // Style default selected tab
-        this.styleTabTextViewSelected(tabTextViews.get(defaultSelected() - 1),
-                                      underlineViews.get(defaultSelected() - 1),
+        this.styleTabTextViewSelected(tabTextViews.get(this.currentTabIndex - 1),
+                                      underlineViews.get(this.currentTabIndex - 1),
                                       context);
 
 
@@ -491,5 +524,32 @@ public class TabWidget extends Widget implements Serializable
             return thisBgColor;
 
         return parentBgColor;
+    }
+
+
+    private LinearLayout groupsView(Context context)
+    {
+        LinearLayout layout = groupsViewLayout(context);
+
+        Tab currentTab = this.tabs().get(this.currentTabIndex - 1);
+
+        for (Group group : currentTab.groups())
+        {
+            layout.addView(group.view(context));
+        }
+
+        return layout;
+    }
+
+
+    private LinearLayout groupsViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
     }
 }

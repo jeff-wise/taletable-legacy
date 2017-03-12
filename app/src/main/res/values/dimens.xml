@@ -184,7 +184,7 @@
     <dimen name="widget_action_text_size_medium">4.2sp</dimen>
     <dimen name="widget_action_text_size_large">4.7sp</dimen>
 
-    <dimen name="widget_action_dice_size_small">21dp</dimen>
+    <dimen name="widget_action_dice_size_small">19dp</dimen>
     <dimen name="widget_action_dice_size_medium_small">21dp</dimen>
     <dimen name="widget_action_dice_size_medium">22dp</dimen>
     <dimen name="widget_action_dice_size_medium_large">24dp</dimen>

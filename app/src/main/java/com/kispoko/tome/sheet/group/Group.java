@@ -256,11 +256,14 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation      = LinearLayout.VERTICAL;
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.marginSpacing    = this.format().margins();
+        layout.marginSpacing        = this.format().margins();
+
+        layout.backgroundColor      = this.background().colorId();
+        layout.backgroundResource   = this.format().corners().resourceId();
 
         return layout.linearLayout(context);
     }
@@ -287,8 +290,6 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
 
         layout.paddingSpacing   = this.format().padding();
 
-        layout.backgroundColor  = this.background().colorId();
-        layout.backgroundResource = this.format().corners().resourceId();
 
         return layout.linearLayout(context);
     }

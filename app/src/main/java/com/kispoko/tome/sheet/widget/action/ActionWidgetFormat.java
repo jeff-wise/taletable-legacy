@@ -91,6 +91,11 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
 
         this.setDescriptionStyle(descriptionStyle);
         this.setActionStyle(actionStyle);
+
+        this.setPaddingHorizontal(paddingHorizontal);
+        this.setPaddingVertical(paddingVertical);
+
+        this.setHeight(height);
     }
 
 
@@ -130,8 +135,14 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
         ActionWidgetFormat format = new ActionWidgetFormat();
 
         format.setId(UUID.randomUUID());
+
         format.setDescriptionStyle(null);
         format.setActionStyle(null);
+
+        format.setPaddingHorizontal(null);
+        format.setPaddingVertical(null);
+
+        format.setHeight(null);
 
         return format;
     }
@@ -175,7 +186,9 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
         return YamlBuilder.map()
                 .putYaml("action_style", this.actionStyle())
                 .putYaml("description_style", this.descriptionStyle())
-                .putInteger("padding_horizontal", this.paddingHorizontal());
+                .putInteger("padding_horizontal", this.paddingHorizontal())
+                .putInteger("padding_vertical", this.paddingVertical())
+                .putYaml("height", this.height());
     }
 
 
@@ -259,16 +272,42 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
     }
 
 
+    /**
+     * Set the horizontal padding.
+     * @param padding The padding.
+     */
+    public void setPaddingHorizontal(Integer padding)
+    {
+        if (padding != null)
+            this.paddingHorizontal.setValue(padding);
+        else
+            this.paddingHorizontal.setValue(0);
+    }
+
+
     // ** Padding Vertical
     // -----------------------------------------------------------------------------------------
 
     /**
-     * The veritcal padding.
+     * The vertical padding.
      * @return The vertical padding.
      */
     public Integer paddingVertical()
     {
         return this.paddingVertical.getValue();
+    }
+
+
+    /**
+     * Set the vertical padding.
+     * @param padding The padding.
+     */
+    public void setPaddingVertical(Integer padding)
+    {
+        if (padding != null)
+            this.paddingVertical.setValue(padding);
+        else
+            this.paddingVertical.setValue(0);
     }
 
 
@@ -291,7 +330,10 @@ public class ActionWidgetFormat implements Model, ToYaml, Serializable
      */
     public void setHeight(Height height)
     {
-        this.height.setValue(height);
+        if (height != null)
+            this.height.setValue(height);
+        else
+            this.height.setValue(Height.WRAP);
     }
 
 

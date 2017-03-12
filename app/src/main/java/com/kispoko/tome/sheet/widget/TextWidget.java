@@ -203,6 +203,8 @@ public class TextWidget extends Widget
         return YamlBuilder.map()
                 .putYaml("data", this.data())
                 .putYaml("value", this.valueVariable())
+                .putYaml("format", this.format())
+                .putString("description", this.description())
                 .putList("variables", this.variables());
     }
 

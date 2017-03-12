@@ -119,7 +119,7 @@ public class ActionWidget extends Widget
     {
         UUID               id              = UUID.randomUUID();
 
-        String             description     = yaml.atKey("description").getTrimmedString();
+        String             description     = yaml.atKey("description").getString();
         String             actionHighlight = yaml.atKey("action_highlight").getTrimmedString();
         String             actionName      = yaml.atKey("action_name").getTrimmedString();
         NumberVariable     modifier        = NumberVariable.fromYaml(yaml.atKey("modifier"));
@@ -181,15 +181,13 @@ public class ActionWidget extends Widget
      */
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
-
-        yaml.putString("action", this.action());
-        yaml.putString("action_name", this.actionName());
-        yaml.putYaml("modifier", this.modifierVariable());
-        yaml.putYaml("data", this.data());
-        yaml.putYaml("format", this.format());
-
-        return yaml;
+        return YamlBuilder.map()
+                .putString("description", this.description())
+                .putString("action_highlight", this.actionHighlight())
+                .putString("action_name", this.actionName())
+                .putYaml("modifier", this.modifierVariable())
+                .putYaml("data", this.data())
+                .putYaml("format", this.format());
     }
 
 
@@ -234,7 +232,7 @@ public class ActionWidget extends Widget
      * Get the roll description.
      * @return The roll description.
      */
-    public String action()
+    public String description()
     {
         return this.description.getValue();
     }
@@ -369,7 +367,7 @@ public class ActionWidget extends Widget
         layout.orientation          = LinearLayout.VERTICAL;
 
         // > Width
-        if (this.format().paddingHorizontal() != null)
+        if (this.format().paddingHorizontal() > 0)
             layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
         else
             layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -385,7 +383,7 @@ public class ActionWidget extends Widget
         {
             layout.backgroundColor      = this.data().format().background().colorId();
 
-            if (this.format().height() != null) {
+            if (this.format().height() != Height.WRAP) {
                 layout.backgroundResource   = this.format().height()
                                                   .resourceId(this.data().format().corners());
             }
@@ -394,14 +392,11 @@ public class ActionWidget extends Widget
         layout.marginSpacing        = this.data().format().margins();
 
         // > Horizontal Padding
-        if (this.format().paddingHorizontal() != null) {
-            layout.padding.leftDp   = this.format().paddingHorizontal();
-            layout.padding.rightDp  = this.format().paddingHorizontal();
-        }
+        layout.padding.leftDp   = this.format().paddingHorizontal();
+        layout.padding.rightDp  = this.format().paddingHorizontal();
 
         // > Vertical Padding
-        if (this.format().height() == Height.WRAP &&
-            this.format().paddingVertical() != null) {
+        if (this.format().height() == Height.WRAP) {
             layout.padding.topDp    = this.format().paddingVertical();
             layout.padding.bottomDp = this.format().paddingVertical();
         }
@@ -451,43 +446,43 @@ public class ActionWidget extends Widget
 
     private SpannableStringBuilder descriptionSpannable(Context context)
     {
-        SpannableStringBuilder builder = new SpannableStringBuilder(this.action());
+        SpannableStringBuilder builder = new SpannableStringBuilder(this.description());
 
-        int actionNameIndex = this.action().indexOf(this.actionHighlight());
+        int actionHighlightIndex = this.description().indexOf(this.actionHighlight());
 
-        ImageSpan diceRollIcon = this.actionImageSpan(context);
-
-        String imageSpace = "i" + "\u2006";
-        builder.insert(actionNameIndex, imageSpace);
-        builder.setSpan(diceRollIcon, actionNameIndex, actionNameIndex + 1, 0);
-
-        int actionNameEnd = actionNameIndex + 2 + this.actionHighlight().length();
-        builder.setSpan(this.actionHighlightSpan(context), actionNameIndex + 1, actionNameEnd, 0);
-
-//        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-//        builder.setSpan(boldSpan, actionNameIndex + 1, actionNameEnd, 0 );
-
-        int textSizeResourceId = this.format().actionStyle().size().resourceId();
-        int textSizePx = context.getResources().getDimensionPixelSize(textSizeResourceId);
-        AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(textSizePx, true);
-        builder.setSpan(sizeSpan, actionNameIndex + 1, actionNameEnd, 0);
-
-        // > Typeface
-        // -------------------------------------------------------------------------------------
-        switch (this.format().actionStyle().font())
+        if (actionHighlightIndex >= 0)
         {
-            case BOLD:
-                StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
-                builder.setSpan(valueBoldSpan, actionNameIndex + 1, actionNameEnd, 0);
-                break;
-            case ITALIC:
-                StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
-                builder.setSpan(valueItalicSpan, actionNameIndex + 1, actionNameEnd, 0);
-                break;
-            case BOLD_ITALIC:
-                StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
-                builder.setSpan(valueBoldItalicSpan, actionNameIndex + 1, actionNameEnd, 0);
-                break;
+            ImageSpan diceRollIcon = this.actionImageSpan(context);
+
+            String imageSpace = "i" + "\u2006";
+            builder.insert(actionHighlightIndex, imageSpace);
+            builder.setSpan(diceRollIcon, actionHighlightIndex, actionHighlightIndex + 1, 0);
+
+            int actionNameEnd = actionHighlightIndex + 2 + this.actionHighlight().length();
+            builder.setSpan(this.actionHighlightSpan(context), actionHighlightIndex + 1, actionNameEnd, 0);
+
+            int textSizeResourceId = this.format().actionStyle().size().resourceId();
+            int textSizePx = context.getResources().getDimensionPixelSize(textSizeResourceId);
+            AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(textSizePx, true);
+            builder.setSpan(sizeSpan, actionHighlightIndex + 1, actionNameEnd, 0);
+
+            // > Typeface
+            // -------------------------------------------------------------------------------------
+            switch (this.format().actionStyle().font())
+            {
+                case BOLD:
+                    StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
+                    builder.setSpan(valueBoldSpan, actionHighlightIndex + 1, actionNameEnd, 0);
+                    break;
+                case ITALIC:
+                    StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
+                    builder.setSpan(valueItalicSpan, actionHighlightIndex + 1, actionNameEnd, 0);
+                    break;
+                case BOLD_ITALIC:
+                    StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
+                    builder.setSpan(valueBoldItalicSpan, actionHighlightIndex + 1, actionNameEnd, 0);
+                    break;
+            }
         }
 
         return builder;
@@ -514,6 +509,9 @@ public class ActionWidget extends Widget
         int diceSizeId = 0;
         switch (this.format().actionStyle().size())
         {
+            case SMALL:
+                diceSizeId = R.dimen.widget_action_dice_size_small;
+                break;
             case MEDIUM_SMALL:
                 diceSizeId = R.dimen.widget_action_dice_size_medium_small;
                 break;
@@ -522,6 +520,12 @@ public class ActionWidget extends Widget
                 break;
             case MEDIUM_LARGE:
                 diceSizeId = R.dimen.widget_action_dice_size_medium_large;
+                break;
+            case LARGE:
+                diceSizeId = R.dimen.widget_action_dice_size_large;
+                break;
+            case VERY_LARGE:
+                diceSizeId = R.dimen.widget_action_dice_size_very_large;
                 break;
         }
 
