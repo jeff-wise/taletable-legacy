@@ -204,7 +204,7 @@ public enum BackgroundColor implements ToYaml
             case EMPTY:
                 return null;
             case NONE:
-                return null;
+                return R.color.transparent;
             case LIGHT:
                 return R.color.dark_blue_5;
             case MEDIUM_LIGHT:

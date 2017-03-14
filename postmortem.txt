@@ -53,3 +53,13 @@ always optimize everything. always keep everything clean. write DSLS for everyth
 
 everything that coudl have an error or take long to do, create a pattern for it.
 find optiml way, bput it in a function. 
+
+
+creating good absstractings is one of the arts of programming. it is an art because it is 
+connected with being human and programming. that is what art is. connected with humanity
+or with society. so things which are the art of programming. abstraction is only needed
+bcause we are human. not a human invention exactly, but a necessity. otherwise, why
+ not program with assembly. so abstraction requires careful balance. make sure it is needed before
+ doing it, otherwise you lose efficiency. if you don't do it right, you lose efficiency too.
+ it can be really important. but abstract the smallest pieces possible. make it compositional. 
+ tradeoffs. 

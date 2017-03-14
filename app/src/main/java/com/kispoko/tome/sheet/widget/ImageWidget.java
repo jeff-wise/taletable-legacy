@@ -70,6 +70,8 @@ public class ImageWidget extends Widget
     private int                             imageViewId;
     private int                             chooseImageButtonId;
 
+    private GroupParent                     groupParent;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -190,18 +192,9 @@ public class ImageWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public void initialize(GroupParent groupParent) { }
-
-
-    // > State
-    // ------------------------------------------------------------------------------------------
-
-    public Bitmap bitmap()
+    public void initialize(GroupParent groupParent)
     {
-        if (!this.bitmap.isNull())
-            return this.bitmap.getValue().getBitmap();
-        else
-            return null;
+        this.groupParent = groupParent;
     }
 
 
@@ -329,7 +322,10 @@ public class ImageWidget extends Widget
         layout.orientation          = LinearLayout.VERTICAL;
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
         layout.gravity              = Gravity.CENTER_HORIZONTAL;
+
+        layout.backgroundColor      = this.data().format().background().colorId();
 
         return layout.linearLayout(context);
     }

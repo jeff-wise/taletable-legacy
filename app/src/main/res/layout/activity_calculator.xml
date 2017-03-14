@@ -58,7 +58,7 @@
                     android:src="@drawable/ic_edit_summation"
                     app:layout_anchor="@id/calculator_view"
                     app:layout_anchorGravity="bottom|right"
-                    app:backgroundTint="@color/green_hlx_5"
+                    app:backgroundTint="@color/green_light"
                     app:rippleColor="#FFF" />
 
             </android.support.design.widget.CoordinatorLayout>

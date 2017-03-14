@@ -103,7 +103,7 @@ templates:
   number_created: 3775
 - game: dungeons_and_dragons_5
   name: fighter
-  label: 'The Mercenary Fighter, Aladasian Wineheart'
+  label: 'The Fighter, Cirus Scarborn'
   description: >
     Aladasian Wineheart is a mercenary fighter, doing his work for the highest bidder, even when
     the works involves questionable activities. He is often found drinking ale -- before fighting,
@@ -166,13 +166,17 @@ templates:
   - 'Level 15'
   number_created: 15134
 - game: dungeons_and_dragons_5
-  name: sorceror
-  label: 'Yunita Hakawa, the Flamethrower'
+  name: sorcerer
+  label: 'Alaria the Illuminator (Sorcerer)'
   description: >
     Yurninta Hakawa the Flamethrower has a deadly reputation for reducing anything in her way to
     ashes. She was born with magic in her veins, and had to be sent away at a young age to save
     her and her family from herself. As a Sorceror she was given the gift of magic and uses it to
     accomplish her goals, but does not always understand it.
+  variants:
+  - 'Level 1'
+  - 'Level 7'
+  - 'Level 15'
   number_created: 12550
 - game: dungeons_and_dragons_5
   name: warlock

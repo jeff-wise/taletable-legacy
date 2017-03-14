@@ -102,4 +102,23 @@ public enum Corners implements ToYaml
     }
 
 
+    public Integer widgetResourceId()
+    {
+        switch (this)
+        {
+            case NONE:
+                return null;
+            case SMALL:
+                return R.drawable.bg_widget_wrap_corners_small;
+            case MEDIUM:
+                return R.drawable.bg_widget_wrap_corners_medium;
+            case LARGE:
+                return R.drawable.bg_widget_wrap_corners_small;
+            default:
+                return null;
+        }
+
+    }
+
+
 }

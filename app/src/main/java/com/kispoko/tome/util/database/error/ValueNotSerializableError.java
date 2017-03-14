@@ -2,10 +2,14 @@
 package com.kispoko.tome.util.database.error;
 
 
+import com.kispoko.tome.util.ApplicationError;
+
+
+
 /**
  * Value Not Serializable to Database ErrorType Error
  */
-public class ValueNotSerializableError
+public class ValueNotSerializableError implements ApplicationError
 {
 
     // PROPERTIES

@@ -2,13 +2,16 @@
 package com.kispoko.tome.util.database.error;
 
 
+import com.kispoko.tome.util.ApplicationError;
+
+
 
 /**
  * Database Error: Serialization Exception
  *
  * Occurs while trying to read a class object and convert that to a SQL table.
  */
-public class SerializationError
+public class SerializationError implements ApplicationError
 {
 
     // PROPERTIES

@@ -5,7 +5,6 @@ package com.kispoko.tome.util.value;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import com.kispoko.tome.activity.sheet.dialog.ArithmeticDialogType;
 import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
 import com.kispoko.tome.engine.program.ProgramValueType;
 import com.kispoko.tome.engine.program.statement.ParameterType;
@@ -20,15 +19,17 @@ import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.mechanic.dice.DiceType;
+import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.sheet.widget.WidgetType;
-import com.kispoko.tome.sheet.widget.table.cell.CellAlignment;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.Corners;
+import com.kispoko.tome.sheet.widget.util.Height;
+import com.kispoko.tome.sheet.widget.util.Position;
+import com.kispoko.tome.sheet.widget.util.TextFont;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.util.SerialBitmap;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
+
 
 
 /**
@@ -143,36 +145,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        /*
-        else if (valueClass.isAssignableFrom(DiceType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(TextSize.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(Background.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(TextColor.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(Corners.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(ActionColor.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(ActionSize.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        */
         else if (valueClass.isAssignableFrom(SerialBitmap.class))
         {
             return SQLValue.Type.BLOB;
@@ -181,63 +153,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(ProgramValueType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
         else if (valueClass.isAssignableFrom(ProgramValueType[].class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(ParameterType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(VariableType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(WidgetType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(VariableReferenceType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(TextVariable.Kind.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(NumberVariable.Kind.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(BooleanVariable.Kind.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(InvocationParameterType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(IntegerTermValue.Kind.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(BooleanTermValue.Kind.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(DiceRollTermValue.Kind.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(TermType.class))
-        {
-            return SQLValue.Type.TEXT;
-        }
-        else if (valueClass.isAssignableFrom(ValueType.class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -300,31 +216,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String enumString = ((Enum) this.getValue()).name().toLowerCase();
             return SQLValue.newText(enumString);
         }
-        else if (this.getValue() instanceof TextSize)
-        {
-            String enumString = ((TextSize) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof BackgroundColor)
-        {
-            String enumString = ((BackgroundColor) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof Alignment)
-        {
-            String enumString = ((Alignment) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof TextColor)
-        {
-            String enumString = ((TextColor) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof Corners)
-        {
-            String enumString = ((Corners) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
         else if (this.getValue() instanceof SerialBitmap)
         {
             Bitmap bitmap = ((SerialBitmap) this.getValue()).getBitmap();
@@ -340,41 +231,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String arrayString = TextUtils.join("***", ((String[]) this.getValue()));
             return SQLValue.newText(arrayString);
         }
-        else if (this.getValue() instanceof DiceType)
-        {
-            String enumString = ((DiceType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof ArithmeticDialogType)
-        {
-            String enumString = ((ArithmeticDialogType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof CellType)
-        {
-            String enumString = ((CellType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof SectionType)
-        {
-            String enumString = ((SectionType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof ColumnType)
-        {
-            String enumString = ((ColumnType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof CellAlignment)
-        {
-            String enumString = ((CellAlignment) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof ProgramValueType)
-        {
-            String enumString = ((ProgramValueType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
         else if (this.getValue() instanceof ProgramValueType[])
         {
             ProgramValueType[] programValueTypeArray = (ProgramValueType[]) this.getValue();
@@ -385,21 +241,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String arrayString = TextUtils.join("***", programValueTypeStrings);
             return SQLValue.newText(arrayString);
         }
-        else if (this.getValue() instanceof ParameterType)
-        {
-            String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof VariableType)
-        {
-            String enumString = ((VariableType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof ProgramValueType)
-        {
-            String enumString = ((ProgramValueType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
         else if (this.getValue() instanceof ProgramValueType[])
         {
             ProgramValueType[] programValueTypeArray = (ProgramValueType[]) this.getValue();
@@ -409,72 +250,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             }
             String arrayString = TextUtils.join("***", programValueTypeStrings);
             return SQLValue.newText(arrayString);
-        }
-        else if (this.getValue() instanceof ParameterType)
-        {
-            String enumString = ((ParameterType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof VariableType)
-        {
-            String enumString = ((VariableType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof WidgetType)
-        {
-            String enumString = ((WidgetType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof VariableReferenceType)
-        {
-            String enumString = ((VariableReferenceType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof TextVariable.Kind)
-        {
-            String enumString = ((TextVariable.Kind) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof NumberVariable.Kind)
-        {
-            String enumString = ((NumberVariable.Kind) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof BooleanVariable.Kind)
-        {
-            String enumString = ((BooleanVariable.Kind) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof IntegerTermValue.Kind)
-        {
-            String enumString = ((IntegerTermValue.Kind) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof DiceRollTermValue.Kind)
-        {
-            String enumString = ((DiceRollTermValue.Kind) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof TermType)
-        {
-            String enumString = ((TermType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof ValueType)
-        {
-            String enumString = ((ValueType) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof BooleanTermValue.Kind)
-        {
-            String enumString = ((BooleanTermValue.Kind) this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
-        }
-        else if (this.getValue() instanceof InvocationParameterType)
-        {
-            String enumString = ((InvocationParameterType)
-                                            this.getValue()).name().toLowerCase();
-            return SQLValue.newText(enumString);
         }
         else
         {
@@ -527,6 +302,19 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             this.setValue((A) sqlValue.getBlob());
         }
+//        else if (this.valueClass.isAssignableFrom(Enum.class))
+//        {
+            // TODO can this work??
+            // TODO do we need to say somewhere that A is an enum??
+            // alternative solution FromString interface
+//            String valueString = sqlValue.getText();
+//            try {
+//                Enum.valueOf((<Enum<?>) this.valueClass,  valueString);
+//            }
+//            catch (InvalidDataException exception) {
+//
+//            }
+//        }
         else if (this.valueClass.isAssignableFrom(DiceType.class))
         {
             DiceType diceType = DiceType.fromSQLValue(sqlValue);
@@ -536,6 +324,21 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             CellType cellType = CellType.fromSQLValue(sqlValue);
             this.setValue((A) cellType);
+        }
+        else if (this.valueClass.isAssignableFrom(Position.class))
+        {
+            Position position = Position.fromSQLValue(sqlValue);
+            this.setValue((A) position);
+        }
+        else if (this.valueClass.isAssignableFrom(Height.class))
+        {
+            Height height = Height.fromSQLValue(sqlValue);
+            this.setValue((A) height);
+        }
+        else if (this.valueClass.isAssignableFrom(TextFont.class))
+        {
+            TextFont textFont = TextFont.fromSQLValue(sqlValue);
+            this.setValue((A) textFont);
         }
         else if (this.valueClass.isAssignableFrom(SectionType.class))
         {
@@ -567,6 +370,11 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             BackgroundColor background = BackgroundColor.fromSQLValue(sqlValue);
             this.setValue((A) background);
+        }
+        else if (this.valueClass.isAssignableFrom(DividerType.class))
+        {
+            DividerType dividerType = DividerType.fromSQLValue(sqlValue);
+            this.setValue((A) dividerType);
         }
         else if (this.valueClass.isAssignableFrom(Alignment.class))
         {

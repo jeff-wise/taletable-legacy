@@ -57,7 +57,7 @@
                     android:src="@drawable/ic_dictionary_new_value_set"
                     app:layout_anchor="@id/sheet_list_view"
                     app:layout_anchorGravity="bottom|right"
-                    app:backgroundTint="@color/green_hlx_5"
+                    app:backgroundTint="@color/green_light"
                     app:rippleColor="#FFF" />
 
             </android.support.design.widget.CoordinatorLayout>

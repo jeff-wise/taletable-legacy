@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -70,6 +71,12 @@ public class QuoteWidget extends Widget
     private ModelFunctor<QuoteWidgetFormat> format;
 
     private ModelFunctor<WidgetData>        widgetData;
+
+
+    // > Internal
+    // -----------------------------------------------------------------------------------------
+
+    private GroupParent                     groupParent;
 
 
     // CONSTRUCTORS
@@ -188,7 +195,11 @@ public class QuoteWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public void initialize(GroupParent groupParent) { };
+    public void initialize(GroupParent groupParent)
+    {
+        this.groupParent = groupParent;
+    }
+
 
     @Override
     public WidgetData data()
@@ -337,6 +348,10 @@ public class QuoteWidget extends Widget
         layout.orientation      = LinearLayout.VERTICAL;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.backgroundColor  = this.data().format().background().colorId();
+
+        layout.gravity          = this.data().format().alignment().gravityConstant();
 
         return layout.linearLayout(context);
     }

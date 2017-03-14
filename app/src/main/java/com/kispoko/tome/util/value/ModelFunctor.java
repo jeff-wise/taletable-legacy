@@ -2,6 +2,8 @@
 package com.kispoko.tome.util.value;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.model.Model;
@@ -225,6 +227,8 @@ public class ModelFunctor<A extends Model> extends Functor<A>
                 setIsSaved(true);
 
                 // getValue().onSave();
+
+                Log.d("***MODELFUNCTOR", "on save  " + modelClass.getName());
 
                 if (staticOnSaveListener != null)
                     staticOnSaveListener.onSave();

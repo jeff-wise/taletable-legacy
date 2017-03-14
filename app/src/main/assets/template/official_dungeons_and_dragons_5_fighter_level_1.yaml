@@ -2018,7 +2018,7 @@ profile:
               value: 103
       - format:
           margins:
-            top: 10
+            top: 20
             bottom: 25
         widgets:
         - type: quote
@@ -5096,7 +5096,7 @@ encounter:
         widgets:
         - type: quote
           widget:
-            quote: >
+            quote: >-
               The day that I'm not ready for a fight is the day that I'm dead.
             format:
               quote_style:
@@ -5123,7 +5123,7 @@ encounter:
         widgets:
         - type: action
           widget:
-            description: >
+            description: >-
               In the stance of the roaring tempest, I spin my longsword in wide, graceful arcs,
               slashing at my opponent with glimmering steel.
             action_highlight: longsword
@@ -5260,7 +5260,7 @@ encounter:
         widgets:
         - type: action
           widget:
-            description: >
+            description: >-
               My muscles strain winding back the taut string of my heavy crossbow. A violent
               thwack sounds as a bolt flies toward my opponent.
             action_highlight: heavy crossbow
@@ -5366,7 +5366,7 @@ encounter:
                 size: small
             value:
               type: literal
-              value: >
+              value: >-
                 Sometimes a situation calls for finesse. I've carried a dagger in my boot since I
                 was a theiving street urchin, getting myself into all sorts of trouble.
     - format:
@@ -5385,7 +5385,7 @@ encounter:
         widgets:
         - type: action
           widget:
-            description: >
+            description: >-
               I stab my dagger (melee) towards my opponent.
             action_highlight: dagger (melee)
             action_name: Dagger Melee Attack
@@ -5481,7 +5481,7 @@ encounter:
         widgets:
         - type: action
           widget:
-            description: >
+            description: >-
               I throw my dagger (ranged) end over end toward my opponent.
             action_highlight: dagger (ranged)
             action_name: Dagger Ranged Attack
@@ -5571,7 +5571,7 @@ encounter:
         widgets:
         - type: action
           widget:
-            description: >
+            description: >-
               I attempt to grapple my opponent.
             action_highlight: grapple
             action_name: Grapple
@@ -5623,6 +5623,8 @@ encounter:
           right: 10
       rows:
       - format:
+          margins:
+            bottom: 5
         widgets:
         - type: text
           widget:
@@ -5634,39 +5636,63 @@ encounter:
               value_height: wrap
               value_style:
                 alignment: center
-                color: theme_dark
+                color: theme_very_dark
                 font: italic
-                size: medium_large
+                size: small
             value:
               type: literal
-              value: 'ANYTHING IS A WEAPON...'
+              value: >
+                I learned a lot in the military. The kind of lessons that save your life. Well,
+                I've been in enough situations now to know that...
+      - format:
+          padding:
+            bottom: 10
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                alignment: center
+                color: red_orange_light
+                font: italic
+                size: large
+            value:
+              type: literal
+              value: 'ANYTHING IS A WEAPON'
     - format:
         background: medium
         padding:
-          top: 25
+          top: 15
+          bottom: 10
           left: 10
           right: 10
-          bottom: 20
       rows:
       - format:
           margins:
         widgets:
         - type: action
           widget:
-            description: >
+            description: >-
               I punch my opponent with bare knuckles.
             action_highlight: punch
             action_name: Unarmed Attack
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_light
+                corners: small
             format:
               action_style:
                 color: gold_medium
                 font: bold
                 size: medium_small
               height: wrap
+              padding_vertical: 5
             modifier:
               name: heavy_crossbow_attack_bonus
               type: summation
@@ -5743,7 +5769,7 @@ encounter:
         widgets:
         - type: action
           widget:
-            description: >
+            description: >-
               I swing a barstool at my enemy.
             action_highlight: barstool
             action_name: Barstool Attack
@@ -5751,12 +5777,14 @@ encounter:
               format:
                 alignment: center
                 background: empty
+                corners: small
             format:
               action_style:
                 color: gold_medium
                 font: bold
                 size: medium_small
               height: wrap
+              padding_vertical: 5
             modifier:
               name: heavy_crossbow_attack_bonus
               type: summation
@@ -5833,7 +5861,7 @@ encounter:
         widgets:
         - type: action
           widget:
-            description: >
+            description: >-
               I attack with a cast iron frying pan that still smells like bacon grease.
             action_highlight: frying pan
             action_name: Frying Pan
@@ -5841,12 +5869,14 @@ encounter:
               format:
                 alignment: center
                 background: empty
+                corners: small
             format:
               action_style:
                 color: gold_medium
                 font: bold
                 size: medium_small
               height: wrap
+              padding_vertical: 5
             modifier:
               name: heavy_crossbow_attack_bonus
               type: summation
@@ -6188,8 +6218,8 @@ encounter:
                   divider: light
                   divider_padding: 10
                   padding:
-                    top: 25
-                    bottom: 25
+                    top: 27
+                    bottom: 27
                 rows:
                 - format:
                   widgets:
@@ -6519,7 +6549,7 @@ campaign:
         - type: log
           widget:
             format:
-              divider: very_dark
+              divider: very_light
             entries:
             - title: The Way Back Home
               date: 1491256800000
@@ -6600,7 +6630,7 @@ campaign:
         - type: log
           widget:
             format:
-              divider: very_dark
+              divider: very_light
             entries:
             - title: Journey to Cyranus, City of Dragons
               date: 1488248188691

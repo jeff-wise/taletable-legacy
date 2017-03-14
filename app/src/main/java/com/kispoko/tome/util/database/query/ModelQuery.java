@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.kispoko.tome.Global;
 import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.error.ModelRowDoesNotExistError;
 import com.kispoko.tome.util.database.error.NullColumnTypeError;
 import com.kispoko.tome.util.database.error.QueryError;
 import com.kispoko.tome.util.database.sql.OrderBy;
@@ -84,7 +85,13 @@ public class ModelQuery
 
         try
         {
-            cursor.moveToFirst();
+            boolean firstExists = cursor.moveToFirst();
+
+            if (firstExists)
+            {
+                throw DatabaseException.modelRowDoesNotExist(
+                        new ModelRowDoesNotExistError(this.queryString));
+            }
 
             for (int i = 0; i < columnsSize; i++)
             {

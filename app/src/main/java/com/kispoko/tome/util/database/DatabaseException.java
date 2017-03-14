@@ -2,10 +2,11 @@
 package com.kispoko.tome.util.database;
 
 
+import com.kispoko.tome.util.ApplicationError;
 import com.kispoko.tome.util.database.error.ColumnDoesNotExistError;
 import com.kispoko.tome.util.database.error.InvalidEnumError;
+import com.kispoko.tome.util.database.error.ModelRowDoesNotExistError;
 import com.kispoko.tome.util.database.error.NullColumnTypeError;
-import com.kispoko.tome.util.database.error.NullModelError;
 import com.kispoko.tome.util.database.error.NullModelIdentifierError;
 import com.kispoko.tome.util.database.error.QueryError;
 import com.kispoko.tome.util.database.error.SerializationError;
@@ -24,14 +25,14 @@ public class DatabaseException extends Exception
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    Object    error;
-    ErrorType errorType;
+    ApplicationError error;
+    ErrorType        errorType;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    private DatabaseException(Object error, ErrorType errorType)
+    private DatabaseException(ApplicationError error, ErrorType errorType)
     {
         this.error     = error;
         this.errorType = errorType;
@@ -56,6 +57,12 @@ public class DatabaseException extends Exception
     }
 
 
+    public static DatabaseException modelRowDoesNotExist(ModelRowDoesNotExistError error)
+    {
+        return new DatabaseException(error, ErrorType.MODEL_ROW_DOES_NOT_EXIST);
+    }
+
+
     public static DatabaseException nullColumnType(NullColumnTypeError error)
     {
         return new DatabaseException(error, ErrorType.NULL_COLUMN_TYPE);
@@ -65,12 +72,6 @@ public class DatabaseException extends Exception
     public static DatabaseException nullModelId(NullModelIdentifierError error)
     {
         return new DatabaseException(error, ErrorType.NULL_MODEL_ID);
-    }
-
-
-    public static DatabaseException nullModel(NullModelError error)
-    {
-        return new DatabaseException(error, ErrorType.NULL_MODEL);
     }
 
 
@@ -108,41 +109,10 @@ public class DatabaseException extends Exception
     public String errorMessage()
     {
         StringBuilder errorBuilder = new StringBuilder();
+
         errorBuilder.append("Database Error: ");
 
-        switch (this.errorType)
-        {
-            case VALUE_NOT_SERIALIZABLE:
-                errorBuilder.append(((ValueNotSerializableError) this.error).errorMessage());
-                break;
-            case UNEXPECTED_SQL_TYPE:
-                errorBuilder.append(((UnexpectedSQLTypeError) this.error).errorMessage());
-                break;
-            case COLUMN_DOES_NOT_EXIST:
-                errorBuilder.append(((ColumnDoesNotExistError) this.error).errorMessage());
-                break;
-            case NULL_COLUMN_TYPE:
-                errorBuilder.append(((NullColumnTypeError) this.error).errorMessage());
-                break;
-            case NULL_MODEL:
-                errorBuilder.append(((NullModelError) this.error).errorMessage());
-                break;
-            case NULL_MODEL_ID:
-                errorBuilder.append(((NullModelIdentifierError) this.error).errorMessage());
-                break;
-            case UNINITIALIZED_FUNCTOR:
-                errorBuilder.append(((UninitializedFunctorError) this.error).errorMessage());
-                break;
-            case INVALID_ENUM:
-                errorBuilder.append(((InvalidEnumError) this.error).errorMessage());
-                break;
-            case SERIALIZATION:
-                errorBuilder.append(((SerializationError) this.error).errorMessage());
-                break;
-            case QUERY:
-                errorBuilder.append(((QueryError) this.error).errorMessage());
-                break;
-        }
+        errorBuilder.append(this.error.errorMessage());
 
         return errorBuilder.toString();
     }
@@ -156,6 +126,7 @@ public class DatabaseException extends Exception
         VALUE_NOT_SERIALIZABLE,
         UNEXPECTED_SQL_TYPE,
         COLUMN_DOES_NOT_EXIST,
+        MODEL_ROW_DOES_NOT_EXIST,
         NULL_COLUMN_TYPE,
         NULL_MODEL,
         NULL_MODEL_ID,

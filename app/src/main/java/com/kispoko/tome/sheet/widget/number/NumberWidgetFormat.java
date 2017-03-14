@@ -55,6 +55,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     private ModelFunctor<TextStyle>     valueStyle;
     private PrimitiveFunctor<Height>    valueHeight;
     private PrimitiveFunctor<Integer>   valuePaddingHorizontal;
+    private PrimitiveFunctor<Integer>   valuePaddingVertical;
 
     private ModelFunctor<TextStyle>     valuePrefixStyle;
     private ModelFunctor<TextStyle>     valuePostfixStyle;
@@ -82,6 +83,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.valueStyle             = ModelFunctor.empty(TextStyle.class);
         this.valueHeight            = new PrimitiveFunctor<>(null, Height.class);
         this.valuePaddingHorizontal = new PrimitiveFunctor<>(null, Integer.class);
+        this.valuePaddingVertical   = new PrimitiveFunctor<>(null, Integer.class);
 
         this.valuePrefixStyle       = ModelFunctor.empty(TextStyle.class);
         this.valuePostfixStyle      = ModelFunctor.empty(TextStyle.class);
@@ -101,6 +103,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                               TextStyle valueStyle,
                               Height valueHeight,
                               Integer valuePaddingHorizontal,
+                              Integer valuePaddingVertical,
                               TextStyle valuePrefixStyle,
                               TextStyle valuePostfixStyle)
     {
@@ -121,6 +124,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
         this.valueHeight            = new PrimitiveFunctor<>(valueHeight, Height.class);
         this.valuePaddingHorizontal = new PrimitiveFunctor<>(valuePaddingHorizontal, Integer.class);
+        this.valuePaddingVertical   = new PrimitiveFunctor<>(valuePaddingVertical, Integer.class);
 
         this.valuePrefixStyle       = ModelFunctor.full(valuePrefixStyle, TextStyle.class);
         this.valuePostfixStyle      = ModelFunctor.full(valuePostfixStyle, TextStyle.class);
@@ -138,6 +142,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         this.setValueStyle(valueStyle);
         this.setValueHeight(valueHeight);
+        this.setValuePaddingVertical(valuePaddingVertical);
 
         this.setValuePrefixStyle(valuePrefixStyle);
         this.setValuePostfixStyle(valuePostfixStyle);
@@ -175,6 +180,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         TextStyle valueStyle           = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
         Height    valueHeight          = Height.fromYaml(yaml.atMaybeKey("value_height"));
         Integer   valuePaddingHorz     = yaml.atMaybeKey("value_padding_horizontal").getInteger();
+        Integer   valuePaddingVert     = yaml.atMaybeKey("value_padding_vertical").getInteger();
 
         TextStyle valuePrefixStyle     = TextStyle.fromYaml(yaml.atMaybeKey("value_prefix_style"));
         TextStyle valuePostfixStyle    = TextStyle.fromYaml(yaml.atMaybeKey("value_postfix_style"));
@@ -182,8 +188,8 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         return new NumberWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
                                       insideLabelMargins, outsideLabel, outsideLabelPosition,
                                       outsideLabelStyle, outsideLabelMargins, descriptionStyle,
-                                      valueStyle, valueHeight, valuePaddingHorz, valuePrefixStyle,
-                                      valuePostfixStyle);
+                                      valueStyle, valueHeight, valuePaddingHorz, valuePaddingVert,
+                                      valuePrefixStyle, valuePostfixStyle);
     }
 
 
@@ -212,6 +218,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         numberWidgetFormat.setValueStyle(null);
         numberWidgetFormat.setValueHeight(null);
         numberWidgetFormat.setValuePaddingHorizontal(null);
+        numberWidgetFormat.setValuePaddingVertical(null);
 
         numberWidgetFormat.setValuePrefixStyle(null);
         numberWidgetFormat.setValuePostfixStyle(null);
@@ -270,6 +277,7 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
             .putYaml("value_style", this.valueStyle())
             .putInteger("value_padding_horizontal", this.valuePaddingHorizontal())
+            .putInteger("value_padding_vertical", this.valuePaddingVertical())
 
             .putYaml("value_prefix_style", this.valuePrefixStyle())
             .putYaml("value_postfix_style", this.valuePostfixStyle());
@@ -591,6 +599,32 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     public void setValuePaddingHorizontal(Integer padding)
     {
         this.valuePaddingHorizontal.setValue(padding);
+    }
+
+
+    // ** Value Padding Vertical
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The vertical padding around the value.
+     * @return The padding.
+     */
+    public Integer valuePaddingVertical()
+    {
+        return this.valuePaddingVertical.getValue();
+    }
+
+
+    /**
+     * Set the vertical value padding.
+     * @param padding The padding.
+     */
+    public void setValuePaddingVertical(Integer padding)
+    {
+        if (padding != null)
+            this.valuePaddingVertical.setValue(padding);
+        else
+            this.valuePaddingVertical.setValue(0);
     }
 
 

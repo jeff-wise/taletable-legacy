@@ -13,7 +13,7 @@ import com.kispoko.tome.util.yaml.error.InvalidEnumError;
 
 
 /**
- * CellUnion ErrorType
+ * Cell Type
  */
 public enum CellType
 {

@@ -14,6 +14,8 @@ import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
+import org.w3c.dom.Text;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -28,7 +30,14 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
+    // > Model
+    // -----------------------------------------------------------------------------------------
+
     private UUID                                id;
+
+
+    // > Functors
+    // -----------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<String>            name;
     private PrimitiveFunctor<String>            label;
@@ -37,6 +46,8 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     private ModelFunctor<TextStyle>             labelStyle;
     private PrimitiveFunctor<BackgroundColor>   background;
     private PrimitiveFunctor<Corners>           corners;
+    private PrimitiveFunctor<Integer>           underlineThickness;
+    private PrimitiveFunctor<TextColor>         underlineColor;
     private ModelFunctor<Spacing>               margins;
     private PrimitiveFunctor<Integer>           elevation;
 
@@ -46,17 +57,19 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
     public WidgetFormat()
     {
-        this.id             = null;
+        this.id                 = null;
 
-        this.name           = new PrimitiveFunctor<>(null, String.class);
-        this.label          = new PrimitiveFunctor<>(null, String.class);
-        this.width          = new PrimitiveFunctor<>(null, Integer.class);
-        this.alignment      = new PrimitiveFunctor<>(null, Alignment.class);
-        this.labelStyle     = ModelFunctor.empty(TextStyle.class);
-        this.background     = new PrimitiveFunctor<>(null, BackgroundColor.class);
-        this.corners        = new PrimitiveFunctor<>(null, Corners.class);
-        this.margins        = ModelFunctor.empty(Spacing.class);
-        this.elevation      = new PrimitiveFunctor<>(null, Integer.class);
+        this.name               = new PrimitiveFunctor<>(null, String.class);
+        this.label              = new PrimitiveFunctor<>(null, String.class);
+        this.width              = new PrimitiveFunctor<>(null, Integer.class);
+        this.alignment          = new PrimitiveFunctor<>(null, Alignment.class);
+        this.labelStyle         = ModelFunctor.empty(TextStyle.class);
+        this.background         = new PrimitiveFunctor<>(null, BackgroundColor.class);
+        this.corners            = new PrimitiveFunctor<>(null, Corners.class);
+        this.underlineThickness = new PrimitiveFunctor<>(null, Integer.class);
+        this.underlineColor     = new PrimitiveFunctor<>(null, TextColor.class);
+        this.margins            = ModelFunctor.empty(Spacing.class);
+        this.elevation          = new PrimitiveFunctor<>(null, Integer.class);
     }
 
 
@@ -68,27 +81,34 @@ public class WidgetFormat implements Model, ToYaml, Serializable
                         TextStyle labelStyle,
                         BackgroundColor background,
                         Corners corners,
+                        Integer underlineThickness,
+                        TextColor underlineColor,
                         Spacing margins,
                         Integer elevation)
     {
-        this.id             = id;
+        this.id                 = id;
 
-        this.name           = new PrimitiveFunctor<>(name, String.class);
-        this.label          = new PrimitiveFunctor<>(label, String.class);
-        this.width          = new PrimitiveFunctor<>(width, Integer.class);
-        this.alignment      = new PrimitiveFunctor<>(alignment, Alignment.class);
-        this.labelStyle     = ModelFunctor.full(labelStyle, TextStyle.class);
-        this.background     = new PrimitiveFunctor<>(background, BackgroundColor.class);
-        this.corners        = new PrimitiveFunctor<>(corners, Corners.class);
-        this.margins        = ModelFunctor.full(margins, Spacing.class);
-        this.elevation      = new PrimitiveFunctor<>(elevation, Integer.class);
+        this.name               = new PrimitiveFunctor<>(name, String.class);
+        this.label              = new PrimitiveFunctor<>(label, String.class);
+        this.width              = new PrimitiveFunctor<>(width, Integer.class);
+        this.alignment          = new PrimitiveFunctor<>(alignment, Alignment.class);
+        this.labelStyle         = ModelFunctor.full(labelStyle, TextStyle.class);
+        this.background         = new PrimitiveFunctor<>(background, BackgroundColor.class);
+        this.corners            = new PrimitiveFunctor<>(corners, Corners.class);
+        this.underlineThickness = new PrimitiveFunctor<>(underlineThickness, Integer.class);
+        this.underlineColor     = new PrimitiveFunctor<>(underlineColor, TextColor.class);
+        this.margins            = ModelFunctor.full(margins, Spacing.class);
+        this.elevation          = new PrimitiveFunctor<>(elevation, Integer.class);
 
         this.setWidth(width);
         this.setAlignment(alignment);
         this.setLabelStyle(labelStyle);
         this.setBackground(background);
         this.setCorners(corners);
+        this.setUnderlineThickness(underlineThickness);
+        this.setUnderlineColor(underlineColor);
         this.setMargins(margins);
+        this.setElevation(elevation);
     }
 
 
@@ -106,6 +126,8 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         defaultFormat.setLabelStyle(null);
         defaultFormat.setBackground(null);
         defaultFormat.setCorners(null);
+        defaultFormat.setUnderlineThickness(null);
+        defaultFormat.setUnderlineColor(null);
         defaultFormat.setMargins(null);
         defaultFormat.setElevation(null);
 
@@ -119,13 +141,11 @@ public class WidgetFormat implements Model, ToYaml, Serializable
      * @return The parsed WidgetFormat object.
      */
     @SuppressWarnings("unchecked")
-    protected static WidgetFormat fromYaml(YamlParser yaml, boolean useDefault)
+    protected static WidgetFormat fromYaml(YamlParser yaml)
                      throws YamlParseException
     {
-        if (yaml.isNull() && useDefault)
+        if (yaml.isNull())
             return WidgetFormat.asDefault();
-        else if (yaml.isNull())
-            return new WidgetFormat();
 
         UUID            id           = UUID.randomUUID();
 
@@ -140,11 +160,14 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         BackgroundColor background   = BackgroundColor.fromYaml(
                                                                 yaml.atMaybeKey("background"));
         Corners         corners      = Corners.fromYaml(yaml.atMaybeKey("corners"));
+        Integer         ulThickness  = yaml.atMaybeKey("underline_thickness").getInteger();
+        TextColor       ulColor      = TextColor.fromYaml(yaml.atMaybeKey("underline_color"));
+
         Spacing         margins      = Spacing.fromYaml(yaml.atMaybeKey("margins"));
         Integer         elevation    = yaml.atMaybeKey("elevation").getInteger();
 
         return new WidgetFormat(id, name, label, width, alignment, labelStyle, background, corners,
-                                margins, elevation);
+                                ulThickness, ulColor, margins, elevation);
     }
 
 
@@ -183,19 +206,18 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
-
-        yaml.putString("name", this.name());
-        yaml.putString("label", this.label());
-        yaml.putInteger("width", this.width());
-        yaml.putYaml("alignment", this.alignment());
-        yaml.putYaml("label_style", this.labelStyle());
-        yaml.putYaml("background", this.background());
-        yaml.putYaml("corners", this.corners());
-        yaml.putYaml("margins", this.margins());
-        yaml.putInteger("elevation", this.elevation());
-
-        return yaml;
+        return  YamlBuilder.map()
+                    .putString("name", this.name())
+                    .putString("label", this.label())
+                    .putInteger("width", this.width())
+                    .putYaml("alignment", this.alignment())
+                    .putYaml("label_style", this.labelStyle())
+                    .putYaml("background", this.background())
+                    .putYaml("corners", this.corners())
+                    .putInteger("underline_thickness", this.underlineThickness())
+                    .putYaml("underline_color", this.underlineColor())
+                    .putYaml("margins", this.margins())
+                    .putInteger("elevation", this.elevation());
     }
 
 
@@ -279,15 +301,29 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
 
     /**
+     * True if the alignment value is a default value.
+     * @return Is default alignment?
+     */
+    public boolean alignmentIsDefault()
+    {
+        return this.alignment.isDefault();
+    }
+
+
+    /**
      * Set the components alignment within its box. Defaults to CENTER alignment.
-     * @param alignment
+     * @param alignment The alignment
      */
     public void setAlignment(Alignment alignment)
     {
-        if (alignment != null)
+        if (alignment != null) {
             this.alignment.setValue(alignment);
-        else
+            this.alignment.setIsDefault(false);
+        }
+        else {
             this.alignment.setValue(Alignment.CENTER);
+            this.alignment.setIsDefault(true);
+        }
     }
 
 
@@ -305,12 +341,30 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     }
 
 
+    /**
+     * True if the background value is a default.
+     * @return Is default background?
+     */
+    public boolean backgroundIsDefault()
+    {
+        return this.background.isDefault();
+    }
+
+
+    /**
+     * Set the background. If null, defaults to NONE.
+     * @param background The background
+     */
     public void setBackground(BackgroundColor background)
     {
-        if (background != null)
+        if (background != null) {
             this.background.setValue(background);
-        else
+            this.background.setIsDefault(false);
+        }
+        else {
             this.background.setValue(BackgroundColor.NONE);
+            this.background.setIsDefault(true);
+        }
     }
 
 
@@ -328,15 +382,105 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
 
     /**
+     * True if the corners value is a default value.
+     * @return Is default corners?
+     */
+    public boolean cornersIsDefault()
+    {
+        return this.corners.isDefault();
+    }
+
+
+    /**
      * The set widget corner radius.
      * @param corners The widget corners.
      */
     public void setCorners(Corners corners)
     {
-        if (corners != null)
+        if (corners != null) {
             this.corners.setValue(corners);
-        else
+            this.corners.setIsDefault(false);
+        }
+        else {
             this.corners.setValue(Corners.SMALL);
+            this.corners.setIsDefault(true);
+        }
+    }
+
+
+    // ** Underline Thickness
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The underline thickness.
+     * @return The thickness
+     */
+    public Integer underlineThickness()
+    {
+        return this.underlineThickness.getValue();
+    }
+
+
+    /**
+     * True if the underline thickness value is a default value.
+     * @return Is default?
+     */
+    public Boolean underlineThicknessIsDefault()
+    {
+        return this.underlineThickness.isDefault();
+    }
+
+
+    /**
+     * Set the underline thickness. If null, defaults to 0 (no underline).
+     * @param underlineThickness The underline thickness.
+     */
+    public void setUnderlineThickness(Integer underlineThickness)
+    {
+        if (underlineThickness != null) {
+            this.underlineThickness.setValue(underlineThickness);
+            this.underlineThickness.setIsDefault(false);
+        }
+        else {
+            this.underlineThickness.setValue(0);
+            this.underlineThickness.setIsDefault(true);
+        }
+    }
+
+
+    // ** Underline Color
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The underline color.
+     * @return the underline color.
+     */
+    public TextColor underlineColor()
+    {
+        return this.underlineColor.getValue();
+    }
+
+
+    /**
+     * True if the underline color value is a default value.
+     * @return Is default?
+     */
+    public boolean underlineColorIsDefault()
+    {
+        return this.underlineColor.isDefault();
+    }
+
+
+    public void setUnderlineColor(TextColor color)
+    {
+        if (color != null) {
+            this.underlineColor.setValue(color);
+            this.underlineColor.setIsDefault(false);
+        }
+        else {
+            this.underlineColor.setValue(TextColor.THEME_MEDIUM);
+            this.underlineColor.setIsDefault(true);
+        }
     }
 
 

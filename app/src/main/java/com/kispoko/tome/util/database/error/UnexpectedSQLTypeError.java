@@ -2,12 +2,15 @@
 package com.kispoko.tome.util.database.error;
 
 
+import com.kispoko.tome.util.ApplicationError;
 import com.kispoko.tome.util.database.sql.SQLValue;
+
+
 
 /**
  * Database Error: Unexpected SQL ErrorType
  */
-public class UnexpectedSQLTypeError
+public class UnexpectedSQLTypeError implements ApplicationError
 {
 
     // PROPERTIES

@@ -2,11 +2,14 @@
 package com.kispoko.tome.util.database.error;
 
 
+import com.kispoko.tome.util.ApplicationError;
+
+
 
 /**
  * Database Error: Invalid Enum
  */
-public class InvalidEnumError
+public class InvalidEnumError implements ApplicationError
 {
 
     // PROPERTIES

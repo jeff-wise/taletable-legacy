@@ -255,6 +255,8 @@ public class State
     {
         mechanicIndexReady = true;
 
+        // TODO casues concurrent mod error
+        // whole system needs to be more understandable
         MechanicIndex mechanicIndex = SheetManager.currentSheet().engine().mechanicIndex();
         for (VariableUnion variableUnion : variableByName.values()) {
             mechanicIndex.onVariableUpdate(variableUnion.variable().name());

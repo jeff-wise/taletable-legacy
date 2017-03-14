@@ -28,6 +28,7 @@ import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.sheet.Alignment;
+import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
 import com.kispoko.tome.activity.sheet.dialog.RollDialogFragment;
@@ -334,6 +335,9 @@ public class ActionWidget extends Widget
 
         if (this.data().format().background() == null)
             this.data().format().setBackground(BackgroundColor.NONE);
+
+        if (this.data().format().corners() == null)
+            this.data().format().setCorners(Corners.NONE);
     }
 
 
@@ -383,9 +387,14 @@ public class ActionWidget extends Widget
         {
             layout.backgroundColor      = this.data().format().background().colorId();
 
-            if (this.format().height() != Height.WRAP) {
-                layout.backgroundResource   = this.format().height()
+            if (this.format().height() != Height.WRAP)
+            {
+                layout.backgroundResource = this.format().height()
                                                   .resourceId(this.data().format().corners());
+            }
+            else
+            {
+                layout.backgroundResource = this.data().format().corners().widgetResourceId();
             }
         }
 

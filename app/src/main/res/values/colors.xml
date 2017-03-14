@@ -74,12 +74,12 @@
     <!-- GREEN -->
     <!-- ================================================================ -->
 
-    <color name="green_hlx_5">#ADE098</color>
-    <color name="green_bright">#ADE098</color>
     <color name="green_very_light">#C5E5D7</color>
     <color name="green_light">#B4D1C4</color>
     <color name="green_medium_light">#A5BFB4</color>
     <color name="green_medium">#9AB2A8</color>
+    <color name="green_medium_dark">#8FA69C</color>
+    <color name="green_dark">#82968E</color>
 
 
     <!-- BLUE -->
@@ -91,14 +91,16 @@
     <!-- ================================================================ -->
 
     <color name="red_5">#A14746</color>
-    <color name="red_light">#C7848A</color>
+    <color name="red_light">#D1514A</color>
     <color name="red_medium_light">#B0827C</color>
 
     <!-- RED ORANGE -->
     <!-- ================================================================ -->
 
     <!-- cool but more orangy -->
-    <!--<color name="red_orange_light">#C7886B</color>-->
-    <color name="red_orange_light">#C78D6D</color>
+    <color name="red_orange_light">#D17156</color>
+
+    <!-- ORANGE -->
+    <color name="orange_light">#D19D6E</color>
 
 </resources>

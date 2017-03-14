@@ -159,6 +159,7 @@ public class SheetManager
                         @Override
                         public void onSave()
                         {
+                            Log.d("***SHEET MANAGER", "saved sheet successfully");
 
                         }
 

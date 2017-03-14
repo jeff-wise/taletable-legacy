@@ -2,11 +2,14 @@
 package com.kispoko.tome.util.database.error;
 
 
+import com.kispoko.tome.util.ApplicationError;
+
+
 
 /**
  * Database Error: Null Model Id
  */
-public class NullModelIdentifierError
+public class NullModelIdentifierError implements ApplicationError
 {
 
     // PROPERTIES

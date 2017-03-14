@@ -2,6 +2,9 @@
 package com.kispoko.tome.util.database.error;
 
 
+import com.kispoko.tome.util.ApplicationError;
+
+
 
 /**
  * Database Error: Query Error
@@ -9,7 +12,7 @@ package com.kispoko.tome.util.database.error;
  * This error encapsulates any exception that may be thrown in the process of querying a value.
  * The exceptions are undocumented, so this type at least indicates where the exception came from.
  */
-public class QueryError
+public class QueryError implements ApplicationError
 {
 
     // PROPERTIES

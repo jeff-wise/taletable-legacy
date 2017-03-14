@@ -51,6 +51,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
     private ModelFunctor<TextStyle>     valueStyle;
     private PrimitiveFunctor<Height>    valueHeight;
+    private PrimitiveFunctor<Integer>   valuePaddingVertical;
 
     private ModelFunctor<TextStyle>     descriptionStyle;
 
@@ -76,6 +77,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         this.valueStyle             = ModelFunctor.empty(TextStyle.class);
         this.valueHeight            = new PrimitiveFunctor<>(null, Height.class);
+        this.valuePaddingVertical   = new PrimitiveFunctor<>(null, Integer.class);
 
         this.descriptionStyle       = ModelFunctor.empty(TextStyle.class);
 
@@ -95,6 +97,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                             Spacing outsideLabelMargins,
                             TextStyle valueStyle,
                             Height valueHeight,
+                            Integer valuePaddingVertical,
                             TextStyle descriptionStyle,
                             Boolean isQuote,
                             String quoteSource)
@@ -112,6 +115,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
         this.valueHeight            = new PrimitiveFunctor<>(valueHeight, Height.class);
+        this.valuePaddingVertical   = new PrimitiveFunctor<>(valuePaddingVertical, Integer.class);
 
         this.descriptionStyle       = ModelFunctor.full(descriptionStyle, TextStyle.class);
 
@@ -130,6 +134,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         this.setValueStyle(valueStyle);
         this.setValueHeight(valueHeight);
+        this.setValuePaddingVertical(valuePaddingVertical);
+
         this.setDescriptionStyle(descriptionStyle);
 
         this.setIsQuote(isQuote);
@@ -158,6 +164,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         TextStyle valueStyle           = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
         Height    valueHeight          = Height.fromYaml(yaml.atMaybeKey("value_height"));
+        Integer   valuePaddingVertical = yaml.atMaybeKey("value_padding_vertical").getInteger();
+
         TextStyle descriptionStyle     = TextStyle.fromYaml(yaml.atMaybeKey("description_style"));
 
         Boolean   isQuote              = yaml.atMaybeKey("is_quote").getBoolean();
@@ -165,8 +173,8 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
 
         return new TextWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
                                     outsideLabel, outsideLabelPosition, outsideLabelStyle,
-                                    outsideLabelMargins, valueStyle, valueHeight, descriptionStyle,
-                                    isQuote, quoteSource);
+                                    outsideLabelMargins, valueStyle, valueHeight,
+                                    valuePaddingVertical, descriptionStyle, isQuote, quoteSource);
     }
 
 
@@ -186,6 +194,9 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
         textWidgetFormat.setOutsideLabelMargins(null);
 
         textWidgetFormat.setValueStyle(null);
+        textWidgetFormat.setValueHeight(null);
+        textWidgetFormat.setValuePaddingVertical(null);
+
         textWidgetFormat.setDescriptionStyle(null);
 
         textWidgetFormat.setIsQuote(null);
@@ -240,6 +251,7 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
                 .putYaml("outside_label_margins", this.outsideLabelMargins())
                 .putYaml("value_style", this.valueStyle())
                 .putYaml("value_height", this.valueHeight())
+                .putInteger("value_padding_vertical", this.valuePaddingVertical())
                 .putYaml("description_style", this.descriptionStyle())
                 .putBoolean("is_quote", this.isQuote())
                 .putString("quote_source", this.quoteSource());
@@ -487,6 +499,32 @@ public class TextWidgetFormat implements Model, ToYaml, Serializable
             this.valueHeight.setValue(height);
         else
             this.valueHeight.setValue(Height.SMALL);
+    }
+
+
+    // ** Value Padding Vertical
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The vertical value padding.
+     * @return The vertical padding.
+     */
+    public Integer valuePaddingVertical()
+    {
+        return this.valuePaddingVertical.getValue();
+    }
+
+
+    /**
+     * Set the value's vertical padding. If null, defaults to 0.
+     * @param padding The padding.
+     */
+    public void setValuePaddingVertical(Integer padding)
+    {
+        if (padding != null)
+            this.valuePaddingVertical.setValue(padding);
+        else
+            this.valuePaddingVertical.setValue(0);
     }
 
 

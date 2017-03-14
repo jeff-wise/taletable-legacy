@@ -52,12 +52,12 @@ public class EditResult implements Serializable
 
     public void applyResult(SheetActivity sheetActivity, Sheet sheet)
     {
-        Widget widget = sheet.componentWithId(this.componentId);
+        Widget widget = sheet.widgetWithId(this.componentId);
 
         switch (this.resultType)
         {
             case TEXT_VALUE:
-                ((TextWidget) widget).setValue((String) this.result, sheetActivity);
+                ((TextWidget) widget).setLiteralValue((String) this.result, sheetActivity);
                 break;
         }
     }

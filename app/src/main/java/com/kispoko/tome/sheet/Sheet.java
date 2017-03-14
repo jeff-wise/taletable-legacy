@@ -70,7 +70,7 @@ public class Sheet implements Model
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Map<UUID,Widget>            componentById;
+    private Map<UUID,Widget>            widgetById;
 
 
     // CONSTRUCTORS
@@ -223,9 +223,9 @@ public class Sheet implements Model
     // > Components
     // ------------------------------------------------------------------------------------------
 
-    public Widget componentWithId(UUID componentId)
+    public Widget widgetWithId(UUID widgetId)
     {
-        return this.componentById.get(componentId);
+        return this.widgetById.get(widgetId);
     }
 
 
@@ -319,22 +319,26 @@ public class Sheet implements Model
 
     private void initializeSheet()
     {
-        indexComponents();
+        indexWidgets();
     }
 
 
     /**
      * Index the widgets by their id, so that can later be retrieved.
      */
-    private void indexComponents()
+    private void indexWidgets()
     {
-        componentById = new HashMap<>();
+        widgetById = new HashMap<>();
 
-        for (Page page : this.profileSection.getValue().pages()) {
-            for (Group group : page.groups()) {
-                for (GroupRow groupRow : group.rows()) {
-                    for (WidgetUnion widgetUnion : groupRow.widgets()) {
-                        componentById.put(widgetUnion.widget().getId(), widgetUnion.widget());
+        for (Page page : this.profileSection.getValue().pages())
+        {
+            for (Group group : page.groups())
+            {
+                for (GroupRow groupRow : group.rows())
+                {
+                    for (WidgetUnion widgetUnion : groupRow.widgets())
+                    {
+                        widgetById.put(widgetUnion.widget().getId(), widgetUnion.widget());
                     }
                 }
             }

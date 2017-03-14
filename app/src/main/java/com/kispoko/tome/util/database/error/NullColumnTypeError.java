@@ -2,11 +2,14 @@
 package com.kispoko.tome.util.database.error;
 
 
+import com.kispoko.tome.util.ApplicationError;
+
+
 
 /**
  * Database Error: Null ColumnUnion ErrorType
  */
-public class NullColumnTypeError
+public class NullColumnTypeError implements ApplicationError
 {
 
     // PROPERTIES

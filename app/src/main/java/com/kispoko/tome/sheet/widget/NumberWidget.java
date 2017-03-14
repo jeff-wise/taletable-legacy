@@ -25,6 +25,7 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.number.NumberWidgetFormat;
 import com.kispoko.tome.sheet.Corners;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
@@ -394,21 +395,21 @@ public class NumberWidget extends Widget
         // [1] Apply default format values
         // -------------------------------------------------------------------------------------
 
-        // ** Width
-        if (this.data().format().width() == null)
-            this.data().format().setWidth(1);
-
-        // ** Background
-        if (this.data().format().background() == null)
-            this.data().format().setBackground(BackgroundColor.DARK);
-
         // ** Alignment
-        if (this.data().format().alignment() == null)
+        if (this.data().format().alignmentIsDefault())
             this.data().format().setAlignment(Alignment.CENTER);
 
+        // ** Background
+        if (this.data().format().backgroundIsDefault())
+            this.data().format().setBackground(BackgroundColor.NONE);
+
         // ** Corners
-        if (this.data().format().corners() == null)
+        if (this.data().format().cornersIsDefault())
             this.data().format().setCorners(Corners.SMALL);
+
+        // ** Underline Thickness
+        if (this.data().format().underlineThicknessIsDefault())
+            this.data().format().setUnderlineThickness(0);
 
     }
 
@@ -553,14 +554,35 @@ public class NumberWidget extends Widget
 
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        if (this.data().format().background() != BackgroundColor.EMPTY &&
-            this.data().format().background() != BackgroundColor.NONE)
+
+        if (this.data().format().underlineThickness() > 0)
+        {
+            layout.backgroundColor    = this.data().format().underlineColor().resourceId();
+            layout.backgroundResource = R.drawable.bg_widget_bottom_border;
+        }
+        else if (this.data().format().background() != BackgroundColor.EMPTY &&
+                 this.data().format().background() != BackgroundColor.NONE)
         {
             layout.backgroundColor      = this.data().format().background().colorId();
 
-            layout.backgroundResource   = this.format().valueHeight()
-                                              .resourceId(this.data().format().corners());
+            if (this.format().valueHeight() != Height.WRAP)
+            {
+                layout.backgroundResource   = this.format().valueHeight()
+                                                  .resourceId(this.data().format().corners());
+            }
+            else
+            {
+                layout.backgroundResource = this.data().format().corners().widgetResourceId();
+            }
         }
+
+
+        if (this.format().valueHeight() == Height.WRAP)
+        {
+            layout.padding.topDp    = this.format().valuePaddingVertical();
+            layout.padding.bottomDp = this.format().valuePaddingVertical();
+        }
+
 
         layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
                                         | Gravity.CENTER_VERTICAL;
@@ -655,20 +677,6 @@ public class NumberWidget extends Widget
         label.text              = this.format().outsideLabel();
 
         this.format().outsideLabelStyle().styleTextViewBuilder(label, context);
-
-        // > Format the label depending on its properties
-
-        // > Alignment: LEFT
-//        if (this.format().outsideLabelStyle().alignment() == Alignment.LEFT)
-//            label.margin.left   = R.dimen.one_dp;
-
-        // > Position: TOP
-//        if (this.format().outsideLabelPosition() == Position.TOP)
-//            label.margin.bottom = R.dimen.two_dp;
-
-        // > Position: RIGHT
-//        if (this.format().outsideLabelPosition() == Position.RIGHT)
-//            label.margin.left = R.dimen.five_dp;
 
         label.marginSpacing     = this.format().outsideLabelMargins();
 

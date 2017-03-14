@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
@@ -56,6 +57,8 @@ public class TextViewBuilder implements ViewBuilder
     public Spacing                  marginSpacing;
 
     public Integer                  size;
+    public Float                    sizeSp;
+
     public Integer                  color;
     public Typeface                 font;
     public Boolean                  underlined;
@@ -105,6 +108,8 @@ public class TextViewBuilder implements ViewBuilder
         this.marginSpacing      = null;
 
         this.size               = null;
+        this.sizeSp             = null;
+
         this.color              = null;
         this.font               = null;
         this.underlined         = null;
@@ -223,6 +228,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.size != null)
             textView.setTextSize(context.getResources().getDimension(this.size));
+
+        // > Size SP
+        // --------------------------------------------------------------------------------------
+
+        if (this.sizeSp != null)
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, this.sizeSp);
 
         // > Color
         // --------------------------------------------------------------------------------------

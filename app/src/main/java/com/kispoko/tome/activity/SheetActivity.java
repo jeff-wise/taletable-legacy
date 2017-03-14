@@ -32,8 +32,7 @@ import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.activity.sheet.PageFragment;
+import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.Util;
@@ -42,6 +41,10 @@ import com.kispoko.tome.util.ui.ImageViewBuilder;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.ScrollViewBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -53,8 +56,7 @@ import java.util.ArrayList;
  */
 public class SheetActivity
        extends AppCompatActivity
-       implements PageFragment.EventListener,
-                  Sheet.OnSheetListener
+       implements Sheet.OnSheetListener
 {
 
     // PROPERTIES
@@ -96,6 +98,22 @@ public class SheetActivity
 
 
     @Override
+    public void onStart()
+    {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Override
+    public void onStop()
+    {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+
+    @Override
     public void onBackPressed()
     {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -124,7 +142,8 @@ public class SheetActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id) {
+        switch (id)
+        {
             case android.R.id.home:
                 this.drawerLayout.openDrawer(GravityCompat.START);
                 return true;
@@ -137,7 +156,8 @@ public class SheetActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        // Skip Errors // TODO
+        // TODO clearn this up. maybe delete
+        // Skip Errors
         if (resultCode != RESULT_OK) return;
 
         // Process Chosen ImageWidget
@@ -166,17 +186,6 @@ public class SheetActivity
     public void setChooseImageAction(ChooseImageAction chooseImageAction)
     {
         this.chooseImageAction = chooseImageAction;
-    }
-
-
-    /**
-     * Open the Edit activity.
-     */
-    public void openEditActivity(WidgetData widgetData)
-    {
-//        Intent intent = new Intent(this, EditActivity.class);
-//        intent.putExtra("COMPONENT", widgetData);
-//        startActivityForResult(intent, COMPONENT_EDIT);
     }
 
 
@@ -210,6 +219,20 @@ public class SheetActivity
             navHeaderDesc.setText(this.characterName);
             navHeaderDesc.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    // > Events
+    //   (Event Bus Subscriptions)
+    // -------------------------------------------------------------------------------------------
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTextWidgetUpdateLiteralEvent(TextWidget.UpdateLiteralEvent event)
+    {
+        TextWidget textWidget = (TextWidget) SheetManager.currentSheet()
+                                                         .widgetWithId(event.widgetId());
+
+        textWidget.setLiteralValue(event.newValue(), this);
     }
 
 

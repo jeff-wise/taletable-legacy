@@ -2,11 +2,12 @@
 package com.kispoko.tome.util.database.error;
 
 
+import com.kispoko.tome.util.ApplicationError;
 
 /**
  * Database Error: Uninitialized Functor
  */
-public class UninitializedFunctorError
+public class UninitializedFunctorError implements ApplicationError
 {
 
     // PROPERTIES

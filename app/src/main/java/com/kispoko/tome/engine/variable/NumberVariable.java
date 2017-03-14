@@ -628,7 +628,7 @@ public class NumberVariable extends Variable
                 break;
             case PROGRAM:
                 // Do Nothing?
-                //this.reactiveValue.setValue(newValue);
+                //this.reactiveValue.setLiteralValue(newValue);
                 break;
             case VALUE:
                 break;

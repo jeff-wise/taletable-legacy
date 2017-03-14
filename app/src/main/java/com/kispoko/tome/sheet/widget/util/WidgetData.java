@@ -63,8 +63,7 @@ public class WidgetData implements Model, ToYaml, Serializable
 
         UUID         id            = UUID.randomUUID();
 
-        WidgetFormat format        = WidgetFormat.fromYaml(yaml.atMaybeKey("format"),
-                                                           useDefaultFormat);
+        WidgetFormat format        = WidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
         return new WidgetData(id, format);
     }

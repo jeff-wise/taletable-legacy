@@ -36,13 +36,18 @@
 
     <string name="edit_full_screen">Edit Full Screen</string>
 
-    <string name="advanced_editor">Adv. Editor</string>
+    <string name="advanced_editor">Advanced Editor</string>
+    <string name="full_editor">Full Editor</string>
+
+    <string name="done">Done</string>
 
 
     <string name="placeholder_label">&lt;label&gt;</string>
     <string name="placeholder_value">&lt;value&gt;</string>
 
     <string name="by">By</string>
+
+    <string name="style">Style</string>
 
 
     <!-- DIALOG -->

@@ -3,13 +3,14 @@ package com.kispoko.tome.util.ui;
 
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.kispoko.tome.util.Util;
 
 
 /**
@@ -29,6 +30,7 @@ public class EditTextBuilder implements ViewBuilder
     public Integer      width;
     public Float        weight;
     public Integer      minHeight;
+    public Float        minHeightDp;
 
     public Integer      gravity;
     public Integer      layoutGravity;
@@ -39,13 +41,15 @@ public class EditTextBuilder implements ViewBuilder
     public Margins      margin;
 
     public Integer      size;
+    public Float        sizeSp;
+
     public Integer      color;
     public Typeface     font;
 
     public Integer      backgroundColor;
     public Integer      backgroundResource;
+    public Integer      underlineColor;
 
-    public boolean      withLabel;
     public String       hint;
 
 
@@ -62,6 +66,7 @@ public class EditTextBuilder implements ViewBuilder
         this.width              = null;
         this.weight             = null;
         this.minHeight          = null;
+        this.minHeightDp        = null;
 
         this.gravity            = null;
         this.layoutGravity      = null;
@@ -72,13 +77,15 @@ public class EditTextBuilder implements ViewBuilder
         this.margin             = new Margins();
 
         this.size               = null;
+        this.sizeSp             = null;
+
         this.color              = null;
         this.font               = null;
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
+        this.underlineColor     = null;
 
-        this.withLabel          = false;
         this.hint               = null;
     }
 
@@ -93,7 +100,7 @@ public class EditTextBuilder implements ViewBuilder
     }
 
 
-    public View editText(Context context)
+    public EditText editText(Context context)
     {
         EditText editText = new EditText(context);
 
@@ -118,6 +125,11 @@ public class EditTextBuilder implements ViewBuilder
         if (this.minHeight != null)
             editText.setMinHeight((int) context.getResources().getDimension(this.minHeight));
 
+        // > Min Height Dp
+        // --------------------------------------------------------------------------------------
+
+        if (this.minHeightDp != null)
+            editText.setMinHeight(Util.dpToPixel(this.minHeightDp));
 
         // > Padding
         // --------------------------------------------------------------------------------------
@@ -133,6 +145,12 @@ public class EditTextBuilder implements ViewBuilder
         if (this.size != null)
             editText.setTextSize(context.getResources().getDimension(this.size));
 
+        // > Size SP
+        // --------------------------------------------------------------------------------------
+
+        if (this.sizeSp != null)
+            editText.setTextSize(this.sizeSp);
+
         // > Color
         // --------------------------------------------------------------------------------------
 
@@ -144,6 +162,13 @@ public class EditTextBuilder implements ViewBuilder
 
         if (this.backgroundResource != null)
             editText.setBackgroundResource(this.backgroundResource);
+
+        // > Underline Color
+        // --------------------------------------------------------------------------------------
+
+        if (this.underlineColor != null)
+            editText.getBackground().setColorFilter(
+                    ContextCompat.getColor(context, this.underlineColor), PorterDuff.Mode.SRC_ATOP);
 
         // > Font
         // --------------------------------------------------------------------------------------
@@ -205,28 +230,14 @@ public class EditTextBuilder implements ViewBuilder
 
         layoutParamsBuilder.setMargins(this.margin);
 
-
-        // [3] Configure Layout
-        // --------------------------------------------------------------------------------------
-
-        TextInputLayout textInputLayout = new TextInputLayout(context);
+// --------------------------------------------------------------------------------------
 
         ViewGroup.LayoutParams layoutParams = layoutParamsBuilder.layoutParams();
 
-        if (withLabel)
-            textInputLayout.setLayoutParams(layoutParams);
-        else
-            editText.setLayoutParams(layoutParams);
-
-        if (withLabel) {
-            textInputLayout.addView(editText);
-        }
+        editText.setLayoutParams(layoutParams);
 
 
-        if (withLabel)
-            return textInputLayout;
-        else
-            return editText;
+        return editText;
     }
 
 }
