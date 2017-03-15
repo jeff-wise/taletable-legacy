@@ -5,8 +5,8 @@ package com.kispoko.tome.engine.function;
 import com.kispoko.tome.engine.program.ProgramValueUnion;
 import com.kispoko.tome.engine.program.ProgramValueType;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -48,9 +48,7 @@ public class Tuple implements Model, ToYaml, Serializable
     {
         this.id         = null;
 
-        List<Class<? extends ProgramValueUnion>> programValueClasses = new ArrayList<>();
-        programValueClasses.add(ProgramValueUnion.class);
-        this.parameters = CollectionFunctor.empty(programValueClasses);
+        this.parameters = CollectionFunctor.empty(ProgramValueUnion.class);
 
         this.result     = ModelFunctor.empty(ProgramValueUnion.class);
     }
@@ -60,9 +58,7 @@ public class Tuple implements Model, ToYaml, Serializable
     {
         this.id         = id;
 
-        List<Class<? extends ProgramValueUnion>> programValueClasses = new ArrayList<>();
-        programValueClasses.add(ProgramValueUnion.class);
-        this.parameters = CollectionFunctor.full(parameters, programValueClasses);
+        this.parameters = CollectionFunctor.full(parameters, ProgramValueUnion.class);
 
         this.result     = ModelFunctor.full(result, ProgramValueUnion.class);
 

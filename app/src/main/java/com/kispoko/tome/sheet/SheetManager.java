@@ -13,7 +13,7 @@ import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.database.sql.Function;
 import com.kispoko.tome.util.database.sql.OrderBy;
-import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
@@ -177,7 +177,7 @@ public class SheetManager
                     };
 
                     currentSheet.setOnSaveListener(onSaveListener);
-                    currentSheet.save();
+                    currentSheet.saveAsync();
                 }
             }
 
@@ -231,7 +231,7 @@ public class SheetManager
         ModelQueryParameters queryParameters =
                 new ModelQueryParameters(topResultQuery, ModelQueryParameters.Type.TOP_RESULT);
 
-        currentSheet.load(queryParameters, null);
+        currentSheet.loadAsync(queryParameters);
     }
 
 }

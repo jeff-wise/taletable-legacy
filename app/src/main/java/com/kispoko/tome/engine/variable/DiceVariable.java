@@ -2,11 +2,10 @@
 package com.kispoko.tome.engine.variable;
 
 
-import com.kispoko.tome.engine.State;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;

@@ -34,8 +34,8 @@ import com.kispoko.tome.util.ui.LayoutType;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TableLayoutBuilder;
 import com.kispoko.tome.util.ui.TableRowBuilder;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
@@ -87,13 +87,9 @@ public class TableWidget extends Widget
         this.format     = ModelFunctor.empty(TableWidgetFormat.class);
         this.widgetData = ModelFunctor.empty(WidgetData.class);
 
-        List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
-        columnClassList.add(ColumnUnion.class);
-        this.columns    = CollectionFunctor.empty(columnClassList);
+        this.columns    = CollectionFunctor.empty(ColumnUnion.class);
 
-        List<Class<? extends TableRow>> rowClassList = new ArrayList<>();
-        rowClassList.add(TableRow.class);
-        this.rows       = CollectionFunctor.empty(rowClassList);
+        this.rows       = CollectionFunctor.empty(TableRow.class);
     }
 
 
@@ -108,13 +104,9 @@ public class TableWidget extends Widget
         this.format     = ModelFunctor.full(format, TableWidgetFormat.class);
         this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
 
-        List<Class<? extends ColumnUnion>> columnClassList = new ArrayList<>();
-        columnClassList.add(ColumnUnion.class);
-        this.columns    = CollectionFunctor.full(columns, columnClassList);
+        this.columns    = CollectionFunctor.full(columns, ColumnUnion.class);
 
-        List<Class<? extends TableRow>> rowClassList = new ArrayList<>();
-        rowClassList.add(TableRow.class);
-        this.rows        = CollectionFunctor.full(rows, rowClassList);
+        this.rows       = CollectionFunctor.full(rows, TableRow.class);
 
         initializeTableWidget();
 

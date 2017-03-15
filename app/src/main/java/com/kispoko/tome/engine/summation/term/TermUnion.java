@@ -8,8 +8,8 @@ import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 

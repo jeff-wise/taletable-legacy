@@ -18,8 +18,8 @@ import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.tuple.Tuple2;
-import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
@@ -216,7 +216,7 @@ public class Sheet implements Model
         this.campaignSection().initialize();
 
         this.summary.setValue(sheetSummary());
-        this.summary.save();
+        this.summary.saveAsync();
     }
 
 

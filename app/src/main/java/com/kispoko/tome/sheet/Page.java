@@ -4,20 +4,16 @@ package com.kispoko.tome.sheet;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.kispoko.tome.R;
-import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
-import com.kispoko.tome.util.value.Functor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.Functor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;

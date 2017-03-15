@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.mechanic;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -57,9 +57,7 @@ public class MechanicIndex implements Model, ToYaml, Serializable
     {
         this.id            = null;
 
-        List<Class<? extends Mechanic>> mechanicClasses = new ArrayList<>();
-        mechanicClasses.add(Mechanic.class);
-        this.mechanics     = CollectionFunctor.empty(mechanicClasses);
+        this.mechanics     = CollectionFunctor.empty(Mechanic.class);
     }
 
 
@@ -67,9 +65,7 @@ public class MechanicIndex implements Model, ToYaml, Serializable
     {
         this.id            = id;
 
-        List<Class<? extends Mechanic>> mechanicClasses = new ArrayList<>();
-        mechanicClasses.add(Mechanic.class);
-        this.mechanics     = CollectionFunctor.full(mechanics, mechanicClasses);
+        this.mechanics     = CollectionFunctor.full(mechanics, Mechanic.class);
 
         this.initialize();
     }

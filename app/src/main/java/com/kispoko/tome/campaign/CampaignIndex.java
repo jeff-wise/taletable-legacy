@@ -13,7 +13,7 @@ import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.query.CountQuery;
-import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
 import com.kispoko.tome.util.yaml.YamlParseException;
 import com.kispoko.tome.util.yaml.YamlParser;
 
@@ -99,7 +99,7 @@ public class CampaignIndex
             }
         });
 
-        campaigns.load();
+        // campaigns.load();
     }
 
 
@@ -193,7 +193,7 @@ public class CampaignIndex
 
                     campaigns.setOnSaveListener(onSaveListener);
 
-                    campaigns.save();
+                    campaigns.saveAsync();
                 }
             }
 

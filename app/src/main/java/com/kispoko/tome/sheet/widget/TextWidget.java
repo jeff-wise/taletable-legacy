@@ -38,9 +38,9 @@ import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.FormattedString;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
@@ -291,7 +291,7 @@ public class TextWidget extends Widget
                 textView.setText(this.valueVariable().value());
 
                 // > SAVE the new value
-                this.valueVariable.save();
+                this.valueVariable.saveAsync();
             }
             catch (NullVariableException exception)
             {

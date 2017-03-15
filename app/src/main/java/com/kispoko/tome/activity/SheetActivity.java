@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -343,6 +344,8 @@ public class SheetActivity
      */
     private void loadSheet()
     {
+        Log.d("***SHEET", "load sheet called");
+
         // If previous activity was template chooser, get id of chosen template
         String templateId = null;
         if (getIntent().hasExtra("TEMPLATE_ID"))

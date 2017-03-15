@@ -4,8 +4,8 @@ package com.kispoko.tome.sheet.widget.tab;
 
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParseException;

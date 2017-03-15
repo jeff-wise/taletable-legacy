@@ -3,10 +3,11 @@ package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -54,9 +55,7 @@ public class NumberValue implements Value, Model, ToYaml, Serializable
         this.value      = new PrimitiveFunctor<>(null, Integer.class);
         this.summary    = new PrimitiveFunctor<>(null, String.class);
 
-        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
-        variableClasses.add(VariableUnion.class);
-        this.variables  = CollectionFunctor.empty(variableClasses);
+        this.variables  = CollectionFunctor.empty(VariableUnion.class);
     }
 
 
@@ -72,15 +71,12 @@ public class NumberValue implements Value, Model, ToYaml, Serializable
         this.value      = new PrimitiveFunctor<>(value, Integer.class);
         this.summary    = new PrimitiveFunctor<>(summary, String.class);
 
-        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
-        variableClasses.add(VariableUnion.class);
-
         if (variables != null) {
-            this.variables = CollectionFunctor.full(variables, variableClasses);
+            this.variables = CollectionFunctor.full(variables, VariableUnion.class);
         }
         else {
             this.variables = CollectionFunctor.full(new ArrayList<VariableUnion>(),
-                                                    variableClasses);
+                                                    VariableUnion.class);
         }
     }
 

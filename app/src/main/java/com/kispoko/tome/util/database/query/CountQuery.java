@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.kispoko.tome.Global;
 import com.kispoko.tome.util.database.DatabaseException;
 import com.kispoko.tome.util.database.error.QueryError;
+import com.kispoko.tome.util.database.orm.ORM;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.model.ModelLib;
 import com.kispoko.tome.util.promise.AsyncFunction;
 
 
@@ -33,7 +33,7 @@ public class CountQuery<A extends Model>
 
     private CountQuery(Class<A> modelClass)
     {
-        String tableName = ModelLib.name(modelClass);
+        String tableName = ORM.name(modelClass);
 
         this.queryString = CountQuery.countQueryString(tableName);
         this.modelClass  = modelClass;
@@ -85,7 +85,7 @@ public class CountQuery<A extends Model>
                     listener.onCountError((DatabaseException) result);
                 }
                 else if (result instanceof Integer) {
-                    String tableName = ModelLib.name(modelClass);
+                    String tableName = ORM.name(modelClass);
                     listener.onCountResult(tableName, (Integer) result);
                 }
             }

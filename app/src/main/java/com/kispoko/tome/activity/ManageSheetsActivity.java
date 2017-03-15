@@ -17,7 +17,7 @@ import com.kispoko.tome.sheet.Summary;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
 
 import java.util.List;
 
@@ -149,7 +149,7 @@ public class ManageSheetsActivity extends AppCompatActivity
             }
         });
 
-        summaries.load();
+        //summaries.load();
     }
 
 }

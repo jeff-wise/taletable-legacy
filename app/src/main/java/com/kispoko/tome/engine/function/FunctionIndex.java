@@ -4,7 +4,7 @@ package com.kispoko.tome.engine.function;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -53,9 +53,7 @@ public class FunctionIndex implements Model, ToYaml, Serializable
     {
         this.id        = null;
 
-        List<Class<? extends Function>> functionClasses = new ArrayList<>();
-        functionClasses.add(Function.class);
-        this.functions = CollectionFunctor.empty(functionClasses);
+        this.functions = CollectionFunctor.empty(Function.class);
 
         this.functionByName = new HashMap<>();
     }
@@ -65,9 +63,7 @@ public class FunctionIndex implements Model, ToYaml, Serializable
     {
         this.id = id;
 
-        List<Class<? extends Function>> functionClasses = new ArrayList<>();
-        functionClasses.add(Function.class);
-        this.functions = CollectionFunctor.full(new ArrayList<Function>(), functionClasses);
+        this.functions = CollectionFunctor.full(new ArrayList<Function>(), Function.class);
 
         this.functionByName = new HashMap<>();
 

@@ -100,7 +100,7 @@ import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.model.ModelLib;
+import com.kispoko.tome.util.database.orm.ORM;
 import com.kispoko.tome.util.database.DatabaseException;
 
 import java.util.ArrayList;
@@ -250,7 +250,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(BooleanVariable.class);
             modelClasses.add(VariableReference.class);
 
-            ModelLib.createSchema(modelClasses, database);
+            ORM.createSchema(modelClasses, database);
         }
         catch (DatabaseException exception)
         {

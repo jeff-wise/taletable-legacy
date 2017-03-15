@@ -4,9 +4,9 @@ package com.kispoko.tome.sheet;
 
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.Functor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.Functor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -54,11 +54,7 @@ public class Section implements Model, ToYaml
 
         this.type   = new PrimitiveFunctor<>(null, SectionType.class);
 
-        // ** Configure Pages Value
-        List<Class<? extends Page>> pageClasses = new ArrayList<>();
-        pageClasses.add(Page.class);
-
-        this.pages  = CollectionFunctor.empty(pageClasses);
+        this.pages  = CollectionFunctor.empty(Page.class);
     }
 
 
@@ -68,11 +64,7 @@ public class Section implements Model, ToYaml
 
         this.type   = new PrimitiveFunctor<>(sectionType, SectionType.class);
 
-        // ** Configure Pages Value
-        List<Class<? extends Page>> pageClasses = new ArrayList<>();
-        pageClasses.add(Page.class);
-
-        this.pages  = CollectionFunctor.full(pages, pageClasses);
+        this.pages  = CollectionFunctor.full(pages, Page.class);
 
         this.initializeSection();
     }

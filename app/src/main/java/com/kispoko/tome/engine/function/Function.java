@@ -8,8 +8,8 @@ import com.kispoko.tome.engine.program.ProgramValueUnion;
 import com.kispoko.tome.engine.program.ProgramValueType;
 import com.kispoko.tome.engine.function.error.InvalidTupleLengthError;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -75,9 +75,7 @@ public class Function implements Model, ToYaml, Serializable
         this.parameterNames = new PrimitiveFunctor<>(null, String[].class);
         this.resultName     = new PrimitiveFunctor<>(null, String.class);
 
-        List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
-        tupleClasses.add(Tuple.class);
-        this.tuples         = CollectionFunctor.empty(tupleClasses);
+        this.tuples         = CollectionFunctor.empty(Tuple.class);
     }
 
 
@@ -121,9 +119,7 @@ public class Function implements Model, ToYaml, Serializable
         this.resultName     = new PrimitiveFunctor<>(resultName, String.class);
 
         // ** Tuples
-        List<Class<? extends Tuple>> tupleClasses = new ArrayList<>();
-        tupleClasses.add(Tuple.class);
-        this.tuples         = CollectionFunctor.full(tuples, tupleClasses);
+        this.tuples         = CollectionFunctor.full(tuples, Tuple.class);
 
         // > Validate the function definition
         this.validate();

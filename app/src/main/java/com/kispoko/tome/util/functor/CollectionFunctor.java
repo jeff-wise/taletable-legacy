@@ -1,11 +1,13 @@
 
-package com.kispoko.tome.util.value;
+package com.kispoko.tome.util.functor;
 
+
+import android.os.AsyncTask;
 
 import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.orm.ORM;
 import com.kispoko.tome.util.database.sql.OneToManyRelation;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.model.ModelLib;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,32 +25,32 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
     // PROPERTIES
     // -------------------------------------------------------------------------------------
 
-    private List<Class<? extends A>> modelClasses;
+    private Class<A>                modelClass;
 
-    private OnSaveListener           staticOnSaveListener;
-    private OnLoadListener<A>        staticOnLoadListener;
+    private OnSaveListener          staticOnSaveListener;
+    private OnLoadListener<A>       staticOnLoadListener;
 
-    private boolean                  isLoaded;
-    private boolean                  isSaved;
+    private boolean                 isLoaded;
+    private boolean                 isSaved;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
     private CollectionFunctor(List<A> value,
-                              List<Class<? extends A>> modelClasses,
+                              Class<A> modelClass,
                               boolean isSaved,
                               boolean isLoaded)
     {
         super(value);
 
-        this.modelClasses         = modelClasses;
+        this.modelClass             = modelClass;
 
-        this.staticOnSaveListener = null;
-        this.staticOnLoadListener = null;
+        this.staticOnSaveListener   = null;
+        this.staticOnLoadListener   = null;
 
-        this.isSaved              = isSaved;
-        this.isLoaded             = isLoaded;
+        this.isSaved                = isSaved;
+        this.isLoaded               = isLoaded;
     }
 
 
@@ -56,35 +58,18 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
     // -----------------------------------------------------------------------------------------
 
     public static <A extends Model> CollectionFunctor<A> full(List<A> value,
-                                                              List<Class<? extends A>> modelClasses)
+                                                              Class<A> modelClass)
     {
-        return new CollectionFunctor<>(value, modelClasses, false, true);
-    }
-
-
-    public static <A extends Model> CollectionFunctor<A> full(List<A> value,
-                                                              Class<? extends A> modelClass)
-    {
-        List<Class<? extends A>> modelClasses = new ArrayList<>();
-        modelClasses.add(modelClass);
-        return new CollectionFunctor<>(value, modelClasses, false, true);
+        return new CollectionFunctor<>(value, modelClass, false, true);
     }
 
 
     // > Empty Functor
     // -----------------------------------------------------------------------------------------
 
-    public static <A extends Model> CollectionFunctor<A> empty(List<Class<? extends A>> modelClasses)
+    public static <A extends Model> CollectionFunctor<A> empty(Class<A> modelClass)
     {
-        return new CollectionFunctor<>(null, modelClasses, true, false);
-    }
-
-
-    public static <A extends Model> CollectionFunctor<A> empty(Class<? extends A> modelClass)
-    {
-        List<Class<? extends A>> modelClasses = new ArrayList<>();
-        modelClasses.add(modelClass);
-        return new CollectionFunctor<>(null, modelClasses, true, false);
+        return new CollectionFunctor<>(null, modelClass, true, false);
     }
 
 
@@ -93,6 +78,15 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
 
     // > State
     // --------------------------------------------------------------------------------------
+
+    // ** Model Class
+    // ------------------------------------------------------------------------------------------
+
+    public Class<A> modelClass()
+    {
+        return this.modelClass;
+    }
+
 
     // ** Listeners
     // ------------------------------------------------------------------------------------------
@@ -139,12 +133,6 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
     }
 
 
-    public List<Class<? extends A>> getModelClasses()
-    {
-        return this.modelClasses;
-    }
-
-
     // > Asynchronous Operations
     // -----------------------------------------------------------------------------------------
 
@@ -152,41 +140,87 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
      * Load an entire table of values.
      */
     public void load()
+           throws DatabaseException
     {
-        ModelLib.modelCollectionFromDatabase(null, this.modelClasses, this.onLoadListener(null));
+        ORM.loadModelCollection(this.modelClass(), null);
     }
 
 
-    @SuppressWarnings("unchecked")
-    public void load(final Model ownerModel,
-                     final OnLoadListener dynamicOnLoadListener)
+    public void load(final Model ownerModel)
+           throws DatabaseException
     {
-        OneToManyRelation oneToManyRelation =
-                                new OneToManyRelation(ModelLib.name(ownerModel),
-                                                      this.name(),
-                                                      ownerModel.getId());
-        ModelLib.<A>modelCollectionFromDatabase(oneToManyRelation,
-                                                this.modelClasses,
-                                                this.onLoadListener(dynamicOnLoadListener));
+        OneToManyRelation oneToManyRelation = new OneToManyRelation(ORM.name(ownerModel),
+                                                                    this.name(),
+                                                                    ownerModel.getId());
+        ORM.loadModelCollection(this.modelClass, oneToManyRelation);
     }
 
 
-    @SuppressWarnings("unchecked")
     public void save()
+           throws DatabaseException
     {
-        ModelLib.modelCollectionToDatabase((List<Model>) this.getValue(),
-                                           new ArrayList<OneToManyRelation>(),
-                                           this.onSaveListener(null));
+        for (Model model : this.value)
+        {
+            ORM.saveModel(model, new ArrayList<OneToManyRelation>());
+        }
     }
 
 
-    @SuppressWarnings("unchecked")
-    public void save(List<OneToManyRelation> parentRelations,
-                     OnSaveListener dynamicOnSaveListener)
+    public void save(List<OneToManyRelation> parentRelations)
+           throws DatabaseException
     {
-        ModelLib.modelCollectionToDatabase((List<Model>) this.getValue(),
-                                           parentRelations,
-                                           this.onSaveListener(dynamicOnSaveListener));
+        for (Model model : this.value)
+        {
+            ORM.saveModel(model, parentRelations);
+        }
+    }
+
+
+    public void saveAsync()
+    {
+        new AsyncTask<Void,Void,Object>()
+        {
+
+            @Override
+            protected Object doInBackground(Void... args)
+            {
+                try
+                {
+                    save();
+                    return true;
+                }
+                catch (DatabaseException exception)
+                {
+                    return exception;
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Object result)
+            {
+                if (result instanceof DatabaseException)
+                {
+                    if (staticOnSaveListener != null)
+                        staticOnSaveListener.onSaveDBError((DatabaseException) result);
+                }
+                else if (result instanceof Exception)
+                {
+                    if (staticOnSaveListener != null)
+                        staticOnSaveListener.onSaveError((Exception) result);
+                }
+                else
+                {
+                    if (staticOnSaveListener != null)
+                        staticOnSaveListener.onSave();
+                }
+            }
+
+        }.execute();
+
     }
 
 
@@ -241,49 +275,6 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
 
     }
 
-
-    /**
-     * Wrap the dynamic and static listeners into one listener. This also sets the model value
-     * by default when the listener is called.
-     * @return
-     */
-    private OnSaveListener onSaveListener(final OnSaveListener dynamicOnSaveListener)
-    {
-        return new OnSaveListener()
-        {
-            @Override
-            public void onSave()
-            {
-                setIsSaved(true);
-
-                if (staticOnSaveListener != null)
-                    staticOnSaveListener.onSave();
-
-                if (dynamicOnSaveListener != null)
-                    dynamicOnSaveListener.onSave();
-            }
-
-            @Override
-            public void onSaveDBError(DatabaseException exception)
-            {
-                if (staticOnSaveListener != null)
-                    staticOnSaveListener.onSaveDBError(exception);
-
-                if (dynamicOnSaveListener != null)
-                    dynamicOnSaveListener.onSaveDBError(exception);
-            }
-
-            @Override
-            public void onSaveError(Exception exception)
-            {
-                if (staticOnSaveListener != null)
-                    staticOnSaveListener.onSaveError(exception);
-
-                if (dynamicOnSaveListener != null)
-                    dynamicOnSaveListener.onSaveError(exception);
-            }
-        };
-    }
 
 
 

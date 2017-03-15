@@ -6,7 +6,7 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.value.error.UndefinedValueError;
 import com.kispoko.tome.engine.value.error.UnexpectedValueTypeError;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -55,9 +55,7 @@ public class Dictionary implements Model, ToYaml, Serializable
     {
         this.id = null;
 
-        List<Class<? extends ValueSet>> valueSetClasses = new ArrayList<>();
-        valueSetClasses.add(ValueSet.class);
-        this.valueSets = CollectionFunctor.empty(valueSetClasses);
+        this.valueSets = CollectionFunctor.empty(ValueSet.class);
     }
 
 
@@ -65,9 +63,7 @@ public class Dictionary implements Model, ToYaml, Serializable
     {
         this.id        = id;
 
-        List<Class<? extends ValueSet>> valueSetClasses = new ArrayList<>();
-        valueSetClasses.add(ValueSet.class);
-        this.valueSets = CollectionFunctor.full(valueSets, valueSetClasses);
+        this.valueSets = CollectionFunctor.full(valueSets, ValueSet.class);
 
         initialize();
     }

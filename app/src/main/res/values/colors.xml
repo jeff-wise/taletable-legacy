@@ -3,7 +3,7 @@
 <resources>
 
 
-    <color name="primary">#1D2126</color>
+    <color name="primary">#191D21</color>
 
     <color name="blue_5">#057C8F</color>
     <color name="blue_6">#386078</color>
@@ -46,6 +46,10 @@
     <color name="dark_blue_9">#21252B</color>
     <color name="dark_blue_10">#1F2329</color>
     <color name="dark_blue_11">#1D2126</color>
+    <color name="dark_blue_12">#1B1F24</color>
+    <color name="dark_blue_13">#191D21</color>
+    <color name="dark_blue_14">#171B1F</color>
+    <color name="dark_blue_15">#15181C</color>
 
 
     <!-- GOLD -->

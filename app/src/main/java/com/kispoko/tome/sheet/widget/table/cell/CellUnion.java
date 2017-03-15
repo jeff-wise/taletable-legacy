@@ -3,10 +3,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 
 import android.content.Context;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.InvalidCaseError;
@@ -14,11 +11,9 @@ import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
-import com.kispoko.tome.sheet.widget.util.Height;
-import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;

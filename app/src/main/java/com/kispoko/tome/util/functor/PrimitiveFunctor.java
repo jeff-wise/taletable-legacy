@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.util.value;
+package com.kispoko.tome.util.functor;
 
 
 import android.graphics.Bitmap;

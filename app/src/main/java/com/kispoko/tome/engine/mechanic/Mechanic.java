@@ -8,8 +8,8 @@ import com.kispoko.tome.engine.mechanic.error.NonBooleanRequirementError;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -85,9 +85,7 @@ public class Mechanic implements Model, ToYaml, Serializable
         this.type           = new PrimitiveFunctor<>(null, String.class);
         this.requirements   = new PrimitiveFunctor<>(null, String[].class);
 
-        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
-        variableClasses.add(VariableUnion.class);
-        this.variables    = CollectionFunctor.empty(variableClasses);
+        this.variables    = CollectionFunctor.empty(VariableUnion.class);
     }
 
 
@@ -112,9 +110,7 @@ public class Mechanic implements Model, ToYaml, Serializable
         requirements.toArray(requirementsArray);
         this.requirements = new PrimitiveFunctor<>(requirementsArray, String[].class);
 
-        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
-        variableClasses.add(VariableUnion.class);
-        this.variables    = CollectionFunctor.full(variables, variableClasses);
+        this.variables    = CollectionFunctor.full(variables, VariableUnion.class);
     }
 
 

@@ -6,12 +6,11 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.summation.term.TermSummary;
 import com.kispoko.tome.engine.summation.term.TermType;
 import com.kispoko.tome.engine.summation.term.TermUnion;
-import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
@@ -60,9 +59,7 @@ public class Summation implements Model, Serializable
     {
         this.id = null;
 
-        List<Class<? extends TermUnion>> termClasses = new ArrayList<>();
-        termClasses.add(TermUnion.class);
-        this.terms = CollectionFunctor.empty(termClasses);
+        this.terms = CollectionFunctor.empty(TermUnion.class);
     }
 
 
@@ -70,9 +67,7 @@ public class Summation implements Model, Serializable
     {
         this.id = id;
 
-        List<Class<? extends TermUnion>> termClasses = new ArrayList<>();
-        termClasses.add(TermUnion.class);
-        this.terms = CollectionFunctor.full(terms, termClasses);
+        this.terms = CollectionFunctor.full(terms, TermUnion.class);
 
         this.initialize();
     }

@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.util.value;
+package com.kispoko.tome.util.functor;
 
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ public abstract class Functor<A> implements Serializable
     // PROPERTIES
     // --------------------------------------------------------------------------------------
 
-    protected A                value;
+    protected A                 value;
 
     private   String           name;
 

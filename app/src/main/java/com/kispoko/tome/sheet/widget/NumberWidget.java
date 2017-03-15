@@ -29,13 +29,12 @@ import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.ui.Font;
 import com.kispoko.tome.util.ui.FormattedString;
 import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -96,11 +95,9 @@ public class NumberWidget extends Widget
         this.valuePostfix       = new PrimitiveFunctor<>(null, String.class);
         this.description        = new PrimitiveFunctor<>(null, String.class);
 
-        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
-        variableClasses.add(VariableUnion.class);
-        this.variables  = CollectionFunctor.empty(variableClasses);
+        this.variables          = CollectionFunctor.empty(VariableUnion.class);
 
-        this.valueViewId    = null;
+        this.valueViewId        = null;
     }
 
 
@@ -122,9 +119,7 @@ public class NumberWidget extends Widget
         this.valuePostfix       = new PrimitiveFunctor<>(valuePostfix, String.class);
         this.description        = new PrimitiveFunctor<>(description, String.class);
 
-        List<Class<? extends VariableUnion>> variableClasses = new ArrayList<>();
-        variableClasses.add(VariableUnion.class);
-        this.variables  = CollectionFunctor.full(variables, variableClasses);
+        this.variables  = CollectionFunctor.full(variables, VariableUnion.class);
 
         this.valueViewId    = null;
 

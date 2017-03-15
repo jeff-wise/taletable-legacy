@@ -3,7 +3,7 @@ package com.kispoko.tome.engine.program;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -52,9 +52,7 @@ public class ProgramIndex implements Model, ToYaml, Serializable
     {
         this.id            = null;
 
-        List<Class<? extends Program>> programClasses = new ArrayList<>();
-        programClasses.add(Program.class);
-        this.programs      = CollectionFunctor.empty(programClasses);
+        this.programs      = CollectionFunctor.empty(Program.class);
 
         this.programByName = new HashMap<>();
     }
@@ -64,9 +62,7 @@ public class ProgramIndex implements Model, ToYaml, Serializable
     {
         this.id = id;
 
-        List<Class<? extends Program>> programClasses = new ArrayList<>();
-        programClasses.add(Program.class);
-        this.programs = CollectionFunctor.full(programs, programClasses);
+        this.programs = CollectionFunctor.full(programs, Program.class);
 
         this.programByName = new HashMap<>();
 

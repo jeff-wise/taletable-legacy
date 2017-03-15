@@ -3,8 +3,8 @@ package com.kispoko.tome.engine.program.statement;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -45,9 +45,7 @@ public class Statement implements Model, ToYaml, Serializable
         this.variableName = new PrimitiveFunctor<>(null, String.class);
         this.functionName = new PrimitiveFunctor<>(null, String.class);
 
-        List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
-        parameterClasses.add(Parameter.class);
-        this.parameters   = CollectionFunctor.empty(parameterClasses);
+        this.parameters   = CollectionFunctor.empty(Parameter.class);
     }
 
 
@@ -58,9 +56,7 @@ public class Statement implements Model, ToYaml, Serializable
         this.variableName = new PrimitiveFunctor<>(variableName, String.class);
         this.functionName = new PrimitiveFunctor<>(functionName, String.class);
 
-        List<Class<? extends Parameter>> parameterClasses = new ArrayList<>();
-        parameterClasses.add(Parameter.class);
-        this.parameters   = CollectionFunctor.full(parameters, parameterClasses);
+        this.parameters   = CollectionFunctor.full(parameters, Parameter.class);
     }
 
 

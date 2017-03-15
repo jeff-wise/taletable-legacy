@@ -4,11 +4,10 @@ package com.kispoko.tome.engine.variable;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 

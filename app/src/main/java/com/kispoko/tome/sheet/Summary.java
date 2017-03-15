@@ -4,7 +4,7 @@ package com.kispoko.tome.sheet;
 
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.tuple.Tuple2;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 
 import java.util.UUID;
 

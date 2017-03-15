@@ -9,7 +9,7 @@ import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.program.ProgramIndex;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.ModelFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;

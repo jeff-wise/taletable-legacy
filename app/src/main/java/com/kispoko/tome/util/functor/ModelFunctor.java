@@ -1,13 +1,14 @@
 
-package com.kispoko.tome.util.value;
+package com.kispoko.tome.util.functor;
 
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.orm.ORM;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.model.ModelLib;
 
 import java.io.Serializable;
 
@@ -23,13 +24,15 @@ public class ModelFunctor<A extends Model> extends Functor<A>
     // PROPERTIES
     // -------------------------------------------------------------------------------------
 
-    private Class<A>       modelClass;
+    private Class<A>        modelClass;
 
-    private OnSaveListener staticOnSaveListener;
-    private OnLoadListener staticOnLoadListener;
+    private OnSaveListener  staticOnSaveListener;
+    private OnLoadListener  staticOnLoadListener;
 
-    private boolean        isLoaded;
-    private boolean        isSaved;
+    private boolean         isLoaded;
+    private boolean         isSaved;
+
+    private boolean         isSaving;
 
 
     // CONSTRUCTORS
@@ -39,13 +42,15 @@ public class ModelFunctor<A extends Model> extends Functor<A>
     {
         super(value);
 
-        this.modelClass           = modelClass;
+        this.modelClass             = modelClass;
 
-        this.isLoaded             = isLoaded;
-        this.isSaved              = isSaved;
+        this.isLoaded               = isLoaded;
+        this.isSaved                = isSaved;
 
-        this.staticOnSaveListener = null;
-        this.staticOnLoadListener = null;
+        this.staticOnSaveListener   = null;
+        this.staticOnLoadListener   = null;
+
+        this.isSaving               = false;
     }
 
 
@@ -64,13 +69,10 @@ public class ModelFunctor<A extends Model> extends Functor<A>
     // API
     // --------------------------------------------------------------------------------------
 
-    // > State
-    // --------------------------------------------------------------------------------------
-
     // ** Model Class
     // ------------------------------------------------------------------------------------------
 
-    public Class<A> getModelClass()
+    public Class<A> modelClass()
     {
         return this.modelClass;
     }
@@ -126,36 +128,157 @@ public class ModelFunctor<A extends Model> extends Functor<A>
 
     public String sqlColumnName()
     {
-        return this.name() + "_" + ModelLib.name(modelClass) + "_id";
+        return this.name() + "_" + ORM.name(modelClass) + "_id";
     }
 
 
-    // > Asynchronous Operations
+    // > Load
     // ------------------------------------------------------------------------------------------
 
-    public void load(final ModelQueryParameters queryParameters,
-                     final OnLoadListener<A> dynamicOnLoadListener)
+    public void load(final ModelQueryParameters queryParameters)
+           throws DatabaseException
     {
-        ModelLib.modelFromDatabase(getModelClass(),
-                                   queryParameters,
-                                   this.onLoadListener(dynamicOnLoadListener));
+        A model = ORM.loadModel(this.modelClass(), queryParameters);
+
+        this.setValue(model);
+        this.setIsLoaded(true);
     }
 
 
-    public void save(final OnSaveListener dynamicOnSaveListener)
+    @SuppressWarnings("unchecked")
+    public void loadAsync(final ModelQueryParameters queryParameters)
     {
-        if (this.getValue() != null) {
-            ModelLib.modelToDatabase(this.getValue(),
-                                     this.onSaveListener(dynamicOnSaveListener));
+        new AsyncTask<Void,Void,Object>()
+        {
+
+            @Override
+            protected Object doInBackground(Void... args)
+            {
+                try
+                {
+                    return ORM.loadModel(modelClass(), queryParameters);
+                }
+                catch (DatabaseException exception)
+                {
+                    return exception;
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Object result)
+            {
+                if (result instanceof DatabaseException)
+                {
+                    if (staticOnLoadListener != null)
+                        staticOnLoadListener.onLoadDBError((DatabaseException) result);
+                }
+                else if (result instanceof Exception)
+                {
+                    if (staticOnLoadListener != null)
+                        staticOnLoadListener.onLoadError((Exception) result);
+                }
+                else
+                {
+                    A loadedModel = (A) result;
+
+                    setValue(loadedModel);
+                    setIsLoaded(true);
+
+                    if (staticOnLoadListener != null)
+                        staticOnLoadListener.onLoad(loadedModel);
+                }
+            }
+
+        }.execute();
+
+    }
+
+
+    // > Save
+    // ------------------------------------------------------------------------------------------
+
+    public void save()
+           throws DatabaseException
+    {
+        if (this.getValue() != null && !this.isSaving)
+        {
+            this.isSaving = true;
+
+            ORM.saveModel(this.getValue());
+
+            this.isSaving = false;
         }
     }
 
 
-    public void save()
+    public void saveAsync()
     {
-        this.save(null);
-    }
+        new AsyncTask<Void,Void,Object>()
+        {
 
+            @Override
+            protected Object doInBackground(Void... args)
+            {
+                try
+                {
+                    if (getValue() != null && !isSaving)
+                    {
+                        isSaving = true;
+
+                        ORM.saveModel(getValue());
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+                catch (DatabaseException exception)
+                {
+                    return exception;
+                }
+                catch (Exception exception)
+                {
+                    return exception;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Object result)
+            {
+                if (result instanceof DatabaseException)
+                {
+                    if (staticOnSaveListener != null)
+                        staticOnSaveListener.onSaveDBError((DatabaseException) result);
+                }
+                else if (result instanceof Exception)
+                {
+                    if (staticOnSaveListener != null)
+                        staticOnSaveListener.onSaveError((Exception) result);
+                }
+                else if (result instanceof Boolean)
+                {
+                    Boolean savedModel = (Boolean) result;
+
+                    if (savedModel)
+                    {
+                        isSaving = false;
+
+                        if (staticOnSaveListener != null)
+                            staticOnSaveListener.onSave();
+                    }
+
+                }
+            }
+
+        }.execute();
+    }
 
 
     // INTERNAL
@@ -263,14 +386,16 @@ public class ModelFunctor<A extends Model> extends Functor<A>
     // LISTENERS
     // --------------------------------------------------------------------------------------
 
-    public interface OnSaveListener extends Serializable {
+    public interface OnSaveListener extends Serializable
+    {
         void onSave();
         void onSaveDBError(DatabaseException exception);
         void onSaveError(Exception exception);
     }
 
 
-    public interface OnLoadListener<A> extends Serializable {
+    public interface OnLoadListener<A> extends Serializable
+    {
         void onLoad(A value);
         void onLoadDBError(DatabaseException exception);
         void onLoadError(Exception exception);

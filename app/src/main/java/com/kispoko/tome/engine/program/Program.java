@@ -4,9 +4,9 @@ package com.kispoko.tome.engine.program;
 
 import com.kispoko.tome.engine.program.statement.Statement;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.ModelFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.ModelFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -72,9 +72,7 @@ public class Program implements Model, ToYaml, Serializable
         this.resultType      = new PrimitiveFunctor<>(null, ProgramValueType.class);
 
         // **  Statements
-        List<Class<? extends Statement>> statementClasses = new ArrayList<>();
-        statementClasses.add(Statement.class);
-        this.statements      = CollectionFunctor.empty(statementClasses);
+        this.statements      = CollectionFunctor.empty(Statement.class);
 
         // **  Result Statement
         this.resultStatement = ModelFunctor.empty(Statement.class);
@@ -110,9 +108,7 @@ public class Program implements Model, ToYaml, Serializable
         this.resultType      = new PrimitiveFunctor<>(resultType, ProgramValueType.class);
 
         // **  Statements
-        List<Class<? extends Statement>> statementClasses = new ArrayList<>();
-        statementClasses.add(Statement.class);
-        this.statements      = CollectionFunctor.full(statements, statementClasses);
+        this.statements      = CollectionFunctor.full(statements, Statement.class);
 
         // **  Result Statement
         this.resultStatement = ModelFunctor.full(resultStatement, Statement.class);

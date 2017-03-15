@@ -4,7 +4,7 @@ package com.kispoko.tome.sheet.widget.log;
 
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParseException;

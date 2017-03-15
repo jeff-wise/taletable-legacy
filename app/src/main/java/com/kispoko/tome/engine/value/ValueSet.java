@@ -3,8 +3,8 @@ package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
 import com.kispoko.tome.util.yaml.YamlBuilder;
 import com.kispoko.tome.util.yaml.YamlParser;
@@ -61,9 +61,7 @@ public class ValueSet implements Model, ToYaml, Serializable
         this.labelSingular  = new PrimitiveFunctor<>(null, String.class);
         this.description    = new PrimitiveFunctor<>(null, String.class);
 
-        List<Class<? extends ValueUnion>> valueClasses = new ArrayList<>();
-        valueClasses.add(ValueUnion.class);
-        this.values         = CollectionFunctor.empty(valueClasses);
+        this.values         = CollectionFunctor.empty(ValueUnion.class);
     }
 
 
@@ -81,9 +79,7 @@ public class ValueSet implements Model, ToYaml, Serializable
         this.labelSingular  = new PrimitiveFunctor<>(labeSingular, String.class);
         this.description    = new PrimitiveFunctor<>(description, String.class);
 
-        List<Class<? extends ValueUnion>> valueClasses = new ArrayList<>();
-        valueClasses.add(ValueUnion.class);
-        this.values         = CollectionFunctor.full(values, valueClasses);
+        this.values         = CollectionFunctor.full(values, ValueUnion.class);
 
         initialize();
     }

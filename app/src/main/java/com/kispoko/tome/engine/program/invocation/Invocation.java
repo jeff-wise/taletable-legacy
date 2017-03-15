@@ -4,8 +4,8 @@ package com.kispoko.tome.engine.program.invocation;
 
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.value.CollectionFunctor;
-import com.kispoko.tome.util.value.PrimitiveFunctor;
+import com.kispoko.tome.util.functor.CollectionFunctor;
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.yaml.YamlParser;
 import com.kispoko.tome.util.yaml.YamlParseException;
 
@@ -40,10 +40,7 @@ public class Invocation implements Model, Serializable
 
         this.programName = new PrimitiveFunctor<>(null, String.class);
 
-        List<Class<? extends InvocationParameterUnion>> parameterClasses
-                                                = new ArrayList<>();
-        parameterClasses.add(InvocationParameterUnion.class);
-        this.parameters  = CollectionFunctor.empty(parameterClasses);
+        this.parameters  = CollectionFunctor.empty(InvocationParameterUnion.class);
     }
 
 
@@ -55,10 +52,7 @@ public class Invocation implements Model, Serializable
 
         this.programName = new PrimitiveFunctor<>(programName, String.class);
 
-        List<Class<? extends InvocationParameterUnion>> parameterClasses
-                                                = new ArrayList<>();
-        parameterClasses.add(InvocationParameterUnion.class);
-        this.parameters  = CollectionFunctor.full(parameters, parameterClasses);
+        this.parameters  = CollectionFunctor.full(parameters, InvocationParameterUnion.class);
     }
 
 
