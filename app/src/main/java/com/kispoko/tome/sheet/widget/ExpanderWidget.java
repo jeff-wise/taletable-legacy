@@ -113,7 +113,7 @@ public class ExpanderWidget extends Widget
 
         ExpanderWidgetFormat format     = ExpanderWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        WidgetData           widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
+        WidgetData           widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"));
 
         return new ExpanderWidget(id, name, groups, format, widgetData);
     }
@@ -246,16 +246,13 @@ public class ExpanderWidget extends Widget
         // [1] Apply default formats
         // -------------------------------------------------------------------------------------
 
-        if (this.data().format().width() == null)
-            this.data().format().setWidth(1);
-
-        if (this.data().format().alignment() == null)
+        if (this.data().format().alignmentIsDefault())
             this.data().format().setAlignment(Alignment.CENTER);
 
-        if (this.data().format().background() == null)
+        if (this.data().format().backgroundIsDefault())
             this.data().format().setBackground(BackgroundColor.NONE);
 
-        if (this.data().format().corners() == null)
+        if (this.data().format().cornersIsDefault())
             this.data().format().setCorners(Corners.NONE);
     }
 

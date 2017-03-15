@@ -98,7 +98,7 @@ public class ListWidget extends Widget
     {
         UUID                id         = UUID.randomUUID();
 
-        WidgetData          widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
+        WidgetData          widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"));
         ListWidgetFormat    format     = ListWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
         List<VariableUnion> values     = yaml.atMaybeKey("values").forEach(
@@ -242,12 +242,8 @@ public class ListWidget extends Widget
         // [1] Set default format values
         // -------------------------------------------------------------------------------------
 
-        // ** Width
-        if (this.data().format().width() == null)
-            this.data().format().setWidth(1);
-
         // ** Background
-        if (this.data().format().background() == null)
+        if (this.data().format().backgroundIsDefault())
             this.data().format().setBackground(BackgroundColor.NONE);
     }
 

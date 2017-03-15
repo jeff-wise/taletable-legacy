@@ -114,7 +114,7 @@ public class ImageWidget extends Widget
     {
         UUID       id         = UUID.randomUUID();
 
-        WidgetData widgetData = WidgetData.fromYaml(yaml.atKey("data"), false);
+        WidgetData widgetData = WidgetData.fromYaml(yaml.atKey("data"));
 
         return new ImageWidget(id, widgetData, null);
     }
@@ -269,16 +269,12 @@ public class ImageWidget extends Widget
         // [1] Set default format values
         // -------------------------------------------------------------------------------------
 
-        // ** Width
-        if (this.data().format().width() == null)
-            this.data().format().setWidth(1);
-
         // ** Alignment
-        if (this.data().format().alignment() == null)
+        if (this.data().format().alignmentIsDefault())
             this.data().format().setAlignment(Alignment.CENTER);
 
         // ** Background
-        if (this.data().format().background() == null)
+        if (this.data().format().backgroundIsDefault())
             this.data().format().setBackground(BackgroundColor.NONE);
 
     }

@@ -1781,9 +1781,9 @@ profile:
         - type: text
           widget:
             data:
+              name: Name
               format:
                 background: empty
-                name: Name
             format:
               value_style:
                 alignment: center
@@ -5776,7 +5776,7 @@ encounter:
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_light
                 corners: small
             format:
               action_style:
@@ -5868,7 +5868,7 @@ encounter:
             data:
               format:
                 alignment: center
-                background: empty
+                background: medium_light
                 corners: small
             format:
               action_style:

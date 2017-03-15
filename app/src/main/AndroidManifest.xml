@@ -203,6 +203,12 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Groups" />
 
+    <activity
+        android:name=".activity.widget.text.TextEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Text Editor" />
+
 </application>
 
 </manifest>

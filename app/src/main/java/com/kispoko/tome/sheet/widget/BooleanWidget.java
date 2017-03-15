@@ -116,7 +116,7 @@ public class BooleanWidget extends Widget
     {
         UUID                id         = UUID.randomUUID();
 
-        WidgetData          widgetData = WidgetData.fromYaml(yaml.atKey("data"), false);
+        WidgetData          widgetData = WidgetData.fromYaml(yaml.atKey("data"));
         BooleanWidgetFormat format     = BooleanWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
         BooleanVariable     value      = BooleanVariable.fromYaml(yaml.atKey("value"));
 
@@ -313,12 +313,8 @@ public class BooleanWidget extends Widget
         // [1] Apply default format values
         // -------------------------------------------------------------------------------------
 
-        // ** Width
-        if (this.data().format().width() == null)
-            this.data().format().setWidth(1);
-
         // ** Content Alignment
-        if (this.data().format().alignment() == null)
+        if (this.data().format().alignmentIsDefault())
             this.data().format().setAlignment(Alignment.CENTER);
 
         // ** Label Style
@@ -331,11 +327,11 @@ public class BooleanWidget extends Widget
         }
 
         // ** Background
-        if (this.data().format().background() == null)
+        if (this.data().format().backgroundIsDefault())
             this.data().format().setBackground(BackgroundColor.DARK);
 
         // ** Corners
-        if (this.data().format().corners() == null)
+        if (this.data().format().cornersIsDefault())
             this.data().format().setCorners(Corners.SMALL);
     }
 

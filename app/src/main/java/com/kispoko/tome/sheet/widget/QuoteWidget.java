@@ -133,7 +133,7 @@ public class QuoteWidget extends Widget
         ViewType          viewType   = ViewType.fromYaml(yaml.atMaybeKey("view_type"));
         QuoteWidgetFormat format     = QuoteWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        WidgetData        widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
+        WidgetData        widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"));
 
         return new QuoteWidget(id, quote, source, viewType, format, widgetData);
     }
@@ -280,20 +280,16 @@ public class QuoteWidget extends Widget
         // [1] Apply default format values
         // -------------------------------------------------------------------------------------
 
-        // ** Width
-        if (this.data().format().width() == null)
-            this.data().format().setWidth(1);
-
         // ** Alignment
-        if (this.data().format().alignment() == null)
+        if (this.data().format().alignmentIsDefault())
             this.data().format().setAlignment(Alignment.CENTER);
 
         // ** Background
-        if (this.data().format().background() == null)
+        if (this.data().format().backgroundIsDefault())
             this.data().format().setBackground(BackgroundColor.NONE);
 
         // ** Corners
-        if (this.data().format().corners() == null)
+        if (this.data().format().cornersIsDefault())
             this.data().format().setCorners(Corners.SMALL);
 
     }

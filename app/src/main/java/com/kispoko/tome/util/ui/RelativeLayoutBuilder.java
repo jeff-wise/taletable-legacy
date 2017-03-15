@@ -27,34 +27,36 @@ public class RelativeLayoutBuilder
     // > Layout State
     // ------------------------------------------------------------------------------------------
 
-    public Integer                 orientation;
+    public Integer                  orientation;
 
-    public Integer                 id;
+    public Integer                  id;
 
-    public Integer                 height;
-    public Integer                 width;
-    public Float                   weight;
+    public Integer                  height;
+    public Integer                  heightDp;
 
-    public LayoutType              layoutType;
+    public Integer                  width;
+    public Float                    weight;
 
-    public Integer                 gravity;
-    public Integer                 layoutGravity;
+    public LayoutType               layoutType;
 
-    public Integer                 backgroundColor;
-    public Integer                 backgroundResource;
+    public Integer                  gravity;
+    public Integer                  layoutGravity;
 
-    public Margins                 margin;
-    public Padding                 padding;
+    public Integer                  backgroundColor;
+    public Integer                  backgroundResource;
 
-    public View.OnClickListener    onClick;
+    public Margins                  margin;
+    public Padding                  padding;
 
-    public List<Integer>           rules;
+    public View.OnClickListener     onClick;
+
+    public List<Integer>            rules;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private List<ViewBuilder>      children;
+    private List<ViewBuilder>       children;
 
 
     // CONSTRUCTORS
@@ -67,6 +69,8 @@ public class RelativeLayoutBuilder
         this.orientation        = null;
 
         this.height             = null;
+        this.heightDp           = null;
+
         this.width              = null;
         this.weight             = null;
 
@@ -186,6 +190,8 @@ public class RelativeLayoutBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+        else if (this.heightDp != null)
+            layoutParamsBuilder.setHeightDp(this.heightDp);
 
         // > Weight
         // --------------------------------------------------------------------------------------

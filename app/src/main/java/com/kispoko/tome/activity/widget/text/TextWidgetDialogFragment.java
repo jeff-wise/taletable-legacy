@@ -1,9 +1,10 @@
 
-package com.kispoko.tome.activity.sheet.dialog;
+package com.kispoko.tome.activity.widget.text;
 
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.kispoko.tome.util.ui.LinearLayoutBuilder;
 import com.kispoko.tome.util.ui.TextViewBuilder;
 
 import org.greenrobot.eventbus.EventBus;
+
 
 
 /**
@@ -338,6 +340,19 @@ public class TextWidgetDialogFragment extends DialogFragment
 
         layout.margin.rightDp   = 15;
         layout.margin.topDp     = 2;
+
+        layout.onClick          = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getContext(), TextEditorActivity.class);
+                intent.putExtra("text_widget", textWidget);
+                dismiss();
+                startActivity(intent);
+            }
+        };
+
 
         layout.child(button);
 

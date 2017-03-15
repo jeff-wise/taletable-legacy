@@ -17,6 +17,7 @@ import com.kispoko.tome.util.yaml.YamlParseException;
 import java.io.Serializable;
 import java.util.UUID;
 
+import static android.R.attr.name;
 
 
 /**
@@ -37,7 +38,6 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>            name;
     private PrimitiveFunctor<String>            label;
     private PrimitiveFunctor<Integer>           width;
     private PrimitiveFunctor<Alignment>         alignment;
@@ -57,7 +57,6 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     {
         this.id                 = null;
 
-        this.name               = new PrimitiveFunctor<>(null, String.class);
         this.label              = new PrimitiveFunctor<>(null, String.class);
         this.width              = new PrimitiveFunctor<>(null, Integer.class);
         this.alignment          = new PrimitiveFunctor<>(null, Alignment.class);
@@ -72,7 +71,6 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
 
     public WidgetFormat(UUID id,
-                        String name,
                         String label,
                         Integer width,
                         Alignment alignment,
@@ -86,7 +84,6 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     {
         this.id                 = id;
 
-        this.name               = new PrimitiveFunctor<>(name, String.class);
         this.label              = new PrimitiveFunctor<>(label, String.class);
         this.width              = new PrimitiveFunctor<>(width, Integer.class);
         this.alignment          = new PrimitiveFunctor<>(alignment, Alignment.class);
@@ -147,7 +144,6 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
         UUID            id           = UUID.randomUUID();
 
-        String          name         = yaml.atMaybeKey("name").getString();
         String          label        = yaml.atMaybeKey("label").getTrimmedString();
 
         Integer         width        = yaml.atMaybeKey("width").getInteger();
@@ -164,7 +160,7 @@ public class WidgetFormat implements Model, ToYaml, Serializable
         Spacing         margins      = Spacing.fromYaml(yaml.atMaybeKey("margins"));
         Integer         elevation    = yaml.atMaybeKey("elevation").getInteger();
 
-        return new WidgetFormat(id, name, label, width, alignment, labelStyle, background, corners,
+        return new WidgetFormat(id, label, width, alignment, labelStyle, background, corners,
                                 ulThickness, ulColor, margins, elevation);
     }
 
@@ -205,7 +201,6 @@ public class WidgetFormat implements Model, ToYaml, Serializable
     public YamlBuilder toYaml()
     {
         return  YamlBuilder.map()
-                    .putString("name", this.name())
                     .putString("label", this.label())
                     .putInteger("width", this.width())
                     .putYaml("alignment", this.alignment())
@@ -221,28 +216,6 @@ public class WidgetFormat implements Model, ToYaml, Serializable
 
     // > State
     // --------------------------------------------------------------------------------------
-
-    // ** Name
-    // --------------------------------------------------------------------------------------
-
-    /**
-     * The Widget's name. May not be null.
-     * @return The widget name.
-     */
-    public String name()
-    {
-        return this.name.getValue();
-    }
-
-
-    public void setName(String name)
-    {
-        if (name != null)
-            this.name.setValue(name);
-        else
-            this.name.setValue("");
-    }
-
 
     // ** Label
     // --------------------------------------------------------------------------------------

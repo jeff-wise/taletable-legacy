@@ -1,20 +1,23 @@
 
-package com.kispoko.tome.util.database;
+package com.kispoko.tome;
 
 
 import android.util.Log;
 
+import static com.kispoko.tome.util.database.EventLog.EventType.ROW_INSERT;
+
+
 /**
- * Database Event Log
+ * Application Event Log
  */
-public class EventLog
+public class AppEventLog
 {
 
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
     private static boolean logToConsole = true;
-    private static Level   logLevel     = Level.LOW;
+    private static Level   logLevel     = Level.HIGH;
 
 
     // API
@@ -22,15 +25,26 @@ public class EventLog
 
     public static void add(EventType eventType, String message)
     {
+        String logLine = eventType.name().toUpperCase() + "  " + message;
+
         if (logToConsole)
         {
             switch (eventType)
             {
-                case ROW_INSERT:
+                case MEASUREMENT_SAVE_TIME:
                     if (logLevel == Level.HIGH)
-                        Log.d("***DATABASE EVENT", eventType.name().toUpperCase() + "  " + message);
+                        logToConsole(logLine);
             }
         }
+    }
+
+
+    // INTERNAL
+    // -----------------------------------------------------------------------------------------
+
+    private static void logToConsole(String line)
+    {
+        Log.d("***APP EVENT", line);
     }
 
 
@@ -50,6 +64,7 @@ public class EventLog
 
     public enum EventType
     {
-        ROW_INSERT
+        MEASUREMENT_SAVE_TIME
     }
+
 }

@@ -5,7 +5,9 @@ package com.kispoko.tome.util.functor;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.kispoko.tome.AppEventLog;
 import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.util.database.EventLog;
 import com.kispoko.tome.util.database.orm.ORM;
 import com.kispoko.tome.util.database.query.ModelQueryParameters;
 import com.kispoko.tome.util.model.Model;
@@ -217,6 +219,8 @@ public class ModelFunctor<A extends Model> extends Functor<A>
 
     public void saveAsync()
     {
+        final Long startTime = System.nanoTime();
+
         new AsyncTask<Void,Void,Object>()
         {
 
@@ -268,10 +272,21 @@ public class ModelFunctor<A extends Model> extends Functor<A>
 
                     if (savedModel)
                     {
-                        isSaving = false;
-
                         if (staticOnSaveListener != null)
                             staticOnSaveListener.onSave();
+
+                        // > Log time of event
+                        // --------------------------------------------
+                        Long endTime = System.nanoTime();
+                        Long duration = (endTime - startTime) / 1000000000;
+
+                        String message = modelClass().getName() + ": " +
+                                             duration.toString() + " seconds";
+                        AppEventLog.add(AppEventLog.EventType.MEASUREMENT_SAVE_TIME, message);
+
+                        // > Toggle Is Saving State
+                        // --------------------------------------------
+                        isSaving = false;
                     }
 
                 }

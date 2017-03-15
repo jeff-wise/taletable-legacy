@@ -2,6 +2,7 @@
 package com.kispoko.tome.sheet.widget.util;
 
 
+import com.kispoko.tome.util.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.model.Model;
 import com.kispoko.tome.util.functor.ModelFunctor;
 import com.kispoko.tome.util.yaml.ToYaml;
@@ -32,6 +33,7 @@ public class WidgetData implements Model, ToYaml, Serializable
     // > Functors
     // ------------------------------------------------------------------------------------------
 
+    private PrimitiveFunctor<String>    name;
     private ModelFunctor<WidgetFormat>  format;
 
 
@@ -40,22 +42,31 @@ public class WidgetData implements Model, ToYaml, Serializable
 
     public WidgetData()
     {
-        this.id            = null;
+        this.id             = null;
 
-        this.format        = ModelFunctor.empty(WidgetFormat.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.format         = ModelFunctor.empty(WidgetFormat.class);
     }
 
 
     public WidgetData(UUID id,
+                      String name,
                       WidgetFormat widgetFormat)
     {
-        this.id            = id;
+        this.id             = id;
 
-        this.format        = ModelFunctor.full(widgetFormat, WidgetFormat.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.format         = ModelFunctor.full(widgetFormat, WidgetFormat.class);
     }
 
 
-    public static WidgetData fromYaml(YamlParser yaml, boolean useDefaultFormat)
+    /**
+     * Create a WidgetData from its yaml representation.
+     * @param yaml The yaml parser.
+     * @return The parsed Widget Data.
+     * @throws YamlParseException
+     */
+    public static WidgetData fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         if (yaml.isNull())
@@ -63,9 +74,10 @@ public class WidgetData implements Model, ToYaml, Serializable
 
         UUID         id            = UUID.randomUUID();
 
+        String       name        = yaml.atMaybeKey("name").getString();
         WidgetFormat format        = WidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        return new WidgetData(id, format);
+        return new WidgetData(id, name, format);
     }
 
 
@@ -74,6 +86,8 @@ public class WidgetData implements Model, ToYaml, Serializable
         WidgetData widgetData = new WidgetData();
 
         widgetData.setId(UUID.randomUUID());
+
+        widgetData.setName(null);
         widgetData.format.setValue(WidgetFormat.asDefault());
 
         return widgetData;
@@ -114,29 +128,65 @@ public class WidgetData implements Model, ToYaml, Serializable
 
     public YamlBuilder toYaml()
     {
-        YamlBuilder yaml = YamlBuilder.map();
-
-        yaml.putYaml("format", this.format());
-
-        return yaml;
+        return YamlBuilder.map()
+                .putString("name", this.name())
+                .putYaml("format", this.format());
     }
 
 
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Name
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The widget name.
+     * @return The name.
+     */
+    public String name()
+    {
+        return this.name.getValue();
+    }
+
+
+    /**
+     * Set the widget name. If the name is null, sets an empty string to prevent errosr.
+     * @param name The widget name.
+     */
+    public void setName(String name)
+    {
+        if (name != null)
+            this.name.setValue(name);
+        else
+            this.name.setValue("");
+    }
+
+
     // ** WidgetFormat
     // ------------------------------------------------------------------------------------------
 
+    /**
+     * The standard widget formatting options.
+     * @return The widget format.
+     */
     public WidgetFormat format()
     {
         return this.format.getValue();
     }
 
 
-    public void setWidgetFormat(WidgetFormat format)
+    /**
+     * Set the widget format. If null, sets the default widget format.
+     * @param widgetFormat The widget format.
+     */
+    public void setFormat(WidgetFormat widgetFormat)
     {
-        this.format.setValue(format);
+        if (widgetFormat != null)
+            this.format.setValue(widgetFormat);
+        else
+            this.format.setValue(WidgetFormat.asDefault());
     }
+
 
 }

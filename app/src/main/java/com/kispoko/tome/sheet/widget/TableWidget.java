@@ -129,7 +129,7 @@ public class TableWidget extends Widget
         TableWidgetFormat format  = TableWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
         // ** Widget Data
-        WidgetData   widgetData   = WidgetData.fromYaml(yaml.atKey("data"), false);
+        WidgetData   widgetData   = WidgetData.fromYaml(yaml.atKey("data"));
 
         // ** Columns
         final List<ColumnUnion> columns
@@ -393,10 +393,7 @@ public class TableWidget extends Widget
         // [1] Apply default formats
         // -------------------------------------------------------------------------------------
 
-        if (this.data().format().width() == null)
-            this.data().format().setWidth(1);
-
-        if (this.data().format().background() == null)
+        if (this.data().format().backgroundIsDefault())
             this.data().format().setBackground(BackgroundColor.NONE);
 
 

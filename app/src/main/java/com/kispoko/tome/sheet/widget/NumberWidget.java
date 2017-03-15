@@ -132,7 +132,7 @@ public class NumberWidget extends Widget
     {
         UUID               id            = UUID.randomUUID();
 
-        WidgetData         widgetData    = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
+        WidgetData         widgetData    = WidgetData.fromYaml(yaml.atMaybeKey("data"));
         NumberWidgetFormat format        = NumberWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
         NumberVariable     value         = NumberVariable.fromYaml(yaml.atKey("value"));
         String             valuePrefix   = yaml.atMaybeKey("value_prefix").getString();

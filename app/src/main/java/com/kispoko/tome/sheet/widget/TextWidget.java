@@ -27,7 +27,7 @@ import com.kispoko.tome.sheet.SheetException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.error.UndefinedValueSetError;
 import com.kispoko.tome.sheet.group.GroupParent;
-import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
+import com.kispoko.tome.activity.widget.text.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.Height;
@@ -144,7 +144,7 @@ public class TextWidget extends Widget
         TextWidgetFormat format      = TextWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
         String           description = yaml.atMaybeKey("description").getTrimmedString();
 
-        WidgetData       widgetData  = WidgetData.fromYaml(yaml.atKey("data"), false);
+        WidgetData       widgetData  = WidgetData.fromYaml(yaml.atKey("data"));
 
         List<VariableUnion> variables  = yaml.atMaybeKey("variables").forEach(
                                                 new YamlParser.ForEach<VariableUnion>()
@@ -704,20 +704,6 @@ public class TextWidget extends Widget
             case PROGRAM:
                 break;
         }
-    }
-
-
-    /**
-     * On a long click, open the text widget action dialog.
-     */
-    private void onTextWidgetLongClick(Context context)
-    {
-        SheetActivity sheetActivity = (SheetActivity) context;
-        String widgetName = this.data().format().name();
-
-        NavigationDialogFragment actionDialogFragment =
-                NavigationDialogFragment.newInstance(widgetName, WidgetType.TEXT);
-        actionDialogFragment.show(sheetActivity.getSupportFragmentManager(), "actions");
     }
 
 

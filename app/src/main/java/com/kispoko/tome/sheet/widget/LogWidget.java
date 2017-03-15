@@ -101,7 +101,7 @@ public class LogWidget extends Widget
 
         LogWidgetFormat format = LogWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        WidgetData     data    = WidgetData.fromYaml(yaml.atMaybeKey("data"), false);
+        WidgetData     data    = WidgetData.fromYaml(yaml.atMaybeKey("data"));
 
         return new LogWidget(id, entries, format, data);
     }
@@ -234,12 +234,8 @@ public class LogWidget extends Widget
         // [1] Apply default format values
         // -------------------------------------------------------------------------------------
 
-        // ** Width
-        if (this.data().format().width() == null)
-            this.data().format().setWidth(1);
-
         // ** Background
-        if (this.data().format().background() == null)
+        if (this.data().format().backgroundIsDefault())
             this.data().format().setBackground(BackgroundColor.NONE);
     }
 

@@ -68,14 +68,14 @@ public class SheetActivity
     public static final int COMPONENT_EDIT = 1;
 
     // ComponentUtil
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
+    private Toolbar             toolbar;
+    private DrawerLayout        drawerLayout;
 
-    private ChooseImageAction chooseImageAction;
+    private ChooseImageAction   chooseImageAction;
 
-    private String characterName;
+    private String              characterName;
 
-    private PagePagerAdapter pagePagerAdapter;
+    private PagePagerAdapter    pagePagerAdapter;
 
 
     // ACTIVITY EVENTS
@@ -169,12 +169,6 @@ public class SheetActivity
             this.chooseImageAction = null;
         }
 
-        // Update component with new values
-        else if (requestCode == COMPONENT_EDIT)
-        {
-            EditResult editResult = (EditResult) data.getExtras().getSerializable("RESULT");
-            editResult.applyResult(this, SheetManager.currentSheet());
-        }
     }
 
 

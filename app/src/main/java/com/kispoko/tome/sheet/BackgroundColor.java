@@ -32,7 +32,9 @@ public enum BackgroundColor implements ToYaml
     MEDIUM_LIGHT,
     MEDIUM,
     MEDIUM_DARK,
-    DARK;
+    DARK,
+    VERY_DARK,
+    SUPER_DARK;
 
 
     // CONSTRUCTORS
@@ -215,6 +217,10 @@ public enum BackgroundColor implements ToYaml
                 return R.color.dark_blue_8;
             case DARK:
                 return R.color.dark_blue_9;
+            case VERY_DARK:
+                return R.color.dark_blue_10;
+            case SUPER_DARK:
+                return R.color.dark_blue_11;
             default:
                 return R.color.dark_blue_7;
         }
