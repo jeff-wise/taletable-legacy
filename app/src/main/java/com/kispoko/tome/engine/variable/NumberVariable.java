@@ -15,18 +15,18 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
-import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.functor.ModelFunctor;
-import com.kispoko.tome.util.functor.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.ToYaml;
-import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
-import com.kispoko.tome.util.yaml.error.InvalidEnumError;
+import com.kispoko.tome.lib.database.sql.SQLValue;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.yaml.ToYaml;
+import com.kispoko.tome.lib.yaml.YamlBuilder;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.lib.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -787,7 +787,7 @@ public class NumberVariable extends Variable
                 return kind;
             } catch (InvalidDataException e) {
                 throw DatabaseException.invalidEnum(
-                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
+                        new com.kispoko.tome.lib.database.error.InvalidEnumError(enumString));
             }
         }
 

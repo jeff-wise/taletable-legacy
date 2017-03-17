@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.engine.value.ValueSet;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
-import com.kispoko.tome.util.ui.RecyclerViewBuilder;
+import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
 
 
 

@@ -21,11 +21,11 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.template.Template;
 import com.kispoko.tome.template.TemplateIndex;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.ScrollViewBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.ScrollViewBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.util.ArrayList;
 import java.util.List;

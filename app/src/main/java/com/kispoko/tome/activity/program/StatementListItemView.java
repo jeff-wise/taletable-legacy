@@ -11,12 +11,12 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.program.statement.Statement;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.LayoutType;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TableLayoutBuilder;
-import com.kispoko.tome.util.ui.TableRowBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.LayoutType;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.TableLayoutBuilder;
+import com.kispoko.tome.lib.ui.TableRowBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
 
 
 

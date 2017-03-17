@@ -6,10 +6,10 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.functor.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -2,15 +2,14 @@
 package com.kispoko.tome.util;
 
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.util.DisplayMetrics;
-import android.widget.LinearLayout;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -22,41 +21,6 @@ public class Util
 {
 
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
-
-    private static Typeface serifFontRegular;
-    private static Typeface serifFontBold;
-    private static Typeface sansSerifFontRegular;
-    private static Typeface sansSerifFontBold;
-
-
-    public static LinearLayout.LayoutParams linearLayoutParamsWrap()
-    {
-        return new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                                             LinearLayout.LayoutParams.WRAP_CONTENT);
-    }
-
-    public static LinearLayout.LayoutParams linearLayoutParamsMatch()
-    {
-        return new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                             LinearLayout.LayoutParams.MATCH_PARENT);
-    }
-
-    public static LinearLayout.LayoutParams linearLayoutParamsMatchWrap()
-    {
-        return new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                             LinearLayout.LayoutParams.WRAP_CONTENT);
-    }
-
-    public static LinearLayout.LayoutParams linearLayoutParamsWrapMatch()
-    {
-        return new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                                             LinearLayout.LayoutParams.MATCH_PARENT);
-    }
-
-    public static float getDim(Context context, int id)
-    {
-        return context.getResources().getDimension(id);
-    }
 
 
     /**
@@ -79,45 +43,6 @@ public class Util
     }
 
 
-
-    public static Typeface serifFontRegular(Context context)
-    {
-        if (serifFontRegular == null)
-//            serifFontRegular = Typeface.createFromAsset(context.getAssets(),
-//                                                 "fonts/DavidLibre-Regular.ttf");
-            serifFontRegular = Typeface.createFromAsset(context.getAssets(),
-                                                        "fonts/Lora-Regular.ttf");
-        return serifFontRegular;
-    }
-
-
-    public static Typeface serifFontBold(Context context)
-    {
-        if (serifFontBold == null)
-//            serifFontBold = Typeface.createFromAsset(context.getAssets(),
-//                    "fonts/DavidLibre-Bold.ttf");
-            serifFontBold = Typeface.createFromAsset(context.getAssets(),
-                                                    "fonts/Lora-Bold.ttf");
-        return serifFontBold;
-    }
-
-
-    public static Typeface sansSerifFontBold(Context context)
-    {
-        if (sansSerifFontBold == null)
-            sansSerifFontBold = Typeface.createFromAsset(context.getAssets(),
-                                                         "fonts/Lato-Bold.ttf");
-        return sansSerifFontBold;
-    }
-
-    public static Typeface sansSerifFontRegular(Context context)
-    {
-        if (sansSerifFontRegular == null)
-            sansSerifFontRegular = Typeface.createFromAsset(context.getAssets(),
-                                                            "fonts/Lato-Regular.ttf");
-        return sansSerifFontRegular;
-    }
-
     // convert from bitmap to byte array
     public static byte[] getBytes(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -137,5 +62,18 @@ public class Util
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);
     }
+
+
+    public static String timeDifferenceString(Long startTime, Long endTime)
+    {
+        Double timeDifferenceMS = Long.valueOf(endTime - startTime).doubleValue() / 1000000;
+
+        BigDecimal bd = new BigDecimal(timeDifferenceMS);
+        bd = bd.round(new MathContext(3));
+        Double rounded = bd.doubleValue();
+
+        return rounded.toString();
+    }
+
 }
 

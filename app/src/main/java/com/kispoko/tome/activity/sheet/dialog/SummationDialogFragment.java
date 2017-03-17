@@ -17,13 +17,10 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.summation.Summation;
-import com.kispoko.tome.util.ui.EditDialog;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.EditDialog;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 
 /**

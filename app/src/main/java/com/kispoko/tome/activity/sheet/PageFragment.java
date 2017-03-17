@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.util.Util;
@@ -74,8 +76,7 @@ public class PageFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        ScrollView fragmentView = new ScrollView(getContext());
-        fragmentView.setLayoutParams(Util.linearLayoutParamsMatch());
+        ScrollView fragmentView = this.scrollView(getContext());
 
         View pageView = this.page.view();
         fragmentView.addView(pageView);
@@ -85,32 +86,30 @@ public class PageFragment extends Fragment
 
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(Context context)
+    {
         super.onAttach(context);
-//        if (context instanceof EventListener) {
-//            mListener = (EventListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement EventListener");
-//        }
     }
 
 
     @Override
-    public void onDetach() {
+    public void onDetach()
+    {
         super.onDetach();
-        //mListener = null;
     }
 
 
-    /**
-     * This interface represents the messages that this fragment may send to the activity.
-     * The activity must therefore implement the EventListener interface.
-     */
-    public interface EventListener
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private ScrollView scrollView(Context context)
     {
-        void setChooseImageAction(ChooseImageAction chooseImageAction);
-        void openEditActivity(WidgetData widgetData);
+        ScrollViewBuilder scrollView = new ScrollViewBuilder();
+
+        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT;
+        scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        return scrollView.scrollView(context);
     }
 
 }

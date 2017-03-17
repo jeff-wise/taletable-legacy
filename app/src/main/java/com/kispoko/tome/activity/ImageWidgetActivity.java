@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.ImageWidget;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.ui.Form;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.Form;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
 

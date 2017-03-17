@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.engine.program.Program;
 import com.kispoko.tome.engine.program.statement.Statement;
-import com.kispoko.tome.util.ui.RecyclerViewBuilder;
+import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

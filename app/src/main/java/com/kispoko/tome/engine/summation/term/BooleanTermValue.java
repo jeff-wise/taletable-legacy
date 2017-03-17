@@ -11,13 +11,13 @@ import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.EnumUtils;
-import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.database.sql.SQLValue;
-import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.functor.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
-import com.kispoko.tome.util.yaml.error.InvalidEnumError;
+import com.kispoko.tome.lib.database.DatabaseException;
+import com.kispoko.tome.lib.database.sql.SQLValue;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.lib.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -219,7 +219,6 @@ public class BooleanTermValue implements Model, Serializable
      * Get the value of the term's boolean variable.
      * @param variableName The boolean variable name.
      * @return The boolean variable's value.
-     * @throws SummationException
      */
     private Boolean variableValue(String variableName)
             throws VariableException
@@ -284,7 +283,7 @@ public class BooleanTermValue implements Model, Serializable
                 return kind;
             } catch (InvalidDataException e) {
                 throw DatabaseException.invalidEnum(
-                        new com.kispoko.tome.util.database.error.InvalidEnumError(enumString));
+                        new com.kispoko.tome.lib.database.error.InvalidEnumError(enumString));
             }
         }
     }

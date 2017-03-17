@@ -3,12 +3,20 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kispoko.tome.NullValueException;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.activity.sheet.dialog.QuoteWidgetDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
+import com.kispoko.tome.activity.widget.QuoteEditorActivity;
+import com.kispoko.tome.activity.widget.text.TextEditorActivity;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.group.GroupParent;
@@ -16,14 +24,14 @@ import com.kispoko.tome.sheet.widget.quote.QuoteWidgetFormat;
 import com.kispoko.tome.sheet.widget.quote.ViewType;
 import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.ui.ImageViewBuilder;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.functor.ModelFunctor;
-import com.kispoko.tome.util.functor.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParseException;
-import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.lib.ui.ImageViewBuilder;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.yaml.YamlBuilder;
+import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.lib.yaml.YamlParser;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -237,6 +245,7 @@ public class QuoteWidget extends Widget
      * The quote source.
      * @return The source string.
      */
+    @Nullable
     public String source()
     {
         return this.source.getValue();
@@ -336,7 +345,7 @@ public class QuoteWidget extends Widget
     }
 
 
-    private LinearLayout mainViewLayout(Context context)
+    private LinearLayout mainViewLayout(final Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -347,6 +356,15 @@ public class QuoteWidget extends Widget
         layout.backgroundColor  = this.data().format().background().colorId();
 
         layout.gravity          = this.data().format().alignment().gravityConstant();
+
+        layout.onClick          = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                onQuoteWidgetShortClick(context);
+            }
+        };
 
         return layout.linearLayout(context);
     }
@@ -488,6 +506,64 @@ public class QuoteWidget extends Widget
         return source.textView(context);
     }
 
+
+    // > Clicks
+    // -----------------------------------------------------------------------------------------
+
+    private void onQuoteWidgetShortClick(Context context)
+    {
+        SheetActivity sheetActivity = (SheetActivity) context;
+
+        if (this.quote().length() > 145 || this.source() != null)
+        {
+            Intent intent = new Intent(sheetActivity, QuoteEditorActivity.class);
+            intent.putExtra("quote_widget", this);
+            context.startActivity(intent);
+        }
+        else
+        {
+            QuoteWidgetDialogFragment dialog = QuoteWidgetDialogFragment.newInstance(this);
+            dialog.show(sheetActivity.getSupportFragmentManager(), "");
+        }
+    }
+
+
+    // UPDATE EVENT
+    // -----------------------------------------------------------------------------------------
+
+    public static class UpdateQuoteEvent
+    {
+
+        // PROPERTIES
+        // -------------------------------------------------------------------------------------
+
+        private UUID   widgetId;
+        private String newValue;
+
+
+        // CONSTRUCTORS
+        // -------------------------------------------------------------------------------------
+
+        public UpdateQuoteEvent(UUID widgetId, String newValue)
+        {
+            this.widgetId   = widgetId;
+            this.newValue   = newValue;
+        }
+
+        // API
+        // -------------------------------------------------------------------------------------
+
+        public UUID widgetId()
+        {
+            return this.widgetId;
+        }
+
+        public String newValue()
+        {
+            return this.newValue;
+        }
+
+    }
 
 
 }

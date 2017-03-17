@@ -5,7 +5,6 @@ package com.kispoko.tome.activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -13,11 +12,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.ui.EditTextBuilder;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.view.Calculator;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
 /**

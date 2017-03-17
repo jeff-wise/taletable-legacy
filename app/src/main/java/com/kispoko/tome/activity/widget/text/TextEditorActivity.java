@@ -17,13 +17,13 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.ui.EditTextBuilder;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.LayoutType;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.RelativeLayoutBuilder;
-import com.kispoko.tome.util.ui.ScrollViewBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
+import com.kispoko.tome.lib.ui.EditTextBuilder;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.LayoutType;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
+import com.kispoko.tome.lib.ui.ScrollViewBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
 
 
 

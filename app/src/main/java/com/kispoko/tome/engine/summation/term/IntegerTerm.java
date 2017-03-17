@@ -6,10 +6,10 @@ import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.summation.error.SummationVariableError;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
-import com.kispoko.tome.util.functor.ModelFunctor;
-import com.kispoko.tome.util.functor.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;

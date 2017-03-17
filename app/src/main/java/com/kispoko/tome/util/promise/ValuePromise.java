@@ -4,7 +4,7 @@ package com.kispoko.tome.util.promise;
 
 import android.os.AsyncTask;
 
-import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.lib.model.Model;
 
 
 

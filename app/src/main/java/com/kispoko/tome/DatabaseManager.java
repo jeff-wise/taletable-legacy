@@ -43,6 +43,7 @@ import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.sheet.Section;
+import com.kispoko.tome.sheet.Settings;
 import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.sheet.Summary;
 import com.kispoko.tome.sheet.group.Group;
@@ -99,9 +100,11 @@ import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.sheet.widget.util.WidgetFormat;
-import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.database.orm.ORM;
-import com.kispoko.tome.util.database.DatabaseException;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.database.orm.ORM;
+import com.kispoko.tome.lib.database.DatabaseException;
+import com.kispoko.tome.theme.Theme;
+import com.kispoko.tome.theme.ThemeColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +139,9 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             // ** Sheet
             modelClasses.add(Sheet.class);
+            modelClasses.add(Settings.class);
+            modelClasses.add(Theme.class);
+            modelClasses.add(ThemeColor.class);
             modelClasses.add(Summary.class);
             modelClasses.add(RulesEngine.class);
             modelClasses.add(Section.class);

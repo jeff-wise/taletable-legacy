@@ -7,16 +7,14 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 
-import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.util.ui.LayoutType;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.LayoutType;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 import java.util.List;
 

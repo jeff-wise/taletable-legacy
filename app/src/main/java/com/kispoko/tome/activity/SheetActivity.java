@@ -37,11 +37,11 @@ import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.ImageViewBuilder;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.ScrollViewBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.ImageViewBuilder;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.ScrollViewBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -250,7 +250,7 @@ public class SheetActivity
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
 
         TextView titleView = (TextView) this.toolbar.findViewById(R.id.page_title);
-        titleView.setTypeface(Util.serifFontRegular(this));
+        titleView.setTypeface(Font.serifFontRegular(this));
     }
 
 
@@ -338,8 +338,6 @@ public class SheetActivity
      */
     private void loadSheet()
     {
-        Log.d("***SHEET", "load sheet called");
-
         // If previous activity was template chooser, get id of chosen template
         String templateId = null;
         if (getIntent().hasExtra("TEMPLATE_ID"))
@@ -369,8 +367,8 @@ public class SheetActivity
         layout.addView(topButtonsRowView());
 
         // > Divider
-        layout.addView(UI.divider(this, R.color.dark_blue_10, 1));
-        layout.addView(UI.divider(this, R.color.dark_blue_7, 1));
+//        layout.addView(UI.divider(this, R.color.dark_blue_10, 1));
+//        layout.addView(UI.divider(this, R.color.dark_blue_7, 1));
 
         // > Sheet Options
         layout.addView(sheetOptionsView());
@@ -382,8 +380,8 @@ public class SheetActivity
         layout.addView(toolsView());
 
         // > Divider
-        layout.addView(UI.divider(this, R.color.dark_blue_10, 1));
-        layout.addView(UI.divider(this, R.color.dark_blue_7, 1));
+//        layout.addView(UI.divider(this, R.color.dark_blue_10, 1));
+//        layout.addView(UI.divider(this, R.color.dark_blue_7, 1));
 
         // > Bottom Button Row
         layout.addView(bottomButtonsRowView());

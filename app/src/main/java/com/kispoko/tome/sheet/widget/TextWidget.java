@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -13,6 +14,7 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.dialog.ChooseValueDialogFragment;
+import com.kispoko.tome.activity.widget.text.TextEditorActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueSet;
@@ -22,28 +24,27 @@ import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
-import com.kispoko.tome.sheet.NavigationDialogFragment;
 import com.kispoko.tome.sheet.SheetException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.error.UndefinedValueSetError;
 import com.kispoko.tome.sheet.group.GroupParent;
-import com.kispoko.tome.activity.widget.text.TextWidgetDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.FormattedString;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.functor.CollectionFunctor;
-import com.kispoko.tome.util.functor.ModelFunctor;
-import com.kispoko.tome.util.functor.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.FormattedString;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.lib.functor.CollectionFunctor;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.yaml.YamlBuilder;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -630,16 +631,6 @@ public class TextWidget extends Widget
 
         this.format().outsideLabelStyle().styleTextViewBuilder(label, context);
 
-        // > Format the label depending on its properties
-
-        // > Alignment: LEFT
-//        if (this.format().outsideLabelStyle().alignment() == Alignment.LEFT)
-//            label.margin.left   = R.dimen.one_dp;
-
-        // > Position: TOP
-//        if (this.format().outsideLabelPosition() == Position.TOP)
-//            label.margin.bottom = R.dimen.two_dp;
-
         label.marginSpacing     = this.format().outsideLabelMargins();
 
         return label.textView(context);
@@ -657,7 +648,7 @@ public class TextWidget extends Widget
 
         this.format().insideLabelStyle().styleTextViewBuilder(label, context);
 
-        label.margin.right      = R.dimen.widget_label_inline_margin_right;
+        label.marginSpacing     = this.format().insideLabelMargins();
 
         return label.textView(context);
     }
@@ -678,8 +669,19 @@ public class TextWidget extends Widget
 
             // OPEN the Quick Text Edit Dialog
             case LITERAL:
-                TextWidgetDialogFragment textDialog = TextWidgetDialogFragment.newInstance(this);
-                textDialog.show(sheetActivity.getSupportFragmentManager(), "");
+                // If the string is short, edit in DIALOG
+                if (this.value().length() < 145)
+                {
+                    TextWidgetDialogFragment textDialog = TextWidgetDialogFragment.newInstance(this);
+                    textDialog.show(sheetActivity.getSupportFragmentManager(), "");
+                }
+                // ...otherwise, edit in ACTIVITY
+                else
+                {
+                    Intent intent = new Intent(context, TextEditorActivity.class);
+                    intent.putExtra("text_widget", this);
+                    context.startActivity(intent);
+                }
                 break;
 
             // OPEN the Choose Value Set Dialog

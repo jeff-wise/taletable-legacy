@@ -19,12 +19,12 @@ import com.kispoko.tome.engine.function.Function;
 import com.kispoko.tome.engine.function.Tuple;
 import com.kispoko.tome.engine.program.ProgramValueType;
 import com.kispoko.tome.engine.program.ProgramValueUnion;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.LayoutType;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TableLayoutBuilder;
-import com.kispoko.tome.util.ui.TableRowBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.LayoutType;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.TableLayoutBuilder;
+import com.kispoko.tome.lib.ui.TableRowBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
 
 import java.util.ArrayList;
 import java.util.List;

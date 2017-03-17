@@ -9,10 +9,10 @@ import com.kispoko.tome.engine.summation.term.TermUnion;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
-import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.functor.CollectionFunctor;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.functor.CollectionFunctor;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;

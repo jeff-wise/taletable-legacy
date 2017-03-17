@@ -11,11 +11,11 @@ import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.database.query.CountQuery;
-import com.kispoko.tome.util.functor.CollectionFunctor;
-import com.kispoko.tome.util.yaml.YamlParseException;
-import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.lib.database.DatabaseException;
+import com.kispoko.tome.lib.database.query.CountQuery;
+import com.kispoko.tome.lib.functor.CollectionFunctor;
+import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.lib.yaml.YamlParser;
 
 import java.io.IOException;
 import java.io.InputStream;

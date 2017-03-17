@@ -16,10 +16,10 @@ import android.view.Window;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.util.ui.EditDialog;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.NumberPickerBuilder;
+import com.kispoko.tome.lib.ui.EditDialog;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.NumberPickerBuilder;
 import com.shawnlin.numberpicker.NumberPicker;
 
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class IncrementDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundResource   = R.drawable.bg_dialog_dark;
+        layout.backgroundResource   = R.drawable.bg_dialog;
 
         return layout.linearLayout(context);
     }

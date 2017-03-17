@@ -14,17 +14,11 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.summation.Summation;
-import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.summation.term.TermUnion;
-import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.tuple.Tuple2;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
-
-import java.util.List;
-
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
 
 
 /**

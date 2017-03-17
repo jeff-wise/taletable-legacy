@@ -14,11 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.Section;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.SectionCard;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.SectionCard;
 
 
 

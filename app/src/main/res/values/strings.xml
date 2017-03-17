@@ -39,6 +39,15 @@
     <string name="advanced_editor">Advanced Editor</string>
     <string name="full_editor">Full Editor</string>
     <string name="text_editor">Text Editor</string>
+    <string name="quote_editor">Quote Editor</string>
+
+    <string name="edit_item">Edit Item</string>
+    <string name="new_item">New Item</string>
+
+    <string name="highlight_item">Highlight Item?</string>
+    <string name="delete_item">Delete Item</string>
+
+    <string name="list_editor">List Editor</string>
 
     <string name="done">Done</string>
 
@@ -49,6 +58,9 @@
     <string name="by">By</string>
 
     <string name="style">Style</string>
+
+    <string name="quote">Quote</string>
+    <string name="source">Source</string>
 
 
     <!-- DIALOG -->

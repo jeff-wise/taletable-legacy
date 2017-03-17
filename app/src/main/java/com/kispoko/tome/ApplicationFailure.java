@@ -14,8 +14,8 @@ import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.engine.interpreter.InterpreterException;
 import com.kispoko.tome.engine.function.InvalidFunctionException;
 import com.kispoko.tome.sheet.SheetException;
-import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.database.DatabaseException;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 
 

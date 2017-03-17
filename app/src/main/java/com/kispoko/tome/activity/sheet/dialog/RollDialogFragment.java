@@ -24,12 +24,12 @@ import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.summation.term.TermSummary;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.util.tuple.Tuple2;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.ImageViewBuilder;
-import com.kispoko.tome.util.ui.LayoutType;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.RelativeLayoutBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.ImageViewBuilder;
+import com.kispoko.tome.lib.ui.LayoutType;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
 
 
 
@@ -184,7 +184,8 @@ public class RollDialogFragment extends DialogFragment
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = R.dimen.dialog_roll_rolls_height;
 
-        layout.backgroundResource  = R.drawable.bg_dialog_header_dark;
+        layout.backgroundColor      = R.color.dark_blue_8;
+        layout.backgroundResource  = R.drawable.bg_dialog_header;
 
         layout.padding.left     = R.dimen.sheet_dialog_header_padding_horz;
         layout.padding.right    = R.dimen.sheet_dialog_header_padding_horz;

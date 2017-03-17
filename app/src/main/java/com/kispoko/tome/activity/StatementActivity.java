@@ -15,8 +15,8 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.program.statement.Parameter;
 import com.kispoko.tome.engine.program.statement.Statement;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.ui.Form;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.Form;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 import java.util.Arrays;
 import java.util.List;

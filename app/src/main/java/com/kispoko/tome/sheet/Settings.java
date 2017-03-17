@@ -1,0 +1,194 @@
+
+package com.kispoko.tome.sheet;
+
+
+import com.kispoko.tome.NullValueException;
+import com.kispoko.tome.lib.yaml.YamlBuilder;
+import com.kispoko.tome.theme.Theme;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.yaml.ToYaml;
+import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.lib.yaml.YamlParser;
+
+import java.io.Serializable;
+import java.util.UUID;
+
+
+
+/**
+ * Sheet Settings
+ */
+public class Settings implements Model, ToYaml, Serializable
+{
+
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    // > Model
+    // -----------------------------------------------------------------------------------------
+
+    private UUID id;
+
+
+    // > Functors
+    // -----------------------------------------------------------------------------------------
+
+    private PrimitiveFunctor<SheetThemeType>    themeType;
+    private ModelFunctor<Theme>                 customTheme;
+
+
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    public Settings()
+    {
+        this.id             = null;
+
+        this.themeType      = new PrimitiveFunctor<>(null, SheetThemeType.class);
+        this.customTheme    = ModelFunctor.empty(Theme.class);
+    }
+
+
+    public Settings(UUID id, SheetThemeType themeType, Theme customTheme)
+    {
+        this.id             = id;
+
+        this.themeType      = new PrimitiveFunctor<>(themeType, SheetThemeType.class);
+        this.customTheme    = ModelFunctor.full(customTheme, Theme.class);
+    }
+
+
+    /**
+     * Create a Settings from its yaml representation.
+     * @param yaml The yaml parser.
+     * @return The parsed Settings
+     * @throws YamlParseException
+     */
+    public static Settings fromYaml(YamlParser yaml)
+                  throws YamlParseException
+    {
+        if (yaml.isNull())
+            return Settings.asDefault();
+
+        UUID           id          = UUID.randomUUID();
+
+        SheetThemeType themeType   = SheetThemeType.fromYaml(yaml.atKey("theme_type"));
+        Theme          customTheme = Theme.fromYaml(yaml.atMaybeKey("theme"));
+
+        return new Settings(id, themeType, customTheme);
+    }
+
+
+    private static Settings asDefault()
+    {
+        Settings settings = new Settings();
+
+        settings.setId(UUID.randomUUID());
+
+        settings.setThemeType(null);
+        settings.setCustomTheme(null);
+
+        return settings;
+    }
+
+
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    // > Model
+    // --------------------------------------------------------------------------------------
+
+    // ** Id
+    // --------------------------------------------------------------------------------------
+
+    public UUID getId()
+    {
+        return this.id;
+    }
+
+
+    public void setId(UUID id)
+    {
+        this.id = id;
+    }
+
+
+    // ** On Load
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * Called when the Spacing is completely loaded.
+     */
+    public void onLoad() { }
+
+
+    // > To Yaml
+    // --------------------------------------------------------------------------------------
+
+    public YamlBuilder toYaml()
+    {
+        return YamlBuilder.map()
+                .putYaml("theme_type", this.themeType())
+                .putYaml("theme", this.customTheme.getValue());
+    }
+
+
+    // > State
+    // --------------------------------------------------------------------------------------
+
+    // ** Theme Type
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The type of sheet theme i.e. LIGHT, DARK, or CUSTOM.
+     * @return the theme type.
+     */
+    public SheetThemeType themeType()
+    {
+        return this.themeType.getValue();
+    }
+
+
+    /**
+     * Set the theme type. If null, defaults to DARK.
+     * @param themeType The theme type.
+     */
+    public void setThemeType(SheetThemeType themeType)
+    {
+        if (themeType != null)
+            this.themeType.setValue(themeType);
+        else
+            this.themeType.setValue(SheetThemeType.DARK);
+    }
+
+
+    // ** Theme
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The custom theme for the sheet. May be null.
+     * @return
+     */
+    public Theme customTheme()
+           throws NullValueException
+    {
+        if (this.customTheme.isNull())
+            throw new NullValueException();
+
+        return this.customTheme.getValue();
+    }
+
+
+    /**
+     * Set the custom sheet theme.
+     * @param theme The theme.
+     */
+    public void setCustomTheme(Theme theme)
+    {
+        this.customTheme.setValue(theme);
+    }
+
+
+}

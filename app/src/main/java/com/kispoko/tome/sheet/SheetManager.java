@@ -9,13 +9,13 @@ import android.util.Log;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.exception.TemplateFileException;
-import com.kispoko.tome.util.database.DatabaseException;
-import com.kispoko.tome.util.database.query.ModelQueryParameters;
-import com.kispoko.tome.util.database.sql.Function;
-import com.kispoko.tome.util.database.sql.OrderBy;
-import com.kispoko.tome.util.functor.ModelFunctor;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.database.DatabaseException;
+import com.kispoko.tome.lib.database.query.ModelQueryParameters;
+import com.kispoko.tome.lib.database.sql.Function;
+import com.kispoko.tome.lib.database.sql.OrderBy;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -106,7 +106,6 @@ public class SheetManager
                 Sheet sheet;
                 try
                 {
-                    Log.d("***SHEETMANAGER", templateFileName);
                     InputStream yamlIS = context.getAssets().open(templateFileName);
                     YamlParser yaml = YamlParser.fromFile(yamlIS);
                     sheet = Sheet.fromYaml(yaml);

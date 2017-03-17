@@ -3,15 +3,14 @@ package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.functor.CollectionFunctor;
-import com.kispoko.tome.util.functor.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.ToYaml;
-import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.functor.CollectionFunctor;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.yaml.ToYaml;
+import com.kispoko.tome.lib.yaml.YamlBuilder;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -34,7 +34,7 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <com.kispoko.tome.util.ui.CustomTabLayout
+            <com.kispoko.tome.lib.ui.CustomTabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

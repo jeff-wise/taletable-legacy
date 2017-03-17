@@ -209,6 +209,12 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Text Editor" />
 
+    <activity
+        android:name=".activity.widget.QuoteEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Quote Editor" />
+
 </application>
 
 </manifest>

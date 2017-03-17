@@ -13,9 +13,9 @@ import android.widget.ScrollView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.mechanic.Mechanic;
-import com.kispoko.tome.util.ui.Form;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.ScrollViewBuilder;
+import com.kispoko.tome.lib.ui.Form;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 
 
 

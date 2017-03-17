@@ -12,10 +12,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.grouprow.WidgetListRecyclerViewAdapter;
-import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.TableWidget;
-import com.kispoko.tome.util.ui.RecyclerViewBuilder;
+import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
 
 
 

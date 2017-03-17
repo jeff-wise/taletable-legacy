@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.TableWidget;
-import com.kispoko.tome.util.ui.Form;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.Form;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
 

@@ -8,12 +8,12 @@ import com.kispoko.tome.engine.function.FunctionIndex;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.program.ProgramIndex;
 import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.util.model.Model;
-import com.kispoko.tome.util.functor.ModelFunctor;
-import com.kispoko.tome.util.yaml.ToYaml;
-import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.yaml.ToYaml;
+import com.kispoko.tome.lib.yaml.YamlBuilder;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.UUID;

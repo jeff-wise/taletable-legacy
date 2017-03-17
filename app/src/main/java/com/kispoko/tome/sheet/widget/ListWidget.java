@@ -8,6 +8,9 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.activity.sheet.dialog.ListWidgetDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.Value;
@@ -15,19 +18,20 @@ import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.list.ListWidgetFormat;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
-import com.kispoko.tome.util.functor.CollectionFunctor;
-import com.kispoko.tome.util.functor.ModelFunctor;
-import com.kispoko.tome.util.yaml.ToYaml;
-import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParseException;
-import com.kispoko.tome.util.yaml.YamlParser;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.lib.functor.CollectionFunctor;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.yaml.ToYaml;
+import com.kispoko.tome.lib.yaml.YamlBuilder;
+import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.lib.yaml.YamlParser;
 
 import java.io.Serializable;
 import java.util.List;
@@ -54,9 +58,17 @@ public class ListWidget extends Widget
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private ModelFunctor<WidgetData>            widgetData;
-    private ModelFunctor<ListWidgetFormat>      format;
     private CollectionFunctor<VariableUnion>    values;
+
+    /**
+     * If this value is not null, it indicates that all values in the list are to be taken from
+     * the value set with the given name.
+     */
+    private PrimitiveFunctor<String>            valueSetName;
+
+    private ModelFunctor<ListWidgetFormat>      format;
+    private ModelFunctor<WidgetData>            widgetData;
+
 
 
     // CONSTRUCTORS
@@ -64,24 +76,31 @@ public class ListWidget extends Widget
 
     public ListWidget()
     {
-        this.id         = null;
+        this.id             = null;
 
-        this.widgetData = ModelFunctor.empty(WidgetData.class);
-        this.format     = ModelFunctor.empty(ListWidgetFormat.class);
-        this.values     = CollectionFunctor.empty(VariableUnion.class);
+        this.values         = CollectionFunctor.empty(VariableUnion.class);
+
+        this.valueSetName   = new PrimitiveFunctor<>(null, String.class);
+
+        this.format         = ModelFunctor.empty(ListWidgetFormat.class);
+        this.widgetData     = ModelFunctor.empty(WidgetData.class);
     }
 
 
     public ListWidget(UUID id,
-                      WidgetData widgetData,
+                      List<VariableUnion> values,
+                      String valueSetName,
                       ListWidgetFormat format,
-                      List<VariableUnion> values)
+                      WidgetData widgetData)
     {
-        this.id         = id;
+        this.id             = id;
 
-        this.widgetData = ModelFunctor.full(widgetData, WidgetData.class);
-        this.format     = ModelFunctor.full(format, ListWidgetFormat.class);
-        this.values     = CollectionFunctor.full(values, VariableUnion.class);
+        this.values         = CollectionFunctor.full(values, VariableUnion.class);
+
+        this.valueSetName   = new PrimitiveFunctor<>(valueSetName, String.class);
+
+        this.format         = ModelFunctor.full(format, ListWidgetFormat.class);
+        this.widgetData     = ModelFunctor.full(widgetData, WidgetData.class);
 
         this.initializeListWidget();
     }
@@ -96,12 +115,9 @@ public class ListWidget extends Widget
     public static ListWidget fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID                id         = UUID.randomUUID();
+        UUID                id           = UUID.randomUUID();
 
-        WidgetData          widgetData = WidgetData.fromYaml(yaml.atMaybeKey("data"));
-        ListWidgetFormat    format     = ListWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
-
-        List<VariableUnion> values     = yaml.atMaybeKey("values").forEach(
+        List<VariableUnion> values       = yaml.atMaybeKey("values").forEach(
                                                 new YamlParser.ForEach<VariableUnion>()
         {
             @Override
@@ -110,7 +126,12 @@ public class ListWidget extends Widget
             }
         }, true);
 
-        return new ListWidget(id, widgetData, format, values);
+        String              valueSetName = yaml.atMaybeKey("value_set").getString();
+
+        ListWidgetFormat    format       = ListWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
+        WidgetData          widgetData   = WidgetData.fromYaml(yaml.atMaybeKey("data"));
+
+        return new ListWidget(id, values, valueSetName, format, widgetData);
     }
 
 
@@ -153,8 +174,10 @@ public class ListWidget extends Widget
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putYaml("data", this.data())
-                .putList("values", this.values());
+                .putList("values", this.values())
+                .putString("value_set_name", this.valueSetName())
+                .putYaml("format", this.format())
+                .putYaml("data", this.data());
     }
 
 
@@ -218,6 +241,19 @@ public class ListWidget extends Widget
     }
 
 
+    // ** Value Set Name
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The value set name. May be null.
+     * @return The value set name.
+     */
+    public String valueSetName()
+    {
+        return this.valueSetName.getValue();
+    }
+
+
     // ** Format
     // -----------------------------------------------------------------------------------------
 
@@ -267,6 +303,7 @@ public class ListWidget extends Widget
     {
         LinearLayout layout = listViewLayout(context);
 
+        int itemIndex = 0;
         for (VariableUnion variableUnion : this.values())
         {
             String itemValue = null;
@@ -292,7 +329,10 @@ public class ListWidget extends Widget
             }
 
             if (itemValue != null)
-                layout.addView(listItemView(itemValue, itemLabel, context));
+            {
+                itemIndex += 1;
+                layout.addView(listItemView(itemValue, itemLabel, itemIndex, context));
+            }
         }
 
         return layout;
@@ -311,7 +351,10 @@ public class ListWidget extends Widget
     }
 
 
-    private LinearLayout listItemView(String itemValue, String itemLabel, Context context)
+    private LinearLayout listItemView(String itemValue,
+                                      String itemLabel,
+                                      final int itemIndex,
+                                      final Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -332,15 +375,17 @@ public class ListWidget extends Widget
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-//        layout.margin.left          = R.dimen.widget_list_item_margins_horz;
-//        layout.margin.right         = R.dimen.widget_list_item_margins_horz;
-
-//        layout.padding.left         = R.dimen.widget_list_item_padding_horz;
-//        layout.padding.right        = R.dimen.widget_list_item_padding_horz;
+        layout.onClick              = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                onListWidgetShortClick(itemIndex, context);
+            }
+        };
 
         layout.child(valueLayout)
               .child(divider);
-
 
         // [3] Value Layout
         // -------------------------------------------------------------------------------------
@@ -389,6 +434,21 @@ public class ListWidget extends Widget
 
 
         return layout.linearLayout(context);
+    }
+
+
+    // > Clicks
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * On a short click, open the value editor.
+     */
+    private void onListWidgetShortClick(Integer itemClicked, Context context)
+    {
+        SheetActivity sheetActivity = (SheetActivity) context;
+
+        ListWidgetDialogFragment dialog = ListWidgetDialogFragment.newInstance(this, itemClicked);
+        dialog.show(sheetActivity.getSupportFragmentManager(), "");
     }
 
 

@@ -16,18 +16,19 @@ import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.group.GroupRow;
 import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
-import com.kispoko.tome.util.model.Model;
+import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.util.tuple.Tuple2;
-import com.kispoko.tome.util.functor.ModelFunctor;
-import com.kispoko.tome.util.functor.PrimitiveFunctor;
-import com.kispoko.tome.util.yaml.YamlBuilder;
-import com.kispoko.tome.util.yaml.YamlParser;
-import com.kispoko.tome.util.yaml.YamlParseException;
+import com.kispoko.tome.lib.functor.ModelFunctor;
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.lib.yaml.YamlBuilder;
+import com.kispoko.tome.lib.yaml.YamlParser;
+import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -42,16 +43,16 @@ public class Sheet implements Model
 {
 
     // PROPERTIES
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Model
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private UUID                        id;
 
 
     // > Functors
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<Long>      lastUsed;
 
@@ -66,15 +67,17 @@ public class Sheet implements Model
     private PrimitiveFunctor<String[]>  summaryVariables;
     private ModelFunctor<Summary>       summary;
 
+    private ModelFunctor<Settings>      settings;
+
 
     // > Internal
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private Map<UUID,Widget>            widgetById;
 
 
     // CONSTRUCTORS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public Sheet()
     {
@@ -93,6 +96,8 @@ public class Sheet implements Model
 
         this.summaryVariables   = new PrimitiveFunctor<>(null, String[].class);
         this.summary            = ModelFunctor.empty(Summary.class);
+
+        this.settings           = ModelFunctor.empty(Settings.class);
     }
 
 
@@ -100,6 +105,7 @@ public class Sheet implements Model
                  Game game,
                  String campaignName,
                  List<String> summaryVariables,
+                 Settings settings,
                  RulesEngine rulesEngine,
                  Section profileSection,
                  Section encounterSection,
@@ -121,6 +127,8 @@ public class Sheet implements Model
         String[] summaryVariablesArray = summaryVariables.toArray(new String[0]);
         this.summaryVariables   = new PrimitiveFunctor<>(summaryVariablesArray, String[].class);
         this.summary            = ModelFunctor.full(null, Summary.class);
+
+        this.settings           = ModelFunctor.full(settings, Settings.class);
 
         initializeSheet();
     }
@@ -150,7 +158,9 @@ public class Sheet implements Model
 
         List<String> summaryVariables = yaml.atKey("summary_variables").getStringList();
 
-        return new Sheet(id, game, campaignName, summaryVariables,
+        Settings     settings         = Settings.fromYaml(yaml.atMaybeKey("settings"));
+
+        return new Sheet(id, game, campaignName, summaryVariables, settings,
                          rulesEngine, profile, encounter, campaign);
     }
 
@@ -197,6 +207,7 @@ public class Sheet implements Model
                 .putYaml("game", this.game())
                 .putString("campaign_name", this.campaignName())
                 .putStringList("summary_variables", this.summaryVariables())
+                .putYaml("settings", this.settings())
                 .putYaml("profile", this.profileSection())
                 .putYaml("encounter", this.encounterSection())
                 .putYaml("campaign", this.campaignSection())
@@ -250,6 +261,16 @@ public class Sheet implements Model
     private List<String> summaryVariables()
     {
         return Arrays.asList(this.summaryVariables.getValue());
+    }
+
+
+    /**
+     * The sheet settings.
+     * @return The settings.
+     */
+    public Settings settings()
+    {
+        return this.settings.getValue();
     }
 
 

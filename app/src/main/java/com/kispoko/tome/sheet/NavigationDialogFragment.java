@@ -19,11 +19,11 @@ import android.widget.LinearLayout;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.value.ValueUnion;
 import com.kispoko.tome.sheet.widget.WidgetType;
-import com.kispoko.tome.util.ui.AppDialog;
-import com.kispoko.tome.util.ui.Font;
-import com.kispoko.tome.util.ui.ImageViewBuilder;
-import com.kispoko.tome.util.ui.LinearLayoutBuilder;
-import com.kispoko.tome.util.ui.TextViewBuilder;
+import com.kispoko.tome.lib.ui.AppDialog;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.ImageViewBuilder;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
 
 
 
@@ -172,7 +172,8 @@ public class NavigationDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundResource   = R.drawable.bg_dialog_dark;
+        layout.backgroundColor      = R.color.dark_blue_7;
+        layout.backgroundResource   = R.drawable.bg_dialog;
 
         return layout.linearLayout(context);
     }
