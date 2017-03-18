@@ -470,8 +470,8 @@ public class TabWidget extends Widget implements Serializable
         }
         else
         {
-            tab.padding.topDp    = this.format().tabPaddingVertical();
-            tab.padding.bottomDp = this.format().tabPaddingVertical();
+            tab.padding.topDp    = this.format().tabPaddingVertical().floatValue();
+            tab.padding.bottomDp = this.format().tabPaddingVertical().floatValue();
         }
 
         return tab.textView(context);

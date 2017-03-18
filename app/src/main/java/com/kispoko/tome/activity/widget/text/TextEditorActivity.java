@@ -200,8 +200,8 @@ public class TextEditorActivity extends AppCompatActivity
 
         layout.backgroundColor  = R.color.dark_blue_9;
 
-        layout.padding.leftDp   = 10;
-        layout.padding.rightDp  = 10;
+        layout.padding.leftDp   = 10f;
+        layout.padding.rightDp  = 10f;
 
         return layout.linearLayout(context);
     }
@@ -225,10 +225,10 @@ public class TextEditorActivity extends AppCompatActivity
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.topDp    = 10;
-        layout.padding.bottomDp = 5;
+        layout.padding.topDp    = 10f;
+        layout.padding.bottomDp = 5f;
 
-        layout.margin.topDp     = 5;
+        layout.margin.topDp     = 5f;
 
         return layout.relativeLayout(context);
     }
@@ -282,7 +282,7 @@ public class TextEditorActivity extends AppCompatActivity
         text.color              = R.color.dark_blue_hl_2;
         text.sizeSp             = 17f;
 
-        text.padding.topDp      = 10;
+        text.padding.topDp      = 10f;
 
         return text.editText(context);
     }

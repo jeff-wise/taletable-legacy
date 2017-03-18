@@ -574,8 +574,8 @@ public class NumberWidget extends Widget
 
         if (this.format().valueHeight() == Height.WRAP)
         {
-            layout.padding.topDp    = this.format().valuePaddingVertical();
-            layout.padding.bottomDp = this.format().valuePaddingVertical();
+            layout.padding.topDp    = this.format().valuePaddingVertical().floatValue();
+            layout.padding.bottomDp = this.format().valuePaddingVertical().floatValue();
         }
 
 
@@ -586,8 +586,8 @@ public class NumberWidget extends Widget
         // -------------------------------------------------------------------------------------
         if (this.format().valuePaddingHorizontal() != null)
         {
-            layout.padding.leftDp   = this.format().valuePaddingHorizontal();
-            layout.padding.rightDp  = this.format().valuePaddingHorizontal();
+            layout.padding.leftDp   = this.format().valuePaddingHorizontal().floatValue();
+            layout.padding.rightDp  = this.format().valuePaddingHorizontal().floatValue();
         }
 
         layout.onClick              = new View.OnClickListener() {

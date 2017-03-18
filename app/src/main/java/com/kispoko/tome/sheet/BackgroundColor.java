@@ -34,7 +34,8 @@ public enum BackgroundColor implements ToYaml
     MEDIUM_DARK,
     DARK,
     VERY_DARK,
-    SUPER_DARK;
+    SUPER_DARK,
+    UBER_DARK;
 
 
     // CONSTRUCTORS

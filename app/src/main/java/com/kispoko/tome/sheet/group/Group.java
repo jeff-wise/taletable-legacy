@@ -302,8 +302,8 @@ public class Group implements GroupParent, Model, ToYaml, Serializable
         divider.backgroundColor     = this.format().dividerType()
                                           .colorIdWithBackground(this.background());
 
-        divider.margin.leftDp       = this.format().dividerPadding();
-        divider.margin.rightDp      = this.format().dividerPadding();
+        divider.margin.leftDp       = this.format().dividerPadding().floatValue();
+        divider.margin.rightDp      = this.format().dividerPadding().floatValue();
 
         return divider.linearLayout(context);
     }

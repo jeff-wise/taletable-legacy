@@ -26,10 +26,10 @@ public class Margins
     public Integer topPx;
     public Integer bottomPx;
 
-    public Integer leftDp;
-    public Integer rightDp;
-    public Integer topDp;
-    public Integer bottomDp;
+    public Float leftDp;
+    public Float rightDp;
+    public Float topDp;
+    public Float bottomDp;
 
 
     // CONSTRUCTORS

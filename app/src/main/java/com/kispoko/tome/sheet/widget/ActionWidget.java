@@ -398,13 +398,13 @@ public class ActionWidget extends Widget
         layout.marginSpacing        = this.data().format().margins();
 
         // > Horizontal Padding
-        layout.padding.leftDp   = this.format().paddingHorizontal();
-        layout.padding.rightDp  = this.format().paddingHorizontal();
+        layout.padding.leftDp   = this.format().paddingHorizontal().floatValue();
+        layout.padding.rightDp  = this.format().paddingHorizontal().floatValue();
 
         // > Vertical Padding
         if (this.format().height() == Height.WRAP) {
-            layout.padding.topDp    = this.format().paddingVertical();
-            layout.padding.bottomDp = this.format().paddingVertical();
+            layout.padding.topDp    = this.format().paddingVertical().floatValue();
+            layout.padding.bottomDp = this.format().paddingVertical().floatValue();
         }
 
         layout.onClick              = new View.OnClickListener() {

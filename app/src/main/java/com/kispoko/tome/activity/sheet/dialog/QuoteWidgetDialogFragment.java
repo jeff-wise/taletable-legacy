@@ -154,8 +154,8 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         layout.backgroundColor      = R.color.dark_blue_9;
         layout.backgroundResource   = R.drawable.bg_dialog;
 
-        layout.padding.leftDp       = 12;
-        layout.padding.rightDp      = 12;
+        layout.padding.leftDp       = 12f;
+        layout.padding.rightDp      = 12f;
 
         return layout.linearLayout(context);
     }
@@ -187,8 +187,8 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.topDp        = 6;
-        layout.padding.bottomDp     = 4;
+        layout.padding.topDp        = 6f;
+        layout.padding.bottomDp     = 4f;
 
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
@@ -228,7 +228,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
 
         layout.gravity          = Gravity.CENTER_VERTICAL;
 
-        layout.margin.rightDp   = 25;
+        layout.margin.rightDp   = 25f;
 
         layout.child(icon)
               .child(label);
@@ -243,7 +243,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
 
         icon.color          = R.color.dark_blue_2;
 
-        icon.margin.rightDp = 4;
+        icon.margin.rightDp = 4f;
 
         // [3 B] Label
         // -------------------------------------------------------------------------------------
@@ -258,8 +258,8 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         label.color                = R.color.dark_blue_1;
         label.font                 = Font.serifFontRegular(context);
 
-        label.padding.topDp        = 12;
-        label.padding.bottomDp     = 12;
+        label.padding.topDp        = 12f;
+        label.padding.bottomDp     = 12f;
 
 
         return layout.linearLayout(context);
@@ -289,11 +289,11 @@ public class QuoteWidgetDialogFragment extends DialogFragment
 
         value.gravity               = Gravity.TOP;
 
-        value.margin.topDp          = 12;
-        value.margin.bottomDp       = 12;
+        value.margin.topDp          = 12f;
+        value.margin.bottomDp       = 12f;
 
-        value.margin.rightDp        = 12;
-        value.padding.leftDp        = 3;
+        value.margin.rightDp        = 12f;
+        value.padding.leftDp        = 3f;
 
         return value.editText(context);
     }
@@ -323,7 +323,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
 
         layout.gravity          = Gravity.CENTER_VERTICAL | Gravity.END;
 
-        layout.margin.bottomDp  = 10;
+        layout.margin.bottomDp  = 10f;
 
         return layout.linearLayout(context);
     }
@@ -343,8 +343,8 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.margin.rightDp   = 15;
-        layout.margin.topDp     = 2;
+        layout.margin.rightDp   = 15f;
+        layout.margin.topDp     = 2f;
 
         layout.onClick          = new View.OnClickListener()
         {
@@ -394,10 +394,10 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         layout.backgroundColor      = R.color.dark_blue_7;
         layout.backgroundResource   = R.drawable.bg_widget_wrap_corners_small;
 
-        layout.padding.topDp        = 6;
-        layout.padding.bottomDp     = 6;
-        layout.padding.leftDp       = 6;
-        layout.padding.rightDp      = 10;
+        layout.padding.topDp        = 6f;
+        layout.padding.bottomDp     = 6f;
+        layout.padding.leftDp       = 6f;
+        layout.padding.rightDp      = 10f;
 
         layout.onClick              = new View.OnClickListener()
         {
@@ -422,7 +422,7 @@ public class QuoteWidgetDialogFragment extends DialogFragment
 
         icon.color                  = R.color.green_medium_dark;
 
-        icon.margin.rightDp         = 3;
+        icon.margin.rightDp         = 3f;
 
         // [3 B] Label
         // -------------------------------------------------------------------------------------

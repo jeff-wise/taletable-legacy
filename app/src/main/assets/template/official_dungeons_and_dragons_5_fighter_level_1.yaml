@@ -1767,6 +1767,8 @@ engine:
               type: literal
               name: is_race_tiefling
               value: true
+settings:
+  theme_type: dark
 profile:
   pages:
   - name: Profile
@@ -2256,34 +2258,46 @@ profile:
       - format:
           alignment: center
           margins:
+            left: 10
             top: 15
         widgets:
         - type: text
           widget:
             data:
               format:
-                alignment: center
+                alignment: left
                 background: empty
-                name: Background
             format:
-              outside_label: Background
-              outside_label_style:
+              value_style:
                 color: gold_light
                 font: italic
                 size: medium_large
-              outside_label_margins:
-                right: 15
+            value:
+              type: literal
+              value: Background
+      - format:
+          alignment: left
+          margins:
+            left: 10
+            top: 20
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: left
+                background: empty
+            format:
               value_style:
-                font: bold
                 color: red_orange_light
-                size: medium_large
+                size: very_large
             value:
               type: literal
               value: The Hard Life
     - format:
         background: medium
         margins:
-          top: 30
+          top: 20
         padding:
           left: 10
           right: 10
@@ -2444,7 +2458,7 @@ profile:
               type: literal
               value: >
                 My mentor was killed, and there was nothing I could do. He was a good, innocent man. I
-                have devoted my life to revenge, for myself and for others that have matching scars.
+                have devoted my life to revenge, for myself and for others with matching scars.
     - name: Flaws
       format:
         margins:
@@ -2496,7 +2510,7 @@ profile:
   - name: Abilities
     groups:
     - format:
-        background: medium
+        background: dark
         divider: light
         padding:
           bottom: 20
@@ -2568,21 +2582,29 @@ profile:
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My saving throw is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 10
+                  right: 10
             format:
               description_style:
                 color: theme_very_dark
                 size: small
-              inside_label: saving throw
+              inside_label: Saving Throw
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
+                alignment: center
                 color: theme_medium_light
-                size: small
+                size: medium
             value:
               name: saving_throw_strength
               label: Strength Saving Throw
@@ -2610,29 +2632,33 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-      - format:
-          margins:
-            top: 10
-        widgets:
         - type: number
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My strength check is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 10
+                  right: 10
             format:
               description_style:
                 color: theme_very_dark
                 size: small
-              inside_label: strength check
+              inside_label: Strength Check
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
+                alignment: center
                 color: theme_medium_light
-                size: small
+                size: medium
             value:
               name: check_strength
               label: Strength Check
@@ -2649,7 +2675,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 25
+            top: 20
         widgets:
         - type: number
           widget:
@@ -2674,6 +2700,7 @@ profile:
                 alignment: center
                 color: theme_dark
                 size: medium_small
+            value_postfix: ' lbs'
             value:
               name: carrying_capacity
               label: Carrying Capacity
@@ -2702,13 +2729,14 @@ profile:
                 alignment: center
                 color: theme_dark
                 size: medium_small
+            value_postfix: ' lbs'
             value:
               name: push_drag_lift
               label: 'Push/Drag/Lift'
               type: literal
               value: 188
     - format:
-        background: medium
+        background: dark
         divider: light
         show_name: false
         padding:
@@ -2860,7 +2888,7 @@ profile:
                         name: dexterity_modifier
             value_prefix: '+'
     - format:
-        background: medium
+        background: dark
         divider: light
         padding:
           bottom: 20
@@ -3039,6 +3067,7 @@ profile:
                 alignment: center
                 color: theme_dark
                 size: medium_small
+            value_postfix: ' hours'
             value:
               label: Hours Functional Without Sleep
               type: literal
@@ -3067,6 +3096,7 @@ profile:
                 alignment: center
                 color: theme_dark
                 size: medium_small
+            value_postfix: ' minutes'
             value:
               label: Minutes Can Hold Breath
               type: literal
@@ -3101,6 +3131,7 @@ profile:
                 alignment: center
                 color: theme_dark
                 size: medium_small
+            value_postfix: ' pints'
             value:
               name: ales_before_intoxication
               label: Ales Before Intoxication
@@ -3130,12 +3161,13 @@ profile:
                 alignment: center
                 color: theme_dark
                 size: medium_small
+            value_postfix: ' stings'
             value:
               label: Bee Strings Before Passing Out
               type: literal
               value: 72
     - format:
-        background: medium
+        background: dark
         divider: light
         padding:
           bottom: 20
@@ -3273,7 +3305,7 @@ profile:
                         name: intelligence_modifier
             value_prefix: '+'
     - format:
-        background: medium
+        background: dark
         divider: light
         padding:
           bottom: 20
@@ -3412,7 +3444,7 @@ profile:
                         name: wisdom_modifier
             value_prefix: '+'
     - format:
-        background: medium
+        background: dark
         divider: light
         padding:
           bottom: 20
@@ -3615,6 +3647,7 @@ profile:
               type: literal
               value: 'Short, Trimed Neatly'
     - format:
+        background: medium
         padding:
           top: 30
       rows:

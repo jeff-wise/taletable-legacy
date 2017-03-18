@@ -13,13 +13,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -35,8 +36,6 @@ import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.util.UI;
-import com.kispoko.tome.util.Util;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
@@ -69,6 +68,7 @@ public class SheetActivity
 
     // ComponentUtil
     private Toolbar             toolbar;
+
     private DrawerLayout        drawerLayout;
 
     private ChooseImageAction   chooseImageAction;
@@ -90,8 +90,8 @@ public class SheetActivity
 
         loadSheet();
 
-        initializeDrawer();
         initializeToolbar();
+        initializeDrawers();
         initializeNavigation();
         initializeBottomNavigation();
         prepareSheetViews();
@@ -134,24 +134,27 @@ public class SheetActivity
         return true;
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id)
-        {
-            case android.R.id.home:
-                this.drawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item)
+//    {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        switch (id)
+//        {
+//            case android.R.id.home:
+//                this.drawerLayout.openDrawer(GravityCompat.START);
+//                return true;
+//            case R.id.action_settings:
+//                this.drawerLayout.openDrawer(GravityCompat.END);
+//                return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
     @Override
@@ -245,7 +248,7 @@ public class SheetActivity
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        //actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
 
@@ -257,9 +260,39 @@ public class SheetActivity
     /**
      * Initialize the drawer ComponentUtil components.
      */
-    private void initializeDrawer()
+    private void initializeDrawers()
     {
         this.drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ImageButton menuLeft = (ImageButton) findViewById(R.id.menuLeft);
+        ImageButton menuRight = (ImageButton) findViewById(R.id.menuRight);
+
+        menuLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+
+        menuRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                    drawerLayout.closeDrawer(GravityCompat.END);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.END);
+                }
+            }
+        });
+
+//        NavigationView navigationView1 = (NavigationView) findViewById(R.id.app_navigation_view);
+//        NavigationView navigationView2 = (NavigationView) findViewById(R.id.sheet_navigation_view);
+//        navigationView1.setNavigationItemSelectedListener(this);
+//        navigationView2.setNavigationItemSelectedListener(this);
     }
 
 
@@ -269,7 +302,7 @@ public class SheetActivity
     private void initializeNavigation()
     {
         //Initializing NavigationView
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.app_navigation_view);
 
         navigationView.addView(this.navigationView());
     }

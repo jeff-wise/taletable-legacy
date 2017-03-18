@@ -21,10 +21,10 @@ public class Padding
     public Integer top;
     public Integer bottom;
 
-    public Integer leftDp;
-    public Integer rightDp;
-    public Integer topDp;
-    public Integer bottomDp;
+    public Float leftDp;
+    public Float rightDp;
+    public Float topDp;
+    public Float bottomDp;
 
 
     // CONSTRUCTORS

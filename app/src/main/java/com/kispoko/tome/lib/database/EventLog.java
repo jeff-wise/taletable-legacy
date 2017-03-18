@@ -16,7 +16,7 @@ public class EventLog
     // -----------------------------------------------------------------------------------------
 
     private static boolean logToConsole = true;
-    private static Level   logLevel     = Level.HIGH;
+    private static Level   logLevel     = Level.LOW;
 
 
     // API

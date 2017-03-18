@@ -496,8 +496,8 @@ public class ListWidgetDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.topDp        = 6;
-        layout.padding.bottomDp     = 4;
+        layout.padding.topDp        = 6f;
+        layout.padding.bottomDp     = 4f;
 
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
@@ -524,7 +524,7 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         layout.gravity          = Gravity.CENTER_VERTICAL;
 
-        layout.margin.rightDp   = 25;
+        layout.margin.rightDp   = 25f;
 
         layout.child(icon)
               .child(label);
@@ -539,7 +539,7 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         icon.color          = R.color.dark_blue_2;
 
-        icon.margin.rightDp = 4;
+        icon.margin.rightDp = 4f;
 
         // [3 B] Label
         // -------------------------------------------------------------------------------------
@@ -554,8 +554,8 @@ public class ListWidgetDialogFragment extends DialogFragment
         label.color                = R.color.dark_blue_1;
         label.font                 = Font.serifFontRegular(context);
 
-        label.padding.topDp        = 12;
-        label.padding.bottomDp     = 12;
+        label.padding.topDp        = 12f;
+        label.padding.bottomDp     = 12f;
 
 
         return layout.linearLayout(context);

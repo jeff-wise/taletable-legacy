@@ -143,7 +143,7 @@ public class ChooseValueDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundColor      = R.color.dark_blue_11;
+        layout.backgroundColor      = R.color.dark_blue_10;
         layout.backgroundResource   = R.drawable.bg_dialog;
 
         return layout.linearLayout(context);
@@ -156,6 +156,9 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         // > Buttons
         layout.addView(optionsView(context));
+
+        // > Divider
+        // layout.addView(dividerView(context));
 
         // > Name
         layout.addView(nameView(context));
@@ -173,9 +176,9 @@ public class ChooseValueDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.leftDp       = 10;
+        layout.padding.leftDp       = 10f;
 
-        layout.padding.bottomDp     = 15;
+        layout.padding.bottomDp     = 8f;
 
         layout.backgroundColor      = R.color.dark_blue_7;
         layout.backgroundResource   = R.drawable.bg_dialog_header;
@@ -191,13 +194,16 @@ public class ChooseValueDialogFragment extends DialogFragment
         header.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        header.text                 = this.valueSet.labelSingular();
+        header.text                 = context.getString(R.string.choose) + " "  +
+                                            this.valueSet.labelSingular();
 
-        header.font                 = Font.serifFontBold(context);
-        header.color                = R.color.gold_light;
-        header.sizeSp               = 18f;
+        header.font                 = Font.serifFontRegular(context);
+        header.color                = R.color.gold_medium_light;
+        header.sizeSp               = 19f;
 
-        header.padding.leftDp       = 3;
+        header.padding.leftDp       = 3.5f;
+        header.padding.topDp        = 7f;
+        header.padding.bottomDp     = 5f;
 
         return header.textView(context);
     }
@@ -257,7 +263,15 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         layout.gravity          = Gravity.CENTER_VERTICAL;
 
-        layout.margin.rightDp   = 25;
+        layout.margin.rightDp   = 25f;
+
+//        layout.backgroundResource   = R.drawable.bg_widget_wrap_corners_small;
+//        layout.backgroundColor      = R.color.dark_blue_8;
+
+//        layout.padding.topDp        = 3f;
+//        layout.padding.bottomDp     = 3f;
+//        layout.padding.leftDp       = 5f;
+//        layout.padding.rightDp      = 5f;
 
         layout.child(icon)
               .child(label);
@@ -270,9 +284,9 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         icon.image          = iconId;
 
-        icon.color          = R.color.dark_blue_2;
+        icon.color          = R.color.dark_blue_1;
 
-        icon.margin.rightDp = 4;
+        icon.margin.rightDp = 4f;
 
         // [3 B] Label
         // -------------------------------------------------------------------------------------
@@ -284,11 +298,8 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         label.text                 = labelText;
         label.sizeSp               = 16.0f;
-        label.color                = R.color.dark_blue_1;
+        label.color                = R.color.dark_blue_hl_9;
         label.font                 = Font.serifFontRegular(context);
-
-        label.padding.topDp        = 10;
-        label.padding.bottomDp     = 10;
 
 
         return layout.linearLayout(context);
@@ -304,7 +315,10 @@ public class ChooseValueDialogFragment extends DialogFragment
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.bottomDp = 5;
+        layout.padding.bottomDp = 5f;
+        layout.padding.topDp    = 12f;
+
+        layout.padding.leftDp   = 0.5f;
 
         return layout.linearLayout(context);
     }
@@ -329,8 +343,8 @@ public class ChooseValueDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.leftDp       = 9;
-        layout.padding.rightDp      = 9;
+        layout.padding.leftDp       = 9f;
+        layout.padding.rightDp      = 9f;
         layout.padding.top          = R.dimen.dialog_choose_value_item_padding_vert;
         layout.padding.bottom       = R.dimen.dialog_choose_value_item_padding_vert;
 
@@ -413,9 +427,9 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         value.id                = R.id.choose_value_dialog_item_value;
 
-        value.font              = Font.serifFontBold(context);
+        value.font              = Font.serifFontRegular(context);
         value.color             = R.color.dark_blue_hlx_9;
-        value.size              = R.dimen.dialog_choose_value_value_text_size;
+        value.sizeSp            = 17f;
 
         return value.textView(context);
     }

@@ -545,8 +545,8 @@ public class TextWidget extends Widget
 
         if (this.format().valueHeight() == Height.WRAP)
         {
-            layout.padding.topDp    = this.format().valuePaddingVertical();
-            layout.padding.bottomDp = this.format().valuePaddingVertical();
+            layout.padding.topDp    = this.format().valuePaddingVertical().floatValue();
+            layout.padding.bottomDp = this.format().valuePaddingVertical().floatValue();
         }
 
         layout.onClick              = new View.OnClickListener() {
