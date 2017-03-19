@@ -265,14 +265,6 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         layout.margin.rightDp   = 25f;
 
-//        layout.backgroundResource   = R.drawable.bg_widget_wrap_corners_small;
-//        layout.backgroundColor      = R.color.dark_blue_8;
-
-//        layout.padding.topDp        = 3f;
-//        layout.padding.bottomDp     = 3f;
-//        layout.padding.leftDp       = 5f;
-//        layout.padding.rightDp      = 5f;
-
         layout.child(icon)
               .child(label);
 
@@ -284,7 +276,7 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         icon.image          = iconId;
 
-        icon.color          = R.color.dark_blue_1;
+        icon.color          = R.color.dark_blue_2;
 
         icon.margin.rightDp = 4f;
 
@@ -298,7 +290,7 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         label.text                 = labelText;
         label.sizeSp               = 16.0f;
-        label.color                = R.color.dark_blue_hl_9;
+        label.color                = R.color.dark_blue_1;
         label.font                 = Font.serifFontRegular(context);
 
 

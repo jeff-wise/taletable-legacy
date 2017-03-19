@@ -526,6 +526,7 @@ public class TextWidget extends Widget
             layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
 
+
         if (this.data().format().underlineThickness() > 0)
         {
             layout.backgroundColor    = this.data().format().underlineColor().resourceId();
@@ -536,18 +537,25 @@ public class TextWidget extends Widget
         {
             layout.backgroundColor      = this.data().format().background().colorId();
 
-            layout.backgroundResource   = this.format().valueHeight()
-                                              .resourceId(this.data().format().corners());
+            if (this.format().valueHeight() != Height.WRAP)
+            {
+                layout.backgroundResource   = this.format().valueHeight()
+                                                  .resourceId(this.data().format().corners());
+            }
+            else
+            {
+                layout.backgroundResource = this.data().format().corners().widgetResourceId();
+            }
         }
-
-        layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
-                                        | Gravity.CENTER_VERTICAL;
 
         if (this.format().valueHeight() == Height.WRAP)
         {
             layout.padding.topDp    = this.format().valuePaddingVertical().floatValue();
             layout.padding.bottomDp = this.format().valuePaddingVertical().floatValue();
         }
+
+        layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
+                | Gravity.CENTER_VERTICAL;
 
         layout.onClick              = new View.OnClickListener() {
             @Override

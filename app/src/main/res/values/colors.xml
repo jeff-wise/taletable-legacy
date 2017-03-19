@@ -69,10 +69,11 @@
 
     <color name="purple_hlx_5">#8A7AB2</color>
     <color name="purple_very_light">#D1C9FA</color>
-    <color name="purple_light">#BCB5E5</color>
-    <color name="purple_medium_light">#AFA9D6</color>
-    <color name="purple_medium">#A09BC4</color>
-    <color name="purple_medium_dark">#928DB2</color>
+    <color name="purple_light">#C4BDEB</color>
+    <color name="purple_medium_light">#B7B0DB</color>
+    <color name="purple_medium">#AAA4CC</color>
+    <color name="purple_medium_dark">#9B96BA</color>
+    <color name="purple_dark">#8D87A8</color>
 
 
     <!-- GREEN -->
@@ -95,7 +96,7 @@
     <!-- ================================================================ -->
 
     <color name="red_5">#A14746</color>
-    <color name="red_light">#D1514A</color>
+    <color name="red_light">#D1817D</color>
     <color name="red_medium_light">#B0827C</color>
 
     <!-- RED ORANGE -->

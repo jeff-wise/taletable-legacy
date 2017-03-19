@@ -2532,18 +2532,18 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_very_dark
+                color: theme_super_dark
                 size: medium_small
               inside_label: Strength
               inside_label_style:
                 color: gold_light
                 font: bold
-                size: medium_small
+                size: medium
               value_height: wrap
               value_style:
                 color: gold_light
                 font: bold
-                size: medium_small
+                size: medium
             value:
               name: strength
               label: Strength
@@ -2582,7 +2582,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -2636,7 +2636,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -2675,13 +2675,13 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 20
+            top: 15
         widgets:
         - type: number
           widget:
             data:
               format:
-                background: medium_dark
+                background: very_dark
                 corners: medium
                 margins:
                   left: 8
@@ -2710,7 +2710,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: very_dark
                 corners: medium
                 margins:
                   left: 8
@@ -2760,16 +2760,18 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_very_dark
+                color: theme_super_dark
                 size: medium_small
               inside_label: Dexterity
               inside_label_style:
                 color: gold_light
                 font: bold
+                size: medium
               value_height: wrap
               value_style:
                 color: gold_light
                 font: bold
+                size: medium
             value:
               name: dexterity
               label: Dexterity
@@ -2808,7 +2810,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -2862,7 +2864,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -2915,22 +2917,27 @@ profile:
             data:
               format:
                 background: empty
+                margins:
+                  left: 5
+                  right: 5
             description: >
               Constitution <value>  I can take a hit, and I have the scars, mental and physical, to
               prove it.
             format:
               description_style:
                 alignment: center
-                color: theme_very_dark
+                color: theme_super_dark
                 size: medium_small
               inside_label: Constitution
               inside_label_style:
                 color: gold_light
                 font: bold
+                size: medium
               value_height: wrap
               value_style:
                 color: gold_light
                 font: bold
+                size: medium
             value:
               name: constitution
               label: Constitution
@@ -2969,7 +2976,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -3020,7 +3027,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -3056,7 +3063,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 25
+            top: 15
             left: 7
             right: 7
         widgets:
@@ -3064,10 +3071,9 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: very_dark
                 corners: medium
                 margins:
-                  left: 3
                   right: 3
                 width: 4
             format:
@@ -3079,7 +3085,8 @@ profile:
               inside_label_position: top
               inside_label_margins:
                 bottom: 3
-              value_height: small
+              value_height: wrap
+              value_padding_vertical: 8
               value_style:
                 alignment: center
                 color: theme_dark
@@ -3093,11 +3100,10 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: very_dark
                 corners: medium
                 margins:
                   left: 3
-                  right: 3
                 width: 3
             format:
               inside_label: Mins Can Hold Breath
@@ -3108,7 +3114,8 @@ profile:
               inside_label_position: top
               inside_label_margins:
                 bottom: 3
-              value_height: small
+              value_height: wrap
+              value_padding_vertical: 8
               value_style:
                 alignment: center
                 color: theme_dark
@@ -3120,7 +3127,7 @@ profile:
               value: 6
       - format:
           margins:
-            top: 10
+            top: 15
             left: 7
             right: 7
         widgets:
@@ -3128,10 +3135,9 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: very_dark
                 corners: medium
                 margins:
-                  left: 3
                   right: 3
                 width: 3
             format:
@@ -3144,6 +3150,7 @@ profile:
               inside_label_margins:
                 bottom: 3
               value_height: small
+              value_padding_vertical: 9
               value_style:
                 alignment: center
                 color: theme_dark
@@ -3158,11 +3165,10 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: very_dark
                 corners: medium
                 margins:
                   left: 3
-                  right: 3
                 width: 4
             format:
               inside_label: Bee Stings Before Passing Out
@@ -3174,6 +3180,7 @@ profile:
               inside_label_margins:
                 bottom: 3
               value_height: small
+              value_padding_vertical: 9
               value_style:
                 alignment: center
                 color: theme_dark
@@ -3207,17 +3214,19 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_very_dark
+                color: theme_super_dark
                 size: medium_small
               inside_label: Intelligence
               inside_label_style:
                 color: gold_light
                 font: bold
+                size: medium
               value_height: wrap
               value_padding_vertical: 5
               value_style:
                 color: gold_light
                 font: bold
+                size: medium
             value:
               name: intelligence
               label: Intelligence
@@ -3245,7 +3254,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -3296,7 +3305,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -3355,16 +3364,18 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_very_dark
+                color: theme_super_dark
                 size: medium_small
               inside_label: Wisdom
               inside_label_style:
                 color: gold_light
                 font: bold
+                size: medium
               value_height: wrap
               value_style:
                 color: gold_light
                 font: bold
+                size: medium
             value:
               name: wisdom
               label: Wisdom
@@ -3392,7 +3403,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -3443,7 +3454,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -3456,7 +3467,7 @@ profile:
                 alignment: center
                 color: theme_medium_dark
                 size: super_small
-              inside_label: wisdom check
+              inside_label: Wisdom Check
               value_height: wrap
               value_padding_vertical: 5
               value_style:
@@ -3503,16 +3514,18 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_very_dark
+                color: theme_super_dark
                 size: medium_small
               inside_label: Charisma
               inside_label_style:
                 color: gold_light
                 font: bold
+                size: medium
               value_height: wrap
               value_style:
                 color: gold_light
                 font: bold
+                size: medium
             value:
               name: charisma
               label: Charisma
@@ -3540,7 +3553,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -3591,7 +3604,7 @@ profile:
           widget:
             data:
               format:
-                background: medium_light
+                background: medium_dark
                 corners: medium
                 margins:
                   left: 8
@@ -3627,7 +3640,7 @@ profile:
             value_prefix: '+'
       - format:
           margins:
-            top: 25
+            top: 15
             left: 7
             right: 7
         widgets:
@@ -3635,10 +3648,9 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: very_dark
                 corners: medium
                 margins:
-                  left: 3
                   right: 3
                 width: 5
             format:
@@ -3650,7 +3662,8 @@ profile:
               inside_label_position: top
               inside_label_margins:
                 bottom: 3
-              value_height: small
+              value_height: wrap
+              value_padding_vertical: 8
               value_style:
                 alignment: center
                 color: theme_dark
@@ -3665,11 +3678,10 @@ profile:
           widget:
             data:
               format:
-                background: medium_dark
+                background: very_dark
                 corners: medium
                 margins:
                   left: 3
-                  right: 3
                 width: 6
             format:
               inside_label: Beard Style
@@ -3680,7 +3692,8 @@ profile:
               inside_label_position: top
               inside_label_margins:
                 bottom: 4
-              value_height: small
+              value_height: wrap
+              value_padding_vertical: 8
               value_style:
                 alignment: center
                 color: theme_dark
@@ -5661,8 +5674,8 @@ encounter:
     - format:
         background: dark
         margins:
-          top: 40
-          bottom: 40
+          top: 30
+          bottom: 30
       rows:
       - format:
           margins:
@@ -5714,61 +5727,15 @@ encounter:
                         type: name
                         name: proficiency_bonus
     - format:
-        background: medium
-        padding:
-          top: 25
+        corners: small
+        margins:
           left: 10
           right: 10
-      rows:
-      - format:
-          margins:
-            bottom: 5
-        widgets:
-        - type: text
-          widget:
-            data:
-              format:
-                alignment: center
-                background: empty
-            format:
-              value_height: wrap
-              value_style:
-                alignment: center
-                color: theme_very_dark
-                font: italic
-                size: small
-            value:
-              type: literal
-              value: >
-                I learned a lot in the military. The kind of lessons that save your life. Well,
-                I've been in enough situations now to know that...
-      - format:
-          padding:
-            bottom: 10
-        widgets:
-        - type: text
-          widget:
-            data:
-              format:
-                alignment: center
-                background: empty
-            format:
-              value_height: wrap
-              value_style:
-                alignment: center
-                color: red_orange_light
-                font: italic
-                size: large
-            value:
-              type: literal
-              value: 'ANYTHING IS A WEAPON'
-    - format:
-        background: medium
         padding:
           top: 15
-          bottom: 10
-          left: 10
-          right: 10
+          bottom: 15
+          left: 5
+          right: 5
       rows:
       - format:
           margins:
@@ -5786,11 +5753,11 @@ encounter:
                 corners: small
             format:
               action_style:
-                color: gold_medium
+                color: red_orange_light
                 font: bold
                 size: medium_small
               height: wrap
-              padding_vertical: 5
+              padding_vertical: 8
             modifier:
               name: heavy_crossbow_attack_bonus
               type: summation
@@ -5855,12 +5822,16 @@ encounter:
                         type: name
                         name: dexterity_modifier
     - format:
-        background: medium
-        padding:
-          top: 20
+        corners: small
+        margins:
+          top: 15
           left: 10
           right: 10
-          bottom: 20
+        padding:
+          top: 15
+          bottom: 15
+          left: 5
+          right: 5
       rows:
       - format:
           margins:
@@ -5878,11 +5849,11 @@ encounter:
                 corners: small
             format:
               action_style:
-                color: gold_medium
+                color: red_orange_light
                 font: bold
                 size: medium_small
               height: wrap
-              padding_vertical: 5
+              padding_vertical: 8
             modifier:
               name: heavy_crossbow_attack_bonus
               type: summation
@@ -5947,12 +5918,17 @@ encounter:
                         type: name
                         name: dexterity_modifier
     - format:
-        background: medium
-        padding:
-          top: 20
+        corners: small
+        margins:
+          top: 15
           left: 10
           right: 10
           bottom: 20
+        padding:
+          top: 15
+          bottom: 15
+          left: 5
+          right: 5
       rows:
       - format:
           margins:
@@ -5970,11 +5946,12 @@ encounter:
                 corners: small
             format:
               action_style:
-                color: gold_medium
+                color: red_orange_light
                 font: bold
                 size: medium_small
               height: wrap
-              padding_vertical: 5
+              padding_vertical: 8
+              padding_horizontal: 8
             modifier:
               name: heavy_crossbow_attack_bonus
               type: summation
@@ -6039,17 +6016,18 @@ encounter:
                         type: name
                         name: dexterity_modifier
   - name: Status
-    background: light
+    background: medium
     groups:
     - format:
-        background: light
+        background: medium
+        divider: light
         padding:
           top: 12
           bottom: 12
+          left: 12
+          right: 12
       rows:
       - format:
-          margins:
-            top: 0
         widgets:
         - type: option
           widget:
@@ -6063,7 +6041,7 @@ encounter:
                 font: italic
                 size: medium_large
               value_style:
-                background_color: medium_light
+                background_color: medium_dark
                 color: green_light
                 font: regular
                 size: medium_large
@@ -6178,6 +6156,7 @@ encounter:
     - name: Temporary Hit Points
       format:
         background: medium
+        divider: light
         padding:
           top: 20
           bottom: 20
@@ -6211,7 +6190,7 @@ encounter:
               type: literal
               value: 0
     - format:
-        background: light
+        background: medium
         padding:
           top: 20
           bottom: 20

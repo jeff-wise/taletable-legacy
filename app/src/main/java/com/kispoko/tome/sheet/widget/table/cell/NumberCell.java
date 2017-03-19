@@ -9,8 +9,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.dialog.ArithmeticDialogType;
+import com.kispoko.tome.activity.sheet.dialog.CalculatorDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.DialogOptionButton;
 import com.kispoko.tome.activity.sheet.dialog.IncrementDialogFragment;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -357,6 +360,13 @@ public class NumberCell extends Cell
         TextStyle valueStyle = this.format().resolveStyle(column.style());
         LinearLayout layout = this.layout(column, valueStyle.size(), format.cellHeight(), context);
 
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNumberCellShortClick(context);
+            }
+        });
+
         layout.addView(valueTextView(column, context));
 
         return layout;
@@ -383,15 +393,6 @@ public class NumberCell extends Cell
         else
             value.text = Integer.toString(column.defaultValue());
 
-        // > On Click
-        value.onClick    = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-                onNumberCellShortClick(context);
-            }
-        };
-
         return value.textView(context);
     }
 
@@ -409,10 +410,30 @@ public class NumberCell extends Cell
         switch (this.editDialogType())
         {
             case INCREMENTAL:
-                IncrementDialogFragment incDialog =
-                        IncrementDialogFragment.newInstance(this.valueVariable().label(),
-                                                            this.value());
-                incDialog.show(sheetActivity.getSupportFragmentManager(), "");
+                ArrayList<DialogOptionButton> dialogButtons = new ArrayList<>();
+
+                DialogOptionButton addRowButton =
+                        new DialogOptionButton(R.string.add_row,
+                                               R.drawable.ic_dialog_table_widget_add_row,
+                                               null);
+
+                DialogOptionButton editRowButton =
+                        new DialogOptionButton(R.string.edit_row,
+                                               R.drawable.ic_dialog_table_widget_edit_row,
+                                               null);
+
+                DialogOptionButton editTableButton =
+                        new DialogOptionButton(R.string.edit_table,
+                                               R.drawable.ic_dialog_table_widget_widget,
+                                               null);
+
+                dialogButtons.add(addRowButton);
+                dialogButtons.add(editRowButton);
+                dialogButtons.add(editTableButton);
+
+                CalculatorDialogFragment dialog =
+                            CalculatorDialogFragment.newInstance(valueVariable(), dialogButtons);
+                dialog.show(sheetActivity.getSupportFragmentManager(), "");
                 break;
         }
     }

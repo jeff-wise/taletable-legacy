@@ -49,6 +49,10 @@
 
     <string name="list_editor">List Editor</string>
 
+    <string name="add_row">Add Row</string>
+    <string name="edit_row">Edit Row</string>
+    <string name="edit_table">Edit Table</string>
+
     <string name="done">Done</string>
 
 

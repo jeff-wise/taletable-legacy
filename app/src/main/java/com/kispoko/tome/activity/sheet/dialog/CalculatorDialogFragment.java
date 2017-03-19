@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.engine.variable.NullVariableException;
+import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
 import com.kispoko.tome.lib.ui.Font;
@@ -29,38 +31,41 @@ import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.widget.NumberWidget;
 
-import static android.R.attr.label;
-import static android.R.attr.path;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Number Widget Dialog Fragment
  */
-public class NumberWidgetDialogFragment extends DialogFragment
+public class CalculatorDialogFragment extends DialogFragment
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private NumberWidget numberWidget;
+    private NumberVariable              numberVariable;
+    private List<DialogOptionButton>    buttons;
 
-    private EditText     valueEditText;
+    private EditText                    valueEditText;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public NumberWidgetDialogFragment() { }
+    public CalculatorDialogFragment() { }
 
 
-    public static NumberWidgetDialogFragment newInstance(NumberWidget numberWidget)
+    public static CalculatorDialogFragment newInstance(NumberVariable numberVariable,
+                                                       List<DialogOptionButton> buttons)
     {
-        NumberWidgetDialogFragment numberWidgetDialogFragment = new NumberWidgetDialogFragment();
+        CalculatorDialogFragment numberWidgetDialogFragment = new CalculatorDialogFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("number_widget", numberWidget);
+        args.putSerializable("number_variable", numberVariable);
+        args.putSerializable("buttons", (Serializable) buttons);
         numberWidgetDialogFragment.setArguments(args);
 
         return numberWidgetDialogFragment;
@@ -70,7 +75,7 @@ public class NumberWidgetDialogFragment extends DialogFragment
     // DIALOG FRAGMENT
     // ------------------------------------------------------------------------------------------
 
-    @Override @NonNull
+    @Override @NonNull @SuppressWarnings("unchecked")
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         LinearLayout dialogLayout = EditDialog.layout(getContext());
@@ -88,7 +93,11 @@ public class NumberWidgetDialogFragment extends DialogFragment
         dialog.getWindow().setLayout(width, height);
 
         // > Read State
-        this.numberWidget = (NumberWidget) getArguments().getSerializable("number_widget");
+        this.numberVariable = (NumberVariable) getArguments().getSerializable("number_variable");
+        this.buttons        = (List<DialogOptionButton>) getArguments().getSerializable("buttons");
+
+        if (this.buttons == null)
+            this.buttons    = new ArrayList<>();
 
         return dialog;
     }
@@ -170,14 +179,13 @@ public class NumberWidgetDialogFragment extends DialogFragment
     {
         LinearLayout layout = headerViewLayout(context);
 
-        // > Style Button
-        String styleString = context.getString(R.string.style);
-        layout.addView(headerButtonView(styleString, R.drawable.ic_dialog_style, context));
-
-        // > Widget Button
-        String configureWidgetString = context.getString(R.string.widget);
-        layout.addView(headerButtonView(configureWidgetString, R.drawable.ic_dialog_widget, context));
-
+        for (DialogOptionButton button : this.buttons)
+        {
+            layout.addView(headerButtonView(button.labelId(),
+                                            button.iconId(),
+                                            button.onClickListener(),
+                                            context));
+        }
         return layout;
     }
 
@@ -218,7 +226,10 @@ public class NumberWidgetDialogFragment extends DialogFragment
     }
 
 
-    private LinearLayout headerButtonView(String labelText, int iconId, Context context)
+    private LinearLayout headerButtonView(int labelId,
+                                          int iconId,
+                                          View.OnClickListener onClickListener,
+                                          Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -232,12 +243,24 @@ public class NumberWidgetDialogFragment extends DialogFragment
 
         layout.orientation      = LinearLayout.HORIZONTAL;
 
-        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        if (this.buttons.size() == 2)
+            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        else
+            layout.width            = 0;
+
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        if (this.buttons.size() == 3)
+            layout.weight           = 1f;
 
         layout.gravity          = Gravity.CENTER_VERTICAL;
 
-        layout.margin.rightDp   = 25f;
+        if (this.buttons.size() == 2)
+            layout.margin.rightDp   = 25f;
+        if (this.buttons.size() == 3)
+            layout.margin.rightDp   = 10f;
+
+        layout.onClick          = onClickListener;
 
         layout.child(icon)
               .child(label);
@@ -252,7 +275,10 @@ public class NumberWidgetDialogFragment extends DialogFragment
 
         icon.color          = R.color.dark_blue_2;
 
-        icon.margin.rightDp = 4f;
+        if (this.buttons.size() == 2)
+            icon.margin.rightDp = 4f;
+        else if (this.buttons.size() == 3)
+            icon.margin.rightDp = 2f;
 
         // [3 B] Label
         // -------------------------------------------------------------------------------------
@@ -262,10 +288,15 @@ public class NumberWidgetDialogFragment extends DialogFragment
 
         label.gravity              = Gravity.CENTER_HORIZONTAL;
 
-        label.text                 = labelText;
-        label.sizeSp               = 16.0f;
+        label.textId               = labelId;
+
         label.color                = R.color.dark_blue_1;
         label.font                 = Font.serifFontRegular(context);
+
+        if (this.buttons.size() > 2)
+            label.sizeSp               = 13.0f;
+        else
+            label.sizeSp               = 16.0f;
 
         label.padding.topDp        = 12f;
         label.padding.bottomDp     = 12f;
@@ -330,8 +361,8 @@ public class NumberWidgetDialogFragment extends DialogFragment
         layout.padding.topDp    = 5f;
         layout.padding.bottomDp = 5f;
 
-        layout.padding.leftDp   = 15f;
-        layout.padding.rightDp  = 18f;
+        layout.padding.leftDp   = 17f;
+        layout.padding.rightDp  = 20f;
 
         return layout.relativeLayout(context);
     }
@@ -351,7 +382,7 @@ public class NumberWidgetDialogFragment extends DialogFragment
 
         button.image            = R.drawable.ic_dialog_number_widget_clear;
 
-        button.color            = R.color.dark_blue_hl_8;
+        button.color            = R.color.dark_blue_1;
 
         button.onClick          = new View.OnClickListener()
         {
@@ -380,7 +411,7 @@ public class NumberWidgetDialogFragment extends DialogFragment
 
         button.image            = R.drawable.ic_dialog_number_widget_backspace;
 
-        button.color            = R.color.dark_blue_1;
+        button.color            = R.color.dark_blue_3;
 
         button.onClick          = new View.OnClickListener()
         {
@@ -407,8 +438,13 @@ public class NumberWidgetDialogFragment extends DialogFragment
 
         value.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-        if (this.numberWidget != null)
-            value.text              = this.numberWidget.valueString();
+        try {
+            if (this.numberVariable != null)
+                value.text          = this.numberVariable.valueString();
+        }
+        catch (NullVariableException exception) {
+            value.text              = "N/A";
+        }
 
         value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.gold_medium_light;
@@ -538,7 +574,7 @@ public class NumberWidgetDialogFragment extends DialogFragment
         TextViewBuilder button = new TextViewBuilder();
 
         button.width                = 0;
-        button.heightDp             = 550;
+        button.heightDp             = 55;
         button.weight               = 1f;
 
         button.gravity              = Gravity.CENTER;
@@ -636,7 +672,10 @@ public class NumberWidgetDialogFragment extends DialogFragment
         layout.gravity          = Gravity.CENTER_VERTICAL | Gravity.END;
 
         layout.margin.topDp     = 10f;
-        layout.margin.bottomDp  = 10f;
+        layout.margin.bottomDp  = 15f;
+
+        layout.margin.leftDp    = 12f;
+        layout.margin.rightDp   = 12f;
 
         return layout.linearLayout(context);
     }

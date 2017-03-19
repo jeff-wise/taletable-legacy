@@ -9,18 +9,27 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.summation.Summation;
+import com.kispoko.tome.engine.summation.term.TermSummary;
 import com.kispoko.tome.lib.ui.EditDialog;
+import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.lib.ui.ImageViewBuilder;
+import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
+import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.util.tuple.Tuple2;
 
-import java.util.ArrayList;
 
 
 /**
@@ -105,52 +114,185 @@ public class SummationDialogFragment extends DialogFragment
     // > Views
     // ------------------------------------------------------------------------------------------
 
+
     private View view(Context context)
     {
-        LinearLayout layout = EditDialog.viewLayout(EditDialog.Shade.LIGHT, context);
+        LinearLayout layout = viewLayout(context);
 
         // > Header
-        // layout.addView(headerView(context));
+        layout.addView(headerView(context));
 
-        //layout.addView(SummationView.componentDividerView(context));
+        layout.addView(dividerView(context));
 
-        // > Summation Components
-        layout.addView(componentsView(context));
+        // > Summmation
+        layout.addView(this.summationView(context));
 
-        // > Bottom Divider
-        layout.addView(SummationView.componentDividerView(context));
-
-        // > Footer
-        LinearLayout footerView = EditDialog.footerView(new ArrayList<String>(),
-                                                        context.getString(R.string.edit),
-                                                        R.drawable.ic_dialog_footer_button_edit,
-                                                        EditDialog.Shade.LIGHT,
-                                                        context);
-        layout.addView(footerView);
+        // > Footer View
+        layout.addView(footerView(context));
 
         return layout;
+    }
+
+
+    private LinearLayout viewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.backgroundColor      = R.color.dark_blue_9;
+        layout.backgroundResource   = R.drawable.bg_dialog;
+
+        layout.padding.leftDp       = 12f;
+        layout.padding.rightDp      = 12f;
+
+        return layout.linearLayout(context);
     }
 
 
     private LinearLayout headerView(Context context)
     {
-        LinearLayout layout = EditDialog.headerViewLayout(context);
+        LinearLayout layout = headerViewLayout(context);
 
-        // > Top Row
-        layout.addView(EditDialog.headerTitleView(this.summationLabel,
-                                                  EditDialog.Shade.LIGHT,
-                                                  context));
+        // > Style Button
+        String styleString = context.getString(R.string.style);
+        layout.addView(headerButtonView(styleString, R.drawable.ic_dialog_style, context));
+
+        // > Widget Button
+        String configureWidgetString = context.getString(R.string.widget);
+        layout.addView(headerButtonView(configureWidgetString, R.drawable.ic_dialog_widget, context));
 
         return layout;
     }
 
 
-    private LinearLayout componentsView(Context context)
+    private LinearLayout headerViewLayout(Context context)
     {
-        LinearLayout layout = componentsViewLayout(context);
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.HORIZONTAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.padding.topDp        = 5f;
+        layout.padding.bottomDp     = 5f;
+
+        layout.gravity              = Gravity.CENTER_VERTICAL;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout dividerView(Context context)
+    {
+        LinearLayoutBuilder divider = new LinearLayoutBuilder();
+
+        divider.width       = LinearLayout.LayoutParams.MATCH_PARENT;
+        divider.heightDp    = 1;
+
+        divider.backgroundColor = R.color.dark_blue_6;
+
+        return divider.linearLayout(context);
+    }
+
+
+    private LinearLayout headerButtonView(String labelText, int iconId, Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        ImageViewBuilder icon   = new ImageViewBuilder();
+        TextViewBuilder     label  = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.orientation      = LinearLayout.HORIZONTAL;
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.gravity          = Gravity.CENTER_VERTICAL;
+
+        layout.margin.rightDp   = 25f;
+
+        layout.child(icon)
+              .child(label);
+
+        // [3 A] Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image          = iconId;
+
+        icon.color          = R.color.dark_blue_2;
+
+        icon.margin.rightDp = 4f;
+
+        // [3 B] Label
+        // -------------------------------------------------------------------------------------
+
+        label.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.gravity              = Gravity.CENTER_HORIZONTAL;
+
+        label.text                 = labelText;
+        label.sizeSp               = 16.0f;
+        label.color                = R.color.dark_blue_1;
+        label.font                 = Font.serifFontRegular(context);
+
+        label.padding.topDp        = 12f;
+        label.padding.bottomDp     = 12f;
+
+
+        return layout.linearLayout(context);
+    }
+
+
+    // ** Summation
+    // -----------------------------------------------------------------------------------------
+
+    private LinearLayout summationView(Context context)
+    {
+        LinearLayout layout = this.summationViewLayout(context);
 
         // > Components
-        layout.addView(SummationView.componentsView(this.summationLabel, this.summation, context));
+        layout.addView(this.componentsView(context));
+
+        // > Total
+        layout.addView(this.totalView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout summationViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout componentsView(Context context)
+    {
+        LinearLayout layout = this.componentsViewLayout(context);
+
+        // > Components
+        for (TermSummary summary: this.summation.summary()) {
+            layout.addView(componentView(summary, context));
+        }
 
         return layout;
     }
@@ -158,12 +300,281 @@ public class SummationDialogFragment extends DialogFragment
 
     private LinearLayout componentsViewLayout(Context context)
     {
+        LinearLayoutBuilder layout =  new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout componentView(TermSummary summary, Context context)
+    {
+        LinearLayout layout = this.componentViewLayout(context);
+
+        if (summary.name() != null)
+            layout.addView(this.componentHeaderView(summary.name(), context));
+
+        for (Tuple2<String,String> component : summary.components())
+        {
+            String name  = component.getItem1();
+            String value = component.getItem2();
+            layout.addView(componentItemView(name, value, context));
+        }
+
+        return layout;
+    }
+
+
+    private LinearLayout componentViewLayout(Context context)
+    {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.backgroundResource   = R.drawable.bg_widget_wrap_corners_small;
+        layout.backgroundColor      = R.color.dark_blue_7;
+
+        layout.margin.topDp         = 3f;
+        layout.margin.bottomDp      = 3f;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private RelativeLayout componentItemView(String nameText, String valueText, Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        RelativeLayoutBuilder layout = new RelativeLayoutBuilder();
+        TextViewBuilder       name   = new TextViewBuilder();
+        TextViewBuilder       value  = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.orientation              = LinearLayout.HORIZONTAL;
+        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.padding.left             = R.dimen.dialog_summ_component_padding_left;
+        layout.padding.right            = R.dimen.dialog_summ_component_padding_right;
+
+        layout.padding.top              = R.dimen.dialog_summ_component_padding_vert;
+        layout.padding.bottom           = R.dimen.dialog_summ_component_padding_vert;
+
+        layout.child(name)
+              .child(value);
+
+        // [3 A] Name
+        // -------------------------------------------------------------------------------------
+
+        name.layoutType                 = LayoutType.RELATIVE;
+        name.width                      = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.height                     = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        name.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+
+        name.text                       = nameText;
+        name.font                       = Font.serifFontItalic(context);
+        name.size                       = R.dimen.dialog_summ_component_name_text_size;
+        name.color                      = R.color.dark_blue_hl_8;
+
+        // [3 B] Value
+        // -------------------------------------------------------------------------------------
+
+        value.layoutType                = LayoutType.RELATIVE;
+        value.width                     = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        value.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+        value.text                      = valueText;
+        value.font                      = Font.serifFontBold(context);
+        value.size                      = R.dimen.dialog_summ_component_value_text_size;
+        value.color                     = R.color.dark_blue_hl_8;
+
+
+        return layout.relativeLayout(context);
+    }
+
+
+    private TextView componentHeaderView(String headerText, Context context)
+    {
+        TextViewBuilder header = new TextViewBuilder();
+
+        header.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        header.text                 = headerText;
+        header.font                 = Font.serifFontRegular(context);
+        header.color                = R.color.dark_blue_hl_5;
+        header.size                 = R.dimen.dialog_summ_component_header_text_size;
+
+        return header.textView(context);
+    }
+
+
+    private TextView totalView(Context context)
+    {
+        TextViewBuilder total = new TextViewBuilder();
+
+        total.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        total.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        total.layoutGravity = Gravity.CENTER_HORIZONTAL;
+
+        total.text          = this.summation.valueString();
+
+        total.font          = Font.serifFontRegular(context);
+        total.color         = R.color.dark_blue_hlx_7;
+        total.sizeSp        = 28f;
+
+        return total.textView(context);
+    }
+
+
+    private LinearLayout footerView(Context context)
+    {
+        LinearLayout layout = footerViewLayout(context);
+
+        // Full Editor Button
+        layout.addView(fullEditorButton(context));
+
+        // Done Button
+        layout.addView(doneButton(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout footerViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.HORIZONTAL;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.margin.top       = R.dimen.dialog_summ_components_margin_top;
+        layout.gravity          = Gravity.CENTER_VERTICAL | Gravity.END;
+
+        layout.margin.bottomDp  = 10f;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout fullEditorButton(Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        TextViewBuilder     button = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.margin.rightDp   = 15f;
+        layout.margin.topDp     = 2f;
+
+//        layout.onClick          = new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                Intent intent = new Intent(getContext(), TextEditorActivity.class);
+//                intent.putExtra("text_widget", textWidget);
+//                dismiss();
+//                startActivity(intent);
+//            }
+//        };
+
+
+        layout.child(button);
+
+        // [3] Button
+        // -------------------------------------------------------------------------------------
+
+        button.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        button.text             = context.getString(R.string.full_editor);
+        button.font             = Font.serifFontRegular(context);
+        button.color            = R.color.dark_blue_1;
+        button.sizeSp           = 16f;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout doneButton(Context context)
+    {
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
+
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        ImageViewBuilder    icon   = new ImageViewBuilder();
+        TextViewBuilder     label  = new TextViewBuilder();
+
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.backgroundColor      = R.color.dark_blue_7;
+        layout.backgroundResource   = R.drawable.bg_widget_wrap_corners_small;
+
+        layout.padding.topDp        = 6f;
+        layout.padding.bottomDp     = 6f;
+        layout.padding.leftDp       = 6f;
+        layout.padding.rightDp      = 10f;
+
+//        layout.onClick              = new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                sendTextWidgetUpdate(editValueView.getText().toString());
+//                dismiss();
+//            }
+//        };
+
+        layout.child(icon)
+              .child(label);
+
+        // [3 A] Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image                  = R.drawable.ic_dialog_done;
+
+        icon.color                  = R.color.green_medium_dark;
+
+        icon.margin.rightDp         = 3f;
+
+        // [3 B] Label
+        // -------------------------------------------------------------------------------------
+
+        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text                  = context.getString(R.string.done).toUpperCase();
+        label.font                  = Font.serifFontBold(context);
+        label.color                 = R.color.green_medium_dark;
+        label.sizeSp                = 14f;
+
 
         return layout.linearLayout(context);
     }

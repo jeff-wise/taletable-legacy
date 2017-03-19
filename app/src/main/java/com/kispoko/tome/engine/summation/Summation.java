@@ -176,7 +176,7 @@ public class Summation implements Model, Serializable
         // Otherwise, just one number
         else
         {
-            return "+" + Integer.toString(this.value());
+            return Integer.toString(this.value());
         }
     }
 

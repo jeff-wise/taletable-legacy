@@ -12,9 +12,9 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.activity.sheet.dialog.NumberWidgetDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.CalculatorDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.DialogOptionButton;
 import com.kispoko.tome.activity.sheet.dialog.SummationDialogFragment;
-import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -715,7 +715,19 @@ public class NumberWidget extends Widget
         switch (this.valueVariable().kind())
         {
             case LITERAL:
-                NumberWidgetDialogFragment dialog = NumberWidgetDialogFragment.newInstance(this);
+                ArrayList<DialogOptionButton> dialogButtons = new ArrayList<>();
+
+                DialogOptionButton styleButton =
+                        new DialogOptionButton(R.string.style, R.drawable.ic_dialog_style, null);
+
+                DialogOptionButton widgetButton =
+                        new DialogOptionButton(R.string.widget, R.drawable.ic_dialog_widget, null);
+
+                dialogButtons.add(styleButton);
+                dialogButtons.add(widgetButton);
+
+                CalculatorDialogFragment dialog =
+                            CalculatorDialogFragment.newInstance(valueVariable(), dialogButtons);
                 dialog.show(sheetActivity.getSupportFragmentManager(), "");
                 break;
 
