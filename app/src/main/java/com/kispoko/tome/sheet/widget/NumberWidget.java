@@ -12,7 +12,9 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.activity.sheet.dialog.NumberWidgetDialogFragment;
 import com.kispoko.tome.activity.sheet.dialog.SummationDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -712,6 +714,10 @@ public class NumberWidget extends Widget
 
         switch (this.valueVariable().kind())
         {
+            case LITERAL:
+                NumberWidgetDialogFragment dialog = NumberWidgetDialogFragment.newInstance(this);
+                dialog.show(sheetActivity.getSupportFragmentManager(), "");
+                break;
 
             // OPEN the summation preview dialog
             case SUMMATION:

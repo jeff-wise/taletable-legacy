@@ -2585,8 +2585,8 @@ profile:
                 background: medium_light
                 corners: medium
                 margins:
-                  left: 10
-                  right: 10
+                  left: 8
+                  right: 8
             format:
               description_style:
                 color: theme_very_dark
@@ -2603,7 +2603,7 @@ profile:
               value_padding_vertical: 5
               value_style:
                 alignment: center
-                color: theme_medium_light
+                color: theme_light
                 size: medium
             value:
               name: saving_throw_strength
@@ -2639,8 +2639,8 @@ profile:
                 background: medium_light
                 corners: medium
                 margins:
-                  left: 10
-                  right: 10
+                  left: 8
+                  right: 8
             format:
               description_style:
                 color: theme_very_dark
@@ -2657,7 +2657,7 @@ profile:
               value_padding_vertical: 5
               value_style:
                 alignment: center
-                color: theme_medium_light
+                color: theme_light
                 size: medium
             value:
               name: check_strength
@@ -2684,8 +2684,8 @@ profile:
                 background: medium_dark
                 corners: medium
                 margins:
-                  left: 10
-                  right: 10
+                  left: 8
+                  right: 8
             format:
               inside_label: Carrying Capacity
               inside_label_style:
@@ -2713,8 +2713,8 @@ profile:
                 background: medium_dark
                 corners: medium
                 margins:
-                  left: 10
-                  right: 10
+                  left: 8
+                  right: 8
             format:
               inside_label: 'Push/Drag/Lift'
               inside_label_style:
@@ -2808,21 +2808,29 @@ profile:
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My saving throw is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
               description_style:
                 color: theme_very_dark
                 size: small
-              inside_label: saving throw
+              inside_label: Saving Throw
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: saving_throw_dexterity
               label: Dexterity Saving Throw
@@ -2850,29 +2858,30 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-      - format:
-          margins:
-            top: 10
-        widgets:
         - type: number
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My dexterity check is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: dexterity check
+              inside_label: Dexterity Check
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: check_dexterity
               label: Dexterity Check
@@ -2893,6 +2902,8 @@ profile:
         padding:
           bottom: 20
           top: 10
+          left: 10
+          right: 10
         show_name: false
       rows:
       - format:
@@ -2958,21 +2969,26 @@ profile:
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My saving throw is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: saving throw
+              inside_label: Saving Throw
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: saving_throw_constitution
               label: Constitution Saving Throw
@@ -3000,29 +3016,30 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-      - format:
-          margins:
-            top: 10
-        widgets:
         - type: number
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My constitution check is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: constitution check
+              inside_label: Constitution Check
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: check_constitution
               label: Constitution Check
@@ -3172,6 +3189,8 @@ profile:
         padding:
           bottom: 20
           top: 10
+          left: 10
+          right: 10
       rows:
       - format:
           margins:
@@ -3195,6 +3214,7 @@ profile:
                 color: gold_light
                 font: bold
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
                 color: gold_light
                 font: bold
@@ -3225,21 +3245,26 @@ profile:
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My saving throw is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: saving throw
+              inside_label: Saving Throw
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: saving_throw_intelligence
               label: Intelligence Saving Throw
@@ -3267,29 +3292,30 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-      - format:
-          margins:
-            top: 10
-        widgets:
         - type: number
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My intelligence check is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: intelligence check
+              inside_label: Intelligence Check
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: check_wisdom
               label: Intelligence Check
@@ -3310,6 +3336,8 @@ profile:
         padding:
           bottom: 20
           top: 10
+          left: 10
+          right: 10
       rows:
       - format:
           margins:
@@ -3364,21 +3392,26 @@ profile:
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My saving throw is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: saving throw
+              inside_label: Saving Throw
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: saving_throw_wisdom
               label: Wisdom Saving Throw
@@ -3406,29 +3439,30 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-      - format:
-          margins:
-            top: 10
-        widgets:
         - type: number
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My wisdom check is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: wisdom check
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
+              inside_label: wisdom check
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: check_wisdom
               label: Wisdom Check
@@ -3447,8 +3481,10 @@ profile:
         background: dark
         divider: light
         padding:
-          bottom: 20
+          bottom: 30
           top: 10
+          left: 10
+          right: 10
       rows:
       - format:
           margins:
@@ -3504,21 +3540,26 @@ profile:
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My saving throw is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: saving throw
+              inside_label: Saving Throw
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: saving_throw_charisma
               label: Charisma Saving Throw
@@ -3546,29 +3587,30 @@ profile:
                       type: literal
                       value: 0
             value_prefix: '+'
-      - format:
-          margins:
-            top: 10
-        widgets:
         - type: number
           widget:
             data:
               format:
-                background: empty
-            description: >
-              My charisma check is <value>.
+                background: medium_light
+                corners: medium
+                margins:
+                  left: 8
+                  right: 8
             format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: charisma check
+              inside_label: Charisma Check
+              inside_label_margins:
+                bottom: 3
+              inside_label_position: top
               inside_label_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_medium_dark
+                size: super_small
               value_height: wrap
+              value_padding_vertical: 5
               value_style:
-                color: theme_medium_light
-                size: small
+                alignment: center
+                color: theme_light
+                size: medium
             value:
               name: check_charisma
               label: Charisma Check
@@ -3613,6 +3655,7 @@ profile:
                 alignment: center
                 color: theme_dark
                 size: medium_small
+            value_postfix: ' tall tales'
             value:
               name: captivating_war_stories
               label: Captivating War Stories
@@ -3664,9 +3707,9 @@ profile:
               value_height: wrap
               value_style:
                 alignment: center
-                color: theme_light
+                color: gold_light
                 font: italic
-                size: large
+                size: medium_large
             value:
               type: literal
               value: Skills
@@ -4612,11 +4655,16 @@ profile:
           widget:
             category: class
   - name: Inventory
+    background: medium_dark
     groups:
     - name: Wealth
       format:
+        background: medium
+        margins:
+          top: 20
         padding:
           top: 25
+          bottom: 25
           left: 7
           right: 7
       rows:
@@ -4625,7 +4673,7 @@ profile:
           widget:
             data:
               format:
-                background: dark
+                background: medium_light
                 margins:
                   left: 3
                   right: 3
@@ -4650,7 +4698,7 @@ profile:
           widget:
             data:
               format:
-                background: dark
+                background: medium_light
                 margins:
                   left: 3
                   right: 3
@@ -4676,7 +4724,7 @@ profile:
           widget:
             data:
               format:
-                background: dark
+                background: medium_light
                 margins:
                   left: 3
                   right: 3
@@ -4707,7 +4755,7 @@ profile:
           widget:
             data:
               format:
-                background: dark
+                background: medium_light
                 margins:
                   left: 3
                   right: 3
@@ -4732,7 +4780,7 @@ profile:
           widget:
             data:
               format:
-                background: dark
+                background: medium_light
                 margins:
                   left: 3
                   right: 3
@@ -4756,13 +4804,13 @@ profile:
     - name: Weapons
       format:
         background: medium
+        margins:
+          top: 20
         padding:
-          top: 25
+          top: 20
+          bottom: 15
       rows:
       - format:
-          margins:
-            top: 15
-            left: 10
         widgets:
         - type: text
           widget:
@@ -4775,13 +4823,13 @@ profile:
               value_style:
                 color: gold_light
                 font: italic
-                size: large
+                size: medium_large
             value:
               type: literal
               value: Weapons
       - format:
           margins:
-            top: 10
+            top: 15
         widgets:
         - type: table
           widget:
@@ -4867,13 +4915,13 @@ profile:
     - name: Armor
       format:
         background: medium
+        margins:
+          top: 20
         padding:
-          top: 25
+          top: 20
+          bottom: 15
       rows:
       - format:
-          margins:
-            top: 15
-            left: 10
         widgets:
         - type: text
           widget:
@@ -4886,7 +4934,7 @@ profile:
               value_style:
                 color: gold_light
                 font: italic
-                size: large
+                size: medium_large
             value:
               type: literal
               value: Armor
@@ -4964,13 +5012,14 @@ profile:
                   value: true
     - name: Gear
       format:
+        background: medium
+        margins:
+          top: 20
         padding:
-          top: 25
+          top: 20
+          bottom: 15
       rows:
       - format:
-          margins:
-            top: 15
-            left: 10
         widgets:
         - type: text
           widget:
@@ -4983,7 +5032,7 @@ profile:
               value_style:
                 color: gold_light
                 font: italic
-                size: large
+                size: medium_large
             value:
               type: literal
               value: Gear

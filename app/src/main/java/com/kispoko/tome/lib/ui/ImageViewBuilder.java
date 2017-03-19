@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.kispoko.tome.R.id.textView;
+
 
 /**
  * Image View Builder
@@ -21,30 +23,33 @@ public class ImageViewBuilder implements ViewBuilder
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    public Integer              id;
+    public Integer                  id;
 
-    public LayoutType           layoutType;
+    public LayoutType               layoutType;
 
-    public Integer              height;
-    public Integer              width;
-    public Float                weight;
+    public Integer                  height;
+    public Integer                  width;
+    public Float                    weight;
 
-    public Integer              layoutGravity;
+    public Integer                  layoutGravity;
 
-    public Padding              padding;
-    public Margins              margin;
+    public Padding                  padding;
+    public Margins                  margin;
 
-    public Integer              image;
+    public Integer                  image;
 
-    public ImageView.ScaleType  scaleType;
-    public Boolean              adjustViewBounds;
+    public ImageView.ScaleType      scaleType;
+    public Boolean                  adjustViewBounds;
 
-    public Integer              backgroundColor;
-    public Integer              backgroundResource;
+    public Integer                  backgroundColor;
+    public Integer                  backgroundResource;
 
-    public Integer              color;
+    public Integer                  color;
 
-    private List<Integer>       rules;
+    public View.OnClickListener     onClick;
+    public View.OnLongClickListener onLongClick;
+
+    private List<Integer>           rules;
 
 
     // CONSTRUCTORS
@@ -72,6 +77,9 @@ public class ImageViewBuilder implements ViewBuilder
         this.backgroundResource = null;
 
         this.color              = null;
+
+        this.onClick            = null;
+        this.onLongClick        = null;
 
         this.rules              = new ArrayList<>();
     }
@@ -158,6 +166,18 @@ public class ImageViewBuilder implements ViewBuilder
 
         if (this.adjustViewBounds != null)
             imageView.setAdjustViewBounds(this.adjustViewBounds);
+
+        // > On Click Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onClick != null)
+            imageView.setOnClickListener(this.onClick);
+
+        // > On Long Click Listener
+        // --------------------------------------------------------------------------------------
+
+        if (this.onLongClick != null)
+            imageView.setOnLongClickListener(this.onLongClick);
 
 
 

@@ -68,11 +68,11 @@
     <!-- ================================================================ -->
 
     <color name="purple_hlx_5">#8A7AB2</color>
-    <color name="purple_very_light">#BDB1D9</color>
-    <color name="purple_light">#ABA0C4</color>
-    <color name="purple_medium_light">#A096B8</color>
-    <color name="purple_medium">#9389A8</color>
-    <color name="purple_medium_dark">#867D99</color>
+    <color name="purple_very_light">#D1C9FA</color>
+    <color name="purple_light">#BCB5E5</color>
+    <color name="purple_medium_light">#AFA9D6</color>
+    <color name="purple_medium">#A09BC4</color>
+    <color name="purple_medium_dark">#928DB2</color>
 
 
     <!-- GREEN -->

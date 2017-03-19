@@ -12,6 +12,9 @@ import android.widget.EditText;
 
 import com.kispoko.tome.util.Util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Edit View Builder
@@ -22,35 +25,37 @@ public class EditTextBuilder implements ViewBuilder
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    public Integer      id;
+    public Integer          id;
 
-    public LayoutType   layoutType;
+    public LayoutType       layoutType;
 
-    public Integer      height;
-    public Integer      width;
-    public Float        weight;
-    public Integer      minHeight;
-    public Float        minHeightDp;
+    public Integer          height;
+    public Integer          width;
+    public Float            weight;
+    public Integer          minHeight;
+    public Float            minHeightDp;
 
-    public Integer      gravity;
-    public Integer      layoutGravity;
+    public Integer          gravity;
+    public Integer          layoutGravity;
 
-    public String       text;
+    public String           text;
 
-    public Padding      padding;
-    public Margins      margin;
+    public Padding          padding;
+    public Margins          margin;
 
-    public Integer      size;
-    public Float        sizeSp;
+    public Integer          size;
+    public Float            sizeSp;
 
-    public Integer      color;
-    public Typeface     font;
+    public Integer          color;
+    public Typeface         font;
 
-    public Integer      backgroundColor;
-    public Integer      backgroundResource;
-    public Integer      underlineColor;
+    public Integer          backgroundColor;
+    public Integer          backgroundResource;
+    public Integer          underlineColor;
 
-    public String       hint;
+    public String           hint;
+
+    public List<Integer>    rules;
 
 
     // CONSTRUCTORS
@@ -87,11 +92,22 @@ public class EditTextBuilder implements ViewBuilder
         this.underlineColor     = null;
 
         this.hint               = null;
+
+        this.rules              = new ArrayList<>();
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
+
+    // > Attributes
+    // ------------------------------------------------------------------------------------------
+
+    public EditTextBuilder addRule(int verb)
+    {
+        this.rules.add(verb);
+        return this;
+    }
 
 
     public View view(Context context)
@@ -230,7 +246,11 @@ public class EditTextBuilder implements ViewBuilder
 
         layoutParamsBuilder.setMargins(this.margin);
 
-// --------------------------------------------------------------------------------------
+        // > Rules (Relative Layout Only)
+        // --------------------------------------------------------------------------------------
+
+        layoutParamsBuilder.setRules(this.rules);
+
 
         ViewGroup.LayoutParams layoutParams = layoutParamsBuilder.layoutParams();
 

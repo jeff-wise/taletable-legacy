@@ -36,6 +36,8 @@ public class TextViewBuilder implements ViewBuilder
     public LayoutType               layoutType;
 
     public Integer                  height;
+    public Integer                  heightDp;
+
     public Integer                  width;
     public Float                    weight;
 
@@ -87,6 +89,8 @@ public class TextViewBuilder implements ViewBuilder
         this.layoutType         = LayoutType.LINEAR;
 
         this.height             = null;
+        this.heightDp           = null;
+
         this.width              = null;
         this.weight             = null;
 
@@ -326,6 +330,8 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.height != null)
             layoutParamsBuilder.setHeight(this.height);
+        else if (this.heightDp != null)
+            layoutParamsBuilder.setHeightDp(this.heightDp);
 
         // > Weight
         // --------------------------------------------------------------------------------------

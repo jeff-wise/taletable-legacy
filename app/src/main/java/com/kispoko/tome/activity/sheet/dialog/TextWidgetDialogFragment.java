@@ -273,7 +273,9 @@ public class TextWidgetDialogFragment extends DialogFragment
         value.width                 = LinearLayout.LayoutParams.MATCH_PARENT;
         value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        value.text                  = this.textWidget.value();
+        if (this.textWidget != null)
+            value.text              = this.textWidget.value();
+
         value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_blue_hl_1;
         value.sizeSp                = 20f;
