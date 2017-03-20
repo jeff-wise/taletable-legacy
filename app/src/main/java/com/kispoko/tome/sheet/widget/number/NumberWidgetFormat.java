@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget.number;
 
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.Spacing;
+import com.kispoko.tome.sheet.VerticalAlignment;
 import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.Position;
 import com.kispoko.tome.sheet.widget.util.TextSize;
@@ -34,31 +35,39 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
     // > Model
     // -----------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                                id;
 
 
     // > Functors
     // -----------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>    insideLabel;
-    private PrimitiveFunctor<Position>  insideLabelPosition;
-    private ModelFunctor<TextStyle>     insideLabelStyle;
-    private ModelFunctor<Spacing>       insideLabelMargins;
+    private PrimitiveFunctor<String>            insideLabel;
+    private PrimitiveFunctor<Position>          insideLabelPosition;
+    private ModelFunctor<TextStyle>             insideLabelStyle;
+    private ModelFunctor<Spacing>               insideLabelMargins;
 
-    private PrimitiveFunctor<String>    outsideLabel;
-    private PrimitiveFunctor<Position>  outsideLabelPosition;
-    private ModelFunctor<TextStyle>     outsideLabelStyle;
-    private ModelFunctor<Spacing>       outsideLabelMargins;
+    private PrimitiveFunctor<String>            outsideLabel;
+    private PrimitiveFunctor<Position>          outsideLabelPosition;
+    private ModelFunctor<TextStyle>             outsideLabelStyle;
+    private ModelFunctor<Spacing>               outsideLabelMargins;
 
-    private ModelFunctor<TextStyle>     descriptionStyle;
+    private ModelFunctor<TextStyle>             descriptionStyle;
 
-    private ModelFunctor<TextStyle>     valueStyle;
-    private PrimitiveFunctor<Height>    valueHeight;
-    private PrimitiveFunctor<Integer>   valuePaddingHorizontal;
-    private PrimitiveFunctor<Integer>   valuePaddingVertical;
+    private ModelFunctor<TextStyle>             valueStyle;
+    private PrimitiveFunctor<Height>            valueHeight;
+    private PrimitiveFunctor<Integer>           valuePaddingHorizontal;
+    private PrimitiveFunctor<Integer>           valuePaddingVertical;
 
-    private ModelFunctor<TextStyle>     valuePrefixStyle;
-    private ModelFunctor<TextStyle>     valuePostfixStyle;
+    private ModelFunctor<TextStyle>             valuePrefixStyle;
+    private ModelFunctor<TextStyle>             valuePostfixStyle;
+
+    private PrimitiveFunctor<String>            baseValueSeparator;
+    private ModelFunctor<TextStyle>             baseValueSeparatorStyle;
+    private ModelFunctor<Spacing>               baseValueSeparatorMargins;
+
+    private ModelFunctor<TextStyle>             baseValueStyle;
+    private PrimitiveFunctor<VerticalAlignment> baseValueVerticalAlignment;
+    private ModelFunctor<Spacing>               baseValueMargins;
 
 
     // CONSTRUCTORS
@@ -66,27 +75,35 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
     public NumberWidgetFormat()
     {
-        this.id                     = null;
+        this.id                         = null;
 
-        this.insideLabel            = new PrimitiveFunctor<>(null, String.class);
-        this.insideLabelPosition    = new PrimitiveFunctor<>(null, Position.class);
-        this.insideLabelStyle       = ModelFunctor.empty(TextStyle.class);
-        this.insideLabelMargins     = ModelFunctor.empty(Spacing.class);
+        this.insideLabel                = new PrimitiveFunctor<>(null, String.class);
+        this.insideLabelPosition        = new PrimitiveFunctor<>(null, Position.class);
+        this.insideLabelStyle           = ModelFunctor.empty(TextStyle.class);
+        this.insideLabelMargins         = ModelFunctor.empty(Spacing.class);
 
-        this.outsideLabel           = new PrimitiveFunctor<>(null, String.class);
-        this.outsideLabelPosition   = new PrimitiveFunctor<>(null, Position.class);
-        this.outsideLabelStyle      = ModelFunctor.empty(TextStyle.class);
-        this.outsideLabelMargins    = ModelFunctor.empty(Spacing.class);
+        this.outsideLabel               = new PrimitiveFunctor<>(null, String.class);
+        this.outsideLabelPosition       = new PrimitiveFunctor<>(null, Position.class);
+        this.outsideLabelStyle          = ModelFunctor.empty(TextStyle.class);
+        this.outsideLabelMargins        = ModelFunctor.empty(Spacing.class);
 
-        this.descriptionStyle       = ModelFunctor.empty(TextStyle.class);
+        this.descriptionStyle           = ModelFunctor.empty(TextStyle.class);
 
-        this.valueStyle             = ModelFunctor.empty(TextStyle.class);
-        this.valueHeight            = new PrimitiveFunctor<>(null, Height.class);
-        this.valuePaddingHorizontal = new PrimitiveFunctor<>(null, Integer.class);
-        this.valuePaddingVertical   = new PrimitiveFunctor<>(null, Integer.class);
+        this.valueStyle                 = ModelFunctor.empty(TextStyle.class);
+        this.valueHeight                = new PrimitiveFunctor<>(null, Height.class);
+        this.valuePaddingHorizontal     = new PrimitiveFunctor<>(null, Integer.class);
+        this.valuePaddingVertical       = new PrimitiveFunctor<>(null, Integer.class);
 
-        this.valuePrefixStyle       = ModelFunctor.empty(TextStyle.class);
-        this.valuePostfixStyle      = ModelFunctor.empty(TextStyle.class);
+        this.valuePrefixStyle           = ModelFunctor.empty(TextStyle.class);
+        this.valuePostfixStyle          = ModelFunctor.empty(TextStyle.class);
+
+        this.baseValueSeparator         = new PrimitiveFunctor<>(null, String.class);
+        this.baseValueSeparatorMargins  = ModelFunctor.empty(Spacing.class);
+        this.baseValueSeparatorStyle    = ModelFunctor.empty(TextStyle.class);
+
+        this.baseValueStyle             = ModelFunctor.empty(TextStyle.class);
+        this.baseValueVerticalAlignment = new PrimitiveFunctor<>(null, VerticalAlignment.class);
+        this.baseValueMargins           = ModelFunctor.empty(Spacing.class);
     }
 
 
@@ -105,29 +122,50 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                               Integer valuePaddingHorizontal,
                               Integer valuePaddingVertical,
                               TextStyle valuePrefixStyle,
-                              TextStyle valuePostfixStyle)
+                              TextStyle valuePostfixStyle,
+                              String baseValueSeparator,
+                              TextStyle baseValueSeparatorStyle,
+                              Spacing baseValueSeparatorMargins,
+                              TextStyle baseValueStyle,
+                              VerticalAlignment baseValueVerticalAlignment,
+                              Spacing baseValueMargins)
     {
-        this.id                     = id;
+        this.id                         = id;
 
-        this.insideLabel            = new PrimitiveFunctor<>(insideLabel, String.class);
-        this.insideLabelPosition    = new PrimitiveFunctor<>(insideLabelPosition, Position.class);
-        this.insideLabelStyle       = ModelFunctor.full(insideLabelStyle, TextStyle.class);
-        this.insideLabelMargins     = ModelFunctor.full(insideLabelMargins, Spacing.class);
+        this.insideLabel                = new PrimitiveFunctor<>(insideLabel, String.class);
+        this.insideLabelPosition        = new PrimitiveFunctor<>(insideLabelPosition,
+                                                                 Position.class);
+        this.insideLabelStyle           = ModelFunctor.full(insideLabelStyle, TextStyle.class);
+        this.insideLabelMargins         = ModelFunctor.full(insideLabelMargins, Spacing.class);
 
-        this.outsideLabel           = new PrimitiveFunctor<>(outsideLabel, String.class);
-        this.outsideLabelPosition   = new PrimitiveFunctor<>(outsideLabelPosition, Position.class);
-        this.outsideLabelStyle      = ModelFunctor.full(outsideLabelStyle, TextStyle.class);
-        this.outsideLabelMargins    = ModelFunctor.full(outsideLabelMargins, Spacing.class);
+        this.outsideLabel               = new PrimitiveFunctor<>(outsideLabel, String.class);
+        this.outsideLabelPosition       = new PrimitiveFunctor<>(outsideLabelPosition,
+                                                                 Position.class);
+        this.outsideLabelStyle          = ModelFunctor.full(outsideLabelStyle, TextStyle.class);
+        this.outsideLabelMargins        = ModelFunctor.full(outsideLabelMargins, Spacing.class);
 
-        this.descriptionStyle       = ModelFunctor.full(descriptionStyle, TextStyle.class);
+        this.descriptionStyle           = ModelFunctor.full(descriptionStyle, TextStyle.class);
 
-        this.valueStyle             = ModelFunctor.full(valueStyle, TextStyle.class);
-        this.valueHeight            = new PrimitiveFunctor<>(valueHeight, Height.class);
-        this.valuePaddingHorizontal = new PrimitiveFunctor<>(valuePaddingHorizontal, Integer.class);
-        this.valuePaddingVertical   = new PrimitiveFunctor<>(valuePaddingVertical, Integer.class);
+        this.valueStyle                 = ModelFunctor.full(valueStyle, TextStyle.class);
+        this.valueHeight                = new PrimitiveFunctor<>(valueHeight, Height.class);
+        this.valuePaddingHorizontal     = new PrimitiveFunctor<>(valuePaddingHorizontal,
+                                                                 Integer.class);
+        this.valuePaddingVertical       = new PrimitiveFunctor<>(valuePaddingVertical,
+                                                                 Integer.class);
 
-        this.valuePrefixStyle       = ModelFunctor.full(valuePrefixStyle, TextStyle.class);
-        this.valuePostfixStyle      = ModelFunctor.full(valuePostfixStyle, TextStyle.class);
+        this.valuePrefixStyle           = ModelFunctor.full(valuePrefixStyle, TextStyle.class);
+        this.valuePostfixStyle          = ModelFunctor.full(valuePostfixStyle, TextStyle.class);
+
+        this.baseValueSeparator         = new PrimitiveFunctor<>(baseValueSeparator, String.class);
+        this.baseValueSeparatorStyle    = ModelFunctor.full(baseValueSeparatorStyle,
+                                                            TextStyle.class);
+        this.baseValueSeparatorMargins  = ModelFunctor.full(baseValueSeparatorMargins,
+                                                            Spacing.class);
+
+        this.baseValueStyle             = ModelFunctor.full(baseValueStyle, TextStyle.class);
+        this.baseValueVerticalAlignment = new PrimitiveFunctor<>(baseValueVerticalAlignment,
+                                                                 VerticalAlignment.class);
+        this.baseValueMargins           = ModelFunctor.full(baseValueMargins, Spacing.class);
 
         // > Set defaults for null values
         this.setInsideLabelPosition(insideLabelPosition);
@@ -146,6 +184,14 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         this.setValuePrefixStyle(valuePrefixStyle);
         this.setValuePostfixStyle(valuePostfixStyle);
+
+        this.setBaseValueSeparator(baseValueSeparator);
+        this.setBaseValueSeparatorStyle(baseValueSeparatorStyle);
+        this.setBaseValueSeparatorMargins(baseValueSeparatorMargins);
+
+        this.setBaseValueStyle(baseValueStyle);
+        this.setBaseValueVerticalAlignment(baseValueVerticalAlignment);
+        this.setBaseValueMargins(baseValueMargins);
     }
 
 
@@ -185,11 +231,24 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
         TextStyle valuePrefixStyle     = TextStyle.fromYaml(yaml.atMaybeKey("value_prefix_style"));
         TextStyle valuePostfixStyle    = TextStyle.fromYaml(yaml.atMaybeKey("value_postfix_style"));
 
+        String    baseValueSep         = yaml.atMaybeKey("base_value_separator").getString();
+        TextStyle baseValueSepStyle    = TextStyle.fromYaml(
+                                                yaml.atMaybeKey("base_value_separator_style"));
+        Spacing   baseValueSepMargins  = Spacing.fromYaml(
+                                                yaml.atMaybeKey("base_value_separator_margins"));
+
+        TextStyle baseValueStyle       = TextStyle.fromYaml(yaml.atMaybeKey("base_value_style"));
+        VerticalAlignment baseValueVA  = VerticalAlignment.fromYaml(
+                                                yaml.atMaybeKey("base_value_vertical_alignment"));
+        Spacing   baseValueMargins     = Spacing.fromYaml(yaml.atMaybeKey("base_value_margins"));
+
         return new NumberWidgetFormat(id, insideLabel, insideLabelPosition, insideLabelStyle,
                                       insideLabelMargins, outsideLabel, outsideLabelPosition,
                                       outsideLabelStyle, outsideLabelMargins, descriptionStyle,
                                       valueStyle, valueHeight, valuePaddingHorz, valuePaddingVert,
-                                      valuePrefixStyle, valuePostfixStyle);
+                                      valuePrefixStyle, valuePostfixStyle, baseValueSep,
+                                      baseValueSepStyle, baseValueSepMargins, baseValueStyle,
+                                      baseValueVA, baseValueMargins);
     }
 
 
@@ -222,6 +281,14 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
 
         numberWidgetFormat.setValuePrefixStyle(null);
         numberWidgetFormat.setValuePostfixStyle(null);
+
+        numberWidgetFormat.setBaseValueSeparator(null);
+        numberWidgetFormat.setBaseValueSeparatorStyle(null);
+        numberWidgetFormat.setBaseValueSeparatorMargins(null);
+
+        numberWidgetFormat.setBaseValueStyle(null);
+        numberWidgetFormat.setBaseValueVerticalAlignment(null);
+        numberWidgetFormat.setBaseValueMargins(null);
 
         return numberWidgetFormat;
     }
@@ -280,7 +347,15 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
             .putInteger("value_padding_vertical", this.valuePaddingVertical())
 
             .putYaml("value_prefix_style", this.valuePrefixStyle())
-            .putYaml("value_postfix_style", this.valuePostfixStyle());
+            .putYaml("value_postfix_style", this.valuePostfixStyle())
+
+            .putString("base_value_separator", this.baseValueSeparator())
+            .putYaml("base_value_separator_style", this.baseValueSeparatorStyle())
+            .putYaml("base_value_separator_margins", this.baseValueSeparatorMargins())
+
+            .putYaml("base_value_style", this.baseValueStyle())
+            .putYaml("base_value_vertical_alignment", this.baseValueVerticalAlignment())
+            .putYaml("base_value_margins", this.baseValueMargins());
     }
 
 
@@ -680,6 +755,177 @@ public class NumberWidgetFormat implements Model, ToYaml, Serializable
                                                                TextSize.MEDIUM);
             this.valuePostfixStyle.setValue(defaultValuePostfixStyle);
         }
+    }
+
+
+    // ** Base Value Separator
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The separator between the value and the "base value".
+     * @return The separator string.
+     */
+    public String baseValueSeparator()
+    {
+        return this.baseValueSeparator.getValue();
+    }
+
+
+    /**
+     * Set the separator string that appears between the value and the "base value".
+     * Defaults to "/" (forward slash).
+     * @param separator The separator string.
+     */
+    public void setBaseValueSeparator(String separator)
+    {
+        if (separator != null)
+            this.baseValueSeparator.setValue(separator);
+        else
+            this.baseValueSeparator.setValue("/");
+    }
+
+
+
+    // ** Base Value Separator Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The base value separator style.
+     * @return The style.
+     */
+    public TextStyle baseValueSeparatorStyle()
+    {
+        return this.baseValueSeparatorStyle.getValue();
+
+    }
+
+
+    /**
+     * Set the base value separator text style. If null, sets a default style.
+     * @param style The text style.
+     */
+    public void setBaseValueSeparatorStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.baseValueSeparatorStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultStyle = new TextStyle(UUID.randomUUID(),
+                                                   TextColor.THEME_MEDIUM,
+                                                   TextSize.MEDIUM_SMALL);
+            this.baseValueSeparatorStyle.setValue(defaultStyle);
+        }
+    }
+
+
+    // ** Base Value Separator Margins
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The margins around the base value separator.
+     * @return The spacing.
+     */
+    public Spacing baseValueSeparatorMargins()
+    {
+        return this.baseValueSeparatorMargins.getValue();
+    }
+
+
+    /**
+     * Set the base value separator margins. If null, sets default margins of 0.
+     * @param spacing The spacing.
+     */
+    public void setBaseValueSeparatorMargins(Spacing spacing)
+    {
+        if (spacing != null)
+            this.baseValueSeparatorMargins.setValue(spacing);
+        else
+            this.baseValueSeparatorMargins.setValue(Spacing.asDefault());
+    }
+
+
+    // ** Base Value Style
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The base value style.
+     * @return The style.
+     */
+    public TextStyle baseValueStyle()
+    {
+        return this.baseValueStyle.getValue();
+
+    }
+
+
+    /**
+     * Set the base value text style. If null, sets a default style.
+     * @param style The text style.
+     */
+    public void setBaseValueStyle(TextStyle style)
+    {
+        if (style != null) {
+            this.baseValueStyle.setValue(style);
+        }
+        else {
+            TextStyle defaultStyle = new TextStyle(UUID.randomUUID(),
+                                                   TextColor.THEME_MEDIUM,
+                                                   TextSize.MEDIUM_LARGE);
+            this.baseValueStyle.setValue(defaultStyle);
+        }
+    }
+
+
+    // ** Base Value Vertical Alignment
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The vertical alignment of the base value (the value and the separator) in relation to the
+     * value.
+     * @return The vertical alignment.
+     */
+    public VerticalAlignment baseValueVerticalAlignment()
+    {
+        return this.baseValueVerticalAlignment.getValue();
+    }
+
+
+    /**
+     * Set the vertical alignment of the base value. If null, defaults to MIDDLE.
+     * @param alignment The vertical alignment.
+     */
+    public void setBaseValueVerticalAlignment(VerticalAlignment alignment)
+    {
+        if (alignment != null)
+            this.baseValueVerticalAlignment.setValue(alignment);
+        else
+            this.baseValueVerticalAlignment.setValue(VerticalAlignment.MIDDLE);
+    }
+
+
+    // ** Base Value Margins
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The margins around the base value (not including the separator).
+     * @return The spacing.
+     */
+    public Spacing baseValueMargins()
+    {
+        return this.baseValueMargins.getValue();
+    }
+
+
+    /**
+     * Set the base value margins. If null, sets the Spacing defaults of 0s.
+     * @param spacing The spacing.
+     */
+    public void setBaseValueMargins(Spacing spacing)
+    {
+        if (spacing != null)
+            this.baseValueMargins.setValue(spacing);
+        else
+            this.baseValueMargins.setValue(Spacing.asDefault());
     }
 
 

@@ -55,6 +55,8 @@ public class TextViewBuilder implements ViewBuilder
     public SpannableStringBuilder   textSpan;
 
     public Padding                  padding;
+    public Spacing                  paddingSpacing;
+
     public Margins                  margin;
     public Spacing                  marginSpacing;
 
@@ -108,6 +110,8 @@ public class TextViewBuilder implements ViewBuilder
         this.textSpan           = null;
 
         this.padding            = new Padding();
+        this.paddingSpacing     = null;
+
         this.margin             = new Margins();
         this.marginSpacing      = null;
 
@@ -204,10 +208,20 @@ public class TextViewBuilder implements ViewBuilder
         // > Padding
         // --------------------------------------------------------------------------------------
 
-        textView.setPadding(this.padding.left(context),
-                            this.padding.top(context),
-                            this.padding.right(context),
-                            this.padding.bottom(context));
+        if (this.paddingSpacing != null) {
+            textView.setPadding(this.paddingSpacing.leftPx(),
+                                this.paddingSpacing.topPx(),
+                                this.paddingSpacing.rightPx(),
+                                this.paddingSpacing.bottomPx());
+        }
+        else
+        {
+            textView.setPadding(this.padding.left(context),
+                                this.padding.top(context),
+                                this.padding.right(context),
+                                this.padding.bottom(context));
+        }
+
 
         // > On Click Listener
         // --------------------------------------------------------------------------------------

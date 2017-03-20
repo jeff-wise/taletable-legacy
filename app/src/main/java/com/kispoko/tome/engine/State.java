@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine;
 
 
+import android.support.annotation.Nullable;
+
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.variable.BooleanVariable;
@@ -10,8 +12,12 @@ import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
+import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
+import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.tuple.Tuple2;
 
@@ -130,6 +136,29 @@ public class State
     public static VariableUnion variableWithName(String name)
     {
         return variableByName.get(name);
+    }
+
+
+    @Nullable
+    public static NumberVariable numberVariableWithName(String name)
+                  throws VariableException
+    {
+        if (name == null)
+            throw VariableException.undefinedVariable(new UndefinedVariableError("__NULL__"));
+
+        VariableUnion variableUnion = State.variableWithName(name);
+
+        if (variableUnion == null)
+            throw VariableException.undefinedVariable(new UndefinedVariableError(name));
+
+        if (variableUnion.type() != VariableType.NUMBER) {
+            throw VariableException.unexpectedVariableType(
+                    new UnexpectedVariableTypeError(name,
+                                                    VariableType.NUMBER,
+                                                    variableUnion.type()));
+        }
+
+        return variableUnion.numberVariable();
     }
 
 

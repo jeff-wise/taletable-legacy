@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,6 +21,7 @@ import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
@@ -47,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static java.io.File.separator;
 
 
 /**
@@ -73,6 +76,7 @@ public class NumberWidget extends Widget
     private ModelFunctor<NumberVariable>        valueVariable;
     private PrimitiveFunctor<String>            valuePrefix;
     private PrimitiveFunctor<String>            valuePostfix;
+    private PrimitiveFunctor<String>            baseValueVariableName;
     private PrimitiveFunctor<String>            description;
     private CollectionFunctor<VariableUnion>    variables;
 
@@ -88,18 +92,19 @@ public class NumberWidget extends Widget
 
     public NumberWidget()
     {
-        this.id                 = null;
+        this.id                     = null;
 
-        this.widgetData         = ModelFunctor.empty(WidgetData.class);
-        this.format             = ModelFunctor.empty(NumberWidgetFormat.class);
-        this.valueVariable      = ModelFunctor.empty(NumberVariable.class);
-        this.valuePrefix        = new PrimitiveFunctor<>(null, String.class);
-        this.valuePostfix       = new PrimitiveFunctor<>(null, String.class);
-        this.description        = new PrimitiveFunctor<>(null, String.class);
+        this.widgetData             = ModelFunctor.empty(WidgetData.class);
+        this.format                 = ModelFunctor.empty(NumberWidgetFormat.class);
+        this.valueVariable          = ModelFunctor.empty(NumberVariable.class);
+        this.valuePrefix            = new PrimitiveFunctor<>(null, String.class);
+        this.valuePostfix           = new PrimitiveFunctor<>(null, String.class);
+        this.baseValueVariableName  = new PrimitiveFunctor<>(null, String.class);
+        this.description            = new PrimitiveFunctor<>(null, String.class);
 
-        this.variables          = CollectionFunctor.empty(VariableUnion.class);
+        this.variables              = CollectionFunctor.empty(VariableUnion.class);
 
-        this.valueViewId        = null;
+        this.valueViewId            = null;
     }
 
 
@@ -109,21 +114,23 @@ public class NumberWidget extends Widget
                         NumberVariable valueVariable,
                         String valuePrefix,
                         String valuePostfix,
+                        String baseValueVariableName,
                         String description,
                         List<VariableUnion> variables)
     {
-        this.id                 = id;
+        this.id                     = id;
 
-        this.widgetData         = ModelFunctor.full(widgetData, WidgetData.class);
-        this.format             = ModelFunctor.full(format, NumberWidgetFormat.class);
-        this.valueVariable      = ModelFunctor.full(valueVariable, NumberVariable.class);
-        this.valuePrefix        = new PrimitiveFunctor<>(valuePrefix, String.class);
-        this.valuePostfix       = new PrimitiveFunctor<>(valuePostfix, String.class);
-        this.description        = new PrimitiveFunctor<>(description, String.class);
+        this.widgetData             = ModelFunctor.full(widgetData, WidgetData.class);
+        this.format                 = ModelFunctor.full(format, NumberWidgetFormat.class);
+        this.valueVariable          = ModelFunctor.full(valueVariable, NumberVariable.class);
+        this.valuePrefix            = new PrimitiveFunctor<>(valuePrefix, String.class);
+        this.valuePostfix           = new PrimitiveFunctor<>(valuePostfix, String.class);
+        this.baseValueVariableName  = new PrimitiveFunctor<>(baseValueVariableName, String.class);
+        this.description            = new PrimitiveFunctor<>(description, String.class);
 
-        this.variables  = CollectionFunctor.full(variables, VariableUnion.class);
+        this.variables              = CollectionFunctor.full(variables, VariableUnion.class);
 
-        this.valueViewId    = null;
+        this.valueViewId            = null;
 
         this.initializeNumberWidget();
     }
@@ -139,6 +146,7 @@ public class NumberWidget extends Widget
         NumberVariable     value         = NumberVariable.fromYaml(yaml.atKey("value"));
         String             valuePrefix   = yaml.atMaybeKey("value_prefix").getString();
         String             valuePostfix  = yaml.atMaybeKey("value_postfix").getString();
+        String             baseValueVar  = yaml.atMaybeKey("base_value_variable_name").getString();
         String             description   = yaml.atMaybeKey("description").getTrimmedString();
 
         List<VariableUnion> variables    = yaml.atMaybeKey("variables").forEach(
@@ -151,7 +159,7 @@ public class NumberWidget extends Widget
         }, true);
 
         return new NumberWidget(id, widgetData, format, value, valuePrefix, valuePostfix,
-                                description, variables);
+                                baseValueVar, description, variables);
     }
 
 
@@ -199,6 +207,7 @@ public class NumberWidget extends Widget
                 .putYaml("value", this.valueVariable())
                 .putString("value_prefix", this.valuePrefix())
                 .putString("value_postfix", this.valuePostfix())
+                .putString("base_value_variable_name", this.baseValueVariableName())
                 .putString("description", this.description())
                 .putList("variables", this.variables());
     }
@@ -338,6 +347,9 @@ public class NumberWidget extends Widget
     }
 
 
+    // ** Value Prefix
+    // -----------------------------------------------------------------------------------------
+
     /**
      * Get the value prefix (may be null).
      * @return The value prefix string.
@@ -348,6 +360,9 @@ public class NumberWidget extends Widget
     }
 
 
+    // ** Value Postfix
+    // -----------------------------------------------------------------------------------------
+
     /**
      * Get the value postfix (may be null).
      * @return The value postfix string.
@@ -357,6 +372,43 @@ public class NumberWidget extends Widget
         return this.valuePostfix.getValue();
     }
 
+
+    // ** Base Value Variable Name
+    // -----------------------------------------------------------------------------------------
+
+    @Nullable
+    private String baseValueVariableName()
+    {
+        return this.baseValueVariableName.getValue();
+    }
+
+
+    private Integer baseValue()
+    {
+        if (this.baseValueVariableName.isNull())
+            return 0;
+
+        try
+        {
+            NumberVariable numberVariable =
+                                State.numberVariableWithName(this.baseValueVariableName());
+            return numberVariable.value();
+        }
+        catch (VariableException exception)
+        {
+            ApplicationFailure.variable(exception);
+            return 0;
+        }
+        catch (NullVariableException exception)
+        {
+            ApplicationFailure.nullVariable(exception);
+            return 0;
+        }
+    }
+
+
+    // ** Description
+    // -----------------------------------------------------------------------------------------
 
     /**
      * The number description.
@@ -517,7 +569,7 @@ public class NumberWidget extends Widget
             }
         }
 
-        layout.addView(valueTextView(context));
+        layout.addView(valueView(context));
 
         // > Inside Bottom/Right Label View
         if (this.format().insideLabel() != null && this.description() == null) {
@@ -603,6 +655,34 @@ public class NumberWidget extends Widget
     }
 
 
+    private LinearLayout valueView(Context context)
+    {
+        LinearLayout layout = valueViewLayout(context);
+
+        // > Value
+        layout.addView(valueTextView(context));
+
+        // > Base Value
+        if (this.baseValueVariableName() != null)
+            layout.addView(baseValueView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout valueViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.HORIZONTAL;
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        return layout.linearLayout(context);
+    }
+
+
     private TextView valueTextView(Context context)
     {
         TextViewBuilder value = new TextViewBuilder();
@@ -656,6 +736,70 @@ public class NumberWidget extends Widget
             value.size      = this.format().valueStyle().size().resourceId();
             value.font      = this.format().valueStyle().typeface(context);
         }
+
+        return value.textView(context);
+    }
+
+
+    private LinearLayout baseValueView(Context context)
+    {
+        LinearLayout layout = this.baseValueViewLayout(context);
+
+        // > Separator
+        layout.addView(baseValueSeparatorView(context));
+
+        // > Value
+        layout.addView(baseValueTextView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout baseValueViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.HORIZONTAL;
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.layoutGravity        = this.format().baseValueVerticalAlignment().gravityConstant();
+        layout.gravity              = Gravity.CENTER_VERTICAL;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private TextView baseValueSeparatorView(Context context)
+    {
+        TextViewBuilder separator = new TextViewBuilder();
+
+        separator.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        separator.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        separator.text          = this.format().baseValueSeparator();
+
+        this.format().baseValueSeparatorStyle().styleTextViewBuilder(separator, context);
+
+        separator.marginSpacing = this.format().baseValueSeparatorMargins();
+
+        return separator.textView(context);
+    }
+
+
+    private TextView baseValueTextView(Context context)
+    {
+        TextViewBuilder value = new TextViewBuilder();
+
+        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        value.text          = this.baseValue().toString();
+
+        this.format().baseValueStyle().styleTextViewBuilder(value, context);
+
+        value.marginSpacing = this.format().baseValueMargins();
 
         return value.textView(context);
     }

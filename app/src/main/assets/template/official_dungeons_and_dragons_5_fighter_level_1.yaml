@@ -910,7 +910,7 @@ engine:
       - type: text
         value:
           name: unconscious_dying
-          value: unconscious (dead)
+          value: unconscious (dying)
       - type: text
         value:
           name: dead
@@ -6020,12 +6020,13 @@ encounter:
     groups:
     - format:
         background: medium
-        divider: light
+        divider: very_light
         padding:
           top: 12
           bottom: 12
-          left: 12
-          right: 12
+        margins:
+          left: 10
+          right: 10
       rows:
       - format:
         widgets:
@@ -6081,18 +6082,26 @@ encounter:
               value: Current Hit Points
       - format:
           margins:
-            top: 10
+            top: 15
         widgets:
         - type: number
           widget:
+            base_value_variable_name: hit_points
             data:
               format:
-                background: medium
+                background: medium_dark
+                corners: medium
             format:
+              base_value_separator_margins:
+                left: 10
+                right: 7
+              value_padding_horizontal: 20
+              value_padding_vertical: 7
+              value_height: wrap
               value_style:
                 alignment: center
                 color: theme_light
-                size: colossal
+                size: gargantuan
             value:
               name: current_hit_points
               label: Current Hit Points
@@ -6109,7 +6118,7 @@ encounter:
       rows:
       - format:
           margins:
-            top: 15
+            top: 20
         widgets:
         - type: button
           widget:
@@ -6156,10 +6165,10 @@ encounter:
     - name: Temporary Hit Points
       format:
         background: medium
-        divider: light
         padding:
           top: 20
           bottom: 20
+        margins:
           right: 10
           left: 10
       rows:
@@ -6190,9 +6199,13 @@ encounter:
               type: literal
               value: 0
     - format:
-        background: medium
+        background: medium_light
         padding:
           top: 20
+          bottom: 20
+        margins:
+          left: 10
+          right: 10
           bottom: 20
       rows:
       - format:
@@ -6202,15 +6215,17 @@ encounter:
             data:
               format:
                 alignment: center
+                corners: medium
             format:
               description_style:
                 color: theme_medium
+                font: italic
                 size: medium
               value_item_style:
                 color: theme_dark
                 size: medium
               value_style:
-                color: theme_light
+                color: purple_light
                 font: bold
                 size: medium
             description: I am <value>.
@@ -6221,6 +6236,31 @@ encounter:
               value:
                 set_name: physical_status
                 value_name: alive
+    - format:
+        background: medium
+        padding:
+          top: 25
+          left: 10
+          right: 10
+      rows:
+      - format:
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                alignment: center
+                color: gold_light
+                font: italic
+                size: medium
+            value:
+              type: literal
+              value: Resting
   - name: Abilities
     background: medium
     groups:
