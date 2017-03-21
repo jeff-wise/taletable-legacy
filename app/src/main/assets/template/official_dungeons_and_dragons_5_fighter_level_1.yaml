@@ -687,7 +687,7 @@ engine:
     - type: number
       value:
         name: armor_scalemail_armor_bonus
-        label: Scalemail Armor
+        label: Scalemail
         type: literal
         value: 14
         tags:
@@ -4439,6 +4439,7 @@ profile:
               format:
                 alignment: left
                 background: empty
+              name: Armor Class
             description: >
               Armor Class  My advice to all new recruits: "Don't get hit by an
               orc battleaxe -- it sucks"  <value>
@@ -4463,6 +4464,7 @@ profile:
                 terms:
                 - type: integer
                   term:
+                    name: Armor
                     value:
                       type: variable
                       variable:
@@ -6020,7 +6022,6 @@ encounter:
     groups:
     - format:
         background: medium
-        divider: very_light
         padding:
           top: 12
           bottom: 12
@@ -6035,14 +6036,16 @@ encounter:
             data:
               format:
                 alignment: center
+                background: light
+                corners: small
             description: 'I am feeling '
             format:
               description_style:
-                color: theme_medium_light
+                color: theme_light
                 font: italic
-                size: medium_large
+                size: medium
               value_style:
-                background_color: medium_dark
+                background_color: medium_light
                 color: green_light
                 font: regular
                 size: medium_large
@@ -6095,7 +6098,8 @@ encounter:
               base_value_separator_margins:
                 left: 10
                 right: 7
-              value_padding_horizontal: 20
+                bottom: 2
+              value_padding_horizontal: 30
               value_padding_vertical: 7
               value_height: wrap
               value_style:
@@ -6109,7 +6113,7 @@ encounter:
               value: 12
     - format:
         background: medium
-        divider: light
+        divider: very_light
         divider_padding: 10
         padding:
           bottom: 20
@@ -6139,6 +6143,7 @@ encounter:
                 size: medium
                 font: bold
                 color: theme_light
+            view_type: circle_icon
       - format:
           margins:
             top: 15
@@ -6162,12 +6167,13 @@ encounter:
                 size: medium
                 font: bold
                 color: theme_light
+            view_type: circle_icon
     - name: Temporary Hit Points
       format:
         background: medium
         padding:
-          top: 20
-          bottom: 20
+          top: 30
+          bottom: 30
         margins:
           right: 10
           left: 10
@@ -6185,7 +6191,7 @@ encounter:
               outside_label: '   Temporary Hit Points'
               outside_label_position: right
               outside_label_style:
-                color: theme_medium_light
+                color: theme_medium
                 font: bold
                 size: medium
               value_padding_horizontal: 15
@@ -6199,14 +6205,10 @@ encounter:
               type: literal
               value: 0
     - format:
-        background: medium_light
-        padding:
-          top: 20
-          bottom: 20
         margins:
           left: 10
           right: 10
-          bottom: 20
+          bottom: 10
       rows:
       - format:
         widgets:
@@ -6215,12 +6217,13 @@ encounter:
             data:
               format:
                 alignment: center
-                corners: medium
+                background: medium_light
+                corners: small
             format:
               description_style:
                 color: theme_medium
-                font: italic
                 size: medium
+              height: wrap
               value_item_style:
                 color: theme_dark
                 size: medium
@@ -6228,6 +6231,7 @@ encounter:
                 color: purple_light
                 font: bold
                 size: medium
+              vertical_padding: 10
             description: I am <value>.
             view_type: expanded_slashes
             value_type: text
@@ -6242,7 +6246,34 @@ encounter:
           top: 25
           left: 10
           right: 10
+          bottom: 20
       rows:
+      - format:
+          margins:
+            top: 15
+            bottom: 10
+        widgets:
+        - type: button
+          widget:
+            data:
+              format:
+                alignment: center
+                background: light
+                corners: small
+                elevation: 7
+                margins:
+                  left: 3
+                  right: 3
+            label: Short Rest
+            format:
+              padding_horizontal: 20
+              padding_vertical: 10
+              height: wrap
+              label_style:
+                color: gold_light
+                font: bold
+                size: medium_small
+            view_type: text
       - format:
         widgets:
         - type: text
@@ -6255,12 +6286,56 @@ encounter:
               value_height: wrap
               value_style:
                 alignment: center
-                color: gold_light
-                font: italic
-                size: medium
+                color: theme_medium_dark
+                size: small
             value:
               type: literal
-              value: Resting
+              value: >
+                Relax for a short period and regain some hit points.
+      - format:
+          margins:
+            top: 15
+            bottom: 10
+        widgets:
+        - type: button
+          widget:
+            data:
+              format:
+                alignment: center
+                background: light
+                corners: small
+                elevation: 7
+                margins:
+                  left: 3
+                  right: 3
+            label: Long Rest
+            format:
+              padding_horizontal: 20
+              padding_vertical: 10
+              height: wrap
+              label_style:
+                color: gold_light
+                font: bold
+                size: medium_small
+            view_type: text
+      - format:
+        widgets:
+        - type: text
+          widget:
+            data:
+              format:
+                alignment: center
+                background: empty
+            format:
+              value_height: wrap
+              value_style:
+                alignment: center
+                color: theme_medium_dark
+                size: small
+            value:
+              type: literal
+              value: >
+                Spend at least 8 hours sleeping to regain all hit points and abilities.
   - name: Abilities
     background: medium
     groups:
@@ -6357,7 +6432,7 @@ encounter:
                         action_style:
                           color: theme_medium_light
                           size: small
-                        height: medium_small
+                        height: medium
                       modifier:
                         type: literal
                         label: Secure a Prisoner
@@ -6379,7 +6454,7 @@ encounter:
                         action_style:
                           color: theme_medium_light
                           size: small
-                        height: medium_small
+                        height: medium
                       modifier:
                         type: literal
                         label: Secure a Prisoner

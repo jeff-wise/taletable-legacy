@@ -30,6 +30,7 @@ import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.option.OptionWidgetFormat;
 import com.kispoko.tome.sheet.widget.option.ViewType;
 import com.kispoko.tome.sheet.Corners;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
 import com.kispoko.tome.lib.ui.FormattedString;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
@@ -526,6 +527,11 @@ public class OptionWidget extends Widget implements Serializable
         layout.gravity              = this.data().format().alignment().gravityConstant()
                                         | Gravity.CENTER_VERTICAL;
 
+        if (this.data().format().background() != BackgroundColor.EMPTY) {
+            layout.backgroundResource   = this.data().format().corners().resourceId();
+            layout.backgroundColor      = this.data().format().background().colorId();
+        }
+
         return layout.linearLayout(context);
     }
 
@@ -630,9 +636,23 @@ public class OptionWidget extends Widget implements Serializable
         value.gravity       = this.data().format().alignment().gravityConstant()
                                 | Gravity.CENTER_VERTICAL;
 
+        value.layoutGravity = this.data().format().alignment().gravityConstant()
+                                | Gravity.CENTER_VERTICAL;
+
+
         value.textSpan      = expandedSlashesSpannable(context);
 
         this.format().descriptionStyle().styleTextViewBuilder(value, context);
+
+        if (this.data().format().background() != BackgroundColor.EMPTY) {
+            value.backgroundResource   = this.data().format().corners().resourceId();
+            value.backgroundColor      = this.data().format().background().colorId();
+        }
+
+        if (this.format().height() == Height.WRAP) {
+            value.padding.topDp    = this.format().verticalPadding().floatValue();
+            value.padding.bottomDp = this.format().verticalPadding().floatValue();
+        }
 
         return value.textView(context);
     }

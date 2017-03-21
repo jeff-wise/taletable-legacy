@@ -102,8 +102,8 @@
     <!-- RED ORANGE -->
     <!-- ================================================================ -->
 
-    <!-- cool but more orangy -->
-    <color name="red_orange_light">#D17156</color>
+    <!--<color name="red_orange_light">#D17156</color>-->
+    <color name="red_orange_light">#D18360</color>
 
     <!-- ORANGE -->
     <color name="orange_light">#D19D6E</color>

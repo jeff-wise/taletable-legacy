@@ -23,7 +23,7 @@ public enum ButtonViewType implements ToYaml
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    CIRCLE_ICON_BUTTON,
+    CIRCLE_ICON,
     TEXT;
 
 

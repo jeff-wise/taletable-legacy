@@ -878,7 +878,13 @@ public class NumberWidget extends Widget
             // OPEN the summation preview dialog
             case SUMMATION:
                 Summation summation      = this.valueVariable().summation();
-                String    summationLabel = this.valueVariable().label();
+
+                String    summationLabel = "";
+                if (this.data().name() != null)
+                    summationLabel = this.data().name();
+                else if (this.valueVariable().label() != null)
+                    summationLabel = this.valueVariable().label();
+
                 SummationDialogFragment summationDialog =
                                     SummationDialogFragment.newInstance(summation, summationLabel);
                 summationDialog.show(sheetActivity.getSupportFragmentManager(), "");

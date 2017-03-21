@@ -124,6 +124,9 @@ public class SummationDialogFragment extends DialogFragment
 
         layout.addView(dividerView(context));
 
+        layout.addView(this.nameView(context));
+        layout.addView(this.totalView(context));
+
         // > Summmation
         layout.addView(this.summationView(context));
 
@@ -162,7 +165,9 @@ public class SummationDialogFragment extends DialogFragment
 
         // > Widget Button
         String configureWidgetString = context.getString(R.string.widget);
-        layout.addView(headerButtonView(configureWidgetString, R.drawable.ic_dialog_widget, context));
+        layout.addView(headerButtonView(configureWidgetString,
+                                        R.drawable.ic_dialog_widget,
+                                        context));
 
         return layout;
     }
@@ -176,25 +181,12 @@ public class SummationDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.topDp        = 5f;
-        layout.padding.bottomDp     = 5f;
+//        layout.padding.topDp        = 5f;
+//        layout.padding.bottomDp     = 5f;
 
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
         return layout.linearLayout(context);
-    }
-
-
-    private LinearLayout dividerView(Context context)
-    {
-        LinearLayoutBuilder divider = new LinearLayoutBuilder();
-
-        divider.width       = LinearLayout.LayoutParams.MATCH_PARENT;
-        divider.heightDp    = 1;
-
-        divider.backgroundColor = R.color.dark_blue_6;
-
-        return divider.linearLayout(context);
     }
 
 
@@ -255,6 +247,19 @@ public class SummationDialogFragment extends DialogFragment
     }
 
 
+    private LinearLayout dividerView(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.heightDp         = 1;
+
+        layout.backgroundColor  = R.color.dark_blue_5;
+
+        return layout.linearLayout(context);
+    }
+
+
     // ** Summation
     // -----------------------------------------------------------------------------------------
 
@@ -265,8 +270,6 @@ public class SummationDialogFragment extends DialogFragment
         // > Components
         layout.addView(this.componentsView(context));
 
-        // > Total
-        layout.addView(this.totalView(context));
 
         return layout;
     }
@@ -280,6 +283,8 @@ public class SummationDialogFragment extends DialogFragment
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.margin.bottomDp      = 15f;
 
         return layout.linearLayout(context);
     }
@@ -317,10 +322,12 @@ public class SummationDialogFragment extends DialogFragment
         if (summary.name() != null)
             layout.addView(this.componentHeaderView(summary.name(), context));
 
+
         for (Tuple2<String,String> component : summary.components())
         {
             String name  = component.getItem1();
             String value = component.getItem2();
+
             layout.addView(componentItemView(name, value, context));
         }
 
@@ -337,7 +344,7 @@ public class SummationDialogFragment extends DialogFragment
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         layout.backgroundResource   = R.drawable.bg_widget_wrap_corners_small;
-        layout.backgroundColor      = R.color.dark_blue_7;
+        layout.backgroundColor      = R.color.dark_blue_6;
 
         layout.margin.topDp         = 3f;
         layout.margin.bottomDp      = 3f;
@@ -346,14 +353,16 @@ public class SummationDialogFragment extends DialogFragment
     }
 
 
-    private RelativeLayout componentItemView(String nameText, String valueText, Context context)
+    private RelativeLayout componentItemView(String nameText,
+                                             String valueText,
+                                             Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
 
-        RelativeLayoutBuilder layout = new RelativeLayoutBuilder();
-        TextViewBuilder       name   = new TextViewBuilder();
-        TextViewBuilder       value  = new TextViewBuilder();
+        RelativeLayoutBuilder layout  = new RelativeLayoutBuilder();
+        TextViewBuilder       name    = new TextViewBuilder();
+        TextViewBuilder       value   = new TextViewBuilder();
 
         // [2] Layout
         // -------------------------------------------------------------------------------------
@@ -362,11 +371,11 @@ public class SummationDialogFragment extends DialogFragment
         layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left             = R.dimen.dialog_summ_component_padding_left;
-        layout.padding.right            = R.dimen.dialog_summ_component_padding_right;
+        layout.padding.leftDp           = 10f;
+        layout.padding.rightDp          = 10f;
 
-        layout.padding.top              = R.dimen.dialog_summ_component_padding_vert;
-        layout.padding.bottom           = R.dimen.dialog_summ_component_padding_vert;
+        layout.padding.topDp            = 8f;
+        layout.padding.bottomDp         = 8f;
 
         layout.child(name)
               .child(value);
@@ -375,29 +384,29 @@ public class SummationDialogFragment extends DialogFragment
         // -------------------------------------------------------------------------------------
 
         name.layoutType                 = LayoutType.RELATIVE;
-        name.width                      = LinearLayout.LayoutParams.WRAP_CONTENT;
-        name.height                     = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.width                      = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        name.height                     = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         name.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 
         name.text                       = nameText;
-        name.font                       = Font.serifFontItalic(context);
-        name.size                       = R.dimen.dialog_summ_component_name_text_size;
-        name.color                      = R.color.dark_blue_hl_8;
+        name.font                       = Font.serifFontRegular(context);
+        name.sizeSp                     = 16f;
+        name.color                      = R.color.dark_blue_hlx_9;
 
         // [3 B] Value
         // -------------------------------------------------------------------------------------
 
         value.layoutType                = LayoutType.RELATIVE;
-        value.width                     = LinearLayout.LayoutParams.WRAP_CONTENT;
-        value.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.width                     = RelativeLayout.LayoutParams.WRAP_CONTENT;
+        value.height                    = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
         value.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
         value.text                      = valueText;
         value.font                      = Font.serifFontBold(context);
-        value.size                      = R.dimen.dialog_summ_component_value_text_size;
-        value.color                     = R.color.dark_blue_hl_8;
+        value.sizeSp                    = 16f;
+        value.color                     = R.color.dark_blue_hlx_9;
 
 
         return layout.relativeLayout(context);
@@ -411,12 +420,37 @@ public class SummationDialogFragment extends DialogFragment
         header.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        header.padding.topDp        = 10f;
+        header.padding.leftDp       = 10f;
+
         header.text                 = headerText;
         header.font                 = Font.serifFontRegular(context);
-        header.color                = R.color.dark_blue_hl_5;
-        header.size                 = R.dimen.dialog_summ_component_header_text_size;
+        header.color                = R.color.dark_blue_1;
+        header.sizeSp               = 12f;
 
         return header.textView(context);
+    }
+
+
+    private TextView nameView(Context context)
+    {
+        TextViewBuilder name = new TextViewBuilder();
+
+        name.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        name.layoutGravity  = Gravity.CENTER_HORIZONTAL;
+
+        if (this.summationLabel != null)
+            name.text           = this.summationLabel.toUpperCase();
+
+        name.font           = Font.serifFontRegular(context);
+        name.color          = R.color.dark_blue_hl_8;
+        name.sizeSp         = 11f;
+
+        name.margin.topDp    = 15f;
+
+        return name.textView(context);
     }
 
 
@@ -424,16 +458,19 @@ public class SummationDialogFragment extends DialogFragment
     {
         TextViewBuilder total = new TextViewBuilder();
 
-        total.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-        total.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
+        total.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        total.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        total.layoutGravity = Gravity.CENTER_HORIZONTAL;
+        total.layoutGravity     = Gravity.CENTER_HORIZONTAL;
 
-        total.text          = this.summation.valueString();
+        total.text              = this.summation.valueString();
 
-        total.font          = Font.serifFontRegular(context);
-        total.color         = R.color.dark_blue_hlx_7;
-        total.sizeSp        = 28f;
+        total.font              = Font.serifFontRegular(context);
+        total.color             = R.color.gold_medium_light;
+        total.sizeSp            = 34f;
+
+        total.margin.topDp      = 8f;
+        total.margin.bottomDp   = 8f;
 
         return total.textView(context);
     }
@@ -463,7 +500,8 @@ public class SummationDialogFragment extends DialogFragment
 
         layout.gravity          = Gravity.CENTER_VERTICAL | Gravity.END;
 
-        layout.margin.bottomDp  = 10f;
+        layout.margin.topDp     = 5f;
+        layout.margin.bottomDp  = 15f;
 
         return layout.linearLayout(context);
     }
@@ -507,7 +545,7 @@ public class SummationDialogFragment extends DialogFragment
         button.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
         button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        button.text             = context.getString(R.string.full_editor);
+        button.text             = context.getString(R.string.calculator);
         button.font             = Font.serifFontRegular(context);
         button.color            = R.color.dark_blue_1;
         button.sizeSp           = 16f;
@@ -558,7 +596,7 @@ public class SummationDialogFragment extends DialogFragment
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        icon.image                  = R.drawable.ic_dialog_done;
+        icon.image                  = R.drawable.ic_dialog_summation_edit;
 
         icon.color                  = R.color.green_medium_dark;
 
@@ -570,7 +608,7 @@ public class SummationDialogFragment extends DialogFragment
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.text                  = context.getString(R.string.done).toUpperCase();
+        label.text                  = context.getString(R.string.edit).toUpperCase();
         label.font                  = Font.serifFontBold(context);
         label.color                 = R.color.green_medium_dark;
         label.sizeSp                = 14f;

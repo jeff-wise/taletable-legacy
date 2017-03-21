@@ -187,7 +187,7 @@ public class ConditionalTerm extends Term implements Serializable
 
     public TermSummary summary()
     {
-        List<Tuple2<String,String>> components = new ArrayList<>();
+        List<Tuple2<String,Integer>> components = new ArrayList<>();
 
         try {
             if (conditionalTermValue().value())
@@ -199,7 +199,18 @@ public class ConditionalTerm extends Term implements Serializable
             ApplicationFailure.variable(exception);
         }
 
-        return new TermSummary(this.name(), components);
+        // > Convert the component integers to strings
+        List<Tuple2<String,String>> componentsWithStringValue = new ArrayList<>();
+
+        for (Tuple2<String,Integer> component : components)
+        {
+            Tuple2<String,String> comp = new Tuple2<>(component.getItem1(),
+                                                      component.getItem2().toString());
+            componentsWithStringValue.add(comp);
+        }
+
+
+        return new TermSummary(this.name(), componentsWithStringValue);
     }
 
 

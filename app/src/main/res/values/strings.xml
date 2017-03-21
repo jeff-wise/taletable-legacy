@@ -55,6 +55,8 @@
 
     <string name="done">Done</string>
 
+    <string name="calculator">Calculator</string>
+
 
     <string name="placeholder_label">&lt;label&gt;</string>
     <string name="placeholder_value">&lt;value&gt;</string>

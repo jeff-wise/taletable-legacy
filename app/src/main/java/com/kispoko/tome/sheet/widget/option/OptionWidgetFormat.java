@@ -2,6 +2,8 @@
 package com.kispoko.tome.sheet.widget.option;
 
 
+import com.kispoko.tome.lib.functor.PrimitiveFunctor;
+import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.TextColor;
 import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
@@ -39,6 +41,9 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
     private ModelFunctor<TextStyle>             valueStyle;
     private ModelFunctor<TextStyle>             valueItemStyle;
 
+    private PrimitiveFunctor<Height>            height;
+    private PrimitiveFunctor<Integer>           verticalPadding;
+
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -50,13 +55,18 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
         this.descriptionStyle   = ModelFunctor.empty(TextStyle.class);
         this.valueStyle         = ModelFunctor.empty(TextStyle.class);
         this.valueItemStyle     = ModelFunctor.empty(TextStyle.class);
+
+        this.height             = new PrimitiveFunctor<>(null, Height.class);
+        this.verticalPadding    = new PrimitiveFunctor<>(null, Integer.class);
     }
 
 
     public OptionWidgetFormat(UUID id,
                               TextStyle descriptionStyle,
                               TextStyle valueStyle,
-                              TextStyle valueItemStyle)
+                              TextStyle valueItemStyle,
+                              Height height,
+                              Integer verticalPadding)
     {
         this.id                 = id;
 
@@ -64,9 +74,16 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
         this.valueStyle         = ModelFunctor.full(valueStyle, TextStyle.class);
         this.valueItemStyle     = ModelFunctor.full(valueItemStyle, TextStyle.class);
 
+        this.height             = new PrimitiveFunctor<>(height, Height.class);
+        this.verticalPadding    = new PrimitiveFunctor<>(verticalPadding, Integer.class);
+
+        // > Set defaults
         this.setDescriptionStyle(descriptionStyle);
         this.setValueStyle(valueStyle);
         this.setValueItemStyle(valueItemStyle);
+
+        this.setHeight(height);
+        this.setVerticalPadding(verticalPadding);
     }
 
 
@@ -88,7 +105,11 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
         TextStyle valueStyle        = TextStyle.fromYaml(yaml.atMaybeKey("value_style"));
         TextStyle valueItemStyle    = TextStyle.fromYaml(yaml.atMaybeKey("value_item_style"));
 
-        return new OptionWidgetFormat(id, descriptionStyle, valueStyle, valueItemStyle);
+        Height    height            = Height.fromYaml(yaml.atMaybeKey("height"));
+        Integer   verticalPadding   = yaml.atMaybeKey("vertical_padding").getInteger();
+
+        return new OptionWidgetFormat(id, descriptionStyle, valueStyle, valueItemStyle,
+                                      height, verticalPadding);
     }
 
 
@@ -101,9 +122,13 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
         OptionWidgetFormat format = new OptionWidgetFormat();
 
         format.setId(UUID.randomUUID());
+
         format.setDescriptionStyle(null);
         format.setValueStyle(null);
         format.setValueItemStyle(null);
+
+        format.setHeight(null);
+        format.setVerticalPadding(null);
 
         return format;
     }
@@ -244,6 +269,59 @@ public class OptionWidgetFormat implements Model, ToYaml, Serializable
                                                         TextSize.MEDIUM_SMALL);
             this.valueItemStyle.setValue(defaultValueItemStyle);
         }
+    }
+
+
+    // ** Height
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The height of the widget.
+     * @return The height
+     */
+    public Height height()
+    {
+        return this.height.getValue();
+    }
+
+
+    /**
+     * Set the height of the option widget. If null, defaults to WRAP.
+     * @param height The height.
+     */
+    public void setHeight(Height height)
+    {
+        if (height != null)
+            this.height.setValue(height);
+        else
+            this.height.setValue(Height.WRAP);
+    }
+
+
+    // ** Vertical Padding
+    // --------------------------------------------------------------------------------------
+
+    /**
+     * The vertical padding (dp) around the widget content. The padding is only used when the
+     * height of the widget is set to WRAP.
+     * @return The vertical padding.
+     */
+    public Integer verticalPadding()
+    {
+        return this.verticalPadding.getValue();
+    }
+
+
+    /**
+     * Set the vertical padding. If null, defaults to 0.
+     * @param padding The padding.
+     */
+    public void setVerticalPadding(Integer padding)
+    {
+        if (padding != null)
+            this.verticalPadding.setValue(padding);
+        else
+            this.verticalPadding.setValue(padding);
     }
 
 

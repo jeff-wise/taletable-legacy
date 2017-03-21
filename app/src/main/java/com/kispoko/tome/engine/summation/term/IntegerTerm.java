@@ -10,6 +10,7 @@ import com.kispoko.tome.lib.functor.ModelFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.util.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -191,7 +192,18 @@ public class IntegerTerm extends Term implements Serializable
      */
     public TermSummary summary()
     {
-        return new TermSummary(this.name(), this.termValue().components());
+        // > Convert the component integers to strings
+        List<Tuple2<String,Integer>> components = this.termValue().components();
+        List<Tuple2<String,String>> componentsWithStringValue = new ArrayList<>();
+
+        for (Tuple2<String,Integer> component : components)
+        {
+            Tuple2<String,String> comp = new Tuple2<>(component.getItem1(),
+                                                      component.getItem2().toString());
+            componentsWithStringValue.add(comp);
+        }
+
+        return new TermSummary(this.name(), componentsWithStringValue);
     }
 
 }

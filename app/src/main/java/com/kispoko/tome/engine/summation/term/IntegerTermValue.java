@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.summation.term;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.VariableException;
@@ -26,6 +27,8 @@ import com.kispoko.tome.lib.yaml.error.InvalidEnumError;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -296,14 +299,14 @@ public class IntegerTermValue implements Model, Serializable
     // > Components
     // ------------------------------------------------------------------------------------------
 
-    public List<Tuple2<String,String>> components()
+    public List<Tuple2<String,Integer>> components()
     {
         switch (this.kind())
         {
             case LITERAL:
-                List<Tuple2<String,String>> components = new ArrayList<>();
+                List<Tuple2<String,Integer>> components = new ArrayList<>();
                 String name = this.name() != null ? this.name() : "";
-                components.add(new Tuple2<>(name, this.literal().toString()));
+                components.add(new Tuple2<>(name, this.literal()));
                 return components;
             case VARIABLE:
                 return this.variableSummaries();
@@ -351,9 +354,9 @@ public class IntegerTermValue implements Model, Serializable
     }
 
 
-    private List<Tuple2<String,String>> variableSummaries()
+    private List<Tuple2<String,Integer>> variableSummaries()
     {
-        List<Tuple2<String,String>> summaries = new ArrayList<>();
+        List<Tuple2<String,Integer>> summaries = new ArrayList<>();
 
         for (VariableUnion variableUnion : this.variableReference().variables())
         {
@@ -372,12 +375,30 @@ public class IntegerTermValue implements Model, Serializable
 
             try {
                 Integer value = variable.value();
-                summaries.add(new Tuple2<>(variable.label(), value.toString()));
+                summaries.add(new Tuple2<>(variable.label(), value));
             }
             catch (NullVariableException exception) {
                 ApplicationFailure.nullVariable(exception);
             }
         }
+
+        // > Sort the summaries
+        Collections.sort(summaries, new Comparator<Tuple2<String,Integer>>()
+        {
+            @Override
+            public int compare(Tuple2<String,Integer> summary1, Tuple2<String,Integer> summary2)
+            {
+                int summary1Value = summary1.getItem2();
+                int summary2Value = summary2.getItem2();
+
+                if (summary1Value > summary2Value)
+                    return -1;
+                if (summary2Value < summary1Value)
+                    return 1;
+                return 0;
+            }
+        });
+
 
         return summaries;
     }
