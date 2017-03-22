@@ -2,6 +2,7 @@
 package com.kispoko.tome.activity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -64,7 +65,6 @@ public class SheetActivity
 
     // > Requests
     public static final int CHOOSE_IMAGE_FROM_FILE = 0;
-    public static final int COMPONENT_EDIT = 1;
 
     // ComponentUtil
     private Toolbar             toolbar;
@@ -301,10 +301,14 @@ public class SheetActivity
      */
     private void initializeNavigation()
     {
-        //Initializing NavigationView
-        NavigationView navigationView = (NavigationView) findViewById(R.id.app_navigation_view);
+        // App Navigation View
+        NavigationView appNavigationView = (NavigationView) findViewById(R.id.app_navigation_view);
+        appNavigationView.addView(this.appNavigationView(this));
 
-        navigationView.addView(this.navigationView());
+        // Sheet Navigation View
+        NavigationView sheetNavigationView =
+                                    (NavigationView) findViewById(R.id.sheet_navigation_view);
+        sheetNavigationView.addView(this.sheetNavigationView(this));
     }
 
 
@@ -390,34 +394,27 @@ public class SheetActivity
     // > Views
     // -------------------------------------------------------------------------------------------
 
-    private ScrollView navigationView()
+    // ** APP Navigation View
+    // -----------------------------------------------------------------------------------------
+
+    private ScrollView appNavigationView(Context context)
     {
-        ScrollView scrollView = this.navigationScrollView();
+        ScrollView scrollView = this.navigationScrollView(context);
 
-        LinearLayout layout = this.navigationLayout();
+        LinearLayout layout = this.appNavigationLayout(context);
 
-        // > Top Button Row
-        layout.addView(topButtonsRowView());
+        // > Account
+        layout.addView(this.accountView(context));
 
-        // > Divider
-//        layout.addView(UI.divider(this, R.color.dark_blue_10, 1));
-//        layout.addView(UI.divider(this, R.color.dark_blue_7, 1));
+        layout.addView(this.dividerView(context));
 
-        // > Sheet Options
-        layout.addView(sheetOptionsView());
+        // > Sheet Buttons
+        layout.addView(this.sheetButtonsView(context));
 
-        // > Manage Sheets Button
-        layout.addView(manageSheetsButton());
+        layout.addView(this.dividerView(context));
 
-        // > Tools
-        layout.addView(toolsView());
-
-        // > Divider
-//        layout.addView(UI.divider(this, R.color.dark_blue_10, 1));
-//        layout.addView(UI.divider(this, R.color.dark_blue_7, 1));
-
-        // > Bottom Button Row
-        layout.addView(bottomButtonsRowView());
+        // > App Buttons
+        layout.addView(this.appButtonsView(context));
 
         scrollView.addView(layout);
 
@@ -425,18 +422,7 @@ public class SheetActivity
     }
 
 
-    private ScrollView navigationScrollView()
-    {
-        ScrollViewBuilder scrollView = new ScrollViewBuilder();
-
-        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT;
-        scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT;
-
-        return scrollView.scrollView(this);
-    }
-
-
-    private LinearLayout navigationLayout()
+    private LinearLayout appNavigationLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -446,547 +432,369 @@ public class SheetActivity
 
         layout.padding.top      = R.dimen.nav_view_padding_top;
 
-        return layout.linearLayout(this);
+        layout.backgroundColor  = R.color.dark_blue_11;
+
+        return layout.linearLayout(context);
     }
 
 
-    private LinearLayout topButtonsRowView()
+    private LinearLayout accountView(Context context)
     {
-        LinearLayout layout = buttonRowView();
+        LinearLayout layout = this.accountViewLayout(context);
 
-        layout.addView(iconButton(R.string.nav_view_button_feedback,
-                                  R.drawable.ic_nav_feedback));
-        layout.addView(iconButton(R.string.nav_view_button_help,
-                                  R.drawable.ic_nav_help));
-        layout.addView(iconButton(R.string.nav_view_button_settings,
-                                  R.drawable.ic_nav_settings));
+        // > User
+        layout.addView(this.userView(context));
+
+        // > Controls
+        layout.addView(this.accountControlsView(context));
 
         return layout;
     }
 
 
-    private LinearLayout bottomButtonsRowView()
+    private LinearLayout accountViewLayout(Context context)
     {
-        LinearLayout layout = buttonRowView();
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.addView(iconButton(R.string.nav_view_button_about_us,
-                                  R.drawable.ic_nav_about_us));
-        layout.addView(iconButton(R.string.nav_view_button_upgrades,
-                                  R.drawable.ic_nav_upgrades));
-        layout.addView(iconButton(R.string.nav_view_button_news,
-                                  R.drawable.ic_nav_news));
+        layout.orientation      = LinearLayout.VERTICAL;
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.padding.leftDp   = 10f;
+        layout.padding.rightDp  = 10f;
+        layout.padding.topDp    = 10f;
+        layout.padding.bottomDp = 20f;
+
+        return layout.linearLayout(context);
+    }
+
+
+
+    private LinearLayout userView(Context context)
+    {
+        LinearLayout layout = this.userViewLayout(context);
+
+        // > Account Picture
+        layout.addView(accountIconView(context));
+
+        // > Account Name
+        layout.addView(accountNameView(context));
 
         return layout;
     }
 
 
-    private LinearLayout buttonRowView()
+    private ImageView accountIconView(Context context)
     {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        ImageViewBuilder icon = new ImageViewBuilder();
 
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.top          = R.dimen.nav_view_buttons_row_layout_padding_vert;
-        layout.padding.bottom       = R.dimen.nav_view_buttons_row_layout_padding_vert;
+        icon.image          = R.drawable.ic_app_nav_account;
 
-        return layout.linearLayout(this);
+        icon.color          = R.color.dark_blue_hl_2;
+
+        return icon.imageView(context);
     }
 
 
-    private LinearLayout iconButton(int labelId, int iconDrawableId)
+    private TextView accountNameView(Context context)
     {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
+        TextViewBuilder name = new TextViewBuilder();
 
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        ImageViewBuilder    icon   = new ImageViewBuilder();
-        TextViewBuilder     text   = new TextViewBuilder();
+        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        // [2] Layout
-        // --------------------------------------------------------------------------------------
+        name.text               = "Jeff Wise";
 
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = 0;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.weight               = 1.0f;
-        layout.gravity              = Gravity.CENTER_HORIZONTAL;
+        name.font               = Font.serifFontRegular(context);
+        name.color              = R.color.gold_light;
+        name.sizeSp             = 17f;
 
-        layout.child(icon)
-              .child(text);
+        name.margin.leftDp      = 10f;
 
-        // [3 A] Icon
-        // --------------------------------------------------------------------------------------
-
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.image                  = iconDrawableId;
-
-        icon.margin.bottom          = R.dimen.nav_view_icon_button_icon_margin_bottom;
-
-        // [3 B] Text
-        // --------------------------------------------------------------------------------------
-
-        text.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        text.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        text.textId                 = labelId;
-        text.color                  = R.color.dark_blue_hl_6;
-        text.size                   = R.dimen.nav_view_icon_button_text_size;
-        text.font                   = Font.sansSerifFontRegular(this);
-
-        return layout.linearLayout(this);
+        return name.textView(context);
     }
 
 
-    private LinearLayout sheetOptionsView()
+    private LinearLayout userViewLayout(Context context)
     {
-        LinearLayout layout = sheetOptionsLayout();
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        // > Header
-        // --------------------------------------------------------------------------------------
+        layout.orientation      = LinearLayout.HORIZONTAL;
 
-        layout.addView(sheetOptionsHeaderView());
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        // > Buttons
-        // --------------------------------------------------------------------------------------
+        layout.gravity          = Gravity.CENTER_VERTICAL;
 
-        LinearLayout buttonsLayout = sheetOptionsButtonsLayout();
+        return layout.linearLayout(context);
+    }
 
-        // > Layout Button
-        View.OnClickListener onLayoutClick = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(SheetActivity.this, SectionsActivity.class);
-                startActivity(intent);
-            }
-        };
-        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_layout_label,
-                                                 R.string.nav_view_button_layout_description,
-                                                 onLayoutClick));
 
-        // > Dictionary Button
-        View.OnClickListener onDictionaryClick = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(SheetActivity.this, DictionaryActivity.class);
-                startActivity(intent);
-            }
-        };
-        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_dictionary_label,
-                                                 R.string.nav_view_button_dictionary_description,
-                                                 onDictionaryClick));
+    private LinearLayout accountControlsView(Context context)
+    {
+        LinearLayout layout = this.accountControlsViewLayout(context);
 
-        // > Functions Button
-        View.OnClickListener onFunctionsClick = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(SheetActivity.this, FunctionIndexActivity.class);
-                startActivity(intent);
-            }
-        };
-        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_functions_label,
-                                                 R.string.nav_view_button_functions_description,
-                                                 onFunctionsClick));
-
-        // > Programs Button
-        View.OnClickListener onProgramsClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SheetActivity.this, ProgramIndexActivity.class);
-                startActivity(intent);
-            }
-        };
-        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_programs_label,
-                                                 R.string.nav_view_button_programs_description,
-                                                 onProgramsClick));
-
-        // > Mechanics Button
-        View.OnClickListener onMechanicsClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SheetActivity.this, MechanicIndexActivity.class);
-                startActivity(intent);
-            }
-        };
-        buttonsLayout.addView(sheetOptionsButton(R.string.nav_view_button_mechanics_label,
-                                                 R.string.nav_view_button_mechanics_description,
-                                                 onMechanicsClick));
-
-        layout.addView(buttonsLayout);
+        layout.addView(this.createAccountButtonView(context));
 
         return layout;
     }
 
 
-    private LinearLayout sheetOptionsLayout()
+    private LinearLayout accountControlsViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.orientation      = LinearLayout.HORIZONTAL;
 
-        layout.padding.top          = R.dimen.nav_view_sheet_options_padding_top;
-        layout.padding.left         = R.dimen.nav_view_sheet_options_padding_horz;
-        layout.padding.right        = R.dimen.nav_view_sheet_options_padding_horz;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        return layout.linearLayout(this);
+        layout.gravity          = Gravity.CENTER_HORIZONTAL;
+
+        layout.margin.topDp     = 20f;
+
+        return layout.linearLayout(context);
     }
 
 
-    private LinearLayout sheetOptionsButtonsLayout()
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        return layout.linearLayout(this);
-    }
-
-
-    private LinearLayout sheetOptionsButton(Integer labelStringId,
-                                            Integer descriptionStringId,
-                                            View.OnClickListener onClickListener)
+    private LinearLayout createAccountButtonView(Context context)
     {
         // [1] Declarations
-        // --------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout          = new LinearLayoutBuilder();
-        TextViewBuilder     label           = new TextViewBuilder();
-        TextViewBuilder     description     = new TextViewBuilder();
-
-        // [2] Layout
-        // --------------------------------------------------------------------------------------
-
-        layout.orientation              = LinearLayout.VERTICAL;
-        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.backgroundResource       = R.drawable.bg_nav_button;
-        layout.onClick                  = onClickListener;
-
-        layout.margin.bottom            = R.dimen.nav_view_sheet_options_button_margin_bottom;
-
-        layout.child(label)
-              .child(description);
-
-        // [3 A] Label
-        // --------------------------------------------------------------------------------------
-
-        label.width                     = LinearLayout.LayoutParams.MATCH_PARENT;
-        label.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.gravity                   = Gravity.CENTER_HORIZONTAL;
-        //label.weight                    = 1.0f;
-
-        label.textId                    = labelStringId;
-        label.font                      = Font.sansSerifFontBold(this);
-        label.size                      = R.dimen.nav_view_sheet_options_button_label_text_size;
-        label.color                     = R.color.dark_blue_hlx_7;
-
-        label.margin.bottom             = R.dimen.nav_view_sheet_options_button_label_margin_bottom;
-
-        // [3 B] Description
-        // --------------------------------------------------------------------------------------
-
-        description.width           = LinearLayout.LayoutParams.MATCH_PARENT;
-        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        //description.weight              = 3.0f;
-
-        description.textId          = descriptionStringId;
-        description.font            = Font.sansSerifFontRegular(this);
-        description.size            = R.dimen.nav_view_sheet_options_button_description_text_size;
-        description.color           = R.color.dark_blue_hl_8;
-
-        return layout.linearLayout(this);
-    }
-
-
-    private LinearLayout sheetOptionsHeaderView()
-    {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
         ImageViewBuilder    icon   = new ImageViewBuilder();
         TextViewBuilder     label  = new TextViewBuilder();
 
-        // [2] Layout
-        // --------------------------------------------------------------------------------------
+        // [2] Declarations
+        // -------------------------------------------------------------------------------------
 
         layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.margin.bottom        = R.dimen.nav_view_sheet_options_header_margin_bottom;
-
-        layout.child(icon)
-              .child(label);
-
-        // [3 A] Icon
-        // --------------------------------------------------------------------------------------
-
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        // icon.image                  = R.drawable.ic_nav_sheet;
-
-        icon.padding.right          = R.dimen.nav_view_sheet_options_header_icon_margin_right;
-
-        // [3 B] Label
-        // --------------------------------------------------------------------------------------
-
-        label.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.textId               = R.string.nav_view_header_sheet;
-        label.color                = R.color.gold_light;
-        label.size                 = R.dimen.nav_view_sheet_options_header_text_size;
-        label.font                 = Font.sansSerifFontRegular(this);
-
-        return layout.linearLayout(this);
-    }
-
-
-    private LinearLayout manageSheetsButton()
-    {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        ImageViewBuilder    icon   = new ImageViewBuilder();
-        TextViewBuilder     label  = new TextViewBuilder();
-
-        // [2] Layout
-        // --------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity              = Gravity.CENTER;
-
-        layout.backgroundColor      = R.color.dark_blue_6;
-
-        layout.padding.top          = R.dimen.nav_view_manage_sheets_button_padding_vert;
-        layout.padding.bottom       = R.dimen.nav_view_manage_sheets_button_padding_vert;
-        layout.margin.top           = R.dimen.nav_view_manage_sheets_button_margin_top;
-
-        layout.onClick              = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(SheetActivity.this, ManageSheetsActivity.class);
-                startActivity(intent);
-            }
-        };
-
-        layout.child(icon)
-              .child(label);
-
-        // [3 A] Icon
-        // --------------------------------------------------------------------------------------
-
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        // icon.image                  = R.drawable.ic_nav_manage_sheets;
-
-        icon.margin.right           = R.dimen.nav_view_manage_sheets_button_icon_margin_right;
-
-        // [3 A] Label
-        // --------------------------------------------------------------------------------------
-
-        label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.textId                = R.string.button_manage_sheets;
-        label.size                  = R.dimen.nav_view_manage_sheets_button_text_size;
-        label.font                  = Font.sansSerifFontRegular(this);
-        label.color                 = R.color.gold_light;
-
-
-        return layout.linearLayout(this);
-    }
-
-
-    private LinearLayout toolsView()
-    {
-        LinearLayout layout = toolsLayout();
-
-        // > Header
-        layout.addView(toolsHeaderView());
-
-        // > Buttons
-        LinearLayout buttonsLayout = this.toolsButtonsLayout();
-
-        LinearLayout row1 = this.toolsButtonsRowView();
-        row1.addView(toolsButton(R.string.nav_view_tools_button_calculator,
-                                 R.drawable.ic_nav_calculator));
-        row1.addView(toolsButton(R.string.nav_view_tools_button_name_generator,
-                                 R.drawable.ic_nav_name_generator));
-
-        buttonsLayout.addView(row1);
-
-        layout.addView(buttonsLayout);
-
-        return layout;
-    }
-
-
-    private LinearLayout toolsLayout()
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.margin.top           = R.dimen.nav_view_tools_margin_top;
-        layout.margin.bottom        = R.dimen.nav_view_tools_margin_bottom;
-
-        return layout.linearLayout(this);
-    }
-
-
-    private LinearLayout toolsHeaderView()
-    {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        ImageViewBuilder    icon   = new ImageViewBuilder();
-        TextViewBuilder     label  = new TextViewBuilder();
-
-        // [2] Layout
-        // --------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
-        layout.margin.bottom        = R.dimen.nav_view_tools_header_margin_bottom;
-        layout.padding.left         = R.dimen.nav_view_tools_header_padding_horz;
-        layout.padding.right        = R.dimen.nav_view_tools_header_padding_horz;
-
         layout.child(icon)
               .child(label);
 
         // [3 A] Icon
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        // icon.image                  = R.drawable.ic_nav_tools;
+        icon.image                  = R.drawable.ic_app_nav_create_account;
 
-        icon.margin.right           = R.dimen.nav_view_tools_header_icon_margin_right;
+        icon.color                  = R.color.dark_blue_hl_8;
 
         // [3 B] Label
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.textId                = R.string.nav_view_header_tools;
-        label.size                  = R.dimen.nav_view_tools_header_text_size;
-        label.color                 = R.color.gold_light;
-        label.font                  = Font.sansSerifFontRegular(this);
+        label.textId                = R.string.create_account;
 
-        return layout.linearLayout(this);
+        label.font                  = Font.serifFontRegular(context);
+        label.color                 = R.color.dark_blue_hl_8;
+        label.sizeSp                = 13f;
+
+
+        return layout.linearLayout(context);
     }
 
 
-    private LinearLayout toolsButtonsLayout()
+    private LinearLayout sheetButtonsView(Context context)
+    {
+        LinearLayout layout = this.buttonsLayout(context);
+
+        // > My Sheets
+        LinearLayout mySheetsButton = this.buttonView(R.string.my_sheets,
+                                                      R.drawable.ic_app_nav_my_sheets,
+                                                      context);
+        layout.addView(mySheetsButton);
+
+        // > New Sheet
+        LinearLayout newSheetButton = this.buttonView(R.string.new_sheet,
+                                                      R.drawable.ic_app_nav_new_sheet,
+                                                      context);
+        layout.addView(newSheetButton);
+
+        return layout;
+    }
+
+
+    private LinearLayout appButtonsView(Context context)
+    {
+        LinearLayout layout = this.buttonsLayout(context);
+
+        // > Tutorials
+        LinearLayout tutorialsButton = this.buttonView(R.string.tutorials,
+                                                       R.drawable.ic_app_nav_help,
+                                                       context);
+        layout.addView(tutorialsButton);
+
+        // > Settings
+        LinearLayout settingsButton = this.buttonView(R.string.settings,
+                                                      R.drawable.ic_app_nav_settings,
+                                                      context);
+        layout.addView(settingsButton);
+
+        // > Feedback
+        LinearLayout feedbackButton = this.buttonView(R.string.give_us_your_feedback,
+                R.drawable.ic_app_nav_feedback,
+                context);
+        layout.addView(feedbackButton);
+
+        // > Upgrades
+        LinearLayout upgradesButton = this.buttonView(R.string.upgrades,
+                                                      R.drawable.ic_app_nav_upgrades,
+                                                      context);
+        layout.addView(upgradesButton);
+
+        // > News
+        LinearLayout newsButton = this.buttonView(R.string.news_slash_updates,
+                                                  R.drawable.ic_app_nav_news,
+                                                  context);
+        layout.addView(newsButton);
+
+        // > About This App
+        LinearLayout aboutButton = this.buttonView(R.string.about_this_app,
+                                                   R.drawable.ic_app_nav_about_us,
+                                                   context);
+        layout.addView(aboutButton);
+
+        return layout;
+    }
+
+
+    // ** SHEET Navigation View
+    // -----------------------------------------------------------------------------------------
+
+    private ScrollView sheetNavigationView(Context context)
+    {
+        ScrollView scrollView = this.navigationScrollView(context);
+
+        LinearLayout layout = this.sheetNavigationLayout(context);
+
+
+        return scrollView;
+    }
+
+
+    private LinearLayout sheetNavigationLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation      = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        layout.padding.top      = R.dimen.nav_view_padding_top;
+
+        return layout.linearLayout(context);
+    }
+
+
+    // ** SHARED views & layouts
+    // -----------------------------------------------------------------------------------------
+
+    private ScrollView navigationScrollView(Context context)
+    {
+        ScrollViewBuilder scrollView = new ScrollViewBuilder();
+
+        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT;
+        scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        return scrollView.scrollView(context);
+    }
+
+
+    private LinearLayout buttonsLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
         layout.orientation          = LinearLayout.VERTICAL;
+
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left         = R.dimen.nav_view_tools_buttons_layout_padding_horz;
-        layout.padding.right        = R.dimen.nav_view_tools_buttons_layout_padding_horz;
+        layout.padding.leftDp       = 15f;
+        layout.padding.topDp        = 10f;
+        layout.padding.bottomDp     = 10f;
 
-        return layout.linearLayout(this);
+        return layout.linearLayout(context);
     }
 
 
-    private LinearLayout toolsButtonsRowView()
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        return layout.linearLayout(this);
-    }
-
-
-    private LinearLayout toolsButton(int labelId, int iconId)
+    private LinearLayout buttonView(int labelId, int iconId, Context context)
     {
         // [1] Declarations
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
         ImageViewBuilder    icon   = new ImageViewBuilder();
         TextViewBuilder     label  = new TextViewBuilder();
 
         // [2] Layout
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = 0;
+        layout.orientation          = LinearLayout.HORIZONTAL;
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.weight               = 1.0f;
-        layout.gravity              = Gravity.CENTER;
 
-        layout.backgroundResource   = R.drawable.bg_nav_button;
-
-        layout.margin.left          = R.dimen.nav_view_tools_button_margin_horz;
-        layout.margin.right         = R.dimen.nav_view_tools_button_margin_horz;
+        layout.padding.topDp        = 15f;
+        layout.padding.bottomDp     = 15f;
 
         layout.child(icon)
               .child(label);
 
         // [3 A] Icon
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         icon.image                  = iconId;
 
-        icon.margin.bottom          = R.dimen.nav_view_tools_button_icon_margin_bottom;
+        icon.color                  = R.color.dark_blue_hl_2;
 
-        // [3 B] Label
-        // --------------------------------------------------------------------------------------
+        icon.margin.rightDp         = 20f;
+
+        // [3 B] Button
+        // -------------------------------------------------------------------------------------
 
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.gravity               = Gravity.CENTER;
 
         label.textId                = labelId;
-        label.color                 = R.color.dark_blue_hl_3;
-        label.font                  = Font.sansSerifFontRegular(this);
-        label.size                  = R.dimen.nav_view_tools_button_text_size;
 
-        return layout.linearLayout(this);
+        label.font                  = Font.serifFontRegular(context);
+        label.color                 = R.color.dark_blue_hlx_10;
+        label.sizeSp                = 17f;
+
+
+        return layout.linearLayout(context);
     }
 
 
+    private LinearLayout dividerView(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.heightDp         = 1;
+
+        layout.backgroundColor  = R.color.dark_blue_7;
+
+        return layout.linearLayout(context);
+    }
 
 }
