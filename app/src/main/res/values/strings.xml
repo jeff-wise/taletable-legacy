@@ -80,6 +80,15 @@
     <string name="about_this_app">About This App</string>
     <string name="news_slash_updates">News / Updates</string>
 
+    <string name="dictionary">Dictionary</string>
+    <string name="mechanics">Mechanics</string>
+    <string name="functions">Functions</string>
+    <string name="programs">Programs</string>
+    <string name="debugger">Debugger</string>
+    <string name="layout">Layout</string>
+    <string name="theme">Theme</string>
+
+
 
     <!-- DIALOG -->
     <!-- ==================================================================================== -->

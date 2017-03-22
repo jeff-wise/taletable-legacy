@@ -75,6 +75,8 @@ public class SheetActivity
 
     private String              characterName;
 
+    private TextView            sheetNavCharacterNameView;
+
     private PagePagerAdapter    pagePagerAdapter;
 
 
@@ -212,11 +214,10 @@ public class SheetActivity
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setText(this.characterName);
 
-        TextView navHeaderDesc = (TextView) findViewById(R.id.nav_view_header_sheet_desc);
-        if (navHeaderDesc != null) {
-            navHeaderDesc.setText(this.characterName);
-            navHeaderDesc.setVisibility(View.VISIBLE);
+        if (this.sheetNavCharacterNameView != null) {
+            this.sheetNavCharacterNameView.setText(this.characterName);
         }
+
     }
 
 
@@ -683,6 +684,22 @@ public class SheetActivity
 
         LinearLayout layout = this.sheetNavigationLayout(context);
 
+        // > Character View
+        layout.addView(this.characterView(context));
+
+        // --- Divider
+        layout.addView(this.dividerView(context));
+
+        // > Programming Options
+        layout.addView(this.programmingButtonsView(context));
+
+        // --- Divider
+        layout.addView(this.dividerView(context));
+
+        // > Style Options
+        layout.addView(this.styleButtonsView(context));
+
+        scrollView.addView(layout);
 
         return scrollView;
     }
@@ -699,6 +716,153 @@ public class SheetActivity
         layout.padding.top      = R.dimen.nav_view_padding_top;
 
         return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout characterView(Context context)
+    {
+        LinearLayout layout = this.characterViewLayout(context);
+
+        // > Avatar
+        layout.addView(characterAvatarView(context));
+
+        // > Name
+        this.sheetNavCharacterNameView = this.characterNameView(context);
+        layout.addView(this.sheetNavCharacterNameView);
+
+        // > Description
+        layout.addView(characterDescriptionView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout characterViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.gravity              = Gravity.CENTER_HORIZONTAL;
+
+        layout.padding.topDp        = 15f;
+        layout.padding.bottomDp     = 20f;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private ImageView characterAvatarView(Context context)
+    {
+        ImageViewBuilder avatar = new ImageViewBuilder();
+
+        avatar.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        avatar.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        avatar.image                = R.drawable.ic_sheet_menu_default_avatar;
+
+        avatar.color                = R.color.dark_blue_hl_2;
+
+        return avatar.imageView(context);
+    }
+
+
+    private TextView characterNameView(Context context)
+    {
+        TextViewBuilder name = new TextViewBuilder();
+
+        name.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        name.text               = this.characterName;
+
+        name.font               = Font.serifFontRegular(context);
+        name.color              = R.color.gold_light;
+        name.sizeSp             = 24f;
+
+        name.margin.topDp       = 8f;
+
+        return name.textView(context);
+    }
+
+
+    private TextView characterDescriptionView(Context context)
+    {
+        TextViewBuilder description = new TextViewBuilder();
+
+        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        description.text            = "Level 1 Human Fighter";
+
+        description.font            = Font.serifFontRegular(context);
+        description.color           = R.color.dark_blue_hl_6;
+        description.sizeSp          = 14f;
+
+        description.margin.topDp    = 8f;
+
+        return description.textView(context);
+    }
+
+
+    private LinearLayout programmingButtonsView(Context context)
+    {
+        LinearLayout layout = this.buttonsLayout(context);
+
+        // > Dictionary
+        LinearLayout dictionaryButton = this.buttonView(R.string.dictionary,
+                                                        R.drawable.ic_sheet_nav_dictionary,
+                                                        context);
+        layout.addView(dictionaryButton);
+
+        // > Functions
+        LinearLayout functionsButton = this.buttonView(R.string.functions,
+                                                      R.drawable.ic_sheet_nav_functions,
+                                                      context);
+        layout.addView(functionsButton);
+
+        // > Programs
+        LinearLayout programsButton = this.buttonView(R.string.programs,
+                                                      R.drawable.ic_sheet_nav_programs,
+                                                      context);
+        layout.addView(programsButton);
+
+        // > Mechanics
+        LinearLayout mechanicsButton = this.buttonView(R.string.mechanics,
+                                                       R.drawable.ic_sheet_nav_mechanics,
+                                                       context);
+        layout.addView(mechanicsButton);
+
+        // > Debugger
+        LinearLayout debuggerButton = this.buttonView(R.string.debugger,
+                                                      R.drawable.ic_sheet_nav_debugger,
+                                                      context);
+        layout.addView(debuggerButton);
+
+        return layout;
+    }
+
+
+    private LinearLayout styleButtonsView(Context context)
+    {
+        LinearLayout layout = this.buttonsLayout(context);
+
+        // > Layout
+        LinearLayout layoutButton = this.buttonView(R.string.layout,
+                                                    R.drawable.ic_sheet_nav_layout,
+                                                    context);
+        layout.addView(layoutButton);
+
+        // > Theme
+        LinearLayout themeButton = this.buttonView(R.string.theme,
+                                                   R.drawable.ic_sheet_nav_theme,
+                                                   context);
+        layout.addView(themeButton);
+
+        return layout;
     }
 
 
@@ -724,6 +888,8 @@ public class SheetActivity
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.gravity              = Gravity.CENTER_VERTICAL;
 
         layout.padding.leftDp       = 15f;
         layout.padding.topDp        = 10f;

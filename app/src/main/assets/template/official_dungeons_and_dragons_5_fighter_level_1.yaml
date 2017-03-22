@@ -6432,7 +6432,7 @@ encounter:
                         action_style:
                           color: theme_medium_light
                           size: small
-                        height: medium
+                        height: small
                       modifier:
                         type: literal
                         label: Secure a Prisoner
@@ -6454,7 +6454,7 @@ encounter:
                         action_style:
                           color: theme_medium_light
                           size: small
-                        height: medium
+                        height: small
                       modifier:
                         type: literal
                         label: Secure a Prisoner
