@@ -48,6 +48,7 @@ public class TextViewBuilder implements ViewBuilder
     public Integer                  gravity;
     public Integer                  layoutGravity;
     public Integer                  visibility;
+    public Integer                  elevation;
 
     public String                   text;
     public Spanned                  textHtml;
@@ -103,6 +104,7 @@ public class TextViewBuilder implements ViewBuilder
         this.gravity            = null;
         this.layoutGravity      = null;
         this.visibility         = null;
+        this.elevation          = null;
 
         this.text               = null;
         this.textHtml           = null;
@@ -240,6 +242,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.hapticFeedback != null)
             textView.setHapticFeedbackEnabled(this.hapticFeedback);
+
+        // > Elevation
+        // --------------------------------------------------------------------------------------
+
+        if (this.elevation != null && android.os.Build.VERSION.SDK_INT >= 21)
+            textView.setElevation(this.elevation);
 
         // > Size
         // --------------------------------------------------------------------------------------

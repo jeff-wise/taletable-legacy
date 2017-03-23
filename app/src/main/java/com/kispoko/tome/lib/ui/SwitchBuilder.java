@@ -33,6 +33,9 @@ public class SwitchBuilder implements ViewBuilder
     public String           onText;
     public String           offText;
 
+    public Float            scaleX;
+    public Float            scaleY;
+
     public List<Integer>    rules;
 
     private Integer         styleId;
@@ -69,6 +72,9 @@ public class SwitchBuilder implements ViewBuilder
         this.offText            = null;
 
         this.styleId            = styleId;
+
+        this.scaleX             = null;
+        this.scaleY             = null;
 
         this.rules              = new ArrayList<>();
     }
@@ -132,6 +138,18 @@ public class SwitchBuilder implements ViewBuilder
 
         if (this.offText != null)
             switchView.setTextOff(this.offText);
+
+        // > Scale X
+        // -------------------------------------------------------------------------------------
+
+        if (this.scaleX != null)
+            switchView.setScaleX(this.scaleX);
+
+        // > Scale Y
+        // -------------------------------------------------------------------------------------
+
+        if (this.scaleY != null)
+            switchView.setScaleY(this.scaleY);
 
 
         // [2] Layout

@@ -9,12 +9,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,7 +31,6 @@ import com.kispoko.tome.lib.ui.SwitchBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.sheet.widget.ListWidget;
 
-import static com.kispoko.tome.lib.ui.EditDialog.headerViewLayout;
 
 
 /**
@@ -151,14 +150,14 @@ public class ListWidgetDialogFragment extends DialogFragment
     {
         LinearLayout layout = viewLayout(context);
 
+        // > List
+        // layout.addView(listEditorButtonView(context));
+
         // > Tab (Main Content) View
         layout.addView(tabView(context));
 
         // > Content
         layout.addView(contentView(context));
-
-        // > List
-        layout.addView(listEditorButtonView(context));
 
         return layout;
     }
@@ -173,7 +172,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundColor      = R.color.dark_blue_9;
+        layout.backgroundColor      = R.color.dark_blue_10;
         layout.backgroundResource   = R.drawable.bg_dialog;
 
         return layout.linearLayout(context);
@@ -210,15 +209,34 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         // Edit Button
         String editButtonLabel = context.getString(R.string.edit_item);
-        layout.addView(this.tabButtonView(editButtonLabel, null, context));
+        LinearLayout editTabView = this.tabButtonView(editButtonLabel, null, context);
+        layout.addView(editTabView);
 
         // New Button
         String newButtonLabel = context.getString(R.string.new_item);
-        layout.addView(this.tabButtonView(newButtonLabel,
-                                          R.drawable.ic_dialog_list_new_item,
-                                          context));
+        LinearLayout newTabView = this.tabButtonView(newButtonLabel,
+                                                     R.drawable.ic_dialog_list_new_item,
+                                                     context);
+        layout.addView(newTabView);
+
+        selectTabView(editTabView, newTabView, context);
 
         return layout;
+    }
+
+
+    private void selectTabView(LinearLayout selectedTabView,
+                               LinearLayout unselectedTabView,
+                               Context context)
+    {
+        // Set Tab Backgrounds
+        selectedTabView.setBackground(
+                ContextCompat.getDrawable(context, R.drawable.bg_dialog_list_widget_tab));
+        unselectedTabView.setBackgroundResource(0);
+
+        // Set Tab Text Colors
+        TextView tabLabelView = (TextView) selectedTabView.findViewById(R.id.tab_label);
+        tabLabelView.setTextColor(ContextCompat.getColor(context, R.color.dark_blue_hl_2));
     }
 
 
@@ -230,6 +248,11 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.margin.topDp         = 20f;
+
+        layout.margin.leftDp        = 10f;
+        layout.margin.rightDp       = 10f;
 
         return layout.linearLayout(context);
     }
@@ -250,8 +273,10 @@ public class ListWidgetDialogFragment extends DialogFragment
         layout.orientation          = LinearLayout.HORIZONTAL;
 
         layout.width                = 0;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.heightDp             = 34;
         layout.weight               = 1f;
+
+        layout.gravity              = Gravity.CENTER;
 
         if (iconId != null)
             layout.child(icon);
@@ -268,16 +293,20 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         icon.color                  = R.color.dark_blue_1;
 
+        icon.margin.rightDp         = 3f;
+
         // [3 B] Label
         // -------------------------------------------------------------------------------------
+
+        label.id                    = R.id.tab_label;
 
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        label.text                  = labelText;
+        label.text                  = labelText.toUpperCase();
         label.font                  = Font.serifFontRegular(context);
-        label.color                 = R.color.dark_blue_hl_5;
-        label.sizeSp                = 15f;
+        label.color                 = R.color.dark_blue_1;
+        label.sizeSp                = 14f;
 
 
         return layout.linearLayout(context);
@@ -313,10 +342,22 @@ public class ListWidgetDialogFragment extends DialogFragment
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation      = LinearLayout.VERTICAL;
+        layout.orientation          = LinearLayout.VERTICAL;
 
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.margin.leftDp        = 10f;
+        layout.margin.rightDp       = 10f;
+
+        layout.margin.bottomDp      = 10f;
+
+        layout.padding.leftDp       = 10f;
+        layout.padding.rightDp      = 10f;
+        layout.padding.topDp        = 20f;
+
+        layout.backgroundColor      = R.color.dark_blue_7;
+        layout.backgroundResource   = R.drawable.bg_dialog_list_widget_content;
 
         return layout.linearLayout(context);
     }
@@ -352,19 +393,72 @@ public class ListWidgetDialogFragment extends DialogFragment
     }
 
 
-    private TextView valueChooserButtonView(Context context)
+    private LinearLayout valueChooserButtonView(Context context)
     {
-        TextViewBuilder button = new TextViewBuilder();
+        // [1] Declarations
+        // -------------------------------------------------------------------------------------
 
-        button.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        button.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        LinearLayoutBuilder layout  = new LinearLayoutBuilder();
+        TextViewBuilder     label   = new TextViewBuilder();
+        TextViewBuilder     value   = new TextViewBuilder();
 
-        button.text             = this.itemClickedValueString();
-        button.font             = Font.serifFontRegular(context);
-        button.color            = R.color.dark_blue_hl_2;
-        button.sizeSp           = 17f;
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
 
-        return button.textView(context);
+        layout.orientation          = LinearLayout.HORIZONTAL;
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+//        layout.padding.bottomDp     = 2f;
+//        layout.padding.leftDp       = 8f;
+//        layout.padding.rightDp      = 7f;
+
+        layout.backgroundResource   = R.drawable.bg_dialog_list_widget_chooser;
+        layout.backgroundColor      = R.color.dark_blue_3;
+
+        layout.elevation            = 8f;
+
+        layout.margin.leftDp        = 3f;
+        layout.margin.rightDp       = 3f;
+
+        layout.padding.topDp        = 10f;
+        layout.padding.bottomDp     = 10f;
+        layout.padding.leftDp       = 8f;
+        layout.padding.rightDp      = 8f;
+
+        layout.gravity              = Gravity.CENTER_VERTICAL;
+
+        layout//.child(label)
+              .child(value);
+
+        // [3] Button
+        // -------------------------------------------------------------------------------------
+
+        label.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text                 = "LANGUAGE";
+
+        label.font                 = Font.serifFontRegular(context);
+        label.color                = R.color.dark_blue_hl_8;
+        label.sizeSp               = 13f;
+
+        label.margin.rightDp       = 7f;
+
+        // [4] Value
+        // -------------------------------------------------------------------------------------
+
+        value.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        value.text                 = this.itemClickedValueString();
+        value.font                 = Font.serifFontRegular(context);
+        value.color                = R.color.gold_light;
+        value.sizeSp               = 18f;
+
+
+        return layout.linearLayout(context);
     }
 
 
@@ -385,6 +479,10 @@ public class ListWidgetDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.gravity              = Gravity.CENTER_VERTICAL;
+
+        layout.margin.topDp         = 15f;
+
         layout.child(switchView)
               .child(label);
 
@@ -398,13 +496,19 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         switchView.checked              = false;
 
+        switchView.scaleX               = 0.85f;
+        switchView.scaleY               = 0.85f;
+
         // [3 B] Label
         // -------------------------------------------------------------------------------------
 
+        label.width                     = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height                    = LinearLayout.LayoutParams.WRAP_CONTENT;
+
         label.textId                    = R.string.highlight_item;
         label.font                      = Font.serifFontRegular(context);
-        label.color                     = R.color.dark_blue_hl_2;
-        label.sizeSp                    = 15f;
+        label.color                     = R.color.dark_blue_hl_4;
+        label.sizeSp                    = 14f;
 
         return layout.linearLayout(context);
     }
@@ -427,6 +531,11 @@ public class ListWidgetDialogFragment extends DialogFragment
         layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.gravity          = Gravity.CENTER_VERTICAL;
+
+        layout.margin.topDp     = 15f;
+        layout.margin.bottomDp  = 15f;
+
         layout.child(icon)
               .child(label);
 
@@ -447,8 +556,8 @@ public class ListWidgetDialogFragment extends DialogFragment
         label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         label.font              = Font.serifFontRegular(context);
-        label.color             = R.color.dark_blue_hl_2;
-        label.sizeSp            = 16f;
+        label.color             = R.color.dark_blue_hl_4;
+        label.sizeSp            = 14f;
 
         label.textId            = R.string.delete_item;
 
@@ -496,10 +605,10 @@ public class ListWidgetDialogFragment extends DialogFragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.topDp        = 6f;
-        layout.padding.bottomDp     = 4f;
-
         layout.gravity              = Gravity.CENTER_VERTICAL;
+
+        layout.padding.topDp        = 10f;
+        layout.padding.bottomDp     = 10f;
 
         return layout.linearLayout(context);
     }
@@ -537,7 +646,7 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         icon.image          = iconId;
 
-        icon.color          = R.color.dark_blue_2;
+        icon.color          = R.color.dark_blue_1;
 
         icon.margin.rightDp = 4f;
 
@@ -553,9 +662,6 @@ public class ListWidgetDialogFragment extends DialogFragment
         label.sizeSp               = 16.0f;
         label.color                = R.color.dark_blue_1;
         label.font                 = Font.serifFontRegular(context);
-
-        label.padding.topDp        = 12f;
-        label.padding.bottomDp     = 12f;
 
 
         return layout.linearLayout(context);
@@ -578,6 +684,8 @@ public class ListWidgetDialogFragment extends DialogFragment
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.gravity              = Gravity.CENTER_HORIZONTAL;
 
         layout.child(icon)
               .child(label);
