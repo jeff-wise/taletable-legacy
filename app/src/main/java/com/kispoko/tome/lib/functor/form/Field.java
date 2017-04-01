@@ -3,6 +3,7 @@ package com.kispoko.tome.lib.functor.form;
 
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,116 +11,81 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.form.TextFieldDialogFragment;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 
+import java.io.Serializable;
+import java.util.UUID;
+
+
 
 /**
  * Functor Forms
  */
-public class Field
+public class Field implements Serializable
 {
 
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private String       name;
+    private UUID            modelId;
 
-    private LinearLayout formView;
+    private String          name;
+    private String          label;
+    private String          value;
+
+    private Type            type;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    private Field(String name, LinearLayout formView)
+    private Field(UUID modelId,
+                  String fieldName,
+                  String fieldLabel,
+                  String fieldValue,
+                  Type type)
     {
-        this.name     = name;
+        this.modelId    = modelId;
 
-        this.formView = formView;
+        this.name       = fieldName;
+        this.label      = fieldLabel;
+        this.value      = fieldValue;
+
+        this.type       = type;
     }
 
 
     /**
      * Create a text field.
-     * @param name The field name.
-     * @param value The field value as a string.
-     * @param context The context.
+     * @param fieldName The field name.
+     * @param fieldLabel The field label.
+     * @param fieldValue The field value as a string.
      * @return The text field.
      */
-    public static Field text(String name, String label, String value, Context context)
+    public static Field text(UUID modelId,
+                             String fieldName,
+                             String fieldLabel,
+                             String fieldValue)
     {
-        LinearLayout formView = textFieldView(label, value, context);
-
-        return new Field(name, formView);
+        return new Field(modelId, fieldName, fieldLabel, fieldValue, Type.TEXT);
     }
 
 
     /**
      * Create a list field.
-     * @param name The field name.
      * @param values The field value strings.
-     * @param context The context.
      * @return The list field.
      */
-    public static Field list(String name, String label, String values, Context context)
+    public static Field list(UUID modelId,
+                             String fieldName,
+                             String fieldLabel,
+                             String values)
     {
-        LinearLayout formView = listFieldView(label, values, context);
-
-        return new Field(name, formView);
-    }
-
-
-    // API
-    // -----------------------------------------------------------------------------------------
-
-    // > Fields
-    // -----------------------------------------------------------------------------------------
-
-    /**
-     * Text Field View.
-     * @param name The field name.
-     * @param value The field value string.
-     * @param context The context.
-     * @return The field Linear Layout.
-     */
-    private static LinearLayout textFieldView(String name,
-                                             String value,
-                                             Context context)
-    {
-        LinearLayout layout = viewLayout(context);
-
-        // > Header
-        layout.addView(fieldTypeView(R.drawable.ic_form_type_text, context));
-
-        // > Data
-        layout.addView(fieldDataView(name, value, context));
-
-        return layout;
-    }
-
-
-    /**
-     * List Field View.
-     * @param name The field name.
-     * @param context The context.
-     * @return The field Linear Layout.
-     */
-    private static LinearLayout listFieldView(String name,
-                                             String valuesString,
-                                             Context context)
-    {
-        LinearLayout layout = viewLayout(context);
-
-        // > Type
-        layout.addView(fieldTypeView(R.drawable.ic_form_type_list, context));
-
-        // > Data
-        //String valuesString = Integer.toString(numberOfValues) + " values";
-        layout.addView(fieldDataView(name, valuesString, context));
-
-        return layout;
+        return new Field(modelId, fieldName, fieldLabel, values, Type.LIST);
     }
 
 
@@ -130,9 +96,17 @@ public class Field
      * The field view.
      * @return The field Linear Layout.
      */
-    public LinearLayout view()
+    public LinearLayout view(AppCompatActivity context)
     {
-        return this.formView;
+        switch (this.type)
+        {
+            case TEXT:
+                return this.textFieldView(context);
+            case LIST:
+                return this.listFieldView(context);
+            default:
+                return null;
+        }
     }
 
 
@@ -146,13 +120,33 @@ public class Field
     }
 
 
+    /**
+     * The field label.
+     * @return The label.
+     */
+    public String label()
+    {
+        return this.label;
+    }
+
+
+    /**
+     * The field value string.
+     * @return The value.
+     */
+    public String value()
+    {
+        return this.value;
+    }
+
+
     // INTERNAL
     // -----------------------------------------------------------------------------------------
 
     // > Layout
     // -----------------------------------------------------------------------------------------
 
-    private static LinearLayout viewLayout(Context context)
+    private LinearLayout viewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -174,7 +168,7 @@ public class Field
     // -----------------------------------------------------------------------------------------
 
 
-    private static ImageView fieldTypeView(int iconId, Context context)
+    private ImageView fieldTypeView(int iconId, Context context)
     {
         ImageViewBuilder icon = new ImageViewBuilder();
 
@@ -190,28 +184,79 @@ public class Field
     }
 
 
-
-
-    // > Data View
+    // > Fields
     // -----------------------------------------------------------------------------------------
 
-    private static LinearLayout fieldDataView(String descriptionString,
-                                              String valueString,
-                                              Context context)
+    /**
+     * Text Field View.
+     * @param context The context.
+     * @return The field Linear Layout.
+     */
+    private LinearLayout textFieldView(final AppCompatActivity context)
     {
-        LinearLayout layout = fieldDataViewLayout(context);
+        LinearLayout layout = this.viewLayout(context);
 
-        // > Name
-        layout.addView(fieldNameView(descriptionString, context));
+        // > Header
+        layout.addView(fieldTypeView(R.drawable.ic_form_type_text, context));
 
-        // > Value
-        layout.addView(fieldValueView(valueString, context));
+        // > Data
+        layout.addView(fieldDataView(context));
+
+
+        final Field thisField = this;
+        layout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                TextFieldDialogFragment dialog =
+                        TextFieldDialogFragment.newInstance(modelId, thisField);
+                dialog.show(context.getSupportFragmentManager(), "");
+            }
+        });
+
 
         return layout;
     }
 
 
-    private static LinearLayout fieldDataViewLayout(Context context)
+    /**
+     * List Field View.
+     * @param context The context.
+     * @return The field Linear Layout.
+     */
+    private LinearLayout listFieldView(final AppCompatActivity context)
+    {
+        LinearLayout layout = viewLayout(context);
+
+        // > Type
+        layout.addView(fieldTypeView(R.drawable.ic_form_type_list, context));
+
+        // > Data
+        layout.addView(fieldDataView(context));
+
+        return layout;
+    }
+
+
+    // > Data View
+    // -----------------------------------------------------------------------------------------
+
+    private LinearLayout fieldDataView(Context context)
+    {
+        LinearLayout layout = fieldDataViewLayout(context);
+
+        // > Name
+        layout.addView(fieldNameView(context));
+
+        // > Value
+        layout.addView(fieldValueView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout fieldDataViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -224,14 +269,14 @@ public class Field
     }
 
 
-    private static TextView fieldNameView(String nameString, Context context)
+    private TextView fieldNameView(Context context)
     {
         TextViewBuilder name = new TextViewBuilder();
 
         name.width               = LinearLayout.LayoutParams.WRAP_CONTENT;
         name.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        name.text                = nameString;
+        name.text                = this.label();
 
         name.font                = Font.serifFontRegular(context);
         name.color               = R.color.gold_light;
@@ -241,22 +286,22 @@ public class Field
     }
 
 
-    private static View fieldValueView(String valueString, Context context)
+    private View fieldValueView(Context context)
     {
-        if (valueString != null)
-            return fieldValueTextView(valueString, context);
+        if (this.value != null)
+            return fieldValueTextView(context);
         else
             return fieldIncompleteValueView(context);
     }
 
-    private static TextView fieldValueTextView(String valueString, Context context)
+    private TextView fieldValueTextView(Context context)
     {
         TextViewBuilder value = new TextViewBuilder();
 
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        value.text          = valueString;
+        value.text          = this.value;
         value.color         = R.color.dark_blue_hl_8;
         value.font          = Font.serifFontRegular(context);
 
@@ -268,7 +313,7 @@ public class Field
     }
 
 
-    private static LinearLayout fieldIncompleteValueView(Context context)
+    private LinearLayout fieldIncompleteValueView(Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -328,149 +373,12 @@ public class Field
     }
 
 
-    /*
-    // > Header View
+    // TYPE
     // -----------------------------------------------------------------------------------------
 
-    private static LinearLayout fieldHeaderView(String fieldName,
-                                                int iconId,
-                                                boolean isEditMode,
-                                                Context context)
+    public enum Type
     {
-        LinearLayout layout = fieldHeaderViewLayout(context);
-
-        layout.addView(fieldHeaderTitleView(fieldName, iconId, context));
-
-        return layout;
+        TEXT,
+        LIST
     }
-
-
-    private static LinearLayout fieldHeaderViewLayout(Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.VERTICAL;
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        return layout.linearLayout(context);
-    }
-
-
-    // ** Header View Components
-    // -----------------------------------------------------------------------------------------
-
-    private static LinearLayout fieldHeaderTitleView(String fieldName,
-                                                  int iconId,
-                                                  Context context)
-    {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        ImageViewBuilder    icon   = new ImageViewBuilder();
-        TextViewBuilder     label  = new TextViewBuilder();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.gravity              = Gravity.CENTER_VERTICAL;
-
-        layout.margin.bottomDp      = 10f;
-        layout.margin.leftDp        = 2f;
-
-        layout.child(icon)
-              .child(label);
-
-        // [3 A] Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.image              = iconId;
-        icon.color              = R.color.gold_medium_light;
-
-        //icon.backgroundResource = R.drawable.bg_form_type;
-
-        icon.margin.rightDp     = 5f;
-
-        // [3 B] Label
-        // -------------------------------------------------------------------------------------
-
-        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.text              = fieldName;
-
-        label.font              = Font.serifFontRegular(context);
-        label.color             = R.color.gold_light;
-        label.sizeSp            = 16f;
-
-
-        return layout.linearLayout(context);
-    }
-
-
-
-    private static LinearLayout fieldInfoLastSavedView(Context context)
-    {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        ImageViewBuilder    icon   = new ImageViewBuilder();
-        TextViewBuilder date   = new TextViewBuilder();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.layoutType       = LayoutType.RELATIVE;
-        layout.width            = RelativeLayout.LayoutParams.WRAP_CONTENT;
-        layout.height           = RelativeLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        layout.addRule(RelativeLayout.CENTER_HORIZONTAL);
-
-        layout.gravity          = Gravity.CENTER_VERTICAL;
-
-        layout.margin.bottomDp  = 3.5f;
-
-        layout.child(icon)
-              .child(date);
-
-        // [3 A] Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.image              = R.drawable.ic_form_field_last_saved;
-        icon.color              = R.color.dark_blue_1;
-
-        icon.margin.rightDp     = 3f;
-
-        // [3 B] Date
-        // -------------------------------------------------------------------------------------
-
-        date.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        date.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        date.text               = "12/03/16";
-
-        date.font               = Font.serifFontRegular(context);
-        date.color              = R.color.dark_blue_1;
-        date.sizeSp             = 11f;
-
-        return layout.linearLayout(context);
-    }
-
-    */
-
 }

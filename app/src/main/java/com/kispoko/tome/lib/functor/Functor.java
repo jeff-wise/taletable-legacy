@@ -428,7 +428,7 @@ public abstract class Functor<A> implements Serializable
         for (PrimitiveFunctor primitiveFunctor : functorsTuple.getItem1())
         {
             if (isEditMode || primitiveFunctor.isRequired()) {
-                fields.add(primitiveFunctor.formView(isEditMode, context));
+                fields.add(primitiveFunctor.field(model.getId(), isEditMode, context));
             }
         }
 
@@ -438,7 +438,7 @@ public abstract class Functor<A> implements Serializable
         for (CollectionFunctor collectionFunctor : functorsTuple.getItem4())
         {
             if (isEditMode || collectionFunctor.isRequired()) {
-                fields.add(collectionFunctor.formView(isEditMode, context));
+                fields.add(collectionFunctor.field(model.getId(), isEditMode, context));
             }
         }
 

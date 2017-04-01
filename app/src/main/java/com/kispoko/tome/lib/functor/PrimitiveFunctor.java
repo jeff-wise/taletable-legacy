@@ -523,7 +523,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
     // FORM
     // --------------------------------------------------------------------------------------
 
-    public Field formView(boolean isEditMode, Context context)
+    public Field field(UUID modelId, boolean isEditMode, Context context)
     {
         // > Field Data
 
@@ -555,7 +555,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else
             fieldOptions = new FieldOptions();
 
-        return Field.text(fieldName, fieldLabel, fieldValue, context);
+        return Field.text(modelId, fieldName, fieldLabel, fieldValue);
 
     }
 

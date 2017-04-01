@@ -253,7 +253,6 @@ public class ValueSetEditorActivity extends AppCompatActivity
         this.addFieldView("label", layout);
         layout.addView(Form.dividerView(context));
         this.addFieldView("values", layout);
-        //layout.addView(Form.dividerView(context));
 
         layout.addView(Form.headerView("Other Properties", context));
 
@@ -264,7 +263,6 @@ public class ValueSetEditorActivity extends AppCompatActivity
         this.addFieldView("value_type", layout);
         layout.addView(Form.dividerView(context));
         this.addFieldView("name", layout);
-        //layout.addView(Form.dividerView(context));
 
         return layout;
     }
@@ -275,7 +273,7 @@ public class ValueSetEditorActivity extends AppCompatActivity
         Field field = this.fieldByName.get(fieldName);
 
         if (field != null)
-            layout.addView(field.view());
+            layout.addView(field.view(this));
     }
 
 }

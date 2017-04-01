@@ -14,6 +14,9 @@ public interface Model
     UUID getId();
     void setId(UUID id);
 
+
+    // Name???
+
     void onLoad();
     // void onSave();
 }

@@ -16,7 +16,7 @@ import com.kispoko.tome.lib.model.Model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.UUID;
 
 
 /**
@@ -231,7 +231,7 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
     // FORM
     // --------------------------------------------------------------------------------------
 
-    public Field formView(boolean isEditMode, Context context)
+    public Field field(UUID modelId, boolean isEditMode, Context context)
     {
         // > Field Data
 
@@ -262,7 +262,7 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
         else
             fieldOptions = new FieldOptions();
 
-        return Field.list(fieldName, fieldLabel, valuesString, context);
+        return Field.list(modelId, fieldName, fieldLabel, valuesString);
     }
 
 
