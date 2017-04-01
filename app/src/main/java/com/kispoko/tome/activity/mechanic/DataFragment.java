@@ -13,7 +13,6 @@ import android.widget.ScrollView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.mechanic.Mechanic;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 
@@ -81,42 +80,42 @@ public class DataFragment extends Fragment
         // -------------------------------------------------------------------------------------
 
         // > Name Field
-        LinearLayout nameField = Form.field(
-                    R.string.mechanic_field_name_label,
-                    R.string.mechanic_field_name_description,
-                    Form.textInput(this.mechanic.name(), getContext()),
-                    getContext());
+//        LinearLayout nameField = Form.field(
+//                    R.string.mechanic_field_name_label,
+//                    R.string.mechanic_field_name_description,
+//                    Form.textInput(this.mechanic.name(), getContext()),
+//                    getContext());
 
         // > Label Field
-        LinearLayout labelField = Form.field(
-                    R.string.mechanic_field_label_label,
-                    R.string.mechanic_field_label_description,
-                    Form.textInput(this.mechanic.label(), getContext()),
-                    getContext());
+//        LinearLayout labelField = Form.field(
+//                    R.string.mechanic_field_label_label,
+//                    R.string.mechanic_field_label_description,
+//                    Form.textInput(this.mechanic.label(), getContext()),
+//                    getContext());
 
         // > Type Field
-        LinearLayout typeField =
-                Form.field(R.string.mechanic_field_type_label,
-                           R.string.mechanic_field_type_description,
-                           Form.textInput(this.mechanic.type(), getContext()),
-                           getContext());
+//        LinearLayout typeField =
+//                Form.field(R.string.mechanic_field_type_label,
+//                           R.string.mechanic_field_type_description,
+//                           Form.textInput(this.mechanic.type(), getContext()),
+//                           getContext());
 
         // > Requirements Field
-        LinearLayout reqsField =
-                Form.field(R.string.mechanic_field_reqs_label,
-                           R.string.mechanic_field_reqs_description,
-                           Form.listInput("REQUIREMENT",
-                                          this.mechanic.requirements(),
-                                          getContext()),
-                           getContext());
+//        LinearLayout reqsField =
+//                Form.field(R.string.mechanic_field_reqs_label,
+//                           R.string.mechanic_field_reqs_description,
+//                           Form.listInput("REQUIREMENT",
+//                                          this.mechanic.requirements(),
+//                                          getContext()),
+//                           getContext());
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
-        layout.addView(nameField);
-        layout.addView(labelField);
-        layout.addView(typeField);
-        layout.addView(reqsField);
+//        layout.addView(nameField);
+//        layout.addView(labelField);
+//        layout.addView(typeField);
+//        layout.addView(reqsField);
 
         return scrollView;
     }

@@ -9,18 +9,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.dictionary.ValueSetsRecyclerViewAdapter;
 import com.kispoko.tome.engine.value.Dictionary;
+import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.util.SimpleDividerItemDecoration;
-import com.kispoko.tome.util.UI;
-
 
 
 /**
@@ -58,27 +57,8 @@ public class DictionaryActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_choose_template, menu);
+        getMenuInflater().inflate(R.menu.empty, menu);
         return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.action_settings:
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -90,16 +70,27 @@ public class DictionaryActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
 
         // > Set the title
         String title = "Dictionary";
         TextView titleView = (TextView) findViewById(R.id.page_title);
+        titleView.setTypeface(Font.serifFontRegular(this));
         titleView.setText(title);
+
+
+        ImageView backButtonView   = (ImageView) findViewById(R.id.toolbar_back_button);
+        backButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        // ImageView searchButtonView = (ImageView) findViewById(R.id.toolbar_search_button);
     }
 
 
@@ -111,7 +102,9 @@ public class DictionaryActivity extends AppCompatActivity
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.value_set_list_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        // recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+
+        dictionary.sortAscByLabel();
         recyclerView.setAdapter(new ValueSetsRecyclerViewAdapter(dictionary.valueSets(), this));
 
         FloatingActionButton addValueSetButton =
@@ -119,7 +112,7 @@ public class DictionaryActivity extends AppCompatActivity
         addValueSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DictionaryActivity.this, ValueSetActivity.class);
+                Intent intent = new Intent(DictionaryActivity.this, ValueSetEditorActivity.class);
                 startActivity(intent);
             }
         });

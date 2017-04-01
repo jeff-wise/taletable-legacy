@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.function.Function;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
@@ -76,32 +75,32 @@ public class DataFragment extends Fragment
         // -------------------------------------------------------------------------------------
 
         // > Name Field
-        LinearLayout nameField = Form.field(
-                    R.string.function_field_name_label,
-                    R.string.function_field_name_description,
-                    Form.textInput(this.function.name(), null, getContext()),
-                    getContext());
-
-        // > Label Field
-        LinearLayout labelField = Form.field(
-                    R.string.function_field_label_label,
-                    R.string.function_field_label_description,
-                    Form.textInput(this.function.label(), null, getContext()),
-                    getContext());
+//        LinearLayout nameField = Form.field(
+//                    R.string.function_field_name_label,
+//                    R.string.function_field_name_description,
+//                    Form.textInput(this.function.name(), null, getContext()),
+//                    getContext());
+//
+//        // > Label Field
+//        LinearLayout labelField = Form.field(
+//                    R.string.function_field_label_label,
+//                    R.string.function_field_label_description,
+//                    Form.textInput(this.function.label(), null, getContext()),
+//                    getContext());
 
         // > Description Field
-        LinearLayout descriptionField =
-                Form.field(R.string.function_field_description_label,
-                           R.string.function_field_description_description,
-                           Form.textInput(this.function.description(), null, getContext()),
-                           getContext());
+//        LinearLayout descriptionField =
+//                Form.field(R.string.function_field_description_label,
+//                           R.string.function_field_description_description,
+//                           Form.textInput(this.function.description(), null, getContext()),
+//                           getContext());
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
-        layout.addView(nameField);
-        layout.addView(labelField);
-        layout.addView(descriptionField);
+//        layout.addView(nameField);
+//        layout.addView(labelField);
+//        layout.addView(descriptionField);
 
         return layout;
     }

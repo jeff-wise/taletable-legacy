@@ -132,31 +132,9 @@ public class SheetActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.sheet, menu);
+        getMenuInflater().inflate(R.menu.empty, menu);
         return true;
     }
-
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item)
-//    {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        switch (id)
-//        {
-//            case android.R.id.home:
-//                this.drawerLayout.openDrawer(GravityCompat.START);
-//                return true;
-//            case R.id.action_settings:
-//                this.drawerLayout.openDrawer(GravityCompat.END);
-//                return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
 
     @Override
@@ -616,12 +594,14 @@ public class SheetActivity
         LinearLayout layout = this.buttonsLayout(context);
 
         // > My Sheets
+        // -------------------------------------------------------------------------------------
         LinearLayout mySheetsButton = this.buttonView(R.string.my_sheets,
                                                       R.drawable.ic_app_nav_my_sheets,
                                                       context);
         layout.addView(mySheetsButton);
 
         // > New Sheet
+        // -------------------------------------------------------------------------------------
         LinearLayout newSheetButton = this.buttonView(R.string.new_sheet,
                                                       R.drawable.ic_app_nav_new_sheet,
                                                       context);
@@ -636,36 +616,42 @@ public class SheetActivity
         LinearLayout layout = this.buttonsLayout(context);
 
         // > Tutorials
+        // -------------------------------------------------------------------------------------
         LinearLayout tutorialsButton = this.buttonView(R.string.tutorials,
                                                        R.drawable.ic_app_nav_help,
                                                        context);
         layout.addView(tutorialsButton);
 
         // > Settings
+        // -------------------------------------------------------------------------------------
         LinearLayout settingsButton = this.buttonView(R.string.settings,
                                                       R.drawable.ic_app_nav_settings,
                                                       context);
         layout.addView(settingsButton);
 
         // > Feedback
+        // -------------------------------------------------------------------------------------
         LinearLayout feedbackButton = this.buttonView(R.string.give_us_your_feedback,
                 R.drawable.ic_app_nav_feedback,
                 context);
         layout.addView(feedbackButton);
 
         // > Upgrades
+        // -------------------------------------------------------------------------------------
         LinearLayout upgradesButton = this.buttonView(R.string.upgrades,
                                                       R.drawable.ic_app_nav_upgrades,
                                                       context);
         layout.addView(upgradesButton);
 
         // > News
+        // -------------------------------------------------------------------------------------
         LinearLayout newsButton = this.buttonView(R.string.news_slash_updates,
                                                   R.drawable.ic_app_nav_news,
                                                   context);
         layout.addView(newsButton);
 
         // > About This App
+        // -------------------------------------------------------------------------------------
         LinearLayout aboutButton = this.buttonView(R.string.about_this_app,
                                                    R.drawable.ic_app_nav_about_us,
                                                    context);
@@ -813,30 +799,47 @@ public class SheetActivity
         LinearLayout layout = this.buttonsLayout(context);
 
         // > Dictionary
+        // -------------------------------------------------------------------------------------
+
         LinearLayout dictionaryButton = this.buttonView(R.string.dictionary,
                                                         R.drawable.ic_sheet_nav_dictionary,
                                                         context);
+
+        dictionaryButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, DictionaryActivity.class);
+                startActivity(intent);
+            }
+        });
+
         layout.addView(dictionaryButton);
 
         // > Functions
+        // -------------------------------------------------------------------------------------
         LinearLayout functionsButton = this.buttonView(R.string.functions,
                                                       R.drawable.ic_sheet_nav_functions,
                                                       context);
         layout.addView(functionsButton);
 
         // > Programs
+        // -------------------------------------------------------------------------------------
         LinearLayout programsButton = this.buttonView(R.string.programs,
                                                       R.drawable.ic_sheet_nav_programs,
                                                       context);
         layout.addView(programsButton);
 
         // > Mechanics
+        // -------------------------------------------------------------------------------------
         LinearLayout mechanicsButton = this.buttonView(R.string.mechanics,
                                                        R.drawable.ic_sheet_nav_mechanics,
                                                        context);
         layout.addView(mechanicsButton);
 
         // > Debugger
+        // -------------------------------------------------------------------------------------
         LinearLayout debuggerButton = this.buttonView(R.string.debugger,
                                                       R.drawable.ic_sheet_nav_debugger,
                                                       context);
@@ -915,6 +918,8 @@ public class SheetActivity
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.gravity              = Gravity.CENTER_VERTICAL;
 
         layout.padding.topDp        = 15f;
         layout.padding.bottomDp     = 15f;

@@ -15,7 +15,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.program.statement.Parameter;
 import com.kispoko.tome.engine.program.statement.Statement;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.ui.Form;
+import com.kispoko.tome.lib.ui.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 import java.util.Arrays;
@@ -147,10 +147,10 @@ public class StatementActivity extends AppCompatActivity
                                                 functionButtons,
                                                 this);
 
-        LinearLayout functionField = Form.field(R.string.statement_field_function_label,
-                                                R.string.statement_field_function_description,
-                                                inputView,
-                                                this);
+//        LinearLayout functionField = Form.field(R.string.statement_field_function_label,
+//                                                R.string.statement_field_function_description,
+//                                                inputView,
+//                                                this);
 
         // > Parameters Field
         // -------------------------------------------------------------------------------------
@@ -169,17 +169,17 @@ public class StatementActivity extends AppCompatActivity
             parametersTable.addView(parameterRow);
         }
 
-        LinearLayout parametersField =
-                Form.field(R.string.statement_field_parameters_label,
-                           R.string.statement_field_parameters_description,
-                           parametersTable,
-                           this);
+//        LinearLayout parametersField =
+//                Form.field(R.string.statement_field_parameters_label,
+//                           R.string.statement_field_parameters_description,
+//                           parametersTable,
+//                           this);
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
-
-        layout.addView(functionField);
-        layout.addView(parametersField);
+//
+//        layout.addView(functionField);
+//        layout.addView(parametersField);
 
 
         return layout;

@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.program.ProgramValueUnion;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
@@ -13,10 +14,16 @@ import com.kispoko.tome.lib.yaml.ToYaml;
 import com.kispoko.tome.lib.yaml.YamlBuilder;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.mechanic.dice.DiceRoll;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
+import static android.R.attr.valueType;
 
 
 /**
@@ -254,6 +261,54 @@ public class ValueUnion implements Model, ToYaml, Serializable
                             new InvalidCaseError("number", this.type.name())));
         }
         return this.numberValue.getValue();
+    }
+
+
+    // > Custom Equality Methods
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public boolean equals(Object o)
+    {
+
+        if (o == this) return true;
+
+        if (!(o instanceof ValueUnion)) {
+            return false;
+        }
+
+        ValueUnion otherValueUnion = (ValueUnion) o;
+
+        if (this.type() != otherValueUnion.type())
+            return false;
+
+        switch (this.type())
+        {
+            case NUMBER:
+                Integer thatInteger = otherValueUnion.numberValue().value();
+                Integer thisInteger = this.numberValue().value();
+                return new EqualsBuilder()
+                        .append(thisInteger, thatInteger)
+                        .isEquals();
+            case TEXT:
+                String thatString = otherValueUnion.textValue().value();
+                String thisString = this.textValue().value();
+                return new EqualsBuilder()
+                        .append(thatString, thisString)
+                        .isEquals();
+        }
+
+        return false;
+    }
+
+
+    @Override
+    public int hashCode()
+    {
+        return new HashCodeBuilder(17, 37)
+                    .append(this.numberValue())
+                    .append(this.textValue())
+                    .toHashCode();
     }
 
 

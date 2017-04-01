@@ -7,13 +7,6 @@
     <solid android:color="@color/dark_blue_7">
     </solid>
 
-    <padding
-        android:left="8dp"
-        android:top="14dp"
-        android:right="8dp"
-        android:bottom="14dp">
-    </padding>
-
     <corners
         android:radius="2dp">
     </corners>

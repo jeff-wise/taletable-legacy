@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.ImageWidget;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
@@ -131,42 +130,42 @@ public class ImageWidgetActivity extends AppCompatActivity
 
         String name = this.imageWidget.data().format().label();
 
-        LinearLayout nameField =
-                Form.field(
-                    R.string.image_widget_field_name_label,
-                    R.string.image_widget_field_name_description,
-                    Form.textInput(name, this),
-                    this);
+//        LinearLayout nameField =
+//                Form.field(
+//                    R.string.image_widget_field_name_label,
+//                    R.string.image_widget_field_name_description,
+//                    Form.textInput(name, this),
+//                    this);
 
         // > Width
         // -------------------------------------------------------------------------------------
 
         String width = this.imageWidget.data().format().width().toString();
 
-        LinearLayout widthField =
-                Form.field(
-                        R.string.image_widget_field_width_label,
-                        R.string.image_widget_field_width_description,
-                        Form.textInput(width, this),
-                        this);
+//        LinearLayout widthField =
+//                Form.field(
+//                        R.string.image_widget_field_width_label,
+//                        R.string.image_widget_field_width_description,
+//                        Form.textInput(width, this),
+//                        this);
 
         // > Image
         // -------------------------------------------------------------------------------------
 
-        LinearLayout imageField =
-                Form.field(
-                        R.string.image_widget_field_width_label,
-                        R.string.image_widget_field_width_description,
-                        Form.textInput(width, this),
-                        this);
+//        LinearLayout imageField =
+//                Form.field(
+//                        R.string.image_widget_field_width_label,
+//                        R.string.image_widget_field_width_description,
+//                        Form.textInput(width, this),
+//                        this);
 
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
-        layout.addView(nameField);
-        layout.addView(widthField);
-
+//        layout.addView(nameField);
+//        layout.addView(widthField);
+//
 
         return layout;
     }

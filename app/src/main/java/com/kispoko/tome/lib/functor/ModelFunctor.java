@@ -3,7 +3,6 @@ package com.kispoko.tome.lib.functor;
 
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.orm.ORM;
@@ -11,7 +10,6 @@ import com.kispoko.tome.lib.database.query.ModelQueryParameters;
 import com.kispoko.tome.lib.model.Model;
 
 import java.io.Serializable;
-
 
 
 /**
@@ -275,6 +273,7 @@ public class ModelFunctor<A extends Model> extends Functor<A>
                         // > Toggle Is Saving State
                         // --------------------------------------------
                         isSaving = false;
+                        isSaved  = true;
                     }
 
                 }
@@ -284,110 +283,8 @@ public class ModelFunctor<A extends Model> extends Functor<A>
     }
 
 
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    // > Listeners
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Wrap the dynamic and static listeners into one listener. This also sets the model value
-     * by default when the listener is called.
-     * @return
-     */
-    private OnLoadListener<A> onLoadListener(final OnLoadListener<A> dynamicOnLoadListener)
-    {
-        return new OnLoadListener<A>()
-        {
-            @Override
-            public void onLoad(A loadedValue)
-            {
-                setValue(loadedValue);
-
-                setIsLoaded(true);
-
-                loadedValue.onLoad();
-
-                if (staticOnLoadListener != null)
-                    staticOnLoadListener.onLoad(loadedValue);
-
-                if (dynamicOnLoadListener != null)
-                    dynamicOnLoadListener.onLoad(loadedValue);
-            }
-
-            @Override
-            public void onLoadDBError(DatabaseException exception)
-            {
-                if (staticOnLoadListener != null)
-                    staticOnLoadListener.onLoadDBError(exception);
-
-                if (dynamicOnLoadListener != null)
-                    dynamicOnLoadListener.onLoadDBError(exception);
-            }
-
-            @Override
-            public void onLoadError(Exception exception)
-            {
-                if (staticOnLoadListener != null)
-                    staticOnLoadListener.onLoadError(exception);
-
-                if (dynamicOnLoadListener != null)
-                    dynamicOnLoadListener.onLoadError(exception);
-            }
-        };
-    }
-
-
-    /**
-     * Wrap the dynamic and static listeners into one listener. This also sets the model value
-     * by default when the listener is called.
-     * @return
-     */
-    private OnSaveListener onSaveListener(final OnSaveListener dynamicOnSaveListener)
-    {
-        return new OnSaveListener()
-        {
-            @Override
-            public void onSave()
-            {
-                setIsSaved(true);
-
-                // getValue().onSave();
-
-                Log.d("***MODELFUNCTOR", "on save  " + modelClass.getName());
-
-                if (staticOnSaveListener != null)
-                    staticOnSaveListener.onSave();
-
-                if (dynamicOnSaveListener != null)
-                    dynamicOnSaveListener.onSave();
-            }
-
-            @Override
-            public void onSaveDBError(DatabaseException exception)
-            {
-                if (staticOnSaveListener != null)
-                    staticOnSaveListener.onSaveDBError(exception);
-
-                if (dynamicOnSaveListener != null)
-                    dynamicOnSaveListener.onSaveDBError(exception);
-            }
-
-            @Override
-            public void onSaveError(Exception exception)
-            {
-                if (staticOnSaveListener != null)
-                    staticOnSaveListener.onSaveError(exception);
-
-                if (dynamicOnSaveListener != null)
-                    dynamicOnSaveListener.onSaveError(exception);
-            }
-        };
-    }
-
-
     // LISTENERS
-    // --------------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------
 
     public interface OnSaveListener extends Serializable
     {

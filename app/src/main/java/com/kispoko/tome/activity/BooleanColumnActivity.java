@@ -11,10 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
@@ -130,53 +128,53 @@ public class BooleanColumnActivity extends AppCompatActivity
 
         String name = this.booleanColumn.name();
 
-        LinearLayout nameField =
-                Form.field(
-                    R.string.boolean_column_field_name_label,
-                    R.string.boolean_column_field_name_description,
-                    Form.textInput(name, this),
-                    this);
+//        LinearLayout nameField =
+//                Form.field(
+//                    R.string.boolean_column_field_name_label,
+//                    R.string.boolean_column_field_name_description,
+//                    Form.textInput(name, this),
+//                    this);
 
         // > Default Value
         // -------------------------------------------------------------------------------------
 
-        LinearLayout defaultValueField =
-                Form.field(
-                    R.string.boolean_column_field_default_value_label,
-                    R.string.boolean_column_field_default_value_description,
-                    Form.booleanInput(this.booleanColumn.defaultValue(), this),
-                    this);
+//        LinearLayout defaultValueField =
+//                Form.field(
+//                    R.string.boolean_column_field_default_value_label,
+//                    R.string.boolean_column_field_default_value_description,
+//                    Form.booleanInput(this.booleanColumn.defaultValue(), this),
+//                    this);
 
         // > Alignment Field
         // -------------------------------------------------------------------------------------
 
-        LinearLayout alignmentField =
-                Form.field(
-                        R.string.boolean_column_field_alignment_label,
-                        R.string.boolean_column_field_alignment_description,
-                        Form.variantInput(Alignment.class,
-                                          this.booleanColumn.alignment(),
-                                          this),
-                        this);
+//        LinearLayout alignmentField =
+//                Form.field(
+//                        R.string.boolean_column_field_alignment_label,
+//                        R.string.boolean_column_field_alignment_description,
+//                        Form.variantInput(Alignment.class,
+//                                          this.booleanColumn.alignment(),
+//                                          this),
+//                        this);
 
         // > Width Field
         // -------------------------------------------------------------------------------------
 
-        LinearLayout widthField =
-                Form.field(
-                        R.string.boolean_column_field_width_label,
-                        R.string.boolean_column_field_width_description,
-                        Form.textInput(this.booleanColumn.width().toString(), this),
-                        this);
+//        LinearLayout widthField =
+//                Form.field(
+//                        R.string.boolean_column_field_width_label,
+//                        R.string.boolean_column_field_width_description,
+//                        Form.textInput(this.booleanColumn.width().toString(), this),
+//                        this);
 
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
-
-        layout.addView(nameField);
-        layout.addView(defaultValueField);
-        layout.addView(alignmentField);
-        layout.addView(widthField);
+//
+//        layout.addView(nameField);
+//        layout.addView(defaultValueField);
+//        layout.addView(alignmentField);
+//        layout.addView(widthField);
 
 
         return layout;

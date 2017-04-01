@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.ValueSetActivity;
+import com.kispoko.tome.activity.ValueSetEditorActivity;
 import com.kispoko.tome.engine.value.ValueSet;
 
 import java.util.List;
@@ -121,7 +121,7 @@ public class ValueSetsRecyclerViewAdapter
                 @Override
                 public void onClick(View view)
                 {
-                    Intent intent = new Intent(context, ValueSetActivity.class);
+                    Intent intent = new Intent(context, ValueSetEditorActivity.class);
 
                     Bundle bundle = new Bundle();
                     bundle.putString("value_set_name", valueSetName);

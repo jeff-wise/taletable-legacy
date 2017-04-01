@@ -2,15 +2,21 @@
 package com.kispoko.tome.activity.valueset;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.TextValueEditorActivity;
+import com.kispoko.tome.engine.value.ValueReference;
+import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.ValueSetValueType;
+import com.kispoko.tome.engine.value.ValueType;
 import com.kispoko.tome.engine.value.ValueUnion;
-
-import java.util.List;
 
 
 
@@ -24,15 +30,15 @@ public class ValuesRecyclerViewAdapter
     // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private List<ValueUnion> values;
+    private ValueSet valueSet;
 
 
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public ValuesRecyclerViewAdapter(List<ValueUnion> values)
+    public ValuesRecyclerViewAdapter(ValueSet valueSet)
     {
-        this.values  = values;
+        this.valueSet = valueSet;
     }
 
 
@@ -43,31 +49,34 @@ public class ValuesRecyclerViewAdapter
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View itemView = ValueListItemView.view(parent.getContext());
-        return new ViewHolder(itemView);
+        return new ViewHolder(itemView, parent.getContext());
     }
 
 
     @Override
     public void onBindViewHolder(ValuesRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
-        ValueUnion valueUnion = this.values.get(position);
+        if (this.valueSet == null)
+            return;
 
-        switch (valueUnion.type())
-        {
-            case TEXT:
-                viewHolder.setValueText(valueUnion.textValue().value());
-                break;
-            case NUMBER:
-                viewHolder.setValueText(valueUnion.numberValue().value().toString());
-                break;
-        }
+        ValueUnion valueUnion = this.valueSet.values().get(position);
+
+        viewHolder.setValueText(valueUnion.value().valueString());
+        viewHolder.setDescriptionText(valueUnion.value().summary());
+
+        ValueReference valueReference =
+                new ValueReference(this.valueSet.name(), valueUnion.value().name());
+        viewHolder.setOnClickListener(valueUnion.type(), valueReference);
     }
 
 
     @Override
     public int getItemCount()
     {
-        return this.values.size();
+        if (this.valueSet != null)
+            return this.valueSet.values().size();
+
+        return 0;
     }
 
 
@@ -80,20 +89,61 @@ public class ValuesRecyclerViewAdapter
     public class ViewHolder extends RecyclerView.ViewHolder
     {
 
-        private TextView valueView;
+        private Context      context;
+
+        private LinearLayout layout;
+        private TextView     valueView;
+        private TextView     descriptionView;
 
 
-        public ViewHolder(final View itemView)
+        public ViewHolder(final View itemView, Context context)
         {
             super(itemView);
 
+            this.context = context;
+
+            this.layout = (LinearLayout) itemView.findViewById(R.id.value_list_item_layout);
             this.valueView = (TextView) itemView.findViewById(R.id.value_list_item_value);
+            this.descriptionView =
+                    (TextView) itemView.findViewById(R.id.value_list_item_description);
         }
 
 
         public void setValueText(String valueText)
         {
             this.valueView.setText(valueText);
+        }
+
+
+        public void setDescriptionText(String text)
+        {
+            this.descriptionView.setText(text);
+        }
+
+
+        public void setOnClickListener(final ValueType valueType,
+                                       final ValueReference valueReference)
+        {
+            this.layout.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    switch (valueType)
+                    {
+                        case TEXT:
+                            Intent textIntent = new Intent(context, TextValueEditorActivity.class);
+                            textIntent.putExtra("value_reference", valueReference);
+                            context.startActivity(textIntent);
+                            break;
+                        case NUMBER:
+                            Intent numIntent = new Intent(context, TextValueEditorActivity.class);
+                            numIntent.putExtra("value_reference", valueReference);
+                            context.startActivity(numIntent);
+                            break;
+                    }
+                }
+            });
         }
 
     }

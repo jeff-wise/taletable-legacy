@@ -8,6 +8,7 @@ package com.kispoko.tome.engine.value;
  */
 public interface Value
 {
-    String summary();
+    String name();
     String valueString();
+    String summary();
 }

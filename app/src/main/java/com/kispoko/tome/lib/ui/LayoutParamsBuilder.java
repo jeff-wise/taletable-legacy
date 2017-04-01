@@ -153,6 +153,35 @@ public class LayoutParamsBuilder
     }
 
 
+    public void setWidthDp(int widthDp)
+    {
+        int widthValue;
+
+        if (isLayoutConstant(widthDp)) {
+            widthValue = widthDp;
+        }
+        else {
+            widthValue = Util.dpToPixel(widthDp);
+        }
+
+        switch (this.layoutType)
+        {
+            case LINEAR:
+                this.linearLayoutParams.width = widthValue;
+                break;
+            case RELATIVE:
+                this.relativeLayoutParams.width = widthValue;
+                break;
+            case TABLE:
+                this.tableLayoutParams.width = widthValue;
+                break;
+            case TABLE_ROW:
+                this.tableRowLayoutParams.width = widthValue;
+                break;
+        }
+    }
+
+
     public void setHeight(int height)
     {
         int heightValue;

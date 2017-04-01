@@ -55,6 +55,20 @@ public class ValueReference implements Model, Serializable
 
 
     /**
+     * Non-persistent constructor. Sets an ID just in case.
+     * @param valueSetName The value set name.
+     * @param valueName The value name.
+     */
+    public ValueReference(String valueSetName, String valueName)
+    {
+        this.id             = UUID.randomUUID();
+
+        this.valueSetName   = new PrimitiveFunctor<>(valueSetName, String.class);
+        this.valueName      = new PrimitiveFunctor<>(valueName, String.class);
+    }
+
+
+    /**
      * Create a Value Reference from its Yaml representation.
      * @param yaml The yaml parser.
      * @return The parsed Value Reference.

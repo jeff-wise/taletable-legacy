@@ -12,8 +12,6 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.group.GroupRow;
-import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
@@ -77,14 +75,14 @@ public class DataFragment extends Fragment
         // -------------------------------------------------------------------------------------
 
         // > Alignment Field
-        LinearLayout alignmentField =
-                Form.field(
-                    R.string.group_row_field_alignment_label,
-                    R.string.group_row_field_alignment_description,
-                    Form.variantInput(Alignment.class,
-                                      this.groupRow.format().alignment(),
-                                      getContext()),
-                    getContext());
+//        LinearLayout alignmentField =
+//                Form.field(
+//                    R.string.group_row_field_alignment_label,
+//                    R.string.group_row_field_alignment_description,
+//                    Form.variantInput(Alignment.class,
+//                                      this.groupRow.format().alignment(),
+//                                      getContext()),
+//                    getContext());
 
         // > Width Field
 //        LinearLayout widthField =
@@ -99,7 +97,7 @@ public class DataFragment extends Fragment
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
-        layout.addView(alignmentField);
+        // layout.addView(alignmentField);
         //layout.addView(widthField);
 
         return layout;

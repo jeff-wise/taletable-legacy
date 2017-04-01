@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.widget.TableWidget;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
@@ -79,17 +78,17 @@ public class SettingsFragment extends Fragment
 
         String name = this.tableWidget.data().format().label();
 
-        LinearLayout nameField =
-                Form.field(
-                    R.string.boolean_widget_field_name_label,
-                    R.string.boolean_widget_field_name_description,
-                    Form.textInput(name, getContext()),
-                    getContext());
+//        LinearLayout nameField =
+//                Form.field(
+//                    R.string.boolean_widget_field_name_label,
+//                    R.string.boolean_widget_field_name_description,
+//                    Form.textInput(name, getContext()),
+//                    getContext());
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
-        layout.addView(nameField);
+        // layout.addView(nameField);
 
         return layout;
     }

@@ -50,10 +50,10 @@ public class ValueSetRowView
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
-        layout.padding.left         = R.dimen.dictionary_item_padding_horz;
-        layout.padding.right        = R.dimen.dictionary_item_padding_horz;
-        layout.padding.top          = R.dimen.dictionary_item_padding_vert;
-        layout.padding.bottom       = R.dimen.dictionary_item_padding_vert;
+        layout.padding.leftDp       = 15f;
+        layout.padding.rightDp      = 15f;
+        layout.padding.topDp        = 15f;
+        layout.padding.bottomDp     = 15f;
 
         return layout.linearLayout(context);
     }
@@ -85,9 +85,9 @@ public class ValueSetRowView
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         header.id                   = R.id.value_set_row_header;
-        header.size                 = R.dimen.dictionary_item_header_text_size;
+        header.sizeSp               = 19f;
         header.color                = R.color.gold_light;
-        header.font                 = Font.sansSerifFontBold(context);
+        header.font                 = Font.serifFontRegular(context);
 
         header.margin.bottom        = R.dimen.dictionary_item_header_margin_bottom;
 
@@ -98,9 +98,9 @@ public class ValueSetRowView
         description.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         description.id              = R.id.value_set_row_description;
-        description.size            = R.dimen.dictionary_item_description_text_size;
+        description.sizeSp          = 14f;
         description.color           = R.color.dark_blue_hl_8;
-        description.font            = Font.sansSerifFontRegular(context);
+        description.font            = Font.serifFontRegular(context);
 
 
         return layout.linearLayout(context);
@@ -116,9 +116,9 @@ public class ValueSetRowView
         count.gravity               = Gravity.CENTER;
 
         count.id                    = R.id.value_set_row_items;
-        count.font                  = Font.sansSerifFontBold(context);
-        count.color                 = R.color.dark_blue_hl_4;
-        count.size                  = R.dimen.dictionary_item_count_text_size;
+        count.font                  = Font.serifFontBold(context);
+        count.color                 = R.color.dark_blue_hlx_4;
+        count.sizeSp                = 15f;
 
         count.backgroundResource    = R.drawable.bg_value_set_size;
 

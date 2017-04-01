@@ -17,7 +17,7 @@ import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.ui.Form;
+import com.kispoko.tome.lib.ui.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 import java.util.Arrays;
@@ -134,19 +134,19 @@ public class TextVariableActivity extends AppCompatActivity
 
         // > Name Field
         // -------------------------------------------------------------------------------------
-        LinearLayout nameField = Form.field(
-                    R.string.variable_field_name_label,
-                    R.string.variable_field_name_description,
-                    Form.textInput(this.variable.name(), this),
-                    this);
-
-        // > Label Field
-        // -------------------------------------------------------------------------------------
-        LinearLayout labelField = Form.field(
-                    R.string.variable_field_label_label,
-                    R.string.variable_field_label_description,
-                    Form.textInput(this.variable.label(), this),
-                    this);
+//        LinearLayout nameField = Form.field(
+//                    R.string.variable_field_name_label,
+//                    R.string.variable_field_name_description,
+//                    Form.textInput(this.variable.name(), this),
+//                    this);
+//
+//        // > Label Field
+//        // -------------------------------------------------------------------------------------
+//        LinearLayout labelField = Form.field(
+//                    R.string.variable_field_label_label,
+//                    R.string.variable_field_label_description,
+//                    Form.textInput(this.variable.label(), this),
+//                    this);
 
         // > Value Field
         // -------------------------------------------------------------------------------------
@@ -185,38 +185,38 @@ public class TextVariableActivity extends AppCompatActivity
         List<String> tabNames = Arrays.asList("Text", "Value", "Computation");
         List<View> tabViews = Arrays.asList(literalValueInput, valueInput, programInvocationInput);
 
-        LinearLayout valueField =
-                Form.field(R.string.text_variable_field_value_label,
-                           R.string.text_variable_field_value_description,
-                           Form.optionInput(tabNames, tabViews, this),
-                           this);
-
-        // > Is Namespaced Field
-        // -------------------------------------------------------------------------------------
-        LinearLayout isNamespacedField =
-                Form.field(R.string.variable_field_is_namespaced_label,
-                           R.string.variable_field_is_namespaced_description,
-                           Form.booleanInput(this.variable.isNamespaced(), this),
-                           this);
-
-        // > Defines Namespace Field
-        // -------------------------------------------------------------------------------------
-        LinearLayout definesNamespaceField =
-                Form.field(R.string.variable_field_defines_namespace_label,
-                        R.string.variable_field_defines_namespace_description,
-                        Form.booleanInput(this.variable.definesNamespace(), this),
-                        this);
-
-
-        // [2] Add Fields
-        // -------------------------------------------------------------------------------------
-
-        layout.addView(nameField);
-        layout.addView(labelField);
-        layout.addView(valueField);
-        layout.addView(isNamespacedField);
-        layout.addView(definesNamespaceField);
-
+//        LinearLayout valueField =
+//                Form.field(R.string.text_variable_field_value_label,
+//                           R.string.text_variable_field_value_description,
+//                           Form.optionInput(tabNames, tabViews, this),
+//                           this);
+//
+//        // > Is Namespaced Field
+//        // -------------------------------------------------------------------------------------
+//        LinearLayout isNamespacedField =
+//                Form.field(R.string.variable_field_is_namespaced_label,
+//                           R.string.variable_field_is_namespaced_description,
+//                           Form.booleanInput(this.variable.isNamespaced(), this),
+//                           this);
+//
+//        // > Defines Namespace Field
+//        // -------------------------------------------------------------------------------------
+//        LinearLayout definesNamespaceField =
+//                Form.field(R.string.variable_field_defines_namespace_label,
+//                        R.string.variable_field_defines_namespace_description,
+//                        Form.booleanInput(this.variable.definesNamespace(), this),
+//                        this);
+//
+//
+//        // [2] Add Fields
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.addView(nameField);
+//        layout.addView(labelField);
+//        layout.addView(valueField);
+//        layout.addView(isNamespacedField);
+//        layout.addView(definesNamespaceField);
+//
         return layout;
     }
 

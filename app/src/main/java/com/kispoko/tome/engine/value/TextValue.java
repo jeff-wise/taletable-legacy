@@ -208,7 +208,7 @@ public class TextValue implements Value, Model, ToYaml, Serializable
      * The text value's variables.
      * @return The list of variables.
      */
-    private List<VariableUnion> variables()
+    public List<VariableUnion> variables()
     {
         return this.variables.getValue();
     }

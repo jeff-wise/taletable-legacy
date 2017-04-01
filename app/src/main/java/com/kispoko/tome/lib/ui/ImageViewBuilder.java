@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -32,6 +31,7 @@ public class ImageViewBuilder implements ViewBuilder
     public Float                    weight;
 
     public Integer                  layoutGravity;
+    public Integer                  visibility;
 
     public Padding                  padding;
     public Margins                  margin;
@@ -64,6 +64,9 @@ public class ImageViewBuilder implements ViewBuilder
         this.height             = null;
         this.width              = null;
         this.weight             = null;
+
+        this.layoutGravity      = null;
+        this.visibility         = null;
 
         this.padding            = new Padding();
         this.margin             = new Margins();
@@ -179,6 +182,11 @@ public class ImageViewBuilder implements ViewBuilder
         if (this.onLongClick != null)
             imageView.setOnLongClickListener(this.onLongClick);
 
+        // > Visibility
+        // --------------------------------------------------------------------------------------
+
+        if (this.visibility != null)
+            imageView.setVisibility(this.visibility);
 
 
         // [2] Layout

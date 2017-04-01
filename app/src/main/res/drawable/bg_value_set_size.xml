@@ -6,12 +6,12 @@
 
 
     <solid
-        android:color="@color/dark_blue_5">
+        android:color="@color/dark_blue_9">
     </solid>
 
     <stroke
-        android:width="2dp"
-        android:color="@color/dark_blue_hl_9">
+        android:width="1dp"
+        android:color="@color/dark_blue_5">
     </stroke>
 
     <size

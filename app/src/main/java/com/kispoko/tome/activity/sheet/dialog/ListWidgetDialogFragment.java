@@ -417,7 +417,7 @@ public class ListWidgetDialogFragment extends DialogFragment
         layout.backgroundResource   = R.drawable.bg_dialog_list_widget_chooser;
         layout.backgroundColor      = R.color.dark_blue_3;
 
-        layout.elevation            = 8f;
+        layout.elevation            = 12f;
 
         layout.margin.leftDp        = 3f;
         layout.margin.rightDp       = 3f;

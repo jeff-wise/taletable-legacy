@@ -2,11 +2,15 @@
 package com.kispoko.tome.lib.functor;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.LinearLayout;
 
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.orm.ORM;
 import com.kispoko.tome.lib.database.sql.OneToManyRelation;
+import com.kispoko.tome.lib.functor.form.Field;
+import com.kispoko.tome.lib.functor.form.FieldOptions;
 import com.kispoko.tome.lib.model.Model;
 
 import java.io.Serializable;
@@ -224,58 +228,42 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
     }
 
 
-    /**
-     * Wrap the dynamic and static listeners into one listener. This also sets the model value
-     * by default when the listener is called.
-     * @return
-     */
-    private OnLoadListener<A> onLoadListener(final OnLoadListener<A> dynamicOnLoadListener)
+    // FORM
+    // --------------------------------------------------------------------------------------
+
+    public Field formView(boolean isEditMode, Context context)
     {
-        return new OnLoadListener<A>()
-        {
-            @Override
-            public void onLoad(List<A> loadedValues)
-            {
-                setValue(loadedValues);
+        // > Field Data
 
-                setIsLoaded(true);
+        // ** Name
+        String fieldName = this.name();
 
-                for (Model loadedModel : loadedValues)
-                {
-                    loadedModel.onLoad();
-                }
+        // ** Label
+        String fieldLabel = "";
+        if (this.label() != null)
+            fieldLabel = this.label();
+        else if (this.labelId() != null)
+            fieldLabel = context.getString(this.labelId());
 
-                if (staticOnLoadListener != null)
-                    staticOnLoadListener.onLoad(loadedValues);
+        // ** Description
+        String fieldDescription = "";
+        if (this.description() != null)
+            fieldDescription = this.description();
+        else if (this.descriptionId() != null)
+            fieldDescription = context.getString(this.descriptionId());
 
-                if (dynamicOnLoadListener != null)
-                    dynamicOnLoadListener.onLoad(loadedValues);
-            }
 
-            @Override
-            public void onLoadDBError(DatabaseException exception)
-            {
-                if (staticOnLoadListener != null)
-                    staticOnLoadListener.onLoadDBError(exception);
+        String valuesString = Integer.toString(this.value.size()) + " values";
 
-                if (dynamicOnLoadListener != null)
-                    dynamicOnLoadListener.onLoadDBError(exception);
-            }
+        // > Field Options
+        FieldOptions fieldOptions;
+        if (isEditMode)
+            fieldOptions = FieldOptions.newField(this.isRequired());
+        else
+            fieldOptions = new FieldOptions();
 
-            @Override
-            public void onLoadError(Exception exception)
-            {
-                if (staticOnLoadListener != null)
-                    staticOnLoadListener.onLoadError(exception);
-
-                if (dynamicOnLoadListener != null)
-                    dynamicOnLoadListener.onLoadError(exception);
-            }
-        };
-
+        return Field.list(fieldName, fieldLabel, valuesString, context);
     }
-
-
 
 
     // LISTENERS

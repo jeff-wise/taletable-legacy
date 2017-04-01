@@ -13,6 +13,8 @@ import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +141,9 @@ public class Dictionary implements Model, ToYaml, Serializable
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Value Sets
+    // ------------------------------------------------------------------------------------------
+
     /**
      * The value sets.
      * @return The value sets.
@@ -147,6 +152,7 @@ public class Dictionary implements Model, ToYaml, Serializable
     {
         return this.valueSets.getValue();
     }
+
 
 
     /**
@@ -257,6 +263,30 @@ public class Dictionary implements Model, ToYaml, Serializable
             return valueUnion.value();
 
         return null;
+    }
+
+
+    public ValueUnion valueUnion(ValueReference valueReference)
+    {
+        ValueUnion valueUnion = this.lookup(valueReference.valueSetName(),
+                                            valueReference.valueName());
+        return valueUnion;
+    }
+
+
+    // > Sort
+    // ------------------------------------------------------------------------------------------
+
+    public void sortAscByLabel()
+    {
+        Collections.sort(this.valueSets(), new Comparator<ValueSet>()
+        {
+            @Override
+            public int compare(ValueSet valueSet1, ValueSet valueSet2)
+            {
+                return valueSet1.label().compareToIgnoreCase(valueSet2.label());
+            }
+        });
     }
 
 

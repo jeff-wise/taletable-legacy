@@ -34,7 +34,9 @@ public class RelativeLayoutBuilder
     public Integer                  height;
     public Integer                  heightDp;
 
+    public Integer                  widthDp;
     public Integer                  width;
+
     public Float                    weight;
 
     public LayoutType               layoutType;
@@ -72,6 +74,8 @@ public class RelativeLayoutBuilder
         this.heightDp           = null;
 
         this.width              = null;
+        this.widthDp            = null;
+
         this.weight             = null;
 
         this.layoutType         = LayoutType.LINEAR;
@@ -183,7 +187,8 @@ public class RelativeLayoutBuilder
 
         if (this.width != null)
             layoutParamsBuilder.setWidth(this.width);
-
+        else if (this.widthDp != null)
+            layoutParamsBuilder.setWidthDp(this.widthDp);
 
         // > Height
         // --------------------------------------------------------------------------------------

@@ -8,6 +8,11 @@
     <string name="dialog_cancel">CANCEL</string>
     <string name="cancel">Cancel</string>
 
+    <string name="help">Help</string>
+    <string name="delete">Delete</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="export">Export</string>
+
     <string name="save">Save</string>
 
     <string name="action_delete">DELETE</string>
@@ -88,6 +93,28 @@
     <string name="layout">Layout</string>
     <string name="theme">Theme</string>
 
+    <string name="sort_values_ascending">Sort Values (Ascending)</string>
+    <string name="sort_values_descending">Sort Values (Descending)</string>
+    <string name="edit_values">Edit Values</string>
+    <string name="style_widget">Style Widget</string>
+    <string name="edit_widget">Edit Widget</string>
+
+    <string name="incomplete">Incomplete</string>
+    <string name="no_value_set">No Value Set</string>
+
+
+    <string name="options">Options</string>
+
+    <string name="learn_about_value_sets">Learn about Value Sets</string>
+
+    <string name="value_set_editor">Value Set Editor</string>
+    <string name="new_value_set">New Value Set</string>
+    <string name="values_editor">Values Editor</string>
+    <string name="value_editor">Value Editor</string>
+
+    <string name="values">values</string>
+
+    <string name="not_available">N/A</string>
 
 
     <!-- DIALOG -->
@@ -227,15 +254,19 @@
     <!-- ACTIVITY: VALUE SET -->
     <!-- ==================================================================================== -->
 
-    <string name="value_set_field_name_label">Name</string>
-    <string name="value_set_field_name_description">
-        The Value Set\'s identifier. This value is used to uniquely identify the Value Set when
-        programming.
+    <string name="value_set_field_id_label">Identifier</string>
+    <string name="value_set_field_id_description">
+        A unique identifier of the Value Set.
     </string>
 
-    <string name="value_set_field_label_label">Label</string>
-    <string name="value_set_field_label_description">
-        The Value Set\'s name in human-readable form.
+    <string name="value_set_field_name_label">Name</string>
+    <string name="value_set_field_name_description">
+        What is the Value Set\'s unique name?
+    </string>
+
+    <string name="value_set_field_name_singular_label">Value Name (Singular)</string>
+    <string name="value_set_field_name_singular_description">
+        The name of the values in the set.
     </string>
 
     <string name="value_set_field_description_label">Description</string>
@@ -243,8 +274,42 @@
         What does the Value Set represent?
     </string>
 
+    <string name="value_set_field_value_type_label">Value Type</string>
+    <string name="value_set_field_value_type_description">
+        The type of the values in the collection.
+    </string>
+
+    <string name="value_set_field_values_label">Values</string>
+    <string name="value_set_field_values_description">
+        The values in the collection.
+    </string>
+
     <string name="value_set_new_value_dialog_title">New Value</string>
     <string name="value_set_new_value_dialog_add">ADD VALUE</string>
+
+
+    <!-- ACTIVITY: VALUE -->
+    <!-- ==================================================================================== -->
+
+    <string name="value_editor_field_value_label">Value</string>
+    <string name="value_editor_field_value_description">
+        The value.
+    </string>
+
+    <string name="value_editor_field_summary_label">Summary</string>
+    <string name="value_editor_field_summary_description">
+        A short description of the value.
+    </string>
+
+    <string name="value_editor_field_variables_label">Variables</string>
+    <string name="value_editor_field_variables_description">
+        Variables active when the value is used.
+    </string>
+
+    <string name="value_editor_field_step_value">The Value</string>
+    <string name="value_editor_field_step_summary">A Short Description</string>
+    <string name="value_editor_field_step_variables">Add Variables</string>
+
 
     <!-- ACTIVITY: FUNCTION -->
     <!-- ==================================================================================== -->

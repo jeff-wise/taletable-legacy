@@ -1,42 +1,42 @@
 
-package com.kispoko.tome.lib.database.error;
+package com.kispoko.tome.lib.functor.error;
 
 
 import com.kispoko.tome.util.ApplicationError;
 
+
+
 /**
- * Database Error: Uninitialized Functor
+ * Functor Access Error
  */
-public class UninitializedFunctorError implements ApplicationError
+public class FunctorAccessError implements ApplicationError
 {
 
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private String className;
-    private String fieldName;
+    private String    className;
+    private Exception exception;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public UninitializedFunctorError(String className, String fieldName)
+    public FunctorAccessError(String className, Exception exception)
     {
         this.className = className;
-        this.fieldName  = fieldName;
+        this.exception = exception;
     }
 
 
     // API
     // -----------------------------------------------------------------------------------------
 
-
     public String errorMessage()
     {
-        return "Uninitialized Functor Error:\n" +
+        return "Functor Access Error: " + "\n" +
                 "    Class: " + this.className + "\n" +
-                "    Field: " + this.fieldName;
+                "    Exception:\n" + this.exception.getMessage();
     }
-
 
 }

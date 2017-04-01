@@ -11,10 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
@@ -128,55 +126,55 @@ public class NumberColumnActivity extends AppCompatActivity
         // > Name Field
         // -------------------------------------------------------------------------------------
 
-        String name = this.numberColumn.name();
-
-        LinearLayout nameField =
-                Form.field(
-                    R.string.number_column_field_name_label,
-                    R.string.number_column_field_name_description,
-                    Form.textInput(name, this),
-                    this);
-
-        // > Default Value
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout defaultValueField =
-                Form.field(
-                    R.string.number_column_field_default_value_label,
-                    R.string.number_column_field_default_value_description,
-                    Form.textInput(this.numberColumn.defaultValue().toString(), this),
-                    this);
-
-        // > Alignment Field
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout alignmentField =
-                Form.field(
-                        R.string.number_column_field_alignment_label,
-                        R.string.number_column_field_alignment_description,
-                        Form.variantInput(Alignment.class,
-                                          this.numberColumn.alignment(),
-                                          this),
-                        this);
-
-        // > Width Field
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout widthField =
-                Form.field(
-                        R.string.number_column_field_width_label,
-                        R.string.number_column_field_width_description,
-                        Form.textInput(this.numberColumn.width().toString(), this),
-                        this);
-
-
-        // [2] Add Fields
-        // -------------------------------------------------------------------------------------
-
-        layout.addView(nameField);
-        layout.addView(defaultValueField);
-        layout.addView(alignmentField);
-        layout.addView(widthField);
+//        String name = this.numberColumn.name();
+//
+//        LinearLayout nameField =
+//                Form.field(
+//                    R.string.number_column_field_name_label,
+//                    R.string.number_column_field_name_description,
+//                    Form.textInput(name, this),
+//                    this);
+//
+//        // > Default Value
+//        // -------------------------------------------------------------------------------------
+//
+//        LinearLayout defaultValueField =
+//                Form.field(
+//                    R.string.number_column_field_default_value_label,
+//                    R.string.number_column_field_default_value_description,
+//                    Form.textInput(this.numberColumn.defaultValue().toString(), this),
+//                    this);
+//
+//        // > Alignment Field
+//        // -------------------------------------------------------------------------------------
+//
+//        LinearLayout alignmentField =
+//                Form.field(
+//                        R.string.number_column_field_alignment_label,
+//                        R.string.number_column_field_alignment_description,
+//                        Form.variantInput(Alignment.class,
+//                                          this.numberColumn.alignment(),
+//                                          this),
+//                        this);
+//
+//        // > Width Field
+//        // -------------------------------------------------------------------------------------
+//
+//        LinearLayout widthField =
+//                Form.field(
+//                        R.string.number_column_field_width_label,
+//                        R.string.number_column_field_width_description,
+//                        Form.textInput(this.numberColumn.width().toString(), this),
+//                        this);
+//
+//
+//        // [2] Add Fields
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.addView(nameField);
+//        layout.addView(defaultValueField);
+//        layout.addView(alignmentField);
+//        layout.addView(widthField);
 
 
         return layout;

@@ -64,10 +64,28 @@
         android:label="Dictionary" />
 
     <activity
-        android:name=".activity.ValueSetActivity"
+        android:name=".activity.ValueSetEditorActivity"
         android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
+        android:windowSoftInputMode="adjustPan"
         android:label="Value Set" />
+
+    <activity
+        android:name=".activity.valueset.ValueListActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="adjustPan"
+        android:label="Values" />
+
+    <activity
+        android:name=".activity.TextValueEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="adjustPan"
+        android:label="Values" />
+
+    <activity
+        android:name=".activity.NumberValueEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="adjustPan"
+        android:label="Values" />
 
     <activity
         android:name=".activity.FunctionIndexActivity"

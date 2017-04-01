@@ -2,6 +2,8 @@
 package com.kispoko.tome.lib.database;
 
 
+import com.kispoko.tome.lib.database.error.FunctorError;
+import com.kispoko.tome.lib.functor.error.FunctorAccessError;
 import com.kispoko.tome.util.ApplicationError;
 import com.kispoko.tome.lib.database.error.ColumnDoesNotExistError;
 import com.kispoko.tome.lib.database.error.InvalidEnumError;
@@ -11,7 +13,7 @@ import com.kispoko.tome.lib.database.error.NullModelIdentifierError;
 import com.kispoko.tome.lib.database.error.QueryError;
 import com.kispoko.tome.lib.database.error.SerializationError;
 import com.kispoko.tome.lib.database.error.UnexpectedSQLTypeError;
-import com.kispoko.tome.lib.database.error.UninitializedFunctorError;
+import com.kispoko.tome.lib.functor.error.UninitializedFunctorError;
 import com.kispoko.tome.lib.database.error.ValueNotSerializableError;
 
 
@@ -99,6 +101,12 @@ public class DatabaseException extends Exception
     }
 
 
+    public static DatabaseException functor(FunctorError error)
+    {
+        return new DatabaseException(error, ErrorType.FUNCTOR);
+    }
+
+
     // API
     // -----------------------------------------------------------------------------------------
 
@@ -133,7 +141,8 @@ public class DatabaseException extends Exception
         UNINITIALIZED_FUNCTOR,
         INVALID_ENUM,
         SERIALIZATION,
-        QUERY
+        QUERY,
+        FUNCTOR
     }
 
 }

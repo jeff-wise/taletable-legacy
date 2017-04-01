@@ -2,6 +2,7 @@
 package com.kispoko.tome.engine.value;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
@@ -11,6 +12,8 @@ import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,22 +33,23 @@ public class ValueSet implements Model, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                            id;
+    private UUID                                id;
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>        name;
-    private PrimitiveFunctor<String>        label;
-    private PrimitiveFunctor<String>        labelSingular;
-    private PrimitiveFunctor<String>        description;
-    private CollectionFunctor<ValueUnion>   values;
+    private PrimitiveFunctor<String>            name;
+    private PrimitiveFunctor<String>            label;
+    private PrimitiveFunctor<String>            labelSingular;
+    private PrimitiveFunctor<String>            description;
+    private PrimitiveFunctor<ValueSetValueType> valueType;
+    private CollectionFunctor<ValueUnion>       values;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Map<String,ValueUnion>          valueIndex;
+    private Map<String,ValueUnion>              valueIndex;
 
 
     // CONSTRUCTORS
@@ -60,7 +64,10 @@ public class ValueSet implements Model, ToYaml, Serializable
         this.labelSingular  = new PrimitiveFunctor<>(null, String.class);
         this.description    = new PrimitiveFunctor<>(null, String.class);
 
+        this.valueType      = new PrimitiveFunctor<>(null, ValueSetValueType.class);
         this.values         = CollectionFunctor.empty(ValueUnion.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -69,6 +76,7 @@ public class ValueSet implements Model, ToYaml, Serializable
                     String label,
                     String labeSingular,
                     String description,
+                    ValueSetValueType valueType,
                     List<ValueUnion> values)
     {
         this.id             = id;
@@ -78,9 +86,13 @@ public class ValueSet implements Model, ToYaml, Serializable
         this.labelSingular  = new PrimitiveFunctor<>(labeSingular, String.class);
         this.description    = new PrimitiveFunctor<>(description, String.class);
 
+        this.valueType      = new PrimitiveFunctor<>(valueType, ValueSetValueType.class);
         this.values         = CollectionFunctor.full(values, ValueUnion.class);
 
-        initialize();
+        this.setValueType(valueType);
+
+        this.initializeFunctors();
+        this.initializeValueSet();
     }
 
 
@@ -93,17 +105,20 @@ public class ValueSet implements Model, ToYaml, Serializable
     public static ValueSet fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID             id             = UUID.randomUUID();
+        UUID              id            = UUID.randomUUID();
 
-        String           name           = yaml.atKey("name").getString();
+        String            name          = yaml.atKey("name").getString();
 
-        String           label          = yaml.atMaybeKey("label").getTrimmedString();
+        String            label         = yaml.atMaybeKey("label").getTrimmedString();
 
-        String           labelSingular  = yaml.atMaybeKey("label_singular").getTrimmedString();
+        String            labelSingular = yaml.atMaybeKey("label_singular").getTrimmedString();
 
-        String           description = yaml.atMaybeKey("description").getTrimmedString();
+        String            description   = yaml.atMaybeKey("description").getTrimmedString();
 
-        List<ValueUnion> values      = yaml.atKey("values").forEach(
+        ValueSetValueType valueType     = ValueSetValueType.fromYaml(
+                                                        yaml.atMaybeKey("value_type"));
+
+        List<ValueUnion>  values        = yaml.atKey("values").forEach(
                                             new YamlParser.ForEach<ValueUnion>()
         {
             @Override
@@ -112,7 +127,7 @@ public class ValueSet implements Model, ToYaml, Serializable
             }
         });
 
-        return new ValueSet(id, name, label, labelSingular, description, values);
+        return new ValueSet(id, name, label, labelSingular, description, valueType, values);
     }
 
 
@@ -150,7 +165,7 @@ public class ValueSet implements Model, ToYaml, Serializable
 
     public void onLoad()
     {
-        initialize();
+        initializeValueSet();
     }
 
 
@@ -165,6 +180,9 @@ public class ValueSet implements Model, ToYaml, Serializable
     {
         return YamlBuilder.map()
                 .putString("name", this.name())
+                .putString("label", this.label())
+                .putString("description", this.description())
+                .putYaml("value_type", this.valueType())
                 .putList("values", this.values());
     }
 
@@ -209,6 +227,33 @@ public class ValueSet implements Model, ToYaml, Serializable
     public String description()
     {
         return this.description.getValue();
+    }
+
+
+    // ** Value Type
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * The type of values in the value set.
+     * @return The value type.
+     */
+    public ValueSetValueType valueType()
+    {
+        return this.valueType.getValue();
+    }
+
+
+    /**
+     * Set the value type for all the values in the Value Set. If null, defaults to ANY, which
+     * means the set is untyped.
+     * @param valueType The value type.
+     */
+    public void setValueType(ValueSetValueType valueType)
+    {
+        if (valueType != null)
+            this.valueType.setValue(valueType);
+        else
+            this.valueType.setValue(ValueSetValueType.ANY);
     }
 
 
@@ -297,11 +342,31 @@ public class ValueSet implements Model, ToYaml, Serializable
     }
 
 
+    // > Sort
+    // ------------------------------------------------------------------------------------------
+
+    public void sortAscByLabel()
+    {
+        Collections.sort(this.values(), new Comparator<ValueUnion>()
+        {
+            @Override
+            public int compare(ValueUnion valueUnion1, ValueUnion valueUnion2)
+            {
+                return valueUnion1.value().valueString()
+                            .compareToIgnoreCase(valueUnion2.value().valueString());
+            }
+        });
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private void initialize()
+    private void initializeValueSet()
     {
+        // [1] Index the VALUES
+        // -------------------------------------------------------------------------------------
+
         this.valueIndex = new HashMap<>();
 
         for (ValueUnion valueUnion : this.values())
@@ -317,6 +382,42 @@ public class ValueSet implements Model, ToYaml, Serializable
             }
         }
 
+    }
+
+
+    private void initializeFunctors()
+    {
+        // Name
+        this.name.setName("name");
+        this.name.setLabelId(R.string.value_set_field_id_label);
+        this.name.setDescriptionId(R.string.value_set_field_id_description);
+
+        // Label
+        this.label.setName("label");
+        this.label.setLabelId(R.string.value_set_field_name_label);
+        this.label.setDescriptionId(R.string.value_set_field_name_description);
+        this.label.setIsRequired(true);
+
+        // Label Singular
+        this.labelSingular.setName("label_singular");
+        this.labelSingular.setLabelId(R.string.value_set_field_name_singular_label);
+        this.labelSingular.setDescriptionId(R.string.value_set_field_name_singular_description);
+
+        // Description
+        this.description.setName("description");
+        this.description.setLabelId(R.string.value_set_field_description_label);
+        this.description.setDescriptionId(R.string.value_set_field_description_description);
+        this.description.setIsRequired(true);
+
+        // Value Type
+        this.valueType.setName("value_type");
+        this.valueType.setLabelId(R.string.value_set_field_value_type_label);
+        this.valueType.setDescriptionId(R.string.value_set_field_value_type_description);
+
+        // Values
+        this.values.setName("values");
+        this.values.setLabelId(R.string.value_set_field_values_label);
+        this.values.setDescriptionId(R.string.value_set_field_values_description);
     }
 
 }

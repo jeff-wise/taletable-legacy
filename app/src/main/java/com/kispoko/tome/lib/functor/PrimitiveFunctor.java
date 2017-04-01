@@ -2,8 +2,10 @@
 package com.kispoko.tome.lib.functor;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.widget.LinearLayout;
 
 import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
 import com.kispoko.tome.engine.program.ProgramValueType;
@@ -18,6 +20,8 @@ import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
+import com.kispoko.tome.lib.functor.form.FieldOptions;
+import com.kispoko.tome.lib.functor.form.Field;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.SectionType;
@@ -53,7 +57,7 @@ import java.util.UUID;
  * TODO Generalize the enum serialization code here
  */
 public class PrimitiveFunctor<A> extends Functor<A>
-                               implements Serializable
+                                 implements Serializable
 {
 
     // PROPERTIES
@@ -67,10 +71,32 @@ public class PrimitiveFunctor<A> extends Functor<A>
     // --------------------------------------------------------------------------------------
 
     public PrimitiveFunctor(A value,
+                            Class<A> valueClass,
+                            boolean isRequired)
+    {
+        super(value, isRequired);
+        this.valueClass       = valueClass;
+    }
+
+
+    public PrimitiveFunctor(A value,
                             Class<A> valueClass)
     {
         super(value);
         this.valueClass       = valueClass;
+    }
+
+
+    /**
+     * Create a primitive functor that is required to have a non-null value before being saved.
+     * @param value The value.
+     * @param valueClass The value's class object.
+     * @param <A> The value type.
+     * @return The "required" Primitive Functor.
+     */
+    public static <A> PrimitiveFunctor required(A value, Class<A> valueClass)
+    {
+        return new PrimitiveFunctor<>(value, valueClass, true);
     }
 
 
@@ -82,7 +108,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
 
     public String sqlColumnName()
     {
-        return SQL.asValidIdentifier(this.name());
+        return SQL.asValidIdentifier(this.name().toLowerCase());
     }
 
 
@@ -302,19 +328,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             this.setValue((A) sqlValue.getBlob());
         }
-//        else if (this.valueClass.isAssignableFrom(Enum.class))
-//        {
-            // TODO can this work??
-            // TODO do we need to say somewhere that A is an enum??
-            // alternative solution FromString interface
-//            String valueString = sqlValue.getText();
-//            try {
-//                Enum.valueOf((<Enum<?>) this.valueClass,  valueString);
-//            }
-//            catch (InvalidDataException exception) {
-//
-//            }
-//        }
         else if (this.valueClass.isAssignableFrom(DiceType.class))
         {
             DiceType diceType = DiceType.fromSQLValue(sqlValue);
@@ -505,4 +518,45 @@ public class PrimitiveFunctor<A> extends Functor<A>
     public interface OnUpdateListener<A> {
         void onUpdate(A value);
     }
+
+
+    // FORM
+    // --------------------------------------------------------------------------------------
+
+    public Field formView(boolean isEditMode, Context context)
+    {
+        // > Field Data
+
+        // ** Name
+        String fieldName = this.name();
+
+        // ** Label
+        String fieldLabel = "";
+        if (this.label() != null)
+            fieldLabel = this.label();
+        else if (this.labelId() != null)
+            fieldLabel = context.getString(this.labelId());
+
+        // ** Description
+        String fieldDescription = "";
+        if (this.description() != null)
+            fieldDescription = this.description();
+        else if (this.descriptionId() != null)
+            fieldDescription = context.getString(this.descriptionId());
+
+        String fieldValue = null;
+        if (!this.isNull())
+            fieldValue = this.value.toString();
+
+        // > Field Options
+        FieldOptions fieldOptions;
+        if (isEditMode)
+            fieldOptions = FieldOptions.newField(this.isRequired());
+        else
+            fieldOptions = new FieldOptions();
+
+        return Field.text(fieldName, fieldLabel, fieldValue, context);
+
+    }
+
 }

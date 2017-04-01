@@ -961,6 +961,55 @@ engine:
         value:
           name: reluctant
           value: reluctant
+    - name: deity
+      label: Deities
+      label_singular: Deity
+      description: >
+        The gods of the universe.
+      value_type: text
+      values:
+      - type: text
+        value:
+          name: rhylisial
+          value: Rylisial
+          summary: >
+            God of Justice.
+      - type: text
+        value:
+          name: naran
+          value: Naran
+          summary: >
+            God of Knowledge
+      - type: text
+        value:
+          name: dydradria
+          value: Dyradria
+          summary: >
+            Goddess of Nature
+      - type: text
+        value:
+          name: sysopula
+          value: Sysopula
+          summary: >
+            Goddess of Pleasure
+      - type: text
+        value:
+          name: krino_ulito
+          value: Krino Ulito
+          summary: >
+            God of War and Destruction
+      - type: text
+        value:
+          name: mooertisia
+          value: Mooertisia
+          summary: >
+            Goddess of Death
+      - type: text
+        value:
+          name: baladesa
+          value: Baladesa
+          summary: >
+            God of Light and Wisdom
     - name: class
       label: Classes
       label_singular: Class
@@ -998,7 +1047,7 @@ engine:
         value:
           name: cleric
           summary: >
-            Clerics are priests, devoting themselves to a diety. In return, they gain access to
+            Clerics are priests, devoting themselves to a deity. In return, they gain access to
             powerful magic, which they can use to heal, and sometimes destroy.
           value: Cleric
           variables:
@@ -1949,7 +1998,7 @@ profile:
                   right: 3
             format:
               size: medium_small
-              outside_label: diety
+              outside_label: deity
               outside_label_position: top
               outside_label_style:
                 alignment: center
@@ -1963,8 +2012,12 @@ profile:
                 color: theme_medium_light
                 size: medium_small
             value:
-              type: literal
-              value: Tritherion
+              type: value
+              name: deity
+              value_set: deity
+              value:
+                set_name: deity
+                value_name: rhylisial
         - type: text
           widget:
             data:
@@ -5195,7 +5248,7 @@ encounter:
                 background: empty
             format:
               action_style:
-                color: green_very_light
+                color: green_light
                 font: bold
                 size: medium
             modifier:

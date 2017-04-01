@@ -11,17 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.sheet.widget.util.TextSize;
 import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 
 /**
@@ -137,88 +129,88 @@ public class TextWidgetActivity extends AppCompatActivity
 
         String name = this.textWidget.data().format().label();
 
-        LinearLayout nameField =
-                Form.field(
-                    R.string.text_widget_field_name_label,
-                    R.string.text_widget_field_name_description,
-                    Form.textInput(name, this),
-                    this);
-
-
-        // > Text Size Field
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout textSizeField =
-                Form.field(
-                        R.string.text_widget_field_size_label,
-                        R.string.text_widget_field_size_description,
-                        Form.variantInput(TextSize.class,
-                                          this.textWidget.format().valueStyle().size(),
-                                          this),
-                        this);
-
-        // > Alignment Field
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout alignmentField =
-                Form.field(
-                        R.string.text_widget_field_alignment_label,
-                        R.string.text_widget_field_alignment_description,
-                        Form.variantInput(Alignment.class,
-                                          this.textWidget.data().format().alignment(),
-                                          this),
-                        this);
-
-        // > Width
-        // -------------------------------------------------------------------------------------
-
-        String width = this.textWidget.data().format().width().toString();
-
-        LinearLayout widthField =
-                Form.field(
-                        R.string.text_widget_field_width_label,
-                        R.string.text_widget_field_width_description,
-                        Form.textInput(width, this),
-                        this);
-
-
-        // > Value Variable Field
-        // -------------------------------------------------------------------------------------
-
-        LinearLayout valueVariableField =
-                Form.field(
-                        R.string.text_widget_field_value_label,
-                        R.string.text_widget_field_value_description,
-                        Form.buttonInput(this.textWidget.value(), this),
-                        this);
-
-        // > Variables Field
-        // -------------------------------------------------------------------------------------
-
-        List<String> variableNames = new ArrayList<>();
-        for (VariableUnion variableUnion : this.textWidget.variables()) {
-            variableNames.add(variableUnion.variable().label());
-        }
-
-        LinearLayout variablesField =
-                Form.field(R.string.text_widget_field_variables_label,
-                           R.string.text_widget_field_variables_description,
-                           Form.listInput("VARIABLE",
-                                          variableNames,
-                                          this),
-                           this);
-
-
-        // [2] Add Fields
-        // -------------------------------------------------------------------------------------
-
-        layout.addView(nameField);
-        layout.addView(textSizeField);
-        layout.addView(alignmentField);
-        layout.addView(widthField);
-        layout.addView(valueVariableField);
-        layout.addView(variablesField);
-
+//        LinearLayout nameField =
+//                Form.field(
+//                    R.string.text_widget_field_name_label,
+//                    R.string.text_widget_field_name_description,
+//                    Form.textInput(name, this),
+//                    this);
+//
+//
+//        // > Text Size Field
+//        // -------------------------------------------------------------------------------------
+//
+//        LinearLayout textSizeField =
+//                Form.field(
+//                        R.string.text_widget_field_size_label,
+//                        R.string.text_widget_field_size_description,
+//                        Form.variantInput(TextSize.class,
+//                                          this.textWidget.format().valueStyle().size(),
+//                                          this),
+//                        this);
+//
+//        // > Alignment Field
+//        // -------------------------------------------------------------------------------------
+//
+//        LinearLayout alignmentField =
+//                Form.field(
+//                        R.string.text_widget_field_alignment_label,
+//                        R.string.text_widget_field_alignment_description,
+//                        Form.variantInput(Alignment.class,
+//                                          this.textWidget.data().format().alignment(),
+//                                          this),
+//                        this);
+//
+//        // > Width
+//        // -------------------------------------------------------------------------------------
+//
+//        String width = this.textWidget.data().format().width().toString();
+//
+//        LinearLayout widthField =
+//                Form.field(
+//                        R.string.text_widget_field_width_label,
+//                        R.string.text_widget_field_width_description,
+//                        Form.textInput(width, this),
+//                        this);
+//
+//
+//        // > Value Variable Field
+//        // -------------------------------------------------------------------------------------
+//
+//        LinearLayout valueVariableField =
+//                Form.field(
+//                        R.string.text_widget_field_value_label,
+//                        R.string.text_widget_field_value_description,
+//                        Form.buttonInput(this.textWidget.value(), this),
+//                        this);
+//
+//        // > Variables Field
+//        // -------------------------------------------------------------------------------------
+//
+//        List<String> variableNames = new ArrayList<>();
+//        for (VariableUnion variableUnion : this.textWidget.variables()) {
+//            variableNames.add(variableUnion.variable().label());
+//        }
+//
+//        LinearLayout variablesField =
+//                Form.field(R.string.text_widget_field_variables_label,
+//                           R.string.text_widget_field_variables_description,
+//                           Form.listInput("VARIABLE",
+//                                          variableNames,
+//                                          this),
+//                           this);
+//
+//
+//        // [2] Add Fields
+//        // -------------------------------------------------------------------------------------
+//
+//        layout.addView(nameField);
+//        layout.addView(textSizeField);
+//        layout.addView(alignmentField);
+//        layout.addView(widthField);
+//        layout.addView(valueVariableField);
+//        layout.addView(variablesField);
+//
 
         return layout;
     }

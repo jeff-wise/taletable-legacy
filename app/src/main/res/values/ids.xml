@@ -22,7 +22,9 @@
     <item name="value_set_row_items" type="id"/>
 
     <!-- VALUE LIST ITEM -->
+    <item name="value_list_item_layout" type="id"/>
     <item name="value_list_item_value" type="id"/>
+    <item name="value_list_item_description" type="id"/>
 
     <!-- FUNCTION LIST ITEM -->
     <item name="function_list_item_layout" type="id"/>
@@ -98,6 +100,7 @@
     <!-- CHOOSE VALUE DIALOG -->
     <item name="choose_value_dialog_item_value" type="id"/>
     <item name="choose_value_dialog_item_summary" type="id"/>
+    <item name="choose_value_dialog_item_icon" type="id"/>
 
 
     <!-- SHEET SUMMARY LIST ITEM -->

@@ -26,6 +26,8 @@ public class ValueListItemView
 
         layout.addView(valueView(context));
 
+        layout.addView(descriptionView(context));
+
         return layout;
     }
 
@@ -34,13 +36,17 @@ public class ValueListItemView
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
+        layout.id                   = R.id.value_list_item_layout;
+
+        layout.orientation          = LinearLayout.VERTICAL;
+
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left         = R.dimen.value_set_item_padding_horz;
-        layout.padding.right        = R.dimen.value_set_item_padding_horz;
-        layout.padding.top          = R.dimen.value_set_item_padding_vert;
-        layout.padding.bottom       = R.dimen.value_set_item_padding_vert;
+        layout.padding.leftDp       = 17f;
+        layout.padding.rightDp      = 17f;
+        layout.padding.topDp        = 17f;
+        layout.padding.bottomDp     = 17f;
 
         return layout.linearLayout(context);
     }
@@ -54,13 +60,32 @@ public class ValueListItemView
         value.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         value.id                = R.id.value_list_item_value;
-        value.font              = Font.sansSerifFontRegular(context);
-        value.size              = R.dimen.value_set_item_value_text_size;
-        value.color             = R.color.dark_blue_hl_1;
+
+        value.font              = Font.serifFontRegular(context);
+        value.sizeSp            = 18f;
+        value.color             = R.color.gold_light;
 
         return value.textView(context);
     }
 
+
+    private static TextView descriptionView(Context context)
+    {
+        TextViewBuilder description = new TextViewBuilder();
+
+        description.width           = LinearLayout.LayoutParams.WRAP_CONTENT;
+        description.heightDp        = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        description.id              = R.id.value_list_item_description;
+
+        description.font            = Font.serifFontRegular(context);
+        description.color           = R.color.dark_blue_hl_8;
+        description.sizeSp          = 14f;
+
+        description.margin.topDp    = 8f;
+
+        return description.textView(context);
+    }
 
 
 }

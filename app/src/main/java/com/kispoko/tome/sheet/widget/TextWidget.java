@@ -17,7 +17,9 @@ import com.kispoko.tome.activity.sheet.dialog.ChooseValueDialogFragment;
 import com.kispoko.tome.activity.widget.text.TextEditorActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
+import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.ValueUnion;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
@@ -698,6 +700,9 @@ public class TextWidget extends Widget
                 Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
                 ValueSet valueSet = dictionary.lookup(valueSetName);
 
+                ValueReference valueReference = this.valueVariable().valueReference();
+                ValueUnion valueUnion = dictionary.valueUnion(valueReference);
+
                 if (valueSet == null) {
                     ApplicationFailure.sheet(
                             SheetException.undefinedValueSet(
@@ -706,7 +711,7 @@ public class TextWidget extends Widget
                 }
 
                 ChooseValueDialogFragment chooseDialog =
-                                            ChooseValueDialogFragment.newInstance(valueSet);
+                                    ChooseValueDialogFragment.newInstance(valueSet, valueUnion);
                 chooseDialog.show(sheetActivity.getSupportFragmentManager(), "");
 
                 break;

@@ -21,12 +21,17 @@
     <color name="dark_blue_hlx_4">#B6CCF0</color>
     <color name="dark_blue_hlx_5">#AEC3E5</color>
     <color name="dark_blue_hlx_6">#A8BDDE</color>
+
     <color name="dark_blue_hlx_7">#A1B4D4</color>
+    <!--<color name="dark_blue_hlx_7">#B6D4FC</color>-->
+
     <color name="dark_blue_hlx_8">#99ACC9</color>
     <color name="dark_blue_hlx_9">#91A3BF</color>
     <color name="dark_blue_hlx_10">#8FA1BD</color>
 
     <color name="dark_blue_hl_1">#8B9CB8</color>
+    <!--<color name="dark_blue_hl_1">#889FBD</color>-->
+
     <color name="dark_blue_hl_2">#7E8DA6</color>
     <color name="dark_blue_hl_3">#748299</color>
     <color name="dark_blue_hl_4">#6C7A8F</color>
@@ -42,6 +47,7 @@
     <color name="dark_blue_4">#303640</color>
     <color name="dark_blue_5">#292E36</color>
     <color name="dark_blue_6">#272C33</color>
+
     <color name="dark_blue_7">#252930</color>
     <color name="dark_blue_8">#23272E</color>
     <color name="dark_blue_9">#21252B</color>
@@ -49,16 +55,44 @@
     <color name="dark_blue_11">#1D2126</color>
     <color name="dark_blue_12">#1B1F24</color>
     <color name="dark_blue_13">#191D21</color>
+
+    <!--<color name="dark_blue_7">#252B36</color>-->
+    <!--<color name="dark_blue_8">#232933</color>-->
+    <!--<color name="dark_blue_9">#212630</color>-->
+    <!--<color name="dark_blue_10">#20242E</color>-->
+    <!--<color name="dark_blue_11">#1E222B</color>-->
+    <!--<color name="dark_blue_12">#1C2029</color>-->
+    <!--<color name="dark_blue_13">#1A1E26</color>-->
+
+    <!--<color name="dark_blue_7">#252B33</color>-->
+    <!--<color name="dark_blue_8">#232930</color>-->
+    <!--<color name="dark_blue_9">#21272E</color>-->
+    <!--<color name="dark_blue_10">#1F242B</color>-->
+    <!--<color name="dark_blue_11">#1D2229</color>-->
+    <!--<color name="dark_blue_12">#1C2026</color>-->
+    <!--<color name="dark_blue_13">#1A1E24</color>-->
+
+
     <color name="dark_blue_14">#171B1F</color>
     <color name="dark_blue_15">#15181C</color>
+
+
+
+    <!--<color name="dark_primary_">#15181C</color>-->
 
 
     <!-- GOLD -->
     <!-- ================================================================ -->
 
-    <color name="gold_very_light">#F0E3BE</color>
-    <color name="gold_light">#E3D7B4</color>
-    <color name="gold_medium_light">#D9CDAC</color>
+    <!--<color name="gold_very_light">#F0E3BE</color>-->
+    <!--<color name="gold_light">#E3D7B4</color>-->
+    <!--<color name="gold_medium_light">#D9CDAC</color>-->
+
+    <color name="gold_very_light">#FCEFAE</color>
+    <color name="gold_light">#F2E6A7</color>
+    <color name="gold_medium_light">#E5D99E</color>
+
+
     <color name="gold_medium">#CCC1A2</color>
     <color name="gold_medium_dark">#BFB598</color>
     <color name="gold_dark">#B2A98E</color>
@@ -74,18 +108,26 @@
     <color name="purple_medium_light">#B7B0DB</color>
     <color name="purple_medium">#AAA4CC</color>
     <color name="purple_medium_dark">#9B96BA</color>
-    <color name="purple_dark">#8D87A8</color>
+    <color name="purple_dark">#8E89AB</color>
 
 
     <!-- GREEN -->
     <!-- ================================================================ -->
 
-    <color name="green_very_light">#C5E5D7</color>
-    <color name="green_light">#B4D1C4</color>
-    <color name="green_medium_light">#A5BFB4</color>
-    <color name="green_medium">#9AB2A8</color>
-    <color name="green_medium_dark">#8FA69C</color>
-    <color name="green_dark">#82968E</color>
+    <!--<color name="green_very_light">#C5E5D7</color>-->
+    <!--<color name="green_light">#B4D1C4</color>-->
+    <!--<color name="green_medium_light">#A5BFB4</color>-->
+    <!--<color name="green_medium">#9AB2A8</color>-->
+    <!--<color name="green_medium_dark">#8FA69C</color>-->
+    <!--<color name="green_dark">#82968E</color>-->
+
+    <color name="green_very_light">#C7F0B7</color>
+    <color name="green_light">#BCE3AD</color>
+    <color name="green_medium_light">#B2D6A4</color>
+    <color name="green_medium">#A7C99A</color>
+    <color name="green_medium_dark">#9DBD90</color>
+    <color name="green_dark">#92B086</color>
+    <color name="dark_green_medium">#283025</color>
 
 
     <!-- BLUE -->
@@ -97,8 +139,9 @@
     <!-- ================================================================ -->
 
     <color name="red_5">#A14746</color>
-    <color name="red_light">#D1817D</color>
-    <color name="red_medium_light">#B0827C</color>
+    <color name="red_light">#E59893</color>
+    <color name="red_medium_light">#D67E7C</color>
+    <color name="red_medium">#CC7876</color>
 
     <!-- RED ORANGE -->
     <!-- ================================================================ -->

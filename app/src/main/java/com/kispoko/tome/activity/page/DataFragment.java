@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.sheet.Page;
-import com.kispoko.tome.lib.ui.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
@@ -76,16 +75,16 @@ public class DataFragment extends Fragment
         // -------------------------------------------------------------------------------------
 
         // > Name Field
-        LinearLayout nameField = Form.field(
-                    R.string.function_field_name_label,
-                    R.string.function_field_name_description,
-                    Form.textInput(this.page.name(), null, getContext()),
-                    getContext());
+//        LinearLayout nameField = Form.field(
+//                    R.string.function_field_name_label,
+//                    R.string.function_field_name_description,
+//                    Form.textInput(this.page.name(), null, getContext()),
+//                    getContext());
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
-        layout.addView(nameField);
+        // layout.addView(nameField);
 
         return layout;
     }
