@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 
@@ -39,7 +38,7 @@ import java.util.UUID;
  * This class represents the structure and representation of character sheet. Character sheets
  * can therefore be customized for different roleplaying games or even different campaigns.
  */
-public class Sheet implements Model
+public class Sheet extends Model
 {
 
     // PROPERTIES

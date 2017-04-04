@@ -27,7 +27,8 @@ import java.util.UUID;
 /**
  * Group
  */
-public class Group implements GroupParent, Model, ToYaml, Serializable
+public class Group extends Model
+                   implements GroupParent, ToYaml, Serializable
 {
 
     // PROPERTIES

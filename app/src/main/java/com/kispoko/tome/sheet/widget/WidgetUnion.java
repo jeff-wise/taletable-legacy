@@ -21,7 +21,8 @@ import java.util.UUID;
 /**
  * Widget Union
  */
-public class WidgetUnion implements Model, ToYaml, Serializable
+public class WidgetUnion extends Model
+                         implements ToYaml, Serializable
 {
 
     // PROPERTIES

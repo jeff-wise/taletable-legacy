@@ -21,7 +21,8 @@ import java.util.UUID;
 /**
  * Statement Parameter
  */
-public class Parameter implements Model, ToYaml, Serializable
+public class Parameter extends Model
+                       implements ToYaml, Serializable
 {
 
     // PROPERTIES

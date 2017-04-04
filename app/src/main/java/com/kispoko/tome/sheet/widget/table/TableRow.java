@@ -28,7 +28,8 @@ import java.util.UUID;
 /**
  * Table Widget Row
  */
-public class TableRow implements Model, WidgetContainer, ToYaml, Serializable
+public class TableRow extends Model
+                      implements WidgetContainer, ToYaml, Serializable
 {
 
     // PROPERTIES

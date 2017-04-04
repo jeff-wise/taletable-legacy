@@ -25,7 +25,8 @@ import java.util.UUID;
  * A section is a collection of pages. It represents a certain aspect to a sheet, such as static
  * content, dynamic content, campaign information, etc...
  */
-public class Section implements Model, ToYaml
+public class Section extends Model
+                     implements ToYaml
 {
 
     // PROPERTIES

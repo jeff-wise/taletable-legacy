@@ -19,7 +19,8 @@ import java.util.UUID;
 /**
  * Dice Roll
  */
-public class DiceRoll implements Model, ToYaml, Serializable
+public class DiceRoll extends Model
+                      implements ToYaml, Serializable
 {
 
     // PROPERTIES

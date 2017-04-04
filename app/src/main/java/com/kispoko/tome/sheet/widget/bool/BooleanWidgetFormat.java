@@ -18,7 +18,8 @@ import java.util.UUID;
 /**
  * Boolean Widget Format
  */
-public class BooleanWidgetFormat implements Model, ToYaml, Serializable
+public class BooleanWidgetFormat extends Model
+                                 implements ToYaml, Serializable
 {
 
     // PROPERTIES

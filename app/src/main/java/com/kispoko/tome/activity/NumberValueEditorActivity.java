@@ -23,8 +23,6 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.lib.functor.form.FieldOptions;
-import com.kispoko.tome.lib.ui.form.Form;
 import com.kispoko.tome.sheet.SheetManager;
 
 
@@ -47,7 +45,7 @@ public class NumberValueEditorActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_value_editor);
+        setContentView(R.layout.activity_value);
 
         // > Read Parameters
         this.valueReference = null;

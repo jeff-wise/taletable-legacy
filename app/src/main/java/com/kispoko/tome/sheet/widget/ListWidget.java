@@ -10,7 +10,6 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.dialog.ListWidgetDialogFragment;
-import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.Value;
@@ -324,7 +323,7 @@ public class ListWidget extends Widget
                     Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
                     Value value = dictionary.value(textVariable.valueReference());
                     if (value != null)
-                        itemLabel = value.summary();
+                        itemLabel = value.description();
                 }
             }
 

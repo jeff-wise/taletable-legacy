@@ -23,7 +23,8 @@ import java.util.UUID;
 /**
  * Action Widget Format
  */
-public class ActionWidgetFormat implements Model, ToYaml, Serializable
+public class ActionWidgetFormat extends Model
+                                implements ToYaml, Serializable
 {
 
     // PROPERTIES

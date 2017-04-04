@@ -16,9 +16,11 @@ import android.widget.TextView;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.NumberValueEditorActivity;
 import com.kispoko.tome.activity.TextValueEditorActivity;
+import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueSet;
 import com.kispoko.tome.lib.ui.ActivityCommon;
 import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 
 
@@ -33,9 +35,9 @@ public class ValueListActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ValueSet             valueSet;
+    private ValueSet                    valueSet;
 
-    private FloatingActionButton addNewValueButton;
+    private ValuesRecyclerViewAdapter   valuesAdapter;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -49,11 +51,17 @@ public class ValueListActivity extends AppCompatActivity
         setContentView(R.layout.activity_value_list);
 
         // > Read Parameters
-        // --------------------------------------------------------
-        this.valueSet = null;
-        if (getIntent().hasExtra("value_set")) {
-            this.valueSet = (ValueSet) getIntent().getSerializableExtra("value_set");
+        String valueSetName = null;
+        if (getIntent().hasExtra("value_set_name")) {
+            valueSetName = getIntent().getStringExtra("value_set_name");
         }
+
+        // > Lookup ValueSet
+        // -------------------------------------------------------------------------------------
+
+        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+        this.valueSet = dictionary.lookup(valueSetName);
+
 
         initializeToolbar();
 
@@ -74,6 +82,18 @@ public class ValueListActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.empty, menu);
         return true;
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (this.valuesAdapter != null) {
+            this.valueSet.sortAscByLabel();
+            this.valuesAdapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -128,20 +148,20 @@ public class ValueListActivity extends AppCompatActivity
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
-
-        if (this.valueSet != null) {
+        if (this.valueSet != null)
+        {
             this.valueSet.sortAscByLabel();
-            recyclerView.setAdapter(new ValuesRecyclerViewAdapter(this.valueSet));
+            this.valuesAdapter = new ValuesRecyclerViewAdapter(this.valueSet);
+            recyclerView.setAdapter(this.valuesAdapter);
         }
-
 
         // [2] Initalize Floating Action Button
         // -------------------------------------------------------------------------------------
-        this.addNewValueButton =
+        FloatingActionButton addNewValueButton =
                 (FloatingActionButton) findViewById(R.id.button_new_value);
 
         final ValueListActivity valueListActivity = this;
-        this.addNewValueButton.setOnClickListener(new View.OnClickListener()
+        addNewValueButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -151,11 +171,13 @@ public class ValueListActivity extends AppCompatActivity
                     case TEXT:
                         Intent textIntent = new Intent(ValueListActivity.this,
                                                        TextValueEditorActivity.class);
+                        textIntent.putExtra("value_set_name", valueSet.name());
                         valueListActivity.startActivity(textIntent);
                         break;
                     case NUMBER:
                         Intent numberIntent = new Intent(ValueListActivity.this,
                                                          NumberValueEditorActivity.class);
+                        numberIntent.putExtra("value_set_name", valueSet.name());
                         valueListActivity.startActivity(numberIntent);
                         break;
                 }

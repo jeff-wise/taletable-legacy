@@ -24,7 +24,8 @@ import java.util.UUID;
  *
  * Contains metadata about the cells in a table column.
  */
-public class ColumnUnion implements Model, ToYaml, Serializable
+public class ColumnUnion extends Model
+                         implements ToYaml, Serializable
 {
 
     // PROPERTIES

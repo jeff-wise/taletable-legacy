@@ -17,7 +17,8 @@ import java.util.UUID;
 /**
  * Theme Color
  */
-public class ThemeColor implements Model, ToYaml, Serializable
+public class ThemeColor extends Model
+                        implements ToYaml, Serializable
 {
 
     // PROPERTIES

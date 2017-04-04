@@ -15,7 +15,8 @@ import java.util.UUID;
 /**
  * Value Reference
  */
-public class ValueReference implements Model, Serializable
+public class ValueReference extends Model
+                            implements Serializable
 {
 
     // PROPERTIES

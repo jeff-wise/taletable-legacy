@@ -20,7 +20,8 @@ import java.util.UUID;
 /**
  * Tab
  */
-public class Tab implements Model, ToYaml, Serializable
+public class Tab extends Model
+                 implements ToYaml, Serializable
 {
 
     // PROPERTIES

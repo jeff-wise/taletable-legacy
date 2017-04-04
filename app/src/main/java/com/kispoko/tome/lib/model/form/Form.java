@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.lib.functor.form;
+package com.kispoko.tome.lib.model.form;
 
 
 import android.content.Context;

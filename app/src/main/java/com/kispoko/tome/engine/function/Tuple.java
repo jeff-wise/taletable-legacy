@@ -21,7 +21,8 @@ import java.util.UUID;
 /**
  * Tuple
  */
-public class Tuple implements Model, ToYaml, Serializable
+public class Tuple extends Model
+                   implements ToYaml, Serializable
 {
 
     // PROPERTIES

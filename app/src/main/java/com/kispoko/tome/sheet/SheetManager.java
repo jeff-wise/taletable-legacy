@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.exception.TemplateFileException;
 import com.kispoko.tome.lib.database.DatabaseException;
@@ -231,4 +233,19 @@ public class SheetManager
         currentSheet.loadAsync(queryParameters);
     }
 
+
+    // > Sheet State
+    // ------------------------------------------------------------------------------------------
+
+    public static Dictionary dictionary()
+    {
+        if (currentSheet() != null) {
+            RulesEngine engine = currentSheet().engine();
+            if (engine != null) {
+                return engine.dictionary();
+            }
+        }
+
+        return null;
+    }
 }

@@ -23,7 +23,8 @@ import java.util.UUID;
 /**
  * Quote Widget Format
  */
-public class QuoteWidgetFormat implements Model, ToYaml, Serializable
+public class QuoteWidgetFormat extends Model
+                               implements ToYaml, Serializable
 {
 
     // PROPERTIES

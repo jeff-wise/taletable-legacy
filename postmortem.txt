@@ -63,3 +63,14 @@ bcause we are human. not a human invention exactly, but a necessity. otherwise, 
  doing it, otherwise you lose efficiency. if you don't do it right, you lose efficiency too.
  it can be really important. but abstract the smallest pieces possible. make it compositional. 
  tradeoffs. 
+
+
+
+design lessons
+
+the less interfaces the better?
+
+better to give users an interface where they can easily explore and learn than 
+try to give them something that is supposed to help them. Because they will probably
+just ignore what you say and then get stuck. better if they can also just "figure things out" as
+they go. 

@@ -2,6 +2,7 @@
 package com.kispoko.tome.engine.value;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.lib.model.Model;
@@ -22,7 +23,8 @@ import java.util.UUID;
 /**
  * Text Value
  */
-public class TextValue implements Value, Model, ToYaml, Serializable
+public class TextValue extends Model
+                       implements Value, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -31,16 +33,16 @@ public class TextValue implements Value, Model, ToYaml, Serializable
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                             id;
+    private UUID                                id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>         name;
-    private PrimitiveFunctor<String>         value;
-    private PrimitiveFunctor<String>         summary;
-    private CollectionFunctor<VariableUnion> variables;
+    private PrimitiveFunctor<String>            name;
+    private PrimitiveFunctor<String>            value;
+    private PrimitiveFunctor<String>            description;
+    private CollectionFunctor<VariableUnion>    variables;
 
 
     // CONSTRUCTORS
@@ -48,35 +50,39 @@ public class TextValue implements Value, Model, ToYaml, Serializable
 
     public TextValue()
     {
-        this.id         = null;
+        this.id             = null;
 
-        this.name       = new PrimitiveFunctor<>(null, String.class);
-        this.value      = new PrimitiveFunctor<>(null, String.class);
-        this.summary    = new PrimitiveFunctor<>(null, String.class);
+        this.name           = new PrimitiveFunctor<>(null, String.class);
+        this.value          = new PrimitiveFunctor<>(null, String.class);
+        this.description    = new PrimitiveFunctor<>(null, String.class);
 
-        this.variables  = CollectionFunctor.empty(VariableUnion.class);
+        this.variables      = CollectionFunctor.empty(VariableUnion.class);
+
+        this.initializeFunctors();
     }
 
 
     public TextValue(UUID id,
                      String name,
                      String value,
-                     String summary,
+                     String description,
                      List<VariableUnion> variables)
     {
-        this.id         = id;
+        this.id             = id;
 
-        this.name       = new PrimitiveFunctor<>(name, String.class);
-        this.value      = new PrimitiveFunctor<>(value, String.class);
-        this.summary    = new PrimitiveFunctor<>(summary, String.class);
+        this.name           = new PrimitiveFunctor<>(name, String.class);
+        this.value          = new PrimitiveFunctor<>(value, String.class);
+        this.description    = new PrimitiveFunctor<>(description, String.class);
 
         if (variables != null) {
-            this.variables = CollectionFunctor.full(variables, VariableUnion.class);
+            this.variables  = CollectionFunctor.full(variables, VariableUnion.class);
         }
         else {
-            this.variables = CollectionFunctor.full(new ArrayList<VariableUnion>(),
+            this.variables  = CollectionFunctor.full(new ArrayList<VariableUnion>(),
                                                     VariableUnion.class);
         }
+
+        this.initializeFunctors();
     }
 
 
@@ -154,7 +160,7 @@ public class TextValue implements Value, Model, ToYaml, Serializable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putString("value", this.value())
-                .putString("summary", this.summary())
+                .putString("description", this.description())
                 .putList("variables", this.variables());
     }
 
@@ -165,9 +171,9 @@ public class TextValue implements Value, Model, ToYaml, Serializable
     /**
      * The text value's summary (a short description of what it represents).
      */
-    public String summary()
+    public String description()
     {
-        return this.summary.getValue();
+        return this.description.getValue();
     }
 
 
@@ -228,4 +234,33 @@ public class TextValue implements Value, Model, ToYaml, Serializable
             State.removeVariable(variableUnion.variable().name());
         }
     }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    private void initializeFunctors()
+    {
+        // Name
+        this.name.setName("name");
+        this.name.setLabelId(R.string.value_field_name_label);
+        this.name.setDescriptionId(R.string.value_field_name_description);
+
+        // Value
+        this.value.setName("value");
+        this.value.setLabelId(R.string.value_field_value_label);
+        this.value.setDescriptionId(R.string.value_field_value_description);
+        this.value.setIsRequired(true);
+
+        // Description
+        this.description.setName("description");
+        this.description.setLabelId(R.string.value_field_description_label);
+        this.description.setDescriptionId(R.string.value_field_description_description);
+
+        // Variables
+        this.variables.setName("variables");
+        this.variables.setLabelId(R.string.value_field_variables_label);
+        this.variables.setDescriptionId(R.string.value_field_variables_description);
+    }
+
 }

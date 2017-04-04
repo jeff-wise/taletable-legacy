@@ -156,6 +156,12 @@
     <string name="you_clicked">You clicked the</string>
     <string name="edit_its">Edit its</string>
 
+    <string name="required_fields">Required Fields</string>
+
+    <string name="new_value">New Value</string>
+    <string name="new_value_id">new_value</string>
+    <string name="add_a_description">New Value</string>
+
 
 
     <!-- BOTTOM NAVIGATION -->
@@ -291,24 +297,29 @@
     <!-- ACTIVITY: VALUE -->
     <!-- ==================================================================================== -->
 
-    <string name="value_editor_field_value_label">Value</string>
-    <string name="value_editor_field_value_description">
+    <string name="value_field_name_label">Identifier</string>
+    <string name="value_field_name_description">
+        The unique identifier for the value. Used when programming.
+    </string>
+
+    <string name="value_field_value_label">Value</string>
+    <string name="value_field_value_description">
         The value.
     </string>
 
-    <string name="value_editor_field_summary_label">Summary</string>
-    <string name="value_editor_field_summary_description">
+    <string name="value_field_description_label">Description</string>
+    <string name="value_field_description_description">
         A short description of the value.
     </string>
 
-    <string name="value_editor_field_variables_label">Variables</string>
-    <string name="value_editor_field_variables_description">
+    <string name="value_field_variables_label">Variables</string>
+    <string name="value_field_variables_description">
         Variables active when the value is used.
     </string>
 
-    <string name="value_editor_field_step_value">The Value</string>
-    <string name="value_editor_field_step_summary">A Short Description</string>
-    <string name="value_editor_field_step_variables">Add Variables</string>
+    <string name="value_field_step_value">The Value</string>
+    <string name="value_field_step_summary">A Short Description</string>
+    <string name="value_field_step_variables">Add Variables</string>
 
 
     <!-- ACTIVITY: FUNCTION -->

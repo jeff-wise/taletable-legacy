@@ -19,7 +19,8 @@ import java.util.UUID;
 /**
  * Program Invocation
  */
-public class Invocation implements Model, Serializable
+public class Invocation extends Model
+                        implements Serializable
 {
 
     // PROPERTIES

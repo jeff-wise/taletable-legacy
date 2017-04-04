@@ -26,7 +26,8 @@ import java.util.UUID;
 /**
  * Number Widget Format
  */
-public class NumberWidgetFormat implements Model, ToYaml, Serializable
+public class NumberWidgetFormat extends Model
+                                implements ToYaml, Serializable
 {
 
     // PROPERTIES

@@ -2,6 +2,7 @@
 package com.kispoko.tome.engine.value;
 
 
+
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
@@ -10,21 +11,27 @@ import com.kispoko.tome.lib.yaml.ToYaml;
 import com.kispoko.tome.lib.yaml.YamlBuilder;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.util.tuple.Tuple2;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 
 /**
  * ValueSet
  */
-public class ValueSet implements Model, ToYaml, Serializable
+public class ValueSet extends Model
+                      implements ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -51,6 +58,11 @@ public class ValueSet implements Model, ToYaml, Serializable
 
     private Map<String,ValueUnion>              valueIndex;
 
+    private Pattern                             defaultTextValueIdPattern;
+
+
+    private boolean                             isSorted;
+    private Sort                                sort;
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -88,6 +100,8 @@ public class ValueSet implements Model, ToYaml, Serializable
 
         this.valueType      = new PrimitiveFunctor<>(valueType, ValueSetValueType.class);
         this.values         = CollectionFunctor.full(values, ValueUnion.class);
+
+        // TODO remove / prevent duplicates
 
         this.setValueType(valueType);
 
@@ -183,7 +197,7 @@ public class ValueSet implements Model, ToYaml, Serializable
                 .putString("label", this.label())
                 .putString("description", this.description())
                 .putYaml("value_type", this.valueType())
-                .putList("values", this.values());
+                .putList("values", this.valuesMutable());
     }
 
 
@@ -230,6 +244,37 @@ public class ValueSet implements Model, ToYaml, Serializable
     }
 
 
+    public Tuple2<String,String> nextDefaultTextValue()
+    {
+        Set<Integer> numbersUsed = new HashSet<>();
+
+        for (ValueUnion valueUnion : values())
+        {
+            if (valueUnion.type() == ValueType.TEXT)
+            {
+                TextValue textValue = valueUnion.textValue();
+                String textValueName = textValue.name();
+                Matcher m = this.defaultTextValueIdPattern.matcher(textValueName);
+
+                if (m.find()) {
+                    String numberString = m.group(1);
+                    Integer number = Integer.parseInt(numberString);
+                    numbersUsed.add(number);
+                }
+            }
+        }
+
+        int i = 1;
+        while (numbersUsed.contains(i))
+            i++;
+
+        String defaultName = "new_value_" + Integer.toString(i);
+        String defaultValue = "New Value " + Integer.toString(i);
+
+        return new Tuple2<>(defaultName, defaultValue);
+    }
+
+
     // ** Value Type
     // ------------------------------------------------------------------------------------------
 
@@ -271,10 +316,20 @@ public class ValueSet implements Model, ToYaml, Serializable
 
 
     /**
-     * The set values.
-     * @return The list of values.
+     * The set values as an immutable collection.
+     * @return The values.
      */
     public List<ValueUnion> values()
+    {
+        return Collections.unmodifiableList(this.values.getValue());
+    }
+
+
+    /**
+     * The values in the set as a mutable collection, but for internal use only.
+     * @return The values.
+     */
+    private List<ValueUnion> valuesMutable()
     {
         return this.values.getValue();
     }
@@ -309,6 +364,36 @@ public class ValueSet implements Model, ToYaml, Serializable
         return valueIndex.containsKey(valueName);
     }
 
+
+    /**
+     * Add a text value to the values collection. If the Value Set value type is not of
+     * type TEXT or ANY, then the text value will not be added and a Value Exception with an
+     * UnexpectedValueTypeError will be thrown.
+     * @param textValue The text value.
+     */
+    public void addValue(TextValue textValue)
+    {
+        if (this.valueType() == ValueSetValueType.ANY ||
+            this.valueType() == ValueSetValueType.TEXT) {
+            this.valuesMutable().add(ValueUnion.asText(UUID.randomUUID(), textValue));
+            this.isSorted = false;
+        }
+    }
+
+
+    /**
+     * Add a text value to the values collection. If the Value Set value type is not of
+     * type TEXT or ANY, then the text value will not be added and a Value Exception with an
+     * UnexpectedValueTypeError will be thrown.
+       @param numberValue The number value.
+     */
+    public void addValue(NumberValue numberValue)
+    {
+        if (this.valueType() == ValueSetValueType.ANY ||
+            this.valueType() == ValueSetValueType.NUMBER) {
+            this.valuesMutable().add(ValueUnion.asNumber(UUID.randomUUID(), numberValue));
+        }
+    }
 
     // > Length of Longest Value String
     // ------------------------------------------------------------------------------------------
@@ -347,7 +432,10 @@ public class ValueSet implements Model, ToYaml, Serializable
 
     public void sortAscByLabel()
     {
-        Collections.sort(this.values(), new Comparator<ValueUnion>()
+        if (this.isSorted && this.sort == Sort.ASC)
+            return;
+
+        Collections.sort(this.valuesMutable(), new Comparator<ValueUnion>()
         {
             @Override
             public int compare(ValueUnion valueUnion1, ValueUnion valueUnion2)
@@ -356,6 +444,9 @@ public class ValueSet implements Model, ToYaml, Serializable
                             .compareToIgnoreCase(valueUnion2.value().valueString());
             }
         });
+
+        this.isSorted   = true;
+        this.sort       = Sort.ASC;
     }
 
 
@@ -382,6 +473,10 @@ public class ValueSet implements Model, ToYaml, Serializable
             }
         }
 
+        // [2] Set pattern to match default IDs
+        // -------------------------------------------------------------------------------------
+
+        this.defaultTextValueIdPattern = Pattern.compile("^new_value_(\\d+)$");
     }
 
 
@@ -418,6 +513,16 @@ public class ValueSet implements Model, ToYaml, Serializable
         this.values.setName("values");
         this.values.setLabelId(R.string.value_set_field_values_label);
         this.values.setDescriptionId(R.string.value_set_field_values_description);
+    }
+
+
+
+    // SORT
+    // ------------------------------------------------------------------------------------------
+
+    private enum Sort {
+        ASC,
+        DESC
     }
 
 }

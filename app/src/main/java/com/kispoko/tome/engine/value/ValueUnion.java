@@ -3,7 +3,6 @@ package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.program.ProgramValueUnion;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
@@ -14,22 +13,20 @@ import com.kispoko.tome.lib.yaml.ToYaml;
 import com.kispoko.tome.lib.yaml.YamlBuilder;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
-import com.kispoko.tome.mechanic.dice.DiceRoll;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 
-import static android.R.attr.valueType;
 
 
 /**
  * Value Union
  */
-public class ValueUnion implements Model, ToYaml, Serializable
+public class ValueUnion extends Model
+                        implements ToYaml, Serializable
 {
 
     // PROPERTIES

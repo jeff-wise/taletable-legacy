@@ -22,7 +22,8 @@ import java.util.UUID;
 /**
  * Group Format
  */
-public class GroupFormat implements Model, ToYaml, Serializable
+public class GroupFormat extends Model
+                         implements ToYaml, Serializable
 {
 
     // PROPERTIES

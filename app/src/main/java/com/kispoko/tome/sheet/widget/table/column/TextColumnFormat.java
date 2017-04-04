@@ -21,7 +21,8 @@ import java.util.UUID;
 /**
  * Text Column Format
  */
-public class TextColumnFormat implements Model, ToYaml, Serializable
+public class TextColumnFormat extends Model
+                              implements ToYaml, Serializable
 {
 
     // PROPERTIES

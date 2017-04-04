@@ -25,7 +25,8 @@ import java.util.UUID;
 /**
  * Mechanic
  */
-public class Mechanic implements Model, ToYaml, Serializable
+public class Mechanic extends Model
+                      implements ToYaml, Serializable
 {
 
     // PROPERTIES

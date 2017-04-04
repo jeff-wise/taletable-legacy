@@ -22,7 +22,8 @@ import java.util.UUID;
 /**
  * Function Index
  */
-public class FunctionIndex implements Model, ToYaml, Serializable
+public class FunctionIndex extends Model
+                           implements ToYaml, Serializable
 {
 
     // PROPERTIES

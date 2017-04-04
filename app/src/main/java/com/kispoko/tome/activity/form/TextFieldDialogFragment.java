@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.lib.functor.form.Field;
+import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
 import com.kispoko.tome.lib.ui.Font;
@@ -31,7 +32,10 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.UUID;
+
 
 
 /**
@@ -43,9 +47,11 @@ public class TextFieldDialogFragment extends DialogFragment
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID    modelId;
+    private UUID        modelId;
 
-    private Field   field;
+    private Field       field;
+
+    private EditText    valueView;
 
 
     // CONSTRUCTORS
@@ -117,12 +123,13 @@ public class TextFieldDialogFragment extends DialogFragment
     // > Update
     // ------------------------------------------------------------------------------------------
 
-    private void sendTextWidgetUpdate(String newValue)
+    private void sendTextFieldUpdate()
     {
-//        TextWidget.UpdateLiteralEvent event =
-//                new TextWidget.UpdateLiteralEvent(this.textWidget.getId(), newValue);
-//
-//        EventBus.getDefault().post(event);
+        String valueString = this.valueView.getText().toString();
+        Field.TextUpdateEvent event =
+                new Field.TextUpdateEvent(this.modelId, this.field.name(), valueString);
+
+        EventBus.getDefault().post(event);
     }
 
 
@@ -139,11 +146,11 @@ public class TextFieldDialogFragment extends DialogFragment
         layout.addView(dividerView(context));
 
         // > Edit Field
-        EditText editValueView = editValueView(context);
-        layout.addView(editValueView);
+        this.valueView = editValueView(context);
+        layout.addView(this.valueView);
 
         // > Footer View
-        layout.addView(footerView(editValueView, context));
+        layout.addView(footerView(context));
 
         return layout;
     }
@@ -209,7 +216,7 @@ public class TextFieldDialogFragment extends DialogFragment
             name.text           = this.field.label();
 
         name.font               = Font.serifFontRegular(context);
-        name.color              = R.color.dark_blue_hl_8;
+        name.color              = R.color.dark_blue_hl_9;
         name.sizeSp             = 19f;
 
         name.addRule(RelativeLayout.ALIGN_PARENT_START);
@@ -244,7 +251,7 @@ public class TextFieldDialogFragment extends DialogFragment
         divider.width       = LinearLayout.LayoutParams.MATCH_PARENT;
         divider.heightDp    = 1;
 
-        divider.backgroundColor = R.color.dark_blue_6;
+        divider.backgroundColor = R.color.dark_blue_5;
 
         return divider.linearLayout(context);
     }
@@ -282,7 +289,7 @@ public class TextFieldDialogFragment extends DialogFragment
     }
 
 
-    private LinearLayout footerView(EditText editValueView, Context context)
+    private LinearLayout footerView(Context context)
     {
         LinearLayout layout = footerViewLayout(context);
 
@@ -290,7 +297,7 @@ public class TextFieldDialogFragment extends DialogFragment
         layout.addView(lastSavedView(context));
 
         // Done Button
-        layout.addView(saveButton(editValueView, context));
+        layout.addView(saveButton(context));
 
         return layout;
     }
@@ -330,7 +337,7 @@ public class TextFieldDialogFragment extends DialogFragment
     }
 
 
-    private LinearLayout saveButton(final EditText editValueView, Context context)
+    private LinearLayout saveButton(Context context)
     {
         // [1] Declarations
         // -------------------------------------------------------------------------------------
@@ -354,6 +361,16 @@ public class TextFieldDialogFragment extends DialogFragment
         layout.padding.bottomDp     = 6f;
         layout.padding.leftDp       = 6f;
         layout.padding.rightDp      = 10f;
+
+        layout.onClick              = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                sendTextFieldUpdate();
+                dismiss();
+            }
+        };
 
         layout.child(icon)
               .child(label);

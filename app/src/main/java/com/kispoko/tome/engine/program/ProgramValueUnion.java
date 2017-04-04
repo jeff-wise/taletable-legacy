@@ -27,7 +27,8 @@ import java.util.UUID;
 /**
  * Function Value
  */
-public class ProgramValueUnion implements Model, ToYaml, Serializable
+public class ProgramValueUnion extends Model
+                               implements ToYaml, Serializable
 {
 
     // PROPERTIES

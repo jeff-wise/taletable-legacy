@@ -22,7 +22,8 @@ import java.util.UUID;
  *
  * Contains metadata about the cells in a table's number column.
  */
-public class NumberColumn implements Model, Column, ToYaml, Serializable
+public class NumberColumn extends Model
+                          implements Column, ToYaml, Serializable
 {
 
     // PROPERTIES

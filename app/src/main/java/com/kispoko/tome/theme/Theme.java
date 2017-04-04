@@ -20,7 +20,8 @@ import java.util.UUID;
 /**
  * Theme
  */
-public class Theme implements Model, ToYaml, Serializable
+public class Theme extends Model
+                   implements ToYaml, Serializable
 {
 
     // PROPERTIES

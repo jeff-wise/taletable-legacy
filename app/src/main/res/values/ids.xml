@@ -137,5 +137,7 @@
 
     <item name="tab_label" type="id"/>
 
+    <!-- FIELD -->
+    <item name="field_value" type="id"/>
 
 </resources>

@@ -35,7 +35,8 @@ import java.util.UUID;
 /**
  * Dice Roll Term Value
  */
-public class DiceRollTermValue implements Model, Serializable
+public class DiceRollTermValue extends Model
+                               implements Serializable
 {
 
     // PROPERTIES

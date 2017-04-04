@@ -36,7 +36,8 @@ import java.util.UUID;
 /**
  * Log Entry
  */
-public class LogEntry implements Model, ToYaml, Serializable
+public class LogEntry extends Model
+                      implements ToYaml, Serializable
 {
 
     // PROPERTIES

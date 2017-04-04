@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Sheet Summary
  */
-public class Summary implements Model
+public class Summary extends Model
 {
 
     // PROPERTIES

@@ -22,7 +22,7 @@ import java.util.UUID;
  * Dice Variable
  */
 public class DiceVariable extends Variable
-                          implements Model, ToYaml, Serializable
+                          implements ToYaml, Serializable
 {
 
     // PROPERTIES

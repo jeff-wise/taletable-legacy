@@ -24,7 +24,8 @@ import java.io.Serializable;
 /**
  * Widget
  */
-public abstract class Widget implements Model, ToYaml, Serializable
+public abstract class Widget extends Model
+                             implements ToYaml, Serializable
 {
 
     // INTERFACE

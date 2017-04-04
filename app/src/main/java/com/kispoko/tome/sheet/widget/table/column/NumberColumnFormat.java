@@ -21,7 +21,8 @@ import java.util.UUID;
 /**
  * Number Column Format
  */
-public class NumberColumnFormat implements Model, ToYaml, Serializable
+public class NumberColumnFormat extends Model
+                                implements ToYaml, Serializable
 {
 
     // PROPERTIES

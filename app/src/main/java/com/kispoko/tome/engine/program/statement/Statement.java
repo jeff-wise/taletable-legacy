@@ -19,7 +19,8 @@ import java.util.UUID;
 /**
  * Statement
  */
-public class Statement implements Model, ToYaml, Serializable
+public class Statement extends Model
+                       implements ToYaml, Serializable
 {
 
     // PROPERTIES

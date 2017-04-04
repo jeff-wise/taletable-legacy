@@ -27,7 +27,8 @@ import java.util.UUID;
 /**
  * Table Widget CellUnion
  */
-public class CellUnion implements Model, ToYaml, Serializable
+public class CellUnion extends Model
+                       implements ToYaml, Serializable
 {
 
     // PROPERTIES

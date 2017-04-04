@@ -25,7 +25,8 @@ import java.util.UUID;
 /**
  * Text Widget Format
  */
-public class TextWidgetFormat implements Model, ToYaml, Serializable
+public class TextWidgetFormat extends Model
+                              implements ToYaml, Serializable
 {
 
     // PROPERTIES

@@ -23,7 +23,8 @@ import java.util.UUID;
 /**
  * Variable Reference
  */
-public class VariableReference implements Model, Serializable
+public class VariableReference extends Model
+                               implements Serializable
 {
 
     // PROPERTIES

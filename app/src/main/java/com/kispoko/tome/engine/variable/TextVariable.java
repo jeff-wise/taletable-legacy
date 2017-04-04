@@ -32,7 +32,7 @@ import java.util.UUID;
  * Text Variable
  */
 public class TextVariable extends Variable
-                          implements Model, ToYaml, Serializable
+                          implements ToYaml, Serializable
 {
 
     // PROPERTIES

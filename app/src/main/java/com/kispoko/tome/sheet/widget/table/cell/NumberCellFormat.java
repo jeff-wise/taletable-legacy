@@ -23,7 +23,8 @@ import java.util.UUID;
 /**
  * Number Cell Format
  */
-public class NumberCellFormat implements Model, ToYaml, Serializable
+public class NumberCellFormat extends Model
+                              implements ToYaml, Serializable
 {
 
     // PROPERTIES

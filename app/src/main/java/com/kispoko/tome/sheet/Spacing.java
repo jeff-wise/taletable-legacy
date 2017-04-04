@@ -20,7 +20,8 @@ import java.util.UUID;
  *
  * Space around some ui element
  */
-public class Spacing implements Model, ToYaml, Serializable
+public class Spacing extends Model
+                     implements ToYaml, Serializable
 {
 
     // PROPERTIES

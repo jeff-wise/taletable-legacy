@@ -34,7 +34,7 @@ import java.util.UUID;
  * to a specific theme. The fields are cotained in a list of groups, which group related
  * character content.
  */
-public class Page implements Model, ToYaml, Serializable
+public class Page extends Model implements ToYaml, Serializable
 {
 
     // PROPERTIES

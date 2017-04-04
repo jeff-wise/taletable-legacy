@@ -4,13 +4,12 @@ package com.kispoko.tome.lib.functor;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.LinearLayout;
 
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.orm.ORM;
 import com.kispoko.tome.lib.database.sql.OneToManyRelation;
-import com.kispoko.tome.lib.functor.form.Field;
-import com.kispoko.tome.lib.functor.form.FieldOptions;
+import com.kispoko.tome.lib.model.form.Field;
+import com.kispoko.tome.lib.model.form.FieldOptions;
 import com.kispoko.tome.lib.model.Model;
 
 import java.io.Serializable;

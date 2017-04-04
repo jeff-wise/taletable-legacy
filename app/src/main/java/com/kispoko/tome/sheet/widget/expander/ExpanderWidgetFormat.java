@@ -21,7 +21,8 @@ import java.util.UUID;
 /**
  * Expander Widget Format
  */
-public class ExpanderWidgetFormat implements Model, ToYaml, Serializable
+public class ExpanderWidgetFormat extends Model
+                                  implements ToYaml, Serializable
 {
 
     // PROPERTIES

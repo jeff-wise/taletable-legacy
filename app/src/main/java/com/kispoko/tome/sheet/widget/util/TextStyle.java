@@ -26,7 +26,8 @@ import java.util.UUID;
 /**
  * Widget Text Style
  */
-public class TextStyle implements Model, ToYaml, Serializable
+public class TextStyle extends Model
+                       implements ToYaml, Serializable
 {
 
     // PROPERTIES

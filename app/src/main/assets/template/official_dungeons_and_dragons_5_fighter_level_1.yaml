@@ -898,6 +898,7 @@ engine:
       label_singular: Physical Status
       description: >
         The physical states.
+      value_type: text
       values:
       - type: text
         value:
@@ -920,6 +921,7 @@ engine:
       label_singular: Scarborn Mood
       description: >
         The possible moods Cirus Scarborn may be in.
+      value_type: text
       values:
       - type: text
         value:
@@ -1016,6 +1018,7 @@ engine:
       description: >
         A class represents a character's primary profession or skillset. It defines who the
         character is and what they may do.
+      value_type: text
       values:
       - type: text
         value:
@@ -1209,6 +1212,7 @@ engine:
       label_singular: Language
       description: >
         The standard spoken languages.
+      value_type: text
       values:
       - type: text
         value:
@@ -1249,6 +1253,7 @@ engine:
       label_singular: Skill
       description: >
         Skills are different actions that a player may perform related to a specific ability score.
+      value_type: text
       values:
       - type: text
         value:
@@ -1326,6 +1331,7 @@ engine:
       label: Simple Melee Weapons
       description: >
         Basic melee weapons that require Simple Weapon Proficiency.
+      value_type: text
       values:
       - type: text
         value:
@@ -1341,6 +1347,7 @@ engine:
       label: Martial Melee Weapons
       description: >
         Sophisticated melee weapons that require Martial Weapon Proficiency.
+      value_type: text
       values:
       - type: text
         value:
@@ -1556,6 +1563,7 @@ engine:
       label: Levels
       label_singular: Level
       description: The levels a player may reach with experience.
+      value_type: number
       values:
       - type: number
         value:
@@ -1696,6 +1704,7 @@ engine:
       label: Races
       label_singular: Race
       description: The different races a player may choose from.
+      value_type: text
       values:
       - type: text
         value:

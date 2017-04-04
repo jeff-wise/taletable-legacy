@@ -5,7 +5,6 @@ package com.kispoko.tome.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,19 +12,30 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.TextValue;
 import com.kispoko.tome.engine.value.ValueReference;
+import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.lib.functor.FunctorException;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.model.form.Field;
+import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.ActivityCommon;
 import com.kispoko.tome.lib.ui.Font;
-import com.kispoko.tome.lib.functor.form.FieldOptions;
-import com.kispoko.tome.lib.ui.form.Form;
-import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
-import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.util.tuple.Tuple2;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 
 
 /**
@@ -37,9 +47,18 @@ public class TextValueEditorActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ValueReference  valueReference;
+    private String                      valueSetName;
+    private String                      valueName;
 
-    private TextValue       textValue;
+    private ValueSet                    valueSet;
+    private TextValue                   textValue;
+
+
+    // > Fields
+    // ------------------------------------------------------------------------------------------
+
+    private Map<String,Field>           fieldByName;
+    private Map<String,LinearLayout>    fieldViewByName;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -50,20 +69,65 @@ public class TextValueEditorActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_value_editor);
+        setContentView(R.layout.activity_value);
 
-        // > Read Parameters
-        this.valueReference = null;
-        if (getIntent().hasExtra("value_reference")) {
-            this.valueReference =
-                    (ValueReference) getIntent().getSerializableExtra("value_reference");
+
+        // [1] Read Parameters
+        // -------------------------------------------------------------------------------------
+
+        this.valueSetName = null;
+        if (getIntent().hasExtra("value_set_name")) {
+            this.valueSetName = getIntent().getStringExtra("value_set_name");
         }
 
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+        this.valueName = null;
+        if (getIntent().hasExtra("value_name")) {
+            this.valueName = getIntent().getStringExtra("value_name");
+        }
 
+        // [2] Lookup Value/Set from Dictionary
+        // -------------------------------------------------------------------------------------
+
+        Dictionary dictionary = SheetManager.dictionary();
+
+        // [2] Find ValueSet
+        if (this.valueSetName != null && dictionary != null)
+            this.valueSet = dictionary.lookup(this.valueSetName);
+
+        // [1] Find Value
         this.textValue = null;
-        if (this.valueReference != null)
-            this.textValue = dictionary.textValue(this.valueReference);
+        if (this.valueSetName != null && this.valueName != null && dictionary != null)
+        {
+            ValueReference valueReference = new ValueReference(this.valueSetName, this.valueName);
+            this.textValue = dictionary.textValue(valueReference);
+        }
+
+        // If value is NULL, assume we are creating a new one
+        if (this.textValue == null)
+            this.textValue = this.createAndSaveNewTextValue();
+
+
+        // > Get & Index Fields
+        // -------------------------------------------------------------------------------------
+
+        this.fieldByName = new HashMap<>();
+        List<Field> fields = new ArrayList<>();
+
+        try
+        {
+            fields = Model.fields(this.textValue, true, this);
+        }
+        catch (FunctorException exception)
+        {
+            ApplicationFailure.functor(exception);
+        }
+
+        for (Field field : fields) {
+            this.fieldByName.put(field.name(), field);
+        }
+
+        this.fieldViewByName = new HashMap<>();
+
 
         initializeToolbar();
 
@@ -103,6 +167,7 @@ public class TextValueEditorActivity extends AppCompatActivity
         // -------------------------------------------------------------------------------------
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setTypeface(Font.serifFontRegular(this));
+
         titleView.setText(R.string.value_editor);
 
         // > Configure Back Button
@@ -115,13 +180,69 @@ public class TextValueEditorActivity extends AppCompatActivity
             }
         });
 
+        // > Set the Value Set Name
+        // -------------------------------------------------------------------------------------
+        TextView nameView = (TextView) findViewById(R.id.value_name);
+        nameView.setTypeface(Font.serifFontBold(this));
+        if (this.textValue != null)
+            nameView.setText(this.textValue.value());
     }
 
 
     private void initializeView()
     {
-        LinearLayout contentView = (LinearLayout) findViewById(R.id.value_editor_content);
+        // > Content View
+        // -------------------------------------------------------------------------------------
+        LinearLayout contentView = (LinearLayout) findViewById(R.id.value_content);
         contentView.addView(this.view(this));
+    }
+
+
+    // > New Text Value
+    // ------------------------------------------------------------------------------------------
+
+    private TextValue createAndSaveNewTextValue()
+    {
+        // [1] Set Fields
+        // --------------------------------------------------------------------------------------
+
+        Tuple2<String,String> defaultValues = null;
+        if (this.valueSet != null)
+            defaultValues = this.valueSet.nextDefaultTextValue();
+
+        // ** ID
+        UUID   id           = UUID.randomUUID();
+
+        // ** NAME
+        String name         = "";
+        if (defaultValues != null)
+            name = defaultValues.getItem1();
+
+        // ** VALUE
+        String value        = "";
+        if (defaultValues != null)
+            value = defaultValues.getItem2();
+
+        // ** DESCRIPTION
+        String description  = "Add a description";
+
+        // [2] Create Text Value
+        // --------------------------------------------------------------------------------------
+
+        TextValue textValue = new TextValue(id, name, value, description,
+                                            new ArrayList<VariableUnion>());
+
+        // [3] Save Value
+        // --------------------------------------------------------------------------------------
+
+        Dictionary dictionary = SheetManager.dictionary();
+
+        if (dictionary != null && this.valueSetName != null) {
+            ValueSet valueSet = dictionary.lookup(this.valueSetName);
+            valueSet.addValue(textValue);
+        }
+
+        return textValue;
     }
 
 
@@ -134,11 +255,11 @@ public class TextValueEditorActivity extends AppCompatActivity
 
         LinearLayout layout = this.viewLayout(context);
 
-        // > Help
-        layout.addView(this.helpView(context));
+        // > Toolbar
+        layout.addView(Form.toolbarView(context));
 
         // > Form
-        // layout.addView(this.formView(context));
+        layout.addView(this.editFormView(context));
 
 
         scrollView.addView(layout);
@@ -166,168 +287,85 @@ public class TextValueEditorActivity extends AppCompatActivity
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.backgroundColor      = R.color.dark_blue_9;
+        //layout.backgroundColor      = R.color.dark_blue_9;
 
         return layout.linearLayout(context);
     }
 
 
-    // ** Help View
-    // -----------------------------------------------------------------------------------------
+    // ** Forms
+    // ------------------------------------------------------------------------------------------
 
-    private LinearLayout helpView(Context context)
+    private LinearLayout newFormView(Context context)
     {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
+        LinearLayout layout = Form.layout(context);
 
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        ImageViewBuilder icon   = new ImageViewBuilder();
-        TextViewBuilder label  = new TextViewBuilder();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-
-        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.gravity              = Gravity.CENTER;
-        layout.layoutGravity        = Gravity.CENTER;
-
-        layout.margin.topDp         = 25f;
-        layout.margin.bottomDp      = 25f;
-
-        layout.padding.leftDp       = 7f;
-        layout.padding.rightDp      = 7f;
-        layout.padding.topDp        = 7f;
-        layout.padding.bottomDp     = 7f;
-
-        layout.backgroundResource   = R.drawable.bg_form_help_button;
-        layout.backgroundColor      = R.color.dark_blue_6;
-
-        layout.child(icon)
-              .child(label);
-
-        // [3 A] Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.image          = R.drawable.ic_form_help;
-        icon.color          = R.color.dark_blue_hl_2;
-
-        icon.margin.rightDp = 5f;
-
-        // [3 B] Label
-        // -------------------------------------------------------------------------------------
-
-        label.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-        label.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        label.textId        = R.string.learn_about_value_sets;
-
-        label.font          = Font.serifFontRegular(context);
-        label.color         = R.color.dark_blue_hlx_9;
-        label.sizeSp        = 18f;
-
-
-        return layout.linearLayout(context);
-    }
-
-
-    // ** Form Views
-    // -----------------------------------------------------------------------------------------
-
-    /*
-    private LinearLayout formView(final Context context)
-    {
-
-        LinearLayout layout = this.formLayout(context);
-
-        // > Value Field
-        // -------------------------------------------------------------------------------------
-
-        FieldOptions valueFieldOptions = new FieldOptions();
-        if (this.textValue == null) {
-            String stepDescription = context.getString(R.string.value_editor_field_step_value);
-            valueFieldOptions = FieldOptions.newField(1, stepDescription);
+        for (Field field : this.fieldByName.values()) {
+            layout.addView(field.view(this));
         }
-
-        String valueValue = null;
-        if (this.textValue != null)
-            valueValue = this.textValue.value();
-
-        LinearLayout valueField = Form.textFieldView(
-                context.getString(R.string.value_editor_field_value_label),
-                context.getString(R.string.value_editor_field_value_description),
-                valueValue,
-                valueFieldOptions,
-                context);
-
-        // > Summary Field
-        // -------------------------------------------------------------------------------------
-
-        FieldOptions summaryFieldOptions = new FieldOptions();
-        if (this.textValue == null) {
-            String stepDescription = context.getString(R.string.value_editor_field_step_summary);
-            summaryFieldOptions = FieldOptions.newField(2, stepDescription);
-        }
-
-        String summaryValue = null;
-        if (this.textValue != null)
-            summaryValue = this.textValue.summary();
-
-        LinearLayout summaryField = Form.textFieldView(
-                context.getString(R.string.value_editor_field_summary_label),
-                context.getString(R.string.value_editor_field_summary_description),
-                summaryValue,
-                summaryFieldOptions,
-                context);
-
-        // > Variables Field
-        // -------------------------------------------------------------------------------------
-
-        FieldOptions variablesFieldOptions = new FieldOptions();
-        if (this.textValue == null) {
-            String stepDescription = context.getString(R.string.value_editor_field_step_variables);
-            variablesFieldOptions = FieldOptions.newField(3, stepDescription);
-        }
-
-        int variablesSize = 0;
-        if (this.textValue != null)
-            variablesSize = this.textValue.variables().size();
-
-        LinearLayout variablesField = Form.listFieldView(
-                context.getString(R.string.value_editor_field_variables_label),
-                context.getString(R.string.value_editor_field_variables_description),
-                variablesSize,
-                variablesFieldOptions,
-                context);
-
-        //layout.addView(Form.fieldDividerView(context));
-        layout.addView(valueField);
-        //layout.addView(Form.fieldDividerView(context));
-        layout.addView(summaryField);
-        //layout.addView(Form.fieldDividerView(context));
-        layout.addView(variablesField);
-        //layout.addView(Form.fieldDividerView(context));
 
         return layout;
-    }*/
-
-
-    private LinearLayout formLayout(Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        return layout.linearLayout(context);
     }
 
+
+    private LinearLayout editFormView(Context context)
+    {
+        LinearLayout layout = Form.layout(context);
+
+        layout.addView(Form.headerView("Common Properties", context));
+
+        this.addEditFieldView("value", layout);
+        layout.addView(Form.dividerView(context));
+        this.addEditFieldView("description", layout);
+
+        layout.addView(Form.headerView("Other Properties", context));
+
+        this.addEditFieldView("name", layout);
+        layout.addView(Form.dividerView(context));
+        this.addEditFieldView("variables", layout);
+
+        // > Link to deeper editors
+        LinearLayout variablesFieldView = this.fieldViewByName.get("variables");
+        if (variablesFieldView != null)
+        {
+            variablesFieldView.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+//                    Intent intent = new Intent(ValueSetEditorActivity.this,
+//                                               ValueListActivity.class);
+//                    intent.putExtra("value_set_name", valueSet.name());
+//                    startActivity(intent);
+                }
+            });
+        }
+
+        return layout;
+    }
+
+
+    private void addEditFieldView(String fieldName, LinearLayout layout)
+    {
+        Field field = this.fieldByName.get(fieldName);
+
+        if (field != null) {
+            LinearLayout fieldView = field.view(this);
+            layout.addView(fieldView);
+            this.fieldViewByName.put(fieldName, fieldView);
+        }
+    }
+
+
+    private void addNewEditFieldView(String fieldName, LinearLayout layout)
+    {
+        Field field = this.fieldByName.get(fieldName);
+
+        if (field != null) {
+            LinearLayout fieldView = field.view(this);
+            layout.addView(fieldView);
+            this.fieldViewByName.put(fieldName, fieldView);
+        }
+    }
 
 }

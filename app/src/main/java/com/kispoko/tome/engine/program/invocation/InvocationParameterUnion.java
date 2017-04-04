@@ -15,7 +15,8 @@ import java.util.UUID;
 /**
  * Program Invocation Parameter
  */
-public class InvocationParameterUnion implements Model, Serializable
+public class InvocationParameterUnion extends Model
+                                      implements Serializable
 {
 
     // PROPERTIES

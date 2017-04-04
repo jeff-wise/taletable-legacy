@@ -5,7 +5,6 @@ package com.kispoko.tome.lib.functor;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.widget.LinearLayout;
 
 import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
 import com.kispoko.tome.engine.program.ProgramValueType;
@@ -20,8 +19,8 @@ import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
-import com.kispoko.tome.lib.functor.form.FieldOptions;
-import com.kispoko.tome.lib.functor.form.Field;
+import com.kispoko.tome.lib.model.form.FieldOptions;
+import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.SectionType;
@@ -555,7 +554,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else
             fieldOptions = new FieldOptions();
 
-        return Field.text(modelId, fieldName, fieldLabel, fieldValue);
+        if (isEditMode)
+            return Field.text(modelId, fieldName, fieldLabel, fieldValue);
+        else
+            return Field.textNew(modelId, fieldName, fieldLabel, fieldDescription);
 
     }
 

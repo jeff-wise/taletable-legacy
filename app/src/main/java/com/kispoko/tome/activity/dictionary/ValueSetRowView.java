@@ -52,8 +52,8 @@ public class ValueSetRowView
 
         layout.padding.leftDp       = 15f;
         layout.padding.rightDp      = 15f;
-        layout.padding.topDp        = 15f;
-        layout.padding.bottomDp     = 15f;
+        layout.padding.topDp        = 18f;
+        layout.padding.bottomDp     = 18f;
 
         return layout.linearLayout(context);
     }

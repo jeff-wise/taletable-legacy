@@ -20,7 +20,8 @@ import java.util.UUID;
 /**
  * Program Index
  */
-public class ProgramIndex implements Model, ToYaml, Serializable
+public class ProgramIndex extends Model
+                          implements ToYaml, Serializable
 {
 
     // PROPERTIES

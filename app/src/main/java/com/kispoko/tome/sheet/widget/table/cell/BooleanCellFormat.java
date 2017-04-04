@@ -23,7 +23,8 @@ import java.util.UUID;
 /**
  * Boolean Cell Format
  */
-public class BooleanCellFormat implements Model, ToYaml, Serializable
+public class BooleanCellFormat extends Model
+                               implements ToYaml, Serializable
 {
 
     // PROPERTIES

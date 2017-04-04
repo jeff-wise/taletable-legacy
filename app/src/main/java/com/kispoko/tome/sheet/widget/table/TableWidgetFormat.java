@@ -19,7 +19,7 @@ import java.util.UUID;
 /**
  * Table Widget Format
  */
-public class TableWidgetFormat implements Model, ToYaml, Serializable
+public class TableWidgetFormat extends Model implements ToYaml, Serializable
 {
 
     // PROPERTIES

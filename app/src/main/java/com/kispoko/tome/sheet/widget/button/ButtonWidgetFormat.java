@@ -25,7 +25,8 @@ import java.util.UUID;
 /**
  * Button Widget Format
  */
-public class ButtonWidgetFormat implements Model, ToYaml, Serializable
+public class ButtonWidgetFormat extends Model
+                                implements ToYaml, Serializable
 {
 
     // PROPERTIES

@@ -13,6 +13,7 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/main_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -21,14 +22,19 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="88dp"
                 android:background="@color/dark_blue_13"
                 app:contentInsetStart="0dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
-                <RelativeLayout
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
                         <ImageButton
                             android:id="@+id/toolbar_back_button"
@@ -65,35 +71,25 @@
 
                     </RelativeLayout>
 
-            </android.support.v7.widget.Toolbar>
+                    <TextView
+                        android:id="@+id/value_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/dark_blue_hl_4"
+                        android:layout_gravity="center"/>
 
-
-            <android.support.design.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/value_editor_content"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
                 </LinearLayout>
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/button_new_value_set"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:clickable="true"
-                    android:src="@drawable/ic_fab_save"
-                    app:layout_anchor="@id/value_set_list_view"
-                    app:layout_anchorGravity="bottom|right"
-                    app:backgroundTint="@color/green_medium_dark"
-                    app:rippleColor="#FFF" />
+            </android.support.v7.widget.Toolbar>
 
-            </android.support.design.widget.CoordinatorLayout>
-
-
+            <LinearLayout
+                android:id="@+id/value_content"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </LinearLayout>
 
 
         </LinearLayout>

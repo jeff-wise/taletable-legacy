@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 
 import com.kispoko.tome.engine.variable.Variable;
+import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.widget.table.column.Column;
 import com.kispoko.tome.sheet.BackgroundColor;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Cell Interface
  */
-public abstract class Cell
+public abstract class Cell extends Model
 {
 
     // ABSTRACT

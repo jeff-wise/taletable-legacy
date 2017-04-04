@@ -29,7 +29,8 @@ import java.util.UUID;
 /**
  * Function
  */
-public class Function implements Model, ToYaml, Serializable
+public class Function extends Model
+                      implements ToYaml, Serializable
 {
 
     // PROPERTIES

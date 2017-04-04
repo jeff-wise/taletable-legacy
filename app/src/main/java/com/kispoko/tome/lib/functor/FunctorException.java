@@ -3,6 +3,8 @@ package com.kispoko.tome.lib.functor;
 
 
 import com.kispoko.tome.lib.functor.error.FunctorAccessError;
+import com.kispoko.tome.lib.functor.error.FunctorPropertyDoesNotExistError;
+import com.kispoko.tome.lib.functor.error.FunctorPropertyUpdateError;
 import com.kispoko.tome.lib.functor.error.UninitializedFunctorError;
 import com.kispoko.tome.util.ApplicationError;
 
@@ -43,6 +45,18 @@ public class FunctorException extends Exception
     }
 
 
+    public static FunctorException propertyDoesNotExist(FunctorPropertyDoesNotExistError error)
+    {
+        return new FunctorException(error, ErrorType.PROPERTY_DOES_NOT_EXIST);
+    }
+
+
+    public static FunctorException propertyUpdateError(FunctorPropertyUpdateError error)
+    {
+        return new FunctorException(error, ErrorType.PROPERTY_UPDATE);
+    }
+
+
     // API
     // -----------------------------------------------------------------------------------------
 
@@ -69,6 +83,8 @@ public class FunctorException extends Exception
     {
         FUNCTOR_ACCESS,
         UNINITIALIZED_FUNCTOR,
+        PROPERTY_DOES_NOT_EXIST,
+        PROPERTY_UPDATE
     }
 
 }

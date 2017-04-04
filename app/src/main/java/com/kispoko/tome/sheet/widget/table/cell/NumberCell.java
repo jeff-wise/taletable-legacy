@@ -47,7 +47,7 @@ import java.util.UUID;
  * Number CellUnion
  */
 public class NumberCell extends Cell
-                        implements Model, ToYaml, Serializable
+                        implements ToYaml, Serializable
 {
 
     // PROPERTIES

@@ -21,7 +21,6 @@ import com.kispoko.tome.sheet.widget.table.column.TextColumn;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.lib.functor.ModelFunctor;
 import com.kispoko.tome.lib.yaml.ToYaml;
@@ -40,7 +39,7 @@ import java.util.UUID;
  * Text CellUnion
  */
 public class TextCell extends Cell
-                      implements Model, ToYaml, Serializable
+                      implements ToYaml, Serializable
 {
 
     // PROPERTIES

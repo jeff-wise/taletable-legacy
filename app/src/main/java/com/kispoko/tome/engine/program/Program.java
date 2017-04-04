@@ -22,7 +22,8 @@ import java.util.UUID;
 /**
  * Program
  */
-public class Program implements Model, ToYaml, Serializable
+public class Program extends Model
+                     implements ToYaml, Serializable
 {
 
     // PROPERTIES

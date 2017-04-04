@@ -16,12 +16,13 @@ import java.io.Serializable;
 import java.util.UUID;
 
 
+
 /**
  * Text Column
  *
  * Contains metadata about the cells in a table's text column.
  */
-public class TextColumn implements Model, Column, ToYaml, Serializable
+public class TextColumn extends Model implements Column, ToYaml, Serializable
 {
 
     // PROPERTIES

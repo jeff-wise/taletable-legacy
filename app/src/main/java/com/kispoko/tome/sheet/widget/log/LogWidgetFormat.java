@@ -18,7 +18,8 @@ import java.util.UUID;
 /**
  * Log Widget Format
  */
-public class LogWidgetFormat implements Model, ToYaml, Serializable
+public class LogWidgetFormat extends Model
+                             implements ToYaml, Serializable
 {
 
     // PROPERTIES

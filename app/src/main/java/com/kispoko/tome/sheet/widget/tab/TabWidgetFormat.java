@@ -25,7 +25,8 @@ import java.util.UUID;
 /**
  * Tab Widget Format
  */
-public class TabWidgetFormat implements Model, ToYaml, Serializable
+public class TabWidgetFormat extends Model
+                             implements ToYaml, Serializable
 {
 
     // PROPERTIES

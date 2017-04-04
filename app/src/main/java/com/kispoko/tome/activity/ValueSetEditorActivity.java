@@ -3,8 +3,8 @@ package com.kispoko.tome.activity;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,16 +17,21 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.valueset.ValueListActivity;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueSet;
-import com.kispoko.tome.lib.functor.Functor;
 import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.functor.form.Field;
-import com.kispoko.tome.lib.functor.form.Form;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.model.form.Field;
+import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.sheet.SheetManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,12 +50,11 @@ public class ValueSetEditorActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ValueSet    valueSet;
+    private String                      valueSetName;
+    private ValueSet                    valueSet;
 
-    private boolean     isEditMode;
-
-
-    private Map<String,Field> fieldByName;
+    private Map<String,Field>           fieldByName;
+    private Map<String,LinearLayout>    fieldViewByName;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -61,57 +65,19 @@ public class ValueSetEditorActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        // [1] Set activity view
         setContentView(R.layout.activity_value_set);
 
-        // > Read Parameters
-        String valueSetName = null;
+        // [2] Read Parameters
+        this.valueSetName = null;
         if (getIntent().hasExtra("value_set_name")) {
-            valueSetName = getIntent().getStringExtra("value_set_name");
+            this.valueSetName = getIntent().getStringExtra("value_set_name");
         }
 
-        // > Lookup ValueSet
-        // -------------------------------------------------------------------------------------
+        // [3] Initialize Data e.g. Value Set, Fields, ..
+        this.initializeData();
 
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
-        this.valueSet = dictionary.lookup(valueSetName);
-
-        // If value set is NULL, assume we creating a new one
-        if (this.valueSet == null)
-        {
-            this.valueSet = new ValueSet();
-            this.valueSet.setId(UUID.randomUUID());
-
-            this.isEditMode = false;
-        }
-        else
-        {
-            this.isEditMode = true;
-        }
-
-
-        // > Get & Index Fields
-        // -------------------------------------------------------------------------------------
-
-        this.fieldByName = new HashMap<>();
-        List<Field> fields = new ArrayList<>();
-
-        try
-        {
-            if (this.isEditMode)
-                fields = Functor.fields(this.valueSet, true, this);
-            else
-                fields = Functor.fields(this.valueSet, false, this);
-        }
-        catch (FunctorException exception)
-        {
-            ApplicationFailure.functor(exception);
-        }
-
-        for (Field field : fields) {
-            this.fieldByName.put(field.name(), field);
-        }
-
-
+        // [4] Initialize views
         initializeToolbar();
 
         initializeView();
@@ -131,6 +97,67 @@ public class ValueSetEditorActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.empty, menu);
         return true;
+    }
+
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+
+        this.initializeData();
+        this.initializeView();
+    }
+
+
+    // > Events
+    //   (Event Bus Subscriptions)
+    // -------------------------------------------------------------------------------------------
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTextFieldUpdate(Field.TextUpdateEvent event)
+    {
+        if (this.valueSet != null && event.modelId().equals(this.valueSet.getId()))
+        {
+            try
+            {
+                Model.updateProperty(this.valueSet, event.fieldName(), event.text());
+
+                Field updatedfield = this.fieldByName.get(event.fieldName());
+                LinearLayout updatedFieldView = this.fieldViewByName.get(event.fieldName());
+
+                if (updatedfield != null && updatedFieldView !=  null)
+                {
+                    updatedfield.setValue(event.text(), updatedFieldView);
+
+                    if (event.fieldName().equals("label")) {
+                        TextView titleView = (TextView) findViewById(R.id.value_set_name);
+                        titleView.setText(this.valueSet.label());
+                    }
+                }
+
+            }
+            catch (FunctorException exception)
+            {
+                ApplicationFailure.functor(exception);
+            }
+        }
     }
 
 
@@ -158,10 +185,7 @@ public class ValueSetEditorActivity extends AppCompatActivity
         TextView titleView = (TextView) findViewById(R.id.page_title);
         titleView.setTypeface(Font.serifFontRegular(this));
 
-        if (this.isEditMode)
-            titleView.setText(R.string.value_set_editor);
-        else
-            titleView.setText(R.string.new_value_set);
+        titleView.setText(R.string.value_set_editor);
 
         // > Configure Back Button
         // -------------------------------------------------------------------------------------
@@ -177,7 +201,8 @@ public class ValueSetEditorActivity extends AppCompatActivity
         // -------------------------------------------------------------------------------------
         TextView nameView = (TextView) findViewById(R.id.value_set_name);
         nameView.setTypeface(Font.serifFontBold(this));
-        nameView.setText(this.valueSet.label());
+        if (this.valueSet != null)
+            nameView.setText(this.valueSet.label());
 
     }
 
@@ -185,15 +210,53 @@ public class ValueSetEditorActivity extends AppCompatActivity
     private void initializeView()
     {
         LinearLayout contentView = (LinearLayout) findViewById(R.id.value_set_content);
+        contentView.removeAllViews();
         contentView.addView(this.view(this));
+    }
 
-        // > Initialize FAB
+
+    // INITIALIZE
+    // ------------------------------------------------------------------------------------------
+
+    private void initializeData()
+    {
+        // [1] Initialize indexes
         // -------------------------------------------------------------------------------------
-        FloatingActionButton newValueSetButton =
-                                    (FloatingActionButton) findViewById(R.id.button_save_value_set);
 
-        if (this.isEditMode)
-            newValueSetButton.hide();
+        this.fieldByName = new HashMap<>();
+        this.fieldViewByName = new HashMap<>();
+
+        // [2] Lookup ValueSet
+        // -------------------------------------------------------------------------------------
+
+        Dictionary dictionary = SheetManager.dictionary();
+        if (this.valueSetName != null && dictionary != null)
+            this.valueSet = dictionary.lookup(this.valueSetName);
+
+        // If value set is NULL, assume we creating a new one
+        if (this.valueSet == null) {
+            this.valueSet = new ValueSet();
+            this.valueSet.setId(UUID.randomUUID());
+        }
+
+        // [3] Get & Index Fields
+        // -------------------------------------------------------------------------------------
+
+        List<Field> fields = new ArrayList<>();
+
+        // GENERATE fields from Value Set
+        try {
+            fields = Model.fields(this.valueSet, true, this);
+        }
+        catch (FunctorException exception) {
+            ApplicationFailure.functor(exception);
+        }
+
+        // INDEX fields by name
+        for (Field field : fields) {
+            this.fieldByName.put(field.name(), field);
+        }
+
     }
 
 
@@ -264,6 +327,24 @@ public class ValueSetEditorActivity extends AppCompatActivity
         layout.addView(Form.dividerView(context));
         this.addFieldView("name", layout);
 
+
+        // > Link to deeper editors
+        LinearLayout valuesFieldView = this.fieldViewByName.get("values");
+        if (valuesFieldView != null)
+        {
+            valuesFieldView.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    Intent intent = new Intent(ValueSetEditorActivity.this,
+                                               ValueListActivity.class);
+                    intent.putExtra("value_set_name", valueSet.name());
+                    startActivity(intent);
+                }
+            });
+        }
+
         return layout;
     }
 
@@ -272,8 +353,11 @@ public class ValueSetEditorActivity extends AppCompatActivity
     {
         Field field = this.fieldByName.get(fieldName);
 
-        if (field != null)
-            layout.addView(field.view(this));
+        if (field != null) {
+            LinearLayout fieldView = field.view(this);
+            layout.addView(fieldView);
+            this.fieldViewByName.put(fieldName, fieldView);
+        }
     }
 
 }

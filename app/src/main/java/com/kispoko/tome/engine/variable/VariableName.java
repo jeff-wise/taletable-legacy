@@ -15,7 +15,8 @@ import java.util.UUID;
 /**
  * Variable Name
  */
-public class VariableName implements Model, Serializable
+public class VariableName extends Model
+                          implements Serializable
 {
 
     // PROPERTIES

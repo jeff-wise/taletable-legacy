@@ -21,7 +21,8 @@ import java.util.UUID;
 /**
  * Boolean Column Format
  */
-public class BooleanColumnFormat implements Model, ToYaml, Serializable
+public class BooleanColumnFormat extends Model
+                                 implements ToYaml, Serializable
 {
 
     // PROPERTIES

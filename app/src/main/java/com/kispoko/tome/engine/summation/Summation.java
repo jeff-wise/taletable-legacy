@@ -26,7 +26,8 @@ import java.util.UUID;
 /**
  * Summation
  */
-public class Summation implements Model, Serializable
+public class Summation extends Model
+                       implements Serializable
 {
 
     // PROPERTIES

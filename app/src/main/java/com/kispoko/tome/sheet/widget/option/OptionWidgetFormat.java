@@ -22,7 +22,8 @@ import java.util.UUID;
 /**
  * Option Widget Format
  */
-public class OptionWidgetFormat implements Model, ToYaml, Serializable
+public class OptionWidgetFormat extends Model
+                                implements ToYaml, Serializable
 {
 
     // PROPERTIES

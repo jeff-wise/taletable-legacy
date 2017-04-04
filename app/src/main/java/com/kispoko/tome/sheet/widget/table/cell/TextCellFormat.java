@@ -23,7 +23,8 @@ import java.util.UUID;
 /**
  * Text Cell Format
  */
-public class TextCellFormat implements Model, ToYaml, Serializable
+public class TextCellFormat extends Model
+                            implements ToYaml, Serializable
 {
 
     // PROPERTIES

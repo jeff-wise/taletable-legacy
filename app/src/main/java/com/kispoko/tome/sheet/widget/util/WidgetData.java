@@ -18,7 +18,8 @@ import java.util.UUID;
 /**
  * Widget Data
  */
-public class WidgetData implements Model, ToYaml, Serializable
+public class WidgetData extends Model
+                        implements ToYaml, Serializable
 {
 
     // PROPERTIES

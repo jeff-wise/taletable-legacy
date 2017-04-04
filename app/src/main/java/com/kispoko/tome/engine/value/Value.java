@@ -10,5 +10,5 @@ public interface Value
 {
     String name();
     String valueString();
-    String summary();
+    String description();
 }

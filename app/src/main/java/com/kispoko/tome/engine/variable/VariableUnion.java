@@ -22,7 +22,8 @@ import java.util.UUID;
 /**
  * Variable Union
  */
-public class VariableUnion implements Model, ToYaml, Serializable
+public class VariableUnion extends Model
+                           implements ToYaml, Serializable
 {
 
     // PROPERTIES

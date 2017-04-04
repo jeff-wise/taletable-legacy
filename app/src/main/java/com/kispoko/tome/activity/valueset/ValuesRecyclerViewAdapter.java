@@ -14,7 +14,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.TextValueEditorActivity;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.engine.value.ValueSet;
-import com.kispoko.tome.engine.value.ValueSetValueType;
 import com.kispoko.tome.engine.value.ValueType;
 import com.kispoko.tome.engine.value.ValueUnion;
 
@@ -62,7 +61,7 @@ public class ValuesRecyclerViewAdapter
         ValueUnion valueUnion = this.valueSet.values().get(position);
 
         viewHolder.setValueText(valueUnion.value().valueString());
-        viewHolder.setDescriptionText(valueUnion.value().summary());
+        viewHolder.setDescriptionText(valueUnion.value().description());
 
         ValueReference valueReference =
                 new ValueReference(this.valueSet.name(), valueUnion.value().name());
@@ -133,12 +132,14 @@ public class ValuesRecyclerViewAdapter
                     {
                         case TEXT:
                             Intent textIntent = new Intent(context, TextValueEditorActivity.class);
-                            textIntent.putExtra("value_reference", valueReference);
+                            textIntent.putExtra("value_set_name", valueReference.valueSetName());
+                            textIntent.putExtra("value_name", valueReference.valueName());
                             context.startActivity(textIntent);
                             break;
                         case NUMBER:
                             Intent numIntent = new Intent(context, TextValueEditorActivity.class);
-                            numIntent.putExtra("value_reference", valueReference);
+                            numIntent.putExtra("value_set_name", valueReference.valueSetName());
+                            numIntent.putExtra("value_name", valueReference.valueName());
                             context.startActivity(numIntent);
                             break;
                     }

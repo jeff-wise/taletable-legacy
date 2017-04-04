@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.lib.model.Model;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Variable Interface
  */
-public abstract class Variable
+public abstract class Variable extends Model
 {
 
     // ABSTRACT METHODS

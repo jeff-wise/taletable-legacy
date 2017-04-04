@@ -25,7 +25,8 @@ import java.util.UUID;
 /**
  * Dictionary
  */
-public class Dictionary implements Model, ToYaml, Serializable
+public class Dictionary extends Model
+                        implements ToYaml, Serializable
 {
 
     // PROPERTIES

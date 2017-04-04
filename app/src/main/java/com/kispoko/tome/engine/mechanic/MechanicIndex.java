@@ -22,7 +22,8 @@ import java.util.UUID;
 /**
  * Mechanic Index
  */
-public class MechanicIndex implements Model, ToYaml, Serializable
+public class MechanicIndex extends Model
+                           implements ToYaml, Serializable
 {
 
     // PROPERTIES

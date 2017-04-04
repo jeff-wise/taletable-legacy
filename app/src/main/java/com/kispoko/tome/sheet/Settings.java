@@ -20,7 +20,8 @@ import java.util.UUID;
 /**
  * Sheet Settings
  */
-public class Settings implements Model, ToYaml, Serializable
+public class Settings extends Model
+                      implements ToYaml, Serializable
 {
 
     // PROPERTIES

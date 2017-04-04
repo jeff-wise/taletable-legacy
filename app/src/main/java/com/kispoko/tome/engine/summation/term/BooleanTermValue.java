@@ -27,7 +27,8 @@ import java.util.UUID;
 /**
  * Term Value: Boolean
  */
-public class BooleanTermValue implements Model, Serializable
+public class BooleanTermValue extends Model
+                              implements Serializable
 {
 
     // PROPERTIES

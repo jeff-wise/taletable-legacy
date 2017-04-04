@@ -42,7 +42,7 @@ import java.util.UUID;
  * Boolean CellUnion
  */
 public class BooleanCell extends Cell
-                         implements Model, ToYaml, Serializable
+                         implements ToYaml, Serializable
 {
 
     // PROPERTIES

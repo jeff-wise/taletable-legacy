@@ -37,7 +37,8 @@ import java.util.UUID;
 /**
  * Term Value: Integer
  */
-public class IntegerTermValue implements Model, Serializable
+public class IntegerTermValue extends Model
+                              implements Serializable
 {
 
     // PROPERTIES

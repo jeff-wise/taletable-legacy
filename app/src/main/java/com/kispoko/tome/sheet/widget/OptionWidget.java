@@ -44,6 +44,7 @@ import com.kispoko.tome.lib.yaml.YamlParser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -726,7 +727,7 @@ public class OptionWidget extends Widget implements Serializable
         if (valueSet == null)
             return "";
 
-        List<ValueUnion> values = valueSet.values();
+        Collection<ValueUnion> values = valueSet.values();
 
         this.valueStringListIndexMap = new HashMap<>();
 

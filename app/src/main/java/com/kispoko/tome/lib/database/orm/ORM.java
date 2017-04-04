@@ -24,9 +24,7 @@ import com.kispoko.tome.lib.functor.OptionFunctor;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.util.tuple.Tuple2;
-import com.kispoko.tome.util.tuple.Tuple3;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
-import com.kispoko.tome.lib.functor.Functor;
 import com.kispoko.tome.lib.functor.ModelFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.util.tuple.Tuple4;
@@ -211,7 +209,7 @@ public class ORM
                List<CollectionFunctor<?>>> functorsTuple;
 
         try {
-            functorsTuple = Functor.propertyFunctors(model);
+            functorsTuple = Model.propertyFunctors(model);
         }
         catch (FunctorException exception) {
             throw DatabaseException.functor(new FunctorError(exception));
@@ -267,7 +265,7 @@ public class ORM
                List<CollectionFunctor<?>>> functorsTuple;
 
         try {
-            functorsTuple = Functor.propertyFunctors(model);
+            functorsTuple = Model.propertyFunctors(model);
         }
         catch (FunctorException exception) {
             throw DatabaseException.functor(new FunctorError(exception));
@@ -338,7 +336,6 @@ public class ORM
     }
 
 
-
     /**
      * Get the SQL column representations for all of the values in the model. Both primitive and
      * model values have representations in the model's row. Collection values are stored in
@@ -356,7 +353,7 @@ public class ORM
                List<CollectionFunctor<?>>> functorsTuple;
 
         try {
-            functorsTuple = Functor.propertyFunctors(model);
+            functorsTuple = Model.propertyFunctors(model);
         }
         catch (FunctorException exception) {
             throw DatabaseException.functor(new FunctorError(exception));
@@ -457,7 +454,7 @@ public class ORM
                    List<CollectionFunctor<?>>> functorsTuple;
 
             try {
-                functorsTuple = Functor.propertyFunctors(dummyModel);
+                functorsTuple = Model.propertyFunctors(dummyModel);
             }
             catch (FunctorException exception) {
                 throw DatabaseException.functor(new FunctorError(exception));
@@ -513,7 +510,7 @@ public class ORM
                List<CollectionFunctor<?>>> functorsTuple;
 
         try {
-            functorsTuple = Functor.propertyFunctors(dummyModel);
+            functorsTuple = Model.propertyFunctors(dummyModel);
         }
         catch (FunctorException exception) {
             throw DatabaseException.functor(new FunctorError(exception));
@@ -632,7 +629,6 @@ public class ORM
     }
 
 
-
     private static void insertModelRow(Model model, List<OneToManyRelation> parentRelations)
                    throws DatabaseException
     {
@@ -645,7 +641,7 @@ public class ORM
                List<CollectionFunctor<?>>> functorsTuple;
 
         try {
-            functorsTuple = Functor.propertyFunctors(model);
+            functorsTuple = Model.propertyFunctors(model);
         }
         catch (FunctorException exception) {
             throw DatabaseException.functor(new FunctorError(exception));

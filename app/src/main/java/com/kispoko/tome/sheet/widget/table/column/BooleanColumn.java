@@ -21,7 +21,8 @@ import java.util.UUID;
  *
  * Contains metadata about the cells in a table's boolean column.
  */
-public class BooleanColumn implements Model, Column, ToYaml, Serializable
+public class BooleanColumn extends Model
+                           implements Column, ToYaml, Serializable
 {
 
     // PROPERTIES

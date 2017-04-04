@@ -18,7 +18,8 @@ import java.util.UUID;
 /**
  * Table Row Format
  */
-public class TableRowFormat implements Model, ToYaml, Serializable
+public class TableRowFormat extends Model
+                            implements ToYaml, Serializable
 {
 
     // PROPERTIES

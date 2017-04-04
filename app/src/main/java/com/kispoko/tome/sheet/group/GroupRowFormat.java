@@ -22,7 +22,8 @@ import java.util.UUID;
 /**
  * Group Row Format
  */
-public class GroupRowFormat implements Model, ToYaml, Serializable
+public class GroupRowFormat extends Model
+                            implements ToYaml, Serializable
 {
 
     // PROPERTIES

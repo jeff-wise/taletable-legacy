@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Campaign
  */
-public class Campaign implements Model
+public class Campaign extends Model
 {
 
     // PROPERTIES

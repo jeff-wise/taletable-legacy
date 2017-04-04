@@ -7,7 +7,6 @@ import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.sql.SQLValue;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.ModelFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.yaml.ToYaml;
@@ -28,7 +27,7 @@ import java.util.UUID;
  * Boolean Variable
  */
 public class BooleanVariable extends Variable
-                             implements Model, ToYaml, Serializable
+                             implements ToYaml, Serializable
 {
 
     // PROPERTIES

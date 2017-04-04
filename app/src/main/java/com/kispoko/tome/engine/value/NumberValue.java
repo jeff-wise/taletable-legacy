@@ -22,7 +22,8 @@ import java.util.UUID;
 /**
  * Number Value
  */
-public class NumberValue implements Value, Model, ToYaml, Serializable
+public class NumberValue extends Model
+                         implements Value, ToYaml, Serializable
 {
 
     // PROPERTIES
@@ -167,7 +168,7 @@ public class NumberValue implements Value, Model, ToYaml, Serializable
      * @return The summary.
      */
     @Override
-    public String summary()
+    public String description()
     {
         return this.summary.getValue();
     }

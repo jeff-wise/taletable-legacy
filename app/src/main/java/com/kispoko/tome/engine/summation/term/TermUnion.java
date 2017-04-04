@@ -21,7 +21,8 @@ import java.util.UUID;
 /**
  * Term Union
  */
-public class TermUnion implements Model, Serializable
+public class TermUnion extends Model
+                       implements Serializable
 {
 
     // PROPERTIES

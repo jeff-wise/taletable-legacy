@@ -40,7 +40,7 @@ import java.util.UUID;
  * Number Variable
  */
 public class NumberVariable extends Variable
-                            implements Model, ToYaml, Serializable
+                            implements ToYaml, Serializable
 {
 
     // PROPERTIES

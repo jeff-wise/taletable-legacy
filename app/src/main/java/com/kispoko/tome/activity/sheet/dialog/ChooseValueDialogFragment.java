@@ -593,7 +593,7 @@ public class ChooseValueDialogFragment extends DialogFragment
                     else
                         viewHolder.setValueText(valueUnion.textValue().value());
 
-                    viewHolder.setSummaryText(valueUnion.value().summary());
+                    viewHolder.setSummaryText(valueUnion.value().description());
                     break;
                 case NUMBER:
                     viewHolder.setValueText(valueUnion.numberValue().value().toString());

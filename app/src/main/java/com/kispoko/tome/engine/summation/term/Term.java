@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Term
  */
-public abstract class Term implements Model
+public abstract class Term extends Model
 {
 
     // INTERFACE

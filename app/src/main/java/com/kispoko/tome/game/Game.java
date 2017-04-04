@@ -18,7 +18,8 @@ import java.util.UUID;
  *
  * // TODO when do these get loaded? how do they get updated? can you create custom games?
  */
-public class Game implements Model, ToYaml
+public class Game extends Model
+                  implements ToYaml
 {
 
     // PROPERTIES

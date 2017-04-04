@@ -31,7 +31,8 @@ import java.util.UUID;
  *
  * A row of widgets in a group.
  */
-public class GroupRow implements Model, ToYaml, Serializable
+public class GroupRow extends Model
+                      implements ToYaml, Serializable
 {
 
     // PROPERTIES

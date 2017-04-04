@@ -23,7 +23,8 @@ import java.util.UUID;
 /**
  * Rules Engine
  */
-public class RulesEngine implements Model, ToYaml, Serializable
+public class RulesEngine extends Model
+                         implements ToYaml, Serializable
 {
 
     // PROPERTIES
