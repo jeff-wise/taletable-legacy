@@ -82,7 +82,7 @@ public class SheetManager
 
     private static void initializeSheet()
     {
-        currentSheet().initialize();
+        currentSheet().initialize(currentSheetContext());
 
         sheetListener.onSheet(currentSheet());
     }

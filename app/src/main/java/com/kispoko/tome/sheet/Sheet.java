@@ -2,6 +2,8 @@
 package com.kispoko.tome.sheet;
 
 
+import android.content.Context;
+
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.campaign.Campaign;
@@ -217,13 +219,13 @@ public class Sheet extends Model
     // > Initialize
     // ------------------------------------------------------------------------------------------
 
-    public void initialize()
+    public void initialize(Context context)
     {
         State.initializeMechanics();
 
-        this.profileSection().initialize();
-        this.encounterSection().initialize();
-        this.campaignSection().initialize();
+        this.profileSection().initialize(context);
+        this.encounterSection().initialize(context);
+        this.campaignSection().initialize(context);
 
         this.summary.setValue(sheetSummary());
         this.summary.saveAsync();

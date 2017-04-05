@@ -167,7 +167,7 @@ public class BooleanWidget extends Widget
      * Initialize the text widget state.
      */
     @Override
-    public void initialize(GroupParent groupParent)
+    public void initialize(GroupParent groupParent, Context context)
     {
         // > If the variable is non-null
         if (!this.valueVariable.isNull()) {

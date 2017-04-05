@@ -142,11 +142,11 @@ public class Group extends Model
     /**
      * Initialize the group
      */
-    public void initialize()
+    public void initialize(Context context)
     {
         // Initialize each row
         for (GroupRow groupRow : this.rows()) {
-            groupRow.initialize(this);
+            groupRow.initialize(this, context);
         }
     }
 

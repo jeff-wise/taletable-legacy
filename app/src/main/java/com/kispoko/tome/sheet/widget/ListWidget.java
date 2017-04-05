@@ -187,7 +187,7 @@ public class ListWidget extends Widget
      * Initialize the text widget state.
      */
     @Override
-    public void initialize(GroupParent groupParent)
+    public void initialize(GroupParent groupParent, Context context)
     {
         // Initialize variables
         for (VariableUnion variableUnion : this.values())

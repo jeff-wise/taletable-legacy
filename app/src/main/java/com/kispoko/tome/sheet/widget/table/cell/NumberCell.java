@@ -14,7 +14,6 @@ import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.dialog.ArithmeticDialogType;
 import com.kispoko.tome.activity.sheet.dialog.CalculatorDialogFragment;
 import com.kispoko.tome.activity.sheet.dialog.DialogOptionButton;
-import com.kispoko.tome.activity.sheet.dialog.IncrementDialogFragment;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
@@ -27,7 +26,6 @@ import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.util.Util;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.lib.functor.ModelFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
@@ -72,7 +70,7 @@ public class NumberCell extends Cell
 
     private Integer                                 valueViewId;
 
-    private WidgetContainer                         widgetContainer;
+    private NumberColumn                            column;
 
 
     // CONSTRUCTORS
@@ -206,11 +204,6 @@ public class NumberCell extends Cell
      */
     public void initialize(NumberColumn column, WidgetContainer widgetContainer)
     {
-        // [1] Set the widget container
-        // --------------------------------------------------------------------------------------
-
-        this.widgetContainer = widgetContainer;
-
         // [2] Inherit column properties
         // --------------------------------------------------------------------------------------
 
@@ -219,7 +212,7 @@ public class NumberCell extends Cell
         if (column.defaultLabel() != null && this.valueVariable().label() == null)
             this.valueVariable().setLabel(column.defaultLabel());
 
-        // [3] Initialize the value variable
+        // [2] Initialize the value variable
         // --------------------------------------------------------------------------------------
 
         // > If null, set default value
@@ -298,7 +291,7 @@ public class NumberCell extends Cell
      * Get the cell's integer value as a string.
      * @return The cell's value as a string.
      */
-    public String valueString(String columnValuePrefix)
+    public String valueString()
     {
         Integer integerValue = this.value();
 
@@ -306,7 +299,9 @@ public class NumberCell extends Cell
         {
             String integerString = integerValue.toString();
 
-            String valuePrefix = this.format().resolveValuePrefix(columnValuePrefix);
+            String valuePrefix = null;
+            if (this.column != null)
+                valuePrefix = this.format().resolveValuePrefix(column.format().valuePrefix());
             if (valuePrefix != null)
                 integerString = valuePrefix + integerString;
 
@@ -357,6 +352,8 @@ public class NumberCell extends Cell
 
     public LinearLayout view(NumberColumn column, TableRowFormat format, final Context context)
     {
+        this.column = column;
+
         TextStyle valueStyle = this.format().resolveStyle(column.style());
         LinearLayout layout = this.layout(column, valueStyle.size(), format.cellHeight(), context);
 
@@ -387,7 +384,7 @@ public class NumberCell extends Cell
         valueStyle.styleTextViewBuilder(value, context);
 
         // > Value
-        String valueString = this.valueString(column.format().valuePrefix());
+        String valueString = this.valueString();
         if (valueString != null)
             value.text = valueString;
         else
@@ -451,7 +448,6 @@ public class NumberCell extends Cell
         // --------------------------------------------------------------------------------------
 
         this.valueViewId = null;
-        this.widgetContainer = null;
 
         // [2] Initialize the value variable
         // --------------------------------------------------------------------------------------
@@ -473,7 +469,7 @@ public class NumberCell extends Cell
             TextView textView = (TextView) activity.findViewById(this.valueViewId);
 
             if (this.value() != null && textView != null)
-                textView.setText(this.valueString(null));
+                textView.setText(this.valueString());
         }
     }
 

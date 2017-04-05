@@ -2639,105 +2639,6 @@ profile:
                     value: strength
       - format:
           margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: Saving Throw
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: saving_throw_strength
-              label: Strength Saving Throw
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: strength_modifier
-                - type: conditional
-                  term:
-                    conditional:
-                      type: variable
-                      variable: strength_saving_throw_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: Strength Check
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: check_strength
-              label: Strength Check
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: strength_modifier
-            value_prefix: '+'
-      - format:
-          margins:
             top: 15
         widgets:
         - type: number
@@ -4733,7 +4634,7 @@ profile:
           widget:
             category: class
   - name: Inventory
-    background: medium_dark
+    background: dark
     groups:
     - name: Wealth
       format:
@@ -4917,6 +4818,7 @@ profile:
                 label: Weapons
             format:
               cell_height: medium
+              divider_type: very_light
             columns:
             - type: text
               column:
@@ -4925,8 +4827,10 @@ profile:
                 format:
                   width: 3
                   alignment: left
+                  size: medium_small
                   style:
-                    color: theme_medium_light
+                    color: theme_light
+                    size: medium_small
                 defines_namespace: true
             - type: number
               column:
@@ -4935,6 +4839,8 @@ profile:
                 default_label: Quantity
                 format:
                   width: 2
+                  style:
+                    size: medium_small
                   alignment: center
                 namespaced: true
             - type: boolean
@@ -4944,9 +4850,11 @@ profile:
                 format:
                   width: 2
                   alignment: center
+                  size: medium_small
                   true_style:
-                    font: italic
                     color: green_light
+                    font: italic
+                    size: medium_small
                 namespaced: true
             rows:
             - cells:
@@ -5038,6 +4946,7 @@ profile:
                   width: 3
                   style:
                     color: theme_light
+                    size: medium_small
                 defines_namespace: true
             - type: number
               column:
@@ -5046,6 +4955,8 @@ profile:
                 default_label: Quantity
                 format:
                   width: 2
+                  style:
+                    size: medium_small
                   alignment: center
                 namespaced: true
             - type: boolean
@@ -5055,9 +4966,12 @@ profile:
                 format:
                   width: 2
                   alignment: center
+                  style:
+                    size: medium_small
                   true_style:
                     font: italic
                     color: green_light
+                    size: medium_small
                 namespaced: true
             rows:
             - cells:

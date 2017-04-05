@@ -5,6 +5,7 @@ package com.kispoko.tome.sheet.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -49,7 +50,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static java.io.File.separator;
 
 
 /**
@@ -85,6 +85,7 @@ public class NumberWidget extends Widget
     // -----------------------------------------------------------------------------------------
 
     private Integer                             valueViewId;
+    private Integer                             widgetViewId;
 
 
     // CONSTRUCTORS
@@ -105,6 +106,7 @@ public class NumberWidget extends Widget
         this.variables              = CollectionFunctor.empty(VariableUnion.class);
 
         this.valueViewId            = null;
+        this.widgetViewId           = null;
     }
 
 
@@ -131,6 +133,7 @@ public class NumberWidget extends Widget
         this.variables              = CollectionFunctor.full(variables, VariableUnion.class);
 
         this.valueViewId            = null;
+        this.widgetViewId           = null;
 
         this.initializeNumberWidget();
     }
@@ -220,7 +223,7 @@ public class NumberWidget extends Widget
      * Initialize the text widget state.
      */
     @Override
-    public void initialize(GroupParent groupParent)
+    public void initialize(GroupParent groupParent, final Context context)
     {
         // [1] Initialize variables with listeners to update the number widget views when the
         //     values of the variables change
@@ -238,7 +241,7 @@ public class NumberWidget extends Widget
             this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
                 @Override
                 public void onUpdate() {
-                    onValueUpdate();
+                    updateValueView(context);
                 }
             });
 
@@ -462,38 +465,14 @@ public class NumberWidget extends Widget
 
     }
 
-
-    // > Value Updates
-    // -----------------------------------------------------------------------------------------
-
-    /**
-     * When the text widget's value is updated.
-     */
-    private void onValueUpdate()
-    {
-        if (this.valueViewId != null && !this.valueVariable.isNull())
-        {
-            Activity activity = (Activity) SheetManager.currentSheetContext();
-            TextView textView = (TextView) activity.findViewById(this.valueViewId);
-
-            if (textView == null)
-                return;
-
-            Integer value = this.value();
-
-            // TODO can value be null
-            if (value != null)
-                textView.setText(this.valueString());
-        }
-    }
-
-
-    // > Views
     // -----------------------------------------------------------------------------------------
 
     private View widgetView(boolean rowHasLabel, Context context)
     {
         LinearLayout layout = this.layout(rowHasLabel, context);
+
+        this.widgetViewId   = Util.generateViewId();
+        layout.setId(this.widgetViewId);
 
         layout.addView(mainView(context));
 
@@ -893,6 +872,28 @@ public class NumberWidget extends Widget
     }
 
 
+
+    // > Value Updates
+    // -----------------------------------------------------------------------------------------
+
+
+    /**
+     * Update the value view section of the widget view to reflect a new value.
+     * @param context The context
+     */
+    private void updateValueView(Context context)
+    {
+        if (this.widgetViewId != null)
+        {
+            Activity activity = (Activity) SheetManager.currentSheetContext();
+            LinearLayout widgetView = (LinearLayout) activity.findViewById(this.widgetViewId);
+
+            if (widgetView != null) {
+                widgetView.removeAllViews();
+                widgetView.addView(this.mainView(context));
+            }
+        }
+    }
 
 
 }

@@ -35,7 +35,7 @@ public abstract class Widget extends Model
 
     abstract public WidgetData data();
 
-    abstract public void initialize(GroupParent groupParent);
+    abstract public void initialize(GroupParent groupParent, Context context);
 
 
     // > State

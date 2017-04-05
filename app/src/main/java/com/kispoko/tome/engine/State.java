@@ -179,13 +179,7 @@ public class State
         VariableUnion variableUnion = variableByName.get(variableName);
         variableByName.remove(variableName);
 
-
-        // [2] Notify all current listeners of this variable
-        // --------------------------------------------------------------------------------------
-
-        updateVariableDependencies(variableUnion.variable());
-
-        // [3] Un-Index the variable's dependencies
+        // [2] Un-Index the variable's dependencies
         // --------------------------------------------------------------------------------------
 
         for (VariableReference variableReference : variableUnion.variable().dependencies())
@@ -212,7 +206,7 @@ public class State
             }
         }
 
-        // [4] Un-Index the variable's tags
+        // [3] Un-Index the variable's tags
         // --------------------------------------------------------------------------------------
 
         for (String tag : variableUnion.variable().tags())
@@ -223,6 +217,11 @@ public class State
             if (variablesWithTag.isEmpty())
                 tagIndex.remove(tag);
         }
+
+        // [4] Notify all current listeners of this variable
+        // --------------------------------------------------------------------------------------
+
+        updateVariableDependencies(variableUnion.variable());
 
         return true;
     }

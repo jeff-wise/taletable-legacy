@@ -338,7 +338,7 @@ public class TextWidget extends Widget
      * Initialize the text widget.
      */
     @Override
-    public void initialize(GroupParent groupParent)
+    public void initialize(GroupParent groupParent, Context context)
     {
         // [1] Initialize the value variable
         // --------------------------------------------------------------------------------------

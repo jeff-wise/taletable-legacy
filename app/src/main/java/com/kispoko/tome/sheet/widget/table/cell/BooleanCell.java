@@ -21,7 +21,6 @@ import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
 import com.kispoko.tome.sheet.widget.util.WidgetContainer;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
@@ -71,6 +70,11 @@ public class BooleanCell extends Cell
     private String                          trueText;
     private String                          falseText;
 
+    // ** Column State
+
+    private TextStyle                       defaultStyle;
+    private TextStyle                       trueStyle;
+    private TextStyle                       falseStyle;
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -292,6 +296,8 @@ public class BooleanCell extends Cell
 
     public View view(BooleanColumn column, TableRowFormat rowFormat, final Context context)
     {
+        this.setColumnState(column);
+
         final LinearLayout valueView = valueView(column, rowFormat, context);
 
         return valueView;
@@ -330,13 +336,14 @@ public class BooleanCell extends Cell
                     valueView.setText(falseText);
 
                     // No false style, but need to undo true style
-                    if (format().falseStyle() == null && format().trueStyle() != null) {
-                        format().style().styleTextView(valueView, context);
+                    if (falseStyle == null && trueStyle != null && defaultStyle != null) {
+                        defaultStyle.styleTextView(valueView, context);
                     }
                     // Set false style
-                    else if (format().falseStyle() != null) {
-                        format().falseStyle().styleTextView(valueView, context);
+                    else if (falseStyle != null) {
+                        falseStyle.styleTextView(valueView, context);
                     }
+
                 }
                 else
                 {
@@ -344,12 +351,12 @@ public class BooleanCell extends Cell
                     valueView.setText(trueText);
 
                     // No true style, but need to undo false style
-                    if (format().trueStyle() == null && format().falseStyle() != null) {
-                        format().style().styleTextView(valueView, context);
+                    if (trueStyle == null && falseStyle != null && defaultStyle != null) {
+                        defaultStyle.styleTextView(valueView, context);
                     }
                     // Set true style
-                    else if (format().trueStyle() != null) {
-                        format().trueStyle().styleTextView(valueView, context);
+                    else if (trueStyle != null) {
+                        trueStyle.styleTextView(valueView, context);
                     }
                 }
             }
@@ -438,6 +445,19 @@ public class BooleanCell extends Cell
     {
         this.valueViewId        = null;
         this.widgetContainer    = null;
+    }
+
+
+    /**
+     * Saves state about the parent column. This is refreshed whenever a new view is created. When
+     * the column state is changed, it will request a new view to update the table, so the cell
+     * state needs to match the state of the most recent view owner.
+     */
+    private void setColumnState(BooleanColumn column)
+    {
+        this.defaultStyle  = this.format().resolveStyle(column.format().style());
+        this.trueStyle     = this.format().resolveTrueStyle(column.format().trueStyle());
+        this.falseStyle    = this.format().resolveFalseStyle(column.format().falseStyle());
     }
 
 

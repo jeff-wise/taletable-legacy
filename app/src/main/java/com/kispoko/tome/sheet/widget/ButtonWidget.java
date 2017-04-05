@@ -197,7 +197,7 @@ public class ButtonWidget extends Widget implements Serializable
     // -----------------------------------------------------------------------------------------
 
     @Override
-    public void initialize(GroupParent groupParent) { }
+    public void initialize(GroupParent groupParent, Context context) { }
 
 
     @Override

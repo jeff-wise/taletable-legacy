@@ -2,6 +2,8 @@
 package com.kispoko.tome.sheet;
 
 
+import android.content.Context;
+
 import com.kispoko.tome.activity.sheet.PagePagerAdapter;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
@@ -196,11 +198,11 @@ public class Section extends Model
     /**
      * Initialize the section.
      */
-    public void initialize()
+    public void initialize(Context context)
     {
         // Initialize the pages
         for (Page page : this.pages()) {
-            page.initialize();
+            page.initialize(context);
         }
     }
 

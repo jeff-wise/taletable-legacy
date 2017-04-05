@@ -80,6 +80,9 @@ public class SheetActivity
     private PagePagerAdapter    pagePagerAdapter;
 
 
+    public static ViewPager viewPager;
+
+
     // ACTIVITY EVENTS
     // -------------------------------------------------------------------------------------------
 
@@ -268,10 +271,6 @@ public class SheetActivity
             }
         });
 
-//        NavigationView navigationView1 = (NavigationView) findViewById(R.id.app_navigation_view);
-//        NavigationView navigationView2 = (NavigationView) findViewById(R.id.sheet_navigation_view);
-//        navigationView1.setNavigationItemSelectedListener(this);
-//        navigationView2.setNavigationItemSelectedListener(this);
     }
 
 
@@ -337,6 +336,7 @@ public class SheetActivity
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
         viewPager.setAdapter(pagePagerAdapter);
+        SheetActivity.viewPager = viewPager;
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
@@ -822,6 +822,15 @@ public class SheetActivity
         LinearLayout functionsButton = this.buttonView(R.string.functions,
                                                       R.drawable.ic_sheet_nav_functions,
                                                       context);
+        functionsButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, FunctionIndexActivity.class);
+                startActivity(intent);
+            }
+        });
         layout.addView(functionsButton);
 
         // > Programs
@@ -829,6 +838,15 @@ public class SheetActivity
         LinearLayout programsButton = this.buttonView(R.string.programs,
                                                       R.drawable.ic_sheet_nav_programs,
                                                       context);
+        programsButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, ProgramIndexActivity.class);
+                startActivity(intent);
+            }
+        });
         layout.addView(programsButton);
 
         // > Mechanics
@@ -836,6 +854,15 @@ public class SheetActivity
         LinearLayout mechanicsButton = this.buttonView(R.string.mechanics,
                                                        R.drawable.ic_sheet_nav_mechanics,
                                                        context);
+        mechanicsButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, MechanicIndexActivity.class);
+                startActivity(intent);
+            }
+        });
         layout.addView(mechanicsButton);
 
         // > Debugger

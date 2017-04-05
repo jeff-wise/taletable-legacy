@@ -145,14 +145,14 @@ public class GroupRow extends Model
     /**
      * Initialize the group row.
      */
-    public void initialize(GroupParent groupParent)
+    public void initialize(GroupParent groupParent, Context context)
     {
         this.groupParent = groupParent;
 
         // Initialize each widget
         for (WidgetUnion widgetUnion : this.widgets())
         {
-            widgetUnion.widget().initialize(groupParent);
+            widgetUnion.widget().initialize(groupParent, context);
         }
     }
 

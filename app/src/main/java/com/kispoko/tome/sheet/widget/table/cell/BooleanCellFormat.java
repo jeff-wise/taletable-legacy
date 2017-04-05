@@ -415,7 +415,7 @@ public class BooleanCellFormat extends Model
     // --------------------------------------------------------------------------------------
 
     /**
-     * The default column false valuestyle.
+     * The default column false style.
      * @return The style.
      */
     public TextStyle falseStyle()
@@ -425,7 +425,7 @@ public class BooleanCellFormat extends Model
 
 
     /**
-     * Set the default column false valuestyle.
+     * Set the default column false style.
      * @param style The style.
      */
     public void setFalseStyle(TextStyle style)

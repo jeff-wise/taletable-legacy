@@ -28,6 +28,12 @@ import com.kispoko.tome.sheet.SheetManager;
 public class DictionaryActivity extends AppCompatActivity
 {
 
+    // PROPERTIES
+    // ------------------------------------------------------------------------------------------
+
+    private ValueSetsRecyclerViewAdapter valueSetsAdapter;
+
+
     // ACTIVITY LIFECYCLE EVENTS
     // ------------------------------------------------------------------------------------------
 
@@ -59,6 +65,17 @@ public class DictionaryActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.empty, menu);
         return true;
+    }
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (this.valueSetsAdapter != null) {
+            this.valueSetsAdapter.notifyDataSetChanged();
+        }
     }
 
 
@@ -102,10 +119,10 @@ public class DictionaryActivity extends AppCompatActivity
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.value_set_list_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
 
         dictionary.sortAscByLabel();
-        recyclerView.setAdapter(new ValueSetsRecyclerViewAdapter(dictionary.valueSets(), this));
+        this.valueSetsAdapter = new ValueSetsRecyclerViewAdapter(dictionary.valueSets(), this);
+        recyclerView.setAdapter(this.valueSetsAdapter);
 
         FloatingActionButton addValueSetButton =
                 (FloatingActionButton) findViewById(R.id.button_new_value_set);
@@ -118,5 +135,6 @@ public class DictionaryActivity extends AppCompatActivity
         });
 
     }
+
 
 }

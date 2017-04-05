@@ -170,7 +170,7 @@ public class LogWidget extends Widget
     // ------------------------------------------------------------------------------------------
 
     @Override
-    public void initialize(GroupParent groupParent)
+    public void initialize(GroupParent groupParent, Context context)
     {
         this.groupParent = groupParent;
     }

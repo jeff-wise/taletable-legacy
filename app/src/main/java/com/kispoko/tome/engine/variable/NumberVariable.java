@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.variable;
 
 
+import android.util.Log;
+
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
@@ -19,7 +21,6 @@ import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.lib.database.sql.SQLValue;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.ModelFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.yaml.ToYaml;

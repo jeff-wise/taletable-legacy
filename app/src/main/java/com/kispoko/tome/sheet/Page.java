@@ -155,11 +155,11 @@ public class Page extends Model implements ToYaml, Serializable
     /**
      * Initialize the page.
      */
-    public void initialize()
+    public void initialize(Context context)
     {
         // Initialize each group
         for (Group group : this.groups()) {
-            group.initialize();
+            group.initialize(context);
         }
     }
 
