@@ -2574,11 +2574,11 @@ profile:
     groups:
     - format:
         background: dark
-        divider: light
+        divider: very_light
         padding:
-          bottom: 20
+          bottom: 30
           left: 10
-          top: 20
+          top: 30
           right: 10
       rows:
       - format:
@@ -2595,7 +2595,7 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_super_dark
+                color: theme_very_dark
                 size: medium_small
               inside_label: Strength
               inside_label_style:
@@ -2701,17 +2701,15 @@ profile:
               value: 188
     - format:
         background: dark
-        divider: light
+        divider: very_light
         show_name: false
         padding:
-          bottom: 20
-          top: 10
+          bottom: 30
+          top: 30
           left: 10
           right: 10
       rows:
       - format:
-          margins:
-            top: 10
         widgets:
         - type: number
           widget:
@@ -2724,7 +2722,7 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_super_dark
+                color: theme_very_dark
                 size: medium_small
               inside_label: Dexterity
               inside_label_style:
@@ -2766,115 +2764,17 @@ profile:
                   parameters:
                   - type: reference
                     value: dexterity
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              description_style:
-                color: theme_very_dark
-                size: small
-              inside_label: Saving Throw
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: saving_throw_dexterity
-              label: Dexterity Saving Throw
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: dexterity_modifier
-                - type: conditional
-                  term:
-                    conditional:
-                      type: variable
-                      variable: dexterity_saving_throw_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label: Dexterity Check
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: check_dexterity
-              label: Dexterity Check
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: dexterity_modifier
-            value_prefix: '+'
     - format:
         background: dark
-        divider: light
+        divider: very_light
         padding:
-          bottom: 20
-          top: 10
+          bottom: 30
+          top: 30
           left: 10
           right: 10
         show_name: false
       rows:
       - format:
-          margins:
-            top: 10
         widgets:
         - type: number
           widget:
@@ -2890,7 +2790,7 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_super_dark
+                color: theme_very_dark
                 size: medium_small
               inside_label: Constitution
               inside_label_style:
@@ -2932,99 +2832,6 @@ profile:
                   parameters:
                   - type: reference
                     value: constitution
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label: Saving Throw
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: saving_throw_constitution
-              label: Constitution Saving Throw
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: constitution_modifier
-                - type: conditional
-                  term:
-                    conditional:
-                      type: variable
-                      variable: constitution_saving_throw_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label: Constitution Check
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: check_constitution
-              label: Constitution Check
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: constitution_modifier
-            value_prefix: '+'
       - format:
           margins:
             top: 15
@@ -3156,16 +2963,14 @@ profile:
               value: 72
     - format:
         background: dark
-        divider: light
+        divider: very_light
         padding:
-          bottom: 20
-          top: 10
+          bottom: 30
+          top: 30
           left: 10
           right: 10
       rows:
       - format:
-          margins:
-            top: 10
         widgets:
         - type: number
           widget:
@@ -3178,7 +2983,7 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_super_dark
+                color: theme_very_dark
                 size: medium_small
               inside_label: Intelligence
               inside_label_style:
@@ -3210,111 +3015,16 @@ profile:
                       variable:
                         type: tag
                         tag: intelligence_bonus
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label: Saving Throw
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: saving_throw_intelligence
-              label: Intelligence Saving Throw
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: intelligence_modifier
-                - type: conditional
-                  term:
-                    conditional:
-                      type: variable
-                      variable: intelligence_saving_throw_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label: Intelligence Check
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: check_wisdom
-              label: Intelligence Check
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: intelligence_modifier
-            value_prefix: '+'
     - format:
         background: dark
-        divider: light
+        divider: very_light
         padding:
-          bottom: 20
-          top: 10
+          bottom: 30
+          top: 30
           left: 10
           right: 10
       rows:
       - format:
-          margins:
-            top: 10
         widgets:
         - type: number
           widget:
@@ -3328,7 +3038,7 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_super_dark
+                color: theme_very_dark
                 size: medium_small
               inside_label: Wisdom
               inside_label_style:
@@ -3359,111 +3069,17 @@ profile:
                       variable:
                         type: tag
                         tag: wisdom_bonus
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label: Saving Throw
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: saving_throw_wisdom
-              label: Wisdom Saving Throw
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: wisdom_modifier
-                - type: conditional
-                  term:
-                    conditional:
-                      type: variable
-                      variable: wisdom_saving_throw_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              inside_label: Wisdom Check
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: check_wisdom
-              label: Wisdom Check
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: wisdom_modifier
-            value_prefix: '+'
     - format:
         background: dark
-        divider: light
+        divider: very_light
         padding:
           bottom: 30
-          top: 10
+          top: 30
           left: 10
           right: 10
       rows:
       - format:
           margins:
-            top: 10
             left: 10
             right: 10
         widgets:
@@ -3478,7 +3094,7 @@ profile:
             format:
               description_style:
                 alignment: center
-                color: theme_super_dark
+                color: theme_very_dark
                 size: medium_small
               inside_label: Charisma
               inside_label_style:
@@ -3509,99 +3125,6 @@ profile:
                       variable:
                         type: tag
                         tag: charisma_bonus
-      - format:
-          margins:
-            top: 20
-        widgets:
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label: Saving Throw
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: saving_throw_charisma
-              label: Charisma Saving Throw
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: charisma_modifier
-                - type: conditional
-                  term:
-                    conditional:
-                      type: variable
-                      variable: charisma_saving_throw_is_proficient
-                    when_true:
-                      type: variable
-                      variable:
-                        type: name
-                        name: proficiency_bonus
-                    when_false:
-                      type: literal
-                      value: 0
-            value_prefix: '+'
-        - type: number
-          widget:
-            data:
-              format:
-                background: medium_dark
-                corners: medium
-                margins:
-                  left: 8
-                  right: 8
-            format:
-              inside_label: Charisma Check
-              inside_label_margins:
-                bottom: 3
-              inside_label_position: top
-              inside_label_style:
-                alignment: center
-                color: theme_medium_dark
-                size: super_small
-              value_height: wrap
-              value_padding_vertical: 5
-              value_style:
-                alignment: center
-                color: theme_light
-                size: medium
-            value:
-              name: check_charisma
-              label: Charisma Check
-              type: summation
-              value:
-                terms:
-                - type: integer
-                  term:
-                    value:
-                      type: variable
-                      variable:
-                        type: name
-                        name: charisma_modifier
-            value_prefix: '+'
       - format:
           margins:
             top: 15
@@ -3669,7 +3192,7 @@ profile:
     - format:
         background: medium
         padding:
-          top: 30
+          top: 20
       rows:
       - format:
           margins:
@@ -3692,7 +3215,7 @@ profile:
               value: Skills
       - format:
           margins:
-            top: 15
+            top: 10
         widgets:
         - type: table
           widget:

@@ -77,6 +77,97 @@
     <color name="dark_blue_15">#15181C</color>
 
 
+    <!-- DARK THEME PRIMARY -->
+    <!-- ================================================================ -->
+
+    <color name="dark_theme_primary_1">#C5DAFF</color>
+    <color name="dark_theme_primary_2">#C3D8FC</color>
+    <color name="dark_theme_primary_3">#C1D5FA</color>
+    <color name="dark_theme_primary_4">#BFD3F7</color>
+    <color name="dark_theme_primary_5">#BDD1F5</color>
+    <color name="dark_theme_primary_6">#BBCFF2</color>
+    <color name="dark_theme_primary_7">#B9CDF0</color>
+    <color name="dark_theme_primary_8">#B7CBED</color>
+    <color name="dark_theme_primary_9">#B5C8EB</color>
+    <color name="dark_theme_primary_10">#B3C6E8</color>
+    <color name="dark_theme_primary_11">#B1C4E5</color>
+    <color name="dark_theme_primary_12">#AFC2E3</color>
+    <color name="dark_theme_primary_13">#ADC0E0</color>
+    <color name="dark_theme_primary_14">#ABBDDE</color>
+    <color name="dark_theme_primary_15">#A9BBDB</color>
+    <color name="dark_theme_primary_16">#A7B9D9</color>
+    <color name="dark_theme_primary_17">#A5B7D6</color>
+    <color name="dark_theme_primary_18">#A3B5D4</color>
+    <color name="dark_theme_primary_19">#A1B3D1</color>
+    <color name="dark_theme_primary_20">#9FB0CF</color>
+    <color name="dark_theme_primary_21">#9DAECC</color>
+    <color name="dark_theme_primary_22">#9BACC9</color>
+    <color name="dark_theme_primary_23">#99AAC7</color>
+    <color name="dark_theme_primary_24">#97A8C4</color>
+    <color name="dark_theme_primary_25">#95A6C2</color>
+    <color name="dark_theme_primary_26">#93A3BF</color>
+    <color name="dark_theme_primary_27">#91A1BD</color>
+    <color name="dark_theme_primary_28">#8F9FBA</color>
+    <color name="dark_theme_primary_29">#8C9BB5</color>
+    <color name="dark_theme_primary_30">#8A98B2</color>
+    <color name="dark_theme_primary_31">#8896B0</color>
+    <color name="dark_theme_primary_32">#8694AD</color>
+    <color name="dark_theme_primary_33">#8492AB</color>
+    <color name="dark_theme_primary_34">#8290A8</color>
+    <color name="dark_theme_primary_35">#808EA6</color>
+    <color name="dark_theme_primary_36">#7E8BA3</color>
+    <color name="dark_theme_primary_37">#7C89A1</color>
+    <color name="dark_theme_primary_38">#7A879E</color>
+    <color name="dark_theme_primary_39">#78859C</color>
+    <color name="dark_theme_primary_40">#768399</color>
+    <color name="dark_theme_primary_41">#748196</color>
+    <color name="dark_theme_primary_42">#727E94</color>
+    <color name="dark_theme_primary_43">#707C91</color>
+    <color name="dark_theme_primary_44">#6E7A8F</color>
+    <color name="dark_theme_primary_45">#6C788C</color>
+    <color name="dark_theme_primary_46">#6A768A</color>
+    <color name="dark_theme_primary_47">#687387</color>
+    <color name="dark_theme_primary_48">#667185</color>
+    <color name="dark_theme_primary_49">#646F82</color>
+    <color name="dark_theme_primary_50">#626D7F</color>
+    <color name="dark_theme_primary_51">#606B7D</color>
+    <color name="dark_theme_primary_52">#5E697A</color>
+    <color name="dark_theme_primary_53">#5C6678</color>
+    <color name="dark_theme_primary_54">#5A6475</color>
+    <color name="dark_theme_primary_55">#586273</color>
+    <color name="dark_theme_primary_56">#566070</color>
+    <color name="dark_theme_primary_57">#555E6E</color>
+    <color name="dark_theme_primary_58">#535B6B</color>
+    <color name="dark_theme_primary_59">#515969</color>
+    <color name="dark_theme_primary_60">#4F5766</color>
+    <color name="dark_theme_primary_61">#4D5563</color>
+    <color name="dark_theme_primary_62">#4B5361</color>
+    <color name="dark_theme_primary_63">#49515E</color>
+    <color name="dark_theme_primary_64">#474E5C</color>
+    <color name="dark_theme_primary_65">#454C59</color>
+    <color name="dark_theme_primary_66">#434A57</color>
+    <color name="dark_theme_primary_67">#414854</color>
+    <color name="dark_theme_primary_68">#3F4652</color>
+    <color name="dark_theme_primary_69">#3D444F</color>
+    <color name="dark_theme_primary_70">#3B414C</color>
+    <color name="dark_theme_primary_71">#393F4A</color>
+    <color name="dark_theme_primary_72">#373D47</color>
+    <color name="dark_theme_primary_73">#353B45</color>
+    <color name="dark_theme_primary_74">#333942</color>
+    <color name="dark_theme_primary_75">#313640</color>
+    <color name="dark_theme_primary_76">#2F343D</color>
+    <color name="dark_theme_primary_77">#2D323B</color>
+    <color name="dark_theme_primary_78">#2B3038</color>
+    <color name="dark_theme_primary_79">#292E36</color>
+    <color name="dark_theme_primary_80">#272C33</color>
+    <color name="dark_theme_primary_81">#252930</color>
+    <color name="dark_theme_primary_82">#23272E</color>
+    <color name="dark_theme_primary_83">#21252B</color>
+    <color name="dark_theme_primary_84">#1F2329</color>
+    <color name="dark_theme_primary_85">#1D2126</color>
+    <color name="dark_theme_primary_86">#1C1E24</color>
+
+
 
     <!--<color name="dark_primary_">#15181C</color>-->
 
