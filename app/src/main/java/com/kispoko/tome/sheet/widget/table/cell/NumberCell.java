@@ -12,7 +12,7 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.dialog.ArithmeticDialogType;
-import com.kispoko.tome.activity.sheet.dialog.CalculatorDialogFragment;
+import com.kispoko.tome.activity.sheet.widget.number.CalculatorDialogFragment;
 import com.kispoko.tome.activity.sheet.dialog.DialogOptionButton;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.NullVariableException;

@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.sheet.dialog;
+package com.kispoko.tome.activity.sheet.widget.dialog;
 
 
 import android.app.Dialog;

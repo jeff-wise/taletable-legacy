@@ -10,13 +10,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kispoko.tome.NullValueException;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.dialog.QuoteWidgetDialogFragment;
-import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
 import com.kispoko.tome.activity.widget.QuoteEditorActivity;
-import com.kispoko.tome.activity.widget.text.TextEditorActivity;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.group.GroupParent;

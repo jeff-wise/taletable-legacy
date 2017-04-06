@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.widget.text;
+package com.kispoko.tome.activity.sheet.widget.text;
 
 
 import android.content.Context;

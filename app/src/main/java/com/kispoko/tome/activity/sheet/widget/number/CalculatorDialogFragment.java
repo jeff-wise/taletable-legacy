@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.sheet.dialog;
+package com.kispoko.tome.activity.sheet.widget.number;
 
 
 import android.app.Dialog;
@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.sheet.dialog.DialogOptionButton;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.lib.ui.EditDialog;
@@ -35,6 +36,7 @@ import com.kispoko.tome.lib.ui.TextViewBuilder;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -419,7 +421,8 @@ public class CalculatorDialogFragment extends DialogFragment
             public void onClick(View view)
             {
                 String currentValue = valueEditText.getText().toString();
-                valueEditText.setText(currentValue.substring(0, currentValue.length() - 1));
+                if (!currentValue.isEmpty())
+                    valueEditText.setText(currentValue.substring(0, currentValue.length() - 1));
             }
         };
 

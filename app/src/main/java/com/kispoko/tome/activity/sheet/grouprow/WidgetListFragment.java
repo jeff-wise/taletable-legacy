@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.grouprow;
+package com.kispoko.tome.activity.sheet.grouprow;
 
 
 import android.content.Context;

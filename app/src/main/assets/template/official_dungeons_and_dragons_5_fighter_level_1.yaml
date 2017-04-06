@@ -3228,7 +3228,7 @@ profile:
             columns:
             - type: text
               column:
-                name: NAME
+                name: Name
                 default_value: skill
                 format:
                   width: 3
@@ -3238,7 +3238,7 @@ profile:
                     size: medium_small
             - type: number
               column:
-                name: MODIFIER
+                name: Modifier
                 default_value: 0
                 format:
                   width: 2
@@ -3250,7 +3250,7 @@ profile:
                   value_prefix: '+'
             - type: boolean
               column:
-                name: PROFICIENT?
+                name: Proficient?
                 default_value: false
                 format:
                   width: 2
@@ -4345,7 +4345,7 @@ profile:
             columns:
             - type: text
               column:
-                name: NAME
+                name: Name
                 default_value: weapon
                 format:
                   width: 3
@@ -4357,7 +4357,7 @@ profile:
                 defines_namespace: true
             - type: number
               column:
-                name: QUANTITY
+                name: Quantity
                 default_value: 1
                 default_label: Quantity
                 format:
@@ -4368,7 +4368,7 @@ profile:
                 namespaced: true
             - type: boolean
               column:
-                name: EQUIPPED?
+                name: Equipped?
                 default_value: false
                 format:
                   width: 2

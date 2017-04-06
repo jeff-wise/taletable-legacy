@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.group.GroupPagerAdapter;
+import com.kispoko.tome.activity.sheet.group.GroupPagerAdapter;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.util.UI;
 

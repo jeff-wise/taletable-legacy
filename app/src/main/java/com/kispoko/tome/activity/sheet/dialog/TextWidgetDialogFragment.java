@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.widget.text.TextEditorActivity;
+import com.kispoko.tome.activity.sheet.widget.text.TextEditorActivity;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.EditTextBuilder;

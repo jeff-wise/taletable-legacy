@@ -1,19 +1,19 @@
 
-package com.kispoko.tome.activity.group;
+package com.kispoko.tome.activity.sheet.grouprow;
 
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.kispoko.tome.sheet.group.Group;
+import com.kispoko.tome.sheet.group.GroupRow;
 
 
 
 /**
- * Group Pager Adapter
+ * Group Row Pager Adapter
  */
-public class GroupPagerAdapter extends FragmentStatePagerAdapter
+public class GroupRowPagerAdapter extends FragmentStatePagerAdapter
 {
 
     // PROPERTIES
@@ -21,17 +21,17 @@ public class GroupPagerAdapter extends FragmentStatePagerAdapter
 
     private static final int TABS = 2;
 
-    private Group group;
+    private GroupRow groupRow;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public GroupPagerAdapter(FragmentManager fragmentManager, Group group)
+    public GroupRowPagerAdapter(FragmentManager fragmentManager, GroupRow groupRow)
     {
         super(fragmentManager);
 
-        this.group = group;
+        this.groupRow = groupRow;
     }
 
 
@@ -51,9 +51,9 @@ public class GroupPagerAdapter extends FragmentStatePagerAdapter
         switch (position)
         {
             case 0:
-                return DataFragment.newInstance(this.group);
+                return DataFragment.newInstance(this.groupRow);
             case 1:
-                return GroupRowListFragment.newInstance(this.group);
+                return WidgetListFragment.newInstance(this.groupRow);
             default:
                 return null;
         }
@@ -68,10 +68,11 @@ public class GroupPagerAdapter extends FragmentStatePagerAdapter
             case 0:
                 return "Data";
             case 1:
-                return "Groups";
+                return "Widgets";
             default:
-                return "Page";
+                return "Row";
         }
     }
+
 
 }

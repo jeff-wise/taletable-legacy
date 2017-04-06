@@ -1,4 +1,5 @@
-package com.kispoko.tome.activity.tablewidget;
+
+package com.kispoko.tome.activity.sheet.group;
 
 
 import android.content.Context;
@@ -12,35 +13,35 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.widget.TableWidget;
+import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
 
 
 
 /**
- * Column List Fragment
+ * Group Row List Fragment
  */
-public class ColumnListFragment extends Fragment
+public class GroupRowListFragment extends Fragment
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private TableWidget tableWidget;
+    private Group group;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static ColumnListFragment newInstance(TableWidget tableWidget)
+    public static GroupRowListFragment newInstance(Group group)
     {
-        ColumnListFragment columnListFragment = new ColumnListFragment();
+        GroupRowListFragment groupRowListFragment = new GroupRowListFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("table_widget", tableWidget);
-        columnListFragment.setArguments(args);
+        args.putSerializable("group", group);
+        groupRowListFragment.setArguments(args);
 
-        return columnListFragment;
+        return groupRowListFragment;
     }
 
 
@@ -51,7 +52,7 @@ public class ColumnListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.tableWidget = (TableWidget) getArguments().getSerializable("table_widget");
+        this.group = (Group) getArguments().getSerializable("group");
     }
 
 
@@ -79,11 +80,11 @@ public class ColumnListFragment extends Fragment
         recyclerView.layoutManager      = new LinearLayoutManager(context);
 
         // > Adapter
-        recyclerView.adapter            = new ColumnListRecyclerViewAdapter(
-                                                                this.tableWidget.columns(),
-                                                                getContext());
+        recyclerView.adapter            = new GroupRowListRecyclerViewAdapter(this.group.rows(),
+                                                                              this.group.name(),
+                                                                              getContext());
 
-        recyclerView.padding.top        = R.dimen.draggable_list_padding_top;
+        recyclerView.padding.top        = R.dimen.group_row_list_padding_top;
 
         return recyclerView.recyclerView(context);
     }

@@ -1,5 +1,4 @@
-
-package com.kispoko.tome.activity.group;
+package com.kispoko.tome.activity.sheet.widget.table;
 
 
 import android.content.Context;
@@ -11,35 +10,35 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.group.Group;
+import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
 
 /**
- * Group Data Fragment
+ * Table Widget Settings Fragment
  */
-public class DataFragment extends Fragment
+public class SettingsFragment extends Fragment
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Group group;
+    private TableWidget tableWidget;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static DataFragment newInstance(Group group)
+    public static SettingsFragment newInstance(TableWidget tableWidget)
     {
-        DataFragment dataFragment = new DataFragment();
+        SettingsFragment settingsFragment = new SettingsFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("group", group);
-        dataFragment.setArguments(args);
+        args.putSerializable("table_widget", tableWidget);
+        settingsFragment.setArguments(args);
 
-        return dataFragment;
+        return settingsFragment;
     }
 
 
@@ -50,7 +49,7 @@ public class DataFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.group = (Group) getArguments().getSerializable("group");
+        this.tableWidget = (TableWidget) getArguments().getSerializable("table_widget");
     }
 
 
@@ -75,10 +74,15 @@ public class DataFragment extends Fragment
         // -------------------------------------------------------------------------------------
 
         // > Name Field
-//        LinearLayout nameField = Form.field(
-//                    R.string.group_field_name_label,
-//                    R.string.group_field_name_description,
-//                    Form.textInput(this.group.name(), null, getContext()),
+        // -------------------------------------------------------------------------------------
+
+        String name = this.tableWidget.data().format().label();
+
+//        LinearLayout nameField =
+//                Form.field(
+//                    R.string.boolean_widget_field_name_label,
+//                    R.string.boolean_widget_field_name_description,
+//                    Form.textInput(name, getContext()),
 //                    getContext());
 
         // [2] Add Fields
@@ -98,13 +102,14 @@ public class DataFragment extends Fragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left         = R.dimen.group_data_padding_horz;
-        layout.padding.right        = R.dimen.group_data_padding_horz;
-        layout.padding.top          = R.dimen.group_data_padding_vert;
-        layout.padding.bottom       = R.dimen.group_data_padding_vert;
+        layout.padding.left         = R.dimen.form_padding_horz;
+        layout.padding.right        = R.dimen.form_padding_horz;
+        layout.padding.top          = R.dimen.form_padding_vert;
+        layout.padding.bottom       = R.dimen.form_padding_vert;
 
         return layout.linearLayout(context);
     }
+
 
 
 }

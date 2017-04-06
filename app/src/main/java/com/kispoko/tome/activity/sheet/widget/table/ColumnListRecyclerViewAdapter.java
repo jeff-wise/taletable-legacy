@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.tablewidget;
+package com.kispoko.tome.activity.sheet.widget.table;
 
 
 import android.content.Context;
@@ -16,7 +16,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.BooleanColumnActivity;
 import com.kispoko.tome.activity.NumberColumnActivity;
 import com.kispoko.tome.activity.TextColumnActivity;
-import com.kispoko.tome.activity.grouprow.WidgetListItemView;
+import com.kispoko.tome.activity.sheet.grouprow.WidgetListItemView;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.widget.table.column.ColumnType;

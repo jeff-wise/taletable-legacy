@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.grouprow;
+package com.kispoko.tome.activity.sheet.group;
 
 
 import android.content.Context;
@@ -11,13 +11,13 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.group.GroupRow;
+import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 
 
 /**
- * Group Row Data Fragment
+ * Group Data Fragment
  */
 public class DataFragment extends Fragment
 {
@@ -25,18 +25,18 @@ public class DataFragment extends Fragment
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private GroupRow groupRow;
+    private Group group;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static DataFragment newInstance(GroupRow groupRow)
+    public static DataFragment newInstance(Group group)
     {
         DataFragment dataFragment = new DataFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("group_row", groupRow);
+        args.putSerializable("group", group);
         dataFragment.setArguments(args);
 
         return dataFragment;
@@ -50,7 +50,7 @@ public class DataFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.groupRow = (GroupRow) getArguments().getSerializable("group_row");
+        this.group = (Group) getArguments().getSerializable("group");
     }
 
 
@@ -74,31 +74,17 @@ public class DataFragment extends Fragment
         // [1] Define Fields
         // -------------------------------------------------------------------------------------
 
-        // > Alignment Field
-//        LinearLayout alignmentField =
-//                Form.field(
-//                    R.string.group_row_field_alignment_label,
-//                    R.string.group_row_field_alignment_description,
-//                    Form.variantInput(Alignment.class,
-//                                      this.groupRow.format().alignment(),
-//                                      getContext()),
+        // > Name Field
+//        LinearLayout nameField = Form.field(
+//                    R.string.group_field_name_label,
+//                    R.string.group_field_name_description,
+//                    Form.textInput(this.group.name(), null, getContext()),
 //                    getContext());
-
-        // > Width Field
-//        LinearLayout widthField =
-//                Form.field(
-//                        R.string.group_row_field_width_label,
-//                        R.string.group_row_field_width_description,
-//                        Form.variantInput(RowWidth.class,
-//                                          this.groupRow.format().width(),
-//                                          getContext()),
-//                        getContext());
 
         // [2] Add Fields
         // -------------------------------------------------------------------------------------
 
-        // layout.addView(alignmentField);
-        //layout.addView(widthField);
+        // layout.addView(nameField);
 
         return layout;
     }
@@ -112,10 +98,10 @@ public class DataFragment extends Fragment
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.padding.left         = R.dimen.group_row_data_padding_horz;
-        layout.padding.right        = R.dimen.group_row_data_padding_horz;
-        layout.padding.top          = R.dimen.group_row_data_padding_vert;
-        layout.padding.bottom       = R.dimen.group_row_data_padding_vert;
+        layout.padding.left         = R.dimen.group_data_padding_horz;
+        layout.padding.right        = R.dimen.group_data_padding_horz;
+        layout.padding.top          = R.dimen.group_data_padding_vert;
+        layout.padding.bottom       = R.dimen.group_data_padding_vert;
 
         return layout.linearLayout(context);
     }

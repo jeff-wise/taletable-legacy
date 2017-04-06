@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.tablewidget.TableWidgetPagerAdapter;
+import com.kispoko.tome.activity.sheet.widget.table.TableWidgetPagerAdapter;
 import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 import com.kispoko.tome.util.UI;

@@ -405,8 +405,9 @@ public class TableWidget extends Widget
 
         for (ColumnUnion columnUnion : this.columns())
         {
-            TextVariable headerCellValue = TextVariable.asText(UUID.randomUUID(),
-                                                               columnUnion.column().name());
+            TextVariable headerCellValue =
+                    TextVariable.asText(UUID.randomUUID(),
+                                        columnUnion.column().name().toUpperCase());
             TextStyle headerCellStyle = new TextStyle(UUID.randomUUID(),
                                                       TextColor.THEME_DARK,
                                                       TextSize.SUPER_SMALL);

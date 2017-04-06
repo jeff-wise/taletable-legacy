@@ -4,10 +4,13 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.activity.sheet.widget.table.TableActionDialogFragment;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.Namespace;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -64,6 +67,8 @@ public class TextCell extends Cell
     private Integer                         valueViewId;
 
     private WidgetContainer                 widgetContainer;
+
+    private TextColumn                      column;
 
 
     // CONSTRUCTORS
@@ -282,12 +287,23 @@ public class TextCell extends Cell
     // > View
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayout view(TextColumn column, TableRowFormat rowFormat, Context context)
+    public LinearLayout view(TextColumn column, TableRowFormat rowFormat, final Context context)
     {
+        this.column = column;
+
         TextStyle valuestyle = this.format().resolveStyle(column.style());
 
         LinearLayout layout = this.layout(column, valuestyle.size(),
                                           rowFormat.cellHeight(), context);
+
+        layout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                onTextCellShortClick(context);
+            }
+        });
 
         // > Text
         layout.addView(valueTextView(column, context));
@@ -370,5 +386,17 @@ public class TextCell extends Cell
         }
     }
 
+
+    // > Clicks
+    // ------------------------------------------------------------------------------------------
+
+    private void onTextCellShortClick(Context context)
+    {
+        AppCompatActivity activity = (AppCompatActivity) context;
+
+        TableActionDialogFragment dialog =
+                TableActionDialogFragment.newInstance(this.column.name());
+        dialog.show(activity.getSupportFragmentManager(), "");
+    }
 
 }

@@ -222,7 +222,7 @@
         android:label="Groups" />
 
     <activity
-        android:name=".activity.widget.text.TextEditorActivity"
+        android:name=".activity.sheet.widget.text.TextEditorActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Text Editor" />

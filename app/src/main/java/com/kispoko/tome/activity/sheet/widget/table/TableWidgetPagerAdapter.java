@@ -1,19 +1,19 @@
 
-package com.kispoko.tome.activity.grouprow;
+package com.kispoko.tome.activity.sheet.widget.table;
 
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.kispoko.tome.sheet.group.GroupRow;
+import com.kispoko.tome.sheet.widget.TableWidget;
 
 
 
 /**
- * Group Row Pager Adapter
+ * Table Widget Pager Adapter
  */
-public class GroupRowPagerAdapter extends FragmentStatePagerAdapter
+public class TableWidgetPagerAdapter extends FragmentStatePagerAdapter
 {
 
     // PROPERTIES
@@ -21,17 +21,17 @@ public class GroupRowPagerAdapter extends FragmentStatePagerAdapter
 
     private static final int TABS = 2;
 
-    private GroupRow groupRow;
+    private TableWidget tableWidget;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public GroupRowPagerAdapter(FragmentManager fragmentManager, GroupRow groupRow)
+    public TableWidgetPagerAdapter(FragmentManager fragmentManager, TableWidget tableWidget)
     {
         super(fragmentManager);
 
-        this.groupRow = groupRow;
+        this.tableWidget = tableWidget;
     }
 
 
@@ -51,9 +51,9 @@ public class GroupRowPagerAdapter extends FragmentStatePagerAdapter
         switch (position)
         {
             case 0:
-                return DataFragment.newInstance(this.groupRow);
+                return SettingsFragment.newInstance(this.tableWidget);
             case 1:
-                return WidgetListFragment.newInstance(this.groupRow);
+                return ColumnListFragment.newInstance(this.tableWidget);
             default:
                 return null;
         }
@@ -66,11 +66,11 @@ public class GroupRowPagerAdapter extends FragmentStatePagerAdapter
         switch (position)
         {
             case 0:
-                return "Data";
+                return "Settings";
             case 1:
-                return "Widgets";
+                return "Columns";
             default:
-                return "Row";
+                return "Table Widget";
         }
     }
 

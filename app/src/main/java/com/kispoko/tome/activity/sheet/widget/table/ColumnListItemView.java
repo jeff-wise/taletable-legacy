@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.tablewidget;
+package com.kispoko.tome.activity.sheet.widget.table;
 
 
 import android.content.Context;

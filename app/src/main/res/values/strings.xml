@@ -162,6 +162,13 @@
     <string name="new_value_id">new_value</string>
     <string name="add_a_description">New Value</string>
 
+    <string name="add_row_below">Add Row Below</string>
+    <string name="add_row_above">Add Row Above</string>
+    <string name="delete_row">Delete Row</string>
+
+    <string name="edit_cell">Edit Cell</string>
+    <string name="cell">Cell</string>
+    <string name="table">Table</string>
 
 
     <!-- BOTTOM NAVIGATION -->
