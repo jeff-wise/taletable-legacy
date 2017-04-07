@@ -2,16 +2,19 @@
 package com.kispoko.tome.engine.variable;
 
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.TextValue;
 import com.kispoko.tome.engine.value.ValueReference;
+import com.kispoko.tome.error.InvalidCaseError;
+import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
+import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.sql.SQLValue;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.ModelFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.yaml.ToYaml;
@@ -458,6 +461,9 @@ public class TextVariable extends Variable
     // ** Variants
     // ------------------------------------------------------------------------------------------
 
+    // **** Literal
+    // ------------------------------------------------------------------------------------------
+
     /**
      * The string literal case.
      * @return The string literal.
@@ -467,6 +473,29 @@ public class TextVariable extends Variable
         return this.stringLiteral.getValue();
     }
 
+
+    /**
+     * Set the value for the string literal case.
+     * @param newValue The string value.
+     */
+    public void setLiteralValue(String newValue)
+    {
+        if (this.kind() == Kind.LITERAL)
+        {
+            this.stringLiteral.setValue(newValue);
+            this.onUpdate();
+        }
+        else
+        {
+            ApplicationFailure.union(
+                    UnionException.invalidCase(
+                            new InvalidCaseError("literal", this.kind.toString())));
+        }
+    }
+
+
+    // **** Invocation
+    // ------------------------------------------------------------------------------------------
 
     /**
      * The program invocation case.
@@ -540,16 +569,6 @@ public class TextVariable extends Variable
 
     // ** Setters
     // ------------------------------------------------------------------------------------------
-
-    /**
-     * Set the value for the string literal case.
-     * @param newValue The string value.
-     */
-    public void setLiteralValue(String newValue)
-    {
-        this.stringLiteral.setValue(newValue);
-        this.onUpdate();
-    }
 
 
     /**

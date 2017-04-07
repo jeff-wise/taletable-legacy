@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -71,6 +72,9 @@ public class NumberCell extends Cell
     private Integer                                 valueViewId;
 
     private NumberColumn                            column;
+
+    private UUID                                    parentTableWidgetId;
+    private UUID                                    unionId;
 
 
     // CONSTRUCTORS
@@ -181,29 +185,20 @@ public class NumberCell extends Cell
     }
 
 
-    // > Cell
+    // > Initialize
     // ------------------------------------------------------------------------------------------
-
-    @Override
-    public Alignment alignment()
-    {
-        return this.format().alignment();
-    }
-
-
-    @Override
-    public BackgroundColor background()
-    {
-        return this.format().background();
-    }
-
 
     /**
      * Set the cells widget container (which is the parent Table Row).
-     * @param widgetContainer The widget container.
+     * @param parentTableWidgetId The parent table widget's UUID.
      */
-    public void initialize(NumberColumn column, WidgetContainer widgetContainer)
+    public void initialize(NumberColumn column, UUID parentTableWidgetId)
     {
+        // [1] Set properties
+        // --------------------------------------------------------------------------------------
+
+        this.parentTableWidgetId = parentTableWidgetId;
+
         // [2] Inherit column properties
         // --------------------------------------------------------------------------------------
 
@@ -235,6 +230,43 @@ public class NumberCell extends Cell
 
     }
 
+    // > Cell
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public Alignment alignment()
+    {
+        return this.format().alignment();
+    }
+
+
+    @Override
+    public BackgroundColor background()
+    {
+        return this.format().background();
+    }
+
+
+    @Override
+    public UUID parentTableWidgetId()
+    {
+        return this.parentTableWidgetId;
+    }
+
+
+    @Override
+    public void setUnionId(UUID unionId)
+    {
+        this.unionId = unionId;
+    }
+
+
+    @Override
+    public UUID unionId()
+    {
+        return this.unionId;
+    }
+
 
     /**
      * The cell's variables that may be in a namespace.
@@ -248,6 +280,12 @@ public class NumberCell extends Cell
             variables.add(this.valueVariable());
 
         return variables;
+    }
+
+
+    public void openEditor(AppCompatActivity activity)
+    {
+
     }
 
 

@@ -42,7 +42,9 @@ import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -75,6 +77,8 @@ public class TableWidget extends Widget
     private TableRow                        headerRow;
 
     private GroupParent                     groupParent;
+
+    private Map<UUID,CellUnion>             cellById;
 
 
     // CONSTRUCTORS
@@ -219,7 +223,7 @@ public class TableWidget extends Widget
         this.groupParent = groupParent;
 
         for (TableRow tableRow : this.rows()) {
-            tableRow.initialize(this.columns(), this.format());
+            tableRow.initialize(this.columns(), this.format(), this.getId());
         }
     }
 
@@ -328,7 +332,6 @@ public class TableWidget extends Widget
     // > Helpers
     // ------------------------------------------------------------------------------------------
 
-
     /**
      * Get a list of the table's column names.
      * @return A List of column names.
@@ -344,6 +347,19 @@ public class TableWidget extends Widget
         return columnNames;
     }
 
+
+    // > Cells
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Returns the cell in the table with the given id. If the cell does not exist, returns null.
+     * @param cellId The cell id.
+     * @return The Cell Union with the id.
+     */
+    public CellUnion cellWithId(UUID cellId)
+    {
+        return this.cellById.get(cellId);
+    }
 
 
     // > Views
@@ -386,7 +402,7 @@ public class TableWidget extends Widget
 
 
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private void initializeTableWidget()
     {
@@ -399,7 +415,7 @@ public class TableWidget extends Widget
 
         // [2] The header row is derived from the column information, so create it each time the
         //     table widget is instantiated
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         List<CellUnion> headerCells = new ArrayList<>();
 
@@ -427,6 +443,16 @@ public class TableWidget extends Widget
 
         this.headerRow = new TableRow(null, headerCells, headerRowFormat);
 
+        // [3] Index all of the cells in the table
+        // -------------------------------------------------------------------------------------
+
+        this.cellById = new HashMap<>();
+
+        for (TableRow row : this.rows()) {
+            for (CellUnion cellUnion : row.cells()) {
+                this.cellById.put(cellUnion.getId(), cellUnion);
+            }
+        }
     }
 
 

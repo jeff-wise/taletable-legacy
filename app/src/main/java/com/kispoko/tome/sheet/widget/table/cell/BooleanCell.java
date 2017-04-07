@@ -4,6 +4,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,7 +21,6 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.BooleanColumn;
 import com.kispoko.tome.sheet.widget.util.TextStyle;
-import com.kispoko.tome.sheet.widget.util.WidgetContainer;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
@@ -65,8 +65,6 @@ public class BooleanCell extends Cell
 
     private Integer                         valueViewId;
 
-    private WidgetContainer                 widgetContainer;
-
     private String                          trueText;
     private String                          falseText;
 
@@ -75,6 +73,10 @@ public class BooleanCell extends Cell
     private TextStyle                       defaultStyle;
     private TextStyle                       trueStyle;
     private TextStyle                       falseStyle;
+
+    private UUID                            parentTableWidgetId;
+    private UUID                            unionId;
+
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
@@ -174,33 +176,19 @@ public class BooleanCell extends Cell
     }
 
 
-    // > Cell
+    // > Initialize
     // ------------------------------------------------------------------------------------------
-
-    @Override
-    public Alignment alignment()
-    {
-        return this.format().alignment();
-    }
-
-
-    @Override
-    public BackgroundColor background()
-    {
-        return this.format().background();
-    }
-
 
     /**
      * Set the cells widget container (which is the parent Table Row).
-     * @param widgetContainer The widget container.
+     * @param parentTableWidgetId The parent table Widget's UUID.
      */
-    public void initialize(BooleanColumn column, WidgetContainer widgetContainer)
+    public void initialize(BooleanColumn column, UUID parentTableWidgetId)
     {
-        // [1] Set the widget container
+        // [1] Set properties
         // --------------------------------------------------------------------------------------
 
-        this.widgetContainer = widgetContainer;
+        this.parentTableWidgetId = parentTableWidgetId;
 
         // [2] Inherit column properites
         // --------------------------------------------------------------------------------------
@@ -239,6 +227,44 @@ public class BooleanCell extends Cell
     }
 
 
+    // > Cell
+    // ------------------------------------------------------------------------------------------
+
+    @Override
+    public Alignment alignment()
+    {
+        return this.format().alignment();
+    }
+
+
+    @Override
+    public BackgroundColor background()
+    {
+        return this.format().background();
+    }
+
+
+    @Override
+    public UUID parentTableWidgetId()
+    {
+        return this.parentTableWidgetId;
+    }
+
+
+    @Override
+    public void setUnionId(UUID unionId)
+    {
+        this.unionId = unionId;
+    }
+
+
+    @Override
+    public UUID unionId()
+    {
+        return this.unionId;
+    }
+
+
     /**
      * The cell's variables that may be in a namespace.
      * @return The variable list.
@@ -252,6 +278,10 @@ public class BooleanCell extends Cell
 
         return variables;
     }
+
+
+    @Override
+    public void openEditor(AppCompatActivity activity) { }
 
 
     // > State
@@ -444,7 +474,6 @@ public class BooleanCell extends Cell
     private void initializeBooleanCell()
     {
         this.valueViewId        = null;
-        this.widgetContainer    = null;
     }
 
 

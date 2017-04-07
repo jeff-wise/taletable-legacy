@@ -20,6 +20,8 @@ import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -185,7 +187,9 @@ public class TableRow extends Model
     // > Initialize
     // ------------------------------------------------------------------------------------------
 
-    public void initialize(List<ColumnUnion> columns, TableWidgetFormat tableFormat)
+    public void initialize(List<ColumnUnion> columns,
+                           TableWidgetFormat tableFormat,
+                           UUID tableWidgetId)
     {
         // [1] Apply default row/cell height
         // --------------------------------------------------------------------------------------
@@ -202,13 +206,13 @@ public class TableRow extends Model
             switch (cell.type())
             {
                 case TEXT:
-                    cell.textCell().initialize(column.textColumn(), this);
+                    cell.textCell().initialize(column.textColumn(), this, tableWidgetId);
                     break;
                 case NUMBER:
-                    cell.numberCell().initialize(column.numberColumn(), this);
+                    cell.numberCell().initialize(column.numberColumn(), tableWidgetId);
                     break;
                 case BOOLEAN:
-                    cell.booleanCell().initialize(column.booleanColumn(), this);
+                    cell.booleanCell().initialize(column.booleanColumn(), tableWidgetId);
                     break;
             }
         }
@@ -259,7 +263,7 @@ public class TableRow extends Model
      */
     public List<CellUnion> cells()
     {
-        return this.cells.getValue();
+        return Collections.unmodifiableList(this.cells.getValue());
     }
 
 

@@ -18,6 +18,7 @@ import com.kispoko.tome.lib.yaml.ToYaml;
 import com.kispoko.tome.lib.yaml.YamlBuilder;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.sheet.widget.table.column.NumberColumn;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -79,12 +80,18 @@ public class CellUnion extends Model
         switch (type)
         {
             case TEXT:
+                TextCell textCell = (TextCell) cell;
+                textCell.setUnionId(this.getId());
                 this.textCell.setValue((TextCell) cell);
                 break;
             case NUMBER:
+                NumberCell numberCell = (NumberCell) cell;
+                numberCell.setUnionId(this.getId());
                 this.numberCell.setValue((NumberCell) cell);
                 break;
             case BOOLEAN:
+                BooleanCell booleanCell = (BooleanCell) cell;
+                booleanCell.setUnionId(this.getId());
                 this.booleanCell.setValue((BooleanCell) cell);
                 break;
         }
@@ -99,6 +106,7 @@ public class CellUnion extends Model
      */
     public static CellUnion asText(UUID id, TextCell textCell)
     {
+        if (textCell == null) return null;
         return new CellUnion(id, textCell, CellType.TEXT);
     }
 
@@ -111,6 +119,7 @@ public class CellUnion extends Model
      */
     public static CellUnion asNumber(UUID id, NumberCell numberCell)
     {
+        if (numberCell == null) return null;
         return new CellUnion(id, numberCell, CellType.NUMBER);
     }
 
@@ -123,6 +132,7 @@ public class CellUnion extends Model
      */
     public static CellUnion asBoolean(UUID id, BooleanCell booleanCell)
     {
+        if (booleanCell == null) return null;
         return new CellUnion(id, booleanCell, CellType.BOOLEAN);
     }
 

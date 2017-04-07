@@ -30,7 +30,7 @@ import com.kispoko.tome.sheet.SheetException;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.error.UndefinedValueSetError;
 import com.kispoko.tome.sheet.group.GroupParent;
-import com.kispoko.tome.activity.sheet.dialog.TextWidgetDialogFragment;
+import com.kispoko.tome.activity.sheet.dialog.TextEditorDialogFragment;
 import com.kispoko.tome.sheet.widget.text.TextWidgetFormat;
 import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.widget.util.Height;
@@ -285,7 +285,7 @@ public class TextWidget extends Widget
         this.valueVariable().setLiteralValue(stringValue);
 
         // > Update the VIEW, if it exists
-        if (context != null)
+        if (context != null && this.valueViewId != null)
         {
             TextView textView = (TextView) ((Activity) context)
                                     .findViewById(this.valueViewId);
@@ -682,7 +682,8 @@ public class TextWidget extends Widget
                 // If the string is short, edit in DIALOG
                 if (this.value().length() < 145)
                 {
-                    TextWidgetDialogFragment textDialog = TextWidgetDialogFragment.newInstance(this);
+                    TextEditorDialogFragment textDialog =
+                            TextEditorDialogFragment.forTextWidget(this);
                     textDialog.show(sheetActivity.getSupportFragmentManager(), "");
                 }
                 // ...otherwise, edit in ACTIVITY

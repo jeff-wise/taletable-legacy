@@ -4,13 +4,16 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.activity.sheet.dialog.TextEditorDialogFragment;
 import com.kispoko.tome.activity.sheet.widget.table.TableActionDialogFragment;
+import com.kispoko.tome.activity.sheet.widget.text.TextEditorActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.variable.Namespace;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -67,6 +70,8 @@ public class TextCell extends Cell
     private Integer                         valueViewId;
 
     private WidgetContainer                 widgetContainer;
+    private UUID                            parentTableWidgetId;
+    private UUID                            unionId;
 
     private TextColumn                      column;
 
@@ -182,16 +187,40 @@ public class TextCell extends Cell
     }
 
 
+    @Override
+    public UUID parentTableWidgetId()
+    {
+        return this.parentTableWidgetId;
+    }
+
+
+    @Override
+    public void setUnionId(UUID unionId)
+    {
+        this.unionId = unionId;
+    }
+
+
+    @Override
+    public UUID unionId()
+    {
+        return this.unionId;
+    }
+
+
     /**
      * Set the cells widget container (which is the parent Table Row).
      * @param widgetContainer The widget container.
      */
-    public void initialize(TextColumn column, WidgetContainer widgetContainer)
+    public void initialize(TextColumn column,
+                           WidgetContainer widgetContainer,
+                           UUID parentTableWidgetId)
     {
-        // [1] Set widget container
+        // [1] Set properties
         // --------------------------------------------------------------------------------------
 
-        this.widgetContainer = widgetContainer;
+        this.widgetContainer     = widgetContainer;
+        this.parentTableWidgetId = parentTableWidgetId;
 
         // [2] Inherit column properties
         // --------------------------------------------------------------------------------------
@@ -271,6 +300,34 @@ public class TextCell extends Cell
     }
 
 
+    /**
+     * Update the text cell's literal value.
+     * @param value
+     */
+    public void setLiteralValue(String value, Activity activity)
+    {
+        this.valueVariable().setLiteralValue(value);
+
+        if (activity != null && this.valueViewId != null)
+        {
+            TextView textView = (TextView) activity.findViewById(this.valueViewId);
+
+            try
+            {
+                textView.setText(this.valueVariable().value());
+
+                // > SAVE the new value
+                this.valueVariable.saveAsync();
+            }
+            catch (NullVariableException exception)
+            {
+                ApplicationFailure.nullVariable(exception);
+            }
+        }
+
+    }
+
+
     // ** Format
     // ------------------------------------------------------------------------------------------
 
@@ -335,6 +392,35 @@ public class TextCell extends Cell
     }
 
 
+    // > Dialog
+    // ------------------------------------------------------------------------------------------
+
+    public void openEditor(AppCompatActivity activity)
+    {
+        switch (this.valueVariable().kind())
+        {
+            case LITERAL:
+                // If the string is short, edit in DIALOG
+                if (this.value().length() < 145)
+                {
+                    TextEditorDialogFragment textDialog =
+                            TextEditorDialogFragment.forTextCell(this);
+                    textDialog.show(activity.getSupportFragmentManager(), "");
+                }
+                // ...otherwise, edit in ACTIVITY
+                else
+                {
+                    Intent intent = new Intent(activity, TextEditorActivity.class);
+                    intent.putExtra("text_widget", this);
+                    activity.startActivity(intent);
+                }
+                break;
+
+            case VALUE:
+                break;
+        }
+    }
+
 
     // INTERNAL
     // ------------------------------------------------------------------------------------------
@@ -395,8 +481,58 @@ public class TextCell extends Cell
         AppCompatActivity activity = (AppCompatActivity) context;
 
         TableActionDialogFragment dialog =
-                TableActionDialogFragment.newInstance(this.column.name());
+                TableActionDialogFragment.newInstance(this.parentTableWidgetId,
+                                                      this.unionId(),
+                                                      this.column.name());
         dialog.show(activity.getSupportFragmentManager(), "");
+    }
+
+
+    // UPDATE EVENT
+    // -----------------------------------------------------------------------------------------
+
+    public static class UpdateLiteralEvent
+    {
+
+        // PROPERTIES
+        // -------------------------------------------------------------------------------------
+
+        private UUID   tableWidgetId;
+        private UUID   cellId;
+        private String newValue;
+
+
+        // CONSTRUCTORS
+        // -------------------------------------------------------------------------------------
+
+        public UpdateLiteralEvent(UUID tableWidgetId, UUID cellId, String newValue)
+        {
+            this.tableWidgetId  = tableWidgetId;
+            this.cellId         = cellId;
+            this.newValue       = newValue;
+        }
+
+
+        // API
+        // -------------------------------------------------------------------------------------
+
+        public UUID tableWidgetId()
+        {
+            return this.tableWidgetId;
+        }
+
+
+        public UUID cellId()
+        {
+            return this.cellId;
+        }
+
+
+        public String newValue()
+        {
+            return this.newValue;
+        }
+
     }
 
 }

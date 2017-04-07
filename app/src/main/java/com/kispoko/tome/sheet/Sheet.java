@@ -74,7 +74,7 @@ public class Sheet extends Model
     // > Internal
     // -----------------------------------------------------------------------------------------
 
-    private Map<UUID,Widget>            widgetById;
+    private Map<UUID,WidgetUnion>       widgetById;
 
 
     // CONSTRUCTORS
@@ -235,7 +235,7 @@ public class Sheet extends Model
     // > Components
     // ------------------------------------------------------------------------------------------
 
-    public Widget widgetWithId(UUID widgetId)
+    public WidgetUnion widgetWithId(UUID widgetId)
     {
         return this.widgetById.get(widgetId);
     }
@@ -360,7 +360,7 @@ public class Sheet extends Model
                 {
                     for (WidgetUnion widgetUnion : groupRow.widgets())
                     {
-                        widgetById.put(widgetUnion.widget().getId(), widgetUnion.widget());
+                        widgetById.put(widgetUnion.widget().getId(), widgetUnion);
                     }
                 }
             }

@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget.table.cell;
 
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
@@ -18,6 +19,7 @@ import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 import java.util.List;
+import java.util.UUID;
 
 
 
@@ -30,9 +32,13 @@ public abstract class Cell extends Model
     // ABSTRACT
     // -----------------------------------------------------------------------------------------
 
-    public abstract List<Variable> namespacedVariables();
-    public abstract Alignment      alignment();
+    public abstract List<Variable>  namespacedVariables();
+    public abstract Alignment       alignment();
     public abstract BackgroundColor background();
+    public abstract void            openEditor(AppCompatActivity activity);
+    public abstract UUID            parentTableWidgetId();
+    public abstract void            setUnionId(UUID id);
+    public abstract UUID            unionId();
 
 
     // SHARED METHODS

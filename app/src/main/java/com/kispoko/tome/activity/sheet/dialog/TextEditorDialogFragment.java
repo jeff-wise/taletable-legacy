@@ -27,6 +27,7 @@ import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.sheet.widget.table.cell.TextCell;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -37,30 +38,48 @@ import org.greenrobot.eventbus.EventBus;
  *
  * This dialog presents some quick actions for a text widget
  */
-public class TextWidgetDialogFragment extends DialogFragment
+public class TextEditorDialogFragment extends DialogFragment
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private TextWidget textWidget;
+    private Target      target;
+
+    private TextWidget  textWidget;
+
+    private TextCell    textCell;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public TextWidgetDialogFragment() { }
+    public TextEditorDialogFragment() { }
 
 
-    public static TextWidgetDialogFragment newInstance(TextWidget textWidget)
+    public static TextEditorDialogFragment forTextWidget(TextWidget textWidget)
     {
-        TextWidgetDialogFragment textWidgetDialogFragment = new TextWidgetDialogFragment();
+        TextEditorDialogFragment textWidgetDialogFragment = new TextEditorDialogFragment();
 
         Bundle args = new Bundle();
+        args.putSerializable("target", Target.TEXT_WIDGET);
         args.putSerializable("text_widget", textWidget);
         textWidgetDialogFragment.setArguments(args);
 
         return textWidgetDialogFragment;
+    }
+
+
+    public static TextEditorDialogFragment forTextCell(TextCell textCell)
+    {
+        TextEditorDialogFragment textEditorDialogFragment = new TextEditorDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putSerializable("target", Target.TEXT_CELL);
+        args.putSerializable("text_cell", textCell);
+        textEditorDialogFragment.setArguments(args);
+
+        return textEditorDialogFragment;
     }
 
 
@@ -85,7 +104,22 @@ public class TextWidgetDialogFragment extends DialogFragment
         dialog.getWindow().setLayout(width, height);
 
         // > Read State
-        this.textWidget = (TextWidget) getArguments().getSerializable("text_widget");
+        this.target     = (Target) getArguments().getSerializable("target");
+        this.textCell   = null;
+        this.textWidget = null;
+
+        if (target != null)
+        {
+            switch (this.target)
+            {
+                case TEXT_WIDGET:
+                    this.textWidget = (TextWidget) getArguments().getSerializable("text_widget");
+                    break;
+                case TEXT_CELL:
+                    this.textCell = (TextCell) getArguments().getSerializable("text_cell");
+                    break;
+            }
+        }
 
         return dialog;
     }
@@ -117,6 +151,17 @@ public class TextWidgetDialogFragment extends DialogFragment
     {
         TextWidget.UpdateLiteralEvent event =
                 new TextWidget.UpdateLiteralEvent(this.textWidget.getId(), newValue);
+
+        EventBus.getDefault().post(event);
+    }
+
+
+    private void sendTextCellUpdate(String newValue)
+    {
+        TextCell.UpdateLiteralEvent event =
+                new TextCell.UpdateLiteralEvent(this.textCell.parentTableWidgetId(),
+                                                this.textCell.getId(),
+                                                newValue);
 
         EventBus.getDefault().post(event);
     }
@@ -273,8 +318,6 @@ public class TextWidgetDialogFragment extends DialogFragment
         value.width                 = LinearLayout.LayoutParams.MATCH_PARENT;
         value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        if (this.textWidget != null)
-            value.text              = this.textWidget.value();
 
         value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_blue_hl_1;
@@ -294,6 +337,23 @@ public class TextWidgetDialogFragment extends DialogFragment
 
         value.margin.rightDp        = 12f;
         value.padding.leftDp        = 3f;
+
+        // > Value
+        if (this.target != null)
+        {
+            switch (this.target)
+            {
+                case TEXT_WIDGET:
+                    if (this.textWidget != null)
+                        value.text = this.textWidget.value();
+                    break;
+                case TEXT_CELL:
+                    if (this.textCell != null)
+                        value.text = this.textCell.value();
+                    break;
+            }
+        }
+
 
         return value.editText(context);
     }
@@ -439,5 +499,14 @@ public class TextWidgetDialogFragment extends DialogFragment
         return layout.linearLayout(context);
     }
 
+
+    // TARGET
+    // ------------------------------------------------------------------------------------------
+
+    private enum Target
+    {
+        TEXT_WIDGET,
+        TEXT_CELL
+    }
 
 }

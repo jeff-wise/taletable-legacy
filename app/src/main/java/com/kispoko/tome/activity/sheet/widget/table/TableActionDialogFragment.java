@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,13 @@ import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.TableWidget;
+import com.kispoko.tome.sheet.widget.WidgetType;
+import com.kispoko.tome.sheet.widget.WidgetUnion;
+import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
+
+import java.util.UUID;
 
 
 
@@ -34,7 +42,20 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private String cellName;
+    /**
+     * Identifier of the target Table Widget
+     */
+    private UUID    tableWidgetId;
+
+    /**
+     * Identifier of the cell that was clicked (if a cell was clicked).
+     */
+    private UUID    cellId;
+
+    /**
+     * The name (human friendly label) of the clicked cell.
+     */
+    private String  cellName;
 
 
     // CONSTRUCTORS
@@ -43,12 +64,16 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
     public TableActionDialogFragment() { }
 
 
-    public static TableActionDialogFragment newInstance(String cellName)
+    public static TableActionDialogFragment newInstance(UUID tableWidgetId,
+                                                        UUID cellId,
+                                                        String cellName)
     {
         TableActionDialogFragment tableActionDialogFragment = new TableActionDialogFragment();
 
         Bundle args = new Bundle();
         args.putString("cell_name", cellName);
+        args.putSerializable("table_widget_id", tableWidgetId);
+        args.putSerializable("cell_id", cellId);
         tableActionDialogFragment.setArguments(args);
 
         return tableActionDialogFragment;
@@ -77,7 +102,9 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
         dialog.getWindow().setLayout(width, height);
 
         // > Read State
-        this.cellName = getArguments().getString("cell_name");
+        this.tableWidgetId  = (UUID) getArguments().getSerializable("table_widget_id");
+        this.cellId         = (UUID) getArguments().getSerializable("cell_id");
+        this.cellName       = getArguments().getString("cell_name");
 
         return dialog;
     }
@@ -102,10 +129,40 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
+    // > Open Cell Editor
+    // -----------------------------------------------------------------------------------------
+
+    private void openCellEditor(AppCompatActivity activity)
+    {
+        if (this.tableWidgetId != null && this.cellId != null)
+        {
+            // [1] Find Widget
+            WidgetUnion widgetUnion = SheetManager.currentSheet().widgetWithId(this.tableWidgetId);
+
+            if (widgetUnion.type() == WidgetType.TABLE)
+            {
+                // [2] Get Table Widget
+                TableWidget tableWidget = widgetUnion.tableWidget();
+
+                // [3] Get Table Cell
+                CellUnion cellUnion = tableWidget.cellWithId(this.cellId);
+
+                if (cellUnion != null)
+                {
+                    cellUnion.cell().openEditor(activity);
+                    this.dismiss();
+                }
+
+            }
+        }
+
+    }
+
+
     // > Views
     // -----------------------------------------------------------------------------------------
 
-    private View view(Context context)
+    private View view(final Context context)
     {
         LinearLayout layout = this.viewLayout(context);
 
@@ -133,6 +190,14 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
         LinearLayout cellButton = this.buttonView(R.drawable.ic_dialog_table_action_cell,
                                                   cellButtonLabel,
                                                   context);
+
+        final AppCompatActivity activity = (AppCompatActivity) context;
+        cellButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openCellEditor(activity);
+            }
+        });
 
         // ** Edit Row Button
         // -------------------------------------------------------------------------------------

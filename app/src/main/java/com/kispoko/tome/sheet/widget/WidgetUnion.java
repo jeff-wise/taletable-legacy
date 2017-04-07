@@ -160,6 +160,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asAction(UUID id, ActionWidget actionWidget)
     {
+        if (actionWidget == null) return null;
         return new WidgetUnion(id, actionWidget, WidgetType.ACTION);
     }
 
@@ -171,6 +172,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asBoolean(UUID id, BooleanWidget booleanWidget)
     {
+        if (booleanWidget == null) return null;
         return new WidgetUnion(id, booleanWidget, WidgetType.BOOLEAN);
     }
 
@@ -182,6 +184,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asButton(UUID id, ButtonWidget buttonWidget)
     {
+        if (buttonWidget == null) return null;
         return new WidgetUnion(id, buttonWidget, WidgetType.BUTTON);
     }
 
@@ -193,6 +196,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asExpander(UUID id, ExpanderWidget expanderWidget)
     {
+        if (expanderWidget == null) return null;
         return new WidgetUnion(id, expanderWidget, WidgetType.EXPANDER);
     }
 
@@ -204,6 +208,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asImage(UUID id, ImageWidget imageWidget)
     {
+        if (imageWidget == null) return null;
         return new WidgetUnion(id, imageWidget, WidgetType.IMAGE);
     }
 
@@ -215,6 +220,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asList(UUID id, ListWidget listWidget)
     {
+        if (listWidget == null) return null;
         return new WidgetUnion(id, listWidget, WidgetType.LIST);
     }
 
@@ -226,6 +232,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asLog(UUID id, LogWidget logWidget)
     {
+        if (logWidget == null) return null;
         return new WidgetUnion(id, logWidget, WidgetType.LOG);
     }
 
@@ -237,6 +244,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asMechanic(UUID id, MechanicWidget mechanicWidget)
     {
+        if (mechanicWidget == null) return null;
         return new WidgetUnion(id, mechanicWidget, WidgetType.MECHANIC);
     }
 
@@ -248,6 +256,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asNumber(UUID id, NumberWidget numberWidget)
     {
+        if (numberWidget == null) return null;
         return new WidgetUnion(id, numberWidget, WidgetType.NUMBER);
     }
 
@@ -259,6 +268,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asOption(UUID id, OptionWidget optionWidget)
     {
+        if (optionWidget == null) return null;
         return new WidgetUnion(id, optionWidget, WidgetType.OPTION);
     }
 
@@ -270,6 +280,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asQuote(UUID id, QuoteWidget quoteWidget)
     {
+        if (quoteWidget == null) return null;
         return new WidgetUnion(id, quoteWidget, WidgetType.QUOTE);
     }
 
@@ -281,6 +292,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asTab(UUID id, TabWidget tabWidget)
     {
+        if (tabWidget == null) return null;
         return new WidgetUnion(id, tabWidget, WidgetType.TAB);
     }
 
@@ -292,6 +304,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asTable(UUID id, TableWidget tableWidget)
     {
+        if (tableWidget == null) return null;
         return new WidgetUnion(id, tableWidget, WidgetType.TABLE);
     }
 
@@ -303,6 +316,7 @@ public class WidgetUnion extends Model
      */
     public static WidgetUnion asText(UUID id, TextWidget textWidget)
     {
+        if (textWidget == null) return null;
         return new WidgetUnion(id, textWidget, WidgetType.TEXT);
     }
 

@@ -35,6 +35,7 @@ import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.sheet.Page;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.sheet.widget.TableWidget;
 import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.lib.ui.Font;
@@ -42,6 +43,11 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.sheet.widget.WidgetType;
+import com.kispoko.tome.sheet.widget.WidgetUnion;
+import com.kispoko.tome.sheet.widget.table.cell.CellType;
+import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
+import com.kispoko.tome.sheet.widget.table.cell.TextCell;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -209,10 +215,32 @@ public class SheetActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTextWidgetUpdateLiteralEvent(TextWidget.UpdateLiteralEvent event)
     {
-        TextWidget textWidget = (TextWidget) SheetManager.currentSheet()
-                                                         .widgetWithId(event.widgetId());
+        WidgetUnion widgetUnion = SheetManager.currentSheet().widgetWithId(event.widgetId());
 
-        textWidget.setLiteralValue(event.newValue(), this);
+        if (widgetUnion != null && widgetUnion.type() == WidgetType.TEXT)
+        {
+            TextWidget textWidget = widgetUnion.textWidget();
+            textWidget.setLiteralValue(event.newValue(), this);
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTextCellUpdateLiteralEvent(TextCell.UpdateLiteralEvent event)
+    {
+        WidgetUnion widgetUnion = SheetManager.currentSheet().widgetWithId(event.tableWidgetId());
+
+        if (widgetUnion != null && widgetUnion.type() == WidgetType.TABLE)
+        {
+            TableWidget tableWidget = widgetUnion.tableWidget();
+            CellUnion cellUnion = tableWidget.cellWithId(event.cellId());
+
+            if (cellUnion != null && cellUnion.type() == CellType.TEXT)
+            {
+                TextCell textCell = cellUnion.textCell();
+                textCell.setLiteralValue(event.newValue(), this);
+            }
+        }
     }
 
 
