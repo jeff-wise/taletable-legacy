@@ -2,16 +2,20 @@
 package com.kispoko.tome.mechanic.dice;
 
 
+import android.support.v4.content.IntentCompat;
+import android.util.Log;
+
+import com.kispoko.tome.lib.functor.CollectionFunctor;
 import com.kispoko.tome.lib.model.Model;
-import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.yaml.ToYaml;
 import com.kispoko.tome.lib.yaml.YamlBuilder;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -29,21 +33,14 @@ public class DiceRoll extends Model
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                            id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<DiceType>  diceType;
-    private PrimitiveFunctor<Integer>   quantity;
-    private PrimitiveFunctor<Integer>   modifier;
-
-
-    // > Internal
-    // ------------------------------------------------------------------------------------------
-
-    private Random                      randomGen;
+    private CollectionFunctor<DiceQuantity> quantities;
+    private CollectionFunctor<RollModifier> modifiers;
 
 
     // CONSTRUCTORS
@@ -51,28 +48,43 @@ public class DiceRoll extends Model
 
     public DiceRoll()
     {
-        this.id = null;
+        this.id         = null;
 
-        this.diceType = new PrimitiveFunctor<>(null, DiceType.class);
-        this.quantity = new PrimitiveFunctor<>(null, Integer.class);
-        this.modifier = new PrimitiveFunctor<>(null, Integer.class);
-
-        randomGen = new Random();
+        this.quantities = CollectionFunctor.empty(DiceQuantity.class);
+        this.modifiers  = CollectionFunctor.empty(RollModifier.class);
     }
 
 
-    public DiceRoll(UUID id, DiceType diceType, Integer quantity, Integer modifier)
+    public DiceRoll(UUID id,
+                    List<DiceQuantity> quantities,
+                    List<RollModifier> modifiers)
     {
-        this.id = id;
+        this.id         = id;
 
-        this.diceType = new PrimitiveFunctor<>(diceType, DiceType.class);
-        this.quantity = new PrimitiveFunctor<>(null, Integer.class);
-        this.modifier = new PrimitiveFunctor<>(null, Integer.class);
+        this.quantities = CollectionFunctor.full(quantities, DiceQuantity.class);
+        this.modifiers  = CollectionFunctor.full(modifiers, RollModifier.class);
+    }
 
-        this.setQuantity(quantity);
-        this.setModifier(modifier);
 
-        randomGen = new Random();
+    /**
+     * Create an empty dice roll with no dice and no modifiers.
+     * @return The empty Dice Roll.
+     */
+    public static DiceRoll empty()
+    {
+        return new DiceRoll(UUID.randomUUID(),
+                            new ArrayList<DiceQuantity>(),
+                            new ArrayList<RollModifier>());
+    }
+
+
+    public DiceRoll(List<DiceQuantity> quantities,
+                    List<RollModifier> modifiers)
+    {
+        this.id         = UUID.randomUUID();
+
+        this.quantities = CollectionFunctor.full(quantities, DiceQuantity.class);
+        this.modifiers  = CollectionFunctor.full(modifiers, RollModifier.class);
     }
 
 
@@ -85,13 +97,25 @@ public class DiceRoll extends Model
     public static DiceRoll fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID     id       = UUID.randomUUID();
+        UUID               id        = UUID.randomUUID();
 
-        DiceType diceType = DiceType.fromYaml(yaml.atKey("type"));
-        Integer  quantity = yaml.atMaybeKey("quantity").getInteger();
-        Integer  modifier = yaml.atMaybeKey("modifier").getInteger();
+        List<DiceQuantity> quantities = yaml.atKey("quantities").forEach(
+                                                new YamlParser.ForEach<DiceQuantity>() {
+            @Override
+            public DiceQuantity forEach(YamlParser yaml, int index) throws YamlParseException {
+                return DiceQuantity.fromYaml(yaml);
+            }
+        }, true);
 
-        return new DiceRoll(id, diceType, quantity, modifier);
+        List<RollModifier> modifiers = yaml.atMaybeKey("modifiers").forEach(
+                                                new YamlParser.ForEach<RollModifier>() {
+            @Override
+            public RollModifier forEach(YamlParser yaml, int index) throws YamlParseException {
+                return RollModifier.fromYaml(yaml);
+            }
+        }, true);
+
+        return new DiceRoll(id, quantities, modifiers);
     }
 
 
@@ -143,70 +167,66 @@ public class DiceRoll extends Model
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putYaml("type", this.diceType())
-                .putInteger("quantity", this.quantity())
-                .putInteger("modifier", this.modifier());
+                .putList("quantities", this.quantitiesMutable())
+                .putList("modifiers", this.modifiersMutable());
     }
 
 
     // > State
     // ------------------------------------------------------------------------------------------
 
+    // ** Quantities
+    // ------------------------------------------------------------------------------------------
+
     /**
-     * Get the type of dice used in the roll.
-     * @return The dice type.
+     * The dice quantities in the dice roll. Returns an unmodifiable list.
      */
-    public DiceType diceType()
+    public List<DiceQuantity> quantities()
     {
-        return this.diceType.getValue();
+        return Collections.unmodifiableList(this.quantities.getValue());
     }
 
 
     /**
-     * Set the quantity of dice to be rolled. If quantity is null, then the default quantity of
-     * one is used.
-     * @param quantity The dice quantity.
+     * The dice quantities in the dice roll.
+     * @return
      */
-    public void setQuantity(Integer quantity)
+    private List<DiceQuantity> quantitiesMutable()
     {
-        if (quantity != null)
-            this.quantity.setValue(quantity);
-        else
-            this.quantity.setValue(1);
+        return this.quantities.getValue();
+    }
+
+
+    // ** Modifiers
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Get the modifiers applied to this roll. Returns an unmodifiable list.
+     * @return The roll modifiers.
+     */
+    public List<RollModifier> modifiers()
+    {
+        return Collections.unmodifiableList(this.modifiers.getValue());
     }
 
 
     /**
-     * Get the number of times the dice is to be rolled.
-     * @return The roll quantity.
+     * Get the modifiers applied to this roll. Returns an unmodifiable list.
+     * @return The roll modifiers.
      */
-    public Integer quantity()
+    private List<RollModifier> modifiersMutable()
     {
-        return this.quantity.getValue();
+        return this.modifiers.getValue();
     }
 
 
     /**
-     * Set the modifier of the dice roll. If the modifier is null, then the default modifier of
-     * zero is used.
-     * @param modifier The modifier.
+     * Add a modifier to the dice roll.
+     * @param modifier The modifier to add.
      */
-    public void setModifier(Integer modifier)
+    public void addModifier(RollModifier modifier)
     {
-        if (modifier != null)
-            this.modifier.setValue(modifier);
-        else
-            this.modifier.setValue(0);
-    }
-
-
-    /**
-     * Get the modifier that is added to the dice roll.
-     * @return The roll modifier.
-     */
-    public Integer modifier()
-    {
-        return this.modifier.getValue();
+        this.modifiersMutable().add(modifier);
     }
 
 
@@ -219,28 +239,35 @@ public class DiceRoll extends Model
         return this.toString(true);
     }
 
+
     public String toString(boolean withModifier)
     {
         StringBuilder diceRoll = new StringBuilder();
 
-        diceRoll.append(this.quantity().toString());
+        String sep = "";
+        for (DiceQuantity diceQuantity : this.quantities()) {
+            diceRoll.append(sep);
+            diceRoll.append(diceQuantity.toString());
+            sep = " + ";
+        }
 
-        diceRoll.append(this.diceType().name().toLowerCase());
 
+        int totalModifier = 0;
 
-        if (this.modifier() > 0 && withModifier)
+        for (RollModifier modifier : this.modifiers()) {
+            totalModifier += modifier.value();
+        }
+
+        Log.d("***DICEROLL", "modifier " + Integer.toString(totalModifier));
+        if (totalModifier > 0 && withModifier)
         {
-            diceRoll.append(" +");
-
-            diceRoll.append(this.modifier().toString());
+            diceRoll.append(" + ");
+            diceRoll.append(Integer.toString(totalModifier));
         }
 
         return diceRoll.toString();
     }
 
-
-    // > Roll
-    // ------------------------------------------------------------------------------------------
 
     /**
      * Roll the dice.
@@ -248,23 +275,43 @@ public class DiceRoll extends Model
      */
     public Integer roll()
     {
-        int total = 0;
+        return this.rollAsSummary().rollValue();
+    }
 
-        // [1] Roll the dice <quantity> times
-        for (int i = 0; i < this.quantity(); i++) {
-            total += dieRoll(this.diceType());
+
+    public RollSummary rollAsSummary()
+    {
+        RollSummary rollSummary = new RollSummary(new ArrayList<DieRollResult>());
+
+        for (DiceQuantity quantity : this.quantities()) {
+            rollSummary = rollSummary.addSummary(quantity.rollAsSummary());
         }
 
-        // [2] Add the modifier
-        total += this.modifier();
+        return new RollSummary(rollSummary.rollResults(), this.modifiers());
+    }
 
-        return total;
+
+    // > Add Roll
+    // ------------------------------------------------------------------------------------------
+
+    /**
+     * Add another dice roll to this dice roll.
+     * @param diceRoll The dice to roll to add to this roll.
+     */
+    public void addDiceRoll(DiceRoll diceRoll)
+    {
+        if (diceRoll != null)
+        {
+            this.quantitiesMutable().addAll(diceRoll.quantities());
+            this.modifiersMutable().addAll(diceRoll.modifiers());
+        }
     }
 
 
     // COMPARATOR
     // ------------------------------------------------------------------------------------------
 
+    /*
     public static class DiceRollComparator implements Comparator<DiceRoll>
     {
         @Override
@@ -276,70 +323,7 @@ public class DiceRoll extends Model
             return diceRoll1Value.compareTo(diceRoll2Value);
         }
     }
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Roll one die.
-     * @return
-     */
-    private int dieRoll(DiceType diceType)
-    {
-        switch (diceType)
-        {
-            case D3:
-                return this.randRange(1, 3);
-            case D4:
-                return this.randRange(1, 4);
-            case D6:
-                return this.randRange(1, 6);
-            case D8:
-                return this.randRange(1, 8);
-            case D10:
-                return this.randRange(1, 10);
-            case D12:
-                return this.randRange(1, 12);
-            case D20:
-                return this.randRange(1, 20);
-            case D100:
-                return this.randRange(1, 100);
-            default:
-                return 0;
-        }
-    }
-
-
-    private int randRange(int min, int max)
-    {
-        return randomGen.nextInt((max - min) + 1) + min;
-    }
-
-
-    private static int sides(DiceType diceType)
-    {
-        switch (diceType)
-        {
-            case D3:
-                return 3;
-            case D4:
-                return 4;
-            case D6:
-                return 6;
-            case D8:
-                return 8;
-            case D10:
-                return 10;
-            case D12:
-                return 12;
-            case D20:
-                return 20;
-            case D100:
-                return 100;
-            default:
-                return 0;
-        }
-    }
+    */
 
 
 }

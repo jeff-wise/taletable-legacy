@@ -19,7 +19,9 @@ import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.valueset.ValueListActivity;
 import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.BaseValueSet;
+import com.kispoko.tome.engine.value.ValueSetType;
+import com.kispoko.tome.engine.value.ValueSetUnion;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
@@ -44,14 +46,14 @@ import java.util.UUID;
 /**
  * Value Set Activity
  */
-public class ValueSetEditorActivity extends AppCompatActivity
+public class BaseValueSetEditorActivity extends AppCompatActivity
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
     private String                      valueSetName;
-    private ValueSet                    valueSet;
+    private BaseValueSet valueSet;
 
     private Map<String,Field>           fieldByName;
     private Map<String,LinearLayout>    fieldViewByName;
@@ -231,11 +233,15 @@ public class ValueSetEditorActivity extends AppCompatActivity
 
         Dictionary dictionary = SheetManager.dictionary();
         if (this.valueSetName != null && dictionary != null)
-            this.valueSet = dictionary.lookup(this.valueSetName);
+        {
+            ValueSetUnion valueSetUnion = dictionary.lookup(this.valueSetName);
+            if (valueSetUnion.type() == ValueSetType.BASE)
+                this.valueSet = valueSetUnion.base();
+        }
 
         // If value set is NULL, assume we creating a new one
         if (this.valueSet == null) {
-            this.valueSet = new ValueSet();
+            this.valueSet = new BaseValueSet();
             this.valueSet.setId(UUID.randomUUID());
         }
 
@@ -337,7 +343,7 @@ public class ValueSetEditorActivity extends AppCompatActivity
                 @Override
                 public void onClick(View view)
                 {
-                    Intent intent = new Intent(ValueSetEditorActivity.this,
+                    Intent intent = new Intent(BaseValueSetEditorActivity.this,
                                                ValueListActivity.class);
                     intent.putExtra("value_set_name", valueSet.name());
                     startActivity(intent);

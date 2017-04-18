@@ -64,7 +64,7 @@
         android:label="Dictionary" />
 
     <activity
-        android:name=".activity.ValueSetEditorActivity"
+        android:name=".activity.BaseValueSetEditorActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="adjustPan"
         android:label="Value Set" />
@@ -232,6 +232,12 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Quote Editor" />
+
+    <activity
+        android:name=".activity.DiceRollActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Dice Roller" />
 
 </application>
 

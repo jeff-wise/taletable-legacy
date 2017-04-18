@@ -46,7 +46,7 @@ public class ValueReference extends Model
     }
 
 
-    public ValueReference(UUID id, String valueSetName, String valueName)
+    private ValueReference(UUID id, String valueSetName, String valueName)
     {
         this.id             = id;
 
@@ -60,12 +60,11 @@ public class ValueReference extends Model
      * @param valueSetName The value set name.
      * @param valueName The value name.
      */
-    public ValueReference(String valueSetName, String valueName)
+    public static ValueReference create(String valueSetName, String valueName)
     {
-        this.id             = UUID.randomUUID();
+        if (valueSetName == null || valueName == null) return null;
 
-        this.valueSetName   = new PrimitiveFunctor<>(valueSetName, String.class);
-        this.valueName      = new PrimitiveFunctor<>(valueName, String.class);
+        return new ValueReference(UUID.randomUUID(), valueSetName, valueName);
     }
 
 

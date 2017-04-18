@@ -11,5 +11,6 @@ public enum LayoutType
     LINEAR,
     RELATIVE,
     TABLE,
-    TABLE_ROW;
+    TABLE_ROW,
+    FLEXBOX
 }

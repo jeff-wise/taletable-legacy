@@ -22,6 +22,7 @@ import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.sheet.SheetManager;
 
 
+
 /**
  * Dictionary Activity
  */
@@ -129,7 +130,7 @@ public class DictionaryActivity extends AppCompatActivity
         addValueSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DictionaryActivity.this, ValueSetEditorActivity.class);
+                Intent intent = new Intent(DictionaryActivity.this, BaseValueSetEditorActivity.class);
                 startActivity(intent);
             }
         });

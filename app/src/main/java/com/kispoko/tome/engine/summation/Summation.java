@@ -2,9 +2,11 @@
 package com.kispoko.tome.engine.summation;
 
 
+
 import android.util.Log;
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.summation.term.IntegerTerm;
 import com.kispoko.tome.engine.summation.term.TermSummary;
 import com.kispoko.tome.engine.summation.term.TermType;
 import com.kispoko.tome.engine.summation.term.TermUnion;
@@ -15,6 +17,7 @@ import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.mechanic.dice.RollModifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ public class Summation extends Model
 
     private Integer                      sum;
 
-    private Boolean                      hasDiceRoll;
+    private DiceRoll                     diceRoll;
 
 
     // CONSTRUCTORS
@@ -63,16 +66,18 @@ public class Summation extends Model
         this.id = null;
 
         this.terms = CollectionFunctor.empty(TermUnion.class);
+
+        this.diceRoll   = null;
     }
 
 
     public Summation(UUID id, List<TermUnion> terms)
     {
-        this.id = id;
+        this.id         = id;
 
-        this.terms = CollectionFunctor.full(terms, TermUnion.class);
+        this.terms      = CollectionFunctor.full(terms, TermUnion.class);
 
-        this.initialize();
+        this.diceRoll   = null;
     }
 
 
@@ -131,7 +136,6 @@ public class Summation extends Model
      */
     public void onLoad()
     {
-        this.initialize();
     }
 
 
@@ -155,28 +159,10 @@ public class Summation extends Model
      */
     public String valueString()
     {
-        if (this.hasDiceRoll())
+        if (this.diceRoll != null)
         {
-            List<DiceRoll> diceRolls = new ArrayList<>();
-            Integer        modifier  = 0;
-
-            for (TermUnion termUnion : this.terms())
-            {
-                try
-                {
-                    if (termUnion.type() == TermType.DICE_ROLL) {
-                        diceRolls.add(termUnion.diceRollTerm().diceRoll());
-                    } else {
-                        modifier += termUnion.term().value();
-                    }
-                } catch (SummationException exception) {
-                    ApplicationFailure.summation(exception);
-                }
-            }
-
-            return formulaString(diceRolls, modifier);
+            return this.diceRoll.toString(true);
         }
-        // Otherwise, just one number
         else
         {
             return Integer.toString(this.value());
@@ -240,7 +226,8 @@ public class Summation extends Model
      *
      * @return A list of variable names.
      */
-    public List<VariableReference> variableDependencies() {
+    public List<VariableReference> variableDependencies()
+    {
         List<VariableReference> variableReferences = new ArrayList<>();
 
         for (TermUnion termUnion : this.terms.getValue()) {
@@ -248,19 +235,6 @@ public class Summation extends Model
         }
 
         return variableReferences;
-    }
-
-
-    // ** Has Roll
-    // ------------------------------------------------------------------------------------------
-
-    /**
-     * Returns true if a dice roll is a part of the summation value.
-     * @return True if the summation contains a dice roll, False otherwise.
-     */
-    public boolean hasDiceRoll()
-    {
-        return this.hasDiceRoll;
     }
 
 
@@ -295,26 +269,70 @@ public class Summation extends Model
     }
 
 
+    // > Dice Roll
+    // ------------------------------------------------------------------------------------------
+
+    public DiceRoll diceRoll()
+    {
+        if (this.diceRoll == null)
+            this.initializeDiceRoll();
+
+        return this.diceRoll;
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    /**
-     * Initialize the summation.
-     */
-    private void initialize()
+    private void initializeDiceRoll()
     {
-        // Check for a dice roll term
-        // --------------------------------------------------------------------------------------
+        this.diceRoll = null;
 
-        this.hasDiceRoll = false;
-
+        // [1] Check if there is a dice roll in the summation
+        // -------------------------------------------------------------------------------------
+        boolean hasDiceRoll = false;
         for (TermUnion termUnion : this.terms())
         {
             if (termUnion.type() == TermType.DICE_ROLL) {
-                this.hasDiceRoll = true;
+                hasDiceRoll = true;
                 break;
             }
         }
+
+        if (!hasDiceRoll)
+            return;
+
+
+        // [2] Calculate Dice Roll
+        // -------------------------------------------------------------------------------------
+
+        DiceRoll diceRoll = DiceRoll.empty();
+
+        for (TermUnion termUnion : this.terms())
+        {
+            if (termUnion.type() == TermType.DICE_ROLL)
+            {
+                try {
+                    diceRoll.addDiceRoll(termUnion.diceRollTerm().diceRoll());
+                }
+                catch (SummationException exception) {
+                    ApplicationFailure.summation(exception);
+                }
+            }
+            else if (termUnion.type() == TermType.INTEGER)
+            {
+                IntegerTerm integerTerm = termUnion.integerTerm();
+                try {
+                    diceRoll.addModifier(new RollModifier(integerTerm.value()));
+                    Log.d("***SUMMATION", "adding modifier " + integerTerm.value().toString());
+                }
+                catch (SummationException exception) {
+                    ApplicationFailure.summation(exception);
+                }
+            }
+        }
+
+        this.diceRoll = diceRoll;
     }
 
 
@@ -338,31 +356,6 @@ public class Summation extends Model
         this.sum = sum;
 
         return this.sum;
-    }
-
-
-    /**
-     * Create a formula string for a summation that includes dice rolls.
-     * @return
-     */
-    private String formulaString(List<DiceRoll> diceRolls, Integer modifier)
-    {
-        StringBuilder formula = new StringBuilder();
-
-        // Sort the dice rolls
-        Collections.sort(diceRolls, new DiceRoll.DiceRollComparator());
-
-        for (DiceRoll diceRoll : diceRolls)
-        {
-            modifier += diceRoll.modifier();
-
-            formula.append(diceRoll.toString(false));
-            formula.append(" ");
-        }
-
-        formula.append(modifier.toString());
-
-        return formula.toString();
     }
 
 

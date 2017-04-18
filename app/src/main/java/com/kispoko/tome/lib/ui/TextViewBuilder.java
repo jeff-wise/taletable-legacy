@@ -20,6 +20,7 @@ import com.kispoko.tome.sheet.Spacing;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -70,6 +71,11 @@ public class TextViewBuilder implements ViewBuilder
 
     public Integer                  backgroundColor;
     public Integer                  backgroundResource;
+
+    public Integer                  shadowColor;
+    public Float                    shadowRadius;
+    public Float                    shadowDx;
+    public Float                    shadowDy;
 
     public Integer                  drawableTop;
     public Integer                  drawablePadding;
@@ -126,6 +132,11 @@ public class TextViewBuilder implements ViewBuilder
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
+
+        this.shadowColor        = null;
+        this.shadowRadius       = 1f;
+        this.shadowDx           = 1f;
+        this.shadowDy           = 1f;
 
         this.drawableTop        = null;
         this.drawablePadding    = null;
@@ -248,6 +259,14 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.elevation != null && android.os.Build.VERSION.SDK_INT >= 21)
             textView.setElevation(this.elevation);
+
+        // > Shadow
+        // --------------------------------------------------------------------------------------
+
+        if (this.shadowColor != null) {
+            textView.setShadowLayer(this.shadowRadius, this.shadowDx,
+                                    this.shadowDy, this.shadowColor);
+        }
 
         // > Size
         // --------------------------------------------------------------------------------------

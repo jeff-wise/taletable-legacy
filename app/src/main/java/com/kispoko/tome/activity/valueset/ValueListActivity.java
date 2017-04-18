@@ -17,7 +17,9 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.activity.NumberValueEditorActivity;
 import com.kispoko.tome.activity.TextValueEditorActivity;
 import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.BaseValueSet;
+import com.kispoko.tome.engine.value.ValueSetType;
+import com.kispoko.tome.engine.value.ValueSetUnion;
 import com.kispoko.tome.lib.ui.ActivityCommon;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.sheet.SheetManager;
@@ -35,7 +37,7 @@ public class ValueListActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ValueSet                    valueSet;
+    private BaseValueSet                valueSet;
 
     private ValuesRecyclerViewAdapter   valuesAdapter;
 
@@ -59,9 +61,14 @@ public class ValueListActivity extends AppCompatActivity
         // > Lookup ValueSet
         // -------------------------------------------------------------------------------------
 
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
-        this.valueSet = dictionary.lookup(valueSetName);
+        Dictionary dictionary = SheetManager.dictionary();
 
+        if (dictionary != null)
+        {
+            ValueSetUnion valueSetUnion = dictionary.lookup(valueSetName);
+            if (valueSetUnion.type() == ValueSetType.BASE)
+                this.valueSet = valueSetUnion.base();
+        }
 
         initializeToolbar();
 

@@ -12,8 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.ValueSetEditorActivity;
+import com.kispoko.tome.activity.BaseValueSetEditorActivity;
 import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.ValueSetUnion;
 
 import java.util.List;
 
@@ -29,18 +30,18 @@ public class ValueSetsRecyclerViewAdapter
     // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private List<ValueSet> valueSetList;
+    private List<ValueSetUnion> valueSetList;
 
-    private Context        context;
+    private Context             context;
 
 
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public ValueSetsRecyclerViewAdapter(List<ValueSet> valueSetList, Context context)
+    public ValueSetsRecyclerViewAdapter(List<ValueSetUnion> valueSetList, Context context)
     {
-        this.valueSetList = valueSetList;
-        this.context      = context;
+        this.valueSetList   = valueSetList;
+        this.context        = context;
     }
 
 
@@ -56,11 +57,12 @@ public class ValueSetsRecyclerViewAdapter
     @Override
     public void onBindViewHolder(ValueSetsRecyclerViewAdapter.ViewHolder viewHolder, int position)
     {
-        ValueSet valueSet = this.valueSetList.get(position);
+        ValueSetUnion valueSetUnion = this.valueSetList.get(position);
+        ValueSet valueSet = valueSetUnion.valueSet();
 
         viewHolder.setHeaderText(valueSet.label());
         viewHolder.setDescriptionText(valueSet.description());
-        viewHolder.setItemCountText(valueSet.size().toString());
+        viewHolder.setItemCountText(Integer.toString(valueSet.size()));
         viewHolder.setOnClick(valueSet.name(), this.context);
     }
 
@@ -121,7 +123,7 @@ public class ValueSetsRecyclerViewAdapter
                 @Override
                 public void onClick(View view)
                 {
-                    Intent intent = new Intent(context, ValueSetEditorActivity.class);
+                    Intent intent = new Intent(context, BaseValueSetEditorActivity.class);
 
                     Bundle bundle = new Bundle();
                     bundle.putString("value_set_name", valueSetName);

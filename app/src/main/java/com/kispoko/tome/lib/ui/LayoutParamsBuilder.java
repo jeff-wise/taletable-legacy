@@ -9,11 +9,13 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.kispoko.tome.sheet.Spacing;
 import com.kispoko.tome.util.Util;
 
 import java.util.List;
 
+import static android.icu.lang.UCharacter.JoiningGroup.FE;
 
 
 /**
@@ -31,6 +33,7 @@ public class LayoutParamsBuilder
     private RelativeLayout.LayoutParams relativeLayoutParams;
     private TableLayout.LayoutParams    tableLayoutParams;
     private TableRow.LayoutParams       tableRowLayoutParams;
+    private FlexboxLayout.LayoutParams  flexboxLayoutParams;
 
     private Context                     context;
 
@@ -46,6 +49,7 @@ public class LayoutParamsBuilder
         this.relativeLayoutParams = null;
         this.tableLayoutParams    = null;
         this.tableRowLayoutParams = null;
+        this.flexboxLayoutParams  = null;
 
         this.context              = context;
 
@@ -60,14 +64,21 @@ public class LayoutParamsBuilder
                 this.relativeLayoutParams = new RelativeLayout.LayoutParams(
                                                 RelativeLayout.LayoutParams.MATCH_PARENT,
                                                 RelativeLayout.LayoutParams.MATCH_PARENT);
+                break;
             case TABLE:
                 this.tableLayoutParams = new TableLayout.LayoutParams(
                                                 TableLayout.LayoutParams.MATCH_PARENT,
                                                 TableLayout.LayoutParams.MATCH_PARENT);
+                break;
             case TABLE_ROW:
                 this.tableRowLayoutParams = new TableRow.LayoutParams(
                                                 TableRow.LayoutParams.MATCH_PARENT,
                                                 TableRow.LayoutParams.MATCH_PARENT);
+                break;
+            case FLEXBOX:
+                this.flexboxLayoutParams = new FlexboxLayout.LayoutParams(
+                                                FlexboxLayout.LayoutParams.MATCH_PARENT,
+                                                FlexboxLayout.LayoutParams.MATCH_PARENT);
                 break;
         }
     }
@@ -103,6 +114,12 @@ public class LayoutParamsBuilder
     }
 
 
+    public FlexboxLayout.LayoutParams flexboxLayoutParams()
+    {
+        return this.flexboxLayoutParams;
+    }
+
+
     public ViewGroup.LayoutParams layoutParams()
     {
         switch (this.layoutType)
@@ -115,6 +132,8 @@ public class LayoutParamsBuilder
                 return this.tableLayoutParams;
             case TABLE_ROW:
                 return this.tableRowLayoutParams;
+            case FLEXBOX:
+                return this.flexboxLayoutParams;
         }
 
         return null;
@@ -149,6 +168,9 @@ public class LayoutParamsBuilder
             case TABLE_ROW:
                 this.tableRowLayoutParams.width = widthValue;
                 break;
+            case FLEXBOX:
+                this.flexboxLayoutParams.width = widthValue;
+                break;
         }
     }
 
@@ -177,6 +199,9 @@ public class LayoutParamsBuilder
                 break;
             case TABLE_ROW:
                 this.tableRowLayoutParams.width = widthValue;
+                break;
+            case FLEXBOX:
+                this.flexboxLayoutParams.width = widthValue;
                 break;
         }
     }
@@ -207,6 +232,9 @@ public class LayoutParamsBuilder
             case TABLE_ROW:
                 this.tableRowLayoutParams.height = heightValue;
                 break;
+            case FLEXBOX:
+                this.flexboxLayoutParams.height = heightValue;
+                break;
         }
     }
 
@@ -235,6 +263,9 @@ public class LayoutParamsBuilder
                 break;
             case TABLE_ROW:
                 this.tableRowLayoutParams.height = heightValue;
+                break;
+            case FLEXBOX:
+                this.flexboxLayoutParams.height = heightValue;
                 break;
         }
     }
@@ -296,6 +327,12 @@ public class LayoutParamsBuilder
                                                      margins.right(context),
                                                      margins.bottom(context));
                 break;
+            case FLEXBOX:
+                this.flexboxLayoutParams.setMargins(margins.left(context),
+                                                    margins.top(context),
+                                                    margins.right(context),
+                                                    margins.bottom(context));
+                break;
         }
     }
 
@@ -327,6 +364,12 @@ public class LayoutParamsBuilder
                                                      spacing.topPx(),
                                                      spacing.rightPx(),
                                                      spacing.bottomPx());
+                break;
+            case FLEXBOX:
+                this.flexboxLayoutParams.setMargins(spacing.leftPx(),
+                                                    spacing.topPx(),
+                                                    spacing.rightPx(),
+                                                    spacing.bottomPx());
                 break;
         }
     }

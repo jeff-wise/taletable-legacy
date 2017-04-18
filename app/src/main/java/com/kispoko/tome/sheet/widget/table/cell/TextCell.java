@@ -12,15 +12,21 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.activity.sheet.dialog.TextEditorDialogFragment;
+import com.kispoko.tome.activity.sheet.widget.dialog.ChooseValueDialogFragment;
 import com.kispoko.tome.activity.sheet.widget.table.TableActionDialogFragment;
 import com.kispoko.tome.activity.sheet.widget.text.TextEditorActivity;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.value.Dictionary;
+import com.kispoko.tome.engine.value.ValueReference;
+import com.kispoko.tome.engine.value.ValueSetUnion;
+import com.kispoko.tome.engine.value.ValueUnion;
 import com.kispoko.tome.engine.variable.Namespace;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.BackgroundColor;
+import com.kispoko.tome.sheet.Sheet;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.sheet.widget.table.TableRowFormat;
 import com.kispoko.tome.sheet.widget.table.column.TextColumn;
@@ -107,7 +113,7 @@ public class TextCell extends Cell
     {
         UUID           id     = UUID.randomUUID();
 
-        TextVariable   value  = TextVariable.fromYaml(yaml.atMaybeKey("value"));
+        TextVariable   value  = TextVariable.fromYaml(yaml.atMaybeKey("variable"));
         TextCellFormat format = TextCellFormat.fromYaml(yaml.atMaybeKey("format"));
 
         return new TextCell(id, value, format);
@@ -225,11 +231,14 @@ public class TextCell extends Cell
         // [2] Inherit column properties
         // --------------------------------------------------------------------------------------
 
-        this.valueVariable().setDefinesNamespace(column.definesNamespace());
-        this.valueVariable().setIsNamespaced(column.isNamespaced());
+        if (this.valueVariable() != null)
+        {
+            this.valueVariable().setDefinesNamespace(column.definesNamespace());
+            this.valueVariable().setIsNamespaced(column.isNamespaced());
 
-        if (column.defaultLabel() != null && this.valueVariable().label() == null)
-            this.valueVariable().setLabel(column.defaultLabel());
+            if (column.defaultLabel() != null && this.valueVariable().label() == null)
+                this.valueVariable().setLabel(column.defaultLabel());
+        }
 
         // [3] Initialize value variable
         // --------------------------------------------------------------------------------------
@@ -417,6 +426,23 @@ public class TextCell extends Cell
                 break;
 
             case VALUE:
+                Dictionary dictionary = SheetManager.dictionary();
+
+                if (this.valueVariable() == null || dictionary == null)
+                    break;
+
+                ValueReference valueReference = this.valueVariable().valueReference();
+                String         valueSetName   = this.valueVariable().valueSetName();
+
+                ValueSetUnion  valueSetUnion  = dictionary.lookup(valueSetName);
+                ValueUnion     valueUnion     = dictionary.valueUnion(valueReference);
+
+                if (valueSetUnion == null || valueUnion == null)
+                    break;
+
+                ChooseValueDialogFragment valueDialog =
+                            ChooseValueDialogFragment.newInstance(valueSetUnion, valueUnion);
+                valueDialog.show(activity.getSupportFragmentManager(), "");
                 break;
         }
     }

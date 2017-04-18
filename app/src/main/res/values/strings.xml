@@ -116,6 +116,8 @@
 
     <string name="not_available">N/A</string>
 
+    <string name="dice_roller">Dice Roller</string>
+
 
     <!-- DIALOG -->
     <!-- ==================================================================================== -->
@@ -299,6 +301,40 @@
 
     <string name="value_set_new_value_dialog_title">New Value</string>
     <string name="value_set_new_value_dialog_add">ADD VALUE</string>
+
+
+    <!-- ACTIVITY: COMPOUND VALUE SET -->
+    <!-- ==================================================================================== -->
+
+    <string name="compound_value_set_field_name_label">Identifier</string>
+    <string name="compound_value_set_field_name_description">
+        The unique identifier of the Compound Value Set.
+    </string>
+
+    <string name="compound_value_set_field_label_label">Name</string>
+    <string name="compound_value_set_field_label_description">
+        The Compound Value Set name.
+    </string>
+
+    <string name="compound_value_set_field_label_singular_label">Value Name (Singular)</string>
+    <string name="compound_value_set_field_label_singular_description">
+        The name of the values in the set.
+    </string>
+
+    <string name="compound_value_set_field_description_label">Description</string>
+    <string name="compound_value_set_field_description_description">
+        What does the Compound Value Set represent?
+    </string>
+
+    <string name="compound_value_set_field_value_type_label">Value Type</string>
+    <string name="compound_value_set_field_value_type_description">
+        The type of the values in the collection.
+    </string>
+
+    <string name="compound_value_set_field_value_sets_label">Base Value Sets</string>
+    <string name="compound_value_set_field_value_sets_description">
+        The value sets in the compound value set.
+    </string>
 
 
     <!-- ACTIVITY: VALUE -->

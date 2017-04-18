@@ -35,19 +35,19 @@ public class Dictionary extends Model
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                        id;
+    private UUID                                id;
 
 
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private CollectionFunctor<ValueSet> valueSets;
+    private CollectionFunctor<ValueSetUnion>    valueSets;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Map<String,ValueSet>        valueSetIndex;
+    private Map<String,ValueSetUnion>           valueSetIndex;
 
 
     // CONSTRUCTORS
@@ -57,15 +57,15 @@ public class Dictionary extends Model
     {
         this.id = null;
 
-        this.valueSets = CollectionFunctor.empty(ValueSet.class);
+        this.valueSets = CollectionFunctor.empty(ValueSetUnion.class);
     }
 
 
-    public Dictionary(UUID id, List<ValueSet> valueSets)
+    public Dictionary(UUID id, List<ValueSetUnion> valueSets)
     {
         this.id        = id;
 
-        this.valueSets = CollectionFunctor.full(valueSets, ValueSet.class);
+        this.valueSets = CollectionFunctor.full(valueSets, ValueSetUnion.class);
 
         initialize();
     }
@@ -74,12 +74,13 @@ public class Dictionary extends Model
     public static Dictionary fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
-        UUID           id        = UUID.randomUUID();
+        UUID                id        = UUID.randomUUID();
 
-        List<ValueSet> valueSets = yaml.atKey("sets").forEach(new YamlParser.ForEach<ValueSet>() {
+        List<ValueSetUnion> valueSets = yaml.atKey("sets").forEach(
+                                                new YamlParser.ForEach<ValueSetUnion>() {
             @Override
-            public ValueSet forEach(YamlParser yaml, int index) throws YamlParseException {
-                return ValueSet.fromYaml(yaml);
+            public ValueSetUnion forEach(YamlParser yaml, int index) throws YamlParseException {
+                return ValueSetUnion.fromYaml(yaml);
             }
         });
 
@@ -146,14 +147,23 @@ public class Dictionary extends Model
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The value sets.
+     * The value sets as an immutable list.
      * @return The value sets.
      */
-    public List<ValueSet> valueSets()
+    public List<ValueSetUnion> valueSets()
+    {
+        return Collections.unmodifiableList(this.valueSets.getValue());
+    }
+
+
+    /**
+     * The value sets.
+     * @return The ValueSetUnion list.
+     */
+    private List<ValueSetUnion> valueSetsMutable()
     {
         return this.valueSets.getValue();
     }
-
 
 
     /**
@@ -161,9 +171,9 @@ public class Dictionary extends Model
      * @param setName The value set name.
      * @return The Value Set, or null if it does not exist.
      */
-    public ValueSet lookup(String setName)
+    public ValueSetUnion lookup(String setName)
     {
-        return valueSetIndex.get(setName);
+        return this.valueSetIndex.get(setName);
     }
 
 
@@ -175,14 +185,30 @@ public class Dictionary extends Model
      */
     public ValueUnion lookup(String setName, String valueName)
     {
+        if (setName == null || valueName == null)
+            return null;
+
         ValueUnion valueUnion = null;
 
         if (valueSetIndex.containsKey(setName))
         {
-            ValueSet valueSet = valueSetIndex.get(setName);
+            ValueSetUnion valueSetUnion = this.valueSetIndex.get(setName);
 
-            if (valueSet.hasValue(valueName)) {
-                valueUnion = valueSet.valueWithName(valueName);
+            if (valueSetUnion != null)
+            {
+                switch (valueSetUnion.type())
+                {
+                    case BASE:
+                        BaseValueSet baseValueSet = valueSetUnion.base();
+                        if (baseValueSet.hasValue(valueName))
+                            valueUnion = baseValueSet.valueWithName(valueName);
+                        break;
+                    case COMPOUND:
+                        CompoundValueSet compoundValueSet = valueSetUnion.compound();
+                        if (compoundValueSet.hasValue(valueName))
+                            valueUnion = compoundValueSet.valueWithName(valueName);
+                        break;
+                }
             }
         }
 
@@ -280,12 +306,13 @@ public class Dictionary extends Model
 
     public void sortAscByLabel()
     {
-        Collections.sort(this.valueSets(), new Comparator<ValueSet>()
+        Collections.sort(this.valueSetsMutable(), new Comparator<ValueSetUnion>()
         {
             @Override
-            public int compare(ValueSet valueSet1, ValueSet valueSet2)
+            public int compare(ValueSetUnion valueSetUnion1, ValueSetUnion valueSetUnion2)
             {
-                return valueSet1.label().compareToIgnoreCase(valueSet2.label());
+                return valueSetUnion1.valueSet().label()
+                                     .compareToIgnoreCase(valueSetUnion2.valueSet().label());
             }
         });
     }
@@ -298,8 +325,9 @@ public class Dictionary extends Model
     {
         this.valueSetIndex = new HashMap<>();
 
-        for (ValueSet valueSet : this.valueSets()) {
-            this.valueSetIndex.put(valueSet.name(), valueSet);
+        for (ValueSetUnion valueSetUnion : this.valueSets())
+        {
+            this.valueSetIndex.put(valueSetUnion.valueSet().name(), valueSetUnion);
         }
 
     }

@@ -3,7 +3,6 @@ package com.kispoko.tome.engine.summation.term;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.VariableException;

@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
@@ -23,15 +24,16 @@ import java.util.UUID;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.DiceRollActivity;
 import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.sheet.Alignment;
 import com.kispoko.tome.sheet.Corners;
 import com.kispoko.tome.sheet.group.GroupParent;
 import com.kispoko.tome.sheet.widget.action.ActionWidgetFormat;
-import com.kispoko.tome.activity.sheet.dialog.RollDialogFragment;
 import com.kispoko.tome.sheet.BackgroundColor;
 import com.kispoko.tome.sheet.widget.util.Height;
 import com.kispoko.tome.sheet.widget.util.WidgetData;
@@ -69,6 +71,7 @@ public class ActionWidget extends Widget
     private PrimitiveFunctor<String>            description;
     private PrimitiveFunctor<String>            actionHighlight;
     private PrimitiveFunctor<String>            actionName;
+    private PrimitiveFunctor<String>            actionResult;
     private ModelFunctor<NumberVariable>        modifier;
 
 
@@ -84,6 +87,7 @@ public class ActionWidget extends Widget
         this.description        = new PrimitiveFunctor<>(null, String.class);
         this.actionHighlight    = new PrimitiveFunctor<>(null, String.class);
         this.actionName         = new PrimitiveFunctor<>(null, String.class);
+        this.actionResult       = new PrimitiveFunctor<>(null, String.class);
         this.modifier           = ModelFunctor.empty(NumberVariable.class);
     }
 
@@ -94,6 +98,7 @@ public class ActionWidget extends Widget
                         String description,
                         String actionHighlight,
                         String actionName,
+                        String actionResult,
                         NumberVariable modifier)
     {
         this.id                 = id;
@@ -103,6 +108,7 @@ public class ActionWidget extends Widget
         this.description        = new PrimitiveFunctor<>(description, String.class);
         this.actionHighlight    = new PrimitiveFunctor<>(actionHighlight, String.class);
         this.actionName         = new PrimitiveFunctor<>(actionName, String.class);
+        this.actionResult       = new PrimitiveFunctor<>(actionResult, String.class);
         this.modifier           = ModelFunctor.full(modifier, NumberVariable.class);
 
         this.initializeActionWidget();
@@ -123,12 +129,13 @@ public class ActionWidget extends Widget
         String             description     = yaml.atKey("description").getString();
         String             actionHighlight = yaml.atKey("action_highlight").getTrimmedString();
         String             actionName      = yaml.atKey("action_name").getTrimmedString();
+        String             actionResult    = yaml.atMaybeKey("action_result").getTrimmedString();
         NumberVariable     modifier        = NumberVariable.fromYaml(yaml.atKey("modifier"));
         WidgetData         widgetData      = WidgetData.fromYaml(yaml.atKey("data"));
         ActionWidgetFormat format          = ActionWidgetFormat.fromYaml(yaml.atMaybeKey("format"));
 
-        return new ActionWidget(id, widgetData, format, description,
-                                actionHighlight, actionName, modifier);
+        return new ActionWidget(id, widgetData, format, description, actionHighlight,
+                                actionName, actionResult, modifier);
     }
 
 
@@ -186,6 +193,7 @@ public class ActionWidget extends Widget
                 .putString("description", this.description())
                 .putString("action_highlight", this.actionHighlight())
                 .putString("action_name", this.actionName())
+                .putString("action_result", this.actionResult())
                 .putYaml("modifier", this.modifierVariable())
                 .putYaml("data", this.data())
                 .putYaml("format", this.format());
@@ -256,6 +264,16 @@ public class ActionWidget extends Widget
     public String actionName()
     {
         return this.actionName.getValue();
+    }
+
+
+    /**
+     * The action result. For example, "fire damage" or "strength check".
+     * @return The action result description string..
+     */
+    public String actionResult()
+    {
+        return this.actionResult.getValue();
     }
 
 
@@ -538,9 +556,7 @@ public class ActionWidget extends Widget
         Float width = context.getResources().getDimension(diceSizeId);
         diceDrawable.setBounds(0, 0, width.intValue(), width.intValue());
 
-
         return new ImageSpan(diceDrawable);
-
     }
 
 
@@ -552,11 +568,21 @@ public class ActionWidget extends Widget
      */
     private void onActionWidgetShortClick(Context context)
     {
-        SheetActivity sheetActivity = (SheetActivity) context;
+        if (this.modifierVariable().kind() == NumberVariable.Kind.SUMMATION)
+        {
+            Summation summation = this.modifierVariable().summation();
 
-        RollDialogFragment dialog =
-                RollDialogFragment.newInstance(this.actionName(), this.modifierVariable());
-        dialog.show(sheetActivity.getSupportFragmentManager(), "");
+            Intent intent = new Intent(context, DiceRollActivity.class);
+            intent.putExtra("summation", summation);
+
+            if (!this.actionName.isNull())
+                intent.putExtra("roll_name", this.actionName());
+
+            if (!this.actionResult.isNull())
+                intent.putExtra("roll_description", this.actionResult());
+
+            context.startActivity(intent);
+        }
     }
 
 

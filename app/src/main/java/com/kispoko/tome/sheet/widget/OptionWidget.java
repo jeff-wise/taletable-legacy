@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.engine.value.BaseValueSet;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.ValueSetUnion;
 import com.kispoko.tome.engine.value.ValueType;
 import com.kispoko.tome.engine.value.ValueUnion;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -88,7 +90,9 @@ public class OptionWidget extends Widget implements Serializable
     // > Internal
     // -----------------------------------------------------------------------------------------
 
-    private Map<String, Integer>                valueStringListIndexMap;
+    private Map<String,Integer>                 valueStringListIndexMap;
+
+    private ValueSet                            valueSet;
 
 
     // CONSTRUCTORS
@@ -438,12 +442,40 @@ public class OptionWidget extends Widget implements Serializable
     // INTERNAL
     // -----------------------------------------------------------------------------------------
 
+    // > Value Set
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Get the value set that the option widget represents.
+     * @return The Value Set.
+     */
+    public ValueSet valueSet()
+    {
+        if (this.valueSet != null)
+            return this.valueSet;
+
+        Dictionary dictionary = SheetManager.dictionary();
+
+        if (this.valueReference() != null && dictionary != null)
+        {
+            ValueSetUnion valueSetUnion = dictionary.lookup(this.valueReference().valueSetName());
+            if (valueSetUnion != null)
+            {
+                this.valueSet = valueSetUnion.valueSet();
+                return this.valueSet;
+            }
+        }
+
+        return null;
+    }
+
+
     // > Initialize
     // -----------------------------------------------------------------------------------------
 
     private void initializeOptionWidget()
     {
-        // > Configure default format values
+        // [1] Configure default format values
         // -------------------------------------------------------------------------------------
 
         // ** Alignment
@@ -466,16 +498,15 @@ public class OptionWidget extends Widget implements Serializable
     // TODO add null value exception
     private List<String> valueStrings()
     {
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
-        ValueSet valueSet = dictionary.lookup(this.valueReference().valueSetName());
-
-        if (valueSet == null)
-            return new ArrayList<>();
-
         List<String> valueStrings = new ArrayList<>();
 
-        for (ValueUnion valueUnion : valueSet.values()) {
-            valueStrings.add(valueUnion.value().valueString());
+        ValueSet valueSet = this.valueSet();
+
+        if (valueSet != null)
+        {
+            for (ValueUnion valueUnion : valueSet().values()) {
+                valueStrings.add(valueUnion.value().valueString());
+            }
         }
 
         return valueStrings;
@@ -617,10 +648,8 @@ public class OptionWidget extends Widget implements Serializable
         value.margin.left           = R.dimen.six_dp;
 
         // > Set value width by longest value string
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
-        ValueSet valueSet = dictionary.lookup(this.valueReference().valueSetName());
-        value.maxEms                = valueSet.lengthOfLongestValueString() - 2;
-        value.minEms                = valueSet.lengthOfLongestValueString() - 2;
+        value.maxEms                = this.valueSet().lengthOfLongestValueString() - 2;
+        value.minEms                = this.valueSet().lengthOfLongestValueString() - 2;
 
 
         return layout.linearLayout(context);
@@ -721,13 +750,10 @@ public class OptionWidget extends Widget implements Serializable
     {
         StringBuilder valuesSB = new StringBuilder();
 
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
-        ValueSet valueSet = dictionary.lookup(this.valueReference().valueSetName());
-
-        if (valueSet == null)
+        if (this.valueSet() == null)
             return "";
 
-        Collection<ValueUnion> values = valueSet.values();
+        Collection<ValueUnion> values = valueSet().values();
 
         this.valueStringListIndexMap = new HashMap<>();
 

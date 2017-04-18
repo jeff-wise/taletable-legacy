@@ -205,51 +205,75 @@ engine:
     - parameters:
       - barbarian
       result:
-        type: d12
+        quantities:
+        - sides: 12
+          quantity: 1
     - parameters:
       - bard
       result:
-        type: d8
+        quantities:
+        - sides: 8
+          quantity: 1
     - parameters:
       - cleric
       result:
-        type: d8
+        quantities:
+        - sides: 8
+          quantity: 1
     - parameters:
       - druid
       result:
-        type: d8
+        quantities:
+        - sides: 8
+          quantity: 1
     - parameters:
       - fighter
       result:
-        type: d10
+        quantities:
+        - sides: 10
+          quantity: 1
     - parameters:
       - monk
       result:
-        type: d8
+        quantities:
+        - sides: 8
+          quantity: 1
     - parameters:
       - paladin
       result:
-        type: d10
+        quantities:
+        - sides: 10
+          quantity: 1
     - parameters:
       - ranger
       result:
-        type: d10
+        quantities:
+        - sides: 10
+          quantity: 1
     - parameters:
       - rogue
       result:
-        type: d8
+        quantities:
+        - sides: 8
+          quantity: 1
     - parameters:
       - sorceror
       result:
-        type: d6
+        quantities:
+        - sides: 6
+          quantity: 1
     - parameters:
       - warlock
       result:
-        type: d8
+        quantities:
+        - sides: 8
+          quantity: 1
     - parameters:
       - wizard
       result:
-        type: d6
+        quantities:
+        - sides: 6
+          quantity: 1
   - name: class_proficient_saving_throws
     label: Class Saving Throws
     description:
@@ -335,101 +359,123 @@ engine:
     - parameters:
       - 1
       result:
-        type: d6
+        quantities:
+        - sides: 6
+          quantity: 1
     - parameters:
       - 2
       result:
-        type: d6
+        quantities:
+        - sides: 6
+          quantity: 1
     - parameters:
       - 3
       result:
-        type: d6
-        quantity: 2
+        quantities:
+        - sides: 6
+          quantity: 2
     - parameters:
       - 4
       result:
-        type: d6
-        quantity: 2
+        quantities:
+        - sides: 6
+          quantity: 2
     - parameters:
       - 5
       result:
-        type: d6
-        quantity: 3
+        quantities:
+        - sides: 6
+          quantity: 3
     - parameters:
       - 6
       result:
-        type: d6
-        quantity: 3
+        quantities:
+        - sides: 6
+          quantity: 3
     - parameters:
       - 7
       result:
-        type: d6
-        quantity: 4
+        quantities:
+        - sides: 6
+          quantity: 4
     - parameters:
       - 8
       result:
-        type: d6
-        quantity: 4
+        quantities:
+        - sides: 6
+          quantity: 4
     - parameters:
       - 9
       result:
-        type: d6
-        quantity: 5
+        quantities:
+        - sides: 6
+          quantity: 5
     - parameters:
       - 10
       result:
-        type: d6
-        quantity: 5
+        quantities:
+        - sides: 6
+          quantity: 5
     - parameters:
       - 11
       result:
-        type: d6
-        quantity: 6
+        quantities:
+        - sides: 6
+          quantity: 6
     - parameters:
       - 12
       result:
-        type: d6
-        quantity: 6
+        quantities:
+        - sides: 6
+          quantity: 6
     - parameters:
       - 13
       result:
-        type: d6
-        quantity: 7
+        quantities:
+        - sides: 6
+          quantity: 7
     - parameters:
       - 14
       result:
-        type: d6
-        quantity: 7
+        quantities:
+        - sides: 6
+          quantity: 7
     - parameters:
       - 15
       result:
-        type: d6
-        quantity: 8
+        quantities:
+        - sides: 6
+          quantity: 8
     - parameters:
       - 16
       result:
-        type: d6
-        quantity: 8
+        quantities:
+        - sides: 6
+          quantity: 8
     - parameters:
       - 17
       result:
-        type: d6
-        quantity: 9
+        quantities:
+        - sides: 6
+          quantity: 9
     - parameters:
       - 18
       result:
-        type: d6
-        quantity: 9
+        quantities:
+        - sides: 6
+          quantity: 9
     - parameters:
       - 19
       result:
-        type: d6
-        quantity: 10
+        quantities:
+        - sides: 6
+          quantity: 10
     - parameters:
       - 20
       result:
-        type: d6
-        quantity: 10
+        quantities:
+        - sides: 6
+          quantity: 10
   - name: barbarian_rages_per_day
     label: Barbarian Rages Per Day
     description:
@@ -718,17 +764,17 @@ engine:
         name: weapon_longsword_damage
         label: Longsword Damage
         dice:
-          type: d8
-          quantity: 1
-          modifier: 0
+          quantities:
+          - sides: 8
+            quantity: 1
     - type: dice
       value:
         name: weapon_longsword_two_handed_damage
         label: Longsword Damage (Two-Handed)
         dice:
-          type: d10
-          quantity: 1
-          modifier: 0
+          quantities:
+          - sides: 10
+            quantity: 1
   - name: weapon_heavy_crossbow
     label: Heavy Crossbow
     type: weapon
@@ -740,9 +786,9 @@ engine:
         name: weapon_heavy_crossbow_damage
         label: Heavy Crossbow Damage
         dice:
-          type: d10
-          quantity: 1
-          modifier: 0
+          quantities:
+          - sides: 10
+            quantity: 1
   - name: weapon_dagger
     label: Dagger
     type: weapon
@@ -754,9 +800,9 @@ engine:
         name: weapon_dagger_damage
         label: Dagger Damage
         dice:
-          type: d4
-          quantity: 1
-          modifier: 0
+          quantities:
+          - sides: 4
+            quantity: 1
   - name: race_human_ability_score_increase
     label: Ability Score Increase
     summary: Your ability scores each increase by 1.
@@ -893,938 +939,1222 @@ engine:
     - is_level_one
   dictionary:
     sets:
-    - name: physical_status
-      label: Physical Statuses
-      label_singular: Physical Status
-      description: >
-        The physical states.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: alive
-          value: alive
-      - type: text
-        value:
-          name: unconscious_stable
-          value: unconscious (stable)
-      - type: text
-        value:
-          name: unconscious_dying
-          value: unconscious (dying)
-      - type: text
-        value:
-          name: dead
-          value: dead
-    - name: scarborn_mood
-      label: Scarborn's Moods
-      label_singular: Scarborn Mood
-      description: >
-        The possible moods Cirus Scarborn may be in.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: relaxed
-          value: relaxed
-      - type: text
-        value:
-          name: troubled
-          value: troubled
-      - type: text
-        value:
-          name: vindictive
-          value: vindictive
-      - type: text
-        value:
-          name: indignant
-          value: indignant
-      - type: text
-        value:
-          name: cheerful
-          value: cheerful
-      - type: text
-        value:
-          name: nostaligic
-          value: nostalgic
-      - type: text
-        value:
-          name: violent
-          value: violent
-      - type: text
-        value:
-          name: anxious
-          value: anxious
-      - type: text
-        value:
-          name: eager
-          value: eager
-      - type: text
-        value:
-          name: reluctant
-          value: reluctant
-    - name: deity
-      label: Deities
-      label_singular: Deity
-      description: >
-        The gods of the universe.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: rhylisial
-          value: Rylisial
-          summary: >
-            God of Justice.
-      - type: text
-        value:
-          name: naran
-          value: Naran
-          summary: >
-            God of Knowledge
-      - type: text
-        value:
-          name: dydradria
-          value: Dyradria
-          summary: >
-            Goddess of Nature
-      - type: text
-        value:
-          name: sysopula
-          value: Sysopula
-          summary: >
-            Goddess of Pleasure
-      - type: text
-        value:
-          name: krino_ulito
-          value: Krino Ulito
-          summary: >
-            God of War and Destruction
-      - type: text
-        value:
-          name: mooertisia
-          value: Mooertisia
-          summary: >
-            Goddess of Death
-      - type: text
-        value:
-          name: baladesa
-          value: Baladesa
-          summary: >
-            God of Light and Wisdom
-    - name: class
-      label: Classes
-      label_singular: Class
-      description: >
-        A class represents a character's primary profession or skillset. It defines who the
-        character is and what they may do.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: barbarian
-          value: Barbarian
-          summary: >
-            Outsiders, tribesmen, or outcasts, Barbarians come from the fringes of civilization.
-            They are feared warriors, fighting with ferocity and primal rage.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_barbarian
-              value: true
-      - type: text
-        value:
-          name: bard
-          summary: >
-            Bards are performers. They tell tales, sing songs, or perform tricks. Utilizing magical
-            powers, their performances can sometimes turn deadly if they so desire.
-          value: Bard
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_bard
-              value: true
-      - type: text
-        value:
-          name: cleric
-          summary: >
-            Clerics are priests, devoting themselves to a deity. In return, they gain access to
-            powerful magic, which they can use to heal, and sometimes destroy.
-          value: Cleric
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_cleric
-              value: true
-      - type: text
-        value:
-          name: druid
-          summary: >
-            Nature is home to the Druid. She gains her power from the wilderness and has an affinty
-            with the creatures of the land.
-          value: Druid
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_druid
-              value: true
-      - type: text
-        value:
-          name: fighter
-          summary: >
-            Highly specialized in combat, fighters utilize their weapons with precision and possess
-            and experienced, strategical nuance in encounters.
-          value: Fighter
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_fighter
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: strength_saving_throw_is_proficient
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: dexterity_saving_throw_is_proficient
-              value: false
-          - type: boolean
-            value:
-              type: literal
-              name: constitution_saving_throw_is_proficient
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: intelligence_saving_throw_is_proficient
-              value: false
-          - type: boolean
-            value:
-              type: literal
-              name: wisdom_saving_throw_is_proficient
-              value: false
-          - type: boolean
-            value:
-              type: literal
-              name: charisma_saving_throw_is_proficient
-              value: false
-      - type: text
-        value:
-          name: monk
-          summary: >
-            Trained in a monstery, Monks are masters of combat that possess a practiced discipline.
-            They harness ki to boost their abilities and perform unnatural feats.
-          value: Monk
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_monk
-              value: true
-      - type: text
-        value:
-          name: paladin
-          summary: >
-            Paladins are divine warriors, knights fighting for a cause. They protect others and
-            fight passionately for what they believe is right.
-          value: Paladin
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_paladin
-              value: true
-      - type: text
-        value:
-          name: ranger
-          summary: >
-            Independent fighters, skilled in hunting and stealth, Rangers can be found on the
-            outskirts of civilization leading adventurers to remote ruins or tracking dangerous
-            beasts.
-          value: Ranger
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_ranger
-              value: true
-      - type: text
-        value:
-          name: rogue
-          summary: >
-            Rogues are thieves and assassians, trained in stealth and deception. They rarely fight
-            head on, preferring to stick to the shadows and attack with advantage.
-          value: Rogue
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_rogue
-              value: true
-      - type: text
-        value:
-          name: sorceror
-          summary: >
-            Raw, magical energy flows through a Sorceror's veins. They are spellcasters with an
-            innate magical ability. Spells come natural to them, as well as the desire to use them.
-          value: Sorceror
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_sorceror
-              value: true
-      - type: text
-        value:
-          name: warlock
-          summary: >
-            Warlocks gain their powers from a pact with a powerful patron. They can cast spells,
-            but also have other magical abilities gained from service to their masters.
-          value: Warlock
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_warlock
-              value: true
-      - type: text
-        value:
-          name: wizard
-          summary: >
-            Scholars of magic, wizards spend their days studying and researching the mysteries of
-            the world. Through these studies they gain an unrivaled prowess of spellcasting.
-          value: Wizard
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_class_wizard
-              value: true
-    - name: language
-      label: Languages
-      label_singular: Language
-      description: >
-        The standard spoken languages.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: common
-          value: Common
-          summary: One flagon of ale, please.
-      - type: text
-        value:
-          name: dwarvish
-          value: Dwarvish
-      - type: text
-        value:
-          name: elvish
-          value: Elvish
-      - type: text
-        value:
-          name: giant
-          value: Giant
-      - type: text
-        value:
-          name: gnomish
-          value: Gnomish
-      - type: text
-        value:
-          name: goblin
-          value: Goblin
-      - type: text
-        value:
-          name: halfling
-          value: Halfling
-      - type: text
-        value:
-          name: orc
-          value: Orc
-          summary: Aga aga! Vata nara rinak!
-    - name: skill
-      label: Skills
-      label_singular: Skill
-      description: >
-        Skills are different actions that a player may perform related to a specific ability score.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: acrobatics
-          value: Acrobatics
-      - type: text
-        value:
-          name: animal_handling
-          value: Animal Handling
-      - type: text
-        value:
-          name: arcana
-          value: Arcana
-      - type: text
-        value:
-          name: athletics
-          value: Athletics
-      - type: text
-        value:
-          name: deception
-          value: Deception
-      - type: text
-        value:
-          name: history
-          value: History
-      - type: text
-        value:
-          name: insight
-          value: Insight
-      - type: text
-        value:
-          name: intimidation
-          value: Intimidation
-      - type: text
-        value:
-          name: investigation
-          value: Investigation
-      - type: text
-        value:
-          name: medicine
-          value: Medicine
-      - type: text
-        value:
-          name: nature
-          value: Nature
-      - type: text
-        value:
-          name: perception
-          value: Perception
-      - type: text
-        value:
-          name: performance
-          value: Performance
-      - type: text
-        value:
-          name: persuasion
-          value: Persuasion
-      - type: text
-        value:
-          name: religion
-          value: Religion
-      - type: text
-        value:
-          name: sleight_of_hand
-          value: Sleight of Hand
-      - type: text
-        value:
-          name: stealth
-          value: Stealth
-      - type: text
-        value:
-          name: survival
-          value: Survival
-    - name: simple_melee_weapons
-      label: Simple Melee Weapons
-      description: >
-        Basic melee weapons that require Simple Weapon Proficiency.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: longsword
-          value: Longsword
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_longsword
-              value: true
-    - name: martial_melee_weapons
-      label: Martial Melee Weapons
-      description: >
-        Sophisticated melee weapons that require Martial Weapon Proficiency.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: battleaxe
-          value: Battleaxe
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_battleaxe
-              value: true
-      - type: text
-        value:
-          name: flail
-          value: Flail
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_flail
-              value: true
-      - type: text
-        value:
-          name: glaive
-          value: Glaive
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_glaive
-              value: true
-      - type: text
-        value:
-          name: greataxe
-          value: Greataxe
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_greataxe
-              value: true
-      - type: text
-        value:
-          name: greatsword
-          value: Greatsword
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_greatsword
-              value: true
-      - type: text
-        value:
-          name: halberd
-          value: Halberd
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_halberd
-              value: true
-      - type: text
-        value:
-          name: lance
-          value: Lance
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_lance
-              value: true
-      - type: text
-        value:
-          name: longsword
-          value: Longsword
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_longsword
-              value: true
-      - type: text
-        value:
-          name: maul
-          value: Maul
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_maul
-              value: true
-      - type: text
-        value:
-          name: morningstar
-          value: Morningstar
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_morningstar
-              value: true
-      - type: text
-        value:
-          name: pike
-          value: Pike
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_pike
-              value: true
-      - type: text
-        value:
-          name: rapier
-          value: Rapier
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_rapier
-              value: true
-      - type: text
-        value:
-          name: scimitar
-          value: Scimitar
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_scimitar
-              value: true
-      - type: text
-        value:
-          name: shortsword
-          value: Shortsword
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_shortsword
-              value: true
-      - type: text
-        value:
-          name: trident
-          value: Trident
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_trident
-              value: true
-      - type: text
-        value:
-          name: war_pick
-          value: War Pick
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_war_pick
-              value: true
-      - type: text
-        value:
-          name: warhammer
-          value: Warhammer
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_warhammer
-              value: true
-      - type: text
-        value:
-          name: whip
-          value: Whip
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_weapon_whip
-              value: true
-    - name: armor
-      label: Armor
-      description: >
-        The types of armor.
-      values:
-      - type: text
-        value:
-          name: scalemail
-          value: Scalemail
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_armor_scalemail
-              value: true
-    - name: shields
-      label: Shields
-      description: >
-        The shields available.
-      values:
-      - type: text
-        value:
-          name: shield
-          value: Shield
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: has_shield
-              value: true
-    - name: level
-      label: Levels
-      label_singular: Level
-      description: The levels a player may reach with experience.
-      value_type: number
-      values:
-      - type: number
-        value:
-          name: level_one
-          value: 1
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_one
-              value: true
-      - type: number
-        value:
-          name: level_two
-          value: 2
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_one
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_two
-              value: true
-      - type: number
-        value:
-          name: level_three
-          value: 3
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_one
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_two
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_three
-              value: true
-      - type: number
-        value:
-          name: level_four
-          value: 4
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_one
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_two
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_three
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_four
-              value: true
-      - type: number
-        value:
-          name: level_five
-          value: 5
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_one
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_two
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_three
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_four
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_five
-              value: true
-      - type: number
-        value:
-          name: level_six
-          value: 6
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_one
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_two
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_three
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_four
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_five
-              value: true
-          - type: boolean
-            value:
-              type: literal
-              name: is_level_six
-              value: true
-    - name: race
-      label: Races
-      label_singular: Race
-      description: The different races a player may choose from.
-      value_type: text
-      values:
-      - type: text
-        value:
-          name: dragonborn
-          value: Dragonborn
-          summary: >
-            Draconic humanoids with tough, scaly skin. They stand tall and strong and, like their
-            formidable ancestors, are able to exhale bursts of destructive energy.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_dragonborn
-              value: true
-      - type: text
-        value:
-          name: dwarf
-          value: Dwarf
-          summary: >
-            Dwarves are stout and tough, known for their prodigious craftmenship. A hearty laugh
-            and a large, bushy beard are enough to identify a dwarf.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_dwarf
-              value: true
-      - type: text
-        value:
-          name: elf
-          value: Elf
-          summary: >
-            Elves are diverse, but all are gifted with long lifespans. They have reputation for
-            being highly intelligent and gifted in the magical arts.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_elf
-              value: true
-      - type: text
-        value:
-          name: gnome
-          value: Gnome
-          summary: >
-            Gnomes are often quaint creatures, working as farmers, miners, or craftsmen in the
-            country. Few know just how mischevious and magical they can be.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_gnome
-              value: true
-      - type: text
-        value:
-          name: halfelf
-          value: Half-Elf
-          summary: >
-            Half-elves possess many of the talents of elves, but often live in human society. They
-            tend to be good at almost anything and can be found anywhere.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_halfelf
-              value: true
-      - type: text
-        value:
-          name: halforc
-          value: Half-Orc
-          summary: >
-            Half-orcs are often feared, sometimes hated. They tend to live in human society, but
-            are rarely accepted. They have orcish features, but can be as diverse in appearance and
-            personality as humans.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_halforc
-              value: true
-      - type: text
-        value:
-          name: halfling
-          value: Halfling
-          summary: >
-            Halflings are short humanoids, known for their good cheer and hospitality. Many
-            halfings are merchants, while take advantage of their size for a life of theivery.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_halfling
-              value: true
-      - type: text
-        value:
-          name: human
-          value: Human
-          summary: >
-            Humans appear somewhat ungifted alongside the other races, but they have an attitude of
-            perserverance that earns them respect from others. They can be found anywhere, and the
-            best of the best are often humans.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_human
-              value: true
-      - type: text
-        value:
-          name: tiefling
-          value: Tiefling
-          summary: >
-            Horns and tails identify a tiefling, a gift of their infernal ancestry. While not
-            inherently evil, they often find themselves in a life of crime.
-          variables:
-          - type: boolean
-            value:
-              type: literal
-              name: is_race_tiefling
-              value: true
+    - type: base
+      value_set:
+        name: physical_status
+        label: Physical Statuses
+        label_singular: Physical Status
+        description: >
+          The physical states.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: alive
+            value: alive
+        - type: text
+          value:
+            name: unconscious_stable
+            value: unconscious (stable)
+        - type: text
+          value:
+            name: unconscious_dying
+            value: unconscious (dying)
+        - type: text
+          value:
+            name: dead
+            value: dead
+    - type: base
+      value_set:
+        name: scarborn_mood
+        label: Scarborn's Moods
+        label_singular: Scarborn Mood
+        description: >
+          The possible moods Cirus Scarborn may be in.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: relaxed
+            value: relaxed
+        - type: text
+          value:
+            name: troubled
+            value: troubled
+        - type: text
+          value:
+            name: vindictive
+            value: vindictive
+        - type: text
+          value:
+            name: indignant
+            value: indignant
+        - type: text
+          value:
+            name: cheerful
+            value: cheerful
+        - type: text
+          value:
+            name: nostaligic
+            value: nostalgic
+        - type: text
+          value:
+            name: violent
+            value: violent
+        - type: text
+          value:
+            name: anxious
+            value: anxious
+        - type: text
+          value:
+            name: eager
+            value: eager
+        - type: text
+          value:
+            name: reluctant
+            value: reluctant
+    - type: base
+      value_set:
+        name: deity
+        label: Deities
+        label_singular: Deity
+        description: >
+          The gods of the universe.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: rhylisial
+            value: Rylisial
+            summary: >
+              God of Justice.
+        - type: text
+          value:
+            name: naran
+            value: Naran
+            summary: >
+              God of Knowledge
+        - type: text
+          value:
+            name: dydradria
+            value: Dyradria
+            summary: >
+              Goddess of Nature
+        - type: text
+          value:
+            name: sysopula
+            value: Sysopula
+            summary: >
+              Goddess of Pleasure
+        - type: text
+          value:
+            name: krino_ulito
+            value: Krino Ulito
+            summary: >
+              God of War and Destruction
+        - type: text
+          value:
+            name: mooertisia
+            value: Mooertisia
+            summary: >
+              Goddess of Death
+        - type: text
+          value:
+            name: baladesa
+            value: Baladesa
+            summary: >
+              God of Light and Wisdom
+    - type: base
+      value_set:
+        name: class
+        label: Classes
+        label_singular: Class
+        description: >
+          A class represents a character's primary profession or skillset. It defines who the
+          character is and what they may do.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: barbarian
+            value: Barbarian
+            summary: >
+              Outsiders, tribesmen, or outcasts, Barbarians come from the fringes of civilization.
+              They are feared warriors, fighting with ferocity and primal rage.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_barbarian
+                value: true
+        - type: text
+          value:
+            name: bard
+            summary: >
+              Bards are performers. They tell tales, sing songs, or perform tricks. Utilizing magical
+              powers, their performances can sometimes turn deadly if they so desire.
+            value: Bard
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_bard
+                value: true
+        - type: text
+          value:
+            name: cleric
+            summary: >
+              Clerics are priests, devoting themselves to a deity. In return, they gain access to
+              powerful magic, which they can use to heal, and sometimes destroy.
+            value: Cleric
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_cleric
+                value: true
+        - type: text
+          value:
+            name: druid
+            summary: >
+              Nature is home to the Druid. She gains her power from the wilderness and has an affinty
+              with the creatures of the land.
+            value: Druid
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_druid
+                value: true
+        - type: text
+          value:
+            name: fighter
+            summary: >
+              Highly specialized in combat, fighters utilize their weapons with precision and possess
+              and experienced, strategical nuance in encounters.
+            value: Fighter
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_fighter
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: strength_saving_throw_is_proficient
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: dexterity_saving_throw_is_proficient
+                value: false
+            - type: boolean
+              value:
+                type: literal
+                name: constitution_saving_throw_is_proficient
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: intelligence_saving_throw_is_proficient
+                value: false
+            - type: boolean
+              value:
+                type: literal
+                name: wisdom_saving_throw_is_proficient
+                value: false
+            - type: boolean
+              value:
+                type: literal
+                name: charisma_saving_throw_is_proficient
+                value: false
+        - type: text
+          value:
+            name: monk
+            summary: >
+              Trained in a monstery, Monks are masters of combat that possess a practiced discipline.
+              They harness ki to boost their abilities and perform unnatural feats.
+            value: Monk
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_monk
+                value: true
+        - type: text
+          value:
+            name: paladin
+            summary: >
+              Paladins are divine warriors, knights fighting for a cause. They protect others and
+              fight passionately for what they believe is right.
+            value: Paladin
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_paladin
+                value: true
+        - type: text
+          value:
+            name: ranger
+            summary: >
+              Independent fighters, skilled in hunting and stealth, Rangers can be found on the
+              outskirts of civilization leading adventurers to remote ruins or tracking dangerous
+              beasts.
+            value: Ranger
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_ranger
+                value: true
+        - type: text
+          value:
+            name: rogue
+            summary: >
+              Rogues are thieves and assassians, trained in stealth and deception. They rarely fight
+              head on, preferring to stick to the shadows and attack with advantage.
+            value: Rogue
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_rogue
+                value: true
+        - type: text
+          value:
+            name: sorceror
+            summary: >
+              Raw, magical energy flows through a Sorceror's veins. They are spellcasters with an
+              innate magical ability. Spells come natural to them, as well as the desire to use them.
+            value: Sorceror
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_sorceror
+                value: true
+        - type: text
+          value:
+            name: warlock
+            summary: >
+              Warlocks gain their powers from a pact with a powerful patron. They can cast spells,
+              but also have other magical abilities gained from service to their masters.
+            value: Warlock
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_warlock
+                value: true
+        - type: text
+          value:
+            name: wizard
+            summary: >
+              Scholars of magic, wizards spend their days studying and researching the mysteries of
+              the world. Through these studies they gain an unrivaled prowess of spellcasting.
+            value: Wizard
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_class_wizard
+                value: true
+    - type: base
+      value_set:
+        name: language
+        label: Languages
+        label_singular: Language
+        description: >
+          The standard spoken languages.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: common
+            value: Common
+            summary: One flagon of ale, please.
+        - type: text
+          value:
+            name: dwarvish
+            value: Dwarvish
+        - type: text
+          value:
+            name: elvish
+            value: Elvish
+        - type: text
+          value:
+            name: giant
+            value: Giant
+        - type: text
+          value:
+            name: gnomish
+            value: Gnomish
+        - type: text
+          value:
+            name: goblin
+            value: Goblin
+        - type: text
+          value:
+            name: halfling
+            value: Halfling
+        - type: text
+          value:
+            name: orc
+            value: Orc
+            summary: Aga aga! Vata nara rinak!
+    - type: base
+      value_set:
+        name: skill
+        label: Skills
+        label_singular: Skill
+        description: >
+          Skills are different actions that a player may perform related to a specific ability score.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: acrobatics
+            value: Acrobatics
+        - type: text
+          value:
+            name: animal_handling
+            value: Animal Handling
+        - type: text
+          value:
+            name: arcana
+            value: Arcana
+        - type: text
+          value:
+            name: athletics
+            value: Athletics
+        - type: text
+          value:
+            name: deception
+            value: Deception
+        - type: text
+          value:
+            name: history
+            value: History
+        - type: text
+          value:
+            name: insight
+            value: Insight
+        - type: text
+          value:
+            name: intimidation
+            value: Intimidation
+        - type: text
+          value:
+            name: investigation
+            value: Investigation
+        - type: text
+          value:
+            name: medicine
+            value: Medicine
+        - type: text
+          value:
+            name: nature
+            value: Nature
+        - type: text
+          value:
+            name: perception
+            value: Perception
+        - type: text
+          value:
+            name: performance
+            value: Performance
+        - type: text
+          value:
+            name: persuasion
+            value: Persuasion
+        - type: text
+          value:
+            name: religion
+            value: Religion
+        - type: text
+          value:
+            name: sleight_of_hand
+            value: Sleight of Hand
+        - type: text
+          value:
+            name: stealth
+            value: Stealth
+        - type: text
+          value:
+            name: survival
+            value: Survival
+    - type: base
+      value_set:
+        name: simple_melee_weapons
+        label: Simple Melee Weapons
+        description: >
+          Basic melee weapons that most can use with proficiency.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: club
+            value: Club
+            summary: A big wooden stick, when swung really hard, makes for a dangerous hit.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_club
+                value: true
+        - type: text
+          value:
+            name: dagger
+            value: Dagger
+            summary: When a sword is too much, a dagger is usually just right.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_dagger
+                value: true
+        - type: text
+          value:
+            name: greatclub
+            value: Greatclub
+            summary: A really, really big stick that you don't want to get hit with.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_greatclub
+                value: true
+        - type: text
+          value:
+            name: handaxe
+            value: Handaxe
+            summary: A farmer's tool adapted to combat. It can split anything as hard as a oak.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_handaxe
+                value: true
+        - type: text
+          value:
+            name: javelin
+            value: Javelin
+            summary: A short spear that can be thrown with precious.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_javelin
+                value: true
+        - type: text
+          value:
+            name: light_hammer
+            value: Light Hammer
+            summary: A hammer that can be used in one hand but handled with finesse.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_light_hammer
+                value: true
+        - type: text
+          value:
+            name: mace
+            value: Mace
+            summary: >
+              A mace is long steel rod with a heavy end designed to beat down anything it
+              is swung at.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_mace
+                value: true
+        - type: text
+          value:
+            name: quarterstaff
+            value: Quarterstaff
+            summary: A long wooden pole balanced for sophisticated martial arts maneuvers.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_quarterstaff
+                value: true
+        - type: text
+          value:
+            name: sickle
+            value: Sickle
+            summary: >
+              Another tool adapted from the farmer's shed, the sickle had a wooden handle
+              with a long, curved blade that can cut through anything with ease.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_sickle
+                value: true
+        - type: text
+          value:
+            name: spear
+            value: Spear
+            summary: >
+              The traditional weapon of soldiers, the spear can be used for hunting or warfare, in
+              melee combat or ranged.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_spear
+                value: true
+    - type: base
+      value_set:
+        name: simple_ranged_weapons
+        label: Simple Ranged Weapons
+        description: >
+          Basic ranged weapons that most can use with proficiency.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: light_crossbow
+            value: Light Crossbow
+            summary: A small wooden crossbow that can be handled with finesse.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_light_crossbow
+                value: true
+        - type: text
+          value:
+            name: dart
+            value: Dart
+            summary: A dart is like an arrow that can be thrown. Often used in stealth.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_dart
+                value: true
+        - type: text
+          value:
+            name: shortbow
+            value: Shortbow
+            summary: A bow about the size of a man's torso. It can fire arrows at a medium range.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_shortbow
+                value: true
+        - type: text
+          value:
+            name: sling
+            value: Sling
+            summary: A common weapon for hunting that can be used with surprising accuracy.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_sling
+                value: true
+    - type: base
+      value_set:
+        name: martial_melee_weapons
+        label: Martial Melee Weapons
+        description: >
+          Specialized melee weapons that typically require training to use effectively.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: battleaxe
+            value: Battleaxe
+            summary: >
+              An axe designed to be larger and broader than a wooden cutting axe, balanced
+              for combat maneuvers.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_battleaxe
+                value: true
+        - type: text
+          value:
+            name: flail
+            value: Flail
+            summary: A brutal ball of spiked metal that swings on the end of a heavy chain.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_flail
+                value: true
+        - type: text
+          value:
+            name: glaive
+            value: Glaive
+            summary: A polearm weapon that resemebles a sword but with a very long hilt.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_glaive
+                value: true
+        - type: text
+          value:
+            name: greataxe
+            value: Greataxe
+            summary: >
+              A greataxe is an axe that is too large for most to even lift. It can take out more
+              than one enemy at once.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_greataxe
+                value: true
+        - type: text
+          value:
+            name: greatsword
+            value: Greatsword
+            summary: A sword too large for most to even wield in two hands.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_greatsword
+                value: true
+        - type: text
+          value:
+            name: halberd
+            value: Halberd
+            summary: A polearm with a long reach and a deadly curved blade at the end.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_halberd
+                value: true
+        - type: text
+          value:
+            name: lance
+            value: Lance
+            summary: The traditional weapon of men on horseback.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_lance
+                value: true
+        - type: text
+          value:
+            name: longsword
+            value: Longsword
+            summary: >
+              The traditional soldier's weapon, a longsword can be used in one hand with
+              finesse or wieled in two hands with strenth.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_longsword
+                value: true
+        - type: text
+          value:
+            name: maul
+            value: Maul
+            summary: A hammer too large for an ordinary man to lift even with two hands.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_maul
+                value: true
+        - type: text
+          value:
+            name: morningstar
+            value: Morningstar
+            summary: A mace with sharp steel spikes on the end.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_morningstar
+                value: true
+        - type: text
+          value:
+            name: pike
+            value: Pike
+            summary: A long spear used in infantry.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_pike
+                value: true
+        - type: text
+          value:
+            name: rapier
+            value: Rapier
+            summary: A rapier is a light, thin sword wielded with precision and swordsmanship.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_rapier
+                value: true
+        - type: text
+          value:
+            name: scimitar
+            value: Scimitar
+            summary: A long, curved blade, known for piercing armor.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_scimitar
+                value: true
+        - type: text
+          value:
+            name: shortsword
+            value: Shortsword
+            summary: >
+              A sword that can be used in small spaces and with more finesse than larger
+              blades.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_shortsword
+                value: true
+        - type: text
+          value:
+            name: trident
+            value: Trident
+            summary: A long spear with three pointed ends.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_trident
+                value: true
+        - type: text
+          value:
+            name: war_pick
+            value: War Pick
+            summary: A miners pick adapted and balanced for a solider.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_war_pick
+                value: true
+        - type: text
+          value:
+            name: warhammer
+            value: Warhammer
+            summary: A hammer balanced and weighted to break shields and armor.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_warhammer
+                value: true
+        - type: text
+          value:
+            name: whip
+            value: Whip
+            summary: A whip with weighted barbs that can pierce armor and more.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_whip
+                value: true
+    - type: base
+      value_set:
+        name: martial_ranged_weapons
+        label: Martial Ranged Weapons
+        description: >
+          Specialized ranged weapons that typically require training to use effectively.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: blowgun
+            value: Blowgun
+            summary: A long pipe that can fire arrow sized darts.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_blowgun
+                value: true
+        - type: text
+          value:
+            name: hand_crossbow
+            value: Hand Crossbow
+            summary: A small, concealable crossbow.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_hand_crossbow
+                value: true
+        - type: text
+          value:
+            name: heavy_crossbow
+            value: Heavy Crossbow
+            summary: A large crosssbow that fires slowly but with massive force and penetration.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_heavy_crossbow
+                value: true
+        - type: text
+          value:
+            name: longbow
+            value: Longbow
+            summary: A bow as tall as a man that can fire arrows at incredibly long distances.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_longbow
+                value: true
+        - type: text
+          value:
+            name: net
+            value: Net
+            summary: A net that can trap opponents.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_weapon_net
+                value: true
+    - type: compound
+      value_set:
+        name: weapons
+        label: Weapons
+        label_singular: Weapon
+        description: >
+          All of the weapons available in the campaign world.
+        value_type: text
+        value_sets:
+        - simple_melee_weapons
+        - simple_ranged_weapons
+        - martial_melee_weapons
+        - martial_ranged_weapons
+    - type: base
+      value_set:
+        name: armor
+        label: Armor
+        description: >
+          The types of armor.
+        values:
+        - type: text
+          value:
+            name: scalemail
+            value: Scalemail
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_armor_scalemail
+                value: true
+    - type: base
+      value_set:
+        name: shields
+        label: Shields
+        description: >
+          The shields available.
+        values:
+        - type: text
+          value:
+            name: shield
+            value: Shield
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: has_shield
+                value: true
+    - type: base
+      value_set:
+        name: level
+        label: Levels
+        label_singular: Level
+        description: The levels a player may reach with experience.
+        value_type: number
+        values:
+        - type: number
+          value:
+            name: level_one
+            value: 1
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_one
+                value: true
+        - type: number
+          value:
+            name: level_two
+            value: 2
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_one
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_two
+                value: true
+        - type: number
+          value:
+            name: level_three
+            value: 3
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_one
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_two
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_three
+                value: true
+        - type: number
+          value:
+            name: level_four
+            value: 4
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_one
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_two
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_three
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_four
+                value: true
+        - type: number
+          value:
+            name: level_five
+            value: 5
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_one
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_two
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_three
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_four
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_five
+                value: true
+        - type: number
+          value:
+            name: level_six
+            value: 6
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_one
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_two
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_three
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_four
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_five
+                value: true
+            - type: boolean
+              value:
+                type: literal
+                name: is_level_six
+                value: true
+    - type: base
+      value_set:
+        name: race
+        label: Races
+        label_singular: Race
+        description: The different races a player may choose from.
+        value_type: text
+        values:
+        - type: text
+          value:
+            name: dragonborn
+            value: Dragonborn
+            summary: >
+              Draconic humanoids with tough, scaly skin. They stand tall and strong and, like their
+              formidable ancestors, are able to exhale bursts of destructive energy.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_dragonborn
+                value: true
+        - type: text
+          value:
+            name: dwarf
+            value: Dwarf
+            summary: >
+              Dwarves are stout and tough, known for their prodigious craftmenship. A hearty laugh
+              and a large, bushy beard are enough to identify a dwarf.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_dwarf
+                value: true
+        - type: text
+          value:
+            name: elf
+            value: Elf
+            summary: >
+              Elves are diverse, but all are gifted with long lifespans. They have reputation for
+              being highly intelligent and gifted in the magical arts.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_elf
+                value: true
+        - type: text
+          value:
+            name: gnome
+            value: Gnome
+            summary: >
+              Gnomes are often quaint creatures, working as farmers, miners, or craftsmen in the
+              country. Few know just how mischevious and magical they can be.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_gnome
+                value: true
+        - type: text
+          value:
+            name: halfelf
+            value: Half-Elf
+            summary: >
+              Half-elves possess many of the talents of elves, but often live in human society. They
+              tend to be good at almost anything and can be found anywhere.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_halfelf
+                value: true
+        - type: text
+          value:
+            name: halforc
+            value: Half-Orc
+            summary: >
+              Half-orcs are often feared, sometimes hated. They tend to live in human society, but
+              are rarely accepted. They have orcish features, but can be as diverse in appearance and
+              personality as humans.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_halforc
+                value: true
+        - type: text
+          value:
+            name: halfling
+            value: Halfling
+            summary: >
+              Halflings are short humanoids, known for their good cheer and hospitality. Many
+              halfings are merchants, while take advantage of their size for a life of theivery.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_halfling
+                value: true
+        - type: text
+          value:
+            name: human
+            value: Human
+            summary: >
+              Humans appear somewhat ungifted alongside the other races, but they have an attitude of
+              perserverance that earns them respect from others. They can be found anywhere, and the
+              best of the best are often humans.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_human
+                value: true
+        - type: text
+          value:
+            name: tiefling
+            value: Tiefling
+            summary: >
+              Horns and tails identify a tiefling, a gift of their infernal ancestry. While not
+              inherently evil, they often find themselves in a life of crime.
+            variables:
+            - type: boolean
+              value:
+                type: literal
+                name: is_race_tiefling
+                value: true
 settings:
   theme_type: dark
 profile:
@@ -4381,25 +4711,27 @@ profile:
                 namespaced: true
             rows:
             - cells:
-              - value:
-                  type: literal
-                  value: Longsword
-                  label: Longsword
+              - variable:
+                  type: value
+                  value_set: weapons
+                  value:
+                    set_name: weapons
+                    value_name: longsword
               - value:
                   type: literal
                   name: quantity
-                  label: Quantity
                   value: 1
               - value:
                   type: literal
                   name: equipped
-                  label: Is Equipped?
                   value: true
             - cells:
-              - value:
-                  type: literal
-                  value: Heavy Crossbow
-                  label: Heavy Crossbow
+              - variable:
+                  type: value
+                  value_set: weapons
+                  value:
+                    set_name: weapons
+                    value_name: heavy_crossbow
               - value:
                   name: quantity
                   type: literal
@@ -4409,10 +4741,12 @@ profile:
                   type: literal
                   value: false
             - cells:
-              - value:
-                  type: literal
-                  value: Dagger
-                  label: Dagger
+              - variable:
+                  type: value
+                  value_set: weapons
+                  value:
+                    set_name: weapons
+                    value_name: dagger
               - value:
                   name: quantity
                   type: literal
@@ -4498,7 +4832,7 @@ profile:
                 namespaced: true
             rows:
             - cells:
-              - value:
+              - variable:
                   type: value
                   value:
                     set_name: armor
@@ -4512,7 +4846,7 @@ profile:
                   type: literal
                   value: true
             - cells:
-              - value:
+              - variable:
                   type: value
                   value:
                     set_name: shields
@@ -4579,7 +4913,7 @@ profile:
                 namespaced: true
             rows:
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Crossbow Bolt
               - value:
@@ -4587,7 +4921,7 @@ profile:
                   type: literal
                   value: 20
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Torch
               - value:
@@ -4595,7 +4929,7 @@ profile:
                   type: literal
                   value: 3
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Caltrops (Bag of 20)
               - value:
@@ -4603,7 +4937,7 @@ profile:
                   type: literal
                   value: 1
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Hemp Rope (50 feet)
               - value:
@@ -4611,7 +4945,7 @@ profile:
                   type: literal
                   value: 1
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Grappling Hook
               - value:
@@ -4619,7 +4953,7 @@ profile:
                   type: literal
                   value: 1
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Crowbar
               - value:
@@ -4627,7 +4961,7 @@ profile:
                   type: literal
                   value: 1
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Waterskin
               - value:
@@ -4635,7 +4969,7 @@ profile:
                   type: literal
                   value: 1
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Vial
               - value:
@@ -4643,7 +4977,7 @@ profile:
                   type: literal
                   value: 2
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Manacles
               - value:
@@ -4651,7 +4985,7 @@ profile:
                   type: literal
                   value: 1
             - cells:
-              - value:
+              - variable:
                   type: literal
                   value: Bedroll
               - value:
@@ -4741,6 +5075,7 @@ encounter:
               slashing at my opponent with glimmering steel.
             action_highlight: longsword
             action_name: Longsword Melee Attack
+            action_result: Attack Roll
             data:
               format:
                 alignment: center
@@ -4763,9 +5098,9 @@ encounter:
                       type: literal
                       name: Attack Dice
                       value:
-                        type: d20
-                        quantity: 1
-                        modifier: 0
+                        quantities:
+                        - sides: 20
+                          quantity: 1
                 - type: integer
                   term:
                     value:
@@ -4900,9 +5235,9 @@ encounter:
                     value:
                       type: literal
                       value:
-                        type: d20
-                        quantity: 1
-                        modifier: 0
+                        quantities:
+                        - sides: 20
+                          quantity: 1
                 - type: integer
                   term:
                     value:
@@ -5024,9 +5359,9 @@ encounter:
                     value:
                       type: literal
                       value:
-                        type: d20
-                        quantity: 1
-                        modifier: 0
+                        quantities:
+                        - sides: 20
+                          quantity: 1
                 - type: integer
                   term:
                     value:
@@ -5120,9 +5455,9 @@ encounter:
                     value:
                       type: literal
                       value:
-                        type: d20
-                        quantity: 1
-                        modifier: 0
+                        quantities:
+                        - sides: 20
+                          quantity: 1
                 - type: integer
                   term:
                     value:
@@ -5211,9 +5546,9 @@ encounter:
                     value:
                       type: literal
                       value:
-                        type: d20
-                        quantity: 1
-                        modifier: 0
+                        quantities:
+                        - sides: 20
+                          quantity: 1
                 - type: integer
                   term:
                     value:
@@ -5270,9 +5605,9 @@ encounter:
                     value:
                       type: literal
                       value:
-                        type: d20
-                        quantity: 1
-                        modifier: 0
+                        quantities:
+                        - sides: 20
+                          quantity: 1
                 - type: integer
                   term:
                     value:
@@ -5366,9 +5701,9 @@ encounter:
                     value:
                       type: literal
                       value:
-                        type: d20
-                        quantity: 1
-                        modifier: 0
+                        quantities:
+                        - sides: 20
+                          quantity: 1
                 - type: integer
                   term:
                     value:
@@ -5464,9 +5799,9 @@ encounter:
                     value:
                       type: literal
                       value:
-                        type: d20
-                        quantity: 1
-                        modifier: 0
+                        quantities:
+                        - sides: 20
+                          quantity: 1
                 - type: integer
                   term:
                     value:

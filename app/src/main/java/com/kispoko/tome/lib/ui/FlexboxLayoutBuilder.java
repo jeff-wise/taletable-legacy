@@ -8,9 +8,8 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.LinearLayout;
 
-
+import com.google.android.flexbox.FlexboxLayout;
 import com.kispoko.tome.sheet.Spacing;
 
 import java.util.ArrayList;
@@ -19,11 +18,9 @@ import java.util.List;
 
 
 /**
- * Linear Layout Builder
- *
- * Convenience class for creating Linear Layouts
+ * Flexbox Layout Builder
  */
-public class LinearLayoutBuilder implements ViewBuilder
+public class FlexboxLayoutBuilder
 {
 
     // PROPERTIES
@@ -32,19 +29,13 @@ public class LinearLayoutBuilder implements ViewBuilder
     // > Layout State
     // ------------------------------------------------------------------------------------------
 
-    public Integer                  orientation;
-
     public Integer                  id;
 
     public Integer                  height;
     public Integer                  heightDp;
 
     public Integer                  width;
-    public Integer                  widthDp;
-
     public Float                    weight;
-
-    public Integer                  visibility;
 
     public LayoutType               layoutType;
 
@@ -53,19 +44,18 @@ public class LinearLayoutBuilder implements ViewBuilder
 
     public Integer                  backgroundColor;
     public Integer                  backgroundResource;
-    public Float                    elevation;
 
     public Margins                  margin;
     public Spacing                  marginSpacing;
     public Padding                  padding;
     public Spacing                  paddingSpacing;
 
+    public Integer                  wrap;
+
     public View.OnClickListener     onClick;
     public View.OnLongClickListener onLongClick;
 
-    public Boolean                  hapticFeedback;
-
-    public List<Integer>            rules;
+    public List<Integer> rules;
 
 
     // > Internal
@@ -77,21 +67,15 @@ public class LinearLayoutBuilder implements ViewBuilder
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayoutBuilder()
+    public FlexboxLayoutBuilder()
     {
         this.id                 = null;
-
-        this.orientation        = null;
 
         this.height             = null;
         this.heightDp           = null;
 
         this.width              = null;
-        this.widthDp            = null;
-
         this.weight             = null;
-
-        this.visibility         = null;
 
         this.layoutType         = LayoutType.LINEAR;
 
@@ -100,7 +84,6 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         this.backgroundColor    = null;
         this.backgroundResource = null;
-        this.elevation          = null;
 
         this.margin             = new Margins();
         this.padding            = new Padding();
@@ -108,8 +91,6 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         this.onClick            = null;
         this.onLongClick        = null;
-
-        this.hapticFeedback     = null;
 
         this.children           = new ArrayList<>();
 
@@ -123,14 +104,14 @@ public class LinearLayoutBuilder implements ViewBuilder
     // > Attributes
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayoutBuilder child(ViewBuilder childViewBuilder)
+    public FlexboxLayoutBuilder child(ViewBuilder childViewBuilder)
     {
         this.children.add(childViewBuilder);
         return this;
     }
 
 
-    public LinearLayoutBuilder addRule(int verb)
+    public FlexboxLayoutBuilder addRule(int verb)
     {
         this.rules.add(verb);
         return this;
@@ -142,16 +123,16 @@ public class LinearLayoutBuilder implements ViewBuilder
 
     public View view(Context context)
     {
-        return this.linearLayout(context);
+        return this.flexboxLayout(context);
     }
 
 
     // > Layout
     // ------------------------------------------------------------------------------------------
 
-    public LinearLayout linearLayout(Context context)
+    public FlexboxLayout flexboxLayout(Context context)
     {
-        LinearLayout linearLayout = new LinearLayout(context);
+        FlexboxLayout flexboxLayout = new FlexboxLayout(context);
 
         // [1] Layout
         // --------------------------------------------------------------------------------------
@@ -160,68 +141,50 @@ public class LinearLayoutBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.id != null)
-            linearLayout.setId(this.id);
-
-        // > Orientation
-        // --------------------------------------------------------------------------------------
-
-        if (this.orientation != null)
-            linearLayout.setOrientation(this.orientation);
+            flexboxLayout.setId(this.id);
 
         // > Padding
         // --------------------------------------------------------------------------------------
 
-        linearLayout.setPadding(this.padding.left(context),
-                                this.padding.top(context),
-                                this.padding.right(context),
-                                this.padding.bottom(context));
+        flexboxLayout.setPadding(this.padding.left(context),
+                                 this.padding.top(context),
+                                 this.padding.right(context),
+                                 this.padding.bottom(context));
 
         // > Padding Spacing
         // --------------------------------------------------------------------------------------
 
         if (this.paddingSpacing != null)
         {
-            linearLayout.setPadding(this.paddingSpacing.leftPx(),
-                                    this.paddingSpacing.topPx(),
-                                    this.paddingSpacing.rightPx(),
-                                    this.paddingSpacing.bottomPx());
+            flexboxLayout.setPadding(this.paddingSpacing.leftPx(),
+                                     this.paddingSpacing.topPx(),
+                                     this.paddingSpacing.rightPx(),
+                                     this.paddingSpacing.bottomPx());
         }
 
-        // > Gravity
+        // > Flexbox Wrap
         // --------------------------------------------------------------------------------------
 
-        if (this.gravity != null)
-            linearLayout.setGravity(this.gravity);
-
-        // > Visible
-        // --------------------------------------------------------------------------------------
-
-        if (this.visibility != null)
-            linearLayout.setVisibility(this.visibility);
+        if (this.wrap != null)
+            flexboxLayout.setFlexWrap(this.wrap);
 
         // > On Click Listener
         // --------------------------------------------------------------------------------------
 
         if (this.onClick != null)
-            linearLayout.setOnClickListener(this.onClick);
+            flexboxLayout.setOnClickListener(this.onClick);
 
         // > On Long Click Listener
         // --------------------------------------------------------------------------------------
 
         if (this.onLongClick != null)
-            linearLayout.setOnLongClickListener(this.onLongClick);
-
-        // > Haptic Feedback
-        // --------------------------------------------------------------------------------------
-
-        if (this.hapticFeedback != null)
-            linearLayout.setHapticFeedbackEnabled(this.hapticFeedback);
+            flexboxLayout.setOnLongClickListener(this.onLongClick);
 
         // > Background Color
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            linearLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            flexboxLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
 
         // > Background Resource
         // --------------------------------------------------------------------------------------
@@ -230,17 +193,11 @@ public class LinearLayoutBuilder implements ViewBuilder
             Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
             int      color      = ContextCompat.getColor(context, this.backgroundColor);
             bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-            linearLayout.setBackground(bgDrawable);
+            flexboxLayout.setBackground(bgDrawable);
         }
         else if (this.backgroundResource != null) {
-            linearLayout.setBackgroundResource(this.backgroundResource);
+            flexboxLayout.setBackgroundResource(this.backgroundResource);
         }
-
-        // > Elevation
-        // --------------------------------------------------------------------------------------
-
-        if (this.elevation != null && android.os.Build.VERSION.SDK_INT >= 21)
-            linearLayout.setElevation(this.elevation);
 
 
         // [2] Layout Parameters
@@ -254,8 +211,6 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         if (this.width != null)
             layoutParamsBuilder.setWidth(this.width);
-        else if (this.widthDp != null)
-            layoutParamsBuilder.setWidthDp(this.widthDp);
 
         // > Height
         // --------------------------------------------------------------------------------------
@@ -292,7 +247,7 @@ public class LinearLayoutBuilder implements ViewBuilder
         layoutParamsBuilder.setRules(this.rules);
 
 
-        linearLayout.setLayoutParams(layoutParamsBuilder.layoutParams());
+        flexboxLayout.setLayoutParams(layoutParamsBuilder.layoutParams());
 
 
         // [3] Children
@@ -300,15 +255,12 @@ public class LinearLayoutBuilder implements ViewBuilder
 
         for (ViewBuilder childViewBuilder : this.children)
         {
-            linearLayout.addView(childViewBuilder.view(context));
+            flexboxLayout.addView(childViewBuilder.view(context));
         }
 
 
-        return linearLayout;
+        return flexboxLayout;
     }
 
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
 
 }

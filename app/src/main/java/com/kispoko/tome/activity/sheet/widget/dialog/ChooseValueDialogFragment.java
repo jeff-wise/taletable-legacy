@@ -25,7 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.CompoundValueSet;
+import com.kispoko.tome.engine.value.ValueSetUnion;
 import com.kispoko.tome.engine.value.ValueUnion;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.Font;
@@ -49,10 +50,10 @@ public class ChooseValueDialogFragment extends DialogFragment
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ValueSet   valueSet;
-    private ValueUnion selectedValue;
+    private ValueSetUnion valueSetUnion;
+    private ValueUnion    selectedValue;
 
-    private String     title;
+    private String        title;
 
 
     // CONSTRUCTORS
@@ -61,12 +62,13 @@ public class ChooseValueDialogFragment extends DialogFragment
     public ChooseValueDialogFragment() { }
 
 
-    public static ChooseValueDialogFragment newInstance(ValueSet valueSet, ValueUnion selectedValue)
+    public static ChooseValueDialogFragment newInstance(ValueSetUnion valueSetUnion,
+                                                        ValueUnion selectedValue)
     {
         ChooseValueDialogFragment chooseValueDialogFragment = new ChooseValueDialogFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("valueset", valueSet);
+        args.putSerializable("value_set_union", valueSetUnion);
         args.putSerializable("selected_value", selectedValue);
         chooseValueDialogFragment.setArguments(args);
 
@@ -95,13 +97,13 @@ public class ChooseValueDialogFragment extends DialogFragment
         dialog.getWindow().setLayout(width, height);
 
         // > Read State
-        this.valueSet      = (ValueSet) getArguments().getSerializable("valueset");
+        this.valueSetUnion = (ValueSetUnion) getArguments().getSerializable("value_set_union");
         this.selectedValue = (ValueUnion) getArguments().getSerializable("selected_value");
 
         this.title = "";
-        if (this.valueSet != null) {
+        if (this.valueSetUnion != null) {
             this.title = getContext().getString(R.string.choose) + " "  +
-                            this.valueSet.labelSingular();
+                            this.valueSetUnion.valueSet().labelSingular();
         }
 
         return dialog;
@@ -125,10 +127,10 @@ public class ChooseValueDialogFragment extends DialogFragment
 
 
     // VIEWS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Views
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private View view(Context context)
     {
@@ -176,6 +178,9 @@ public class ChooseValueDialogFragment extends DialogFragment
         return layout.linearLayout(context);
     }
 
+
+    // ** Header
+    // -----------------------------------------------------------------------------------------
 
     private RelativeLayout headerView(final View chooserView,
                                       final View menuView,
@@ -259,11 +264,13 @@ public class ChooseValueDialogFragment extends DialogFragment
         title.width             = RelativeLayout.LayoutParams.WRAP_CONTENT;
         title.height            = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
-        title.text              = context.getString(R.string.choose) + " "  +
-                                    this.valueSet.labelSingular();
+        if (this.valueSetUnion != null) {
+            title.text          = context.getString(R.string.choose) + " "  +
+                                    this.valueSetUnion.valueSet().labelSingular();
+        }
 
         title.font              = Font.serifFontRegular(context);
-        title.color             = R.color.gold_light;
+        title.color             = R.color.dark_blue_hlx_4;
         title.sizeSp            = 19f;
 
         title.addRule(RelativeLayout.ALIGN_PARENT_START);
@@ -292,6 +299,9 @@ public class ChooseValueDialogFragment extends DialogFragment
     }
 
 
+    // ** List View
+    // -----------------------------------------------------------------------------------------
+
     private RecyclerView chooserView(Context context)
     {
         RecyclerViewBuilder recyclerView = new RecyclerViewBuilder();
@@ -300,22 +310,44 @@ public class ChooseValueDialogFragment extends DialogFragment
         recyclerView.height             = R.dimen.dialog_choose_value_list_height;
 
         recyclerView.layoutManager      = new LinearLayoutManager(context);
-        recyclerView.adapter            = new ValueSetRecyclerViewAdapter(this.valueSet.values());
-        recyclerView.divider            = new ValueDividerItemDecoration(context);
+
+        if (this.valueSetUnion != null)
+        {
+            switch (valueSetUnion.type())
+            {
+                case BASE:
+                    List<ValueUnion> values = this.valueSetUnion.valueSet().values();
+                    recyclerView.adapter = new BaseValueSetRecyclerViewAdapter(values);
+                    break;
+                case COMPOUND:
+                    CompoundValueSet compoundValueSet = this.valueSetUnion.compound();
+                    List<Object> items = compoundValueSet.valuesWithHeaders();
+                    recyclerView.adapter = new CompoundValueSetRecyclerViewAdapter(items);
+                    break;
+            }
+        }
+
+        // recyclerView.divider            = new ValueDividerItemDecoration(context);
 
         recyclerView.margin.left        = R.dimen.five_dp;
         recyclerView.margin.right       = R.dimen.five_dp;
+
+        recyclerView.padding.bottomDp   = 20f;
 
         return recyclerView.recyclerView(getContext());
     }
 
 
+    // ** Value View
+    // -----------------------------------------------------------------------------------------
+
     private LinearLayout valueView(Context context)
     {
         LinearLayout layout = valueViewLayout(context);
 
-        layout.addView(valueHeaderView(context));
-        layout.addView(valueSummaryView(context));
+        layout.addView(this.valueHeaderView(context));
+        layout.addView(this.valueSummaryView(context));
+        // layout.addView(this.valueDividerView(context));
 
         return layout;
     }
@@ -331,8 +363,7 @@ public class ChooseValueDialogFragment extends DialogFragment
 
         layout.padding.leftDp       = 9f;
         layout.padding.rightDp      = 9f;
-        layout.padding.top          = R.dimen.dialog_choose_value_item_padding_vert;
-        layout.padding.bottom       = R.dimen.dialog_choose_value_item_padding_vert;
+        layout.padding.topDp        = 16f;
 
         return layout.linearLayout(context);
     }
@@ -406,11 +437,39 @@ public class ChooseValueDialogFragment extends DialogFragment
         summary.color           = R.color.dark_blue_hl_8;
         summary.size            = R.dimen.dialog_choose_value_summary_text_size;
 
-        summary.margin.top      = R.dimen.dialog_choose_value_summary_margin_top;
+        summary.margin.topDp    = 6f;
 
         return summary.textView(context);
     }
 
+
+    // ** Set Name View
+    // -----------------------------------------------------------------------------------------
+
+    private TextView valueSetNameView(Context context)
+    {
+        TextViewBuilder name = new TextViewBuilder();
+
+        name.id             = R.id.value_list_header_text;
+
+        name.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        name.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        name.font           = Font.serifFontRegular(context);
+        name.color          = R.color.gold_light;
+        name.sizeSp         = 18f;
+
+        name.margin.leftDp  = 10f;
+        name.margin.rightDp = 10f;
+
+        name.margin.topDp   = 20f;
+
+        return name.textView(context);
+    }
+
+
+    // ** Menu View
+    // -----------------------------------------------------------------------------------------
 
     private LinearLayout optionsMenuView(Context context)
     {
@@ -546,11 +605,14 @@ public class ChooseValueDialogFragment extends DialogFragment
     }
 
 
+    // BASE VALUE SET ADPATER
+    // -----------------------------------------------------------------------------------------
+
     /**
      * ValueSet RecyclerView Adapter
      */
-    private class ValueSetRecyclerViewAdapter
-           extends RecyclerView.Adapter<ValueSetRecyclerViewAdapter.ViewHolder>
+    private class BaseValueSetRecyclerViewAdapter
+           extends RecyclerView.Adapter<ValueViewHolder>
     {
 
         // PROPERTIES
@@ -562,25 +624,25 @@ public class ChooseValueDialogFragment extends DialogFragment
         // CONSTRUCTORS
         // -------------------------------------------------------------------------------------
 
-        public ValueSetRecyclerViewAdapter(List<ValueUnion> values)
+        public BaseValueSetRecyclerViewAdapter(List<ValueUnion> values)
         {
             this.values  = values;
         }
 
 
         // RECYCLER VIEW ADAPTER API
-        // -------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        public ValueViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {
             View itemView = valueView(parent.getContext());
-            return new ViewHolder(itemView, parent.getContext());
+            return new ValueViewHolder(itemView, parent.getContext());
         }
 
 
         @Override
-        public void onBindViewHolder(ValueSetRecyclerViewAdapter.ViewHolder viewHolder,
+        public void onBindViewHolder(ValueViewHolder viewHolder,
                                      int position)
         {
             ValueUnion valueUnion = this.values.get(position);
@@ -609,65 +671,194 @@ public class ChooseValueDialogFragment extends DialogFragment
         }
 
 
-        // VIEW HOLDER
-        // -------------------------------------------------------------------------------------------
+    }
 
-        /**
-         * The View Holder caches a view for each item.
-         */
-        public class ViewHolder extends RecyclerView.ViewHolder
+
+    // COMPOUND VALUE SET ADPATER
+    // -----------------------------------------------------------------------------------------
+
+    private class CompoundValueSetRecyclerViewAdapter
+                        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+    {
+
+        // PROPERTIES
+        // -------------------------------------------------------------------------------------
+
+        private List<Object>    items;
+
+        private final int HEADER = 0, VALUE = 1;
+
+
+        // CONSTRUCTORS
+        // -------------------------------------------------------------------------------------
+
+        public CompoundValueSetRecyclerViewAdapter(List<Object> items)
         {
-
-            private Context   context;
-
-            private TextView  valueView;
-            private TextView  summaryView;
-            private ImageView iconView;
+            this.items = items;
+        }
 
 
-            public ViewHolder(final View itemView, Context context)
+        // RECYCLER VIEW ADAPTER API
+        // -------------------------------------------------------------------------------------
+
+        @Override
+        public int getItemViewType(int position)
+        {
+            Object itemAtPosition = this.items.get(position);
+
+            if (itemAtPosition instanceof String)
+                return HEADER;
+            else if (itemAtPosition instanceof ValueUnion)
+                return VALUE;
+            else
+                return -1;
+        }
+
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            switch (viewType)
             {
-                super(itemView);
-
-                this.context = context;
-
-                this.valueView =
-                        (TextView) itemView.findViewById(R.id.choose_value_dialog_item_value);
-
-                this.summaryView =
-                        (TextView) itemView.findViewById(R.id.choose_value_dialog_item_summary);
-
-                this.iconView =
-                        (ImageView) itemView.findViewById(R.id.choose_value_dialog_item_icon);
+                case HEADER:
+                    View headerView = valueSetNameView(parent.getContext());
+                    return new HeaderViewHolder(headerView);
+                case VALUE:
+                    View valueView = valueView(parent.getContext());
+                    return new ValueViewHolder(valueView, parent.getContext());
+                default:
+                    return null;
             }
+        }
 
 
-            public void setValueText(String valueText)
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position)
+        {
+            Object item = this.items.get(position);
+
+            if (item instanceof ValueUnion)
             {
-                this.valueView.setText(valueText);
-                this.valueView.setTextColor(
-                        ContextCompat.getColor(this.context, R.color.dark_blue_hlx_5));
-                this.iconView.setVisibility(View.GONE);
+                ValueUnion      valueUnion      = (ValueUnion) item;
+                ValueViewHolder valueViewHolder = (ValueViewHolder) viewHolder;
+
+                switch (valueUnion.type())
+                {
+                    case TEXT:
+                        if (valueUnion.equals(selectedValue))
+                            valueViewHolder.setValueTextSelected(valueUnion.textValue().value());
+                        else
+                            valueViewHolder.setValueText(valueUnion.textValue().value());
+
+                        valueViewHolder.setSummaryText(valueUnion.value().description());
+                        break;
+                    case NUMBER:
+                        valueViewHolder.setValueText(valueUnion.numberValue().value().toString());
+                        break;
+                }
             }
-
-
-            public void setValueTextSelected(String valueText)
+            else if (item instanceof String)
             {
-                this.valueView.setText(valueText);
-                this.valueView.setTextColor(
-                        ContextCompat.getColor(this.context, R.color.green_medium_light));
-                this.iconView.setVisibility(View.VISIBLE);
+                String           valueSetName     = (String) item;
+                HeaderViewHolder headerViewHolder = (HeaderViewHolder) viewHolder;
+
+                headerViewHolder.setHeaderText(valueSetName);
             }
+        }
 
 
-            public void setSummaryText(String summaryText)
-            {
-                this.summaryView.setText(summaryText);
-            }
-
+        @Override
+        public int getItemCount()
+        {
+            return this.items.size();
         }
 
     }
+
+
+    // HEADER VIEW HOLDER
+    // -------------------------------------------------------------------------------------
+
+    public class HeaderViewHolder extends RecyclerView.ViewHolder
+    {
+
+        private TextView headerTextView;
+
+
+        public HeaderViewHolder(View headerView)
+        {
+            super(headerView);
+
+            this.headerTextView =
+                    (TextView) headerView.findViewById(R.id.value_list_header_text);
+        }
+
+
+        public void setHeaderText(String text)
+        {
+            this.headerTextView.setText(text);
+        }
+    }
+
+
+    // VALUE VIEW HOLDER
+    // -------------------------------------------------------------------------------------------
+
+    /**
+     * The View Holder caches a view for each item.
+     */
+    public class ValueViewHolder extends RecyclerView.ViewHolder
+    {
+
+        private Context   context;
+
+        private TextView  valueView;
+        private TextView  summaryView;
+        private ImageView iconView;
+
+
+        public ValueViewHolder(final View itemView, Context context)
+        {
+            super(itemView);
+
+            this.context = context;
+
+            this.valueView =
+                    (TextView) itemView.findViewById(R.id.choose_value_dialog_item_value);
+
+            this.summaryView =
+                    (TextView) itemView.findViewById(R.id.choose_value_dialog_item_summary);
+
+            this.iconView =
+                    (ImageView) itemView.findViewById(R.id.choose_value_dialog_item_icon);
+        }
+
+
+        public void setValueText(String valueText)
+        {
+            this.valueView.setText(valueText);
+            this.valueView.setTextColor(
+                    ContextCompat.getColor(this.context, R.color.dark_blue_hlx_5));
+            this.iconView.setVisibility(View.GONE);
+        }
+
+
+        public void setValueTextSelected(String valueText)
+        {
+            this.valueView.setText(valueText);
+            this.valueView.setTextColor(
+                    ContextCompat.getColor(this.context, R.color.green_medium_light));
+            this.iconView.setVisibility(View.VISIBLE);
+        }
+
+
+        public void setSummaryText(String summaryText)
+        {
+            this.summaryView.setText(summaryText);
+        }
+
+    }
+
 
 
     public class ValueDividerItemDecoration extends RecyclerView.ItemDecoration

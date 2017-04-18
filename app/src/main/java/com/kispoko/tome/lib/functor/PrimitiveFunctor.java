@@ -21,7 +21,6 @@ import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.lib.model.form.FieldOptions;
 import com.kispoko.tome.lib.model.form.Field;
-import com.kispoko.tome.mechanic.dice.DiceType;
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.sheet.Alignment;
@@ -326,11 +325,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.valueClass.isAssignableFrom(byte[].class))
         {
             this.setValue((A) sqlValue.getBlob());
-        }
-        else if (this.valueClass.isAssignableFrom(DiceType.class))
-        {
-            DiceType diceType = DiceType.fromSQLValue(sqlValue);
-            this.setValue((A) diceType);
         }
         else if (this.valueClass.isAssignableFrom(CellType.class))
         {

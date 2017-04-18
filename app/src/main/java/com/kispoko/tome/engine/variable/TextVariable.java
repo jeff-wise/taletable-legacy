@@ -7,7 +7,6 @@ import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.TextValue;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.error.InvalidCaseError;
-import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.exception.UnionException;
@@ -674,8 +673,13 @@ public class TextVariable extends Variable
         if (this.kind() != Kind.VALUE)
             return;
 
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
-        dictionary.textValue(this.valueReference()).addToState();
+        Dictionary dictionary = SheetManager.dictionary();
+        if (dictionary != null)
+        {
+            TextValue textValue = dictionary.textValue(this.valueReference());
+            if (textValue != null)
+                textValue.addToState();
+        }
     }
 
 

@@ -3,6 +3,7 @@ package com.kispoko.tome.sheet.widget;
 
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Gravity;
@@ -16,10 +17,13 @@ import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.activity.sheet.widget.dialog.ChooseValueDialogFragment;
 import com.kispoko.tome.activity.sheet.widget.text.TextEditorActivity;
 import com.kispoko.tome.engine.State;
+import com.kispoko.tome.engine.value.BaseValueSet;
 import com.kispoko.tome.engine.value.Dictionary;
+import com.kispoko.tome.engine.value.ValueException;
 import com.kispoko.tome.engine.value.ValueReference;
-import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.ValueSetUnion;
 import com.kispoko.tome.engine.value.ValueUnion;
+import com.kispoko.tome.engine.value.error.UndefinedValueError;
 import com.kispoko.tome.engine.variable.NullVariableException;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.Variable;
@@ -53,6 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.kispoko.tome.R.string.dictionary;
 
 
 /**
@@ -697,24 +702,36 @@ public class TextWidget extends Widget
 
             // OPEN the Choose Value Set Dialog
             case VALUE:
-                String valueSetName = this.valueVariable().valueSetName();
-                Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
-                ValueSet valueSet = dictionary.lookup(valueSetName);
 
+                Dictionary dictionary         = SheetManager.dictionary();
+
+                if (this.valueVariable() == null || dictionary == null)
+                    break;
+
+                String         valueSetName   = this.valueVariable().valueSetName();
                 ValueReference valueReference = this.valueVariable().valueReference();
-                ValueUnion valueUnion = dictionary.valueUnion(valueReference);
 
-                if (valueSet == null) {
+                ValueSetUnion valueSetUnion = dictionary.lookup(valueSetName);
+                ValueUnion    valueUnion    = dictionary.valueUnion(valueReference);
+
+                if (valueSetUnion == null) {
                     ApplicationFailure.sheet(
                             SheetException.undefinedValueSet(
                                     new UndefinedValueSetError("Text Widget", valueSetName)));
                     break;
                 }
 
-                ChooseValueDialogFragment chooseDialog =
-                                    ChooseValueDialogFragment.newInstance(valueSet, valueUnion);
-                chooseDialog.show(sheetActivity.getSupportFragmentManager(), "");
+                if (valueUnion == null) {
+                    ApplicationFailure.value(
+                            ValueException.undefinedValue(
+                                    new UndefinedValueError(valueSetName,
+                                                            valueReference.valueName())));
+                    break;
+                }
 
+                ChooseValueDialogFragment chooseDialog =
+                        ChooseValueDialogFragment.newInstance(valueSetUnion, valueUnion);
+                chooseDialog.show(sheetActivity.getSupportFragmentManager(), "");
                 break;
 
             case PROGRAM:

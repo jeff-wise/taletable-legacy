@@ -1,71 +1,51 @@
 
-package com.kispoko.tome.mechanic.dice;
+package com.kispoko.tome.engine.value;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
-import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.sql.SQLValue;
 import com.kispoko.tome.lib.yaml.ToYaml;
 import com.kispoko.tome.lib.yaml.YamlBuilder;
-import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
+import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.error.InvalidEnumError;
+import com.kispoko.tome.util.EnumUtils;
 
 
 
 /**
- * Die Type
+ * Value Set Type
  */
-public enum DiceType implements ToYaml
+public enum ValueSetType implements ToYaml
 {
 
     // VALUES
     // ------------------------------------------------------------------------------------------
 
-    D3,
-    D4,
-    D6,
-    D8,
-    D10,
-    D12,
-    D20,
-    D100;
+    BASE,
+    COMPOUND;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static DiceType fromString(String typeString)
+    public static ValueSetType fromString(String typeString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(DiceType.class, typeString);
+        return EnumUtils.fromString(ValueSetType.class, typeString);
     }
 
 
-    public static DiceType fromYaml(YamlParser yaml)
+    // TODO generalize this and account for when yaml == null
+    public static ValueSetType fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         String typeString = yaml.getString();
         try {
-            return DiceType.fromString(typeString);
+            return ValueSetType.fromString(typeString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
-        }
-    }
-
-
-    public static DiceType fromSQLValue(SQLValue sqlValue)
-                  throws DatabaseException
-    {
-        String enumString = "";
-        try {
-            enumString = sqlValue.getText();
-            DiceType dice = DiceType.fromString(enumString);
-            return dice;
-        } catch (InvalidDataException e) {
-            throw DatabaseException.invalidEnum(
-                    new com.kispoko.tome.lib.database.error.InvalidEnumError(enumString));
         }
     }
 

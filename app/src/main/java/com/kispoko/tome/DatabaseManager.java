@@ -24,11 +24,13 @@ import com.kispoko.tome.engine.summation.term.DiceRollTermValue;
 import com.kispoko.tome.engine.summation.term.IntegerTermValue;
 import com.kispoko.tome.engine.summation.term.IntegerTerm;
 import com.kispoko.tome.engine.summation.term.TermUnion;
+import com.kispoko.tome.engine.value.CompoundValueSet;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.NumberValue;
 import com.kispoko.tome.engine.value.TextValue;
 import com.kispoko.tome.engine.value.ValueReference;
-import com.kispoko.tome.engine.value.ValueSet;
+import com.kispoko.tome.engine.value.BaseValueSet;
+import com.kispoko.tome.engine.value.ValueSetUnion;
 import com.kispoko.tome.engine.value.ValueUnion;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.DiceVariable;
@@ -41,7 +43,9 @@ import com.kispoko.tome.engine.program.statement.Statement;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.game.Game;
+import com.kispoko.tome.mechanic.dice.DiceQuantity;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
+import com.kispoko.tome.mechanic.dice.RollModifier;
 import com.kispoko.tome.sheet.Section;
 import com.kispoko.tome.sheet.Settings;
 import com.kispoko.tome.sheet.Spacing;
@@ -154,6 +158,8 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             // ** Game Mechanic
             modelClasses.add(DiceRoll.class);
+            modelClasses.add(DiceQuantity.class);
+            modelClasses.add(RollModifier.class);
 
             // ** Widget
             modelClasses.add(WidgetUnion.class);
@@ -242,7 +248,9 @@ public class DatabaseManager extends SQLiteOpenHelper
 
             // ** Value
             modelClasses.add(Dictionary.class);
-            modelClasses.add(ValueSet.class);
+            modelClasses.add(ValueSetUnion.class);
+            modelClasses.add(BaseValueSet.class);
+            modelClasses.add(CompoundValueSet.class);
             modelClasses.add(ValueUnion.class);
             modelClasses.add(TextValue.class);
             modelClasses.add(NumberValue.class);

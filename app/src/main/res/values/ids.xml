@@ -25,6 +25,7 @@
     <item name="value_list_item_layout" type="id"/>
     <item name="value_list_item_value" type="id"/>
     <item name="value_list_item_description" type="id"/>
+    <item name="value_list_header_text" type="id"/>
 
     <!-- FUNCTION LIST ITEM -->
     <item name="function_list_item_layout" type="id"/>

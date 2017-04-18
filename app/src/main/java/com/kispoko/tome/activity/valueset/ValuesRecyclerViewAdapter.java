@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.TextValueEditorActivity;
+import com.kispoko.tome.engine.value.BaseValueSet;
 import com.kispoko.tome.engine.value.ValueReference;
-import com.kispoko.tome.engine.value.ValueSet;
 import com.kispoko.tome.engine.value.ValueType;
 import com.kispoko.tome.engine.value.ValueUnion;
 
@@ -29,13 +29,13 @@ public class ValuesRecyclerViewAdapter
     // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private ValueSet valueSet;
+    private BaseValueSet valueSet;
 
 
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public ValuesRecyclerViewAdapter(ValueSet valueSet)
+    public ValuesRecyclerViewAdapter(BaseValueSet valueSet)
     {
         this.valueSet = valueSet;
     }
@@ -64,7 +64,7 @@ public class ValuesRecyclerViewAdapter
         viewHolder.setDescriptionText(valueUnion.value().description());
 
         ValueReference valueReference =
-                new ValueReference(this.valueSet.name(), valueUnion.value().name());
+                ValueReference.create(this.valueSet.name(), valueUnion.value().name());
         viewHolder.setOnClickListener(valueUnion.type(), valueReference);
     }
 

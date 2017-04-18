@@ -5,10 +5,13 @@ package com.kispoko.tome.util;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.Font;
+import com.kispoko.tome.sheet.Page;
 
 
 /**
@@ -29,7 +32,7 @@ public class UI
     }
 
 
-    public static void initializeToolbar(AppCompatActivity activity,
+    public static void initializeToolbar(final AppCompatActivity activity,
                                          boolean isBold,
                                          boolean showIcon)
     {
@@ -38,10 +41,18 @@ public class UI
         ActionBar actionBar = activity.getSupportActionBar();
 
         if (showIcon) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            try {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+            catch (Exception exception) {
+            }
         }
 
-        actionBar.setDisplayShowTitleEnabled(false);
+        try {
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
+        catch (Exception exception) {
+        }
 
         TextView titleView = (TextView) activity.findViewById(R.id.page_title);
 
@@ -49,6 +60,22 @@ public class UI
             titleView.setTypeface(Font.serifFontBold(activity));
         else
             titleView.setTypeface(Font.serifFontRegular(activity));
+
+        // > Configure Back Button
+        // -------------------------------------------------------------------------------------
+
+        ImageView backButtonView = (ImageView) activity.findViewById(R.id.toolbar_back_button);
+
+        if (backButtonView != null)
+        {
+            backButtonView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    activity.finish();
+                }
+            });
+        }
+
     }
 
 
