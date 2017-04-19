@@ -153,7 +153,10 @@ public class ValueListActivity extends AppCompatActivity
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.value_list_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+
+        SimpleDividerItemDecoration dividerItemDecoration =
+                new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_85);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         if (this.valueSet != null)
         {

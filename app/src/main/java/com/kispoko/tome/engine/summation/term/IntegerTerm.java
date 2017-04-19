@@ -131,9 +131,10 @@ public class IntegerTerm extends Term implements Serializable
      * The Integer Term's name.
      * @return The name.
      */
-    private String name()
+    public String name()
     {
-        return this.name.getValue();
+        //return this.name.getValue();
+        return this.termValue().name();
     }
 
 

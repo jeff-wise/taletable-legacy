@@ -264,8 +264,9 @@ public class TextViewBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.shadowColor != null) {
+            int color = ContextCompat.getColor(context, this.shadowColor);
             textView.setShadowLayer(this.shadowRadius, this.shadowDx,
-                                    this.shadowDy, this.shadowColor);
+                                    this.shadowDy, color);
         }
 
         // > Size

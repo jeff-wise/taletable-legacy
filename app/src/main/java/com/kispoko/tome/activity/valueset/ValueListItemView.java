@@ -62,7 +62,7 @@ public class ValueListItemView
         value.id                = R.id.value_list_item_value;
 
         value.font              = Font.serifFontRegular(context);
-        value.sizeSp            = 18f;
+        value.sizeSp            = 17f;
         value.color             = R.color.gold_light;
 
         return value.textView(context);

@@ -25,7 +25,6 @@ import java.util.UUID;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.DiceRollActivity;
-import com.kispoko.tome.activity.SheetActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.variable.NullVariableException;

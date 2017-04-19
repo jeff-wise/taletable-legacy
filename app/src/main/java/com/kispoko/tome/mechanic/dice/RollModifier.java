@@ -34,6 +34,7 @@ public class RollModifier extends Model
     // ------------------------------------------------------------------------------------------
 
     private PrimitiveFunctor<Integer>   value;
+    private PrimitiveFunctor<String>    name;
 
 
     // CONSTRUCTORS
@@ -44,14 +45,16 @@ public class RollModifier extends Model
         this.id     = null;
 
         this.value  = new PrimitiveFunctor<>(null, Integer.class);
+        this.name   = new PrimitiveFunctor<>(null, String.class);
     }
 
 
-    public RollModifier(UUID id, Integer value)
+    public RollModifier(UUID id, Integer value, String name)
     {
         this.id     = id;
 
         this.value  = new PrimitiveFunctor<>(value, Integer.class);
+        this.name   = new PrimitiveFunctor<>(name, String.class);
     }
 
 
@@ -59,11 +62,12 @@ public class RollModifier extends Model
      * Non-persitent constructor.
      * @param value
      */
-    public RollModifier(Integer value)
+    public RollModifier(Integer value, String name)
     {
         this.id     = null;
 
         this.value  = new PrimitiveFunctor<>(value, Integer.class);
+        this.name   = new PrimitiveFunctor<>(name, String.class);
     }
 
 
@@ -79,8 +83,9 @@ public class RollModifier extends Model
         UUID    id    = UUID.randomUUID();
 
         Integer value = yaml.atKey("value").getInteger();
+        String  name  = yaml.atMaybeKey("name").getString();
 
-        return new RollModifier(id, value);
+        return new RollModifier(id, value, name);
     }
 
 
@@ -132,7 +137,8 @@ public class RollModifier extends Model
     public YamlBuilder toYaml()
     {
         return YamlBuilder.map()
-                .putInteger("value", this.value());
+                .putInteger("value", this.value())
+                .putString("name", this.name());
     }
 
 
@@ -147,4 +153,15 @@ public class RollModifier extends Model
     {
         return this.value.getValue();
     }
+
+
+    /**
+     * The name of the modifier.
+     * @return The modifier name.
+     */
+    public String name()
+    {
+        return this.name.getValue();
+    }
+
 }

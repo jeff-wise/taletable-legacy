@@ -85,7 +85,7 @@ public class ValueSetRowView
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         header.id                   = R.id.value_set_row_header;
-        header.sizeSp               = 19f;
+        header.sizeSp               = 17f;
         header.color                = R.color.gold_light;
         header.font                 = Font.serifFontRegular(context);
 

@@ -5124,6 +5124,7 @@ encounter:
             description: I strike, dealing damage.
             action_highlight: damage
             action_name: Longsword Melee Damage
+            action_result: Slashing Damage
             data:
               format:
                 alignment: center
@@ -5162,6 +5163,7 @@ encounter:
             description: I strike, dealing two-handed damage.
             action_highlight: two-handed damage
             action_name: Longsword Melee Damage
+            action_result: Slashing Damage
             data:
               format:
                 alignment: center

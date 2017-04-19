@@ -248,7 +248,15 @@ public class IntegerTermValue extends Model
      */
     public String name()
     {
-        return this.name.getValue();
+        switch (this.kind())
+        {
+            case LITERAL:
+                return this.name.getValue();
+            case VARIABLE:
+                return this.variableReference().variable().variable().label();
+        }
+
+        return "";
     }
 
 

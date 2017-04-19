@@ -322,11 +322,14 @@ public class Summation extends Model
             else if (termUnion.type() == TermType.INTEGER)
             {
                 IntegerTerm integerTerm = termUnion.integerTerm();
-                try {
-                    diceRoll.addModifier(new RollModifier(integerTerm.value()));
-                    Log.d("***SUMMATION", "adding modifier " + integerTerm.value().toString());
+                try
+                {
+                    RollModifier rollModifier = new RollModifier(integerTerm.value(),
+                                                                 integerTerm.name());
+                    diceRoll.addModifier(rollModifier);
                 }
-                catch (SummationException exception) {
+                catch (SummationException exception)
+                {
                     ApplicationFailure.summation(exception);
                 }
             }

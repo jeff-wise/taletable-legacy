@@ -4,6 +4,8 @@ package com.kispoko.tome.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -18,12 +20,25 @@ import com.kispoko.tome.R;
  */
 public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration
 {
+
     private Drawable divider;
+
 
     public SimpleDividerItemDecoration(Context context)
     {
-        divider = ContextCompat.getDrawable(context, R.drawable.line_divider);
+        this.divider = ContextCompat.getDrawable(context, R.drawable.line_divider);
     }
+
+
+    public SimpleDividerItemDecoration(Context context, int colorId)
+    {
+        Drawable dividerDrawable = ContextCompat.getDrawable(context, R.drawable.line_divider);
+        int color = ContextCompat.getColor(context, colorId);
+        dividerDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+
+        this.divider = dividerDrawable;
+    }
+
 
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state)

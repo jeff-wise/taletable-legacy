@@ -727,7 +727,7 @@ public class SheetActivity
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        layout.padding.top      = R.dimen.nav_view_padding_top;
+        layout.padding.topDp    = 27f;
 
         return layout.linearLayout(context);
     }

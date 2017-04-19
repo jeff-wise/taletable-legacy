@@ -20,7 +20,7 @@ import com.kispoko.tome.activity.dictionary.ValueSetsRecyclerViewAdapter;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.sheet.SheetManager;
-
+import com.kispoko.tome.util.SimpleDividerItemDecoration;
 
 
 /**
@@ -124,6 +124,10 @@ public class DictionaryActivity extends AppCompatActivity
         dictionary.sortAscByLabel();
         this.valueSetsAdapter = new ValueSetsRecyclerViewAdapter(dictionary.valueSets(), this);
         recyclerView.setAdapter(this.valueSetsAdapter);
+
+        SimpleDividerItemDecoration dividerItemDecoration =
+                new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_85);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         FloatingActionButton addValueSetButton =
                 (FloatingActionButton) findViewById(R.id.button_new_value_set);
