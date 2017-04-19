@@ -5,7 +5,7 @@ package com.kispoko.tome.sheet;
 import android.content.Context;
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.activity.sheet.PagePagerAdapter;
+import com.kispoko.tome.activity.sheet.page.PagePagerAdapter;
 import com.kispoko.tome.campaign.Campaign;
 import com.kispoko.tome.campaign.CampaignIndex;
 import com.kispoko.tome.engine.State;
@@ -16,7 +16,6 @@ import com.kispoko.tome.game.Game;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.sheet.group.Group;
 import com.kispoko.tome.sheet.group.GroupRow;
-import com.kispoko.tome.sheet.widget.Widget;
 import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.util.tuple.Tuple2;
@@ -31,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 
 
 /**
@@ -352,14 +350,33 @@ public class Sheet extends Model
     {
         widgetById = new HashMap<>();
 
-        for (Page page : this.profileSection.getValue().pages())
-        {
-            for (Group group : page.groups())
-            {
-                for (GroupRow groupRow : group.rows())
-                {
-                    for (WidgetUnion widgetUnion : groupRow.widgets())
-                    {
+        // Index PROFILE section
+        for (Page page : this.profileSection().pages()) {
+            for (Group group : page.groups()) {
+                for (GroupRow groupRow : group.rows()) {
+                    for (WidgetUnion widgetUnion : groupRow.widgets()) {
+                        widgetById.put(widgetUnion.widget().getId(), widgetUnion);
+                    }
+                }
+            }
+        }
+
+        // Index ENCOUNTER section
+        for (Page page : this.encounterSection().pages()) {
+            for (Group group : page.groups()) {
+                for (GroupRow groupRow : group.rows()) {
+                    for (WidgetUnion widgetUnion : groupRow.widgets()) {
+                        widgetById.put(widgetUnion.widget().getId(), widgetUnion);
+                    }
+                }
+            }
+        }
+
+        // Index CAMPAIGN section
+        for (Page page : this.campaignSection().pages()) {
+            for (Group group : page.groups()) {
+                for (GroupRow groupRow : group.rows()) {
+                    for (WidgetUnion widgetUnion : groupRow.widgets()) {
                         widgetById.put(widgetUnion.widget().getId(), widgetUnion);
                     }
                 }

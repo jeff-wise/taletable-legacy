@@ -133,7 +133,7 @@
         android:label="Text Variable" />
 
     <activity
-        android:name=".activity.NumberVariableActivity"
+        android:name=".activity.engine.variable.NumberVariableActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Number Variable" />
@@ -186,7 +186,7 @@
         android:label="Groups" />
 
     <activity
-        android:name=".activity.ActionWidgetActivity"
+        android:name=".activity.sheet.widget.ActionWidgetActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Groups" />
@@ -234,7 +234,7 @@
         android:label="Quote Editor" />
 
     <activity
-        android:name=".activity.DiceRollActivity"
+        android:name=".activity.sheet.DiceRollActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Dice Roller" />

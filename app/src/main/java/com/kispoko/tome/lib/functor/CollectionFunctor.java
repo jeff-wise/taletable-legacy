@@ -230,7 +230,7 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
     // FORM
     // --------------------------------------------------------------------------------------
 
-    public Field field(UUID modelId, boolean isEditMode, Context context)
+    public Field field(UUID modelId, Context context)
     {
         // > Field Data
 
@@ -244,22 +244,7 @@ public class CollectionFunctor<A extends Model> extends Functor<List<A>>
         else if (this.labelId() != null)
             fieldLabel = context.getString(this.labelId());
 
-        // ** Description
-        String fieldDescription = "";
-        if (this.description() != null)
-            fieldDescription = this.description();
-        else if (this.descriptionId() != null)
-            fieldDescription = context.getString(this.descriptionId());
-
-
         String valuesString = Integer.toString(this.value.size()) + " values";
-
-        // > Field Options
-        FieldOptions fieldOptions;
-        if (isEditMode)
-            fieldOptions = FieldOptions.newField(this.isRequired());
-        else
-            fieldOptions = new FieldOptions();
 
         return Field.list(modelId, fieldName, fieldLabel, valuesString);
     }

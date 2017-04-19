@@ -122,7 +122,7 @@ public class TextValueEditorActivity extends AppCompatActivity
 
         try
         {
-            fields = Model.fields(this.textValue, true, this);
+            fields = Model.fields(this.textValue, this);
         }
         catch (FunctorException exception)
         {

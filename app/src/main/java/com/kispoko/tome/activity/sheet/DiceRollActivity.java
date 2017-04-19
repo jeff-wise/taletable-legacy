@@ -1,8 +1,9 @@
 
-package com.kispoko.tome.activity;
+package com.kispoko.tome.activity.sheet;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.sheet.widget.ActionWidgetActivity;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.lib.ui.ActivityCommon;
 import com.kispoko.tome.lib.ui.FlexboxLayoutBuilder;
@@ -35,8 +37,8 @@ import com.kispoko.tome.mechanic.dice.RollModifier;
 import com.kispoko.tome.mechanic.dice.RollSummary;
 import com.kispoko.tome.util.UI;
 
-import static com.kispoko.tome.R.id.menuLeft;
-import static com.kispoko.tome.R.id.menuRight;
+import java.util.UUID;
+
 
 
 /**
@@ -51,6 +53,8 @@ public class DiceRollActivity extends AppCompatActivity
     private String       rollName;
     private String       rollDescription;
     private Summation    summation;
+
+    private UUID         actionWidgetId;
 
 
     private LinearLayout rollsView;
@@ -84,6 +88,11 @@ public class DiceRollActivity extends AppCompatActivity
         this.rollDescription = "";
         if (getIntent().hasExtra("roll_description")) {
             this.rollDescription = getIntent().getStringExtra("roll_description");
+        }
+
+        this.actionWidgetId = null;
+        if (getIntent().hasExtra("action_widget_id")) {
+            this.actionWidgetId = (UUID) getIntent().getSerializableExtra("action_widget_id");
         }
 
         // [3] Initialize UI components
@@ -679,13 +688,29 @@ public class DiceRollActivity extends AppCompatActivity
     // ** Options Navigation View
     // -----------------------------------------------------------------------------------------
 
-    private LinearLayout optionsNavigationView(Context context)
+    private LinearLayout optionsNavigationView(final Context context)
     {
         LinearLayout layout = this.optionsNavigationViewLayout(context);
 
-        layout.addView(ActivityCommon.navigationButtonView(R.string.widget_action,
-                                                           R.drawable.ic_nav_button_widget,
-                                                           context));
+        final LinearLayout actionWidgetButton =
+                ActivityCommon.navigationButtonView(R.string.widget_action,
+                                                    R.drawable.ic_nav_button_widget,
+                                                    context);
+        actionWidgetButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(context, ActionWidgetActivity.class);
+
+                if (actionWidgetId != null)
+                    intent.putExtra("widget_id", actionWidgetId);
+
+                context.startActivity(intent);
+            }
+        });
+
+        layout.addView(actionWidgetButton);
 
         return layout;
     }

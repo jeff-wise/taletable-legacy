@@ -39,7 +39,6 @@ public class Field implements Serializable
     private String          value;
 
     private Type            type;
-    private Mode            mode;
 
 
     // CONSTRUCTORS
@@ -50,18 +49,16 @@ public class Field implements Serializable
                   String fieldLabel,
                   String fieldDescription,
                   String fieldValue,
-                  Type type,
-                  Mode mode)
+                  Type type)
     {
-        this.modelId    = modelId;
+        this.modelId        = modelId;
 
-        this.name       = fieldName;
-        this.label      = fieldLabel;
+        this.name           = fieldName;
+        this.label          = fieldLabel;
         this.description    = fieldDescription;
-        this.value      = fieldValue;
+        this.value          = fieldValue;
 
-        this.type       = type;
-        this.mode       = mode;
+        this.type           = type;
     }
 
 
@@ -77,17 +74,16 @@ public class Field implements Serializable
                              String fieldLabel,
                              String fieldValue)
     {
-        return new Field(modelId, fieldName, fieldLabel, null, fieldValue, Type.TEXT, Mode.EDIT);
+        return new Field(modelId, fieldName, fieldLabel, null, fieldValue, Type.TEXT);
     }
 
 
-    public static Field textNew(UUID modelId,
-                                String fieldName,
-                                String fieldLabel,
-                                String fieldDescription)
+    public static Field model(UUID modelId,
+                              String fieldName,
+                              String fieldLabel,
+                              String fieldDescription)
     {
-        return new Field(modelId, fieldName, fieldLabel, fieldDescription,
-                         null, Type.TEXT, Mode.NEW);
+        return new Field(modelId, fieldName, fieldLabel, fieldDescription, null, Type.MODEL);
     }
 
 
@@ -101,7 +97,7 @@ public class Field implements Serializable
                              String fieldLabel,
                              String values)
     {
-        return new Field(modelId, fieldName, fieldLabel, null, values, Type.LIST, Mode.EDIT);
+        return new Field(modelId, fieldName, fieldLabel, null, values, Type.LIST);
     }
 
 
@@ -117,17 +113,13 @@ public class Field implements Serializable
         switch (this.type)
         {
             case TEXT:
-                switch (this.mode)
-                {
-                    case EDIT:
-                        return this.editTextFieldView(context);
-                    case NEW:
-                        return this.newTextFieldView(context);
-                }
+                return this.textFieldView(context);
+            case MODEL:
+                return this.modelFieldview(context);
             case LIST:
-                return this.editListFieldView(context);
+                return this.listFieldView(context);
             default:
-                return this.editTextFieldView(context);
+                return this.textFieldView(context);
         }
     }
 
@@ -191,136 +183,6 @@ public class Field implements Serializable
     // INTERNAL
     // -----------------------------------------------------------------------------------------
 
-    // > New View
-    // -----------------------------------------------------------------------------------------
-
-    // ** Fields
-    // -----------------------------------------------------------------------------------------
-
-    private LinearLayout newTextFieldView(Context context)
-    {
-        LinearLayout layout = this.newViewLayout(context);
-
-        // > Header
-        layout.addView(this.newTextFieldHeaderView(context));
-
-        // > Description
-        layout.addView(this.newTextFieldDescriptionView(context));
-
-        return layout;
-    }
-
-
-    // ** Layout
-    // -----------------------------------------------------------------------------------------
-
-    private LinearLayout newViewLayout(Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.VERTICAL;
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.margin.topDp         = 15f;
-        layout.margin.bottomDp      = 15f;
-        layout.margin.leftDp        = 10f;
-        layout.margin.rightDp       = 10f;
-
-        //layout.backgroundColor      = R.color.dark_blue_7;
-
-        return layout.linearLayout(context);
-    }
-
-
-    // ** Header
-    // -----------------------------------------------------------------------------------------
-
-    private LinearLayout newTextFieldHeaderView(Context context)
-    {
-        // [1] Declarations
-        // -------------------------------------------------------------------------------------
-
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-        ImageViewBuilder    icon   = new ImageViewBuilder();
-        TextViewBuilder     status = new TextViewBuilder();
-
-        // [2] Layout
-        // -------------------------------------------------------------------------------------
-
-        layout.orientation          = LinearLayout.HORIZONTAL;
-
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.gravity              = Gravity.CENTER_VERTICAL;
-
-        layout.child(icon)
-              .child(status);
-
-        // [3 A] Icon
-        // -------------------------------------------------------------------------------------
-
-        icon.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
-        icon.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        icon.margin.rightDp         = 10f;
-
-        // [3 B] Name
-        // -------------------------------------------------------------------------------------
-
-        status.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-        status.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        status.text                 = this.label();
-
-        status.font                 = Font.serifFontRegular(context);
-        status.color                = R.color.dark_blue_hl_1;
-        status.sizeSp               = 24f;
-
-
-        return layout.linearLayout(context);
-    }
-
-
-    private TextView newTextFieldDescriptionView(Context context)
-    {
-        TextViewBuilder name = new TextViewBuilder();
-
-        name.width          = LinearLayout.LayoutParams.MATCH_PARENT;
-        name.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        name.text           = this.description();
-
-        name.font           = Font.serifFontRegular(context);
-        name.color          = R.color.dark_blue_hl_5;
-        name.sizeSp         = 22f;
-
-        return name.textView(context);
-    }
-
-
-    private TextView newTextFieldValueView(Context context)
-    {
-        TextViewBuilder value = new TextViewBuilder();
-
-        value.width                 = LinearLayout.LayoutParams.MATCH_PARENT;
-        value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        value.text                  = this.value();
-
-        value.font                  = Font.serifFontRegular(context);
-        value.color                 = R.color.dark_blue_hl_5;
-        value.sizeSp                = 18f;
-
-        return value.textView(context);
-    }
-
-
-    // > Edit View
-    // -----------------------------------------------------------------------------------------
-
     // ** Fields
     // -----------------------------------------------------------------------------------------
 
@@ -329,15 +191,15 @@ public class Field implements Serializable
      * @param context The context.
      * @return The field Linear Layout.
      */
-    private LinearLayout editTextFieldView(final AppCompatActivity context)
+    private LinearLayout textFieldView(final AppCompatActivity context)
     {
-        LinearLayout layout = this.editViewLayout(context);
+        LinearLayout layout = this.viewLayout(context);
 
         // > Header
-        layout.addView(editFieldTypeView(R.drawable.ic_form_type_text, context));
+        layout.addView(fieldTypeView(R.drawable.ic_form_type_text, context));
 
         // > Data
-        layout.addView(editFieldDataView(context));
+        layout.addView(fieldDataView(context));
 
 
         final Field thisField = this;
@@ -358,19 +220,38 @@ public class Field implements Serializable
 
 
     /**
+     * Model Field View
+     * @param context
+     * @return
+     */
+    private LinearLayout modelFieldview(final AppCompatActivity context)
+    {
+        LinearLayout layout = this.viewLayout(context);
+
+        // > Type
+        layout.addView(this.fieldTypeView(R.drawable.ic_form_type_model, context));
+
+        // > Data
+        layout.addView(this.fieldDataView(context));
+
+        return layout;
+    }
+
+
+    /**
      * List Field View.
      * @param context The context.
      * @return The field Linear Layout.
      */
-    private LinearLayout editListFieldView(final AppCompatActivity context)
+    private LinearLayout listFieldView(final AppCompatActivity context)
     {
-        LinearLayout layout = editViewLayout(context);
+        LinearLayout layout = viewLayout(context);
 
         // > Type
-        layout.addView(editFieldTypeView(R.drawable.ic_form_type_list, context));
+        layout.addView(fieldTypeView(R.drawable.ic_form_type_list, context));
 
         // > Data
-        layout.addView(editFieldDataView(context));
+        layout.addView(fieldDataView(context));
 
         return layout;
     }
@@ -379,7 +260,7 @@ public class Field implements Serializable
     // ** Layout
     // -----------------------------------------------------------------------------------------
 
-    private LinearLayout editViewLayout(Context context)
+    private LinearLayout viewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -401,7 +282,7 @@ public class Field implements Serializable
     // -----------------------------------------------------------------------------------------
 
 
-    private ImageView editFieldTypeView(int iconId, Context context)
+    private ImageView fieldTypeView(int iconId, Context context)
     {
         ImageViewBuilder icon = new ImageViewBuilder();
 
@@ -420,21 +301,21 @@ public class Field implements Serializable
     // > Data View
     // -----------------------------------------------------------------------------------------
 
-    private LinearLayout editFieldDataView(Context context)
+    private LinearLayout fieldDataView(Context context)
     {
-        LinearLayout layout = editFieldDataViewLayout(context);
+        LinearLayout layout = fieldDataViewLayout(context);
 
         // > Name
-        layout.addView(this.editFieldNameView(context));
+        layout.addView(this.fieldNameView(context));
 
-        // > Value
-        layout.addView(this.editFieldValueTextView(context));
+        // > Value / Description
+        layout.addView(this.fieldValueTextView(context));
 
         return layout;
     }
 
 
-    private LinearLayout editFieldDataViewLayout(Context context)
+    private LinearLayout fieldDataViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -443,11 +324,13 @@ public class Field implements Serializable
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
+        layout.margin.rightDp       = 10f;
+
         return layout.linearLayout(context);
     }
 
 
-    private TextView editFieldNameView(Context context)
+    private TextView fieldNameView(Context context)
     {
         TextViewBuilder name = new TextViewBuilder();
 
@@ -464,7 +347,7 @@ public class Field implements Serializable
     }
 
 
-    private TextView editFieldValueTextView(Context context)
+    private TextView fieldValueTextView(Context context)
     {
         TextViewBuilder value = new TextViewBuilder();
 
@@ -473,11 +356,15 @@ public class Field implements Serializable
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        value.text          = this.value;
+        if (this.value() != null)
+            value.text      = this.value;
+        else
+            value.text      = this.description;
+
         value.color         = R.color.dark_blue_hl_8;
         value.font          = Font.serifFontRegular(context);
 
-        value.sizeSp        = 16f;
+        value.sizeSp        = 14f;
 
         value.margin.topDp  = 5f;
 
@@ -491,17 +378,8 @@ public class Field implements Serializable
     public enum Type
     {
         TEXT,
+        MODEL,
         LIST
-    }
-
-
-    // MODE
-    // -----------------------------------------------------------------------------------------
-
-    public enum Mode
-    {
-        EDIT,
-        NEW
     }
 
 

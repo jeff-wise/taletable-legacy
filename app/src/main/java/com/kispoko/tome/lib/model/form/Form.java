@@ -13,6 +13,8 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 
+import java.util.Map;
+
 
 /**
  * Form
@@ -68,7 +70,7 @@ public class Form
         header.text             = headerString.toUpperCase();
 
         header.font             = Font.serifFontBold(context);
-        header.color            = R.color.dark_blue_hl_6;
+        header.color            = R.color.dark_theme_primary_55;
         header.sizeSp           = 12f;
 
         header.margin.topDp     = 25f;

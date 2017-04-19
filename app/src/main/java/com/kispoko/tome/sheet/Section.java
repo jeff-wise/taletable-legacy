@@ -4,7 +4,7 @@ package com.kispoko.tome.sheet;
 
 import android.content.Context;
 
-import com.kispoko.tome.activity.sheet.PagePagerAdapter;
+import com.kispoko.tome.activity.sheet.page.PagePagerAdapter;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
 import com.kispoko.tome.lib.functor.Functor;

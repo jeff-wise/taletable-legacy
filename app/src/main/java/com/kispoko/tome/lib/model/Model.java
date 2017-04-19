@@ -141,7 +141,6 @@ public abstract class Model
 
     public static <A extends Model> List<com.kispoko.tome.lib.model.form.Field>
                                         fields(A model,
-                                               boolean isEditMode,
                                                Context context)
                   throws FunctorException
     {
@@ -158,21 +157,22 @@ public abstract class Model
         // [2 A] Add PRIMITIVE functor fields
         // -------------------------------------------------------------------------------------
 
-        for (PrimitiveFunctor primitiveFunctor : functorsTuple.getItem1())
-        {
-            if (isEditMode || primitiveFunctor.isRequired()) {
-                fields.add(primitiveFunctor.field(model.getId(), isEditMode, context));
-            }
+        for (PrimitiveFunctor primitiveFunctor : functorsTuple.getItem1()) {
+            fields.add(primitiveFunctor.field(model.getId(), context));
         }
 
-        // [2 B] Add COLLECTION functor fields
+        // [2 B] Add MODEL functor fields
         // -------------------------------------------------------------------------------------
 
-        for (CollectionFunctor collectionFunctor : functorsTuple.getItem4())
-        {
-            if (isEditMode || collectionFunctor.isRequired()) {
-                fields.add(collectionFunctor.field(model.getId(), isEditMode, context));
-            }
+        for (ModelFunctor modelFunctor : functorsTuple.getItem3()) {
+            fields.add(modelFunctor.field(model.getId(), context));
+        }
+
+        // [2 C] Add COLLECTION functor fields
+        // -------------------------------------------------------------------------------------
+
+        for (CollectionFunctor collectionFunctor : functorsTuple.getItem4()) {
+            fields.add(collectionFunctor.field(model.getId(), context));
         }
 
         return fields;

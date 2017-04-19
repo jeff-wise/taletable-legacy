@@ -337,6 +337,44 @@
     </string>
 
 
+    <!-- ACTIVITY: WIDGET: ACTION -->
+    <!-- ==================================================================================== -->
+
+    <string name="widget_action_field_action_name_label">Action Name</string>
+    <string name="widget_action_field_action_name_description">
+        The name of the action.
+    </string>
+
+    <string name="widget_action_field_action_result_label">Action Result</string>
+    <string name="widget_action_field_action_result_description">
+        A description of the result of the action.
+    </string>
+
+    <string name="widget_action_field_modifier_label">Modifier</string>
+    <string name="widget_action_field_modifier_description">
+        The numerical value applied to the action.
+    </string>
+
+    <string name="widget_action_field_description_label">Description</string>
+    <string name="widget_action_field_description_description">
+        The action description displayed on the character sheet.
+    </string>
+
+    <string name="widget_action_field_action_highlight_label">Action Highlight</string>
+    <string name="widget_action_field_action_highlight_description">
+        A highlighted value in the description on the character sheet.
+    </string>
+
+    <string name="widget_action_field_format_label">Format</string>
+    <string name="widget_action_field_format_description">
+        Formatting options.
+    </string>
+
+    <!--<string name="widget_action_field_widget_data_label">Format</string>-->
+    <!--<string name="widget_action_field_widget_data_description">-->
+        <!--Formatting options.-->
+    <!--</string>-->
+
     <!-- ACTIVITY: VALUE -->
     <!-- ==================================================================================== -->
 

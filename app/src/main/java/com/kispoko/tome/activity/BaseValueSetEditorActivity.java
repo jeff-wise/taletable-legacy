@@ -53,7 +53,7 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
     // ------------------------------------------------------------------------------------------
 
     private String                      valueSetName;
-    private BaseValueSet valueSet;
+    private BaseValueSet                valueSet;
 
     private Map<String,Field>           fieldByName;
     private Map<String,LinearLayout>    fieldViewByName;
@@ -252,7 +252,7 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
 
         // GENERATE fields from Value Set
         try {
-            fields = Model.fields(this.valueSet, true, this);
+            fields = Model.fields(this.valueSet, this);
         }
         catch (FunctorException exception) {
             ApplicationFailure.functor(exception);

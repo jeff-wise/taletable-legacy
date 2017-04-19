@@ -516,7 +516,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
     // FORM
     // --------------------------------------------------------------------------------------
 
-    public Field field(UUID modelId, boolean isEditMode, Context context)
+    public Field field(UUID modelId, Context context)
     {
         // > Field Data
 
@@ -537,22 +537,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.descriptionId() != null)
             fieldDescription = context.getString(this.descriptionId());
 
-        String fieldValue = null;
-        if (!this.isNull())
-            fieldValue = this.value.toString();
-
-        // > Field Options
-        FieldOptions fieldOptions;
-        if (isEditMode)
-            fieldOptions = FieldOptions.newField(this.isRequired());
-        else
-            fieldOptions = new FieldOptions();
-
-        if (isEditMode)
-            return Field.text(modelId, fieldName, fieldLabel, fieldValue);
-        else
-            return Field.textNew(modelId, fieldName, fieldLabel, fieldDescription);
-
+        return Field.text(modelId, fieldName, fieldLabel, fieldDescription);
     }
 
 }

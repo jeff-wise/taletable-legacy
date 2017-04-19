@@ -28,7 +28,7 @@ public class Font
     {
         if (serifFontRegular == null)
             serifFontRegular = Typeface.createFromAsset(context.getAssets(),
-                                                        "fonts/Lora-Regular.ttf");
+                                                        "fonts/Merriweather-Regular.ttf");
         return serifFontRegular;
     }
 
@@ -37,7 +37,7 @@ public class Font
     {
         if (serifFontBold == null)
             serifFontBold = Typeface.createFromAsset(context.getAssets(),
-                                                    "fonts/Lora-Bold.ttf");
+                                                    "fonts/Merriweather-Bold.ttf");
         return serifFontBold;
     }
 
@@ -46,7 +46,7 @@ public class Font
     {
         if (serifFontItalic == null)
             serifFontItalic = Typeface.createFromAsset(context.getAssets(),
-                                                    "fonts/Lora-Italic.ttf");
+                                                    "fonts/Merriweather-Italic.ttf");
         return serifFontItalic;
     }
 
@@ -55,7 +55,7 @@ public class Font
     {
         if (serifFontBoldItalic == null)
             serifFontBoldItalic = Typeface.createFromAsset(context.getAssets(),
-                                                    "fonts/Lora-BoldItalic.ttf");
+                                                    "fonts/Merriweather-BoldItalic.ttf");
         return serifFontBoldItalic;
     }
 

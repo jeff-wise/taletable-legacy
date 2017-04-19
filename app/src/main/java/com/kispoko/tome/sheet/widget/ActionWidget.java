@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.DiceRollActivity;
+import com.kispoko.tome.activity.sheet.DiceRollActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -67,10 +67,13 @@ public class ActionWidget extends Widget
 
     private ModelFunctor<WidgetData>            widgetData;
     private ModelFunctor<ActionWidgetFormat>    format;
+
     private PrimitiveFunctor<String>            description;
     private PrimitiveFunctor<String>            actionHighlight;
+
     private PrimitiveFunctor<String>            actionName;
     private PrimitiveFunctor<String>            actionResult;
+
     private ModelFunctor<NumberVariable>        modifier;
 
 
@@ -88,6 +91,8 @@ public class ActionWidget extends Widget
         this.actionName         = new PrimitiveFunctor<>(null, String.class);
         this.actionResult       = new PrimitiveFunctor<>(null, String.class);
         this.modifier           = ModelFunctor.empty(NumberVariable.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -111,6 +116,7 @@ public class ActionWidget extends Widget
         this.modifier           = ModelFunctor.full(modifier, NumberVariable.class);
 
         this.initializeActionWidget();
+        this.initializeFunctors();
     }
 
 
@@ -355,6 +361,48 @@ public class ActionWidget extends Widget
     }
 
 
+    private void initializeFunctors()
+    {
+        // Action Name
+        this.actionName.setName("action_name");
+        this.actionName.setLabelId(R.string.widget_action_field_action_name_label);
+        this.actionName.setDescriptionId(R.string.widget_action_field_action_name_description);
+
+        // Action Result
+        this.actionResult.setName("action_result");
+        this.actionResult.setLabelId(R.string.widget_action_field_action_result_label);
+        this.actionResult.setDescriptionId(R.string.widget_action_field_action_result_description);
+
+        // Modifier
+        this.modifier.setName("modifier");
+        this.modifier.setLabelId(R.string.widget_action_field_modifier_label);
+        this.modifier.setDescriptionId(R.string.widget_action_field_modifier_description);
+
+        // Description
+        this.description.setName("description");
+        this.description.setLabelId(R.string.widget_action_field_description_label);
+        this.description.setDescriptionId(R.string.widget_action_field_modifier_description);
+
+        // Action Highlight
+        this.actionHighlight.setName("action_highlight");
+        this.actionHighlight.setLabelId(R.string.widget_action_field_action_highlight_label);
+        this.actionHighlight
+                    .setDescriptionId(R.string.widget_action_field_action_highlight_description);
+
+        // Format
+        this.format.setName("format");
+        this.format.setLabelId(R.string.widget_action_field_format_label);
+        this.format.setDescriptionId(R.string.widget_action_field_format_description);
+
+        // Widget Data
+//        this.widgetData.setName("widget_data");
+//        this.widgetData.setLabelId(R.string.value_set_field_values_label);
+//        this.widgetData.setDescriptionId(R.string.value_set_field_values_description);
+//
+
+    }
+
+
     // > Views
     // -----------------------------------------------------------------------------------------
 
@@ -579,6 +627,8 @@ public class ActionWidget extends Widget
 
             if (!this.actionResult.isNull())
                 intent.putExtra("roll_description", this.actionResult());
+
+            intent.putExtra("action_widget_id", this.getId());
 
             context.startActivity(intent);
         }

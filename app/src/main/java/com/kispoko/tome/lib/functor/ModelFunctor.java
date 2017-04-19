@@ -2,14 +2,17 @@
 package com.kispoko.tome.lib.functor;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.orm.ORM;
 import com.kispoko.tome.lib.database.query.ModelQueryParameters;
 import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.model.form.Field;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 
 /**
@@ -280,6 +283,32 @@ public class ModelFunctor<A extends Model> extends Functor<A>
             }
 
         }.execute();
+    }
+
+
+    // FORM
+    // --------------------------------------------------------------------------------------
+
+    public Field field(UUID modelId, Context context)
+    {
+        // ** Name
+        String fieldName = this.name();
+
+        // ** Label
+        String fieldLabel = "";
+        if (this.label() != null)
+            fieldLabel = this.label();
+        else if (this.labelId() != null)
+            fieldLabel = context.getString(this.labelId());
+
+        String fieldDescription = "";
+        if (this.description() != null)
+            fieldDescription = this.description();
+        else if (this.descriptionId() != null)
+            fieldDescription = context.getString(this.descriptionId());
+
+
+        return Field.model(modelId, fieldName, fieldLabel, fieldDescription);
     }
 
 

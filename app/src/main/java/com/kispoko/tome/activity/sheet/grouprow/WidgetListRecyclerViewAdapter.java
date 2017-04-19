@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.ActionWidgetActivity;
+import com.kispoko.tome.activity.sheet.widget.ActionWidgetActivity;
 import com.kispoko.tome.activity.BooleanWidgetActivity;
 import com.kispoko.tome.activity.ImageWidgetActivity;
 import com.kispoko.tome.activity.NumberWidgetActivity;
