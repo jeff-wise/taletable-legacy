@@ -148,6 +148,9 @@
     <string name="widget_table">Table Widget</string>
     <string name="widget_text">Text Widget</string>
 
+    <string name="number_variable">Number Variable</string>
+    <string name="text_variable">Text Variable</string>
+
     <string name="column">Column</string>
 
 
@@ -528,27 +531,44 @@
         or "damage" variables.
     </string>
 
-    <string name="text_variable_field_value_label">Value</string>
-    <string name="text_variable_field_value_description">
-        The variable\'s value. It could be a text value, a value chosen from a value set, or a
-        computation that creates the value from other values.
+    <string name="variable_field_tags_label">Tags</string>
+    <string name="variable_field_tags_description">
+        Tags associate a variable to a category so multiple variables may be referenced at one
+        time, even if they do not yet exist.
     </string>
 
-    <string name="number_variable_field_value_label">Value</string>
-    <string name="number_variable_field_value_description">
-        The variable\'s value. It could be a number value, a summation of other variables, or a
-        computation that creates the value from other values.
+    <string name="variable_field_kind_label">Value Type</string>
+    <string name="variable_field_kind_description">
+        The type of the variable\'s value e.g. a literal value or a value generated from a program.
     </string>
 
-    <string name="boolean_variable_field_value_label">Value</string>
-    <string name="boolean_variable_field_value_description">
-        The variable\'s value. It could be a true/false value, or acomputation that creates the
-        value from other values.
+
+    <!-- ACTIVITY: VARIABLE: NUMBER -->
+    <!-- ==================================================================================== -->
+
+    <string name="number_variable_field_value_literal_label">Value</string>
+    <string name="number_variable_field_value_literal_description">
+        A an ordinary number e.g. 7, 1000, 5.3.
     </string>
 
-    <string name="dice_variable_field_value_label">Value</string>
-    <string name="dice_variable_field_value_description">
-        The dice roll value.
+    <string name="number_variable_field_value_variable_label">Value</string>
+    <string name="number_variable_field_value_variable_description">
+        The value is the value of a different numerical variable.
+    </string>
+
+    <string name="number_variable_field_value_program_label">Value</string>
+    <string name="number_variable_field_value_program_description">
+        The result of a calculation i.e a program.
+    </string>
+
+    <string name="number_variable_field_value_value_label">Value</string>
+    <string name="number_variable_field_value_value_description">
+        A value from a value set.
+    </string>
+
+    <string name="number_variable_field_value_summation_label">Value</string>
+    <string name="number_variable_field_value_summation_description">
+        A summation of numerical values from different sources.
     </string>
 
     <!-- ACTIVITY: MANAGE SHEETS -->

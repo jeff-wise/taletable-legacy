@@ -13,7 +13,7 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 
-import java.util.Map;
+import static android.R.attr.value;
 
 
 /**
@@ -51,7 +51,7 @@ public class Form
         divider.width           = LinearLayout.LayoutParams.MATCH_PARENT;
         divider.heightDp        = 1;
 
-        divider.backgroundColor = R.color.dark_blue_11;
+        divider.backgroundColor = R.color.dark_theme_primary_86;
 
         return divider.linearLayout(context);
     }
@@ -72,6 +72,11 @@ public class Form
         header.font             = Font.serifFontBold(context);
         header.color            = R.color.dark_theme_primary_55;
         header.sizeSp           = 12f;
+
+        header.shadowColor      = R.color.dark_theme_primary_89;
+        header.shadowRadius     = 6f;
+        header.shadowDx         = 3f;
+        header.shadowDy         = 3f;
 
         header.margin.topDp     = 25f;
         header.margin.bottomDp  = 5f;

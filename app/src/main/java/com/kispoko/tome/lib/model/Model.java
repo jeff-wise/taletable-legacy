@@ -3,7 +3,7 @@ package com.kispoko.tome.lib.model;
 
 
 import android.content.Context;
-import android.widget.LinearLayout;
+import android.util.Log;
 
 import com.kispoko.tome.lib.functor.CollectionFunctor;
 import com.kispoko.tome.lib.functor.Functor;
@@ -13,14 +13,16 @@ import com.kispoko.tome.lib.functor.OptionFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.functor.error.FunctorAccessError;
 import com.kispoko.tome.lib.functor.error.UninitializedFunctorError;
-import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.util.tuple.Tuple4;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -139,7 +141,7 @@ public abstract class Model
     // FORM
     // -----------------------------------------------------------------------------------------
 
-    public static <A extends Model> List<com.kispoko.tome.lib.model.form.Field>
+    public static <A extends Model> Collection<com.kispoko.tome.lib.model.form.Field>
                                         fields(A model,
                                                Context context)
                   throws FunctorException
@@ -152,32 +154,100 @@ public abstract class Model
                List<ModelFunctor<?>>,
                List<CollectionFunctor<?>>> functorsTuple = Model.propertyFunctors(model);
 
-        List<com.kispoko.tome.lib.model.form.Field> fields = new ArrayList<>();
+        List<Functor<?>> functors = new ArrayList<>();
+        functors.addAll(functorsTuple.getItem1());
+        functors.addAll(functorsTuple.getItem3());
+        functors.addAll(functorsTuple.getItem4());
+
+        Map<String, com.kispoko.tome.lib.model.form.Field> fieldByName = new HashMap<>();
+
+        Map<String, List<String>> caseMap = new HashMap<>();
 
         // [2 A] Add PRIMITIVE functor fields
         // -------------------------------------------------------------------------------------
 
-        for (PrimitiveFunctor primitiveFunctor : functorsTuple.getItem1()) {
-            fields.add(primitiveFunctor.field(model.getId(), context));
+        for (PrimitiveFunctor primitiveFunctor : functorsTuple.getItem1())
+        {
+            com.kispoko.tome.lib.model.form.Field field =
+                    primitiveFunctor.field(model.getId(), context);
+            fieldByName.put(field.name(), field);
         }
 
-        // [2 B] Add MODEL functor fields
+        // [2 B] Add OPTION functor fields
         // -------------------------------------------------------------------------------------
 
-        for (ModelFunctor modelFunctor : functorsTuple.getItem3()) {
-            fields.add(modelFunctor.field(model.getId(), context));
+        for (OptionFunctor optionFunctor : functorsTuple.getItem2())
+        {
+            com.kispoko.tome.lib.model.form.Field field =
+                                                optionFunctor.field(model.getId(), context);
+            fieldByName.put(field.name(), field);
         }
 
-        // [2 C] Add COLLECTION functor fields
+        // [2 C] Add MODEL functor fields
         // -------------------------------------------------------------------------------------
 
-        for (CollectionFunctor collectionFunctor : functorsTuple.getItem4()) {
-            fields.add(collectionFunctor.field(model.getId(), context));
+        for (ModelFunctor modelFunctor : functorsTuple.getItem3())
+        {
+            com.kispoko.tome.lib.model.form.Field field =
+                                            modelFunctor.field(model.getId(), context);
+            fieldByName.put(field.name(), field);
         }
 
-        return fields;
+        // [2 D] Add COLLECTION functor fields
+        // -------------------------------------------------------------------------------------
+
+        for (CollectionFunctor collectionFunctor : functorsTuple.getItem4())
+        {
+            com.kispoko.tome.lib.model.form.Field field =
+                                            collectionFunctor.field(model.getId(), context);
+            fieldByName.put(field.name(), field);
+        }
+
+
+        // [3] Process cases
+        // -------------------------------------------------------------------------------------
+
+        for (Functor functor : functors)
+        {
+            if (functor.isCaseType())
+            {
+                if (!caseMap.containsKey(functor.parentTypeName()))
+                    caseMap.put(functor.parentTypeName(), new ArrayList<String>());
+
+                List<String> cases = caseMap.get(functor.parentTypeName());
+                cases.add(functor.caseName());
+            }
+        }
+
+        for (String parentTypeName : caseMap.keySet())
+        {
+            com.kispoko.tome.lib.model.form.Field parentField = fieldByName.get(parentTypeName);
+
+            if (parentField == null)
+                continue;
+
+            List<String> cases = caseMap.get(parentTypeName);
+
+            for (String _case : cases)
+            {
+                Log.d("***MODEL", "case " + _case);
+                String fieldName = parentTypeName + "_" + _case;
+                com.kispoko.tome.lib.model.form.Field field = fieldByName.get(fieldName);
+
+                if (field == null)
+                    continue;
+
+                Log.d("***MODEL", "add case field");
+
+                parentField.addCaseField(_case, field);
+
+                fieldByName.remove(_case);
+            }
+        }
+
+
+        return fieldByName.values();
     }
-
 
     // UPDATE
     // -----------------------------------------------------------------------------------------

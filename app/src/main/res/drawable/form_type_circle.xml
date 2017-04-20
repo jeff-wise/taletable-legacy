@@ -12,7 +12,7 @@
         android:color="@color/dark_blue_5"/>
 
     <size
-        android:width="50dp"
-        android:height="50dp"/>
+        android:width="46dp"
+        android:height="46dp"/>
 
 </shape>

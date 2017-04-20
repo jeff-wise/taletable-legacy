@@ -33,6 +33,7 @@ import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.tuple.Tuple2;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +119,7 @@ public class TextValueEditorActivity extends AppCompatActivity
         // -------------------------------------------------------------------------------------
 
         this.fieldByName = new HashMap<>();
-        List<Field> fields = new ArrayList<>();
+        Collection<Field> fields = new ArrayList<>();
 
         try
         {

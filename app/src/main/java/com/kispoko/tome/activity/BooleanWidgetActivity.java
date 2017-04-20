@@ -38,7 +38,7 @@ public class BooleanWidgetActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_widget);
+        setContentView(R.layout.activity_form_basic);
 
         // > Read Parameters
         if (getIntent().hasExtra("widget")) {
@@ -111,7 +111,7 @@ public class BooleanWidgetActivity extends AppCompatActivity
 
     private void initializeView()
     {
-        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.widget_content);
+        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.content);
         contentLayout.addView(formView());
     }
 

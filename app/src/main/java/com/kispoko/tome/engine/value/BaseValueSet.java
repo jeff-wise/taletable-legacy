@@ -495,7 +495,6 @@ public class BaseValueSet extends Model
         this.label.setName("label");
         this.label.setLabelId(R.string.value_set_field_name_label);
         this.label.setDescriptionId(R.string.value_set_field_name_description);
-        this.label.setIsRequired(true);
 
         // Label Singular
         this.labelSingular.setName("label_singular");
@@ -506,7 +505,6 @@ public class BaseValueSet extends Model
         this.description.setName("description");
         this.description.setLabelId(R.string.value_set_field_description_label);
         this.description.setDescriptionId(R.string.value_set_field_description_description);
-        this.description.setIsRequired(true);
 
         // Value Type
         this.valueType.setName("value_type");

@@ -2,9 +2,6 @@
 package com.kispoko.tome.engine.summation;
 
 
-
-import android.util.Log;
-
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.summation.term.IntegerTerm;
 import com.kispoko.tome.engine.summation.term.TermSummary;

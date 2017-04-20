@@ -2,14 +2,17 @@
 package com.kispoko.tome.lib.functor;
 
 
+import android.content.Context;
+
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.SQL;
 import com.kispoko.tome.lib.database.sql.SQLValue;
+import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.util.EnumUtils;
 
 import java.io.Serializable;
-
+import java.util.UUID;
 
 
 /**
@@ -35,7 +38,7 @@ public class OptionFunctor<A extends Enum> extends Functor<A>
                          Class<A> valueClass,
                          boolean isRequired)
     {
-        super(value, isRequired);
+        super(value);
 
         this.valueClass       = valueClass;
     }
@@ -115,4 +118,37 @@ public class OptionFunctor<A extends Enum> extends Functor<A>
         }
     }
 
+
+
+    // FORM
+    // --------------------------------------------------------------------------------------
+
+    public Field field(UUID modelId, Context context)
+    {
+        // > Field Data
+
+        // ** Name
+        String fieldName = this.name();
+
+        // ** Label
+        String fieldLabel = "";
+        if (this.label() != null)
+            fieldLabel = this.label();
+        else if (this.labelId() != null)
+            fieldLabel = context.getString(this.labelId());
+
+        // ** Description
+        String fieldDescription = "";
+        if (this.description() != null)
+            fieldDescription = this.description();
+        else if (this.descriptionId() != null)
+            fieldDescription = context.getString(this.descriptionId());
+
+        // ** Value
+        String valueString = null;
+        if (this.value != null)
+            valueString = this.value.name().toUpperCase();
+
+        return Field.option(modelId, fieldName, fieldLabel, fieldDescription, valueString);
+    }
 }

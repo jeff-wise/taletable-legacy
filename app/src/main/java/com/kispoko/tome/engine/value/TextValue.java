@@ -250,7 +250,6 @@ public class TextValue extends Model
         this.value.setName("value");
         this.value.setLabelId(R.string.value_field_value_label);
         this.value.setDescriptionId(R.string.value_field_value_description);
-        this.value.setIsRequired(true);
 
         // Description
         this.description.setName("description");

@@ -5,6 +5,7 @@ package com.kispoko.tome.lib.functor;
 import java.io.Serializable;
 
 
+
 /**
  * Value
  */
@@ -33,12 +34,14 @@ public abstract class Functor<A> implements Serializable
     private   String            description;
     private   Integer           descriptionId;
 
+    private   String            parentTypeName;
+    private   String            caseName;
+
     private   OnUpdateListener  onUpdateListener;
 
     private   boolean           isDefault;
 
     private   boolean           isSaved;
-    private   boolean           isRequired;
 
 
     // CONSTRUCTORS
@@ -56,27 +59,11 @@ public abstract class Functor<A> implements Serializable
         this.description    = null;
         this.descriptionId  = null;
 
-        this.isDefault      = false;
-        this.isSaved        = false;
-        this.isRequired     = false;
-    }
-
-
-    public Functor(A value, boolean isRequired)
-    {
-        this.value          = value;
-
-        this.name           = null;
-
-        this.label          = null;
-        this.labelId        = null;
-
-        this.description    = null;
-        this.descriptionId  = null;
+        this.parentTypeName = null;
+        this.caseName       = null;
 
         this.isDefault      = false;
         this.isSaved        = false;
-        this.isRequired     = isRequired;
     }
 
 
@@ -126,6 +113,16 @@ public abstract class Functor<A> implements Serializable
     public void setIsDefault(boolean isDefault)
     {
         this.isDefault = isDefault;
+    }
+
+
+    // ** Case Of
+    // --------------------------------------------------------------------------------------
+
+    public void caseOf(String parentTypeName, String caseName)
+    {
+        this.parentTypeName = parentTypeName;
+        this.caseName       = caseName;
     }
 
 
@@ -269,24 +266,25 @@ public abstract class Functor<A> implements Serializable
     }
 
 
-    // ** Is Required
-    // --------------------------------------------------------------------------------------
+    // ** Case
+    // -----------------------------------------------------------------------------------------
 
-    public boolean isRequired()
+    public boolean isCaseType()
     {
-        return this.isRequired;
+        return this.parentTypeName != null;
     }
 
 
-    /**
-     * Set the functor's isRequired flag.
-     * @param isRequired Is required?
-     */
-    public void setIsRequired(boolean isRequired)
+    public String parentTypeName()
     {
-        this.isRequired = isRequired;
+        return this.parentTypeName;
     }
 
+
+    public String caseName()
+    {
+        return this.caseName;
+    }
 
 
     // LISTENERS

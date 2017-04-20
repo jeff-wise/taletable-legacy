@@ -28,8 +28,8 @@ import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,6 +53,7 @@ public class ActionWidgetActivity extends AppCompatActivity
     private Map<String,Field>           fieldByName;
     private Map<String,LinearLayout>    fieldViewByName;
 
+
     // ACTIVITY API
     // -----------------------------------------------------------------------------------------
 
@@ -63,7 +64,7 @@ public class ActionWidgetActivity extends AppCompatActivity
 
         // [1] Set activity view
         // -------------------------------------------------------------------------------------
-        setContentView(R.layout.activity_widget);
+        setContentView(R.layout.activity_form_basic);
 
         // [2] Read Parameters
         // -------------------------------------------------------------------------------------
@@ -128,7 +129,7 @@ public class ActionWidgetActivity extends AppCompatActivity
 
     private void initializeView()
     {
-        LinearLayout contentView = (LinearLayout) findViewById(R.id.widget_content);
+        LinearLayout contentView = (LinearLayout) findViewById(R.id.content);
         contentView.removeAllViews();
         contentView.addView(this.view(this));
     }
@@ -147,7 +148,7 @@ public class ActionWidgetActivity extends AppCompatActivity
         if (this.actionWidget == null)
             return;
 
-        List<Field> fields = new ArrayList<>();
+        Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
         try {
@@ -258,6 +259,7 @@ public class ActionWidgetActivity extends AppCompatActivity
             {
                 Intent intent = new Intent(ActionWidgetActivity.this,
                                            NumberVariableActivity.class);
+                intent.putExtra("number_variable", actionWidget.modifierVariable());
                 startActivity(intent);
             }
         });

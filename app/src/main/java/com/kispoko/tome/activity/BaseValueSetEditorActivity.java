@@ -36,6 +36,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -248,7 +250,7 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
         // [3] Get & Index Fields
         // -------------------------------------------------------------------------------------
 
-        List<Field> fields = new ArrayList<>();
+        Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
         try {

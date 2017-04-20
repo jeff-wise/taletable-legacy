@@ -19,7 +19,6 @@ import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
 import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
-import com.kispoko.tome.lib.model.form.FieldOptions;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.sheet.DividerType;
 import com.kispoko.tome.sheet.SectionType;
@@ -69,32 +68,10 @@ public class PrimitiveFunctor<A> extends Functor<A>
     // --------------------------------------------------------------------------------------
 
     public PrimitiveFunctor(A value,
-                            Class<A> valueClass,
-                            boolean isRequired)
-    {
-        super(value, isRequired);
-        this.valueClass       = valueClass;
-    }
-
-
-    public PrimitiveFunctor(A value,
                             Class<A> valueClass)
     {
         super(value);
         this.valueClass       = valueClass;
-    }
-
-
-    /**
-     * Create a primitive functor that is required to have a non-null value before being saved.
-     * @param value The value.
-     * @param valueClass The value's class object.
-     * @param <A> The value type.
-     * @return The "required" Primitive Functor.
-     */
-    public static <A> PrimitiveFunctor required(A value, Class<A> valueClass)
-    {
-        return new PrimitiveFunctor<>(value, valueClass, true);
     }
 
 
@@ -253,16 +230,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.getValue() instanceof String[])
         {
             String arrayString = TextUtils.join("***", ((String[]) this.getValue()));
-            return SQLValue.newText(arrayString);
-        }
-        else if (this.getValue() instanceof ProgramValueType[])
-        {
-            ProgramValueType[] programValueTypeArray = (ProgramValueType[]) this.getValue();
-            List<String> programValueTypeStrings = new ArrayList<>();
-            for (int i = 0; i < programValueTypeArray.length; i++) {
-                programValueTypeStrings.add(programValueTypeArray[i].name().toLowerCase());
-            }
-            String arrayString = TextUtils.join("***", programValueTypeStrings);
             return SQLValue.newText(arrayString);
         }
         else if (this.getValue() instanceof ProgramValueType[])
@@ -505,6 +472,33 @@ public class PrimitiveFunctor<A> extends Functor<A>
     }
 
 
+    // > To String
+    // --------------------------------------------------------------------------------------
+
+    public String valueString()
+    {
+        if (this.value instanceof Boolean)
+        {
+            Boolean booleanValue = (Boolean) this.value;
+            if (booleanValue)
+                return "Yes";
+            else
+                return "No";
+        }
+        else if (this.value instanceof String[])
+        {
+            String[] stringArray = (String[]) this.value;
+            if (stringArray.length == 0)
+                return null;
+            return TextUtils.join(", ", stringArray);
+        }
+        else
+        {
+            return this.value.toString();
+        }
+    }
+
+
     // ON UPDATE LISTENER
     // --------------------------------------------------------------------------------------
 
@@ -537,7 +531,12 @@ public class PrimitiveFunctor<A> extends Functor<A>
         else if (this.descriptionId() != null)
             fieldDescription = context.getString(this.descriptionId());
 
-        return Field.text(modelId, fieldName, fieldLabel, fieldDescription);
+        // ** Value
+        String valueString = null;
+        if (this.value != null)
+            valueString = this.valueString();
+
+        return Field.text(modelId, fieldName, fieldLabel, fieldDescription, valueString);
     }
 
 }

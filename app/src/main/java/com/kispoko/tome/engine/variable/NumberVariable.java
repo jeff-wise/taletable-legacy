@@ -2,9 +2,8 @@
 package com.kispoko.tome.engine.variable;
 
 
-import android.util.Log;
-
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.NumberValue;
@@ -18,6 +17,7 @@ import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.lib.database.DatabaseException;
+import com.kispoko.tome.lib.functor.OptionFunctor;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.lib.database.sql.SQLValue;
@@ -65,7 +65,7 @@ public class NumberVariable extends Variable
     private ModelFunctor<ValueReference>    valueReference;
     private ModelFunctor<Summation>         summation;
 
-    private PrimitiveFunctor<Kind>          kind;
+    private OptionFunctor<Kind>             kind;
 
     private PrimitiveFunctor<Boolean>       isNamespaced;
 
@@ -96,13 +96,15 @@ public class NumberVariable extends Variable
         this.valueReference     = ModelFunctor.empty(ValueReference.class);
         this.summation          = ModelFunctor.empty(Summation.class);
 
-        this.kind               = new PrimitiveFunctor<>(null, Kind.class);
+        this.kind               = new OptionFunctor<>(null, Kind.class);
 
         this.isNamespaced       = new PrimitiveFunctor<>(null, Boolean.class);
 
         this.tags               = new PrimitiveFunctor<>(null, String[].class);
 
         this.reactiveValue      = null;
+
+        this.initializeFunctors();
     }
 
 
@@ -134,7 +136,7 @@ public class NumberVariable extends Variable
         this.valueReference         = ModelFunctor.full(null, ValueReference.class);
         this.summation              = ModelFunctor.full(null, Summation.class);
 
-        this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
+        this.kind                   = new OptionFunctor<>(kind, Kind.class);
 
         if (isNamespaced == null) isNamespaced = false;
         this.isNamespaced           = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
@@ -168,6 +170,7 @@ public class NumberVariable extends Variable
                 break;
         }
 
+        this.initializeFunctors();
         this.initializeNumberVariable();
     }
 
@@ -711,6 +714,65 @@ public class NumberVariable extends Variable
         else {
             this.reactiveValue = null;
         }
+    }
+
+
+    private void initializeFunctors()
+    {
+        // Name
+        this.name.setName("name");
+        this.name.setLabelId(R.string.variable_field_name_label);
+        this.name.setDescriptionId(R.string.variable_field_name_description);
+
+        // Label
+        this.label.setName("label");
+        this.label.setLabelId(R.string.variable_field_label_label);
+        this.label.setDescriptionId(R.string.variable_field_label_description);
+
+        // Is Namespaced
+        this.isNamespaced.setName("is_namespaced");
+        this.isNamespaced.setLabelId(R.string.variable_field_is_namespaced_label);
+        this.isNamespaced.setDescriptionId(R.string.variable_field_is_namespaced_description);
+
+        // Tags
+        this.tags.setName("tags");
+        this.tags.setLabelId(R.string.variable_field_tags_label);
+        this.tags.setDescriptionId(R.string.variable_field_tags_description);
+
+        // Kind
+        this.kind.setName("kind");
+        this.kind.setLabelId(R.string.variable_field_kind_label);
+        this.kind.setDescriptionId(R.string.variable_field_kind_description);
+
+        // Literal Value
+        this.literalValue.setName("kind_literal");
+        this.literalValue.setLabelId(R.string.number_variable_field_value_literal_label);
+        this.literalValue.setDescriptionId(R.string.number_variable_field_value_literal_description);
+        this.literalValue.caseOf("kind", "literal");
+
+        // Variable Value
+        this.variableReference.setName("kind_variable");
+        this.variableReference.setLabelId(R.string.number_variable_field_value_variable_label);
+        this.variableReference.setDescriptionId(R.string.number_variable_field_value_variable_description);
+        this.variableReference.caseOf("kind", "variable");
+
+        // Program Value
+        this.invocationValue.setName("kind_program");
+        this.invocationValue.setLabelId(R.string.number_variable_field_value_program_label);
+        this.invocationValue.setDescriptionId(R.string.number_variable_field_value_program_description);
+        this.invocationValue.caseOf("kind", "program");
+
+        // Value (From Value Set) Value
+        this.valueReference.setName("kind_value");
+        this.valueReference.setLabelId(R.string.number_variable_field_value_value_label);
+        this.valueReference.setDescriptionId(R.string.number_variable_field_value_value_description);
+        this.valueReference.caseOf("kind", "value");
+
+        // Summation Value
+        this.summation.setName("kind_summation");
+        this.summation.setLabelId(R.string.number_variable_field_value_summation_label);
+        this.summation.setDescriptionId(R.string.number_variable_field_value_summation_description);
+        this.summation.caseOf("kind", "summation");
     }
 
 

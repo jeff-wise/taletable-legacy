@@ -4,6 +4,7 @@ package com.kispoko.tome.lib.model.form;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,8 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -31,14 +34,16 @@ public class Field implements Serializable
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private UUID            modelId;
+    private UUID                modelId;
 
-    private String          name;
-    private String          label;
-    private String          description;
-    private String          value;
+    private String              name;
+    private String              label;
+    private String              description;
+    private String              value;
 
-    private Type            type;
+    private Type                type;
+
+    private Map<String,Field>   caseMap;
 
 
     // CONSTRUCTORS
@@ -59,11 +64,14 @@ public class Field implements Serializable
         this.value          = fieldValue;
 
         this.type           = type;
+
+        this.caseMap        = new HashMap<>();
     }
 
 
     /**
      * Create a text field.
+     * @param modelId The model ID.
      * @param fieldName The field name.
      * @param fieldLabel The field label.
      * @param fieldValue The field value as a string.
@@ -72,12 +80,42 @@ public class Field implements Serializable
     public static Field text(UUID modelId,
                              String fieldName,
                              String fieldLabel,
+                             String fieldDescription,
                              String fieldValue)
     {
-        return new Field(modelId, fieldName, fieldLabel, null, fieldValue, Type.TEXT);
+        return new Field(modelId, fieldName, fieldLabel,
+                         fieldDescription, fieldValue, Type.TEXT);
     }
 
 
+    /**
+     * Create an option field.
+     * @param modelId The model ID.
+     * @param fieldName The field name.
+     * @param fieldLabel The field label.
+     * @param fieldDescription The field description.
+     * @param fieldValue The field value.
+     * @return The option field.
+     */
+    public static Field option(UUID modelId,
+                               String fieldName,
+                               String fieldLabel,
+                               String fieldDescription,
+                               String fieldValue)
+    {
+        return new Field(modelId, fieldName, fieldLabel,
+                         fieldDescription, fieldValue, Type.OPTION);
+    }
+
+
+    /**
+     * Create a model field.
+     * @param modelId The model ID.
+     * @param fieldName The field name.
+     * @param fieldLabel The field label.
+     * @param fieldDescription The field description.
+     * @return The model Field.
+     */
     public static Field model(UUID modelId,
                               String fieldName,
                               String fieldLabel,
@@ -114,6 +152,8 @@ public class Field implements Serializable
         {
             case TEXT:
                 return this.textFieldView(context);
+            case OPTION:
+                return this.optionFieldview(context);
             case MODEL:
                 return this.modelFieldview(context);
             case LIST:
@@ -154,6 +194,12 @@ public class Field implements Serializable
     }
 
 
+    public void addCaseField(String caseName, Field field)
+    {
+        this.caseMap.put(caseName, field);
+    }
+
+
     // ** Value
     // -----------------------------------------------------------------------------------------
 
@@ -183,7 +229,7 @@ public class Field implements Serializable
     // INTERNAL
     // -----------------------------------------------------------------------------------------
 
-    // ** Fields
+    // > Field Views
     // -----------------------------------------------------------------------------------------
 
     /**
@@ -193,9 +239,9 @@ public class Field implements Serializable
      */
     private LinearLayout textFieldView(final AppCompatActivity context)
     {
-        LinearLayout layout = this.viewLayout(context);
+        LinearLayout layout = this.fieldViewLayout(context);
 
-        // > Header
+        // > Type View
         layout.addView(fieldTypeView(R.drawable.ic_form_type_text, context));
 
         // > Data
@@ -219,6 +265,20 @@ public class Field implements Serializable
     }
 
 
+    private LinearLayout optionFieldview(final AppCompatActivity context)
+    {
+        LinearLayout layout = this.optionFieldViewLayout(context);
+
+        // > Option Field View
+        layout.addView(this.optionFieldViewOptionView(context));
+
+        // > Case Field View
+        layout.addView(this.caseFieldView(context));
+
+        return layout;
+    }
+
+
     /**
      * Model Field View
      * @param context
@@ -226,7 +286,7 @@ public class Field implements Serializable
      */
     private LinearLayout modelFieldview(final AppCompatActivity context)
     {
-        LinearLayout layout = this.viewLayout(context);
+        LinearLayout layout = this.fieldViewLayout(context);
 
         // > Type
         layout.addView(this.fieldTypeView(R.drawable.ic_form_type_model, context));
@@ -245,7 +305,7 @@ public class Field implements Serializable
      */
     private LinearLayout listFieldView(final AppCompatActivity context)
     {
-        LinearLayout layout = viewLayout(context);
+        LinearLayout layout = fieldViewLayout(context);
 
         // > Type
         layout.addView(fieldTypeView(R.drawable.ic_form_type_list, context));
@@ -257,10 +317,13 @@ public class Field implements Serializable
     }
 
 
+    // > View Components
+    // -----------------------------------------------------------------------------------------
+
     // ** Layout
     // -----------------------------------------------------------------------------------------
 
-    private LinearLayout viewLayout(Context context)
+    private LinearLayout fieldViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
@@ -278,9 +341,8 @@ public class Field implements Serializable
     }
 
 
-    // > Type View
+    // ** Type View
     // -----------------------------------------------------------------------------------------
-
 
     private ImageView fieldTypeView(int iconId, Context context)
     {
@@ -298,7 +360,7 @@ public class Field implements Serializable
     }
 
 
-    // > Data View
+    // ** Data View
     // -----------------------------------------------------------------------------------------
 
     private LinearLayout fieldDataView(Context context)
@@ -309,7 +371,7 @@ public class Field implements Serializable
         layout.addView(this.fieldNameView(context));
 
         // > Value / Description
-        layout.addView(this.fieldValueTextView(context));
+        layout.addView(this.fieldInfoView(context));
 
         return layout;
     }
@@ -324,7 +386,7 @@ public class Field implements Serializable
         layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        layout.margin.rightDp       = 10f;
+        layout.margin.rightDp       = 12f;
 
         return layout.linearLayout(context);
     }
@@ -341,13 +403,13 @@ public class Field implements Serializable
 
         name.font                = Font.serifFontRegular(context);
         name.color               = R.color.gold_light;
-        name.sizeSp              = 16f;
+        name.sizeSp              = 15f;
 
         return name.textView(context);
     }
 
 
-    private TextView fieldValueTextView(Context context)
+    private TextView fieldInfoView(Context context)
     {
         TextViewBuilder value = new TextViewBuilder();
 
@@ -372,12 +434,77 @@ public class Field implements Serializable
     }
 
 
+    // > Option View
+    // -----------------------------------------------------------------------------------------
+
+    private LinearLayout optionFieldViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        layout.orientation      = LinearLayout.VERTICAL;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout optionFieldViewOptionView(Context context)
+    {
+        LinearLayout layout = this.fieldViewLayout(context);
+
+        // > Type
+        layout.addView(this.fieldTypeView(R.drawable.ic_form_type_option, context));
+
+        // > Data
+        layout.addView(this.fieldDataView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout caseFieldView(Context context)
+    {
+        LinearLayout layout = this.caseFieldViewLayout(context);
+
+        for (String caseString : this.caseMap.keySet()) {
+            Log.d("***FIELD", "case " + caseString);
+        }
+
+        if (this.value() != null)
+        {
+            Field caseField = this.caseMap.get(this.value().toLowerCase());
+            Log.d("***FIELD", "value " + this.value().toLowerCase());
+            if (caseField != null)
+                layout.addView(caseField.view((AppCompatActivity) context));
+        }
+
+        return layout;
+    }
+
+
+    private LinearLayout caseFieldViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        layout.backgroundResource   = R.drawable.bg_form_case_field;
+        layout.backgroundColor      = R.color.dark_theme_primary_86;
+
+        return layout.linearLayout(context);
+    }
+
+
     // TYPE
     // -----------------------------------------------------------------------------------------
 
     public enum Type
     {
         TEXT,
+        OPTION,
         MODEL,
         LIST
     }
