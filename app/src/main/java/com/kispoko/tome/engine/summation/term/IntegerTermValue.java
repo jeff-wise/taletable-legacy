@@ -14,8 +14,6 @@ import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.exception.UnionException;
 import com.kispoko.tome.util.EnumUtils;
-import com.kispoko.tome.lib.database.DatabaseException;
-import com.kispoko.tome.lib.database.sql.SQLValue;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.util.tuple.Tuple2;
 import com.kispoko.tome.lib.functor.ModelFunctor;
@@ -57,7 +55,7 @@ public class IntegerTermValue extends Model
 
     private PrimitiveFunctor<String>        name;
 
-    private PrimitiveFunctor<Kind>          kind;
+    private PrimitiveFunctor<Type>          type;
 
 
     // CONSTRUCTORS
@@ -72,11 +70,11 @@ public class IntegerTermValue extends Model
 
         this.name               = new PrimitiveFunctor<>(null, String.class);
 
-        this.kind               = new PrimitiveFunctor<>(null, Kind.class);
+        this.type = new PrimitiveFunctor<>(null, Type.class);
     }
 
 
-    private IntegerTermValue(UUID id, Object value, Kind kind, String name)
+    private IntegerTermValue(UUID id, Object value, Type type, String name)
     {
         this.id                 = id;
 
@@ -85,10 +83,10 @@ public class IntegerTermValue extends Model
 
         this.name               = new PrimitiveFunctor<>(name, String.class);
 
-        this.kind               = new PrimitiveFunctor<>(kind, Kind.class);
+        this.type = new PrimitiveFunctor<>(type, Type.class);
 
         // > Set the value depending on the case
-        switch (kind)
+        switch (type)
         {
             case LITERAL:
                 this.integerValue.setValue((Integer) value);
@@ -109,7 +107,7 @@ public class IntegerTermValue extends Model
      */
     private static IntegerTermValue asLiteral(UUID id, Integer value, String name)
     {
-        return new IntegerTermValue(id, value, Kind.LITERAL, name);
+        return new IntegerTermValue(id, value, Type.LITERAL, name);
     }
 
 
@@ -121,7 +119,7 @@ public class IntegerTermValue extends Model
      */
     private static IntegerTermValue asVariable(UUID id, VariableReference variableReference)
     {
-        return new IntegerTermValue(id, variableReference, Kind.VARIABLE, null);
+        return new IntegerTermValue(id, variableReference, Type.VARIABLE, null);
     }
 
 
@@ -136,9 +134,9 @@ public class IntegerTermValue extends Model
     {
         UUID id   = UUID.randomUUID();
 
-        Kind kind = Kind.fromYaml(yaml.atKey("type"));
+        Type type = Type.fromYaml(yaml.atKey("type"));
 
-        switch (kind)
+        switch (type)
         {
             case LITERAL:
                 Integer value = yaml.atKey("value").getInteger();
@@ -198,12 +196,12 @@ public class IntegerTermValue extends Model
     // ------------------------------------------------------------------------------------------
 
     /**
-     * The integer term value kind.
-     * @return The kind.
+     * The integer term value type.
+     * @return The type.
      */
-    private Kind kind()
+    public Type type()
     {
-        return this.kind.getValue();
+        return this.type.getValue();
     }
 
 
@@ -229,10 +227,10 @@ public class IntegerTermValue extends Model
      */
     public VariableReference variableReference()
     {
-        if (this.kind() != Kind.VARIABLE) {
+        if (this.type() != Type.VARIABLE) {
             ApplicationFailure.union(
                     UnionException.invalidCase(
-                            new InvalidCaseError("variable", this.kind.toString())));
+                            new InvalidCaseError("variable", this.type.toString())));
         }
 
         return this.variableReference.getValue();
@@ -248,7 +246,7 @@ public class IntegerTermValue extends Model
      */
     public String name()
     {
-        switch (this.kind())
+        switch (this.type())
         {
             case LITERAL:
                 return this.name.getValue();
@@ -273,7 +271,7 @@ public class IntegerTermValue extends Model
     public Integer value()
            throws VariableException
     {
-        switch (this.kind.getValue())
+        switch (this.type.getValue())
         {
             case LITERAL:
                 return this.integerValue.getValue();
@@ -292,7 +290,7 @@ public class IntegerTermValue extends Model
      */
     public VariableReference variableDependency()
     {
-        switch (this.kind.getValue())
+        switch (this.type.getValue())
         {
             case LITERAL:
                 return null;
@@ -309,7 +307,7 @@ public class IntegerTermValue extends Model
 
     public List<Tuple2<String,Integer>> components()
     {
-        switch (this.kind())
+        switch (this.type())
         {
             case LITERAL:
                 List<Tuple2<String,Integer>> components = new ArrayList<>();
@@ -415,43 +413,28 @@ public class IntegerTermValue extends Model
     // KIND
     // ------------------------------------------------------------------------------------------
 
-    public enum Kind
+    public enum Type
     {
 
         LITERAL,
         VARIABLE;
 
 
-        public static Kind fromString(String kindString)
+        public static Type fromString(String kindString)
                       throws InvalidDataException
         {
-            return EnumUtils.fromString(Kind.class, kindString);
+            return EnumUtils.fromString(Type.class, kindString);
         }
 
 
-        public static Kind fromYaml(YamlParser yaml)
+        public static Type fromYaml(YamlParser yaml)
                       throws YamlParseException
         {
             String kindString = yaml.getString();
             try {
-                return Kind.fromString(kindString);
+                return Type.fromString(kindString);
             } catch (InvalidDataException e) {
                 throw YamlParseException.invalidEnum(new InvalidEnumError(kindString));
-            }
-        }
-
-
-        public static Kind fromSQLValue(SQLValue sqlValue)
-                      throws DatabaseException
-        {
-            String enumString = "";
-            try {
-                enumString = sqlValue.getText();
-                Kind kind = Kind.fromString(enumString);
-                return kind;
-            } catch (InvalidDataException e) {
-                throw DatabaseException.invalidEnum(
-                        new com.kispoko.tome.lib.database.error.InvalidEnumError(enumString));
             }
         }
 

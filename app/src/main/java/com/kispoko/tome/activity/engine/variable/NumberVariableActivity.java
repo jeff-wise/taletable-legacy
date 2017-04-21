@@ -3,15 +3,19 @@ package com.kispoko.tome.activity.engine.variable;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.SummationActivity;
+import com.kispoko.tome.activity.sheet.widget.ActionWidgetActivity;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
@@ -224,29 +228,33 @@ public class NumberVariableActivity extends AppCompatActivity
         // > Click Events
         // -------------------------------------------------------------------------------------
 
+        this.setValueListeners();
+
 
         return layout;
     }
 
-//
-//    private void setModifierFieldClickListener()
-//    {
-//        LinearLayout modifierFieldView = this.fieldViewByName.get("modifier");
-//
-//        if (modifierFieldView == null)
-//            return;
-//
-//        modifierFieldView.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                Intent intent = new Intent(ActionWidgetActivity.this,
-//                                           NumberVariableActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//    }
+
+    private void setValueListeners()
+    {
+        Field kindField = this.fieldByName.get("kind");
+
+        if (kindField == null)
+            return;
+
+        // > Summation Value
+        kindField.setCaseOnClickListener("summation", new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(NumberVariableActivity.this,
+                                           SummationActivity.class);
+                intent.putExtra("summation", numberVariable.summation());
+                startActivity(intent);
+            }
+        });
+    }
 
 
     private void addFieldView(String fieldName, LinearLayout layout)

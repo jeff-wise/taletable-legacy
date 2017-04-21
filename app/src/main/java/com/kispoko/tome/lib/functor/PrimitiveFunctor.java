@@ -11,7 +11,6 @@ import com.kispoko.tome.engine.program.ProgramValueType;
 import com.kispoko.tome.engine.program.statement.ParameterType;
 import com.kispoko.tome.engine.summation.term.BooleanTermValue;
 import com.kispoko.tome.engine.summation.term.DiceRollTermValue;
-import com.kispoko.tome.engine.summation.term.IntegerTermValue;
 import com.kispoko.tome.engine.summation.term.TermType;
 import com.kispoko.tome.engine.value.ValueType;
 import com.kispoko.tome.engine.variable.BooleanVariable;
@@ -432,20 +431,15 @@ public class PrimitiveFunctor<A> extends Functor<A>
             BooleanVariable.Kind kind = BooleanVariable.Kind.fromSQLValue(sqlValue);
             this.setValue((A) kind);
         }
-        else if (this.valueClass.isAssignableFrom(IntegerTermValue.Kind.class))
-        {
-            IntegerTermValue.Kind kind = IntegerTermValue.Kind.fromSQLValue(sqlValue);
-            this.setValue((A) kind);
-        }
         else if (this.valueClass.isAssignableFrom(BooleanTermValue.Kind.class))
         {
             BooleanTermValue.Kind kind = BooleanTermValue.Kind.fromSQLValue(sqlValue);
             this.setValue((A) kind);
         }
-        else if (this.valueClass.isAssignableFrom(DiceRollTermValue.Kind.class))
+        else if (this.valueClass.isAssignableFrom(DiceRollTermValue.Type.class))
         {
-            DiceRollTermValue.Kind kind = DiceRollTermValue.Kind.fromSQLValue(sqlValue);
-            this.setValue((A) kind);
+            DiceRollTermValue.Type type = DiceRollTermValue.Type.fromSQLValue(sqlValue);
+            this.setValue((A) type);
         }
         else if (this.valueClass.isAssignableFrom(TermType.class))
         {

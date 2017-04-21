@@ -45,6 +45,8 @@ public class Field implements Serializable
 
     private Map<String,Field>   caseMap;
 
+    private LinearLayout        view;
+
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
@@ -142,27 +144,58 @@ public class Field implements Serializable
     // API
     // -----------------------------------------------------------------------------------------
 
+    // > View
+    // -----------------------------------------------------------------------------------------
+
     /**
      * The field view.
      * @return The field Linear Layout.
      */
     public LinearLayout view(AppCompatActivity context)
     {
+        if (this.view != null)
+            return this.view;
+
         switch (this.type)
         {
             case TEXT:
-                return this.textFieldView(context);
+                this.view = this.textFieldView(context);
+                break;
             case OPTION:
-                return this.optionFieldview(context);
+                this.view = this.optionFieldview(context);
+                break;
             case MODEL:
-                return this.modelFieldview(context);
+                this.view = this.modelFieldview(context);
+                break;
             case LIST:
-                return this.listFieldView(context);
+                this.view = this.listFieldView(context);
+                break;
             default:
-                return this.textFieldView(context);
+                this.view = this.textFieldView(context);
         }
+
+        return this.view;
     }
 
+
+    public void setOnClickListener(View.OnClickListener listener)
+    {
+        if (this.view != null)
+            this.view.setOnClickListener(listener);
+    }
+
+
+    public void setCaseOnClickListener(String caseName, View.OnClickListener listener)
+    {
+        Field caseField = this.caseMap.get(caseName);
+
+        if (caseField != null)
+            caseField.setOnClickListener(listener);
+    }
+
+
+    // > State
+    // -----------------------------------------------------------------------------------------
 
     /**
      * The field name.
@@ -476,8 +509,10 @@ public class Field implements Serializable
         {
             Field caseField = this.caseMap.get(this.value().toLowerCase());
             Log.d("***FIELD", "value " + this.value().toLowerCase());
-            if (caseField != null)
+            if (caseField != null) {
                 layout.addView(caseField.view((AppCompatActivity) context));
+                Log.d("***FIELD", "adding case field view");
+            }
         }
 
         return layout;

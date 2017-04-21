@@ -96,6 +96,7 @@
     <string name="sort_values_ascending">Sort Values (Ascending)</string>
     <string name="sort_values_descending">Sort Values (Descending)</string>
     <string name="edit_values">Edit Values</string>
+    <string name="edit_value">Edit Value</string>
     <string name="style_widget">Style Widget</string>
     <string name="edit_widget">Edit Widget</string>
 
@@ -117,6 +118,8 @@
     <string name="not_available">N/A</string>
 
     <string name="dice_roller">Dice Roller</string>
+
+    <string name="summation_editor">Summation Editor</string>
 
 
     <!-- DIALOG -->
@@ -150,6 +153,10 @@
 
     <string name="number_variable">Number Variable</string>
     <string name="text_variable">Text Variable</string>
+
+    <string name="conditional_value">Conditional Value</string>
+    <string name="dice_roll">Dice Roll</string>
+    <string name="number">Number</string>
 
     <string name="column">Column</string>
 

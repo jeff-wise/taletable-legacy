@@ -2,23 +2,34 @@
 package com.kispoko.tome.activity;
 
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.summation.Summation;
+import com.kispoko.tome.engine.summation.SummationException;
+import com.kispoko.tome.engine.summation.term.DiceRollTerm;
+import com.kispoko.tome.engine.summation.term.DiceRollTermValue;
+import com.kispoko.tome.engine.summation.term.IntegerTerm;
+import com.kispoko.tome.engine.summation.term.IntegerTermValue;
 import com.kispoko.tome.engine.summation.term.TermUnion;
-import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.Font;
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.util.UI;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.R.attr.value;
 
 
 /**
@@ -26,6 +37,12 @@ import com.kispoko.tome.lib.ui.TextViewBuilder;
  */
 public class SummationActivity extends AppCompatActivity
 {
+
+    // PROPERTEIS
+    // ------------------------------------------------------------------------------------------
+
+    private Summation summation;
+
 
     // ACTIVITY LIFECYCLE EVENTS
     // ------------------------------------------------------------------------------------------
@@ -35,28 +52,21 @@ public class SummationActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        // [1] Set activity view
+        // --------------------------------------------------------------------------------------
         setContentView(R.layout.activity_summation);
 
-        // Get the parameters
+        // [2] Read parameters
         // --------------------------------------------------------------------------------------
-
-        String    widgetName = null;
-        Summation summation  = null;
-
-        if (getIntent().hasExtra("widget_name")) {
-            widgetName = getIntent().getStringExtra("widget_name");
-        }
-
+        this.summation = null;
         if (getIntent().hasExtra("summation")) {
-            summation = (Summation) getIntent().getSerializableExtra("summation");
+            this.summation = (Summation) getIntent().getSerializableExtra("summation");
         }
 
-        // Build the UI
-        // --------------------------------------------------------------------------------------
-
-        initializeToolbar(widgetName);
-
-        initializeView(summation);
+        // [3] Initialize UI components
+        // -------------------------------------------------------------------------------------
+        this.initializeToolbar();
+        this.initializeView();
     }
 
 
@@ -71,144 +81,129 @@ public class SummationActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_choose_template, menu);
+        getMenuInflater().inflate(R.menu.empty, menu);
         return true;
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id)
-        {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // UI
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Initialize the toolbar.
      */
-    private void initializeToolbar(String widgetName)
+    private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        UI.initializeToolbar(this, false, false);
 
         // > Set the title
-        String title = widgetName;
+        // -------------------------------------------------------------------------------------
         TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+        titleView.setText(R.string.summation_editor);
     }
 
 
     /**
      * Initialize the template list view.
      */
-    private void initializeView(Summation summation)
+    private void initializeView()
     {
-        ScrollView scrollView = (ScrollView) findViewById(R.id.summation_view);
-        scrollView.addView(view(summation));
+        ScrollView scrollView = (ScrollView) findViewById(R.id.content);
+        scrollView.addView(this.view(this));
     }
 
 
-    /**
-     * The summation view.
-     * @param summation The summation.
-     * @return The Linear Layout.
-     */
-    private LinearLayout view(Summation summation)
+    // STATE
+    // -----------------------------------------------------------------------------------------
+
+    public List<TermUnion> summationTerms()
     {
-        // > Layout
-        LinearLayout layout = summationLayout();
+        List<TermUnion> terms = new ArrayList<>();
 
-        // > Add Total
-        layout.addView(totalView(summation));
+        if (this.summation != null)
+            terms = this.summation.terms();
 
-        // > Add Summation Terms
-        layout.addView(termsView(summation));
+        return terms;
+    }
+
+
+    // VIEWS
+    // -----------------------------------------------------------------------------------------
+
+
+    private LinearLayout view(Context context)
+    {
+        LinearLayout layout = this.viewLayout(context);
+
+        // > Header
+        layout.addView(this.headerView(context));
+
+        // > Components View
+        layout.addView(this.termListView(context));
 
         return layout;
     }
 
 
-    /**
-     * The summation layout.
-     * @return The Linear Layout.
-     */
-    private LinearLayout summationLayout()
+    private LinearLayout viewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        layout.backgroundResource   = R.color.dark_blue_9;
+        layout.orientation      = LinearLayout.VERTICAL;
 
-        return layout.linearLayout(this);
+        layout.backgroundColor  = R.color.dark_theme_primary_84;
+
+        layout.padding.topDp    = 10f;
+
+        return layout.linearLayout(context);
     }
 
 
-    private TextView totalView(Summation summation)
+    // > Header View
+    // -----------------------------------------------------------------------------------------
+
+    private LinearLayout headerView(Context context)
     {
-        // [1] Declarations
-        // --------------------------------------------------------------------------------------
+        LinearLayout layout = this.headerViewLayout(context);
 
-        TextViewBuilder total = new TextViewBuilder();
-
-        String totalString = summation.value().toString();
-
-        // [2] Attributes
-        // --------------------------------------------------------------------------------------
-
-        total.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-        total.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        total.layoutGravity     = Gravity.CENTER_HORIZONTAL;
-
-        total.text              = totalString;
-        total.size              = R.dimen.summation_total_text_size;
-        total.font              = Font.serifFontRegular(this);
-        total.color             = R.color.dark_blue_hlx_5;
-
-        total.padding.top       = R.dimen.summation_total_padding_vert;
-        total.padding.bottom    = R.dimen.summation_total_padding_vert;
-
-        return total.textView(this);
+        return layout;
     }
 
 
-    /**
-     * The terms view.
-     * @param summation The summation.
-     * @return The Linear Layout.
-     */
-    private LinearLayout termsView(Summation summation)
+    private LinearLayout headerViewLayout(Context context)
     {
-        LinearLayout layout = termsLayout();
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        for (TermUnion termUnion : summation.termsSorted())
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.orientation      = LinearLayout.VERTICAL;
+
+        return layout.linearLayout(context);
+    }
+
+
+    // > Term List View
+    // -----------------------------------------------------------------------------------------
+
+    private LinearLayout termListView(Context context)
+    {
+        LinearLayout layout = this.termListViewLayout(context);
+
+        for (TermUnion termUnion : this.summationTerms())
         {
             switch (termUnion.type())
             {
+                case CONDITIONAL:
+                    break;
+                case DICE_ROLL:
+                    layout.addView(this.diceRollTermView(termUnion.diceRollTerm(), context));
+                    break;
                 case INTEGER:
-//                    List<Tuple2<Integer,String>> termSummaries = termUnion.integerTerm().summary();
-//                    for (Tuple2<Integer,String> summary : termSummaries) {
-//                        layout.addView(integerTermLayout(summary.getItem1(), summary.getItem2()));
-//                    }
+                    layout.addView(this.integerTermView(termUnion.integerTerm(), context));
                     break;
             }
         }
@@ -217,79 +212,249 @@ public class SummationActivity extends AppCompatActivity
     }
 
 
-    /**
-     * The term list layout.
-     * @return The Linear Layout.
-     */
-    private LinearLayout termsLayout()
+    private LinearLayout termListViewLayout(Context context)
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.orientation      = LinearLayout.VERTICAL;
         layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        return layout.linearLayout(this);
+        layout.orientation      = LinearLayout.VERTICAL;
+
+        return layout.linearLayout(context);
     }
 
 
-    private LinearLayout integerTermLayout(Integer termValue, String termDescription)
+    // > Term Views
+    // -----------------------------------------------------------------------------------------
+
+    private LinearLayout termViewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.orientation          = LinearLayout.VERTICAL;
+
+        layout.backgroundResource   = R.drawable.bg_term_view;
+        layout.backgroundColor      = R.color.dark_theme_primary_80;
+
+        layout.margin.bottomDp      = 12f;
+        layout.margin.leftDp        = 8f;
+        layout.margin.rightDp       = 8f;
+
+        //layout.padding.leftDp       = 8f;
+        // layout.padding.rightDp      = 9f;
+        layout.padding.topDp        = 10f;
+        //layout.padding.bottomDp     = 9f;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private TextView termHeaderView(String label, Context context)
+    {
+        TextViewBuilder header = new TextViewBuilder();
+
+        header.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
+        header.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        header.text             = label.toUpperCase();
+
+        header.font             = Font.serifFontBoldItalic(context);
+        header.color            = R.color.dark_theme_primary_7;
+        header.sizeSp           = 14f;
+
+        header.padding.leftDp   = 10f;
+        header.padding.rightDp  = 10f;
+
+        return header.textView(context);
+    }
+
+
+    private TextView termValueTypeView(String valueTypeString, Context context)
+    {
+        TextViewBuilder label = new TextViewBuilder();
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.text              = valueTypeString;
+
+        label.font              = Font.serifFontRegular(context);
+        label.color             = R.color.dark_theme_primary_45;
+        label.sizeSp            = 15.5f;
+
+        label.margin.topDp      = 10f;
+
+        label.padding.leftDp    = 10f;
+        label.padding.rightDp   = 10f;
+
+        return label.textView(context);
+    }
+
+
+    private LinearLayout termCurrentValueView(String valueString, Context context)
     {
         // [1] Declarations
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
-        LinearLayoutBuilder layout      = new LinearLayoutBuilder();
-        TextViewBuilder     value       = new TextViewBuilder();
-        TextViewBuilder     description = new TextViewBuilder();
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+        ImageViewBuilder    icon   = new ImageViewBuilder();
+        TextViewBuilder     value  = new TextViewBuilder();
 
-        // [2 A] Layout
-        // --------------------------------------------------------------------------------------
+        // [2] Layout
+        // -------------------------------------------------------------------------------------
 
-        layout.orientation      = LinearLayout.HORIZONTAL;
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-        layout.gravity          = Gravity.CENTER_VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 
-        layout.backgroundColor  = R.color.dark_blue_8;
-        layout.padding.left     = R.dimen.summation_term_padding_horz;
-        layout.padding.right    = R.dimen.summation_term_padding_horz;
-        layout.padding.top      = R.dimen.summation_term_padding_vert;
-        layout.padding.bottom   = R.dimen.summation_term_padding_vert;
-        layout.margin.bottom    = R.dimen.summation_term_margin_bottom;
+        layout.orientation          = LinearLayout.HORIZONTAL;
 
-        layout.child(value)
-              .child(description);
+        layout.backgroundResource   = R.drawable.bg_dialog_footer;
+        layout.backgroundColor      = R.color.dark_theme_primary_81;
 
-        // [2 B] Value
-        // --------------------------------------------------------------------------------------
+        layout.padding.topDp        = 7f;
+        layout.padding.bottomDp     = 7f;
+        layout.padding.leftDp       = 2.5f;
+        layout.padding.rightDp      = 10f;
 
-        value.width             = 0;
+        layout.margin.topDp         = 10f;
+
+        layout.gravity              = Gravity.CENTER_VERTICAL;
+
+        layout.child(icon)
+              .child(value);
+
+        // [3 A] Icon
+        // -------------------------------------------------------------------------------------
+
+        icon.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
+        icon.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        icon.image              = R.drawable.ic_term_current_value;
+        icon.color              = R.color.dark_theme_primary_50;
+
+        icon.margin.rightDp     = 2f;
+
+        // [3 B] Value
+        // -------------------------------------------------------------------------------------
+
+        value.width             = LinearLayout.LayoutParams.MATCH_PARENT;
         value.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-        value.weight            = 1.0f;
 
-        value.backgroundColor   = R.color.dark_blue_8;
+        value.text              = valueString;
 
-        value.text              = termValue.toString();
-        value.font              = Font.sansSerifFontBold(this);
-        value.color             = R.color.dark_blue_hl_1;
-        value.size              = R.dimen.summation_term_value_text_size;
+        value.font              = Font.serifFontNumeric(context);
+        value.color             = R.color.purple_medium;
+        value.sizeSp            = 19f;
 
-        // [2 C] Description
-        // --------------------------------------------------------------------------------------
-
-        description.width           = 0;
-        description.height          = LinearLayout.LayoutParams.WRAP_CONTENT;
-        description.weight          = 3.0f;
-
-        description.backgroundColor = R.color.dark_blue_8;
-
-        description.text            = termDescription;
-        description.font            = Font.sansSerifFontRegular(this);
-        description.color           = R.color.dark_blue_hl_5;
-        description.size            = R.dimen.summation_term_description_text_size;
-
-        return layout.linearLayout(this);
+        return layout.linearLayout(context);
     }
 
 
+    // ** Integer Term
+    // -----------------------------------------------------------------------------------------
+
+    private LinearLayout integerTermView(IntegerTerm integerTerm, Context context)
+    {
+        LinearLayout layout = this.termViewLayout(context);
+
+        // > Header
+        // -------------------------------------------------------------------------------------
+
+        String headerLabel = context.getString(R.string.number);
+        layout.addView(this.termHeaderView(headerLabel, context));
+
+        // > Value Type
+        // -------------------------------------------------------------------------------------
+
+        IntegerTermValue.Type termValueType = integerTerm.termValueType();
+        StringBuilder typeStringBuilder = new StringBuilder();
+
+        if (termValueType != null)
+        {
+            switch (termValueType)
+            {
+                case LITERAL:
+                    typeStringBuilder.append("Literal");
+                    break;
+                case VARIABLE:
+                    typeStringBuilder.append("Variable");
+                    break;
+            }
+
+            typeStringBuilder.append(" Value");
+        }
+
+        layout.addView(this.termValueTypeView(typeStringBuilder.toString(), context));
+
+        // > Current Value
+        // -------------------------------------------------------------------------------------
+
+        String valueString = "";
+        try {
+            valueString = integerTerm.value().toString();
+        }
+        catch (SummationException exception) {
+            ApplicationFailure.summation(exception);
+        }
+        layout.addView(this.termCurrentValueView(valueString, context));
+
+        return layout;
+    }
+
+
+    // ** Dice Roll Term
+    // -----------------------------------------------------------------------------------------
+
+    private LinearLayout diceRollTermView(DiceRollTerm diceRollTerm, Context context)
+    {
+        LinearLayout layout = this.termViewLayout(context);
+
+        // > Header
+        // -------------------------------------------------------------------------------------
+
+        String headerLabel = context.getString(R.string.dice_roll);
+        layout.addView(this.termHeaderView(headerLabel, context));
+
+        // > Value Type
+        // -------------------------------------------------------------------------------------
+
+        DiceRollTermValue.Type termValueType = diceRollTerm.termValueType();
+        StringBuilder typeStringBuilder = new StringBuilder();
+
+        if (termValueType != null)
+        {
+            switch (termValueType)
+            {
+                case LITERAL:
+                    typeStringBuilder.append("Literal");
+                    break;
+                case VARIABLE:
+                    typeStringBuilder.append("Variable");
+                    break;
+            }
+
+            typeStringBuilder.append(" Value");
+        }
+
+        layout.addView(this.termValueTypeView(typeStringBuilder.toString(), context));
+
+        // > Current Value
+        // -------------------------------------------------------------------------------------
+
+        String valueString = "";
+        try {
+            valueString = diceRollTerm.diceRoll().toString(true);
+        }
+        catch (SummationException exception) {
+            ApplicationFailure.summation(exception);
+        }
+
+        layout.addView(this.termCurrentValueView(valueString, context));
+
+        return layout;
+    }
 }

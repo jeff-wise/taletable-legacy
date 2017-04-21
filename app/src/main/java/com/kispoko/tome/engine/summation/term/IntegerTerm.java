@@ -148,6 +148,12 @@ public class IntegerTerm extends Term implements Serializable
     }
 
 
+    public IntegerTermValue.Type termValueType()
+    {
+        return this.termValue().type();
+    }
+
+
     // > Term
     // ------------------------------------------------------------------------------------------
 

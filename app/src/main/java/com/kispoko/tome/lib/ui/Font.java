@@ -17,6 +17,8 @@ public class Font
     private static Typeface serifFontBold;
     private static Typeface serifFontItalic;
     private static Typeface serifFontBoldItalic;
+    private static Typeface serifFontNumeric;
+
     private static Typeface sansSerifFontRegular;
     private static Typeface sansSerifFontBold;
 
@@ -57,6 +59,15 @@ public class Font
             serifFontBoldItalic = Typeface.createFromAsset(context.getAssets(),
                                                     "fonts/Merriweather-BoldItalic.ttf");
         return serifFontBoldItalic;
+    }
+
+
+    public static Typeface serifFontNumeric(Context context)
+    {
+        if (serifFontNumeric == null)
+            serifFontNumeric = Typeface.createFromAsset(context.getAssets(),
+                                                            "fonts/Lora-Regular.ttf");
+        return serifFontNumeric;
     }
 
 

@@ -165,7 +165,7 @@ public class DiceRollTerm extends Term implements Serializable
     {
         List<VariableReference> variableReferences = new ArrayList<>();
 
-        if (this.termValue().kind() == DiceRollTermValue.Kind.VARIABLE) {
+        if (this.termValue().type() == DiceRollTermValue.Type.VARIABLE) {
             VariableReference variableReference = this.termValue().variable();
             if (variableReference != null)
                 variableReferences.add(variableReference);
@@ -192,6 +192,14 @@ public class DiceRollTerm extends Term implements Serializable
     public DiceRollTermValue termValue()
     {
         return this.termValue.getValue();
+    }
+
+
+    public DiceRollTermValue.Type termValueType()
+    {
+        if (this.termValue() != null)
+            return this.termValue().type();
+        return null;
     }
 
 
