@@ -67,12 +67,13 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <LinearLayout
+            <ScrollView
                 android:id="@+id/content"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </LinearLayout>
+                android:layout_height="match_parent"
+                android:background="@color/dark_theme_primary_84">
+            </ScrollView>
 
         </LinearLayout>
 

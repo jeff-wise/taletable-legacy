@@ -158,6 +158,8 @@
     <string name="dice_roll">Dice Roll</string>
     <string name="number">Number</string>
 
+    <string name="dice_roll_term_editor">Dice Roll Term Editor</string>
+
     <string name="column">Column</string>
 
 
@@ -865,6 +867,31 @@
     </string>
 
 
+    <!-- ACTIVITY: DICE ROLL TERM VALUE -->
+    <!-- ==================================================================================== -->
+
+    <string name="activity_dice_roll_term_value_field_value_name_label">Name</string>
+    <string name="activity_dice_roll_term_value_field_value_name_description">
+        The name of the term\'s value. If the term is a variable, the variable name is used if
+        this value is not set.
+    </string>
+
+    <string name="activity_dice_roll_term_value_field_type_label">Value Type</string>
+    <string name="activity_dice_roll_term_value_field_type_description">
+        The type of the value i.e. literal or variable.
+    </string>
+
+    <string name="activity_dice_roll_term_value_field_literal_value_label">Literal Value</string>
+    <string name="activity_dice_roll_term_value_field_literal_value_description">
+        The literal value.
+    </string>
+
+    <string name="activity_dice_roll_term_value_field_variable_reference_label">
+        Variable Reference
+    </string>
+    <string name="activity_dice_roll_term_value_field_variable_reference_description">
+        The variable reference.
+    </string>
 
     <!-- FORM -->
     <!-- ==================================================================================== -->

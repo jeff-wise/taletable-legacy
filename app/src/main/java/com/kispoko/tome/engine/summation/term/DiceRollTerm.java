@@ -9,7 +9,6 @@ import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.lib.functor.ModelFunctor;
-import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
 
@@ -34,16 +33,10 @@ public class DiceRollTerm extends Term implements Serializable
 
     private UUID                            id;
 
-
     // > Functors
     // ------------------------------------------------------------------------------------------
 
     private ModelFunctor<DiceRollTermValue> termValue;
-
-    /**
-     * The name/description of the term.
-     */
-    private PrimitiveFunctor<String>        name;
 
 
     // CONSTRUCTORS
@@ -51,19 +44,17 @@ public class DiceRollTerm extends Term implements Serializable
 
     public DiceRollTerm()
     {
-        this.id = null;
+        this.id         = null;
 
-        this.termValue = ModelFunctor.empty(DiceRollTermValue.class);
-        this.name = new PrimitiveFunctor<>(null, String.class);
+        this.termValue  = ModelFunctor.empty(DiceRollTermValue.class);
     }
 
 
-    public DiceRollTerm(UUID id, DiceRollTermValue diceRollTermValue, String name)
+    public DiceRollTerm(UUID id, DiceRollTermValue diceRollTermValue)
     {
-        this.id = id;
+        this.id         = id;
 
-        this.termValue = ModelFunctor.full(diceRollTermValue, DiceRollTermValue.class);
-        this.name = new PrimitiveFunctor<>(name, String.class);
+        this.termValue  = ModelFunctor.full(diceRollTermValue, DiceRollTermValue.class);
     }
 
 
@@ -77,12 +68,11 @@ public class DiceRollTerm extends Term implements Serializable
     public static DiceRollTerm fromYaml(YamlParser yaml)
             throws YamlParseException
     {
-        UUID id = UUID.randomUUID();
+        UUID              id        = UUID.randomUUID();
 
         DiceRollTermValue termValue = DiceRollTermValue.fromYaml(yaml.atKey("value"));
-        String name = yaml.atMaybeKey("name").getString();
 
-        return new DiceRollTerm(id, termValue, name);
+        return new DiceRollTerm(id, termValue);
     }
 
 
@@ -141,10 +131,8 @@ public class DiceRollTerm extends Term implements Serializable
         {
             Integer value = this.termValue().value();
 
-            if (value == null) {
-                throw SummationException.nullTerm(
-                        new NullTermError(this.name()));
-            }
+            if (value == null)
+                throw SummationException.nullTerm(new NullTermError(this.termValue().name()));
 
             return value;
         }
@@ -166,7 +154,7 @@ public class DiceRollTerm extends Term implements Serializable
         List<VariableReference> variableReferences = new ArrayList<>();
 
         if (this.termValue().type() == DiceRollTermValue.Type.VARIABLE) {
-            VariableReference variableReference = this.termValue().variable();
+            VariableReference variableReference = this.termValue().variableReference();
             if (variableReference != null)
                 variableReferences.add(variableReference);
         }
@@ -178,7 +166,16 @@ public class DiceRollTerm extends Term implements Serializable
     public TermSummary summary()
            throws VariableException
     {
-        return new TermSummary(this.name(), this.termValue().components());
+        return new TermSummary(this.termValue().name(), this.termValue().components());
+    }
+
+
+    public String valueName()
+    {
+        if (this.termValue() != null)
+            return this.termValue().name();
+
+        return "";
     }
 
 
@@ -218,16 +215,6 @@ public class DiceRollTerm extends Term implements Serializable
         {
             throw SummationException.variable(new SummationVariableError(exception));
         }
-    }
-
-
-    /**
-     * The name of the term.
-     * @return The term name.
-     */
-    public String name()
-    {
-        return this.name.getValue();
     }
 
 }

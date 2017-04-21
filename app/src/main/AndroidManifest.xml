@@ -239,6 +239,12 @@
         android:windowSoftInputMode="stateHidden"
         android:label="Dice Roller" />
 
+    <activity
+        android:name=".activity.engine.variable.DiceRollTermActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Dice Roll Term Editor" />
+
 </application>
 
 </manifest>

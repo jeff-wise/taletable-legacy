@@ -3,16 +3,19 @@ package com.kispoko.tome.activity;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.engine.variable.DiceRollTermActivity;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.summation.SummationException;
 import com.kispoko.tome.engine.summation.term.DiceRollTerm;
@@ -29,7 +32,6 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.value;
 
 
 /**
@@ -129,7 +131,6 @@ public class SummationActivity extends AppCompatActivity
 
     // VIEWS
     // -----------------------------------------------------------------------------------------
-
 
     private LinearLayout view(Context context)
     {
@@ -286,7 +287,7 @@ public class SummationActivity extends AppCompatActivity
         label.color             = R.color.dark_theme_primary_45;
         label.sizeSp            = 15.5f;
 
-        label.margin.topDp      = 10f;
+        label.margin.topDp      = 12f;
 
         label.padding.leftDp    = 10f;
         label.padding.rightDp   = 10f;
@@ -320,7 +321,7 @@ public class SummationActivity extends AppCompatActivity
         layout.padding.leftDp       = 2.5f;
         layout.padding.rightDp      = 10f;
 
-        layout.margin.topDp         = 10f;
+        layout.margin.topDp         = 12f;
 
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
@@ -409,7 +410,7 @@ public class SummationActivity extends AppCompatActivity
     // ** Dice Roll Term
     // -----------------------------------------------------------------------------------------
 
-    private LinearLayout diceRollTermView(DiceRollTerm diceRollTerm, Context context)
+    private LinearLayout diceRollTermView(final DiceRollTerm diceRollTerm, final Context context)
     {
         LinearLayout layout = this.termViewLayout(context);
 
@@ -454,6 +455,22 @@ public class SummationActivity extends AppCompatActivity
         }
 
         layout.addView(this.termCurrentValueView(valueString, context));
+
+
+        // > Click Listener
+        // -------------------------------------------------------------------------------------
+
+        layout.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SummationActivity.this, DiceRollTermActivity.class);
+                intent.putExtra("dice_roll_term", diceRollTerm);
+                context.startActivity(intent);
+
+            }
+        });
 
         return layout;
     }

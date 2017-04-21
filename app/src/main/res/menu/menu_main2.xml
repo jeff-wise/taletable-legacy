@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.kispoko.tome.Main2Activity">
     <item
-        android:name="@+name/action_settings"
+        android:name="@+valueName/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />

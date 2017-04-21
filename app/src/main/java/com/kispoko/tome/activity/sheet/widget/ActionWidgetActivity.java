@@ -129,9 +129,9 @@ public class ActionWidgetActivity extends AppCompatActivity
 
     private void initializeView()
     {
-        LinearLayout contentView = (LinearLayout) findViewById(R.id.content);
-        contentView.removeAllViews();
-        contentView.addView(this.view(this));
+        ScrollView scrollView = (ScrollView) findViewById(R.id.content);
+        scrollView.removeAllViews();
+        scrollView.addView(this.view(this));
     }
 
     private void initializeData()
@@ -168,10 +168,8 @@ public class ActionWidgetActivity extends AppCompatActivity
     // VIEWS
     // ------------------------------------------------------------------------------------------
 
-    private ScrollView view(Context context)
+    private LinearLayout view(Context context)
     {
-        ScrollView scrollView = this.scrollView(context);
-
         LinearLayout layout = this.viewLayout(context);
 
         // > Toolbar
@@ -180,21 +178,7 @@ public class ActionWidgetActivity extends AppCompatActivity
         // > Form
         layout.addView(this.formView(context));
 
-
-        scrollView.addView(layout);
-
-        return scrollView;
-    }
-
-
-    private ScrollView scrollView(Context context)
-    {
-        ScrollViewBuilder scrollView = new ScrollViewBuilder();
-
-        scrollView.width    = LinearLayout.LayoutParams.MATCH_PARENT;
-        scrollView.height   = LinearLayout.LayoutParams.MATCH_PARENT;
-
-        return scrollView.scrollView(context);
+        return layout;
     }
 
 

@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.summation.term;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.DiceVariable;
 import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableReference;
@@ -13,6 +14,7 @@ import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.InvalidDataException;
 import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.lib.functor.OptionFunctor;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
 import com.kispoko.tome.util.EnumUtils;
 import com.kispoko.tome.lib.database.DatabaseException;
@@ -54,9 +56,9 @@ public class DiceRollTermValue extends Model
     private ModelFunctor<DiceRoll>          diceRoll;
     private ModelFunctor<VariableReference> variableReference;
 
-    private PrimitiveFunctor<String>        name;
+    private PrimitiveFunctor<String>        valueName;
 
-    private PrimitiveFunctor<Type>          type;
+    private OptionFunctor<Type>             type;
 
 
     // CONSTRUCTORS
@@ -69,22 +71,24 @@ public class DiceRollTermValue extends Model
         this.diceRoll           = ModelFunctor.empty(DiceRoll.class);
         this.variableReference  = ModelFunctor.empty(VariableReference.class);
 
-        this.name               = new PrimitiveFunctor<>(null, String.class);
+        this.valueName          = new PrimitiveFunctor<>(null, String.class);
 
-        this.type               = new PrimitiveFunctor<>(null, Type.class);
+        this.type               = new OptionFunctor<>(null, Type.class);
+
+        this.initializeFunctors();
     }
 
 
-    private DiceRollTermValue(UUID id, Object value, Type type, String name)
+    private DiceRollTermValue(UUID id, Object value, Type type, String valueName)
     {
         this.id                 = id;
 
         this.diceRoll           = ModelFunctor.full(null, DiceRoll.class);
         this.variableReference  = ModelFunctor.full(null, VariableReference.class);
 
-        this.name               = new PrimitiveFunctor<>(name, String.class);
+        this.valueName          = new PrimitiveFunctor<>(valueName, String.class);
 
-        this.type               = new PrimitiveFunctor<>(type, Type.class);
+        this.type               = new OptionFunctor<>(type, Type.class);
 
         switch (type)
         {
@@ -95,6 +99,8 @@ public class DiceRollTermValue extends Model
                 this.variableReference.setValue((VariableReference) value);
                 break;
         }
+
+        this.initializeFunctors();
     }
 
 
@@ -226,7 +232,7 @@ public class DiceRollTermValue extends Model
      * The variable case.
      * @return The variable reference.
      */
-    public VariableReference variable()
+    public VariableReference variableReference()
     {
         if (this.type() != Type.VARIABLE) {
             ApplicationFailure.union(
@@ -238,16 +244,35 @@ public class DiceRollTermValue extends Model
     }
 
 
-    // ** Name
+    // ** Value Name
     // ------------------------------------------------------------------------------------------
 
     /**
      * The term value name. Only applicable for literal values.
      * @return The name.
      */
+    public String valueName()
+    {
+        return this.valueName.getValue();
+    }
+
+
+    // > Name
+    // ------------------------------------------------------------------------------------------
+
     public String name()
     {
-        return this.name.getValue();
+        if (this.valueName() != null)
+            return this.valueName();
+
+        if (this.type() == Type.VARIABLE)
+        {
+            VariableUnion variableUnion = this.variableReference().variable();
+            if (variableUnion != null)
+                return variableUnion.variable().label();
+        }
+
+        return "";
     }
 
 
@@ -330,10 +355,46 @@ public class DiceRollTermValue extends Model
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    private void initializeFunctors()
+    {
+        // Value Name
+        this.valueName.setName("value_name");
+        this.valueName.setLabelId(R.string.activity_dice_roll_term_value_field_value_name_label);
+        this.valueName
+            .setDescriptionId(R.string.activity_dice_roll_term_value_field_value_name_description);
+
+        // Type
+        this.type.setName("type");
+        this.type.setLabelId(R.string.activity_dice_roll_term_value_field_type_label);
+        this.type.setDescriptionId(R.string.activity_dice_roll_term_value_field_type_description);
+
+        // Literal Value
+        this.diceRoll.setName("type_literal");
+        this.diceRoll.setLabelId(R.string.activity_dice_roll_term_value_field_literal_value_label);
+        this.diceRoll
+          .setDescriptionId(R.string.activity_dice_roll_term_value_field_literal_value_description);
+        this.diceRoll.caseOf("type", "literal");
+
+        // Variable Value
+        this.variableReference.setName("type_variable");
+        this.variableReference
+                .setLabelId(R.string.activity_dice_roll_term_value_field_variable_reference_label);
+        int descId = R.string.activity_dice_roll_term_value_field_variable_reference_description;
+        this.variableReference.setDescriptionId(descId);
+        this.variableReference.caseOf("type", "variable");
+    }
+
+
+    // > Variable
+    // ------------------------------------------------------------------------------------------
+
     private DiceRoll variableValue()
             throws VariableException
     {
-        VariableUnion variableUnion = this.variable().variable();
+        VariableUnion variableUnion = this.variableReference().variable();
 
         if (variableUnion == null)
             return null;
@@ -341,7 +402,7 @@ public class DiceRollTermValue extends Model
         // > If variable is not a dice roll, throw exception
         if (!variableUnion.type().equals(VariableType.DICE)) {
             throw VariableException.unexpectedVariableType(
-                    new UnexpectedVariableTypeError(this.variable().name(),
+                    new UnexpectedVariableTypeError(this.variableReference().name(),
                                                     VariableType.DICE,
                                                     variableUnion.type()));
         }
@@ -357,7 +418,7 @@ public class DiceRollTermValue extends Model
     {
         List<Tuple2<String,String>> summaries = new ArrayList<>();
 
-        for (VariableUnion variableUnion : this.variable().variables())
+        for (VariableUnion variableUnion : this.variableReference().variables())
         {
             // [1] If variable is not a number, throw exception
             // ----------------------------------------------------------------------------------

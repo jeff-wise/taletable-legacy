@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SummationActivity;
-import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.engine.summation.term.DiceRollTerm;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
@@ -30,28 +30,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
 /**
- * Number Variable Activity
+ * Dice Roll Term Activity
  */
-public class NumberVariableActivity extends AppCompatActivity
+public class DiceRollTermActivity extends AppCompatActivity
 {
 
-    // PROPERTIES
+    // PROPERTEIS
     // -----------------------------------------------------------------------------------------
 
-    private NumberVariable              numberVariable;
-
+    private DiceRollTerm        diceRollTerm;
 
     // > Form
     // -----------------------------------------------------------------------------------------
 
-    private Map<String,Field>           fieldByName;
-    private Map<String,LinearLayout>    fieldViewByName;
+    private Map<String,Field>   fieldByName;
 
 
-    // ACTIVITY API
-    // -----------------------------------------------------------------------------------------
+    // ACTIVITY LIFECYCLE EVENTS
+    // ------------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,26 +56,20 @@ public class NumberVariableActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // [1] Set activity view
-        // -------------------------------------------------------------------------------------
+        // --------------------------------------------------------------------------------------
         setContentView(R.layout.activity_form_basic);
 
-        // [2] Read Parameters
-        // -------------------------------------------------------------------------------------
-        this.numberVariable = null;
-        if (getIntent().hasExtra("number_variable")) {
-            this.numberVariable =
-                    (NumberVariable) getIntent().getSerializableExtra("number_variable");
+        // [2] Read parameters
+        // --------------------------------------------------------------------------------------
+        this.diceRollTerm = null;
+        if (getIntent().hasExtra("dice_roll_term")) {
+            this.diceRollTerm = (DiceRollTerm) getIntent().getSerializableExtra("dice_roll_term");
         }
 
-        // [3] Initialize data
+        // [3] Initialize UI components
         // -------------------------------------------------------------------------------------
-
-        this.initializeData();
-
-        // [4] Initialize views
-        // -------------------------------------------------------------------------------------
-
         this.initializeToolbar();
+        this.initializeData();
         this.initializeView();
     }
 
@@ -112,14 +103,16 @@ public class NumberVariableActivity extends AppCompatActivity
         // > Set the title
         // -------------------------------------------------------------------------------------
         TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(R.string.number_variable);
+        titleView.setText(R.string.dice_roll_term_editor);
     }
 
 
+    /**
+     * Initialize the template list view.
+     */
     private void initializeView()
     {
         ScrollView scrollView = (ScrollView) findViewById(R.id.content);
-        scrollView.removeAllViews();
         scrollView.addView(this.view(this));
     }
 
@@ -130,19 +123,19 @@ public class NumberVariableActivity extends AppCompatActivity
         // -------------------------------------------------------------------------------------
 
         this.fieldByName = new HashMap<>();
-        this.fieldViewByName = new HashMap<>();
 
         // [2] Get & Index Fields
         // -------------------------------------------------------------------------------------
 
-        if (this.numberVariable == null)
+        if (this.diceRollTerm == null || this.diceRollTerm.termValue() == null)
             return;
 
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
         try {
-            fields = Model.fields(this.numberVariable, this);
+            fields.addAll(Model.fields(this.diceRollTerm, this));
+            fields.addAll(Model.fields(this.diceRollTerm.termValue(), this));
         }
         catch (FunctorException exception) {
             ApplicationFailure.functor(exception);
@@ -193,31 +186,23 @@ public class NumberVariableActivity extends AppCompatActivity
         // > Form Structure
         // -------------------------------------------------------------------------------------
 
-        layout.addView(Form.headerView("Common Properties", context));
+        layout.addView(Form.headerView("Properties", context));
 
-        this.addFieldView("name", layout);
+        this.addFieldView("value_name", layout);
         layout.addView(Form.dividerView(context));
-        this.addFieldView("label", layout);
-        layout.addView(Form.dividerView(context));
-        this.addFieldView("kind", layout);
-
-        layout.addView(Form.headerView("Other Properties", context));
-
-        this.addFieldView("is_namespaced", layout);
-        layout.addView(Form.dividerView(context));
-        this.addFieldView("tags", layout);
-
+        this.addFieldView("type", layout);
 
         // > Click Events
         // -------------------------------------------------------------------------------------
 
-        this.setValueListeners();
+        // this.setValueListeners();
 
 
         return layout;
     }
 
 
+    /*
     private void setValueListeners()
     {
         Field kindField = this.fieldByName.get("kind");
@@ -238,6 +223,7 @@ public class NumberVariableActivity extends AppCompatActivity
             }
         });
     }
+    */
 
 
     private void addFieldView(String fieldName, LinearLayout layout)
@@ -247,8 +233,8 @@ public class NumberVariableActivity extends AppCompatActivity
         if (field != null) {
             LinearLayout fieldView = field.view(this);
             layout.addView(fieldView);
-            this.fieldViewByName.put(fieldName, fieldView);
         }
     }
+
 
 }
