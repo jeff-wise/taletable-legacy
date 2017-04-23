@@ -39,6 +39,11 @@
         android:label="New Character" />
 
     <activity
+        android:name=".activity.engine.EngineActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Engine" />
+
+    <activity
         android:name=".activity.TemplatesActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Choose Template" />
@@ -244,6 +249,12 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Dice Roll Term Editor" />
+
+    <activity
+        android:name=".activity.engine.variable.VariableReferenceActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Variable Reference Editor" />
 
 </application>
 

@@ -14,6 +14,7 @@
     <string name="export">Export</string>
 
     <string name="save">Save</string>
+    <string name="engine">Engine</string>
 
     <string name="action_delete">DELETE</string>
 
@@ -47,6 +48,7 @@
     <string name="full_editor">Full Editor</string>
     <string name="text_editor">Text Editor</string>
     <string name="quote_editor">Quote Editor</string>
+    <string name="variable_reference_editor">Variable Reference Editor</string>
 
     <string name="edit_item">Edit Item</string>
     <string name="new_item">New Item</string>
@@ -892,6 +894,26 @@
     <string name="activity_dice_roll_term_value_field_variable_reference_description">
         The variable reference.
     </string>
+
+
+    <!-- ACTIVITY: VARIABLE REFERENCE -->
+    <!-- ==================================================================================== -->
+
+    <string name="activity_variable_reference_field_type_label">Reference Type</string>
+    <string name="activity_variable_reference_field_type_description">
+        The type of reference.
+    </string>
+
+    <string name="activity_variable_reference_field_name_label">Variable Name</string>
+    <string name="activity_variable_reference_field_name_description">
+        The name of the referenced variable.
+    </string>
+
+    <string name="activity_variable_reference_field_tag_label">Variable Tag</string>
+    <string name="activity_variable_reference_field_tag_description">
+        The tag of the referenced variables.
+    </string>
+
 
     <!-- FORM -->
     <!-- ==================================================================================== -->

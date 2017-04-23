@@ -1,37 +1,31 @@
 
-package com.kispoko.tome.activity.page;
+package com.kispoko.tome.activity.engine;
 
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.kispoko.tome.sheet.Page;
-
 
 
 /**
- * Pager Pager Adapter
+ * Engine Pager Adapter
  */
-public class PagePagerAdapter extends FragmentStatePagerAdapter
+public class EnginePagerAdapter extends FragmentStatePagerAdapter
 {
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private static final int TABS = 2;
-
-    private Page page;
+    private static final int TABS = 3;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public PagePagerAdapter(FragmentManager fragmentManager, Page page)
+    public EnginePagerAdapter(FragmentManager fragmentManager)
     {
         super(fragmentManager);
-
-        this.page = page;
     }
 
 
@@ -51,9 +45,11 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
         switch (position)
         {
             case 0:
-                return DataFragment.newInstance(this.page);
+                return StateFragment.newInstance();
             case 1:
-                return GroupListFragment.newInstance(this.page);
+                return MechanicsFragment.newInstance();
+            case 2:
+                return LogFragment.newInstance();
             default:
                 return null;
         }
@@ -66,13 +62,14 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
         switch (position)
         {
             case 0:
-                return "Data";
+                return "State";
             case 1:
-                return "Groups";
+                return "Mechanics";
+            case 2:
+                return "Log";
             default:
-                return "Page";
+                return "Engine";
         }
     }
-
 
 }

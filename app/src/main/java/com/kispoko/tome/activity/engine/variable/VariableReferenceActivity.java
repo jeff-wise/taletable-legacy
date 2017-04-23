@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SummationActivity;
-import com.kispoko.tome.engine.summation.term.DiceRollTerm;
 import com.kispoko.tome.engine.variable.VariableReference;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
@@ -32,15 +31,16 @@ import java.util.Map;
 
 
 /**
- * Dice Roll Term Activity
+ * Variable Reference Activity
  */
-public class DiceRollTermActivity extends AppCompatActivity
+public class VariableReferenceActivity extends AppCompatActivity
 {
 
     // PROPERTEIS
     // -----------------------------------------------------------------------------------------
 
-    private DiceRollTerm        diceRollTerm;
+    private VariableReference   variableReference;
+
 
     // > Form
     // -----------------------------------------------------------------------------------------
@@ -62,9 +62,10 @@ public class DiceRollTermActivity extends AppCompatActivity
 
         // [2] Read parameters
         // --------------------------------------------------------------------------------------
-        this.diceRollTerm = null;
-        if (getIntent().hasExtra("dice_roll_term")) {
-            this.diceRollTerm = (DiceRollTerm) getIntent().getSerializableExtra("dice_roll_term");
+        this.variableReference = null;
+        if (getIntent().hasExtra("variable_reference")) {
+            this.variableReference =
+                    (VariableReference) getIntent().getSerializableExtra("variable_reference");
         }
 
         // [3] Initialize UI components
@@ -104,7 +105,7 @@ public class DiceRollTermActivity extends AppCompatActivity
         // > Set the title
         // -------------------------------------------------------------------------------------
         TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(R.string.dice_roll_term_editor);
+        titleView.setText(R.string.variable_reference_editor);
     }
 
 
@@ -128,15 +129,14 @@ public class DiceRollTermActivity extends AppCompatActivity
         // [2] Get & Index Fields
         // -------------------------------------------------------------------------------------
 
-        if (this.diceRollTerm == null || this.diceRollTerm.termValue() == null)
+        if (this.variableReference == null)
             return;
 
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
         try {
-            fields.addAll(Model.fields(this.diceRollTerm, this));
-            fields.addAll(Model.fields(this.diceRollTerm.termValue(), this));
+            fields.addAll(Model.fields(this.variableReference, this));
         }
         catch (FunctorException exception) {
             ApplicationFailure.functor(exception);
@@ -187,49 +187,15 @@ public class DiceRollTermActivity extends AppCompatActivity
         // > Form Structure
         // -------------------------------------------------------------------------------------
 
-        layout.addView(Form.headerView("Properties", context));
-
-        this.addFieldView("value_name", layout);
-        layout.addView(Form.dividerView(context));
         this.addFieldView("type", layout);
 
         // > Click Events
         // -------------------------------------------------------------------------------------
 
-        this.setValueListeners();
+        // this.setReferenceListeners();
 
 
         return layout;
-    }
-
-
-    private void setValueListeners()
-    {
-        Field typeField = this.fieldByName.get("type");
-
-        if (typeField == null)
-            return;
-
-        // > Variable Reference
-        typeField.setCaseOnClickListener("variable", new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(DiceRollTermActivity.this,
-                                           VariableReferenceActivity.class);
-
-                if (diceRollTerm != null &&
-                    diceRollTerm.termValue() != null &&
-                    diceRollTerm.termValue().variableReference() != null)
-                {
-                    intent.putExtra("variable_reference",
-                                    diceRollTerm.termValue().variableReference());
-                }
-
-                startActivity(intent);
-            }
-        });
     }
 
 
@@ -242,6 +208,5 @@ public class DiceRollTermActivity extends AppCompatActivity
             layout.addView(fieldView);
         }
     }
-
 
 }

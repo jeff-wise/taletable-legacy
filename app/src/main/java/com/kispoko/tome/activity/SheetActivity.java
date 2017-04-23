@@ -27,6 +27,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.engine.EngineActivity;
 import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter;
 import com.kispoko.tome.campaign.CampaignIndex;
@@ -67,7 +68,7 @@ public class SheetActivity
 {
 
     // PROPERTIES
-    // -------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Requests
     public static final int CHOOSE_IMAGE_FROM_FILE = 0;
@@ -90,7 +91,7 @@ public class SheetActivity
 
 
     // ACTIVITY EVENTS
-    // -------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -893,12 +894,21 @@ public class SheetActivity
         });
         layout.addView(mechanicsButton);
 
-        // > Debugger
+        // > Engine
         // -------------------------------------------------------------------------------------
-        LinearLayout debuggerButton = this.buttonView(R.string.debugger,
-                                                      R.drawable.ic_sheet_nav_debugger,
-                                                      context);
-        layout.addView(debuggerButton);
+        LinearLayout engineButton = this.buttonView(R.string.engine,
+                                                    R.drawable.ic_sheet_nav_debugger,
+                                                    context);
+        engineButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(SheetActivity.this, EngineActivity.class);
+                startActivity(intent);
+            }
+        });
+        layout.addView(engineButton);
 
         return layout;
     }

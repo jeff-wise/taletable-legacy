@@ -3,9 +3,11 @@ package com.kispoko.tome.engine.variable;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
+import com.kispoko.tome.lib.functor.OptionFunctor;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.yaml.YamlParser;
@@ -42,7 +44,7 @@ public class VariableReference extends Model
     private PrimitiveFunctor<String>                name;
     private PrimitiveFunctor<String>                tag;
 
-    private PrimitiveFunctor<VariableReferenceType> type;
+    private OptionFunctor<VariableReferenceType>    type;
 
 
     // CONSTRUCTORS
@@ -55,7 +57,9 @@ public class VariableReference extends Model
         this.name   = new PrimitiveFunctor<>(null, String.class);
         this.tag    = new PrimitiveFunctor<>(null, String.class);
 
-        this.type   = new PrimitiveFunctor<>(null, VariableReferenceType.class);
+        this.type   = new OptionFunctor<>(null, VariableReferenceType.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -66,7 +70,7 @@ public class VariableReference extends Model
         this.name   = new PrimitiveFunctor<>(null, String.class);
         this.tag    = new PrimitiveFunctor<>(null, String.class);
 
-        this.type   = new PrimitiveFunctor<>(type, VariableReferenceType.class);
+        this.type   = new OptionFunctor<>(type, VariableReferenceType.class);
 
         // > Set the value depending on the case
         switch (type)
@@ -78,6 +82,8 @@ public class VariableReference extends Model
                 this.tag.setValue((String) value);
                 break;
         }
+
+        this.initializeFunctors();
     }
 
 
@@ -281,6 +287,33 @@ public class VariableReference extends Model
         }
 
         return null;
+    }
+
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    private void initializeFunctors()
+    {
+        // Type
+        this.type.setName("type");
+        this.type.setLabelId(R.string.activity_variable_reference_field_type_label);
+        this.type.setDescriptionId(R.string.activity_variable_reference_field_type_description);
+
+        // Name
+        this.name.setName("type_name");
+        this.name.setLabelId(R.string.activity_variable_reference_field_name_label);
+        this.name.setDescriptionId(R.string.activity_variable_reference_field_name_label);
+        this.name.caseOf("type", "name");
+
+        // Tag
+        this.tag.setName("type_tag");
+        this.tag.setLabelId(R.string.activity_variable_reference_field_tag_label);
+        this.tag.setDescriptionId(R.string.activity_variable_reference_field_tag_description);
+        this.tag.caseOf("type", "tag");
     }
 
 }

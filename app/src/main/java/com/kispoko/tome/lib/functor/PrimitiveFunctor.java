@@ -410,12 +410,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             ValueType valueType = ValueType.fromSQLValue(sqlValue);
             this.setValue((A) valueType);
         }
-        else if (this.valueClass.isAssignableFrom(VariableReferenceType.class))
-        {
-            VariableReferenceType variableReferenceType =
-                    VariableReferenceType.fromSQLValue(sqlValue);
-            this.setValue((A) variableReferenceType);
-        }
         else if (this.valueClass.isAssignableFrom(TextVariable.Kind.class))
         {
             TextVariable.Kind kind = TextVariable.Kind.fromSQLValue(sqlValue);
