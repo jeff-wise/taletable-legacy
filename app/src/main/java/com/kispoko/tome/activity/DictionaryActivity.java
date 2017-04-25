@@ -21,6 +21,7 @@ import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
+import com.kispoko.tome.util.UI;
 
 
 /**
@@ -88,27 +89,7 @@ public class DictionaryActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-
-        // > Set the title
-        String title = "Dictionary";
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setTypeface(Font.serifFontRegular(this));
-        titleView.setText(title);
-
-
-        ImageView backButtonView   = (ImageView) findViewById(R.id.toolbar_back_button);
-        backButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        // ImageView searchButtonView = (ImageView) findViewById(R.id.toolbar_search_button);
+        UI.initializeToolbar(this, getString(R.string.dictionary));
     }
 
 

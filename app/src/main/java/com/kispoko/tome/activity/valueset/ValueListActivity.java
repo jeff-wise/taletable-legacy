@@ -24,7 +24,7 @@ import com.kispoko.tome.lib.ui.ActivityCommon;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
-
+import com.kispoko.tome.util.UI;
 
 
 /**
@@ -114,23 +114,7 @@ public class ValueListActivity extends AppCompatActivity
     {
         // > Initalize the toolbar
         // -------------------------------------------------------------------------------------
-        ActivityCommon.initializeToolbar(this);
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setTypeface(Font.serifFontRegular(this));
-        titleView.setText(R.string.values_editor);
-
-        // > Configure Back Button
-        // -------------------------------------------------------------------------------------
-        ImageView backButtonView   = (ImageView) findViewById(R.id.toolbar_back_button);
-        backButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        UI.initializeToolbar(this, getString(R.string.values_editor));
 
         // > Set the Value Set Name
         // -------------------------------------------------------------------------------------

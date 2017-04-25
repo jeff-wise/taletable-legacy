@@ -99,12 +99,7 @@ public class DiceRollTermActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        UI.initializeToolbar(this, false, false);
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(R.string.dice_roll_term_editor);
+        UI.initializeToolbar(this, getString(R.string.dice_roll_term_editor));
     }
 
 

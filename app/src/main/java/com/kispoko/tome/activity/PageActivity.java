@@ -100,16 +100,9 @@ public class PageActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // > Set the title
         String title = this.page.name() + " " + getString(R.string.page);
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+
+        UI.initializeToolbar(this, title);
     }
 
 

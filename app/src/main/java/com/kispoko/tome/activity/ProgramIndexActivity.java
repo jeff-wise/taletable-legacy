@@ -90,16 +90,9 @@ public class ProgramIndexActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // > Set the title
         String title = "Programs";
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+
+        UI.initializeToolbar(this, title);
     }
 
 

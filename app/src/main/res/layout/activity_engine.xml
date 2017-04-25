@@ -26,6 +26,7 @@
                 android:theme="@style/AppTheme.NoActionBar" >
 
                 <RelativeLayout
+                    android:id="@+id/toolbar_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -39,13 +40,13 @@
                         android:layout_marginStart="15dp"
                         android:layout_centerVertical="true"
                         android:background="#00000000"
-                        android:src="@drawable/ic_toolbar_sheet_app_menu"
+                        android:src="@drawable/ic_toolbar_back"
                         android:tint="@color/dark_theme_primary_15" />
 
                     <TextView
-                        android:id="@+id/page_title"
+                        android:id="@+id/toolbar_title"
                         android:layout_gravity="center"
-                        android:textSize="20sp"
+                        android:textSize="19sp"
                         android:textColor="@color/dark_blue_hlx_5"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
@@ -73,19 +74,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/dark_blue_13"
+                android:animateLayoutChanges="true"
                 app:tabGravity="fill"
-                app:tabMode="scrollable"
                 app:tabTextColor="@color/dark_blue_hl_8"
                 app:tabSelectedTextColor="@color/dark_blue_hlx_5"
                 app:tabIndicatorColor="@color/dark_blue_hl_1" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager"
-                android:background="@color/dark_blue_7"
+                android:background="@color/dark_theme_primary_84"
                 android:layout_width="match_parent"
                 android:focusableInTouchMode="true"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_results"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/dark_theme_primary_84"
+                android:visibility="gone">
+            </android.support.v7.widget.RecyclerView>
+
         </LinearLayout>
 
     </RelativeLayout>

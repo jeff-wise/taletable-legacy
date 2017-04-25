@@ -30,6 +30,7 @@ import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.util.UI;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -173,33 +174,7 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-
-        try {
-            actionBar.setDisplayShowTitleEnabled(false);
-        }
-        catch (NullPointerException exception) {
-
-        }
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setTypeface(Font.serifFontRegular(this));
-
-        titleView.setText(R.string.value_set_editor);
-
-        // > Configure Back Button
-        // -------------------------------------------------------------------------------------
-        ImageView backButtonView   = (ImageView) findViewById(R.id.toolbar_back_button);
-        backButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        UI.initializeToolbar(this, getString(R.string.value_set_editor));
 
         // > Set the Value Set Name
         // -------------------------------------------------------------------------------------

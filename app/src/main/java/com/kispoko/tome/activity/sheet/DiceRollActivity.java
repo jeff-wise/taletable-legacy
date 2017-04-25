@@ -127,15 +127,13 @@ public class DiceRollActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        UI.initializeToolbar(this, false, false);
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
+        String title;
         if (this.rollName != null)
-            titleView.setText(this.rollName);
+            title = this.rollName;
         else
-            titleView.setText(R.string.dice_roller);
+            title = getString(R.string.dice_roller);
+
+        UI.initializeToolbar(this, title);
     }
 
 

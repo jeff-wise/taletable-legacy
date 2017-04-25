@@ -116,19 +116,11 @@ public class NewCharacterActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
+        String title = "Create a New Character"; // + this.widgetData.label();
+
         // > If this is the first sheet, then we are not coming from another sheet, so no back
         //   button is provided
-        if (!this.firstSheet) {
-            UI.initializeToolbar(this, true, true);
-        }
-        else {
-            UI.initializeToolbar(this, true, false);
-        }
-
-        // > Set the title
-        String title = "Create a New Character"; // + this.widgetData.label();
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+        UI.initializeToolbar(this, title);
     }
 
 

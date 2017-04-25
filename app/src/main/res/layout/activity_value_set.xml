@@ -47,7 +47,7 @@
                             android:tint="@color/dark_blue_hlx_5" />
 
                         <TextView
-                            android:id="@+id/page_title"
+                            android:id="@+id/toolbar_title"
                             android:layout_gravity="center"
                             android:textSize="20sp"
                             android:textColor="@color/dark_blue_hlx_5"

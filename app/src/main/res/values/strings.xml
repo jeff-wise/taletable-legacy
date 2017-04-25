@@ -16,6 +16,12 @@
     <string name="save">Save</string>
     <string name="engine">Engine</string>
 
+    <string name="name">Name</string>
+    <string name="label">Label</string>
+
+    <string name="variable">Variable</string>
+    <string name="mechanic">Mechanic</string>
+
     <string name="action_delete">DELETE</string>
 
     <string name="create_account">Create Account</string>
@@ -104,6 +110,8 @@
 
     <string name="incomplete">Incomplete</string>
     <string name="no_value_set">No Value Set</string>
+
+    <string name="search_the_engine">Search the Engine</string>
 
 
     <string name="options">Options</string>

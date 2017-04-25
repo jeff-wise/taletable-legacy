@@ -3,12 +3,10 @@ package com.kispoko.tome.activity;
 
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.engine.variable.VariableUnion;
@@ -98,25 +96,18 @@ public class NumberWidgetActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // > Set the title
         String title = this.numberWidget.data().format().label();
         if (title == null)
             title = "Number Widget";
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+
+        UI.initializeToolbar(this, title);
     }
 
 
     private void initializeView()
     {
-        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.content);
-        contentLayout.addView(formView());
+//        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.content);
+//        contentLayout.addView(formView());
     }
 
 

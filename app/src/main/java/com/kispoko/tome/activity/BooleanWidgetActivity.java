@@ -94,25 +94,18 @@ public class BooleanWidgetActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // > Set the title
         String title = this.booleanWidget.data().format().label();
         if (title == null)
             title = "Boolean Widget";
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+
+        UI.initializeToolbar(this, title);
     }
 
 
     private void initializeView()
     {
-        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.content);
-        contentLayout.addView(formView());
+//        LinearLayout contentLayout = (LinearLayout) findViewById(R.id.content);
+//        contentLayout.addView(formView());
     }
 
 

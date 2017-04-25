@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
+
 /**
  * Character Sheet
  *
@@ -219,7 +220,7 @@ public class Sheet extends Model
 
     public void initialize(Context context)
     {
-        State.initializeMechanics();
+        State.initialize();
 
         this.profileSection().initialize(context);
         this.encounterSection().initialize(context);

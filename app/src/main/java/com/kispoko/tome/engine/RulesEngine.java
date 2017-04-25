@@ -7,6 +7,7 @@ import com.kispoko.tome.engine.interpreter.Interpreter;
 import com.kispoko.tome.engine.function.FunctionIndex;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.program.ProgramIndex;
+import com.kispoko.tome.engine.search.EngineActiveSearchResult;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.ModelFunctor;
@@ -16,6 +17,8 @@ import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -28,16 +31,16 @@ public class RulesEngine extends Model
 {
 
     // PROPERTIES
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Model
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private UUID                            id;
 
 
     // > Functors
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private ModelFunctor<FunctionIndex>     functionIndex;
     private ModelFunctor<ProgramIndex>      programIndex;
@@ -48,7 +51,7 @@ public class RulesEngine extends Model
 
 
     // CONSTRUCTORS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public RulesEngine()
     {
@@ -100,13 +103,13 @@ public class RulesEngine extends Model
 
 
     // API
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Model
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // ** Id
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Get the model identifier.
@@ -129,7 +132,7 @@ public class RulesEngine extends Model
 
 
     // ** On Load
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * This method is called when the RulesEngine is completely loaded for the first time.
@@ -142,7 +145,7 @@ public class RulesEngine extends Model
 
 
     // > To Yaml
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * The Rules Engine's yaml representation.
@@ -159,7 +162,7 @@ public class RulesEngine extends Model
 
 
     // > State
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Get the program index.
@@ -208,6 +211,23 @@ public class RulesEngine extends Model
     public Dictionary dictionary()
     {
         return this.dictionary.getValue();
+    }
+
+
+    // > Search Active
+    // -----------------------------------------------------------------------------------------
+
+    public Set<EngineActiveSearchResult> searchActive(String query)
+    {
+        Set<EngineActiveSearchResult> results = new HashSet<>();
+
+        // > Search for active variables
+        results.addAll(State.search(query));
+
+        // > Search for active mechanics
+        results.addAll(this.mechanicIndex().search(query));
+
+        return results;
     }
 
 }

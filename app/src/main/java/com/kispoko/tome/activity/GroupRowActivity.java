@@ -104,17 +104,10 @@ public class GroupRowActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // > Set the title
         Integer rowIndex = this.groupRow.index() + 1;
         String title = this.groupName + " " + getString(R.string.row) + " " + rowIndex.toString();
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+
+        UI.initializeToolbar(this, title);
     }
 
 

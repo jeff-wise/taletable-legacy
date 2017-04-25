@@ -49,6 +49,7 @@ import com.kispoko.tome.sheet.widget.WidgetUnion;
 import com.kispoko.tome.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
 import com.kispoko.tome.sheet.widget.table.cell.TextCell;
+import com.kispoko.tome.util.UI;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -199,7 +200,7 @@ public class SheetActivity
             }
         }
 
-        TextView titleView = (TextView) findViewById(R.id.page_title);
+        TextView titleView = (TextView) findViewById(R.id.toolbar_title);
         titleView.setText(this.characterName);
 
         if (this.sheetNavCharacterNameView != null) {
@@ -257,14 +258,17 @@ public class SheetActivity
     private void initializeToolbar()
     {
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        //actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
 
-        TextView titleView = (TextView) this.toolbar.findViewById(R.id.page_title);
-        titleView.setTypeface(Font.serifFontRegular(this));
+        UI.initializeToolbar(this, null);
+
+//        setSupportActionBar(toolbar);
+//        ActionBar actionBar = getSupportActionBar();
+//        //actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setDisplayShowTitleEnabled(false);
+//        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
+//
+//        TextView titleView = (TextView) this.toolbar.findViewById(R.id.page_title);
+//        titleView.setTypeface(Font.serifFontRegular(this));
     }
 
 
@@ -370,7 +374,7 @@ public class SheetActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
 
-        TextView titleView = (TextView) findViewById(R.id.page_title);
+        TextView titleView = (TextView) findViewById(R.id.toolbar_title);
         titleView.setText(this.characterName);
     }
 

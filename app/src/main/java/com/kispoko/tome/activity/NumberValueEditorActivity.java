@@ -24,6 +24,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.util.UI;
 
 
 public class NumberValueEditorActivity extends AppCompatActivity
@@ -92,24 +93,7 @@ public class NumberValueEditorActivity extends AppCompatActivity
     {
         // > Initialize Toolbar
         // -------------------------------------------------------------------------------------
-        ActivityCommon.initializeToolbar(this);
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setTypeface(Font.serifFontRegular(this));
-        titleView.setText(R.string.value_editor);
-
-        // > Configure Back Button
-        // -------------------------------------------------------------------------------------
-        ImageView backButtonView   = (ImageView) findViewById(R.id.toolbar_back_button);
-        backButtonView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
+        UI.initializeToolbar(this, getString(R.string.value_editor));
     }
 
 

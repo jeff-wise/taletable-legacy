@@ -105,17 +105,9 @@ public class GamesActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
-        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_toolbar_back);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // > Set the title
         String title = "Which Game Do You Play?";
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+
+        UI.initializeToolbar(this, title);
     }
 
 

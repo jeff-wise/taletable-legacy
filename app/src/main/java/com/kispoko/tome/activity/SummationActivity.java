@@ -96,12 +96,7 @@ public class SummationActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        UI.initializeToolbar(this, false, false);
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(R.string.summation_editor);
+        UI.initializeToolbar(this, getString(R.string.summation_editor));
     }
 
 

@@ -51,7 +51,6 @@ public abstract class Variable extends Model
     // API
     // ------------------------------------------------------------------------------------------
 
-
     /**
      * This method should be called when the variable's value changes. This could happen directly
      * from user input, or indirectly, if user input changes a variable that was part of this
@@ -107,7 +106,7 @@ public abstract class Variable extends Model
 
 
     // ON UPDATE LISTENER
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public interface OnUpdateListener
     {

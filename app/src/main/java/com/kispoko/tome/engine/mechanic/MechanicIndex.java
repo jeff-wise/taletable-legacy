@@ -2,6 +2,7 @@
 package com.kispoko.tome.engine.mechanic;
 
 
+import com.kispoko.tome.engine.search.EngineActiveSearchResult;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
 import com.kispoko.tome.lib.yaml.ToYaml;
@@ -9,7 +10,11 @@ import com.kispoko.tome.lib.yaml.YamlBuilder;
 import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
 
+import org.apache.commons.collections4.trie.PatriciaTrie;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +37,7 @@ public class MechanicIndex extends Model
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                        id;
 
 
     // > Functors
@@ -48,6 +53,12 @@ public class MechanicIndex extends Model
 
     private Map<String,Mechanic>        mechanicsByName;
     private Map<String,Set<Mechanic>>   mechanicsByCategory;
+
+    // **  Search Indexes
+    // ------------------------------------------------------------------------------------------
+
+    private PatriciaTrie<Mechanic> activeMechanicNameTrie;
+    private PatriciaTrie<Mechanic> activeMechanicLabelTrie;
 
 
     // CONSTRUCTORS
@@ -207,11 +218,55 @@ public class MechanicIndex extends Model
     }
 
 
+    // > Search
+    // ------------------------------------------------------------------------------------------
+
+    public Collection<EngineActiveSearchResult> search(String query)
+    {
+
+        Set<Mechanic> matches = new HashSet<>();
+        matches.addAll(this.activeMechanicNameTrie.prefixMap(query).values());
+        matches.addAll(this.activeMechanicLabelTrie.prefixMap(query).values());
+
+        Map<String,ActiveMechanicSearchResult> resultsByMechanicName = new HashMap<>();
+
+        for (Mechanic mechanic : matches)
+        {
+            String mechanicName  = mechanic.name();
+            String mechanicLabel = mechanic.label();
+
+            if (resultsByMechanicName.containsKey(mechanicName)) {
+                ActiveMechanicSearchResult result = resultsByMechanicName.get(mechanicName);
+                result.addToRanking(1f);
+            }
+            else
+            {
+                ActiveMechanicSearchResult result =
+                                new ActiveMechanicSearchResult(mechanicName, mechanicLabel, 1f);
+                resultsByMechanicName.put(mechanicName, result);
+            }
+        }
+
+        Collection<EngineActiveSearchResult> results = new ArrayList<>();
+        for (ActiveMechanicSearchResult mechanicSearchResult : resultsByMechanicName.values()) {
+            results.add(new EngineActiveSearchResult(mechanicSearchResult));
+        }
+
+        return results;
+    }
+
+
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
     private void initialize()
     {
+        // Initialize search indexes
+        // --------------------------------------------------------------------------------------
+
+        this.activeMechanicNameTrie  = new PatriciaTrie<>();
+        this.activeMechanicLabelTrie = new PatriciaTrie<>();
+
         // Index mechanic requirements
         // --------------------------------------------------------------------------------------
 

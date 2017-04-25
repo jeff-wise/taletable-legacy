@@ -100,12 +100,7 @@ public class VariableReferenceActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        UI.initializeToolbar(this, false, false);
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(R.string.variable_reference_editor);
+        UI.initializeToolbar(this, getString(R.string.variable_reference_editor));
     }
 
 

@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.Font;
-import com.kispoko.tome.sheet.Page;
 
 
 /**
@@ -20,33 +19,14 @@ import com.kispoko.tome.sheet.Page;
 public class UI
 {
 
-    public static void initializeToolbar(AppCompatActivity activity)
+    public static void initializeToolbar(final AppCompatActivity activity, String title)
     {
-        UI.initializeToolbar(activity, true, false);
-    }
+        // [1] Configure Action Bar
+        // -------------------------------------------------------------------------------------
 
-
-    public static void initializeToolbar(AppCompatActivity activity, boolean isbold)
-    {
-        UI.initializeToolbar(activity, true, isbold);
-    }
-
-
-    public static void initializeToolbar(final AppCompatActivity activity,
-                                         boolean isBold,
-                                         boolean showIcon)
-    {
         Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);
         ActionBar actionBar = activity.getSupportActionBar();
-
-        if (showIcon) {
-            try {
-                actionBar.setDisplayHomeAsUpEnabled(true);
-            }
-            catch (Exception exception) {
-            }
-        }
 
         try {
             actionBar.setDisplayShowTitleEnabled(false);
@@ -54,14 +34,19 @@ public class UI
         catch (Exception exception) {
         }
 
-        TextView titleView = (TextView) activity.findViewById(R.id.page_title);
+        // [2] Configure Title
+        // -------------------------------------------------------------------------------------
 
-        if (isBold)
-            titleView.setTypeface(Font.serifFontBold(activity));
-        else
+        TextView titleView = (TextView) activity.findViewById(R.id.toolbar_title);
+
+        if (titleView != null)
+        {
             titleView.setTypeface(Font.serifFontRegular(activity));
 
-        // > Configure Back Button
+            titleView.setText(title);
+        }
+
+        // [3] Configure Back Button
         // -------------------------------------------------------------------------------------
 
         ImageView backButtonView = (ImageView) activity.findViewById(R.id.toolbar_back_button);

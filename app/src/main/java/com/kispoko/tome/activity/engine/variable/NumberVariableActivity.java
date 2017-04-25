@@ -107,12 +107,7 @@ public class NumberVariableActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        UI.initializeToolbar(this, false, false);
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(R.string.number_variable);
+        UI.initializeToolbar(this, getString(R.string.number_variable));
     }
 
 

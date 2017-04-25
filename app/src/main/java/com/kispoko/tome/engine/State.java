@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;
+import com.kispoko.tome.engine.search.EngineActiveSearchResult;
+import com.kispoko.tome.engine.variable.ActiveVariableSearchResult;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.DiceVariable;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -21,6 +23,10 @@ import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.tuple.Tuple2;
 
+import org.apache.commons.collections4.trie.PatriciaTrie;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,7 +55,29 @@ public class State
     private static boolean                        mechanicIndexReady      = false;
 
 
+    // > Search Indexes
+    // ------------------------------------------------------------------------------------------
+
+    private static PatriciaTrie<VariableUnion> activeVariableNameTrie;
+    private static PatriciaTrie<VariableUnion> activeVariableLabelTrie;
+
+
     // API
+    // ------------------------------------------------------------------------------------------
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    public static void initialize()
+    {
+        activeVariableNameTrie  = new PatriciaTrie<>();
+        activeVariableLabelTrie = new PatriciaTrie<>();
+
+        State.initializeMechanics();
+    }
+
+
+    // > Engine
     // ------------------------------------------------------------------------------------------
 
     /**
@@ -59,13 +87,22 @@ public class State
      */
     public static void addVariable(VariableUnion variableUnion)
     {
-        String variableName = variableUnion.variable().name();
+        String variableName  = variableUnion.variable().name();
+        String variableLabel = variableUnion.variable().label();
 
-        // [1] Add variable to index.
+        // [1] Add variable to indexes.
         // --------------------------------------------------------------------------------------
 
+        // > Add to MAIN variable-by-name index
         if (variableName != null)
             variableByName.put(variableName, variableUnion);
+
+        // > Add to SEARCH indexes
+        if (variableName != null)
+            activeVariableNameTrie.put(variableName, variableUnion);
+
+        if (variableLabel != null)
+            activeVariableLabelTrie.put(variableLabel, variableUnion);
 
         // [2] Index the variable's dependencies
         // --------------------------------------------------------------------------------------
@@ -173,11 +210,17 @@ public class State
         if (!variableByName.containsKey(variableName))
             return false;
 
+        VariableUnion variableUnion = variableByName.get(variableName);
+
         // [1] Remove the variable from the index
         // --------------------------------------------------------------------------------------
 
-        VariableUnion variableUnion = variableByName.get(variableName);
+        // > Delete from MAIN index
         variableByName.remove(variableName);
+
+        // > Delete from SEARCH indexes
+        activeVariableNameTrie.remove(variableName);
+        activeVariableLabelTrie.remove(variableName);
 
         // [2] Un-Index the variable's dependencies
         // --------------------------------------------------------------------------------------
@@ -323,6 +366,43 @@ public class State
         }
 
         return tuple;
+    }
+
+
+    // > Search
+    // ------------------------------------------------------------------------------------------
+
+    public static Collection<EngineActiveSearchResult> search(String query)
+    {
+        Set<VariableUnion> matches = new HashSet<>();
+        matches.addAll(activeVariableNameTrie.prefixMap(query).values());
+        matches.addAll(activeVariableLabelTrie.prefixMap(query).values());
+
+        Map<String,ActiveVariableSearchResult> resultsByVariableName = new HashMap<>();
+
+        for (VariableUnion variableUnion : matches)
+        {
+            String variableName = variableUnion.variable().name();
+            String variableLabel = variableUnion.variable().label();
+
+            if (resultsByVariableName.containsKey(variableName)) {
+                ActiveVariableSearchResult result = resultsByVariableName.get(variableName);
+                result.addToRanking(1f);
+            }
+            else
+            {
+                ActiveVariableSearchResult result =
+                                new ActiveVariableSearchResult(variableName, variableLabel, 1f);
+                resultsByVariableName.put(variableName, result);
+            }
+        }
+
+        Collection<EngineActiveSearchResult> results = new ArrayList<>();
+        for (ActiveVariableSearchResult variableSearchResult : resultsByVariableName.values()) {
+            results.add(new EngineActiveSearchResult(variableSearchResult));
+        }
+
+        return results;
     }
 
 }

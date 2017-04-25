@@ -118,12 +118,7 @@ public class ActionWidgetActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        UI.initializeToolbar(this, false, false);
-
-        // > Set the title
-        // -------------------------------------------------------------------------------------
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(R.string.widget_action);
+        UI.initializeToolbar(this, getString(R.string.widget_action));
     }
 
 

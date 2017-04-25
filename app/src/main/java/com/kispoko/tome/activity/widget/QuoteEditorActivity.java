@@ -104,16 +104,7 @@ public class QuoteEditorActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        // > Initialize action bar
-        UI.initializeToolbar(this);
-        ActionBar actionBar = getSupportActionBar();
-
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        // > Set the title
-        String title = this.getString(R.string.quote_editor);
-        TextView titleView = (TextView) findViewById(R.id.page_title);
-        titleView.setText(title);
+        UI.initializeToolbar(this, getString(R.string.quote_editor));
     }
 
 

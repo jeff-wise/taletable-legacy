@@ -17,7 +17,6 @@ import com.kispoko.tome.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.kispoko.tome.R.id.textView;
 
 
 /**
@@ -43,6 +42,7 @@ public class EditTextBuilder implements ViewBuilder
     public Integer          layoutGravity;
 
     public String           text;
+    public Integer          textId;
 
     public Padding          padding;
     public Margins          margin;
@@ -58,6 +58,7 @@ public class EditTextBuilder implements ViewBuilder
     public Integer          underlineColor;
 
     public String           hint;
+    public Integer          hintColor;
 
     public List<Integer>    rules;
 
@@ -81,6 +82,7 @@ public class EditTextBuilder implements ViewBuilder
         this.layoutGravity      = null;
 
         this.text               = null;
+        this.textId             = null;
 
         this.padding            = new Padding();
         this.margin             = new Margins();
@@ -215,11 +217,23 @@ public class EditTextBuilder implements ViewBuilder
         if (this.text != null)
             editText.setText(this.text);
 
+        // > Text Id
+        // --------------------------------------------------------------------------------------
+
+        if (this.textId != null)
+            editText.setText(this.textId);
+
         // > Hint
         // --------------------------------------------------------------------------------------
 
         if (this.hint != null)
             editText.setHint(this.hint);
+
+        // > Hint Color
+        // --------------------------------------------------------------------------------------
+
+        if (this.hintColor != null)
+            editText.setHintTextColor(ContextCompat.getColor(context, this.hintColor));
 
 
         // [2] Layout
