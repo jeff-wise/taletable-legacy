@@ -577,16 +577,15 @@ public class ButtonWidget extends Widget implements Serializable
         {
             List<FormattedString.Span> spans = new ArrayList<>();
             FormattedString.Span labelSpan =
-                        new FormattedString.Span(labelPlaceholder,
-                                                 this.label(),
-                                                 this.format().labelStyle(),
-                                                 this.format().descriptionStyle().size());
+                    new FormattedString.Span(this.label(),
+                                             labelPlaceholder,
+                                             this.format().labelStyle().color().color(context),
+                                             this.format().descriptionStyle().size().size(context),
+                                             this.format().labelStyle().font());
             spans.add(labelSpan);
 
-            description.textSpan = FormattedString.spannableStringBuilder(
-                                                        this.description(),
-                                                        spans,
-                                                        context);
+            description.textSpan = FormattedString.spannableStringBuilder(this.description(),
+                                                                          spans);
         }
         else
         {

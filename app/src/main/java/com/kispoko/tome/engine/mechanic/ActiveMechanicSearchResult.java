@@ -17,8 +17,14 @@ public class ActiveMechanicSearchResult implements EngineSearchResult
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private String  mechanicName;
-    private String  mechanicLabel;
+    private String  name;
+    private boolean nameIsMatched;
+
+    private String  label;
+    private boolean labelIsMatched;
+
+    private String  variables;
+    private boolean variableIsMatched;
 
 
     // > Search Result
@@ -27,16 +33,21 @@ public class ActiveMechanicSearchResult implements EngineSearchResult
     private float   ranking;
 
 
-
     // CONSTRUCTOR
     // -----------------------------------------------------------------------------------------
 
-    public ActiveMechanicSearchResult(String mechanicName, String mechanicLabel, float ranking)
+    public ActiveMechanicSearchResult(String name, String label, String variables)
     {
-        this.mechanicName  = mechanicName;
-        this.mechanicLabel = mechanicLabel;
+        this.name               = name;
+        this.nameIsMatched      = false;
 
-        this.ranking       = ranking;
+        this.label              = label;
+        this.labelIsMatched     = false;
+
+        this.variables          = variables;
+        this.variableIsMatched  = false;
+
+        this.ranking            = 1f;
     }
 
 
@@ -46,23 +57,78 @@ public class ActiveMechanicSearchResult implements EngineSearchResult
     // > State
     // -----------------------------------------------------------------------------------------
 
+    // ** Name
+    // -----------------------------------------------------------------------------------------
+
     /**
      * The result mechanic's name.
      * @return The mechanic name String.
      */
-    public String mechanicName()
+    public String name()
     {
-        return this.mechanicName;
+        return this.name;
     }
 
+
+    public boolean nameIsMatch()
+    {
+        return this.nameIsMatched;
+    }
+
+
+    public void setNameIsMatch()
+    {
+        this.nameIsMatched = true;
+    }
+
+
+    // ** Label
+    // -----------------------------------------------------------------------------------------
 
     /**
      * The result mechanic's label.
      * @return The mechanic label String.
      */
-    public String mechanicLabel()
+    public String label()
     {
-        return this.mechanicLabel;
+        return this.label;
+    }
+
+
+    public boolean labelIsMatch()
+    {
+        return this.labelIsMatched;
+    }
+
+
+    public void setLabelIsMatch()
+    {
+        this.labelIsMatched = true;
+    }
+
+
+    // ** Variables
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * A comma-separted  list of the mechanic's variables.
+     * @return The mechanic variable list String.
+     */
+    public String variables()
+    {
+        return this.variables;
+    }
+
+
+    public boolean variablesIsMatch()
+    {
+        return this.variableIsMatched;
+    }
+
+
+    public void setVariablesIsMatch()
+    {
+        this.variableIsMatched = true;
     }
 
 

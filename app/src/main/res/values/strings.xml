@@ -20,6 +20,7 @@
     <string name="label">Label</string>
 
     <string name="variable">Variable</string>
+    <string name="variables">Variables</string>
     <string name="mechanic">Mechanic</string>
 
     <string name="action_delete">DELETE</string>

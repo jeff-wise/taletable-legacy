@@ -16,6 +16,7 @@ import com.kispoko.tome.lib.yaml.YamlParser;
 import com.kispoko.tome.lib.yaml.YamlParseException;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -300,6 +301,17 @@ public class Mechanic extends Model
     }
 
 
+    public List<String> variableNames()
+    {
+        List<String> names = new ArrayList<>();
+
+        for (VariableUnion variableUnion : this.variables())
+            names.add(variableUnion.variable().name());
+
+        return names;
+    }
+
+
     // > Active
     // ------------------------------------------------------------------------------------------
 
@@ -333,7 +345,7 @@ public class Mechanic extends Model
      * Called when there is an update to one of the mechanic's requirement variables. Checks to
      * see if the active status of the mechanic has changed.
      */
-    public void onRequirementUpdate()
+    public UpdateStatus onRequirementUpdate()
     {
         boolean isActive = true;
 
@@ -365,13 +377,19 @@ public class Mechanic extends Model
         }
 
         // If was active and is now inactive
-        if (this.active && !isActive) {
+        if (this.active && !isActive)
+        {
             this.removeFromState();
+            return UpdateStatus.REMOVED_FROM_STATE;
         }
         // If was not active and is now active
-        else if (!this.active && isActive) {
+        else if (!this.active && isActive)
+        {
             this.addToState();
+            return UpdateStatus.ADDED_TO_STATE;
         }
+
+        return UpdateStatus.NO_CHANGE;
     }
 
 
@@ -407,6 +425,17 @@ public class Mechanic extends Model
     private void validateRequirements()
     {
         // TODO need way to analyze variable before added to state.
+    }
+
+
+    // UPDATE STATUS
+    // ------------------------------------------------------------------------------------------
+
+    public enum UpdateStatus
+    {
+        ADDED_TO_STATE,
+        REMOVED_FROM_STATE,
+        NO_CHANGE
     }
 
 }

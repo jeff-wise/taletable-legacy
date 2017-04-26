@@ -135,14 +135,10 @@ public enum TextSize implements ToYaml
     }
 
 
-    public RelativeSizeSpan relativeSizeSpan(TextSize baseSize, Context context)
+    public float size(Context context)
     {
-        float baseSizePx = context.getResources().getDimension(baseSize.resourceId());
-        float thisSizePx = context.getResources().getDimension(this.resourceId());
-
-        float relativeSize = thisSizePx / baseSizePx;
-
-        return new RelativeSizeSpan(relativeSize);
+        return context.getResources().getDimension(this.resourceId());
     }
+
 
 }

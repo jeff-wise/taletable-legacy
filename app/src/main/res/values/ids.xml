@@ -138,8 +138,10 @@
 
     <item name="tab_label" type="id"/>
 
+    <item name="search_view" type="id"/>
     <item name="search_field" type="id"/>
     <item name="search_exit" type="id"/>
+    <item name="search_clear" type="id"/>
 
     <item name="search_result_type" type="id"/>
     <item name="search_result_layout" type="id"/>
@@ -147,6 +149,9 @@
     <item name="search_result_variable_label" type="id"/>
     <item name="search_result_mechanic_name" type="id"/>
     <item name="search_result_mechanic_label" type="id"/>
+    <item name="search_result_mechanic_variables" type="id"/>
+    <item name="search_result_label_layout" type="id"/>
+    <item name="search_result_variables_layout" type="id"/>
 
     <!-- FIELD -->
     <item name="field_value" type="id"/>

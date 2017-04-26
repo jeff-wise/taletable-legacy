@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.SortedMap;
 
 
 /**
@@ -374,27 +374,50 @@ public class State
 
     public static Collection<EngineActiveSearchResult> search(String query)
     {
-        Set<VariableUnion> matches = new HashSet<>();
-        matches.addAll(activeVariableNameTrie.prefixMap(query).values());
-        matches.addAll(activeVariableLabelTrie.prefixMap(query).values());
-
         Map<String,ActiveVariableSearchResult> resultsByVariableName = new HashMap<>();
 
-        for (VariableUnion variableUnion : matches)
+        // Name Matches
+        Collection<VariableUnion> nameMatches = activeVariableNameTrie.prefixMap(query).values();
+        for (VariableUnion variableUnion : nameMatches)
         {
             String variableName = variableUnion.variable().name();
             String variableLabel = variableUnion.variable().label();
 
-            if (resultsByVariableName.containsKey(variableName)) {
-                ActiveVariableSearchResult result = resultsByVariableName.get(variableName);
+            ActiveVariableSearchResult result;
+            if (resultsByVariableName.containsKey(variableName))
+            {
+                result = resultsByVariableName.get(variableName);
                 result.addToRanking(1f);
             }
             else
             {
-                ActiveVariableSearchResult result =
-                                new ActiveVariableSearchResult(variableName, variableLabel, 1f);
+                result = new ActiveVariableSearchResult(variableName, variableLabel);
                 resultsByVariableName.put(variableName, result);
             }
+
+            result.setNameIsMatched();
+        }
+
+        // Label Matches
+        Collection<VariableUnion> labelMatches = activeVariableLabelTrie.prefixMap(query).values();
+        for (VariableUnion variableUnion : labelMatches)
+        {
+            String variableName = variableUnion.variable().name();
+            String variableLabel = variableUnion.variable().label();
+
+            ActiveVariableSearchResult result;
+            if (resultsByVariableName.containsKey(variableName))
+            {
+                result = resultsByVariableName.get(variableName);
+                result.addToRanking(1f);
+            }
+            else
+            {
+                result = new ActiveVariableSearchResult(variableName, variableLabel);
+                resultsByVariableName.put(variableName, result);
+            }
+
+            result.setLabelIsMatched();
         }
 
         Collection<EngineActiveSearchResult> results = new ArrayList<>();

@@ -2,8 +2,12 @@
 package com.kispoko.tome.activity.engine.search;
 
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.IntentCompat;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +18,10 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.engine.mechanic.ActiveMechanicSearchResult;
 import com.kispoko.tome.engine.search.EngineActiveSearchResult;
 import com.kispoko.tome.engine.variable.ActiveVariableSearchResult;
+import com.kispoko.tome.lib.ui.FormattedString;
 
 import java.util.Set;
 
-import static android.R.attr.type;
 
 
 /**
@@ -30,19 +34,29 @@ public class ActiveSearchResultsRecyclerViewAdapter
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private final int VARIABLE = 0;
-    private final int MECHANIC = 1;
+    private final int VARIABLE_VIEW = 0;
+    private final int MECHANIC_VIEW = 1;
 
+
+    private String query;
     private SortedList<EngineActiveSearchResult> resultSortedList;
+
+    private Context context;
+
+    private final int HL_COLOR_RES_ID;
 
 
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    public ActiveSearchResultsRecyclerViewAdapter()
+    public ActiveSearchResultsRecyclerViewAdapter(Context context)
     {
+        this.query = "";
         this.resultSortedList = new SortedList<>(EngineActiveSearchResult.class,
                                                  new SortedResultListCallback(this));
+        this.context = context;
+
+        this.HL_COLOR_RES_ID = R.color.purple_light;
     }
 
 
@@ -54,12 +68,12 @@ public class ActiveSearchResultsRecyclerViewAdapter
     {
         switch (viewType)
         {
-            case VARIABLE:
+            case VARIABLE_VIEW:
                 View variableResultView = ActiveResultView.variable(parent.getContext());
                 return new VariableViewHolder(variableResultView);
-            case MECHANIC:
+            case MECHANIC_VIEW:
                 View mechanicResultView = ActiveResultView.mechanic(parent.getContext());
-                return new VariableViewHolder(mechanicResultView);
+                return new MechanicViewHolder(mechanicResultView);
             default:
                 return null;
         }
@@ -71,25 +85,54 @@ public class ActiveSearchResultsRecyclerViewAdapter
     {
         EngineActiveSearchResult result = this.resultSortedList.get(position);
 
-        Log.d("***ADAPTER", "on bind view holder");
+        Log.d("***ADAPTER", "on bind view position: " + Integer.toString(position) + " " +
+                     result.type().toString());
 
         switch (result.type())
         {
             case VARIABLE:
+
                 VariableViewHolder variableViewHolder = (VariableViewHolder) viewHolder;
                 ActiveVariableSearchResult variableResult = result.variableSearchResult();
-                variableViewHolder.setType(R.string.variable);
-                variableViewHolder.setName(variableResult.variableName());
-                variableViewHolder.setLabel(variableResult.variableLabel());
-                Log.d("***ADAPTER", "variable name " + variableResult.variableName());
+
+                String variableString = this.context.getString(R.string.variable).toUpperCase();
+                variableViewHolder.setType(variableString);
+
+                if (variableResult.nameIsMatched())
+                    variableViewHolder.setName(variableResult.name(), true);
+                else
+                    variableViewHolder.setName(variableResult.name(), false);
+
+                if (variableResult.labelIsMatched())
+                    variableViewHolder.setLabel(variableResult.label(), true);
+                else
+                    variableViewHolder.setLabel(variableResult.label(), false);
+
                 break;
+
             case MECHANIC:
+
                 MechanicViewHolder mechanicViewHolder = (MechanicViewHolder) viewHolder;
                 ActiveMechanicSearchResult mechanicResult = result.mechanicSearchResult();
-                mechanicViewHolder.setType(R.string.mechanic);
-                mechanicViewHolder.setName(mechanicResult.mechanicName());
-                mechanicViewHolder.setLabel(mechanicResult.mechanicLabel());
-                Log.d("***ADAPTER", "mechanic name " + mechanicResult.mechanicName());
+
+                String mechanicString = this.context.getString(R.string.mechanic).toUpperCase();
+                mechanicViewHolder.setType(mechanicString);
+
+                if (mechanicResult.nameIsMatch())
+                    mechanicViewHolder.setName(mechanicResult.name(), true);
+                else
+                    mechanicViewHolder.setName(mechanicResult.name(), false);
+
+                if (mechanicResult.labelIsMatch())
+                    mechanicViewHolder.setLabel(mechanicResult.label(), true);
+                else
+                    mechanicViewHolder.setLabel(mechanicResult.label(), false);
+
+                if (mechanicResult.variablesIsMatch())
+                    mechanicViewHolder.setVariables(mechanicResult.variables(), true);
+                else
+                    mechanicViewHolder.setVariables(mechanicResult.variables(), false);
+
                 break;
         }
     }
@@ -107,12 +150,15 @@ public class ActiveSearchResultsRecyclerViewAdapter
     {
         EngineActiveSearchResult result = this.resultSortedList.get(position);
 
+        Log.d("***ADAPTER", "get view type position: " + Integer.toString(position) + " "
+                                + result.type().toString());
+
         switch (result.type())
         {
             case VARIABLE:
-                return VARIABLE;
+                return VARIABLE_VIEW;
             case MECHANIC:
-                return MECHANIC;
+                return MECHANIC_VIEW;
             default:
                 return -1;
         }
@@ -127,8 +173,10 @@ public class ActiveSearchResultsRecyclerViewAdapter
      * sorted list.
      * @param newResults The new search results.
      */
-    public void updateSearchResults(Set<EngineActiveSearchResult> newResults)
+    public void updateSearchResults(Set<EngineActiveSearchResult> newResults, String query)
     {
+        this.query = query;
+
         this.resultSortedList.beginBatchedUpdates();
 
         for (int i = this.resultSortedList.size() - 1; i >= 0; i--)
@@ -142,11 +190,14 @@ public class ActiveSearchResultsRecyclerViewAdapter
         this.resultSortedList.addAll(newResults);
         this.resultSortedList.endBatchedUpdates();
 
-        Log.d("***ADAPTER", "results " + Integer.toString(this.resultSortedList.size()));
+        for (int i = 0; i < this.resultSortedList.size(); i++) {
+            EngineActiveSearchResult result = this.resultSortedList.get(i);
+            Log.d("***ADAPTER", result.type().toString());
+        }
     }
 
 
-    // VARIABLE VIEW HOLDER
+    // VARIABLE_VIEW VIEW HOLDER
     // -----------------------------------------------------------------------------------------
 
     /**
@@ -155,10 +206,21 @@ public class ActiveSearchResultsRecyclerViewAdapter
     public class VariableViewHolder extends RecyclerView.ViewHolder
     {
 
-        private LinearLayout layout;
-        private TextView     typeView;
-        private TextView     nameView;
-        private TextView     labelView;
+        // PROPERTIES
+        // -------------------------------------------------------------------------------------
+
+        private LinearLayout    layout;
+
+        private TextView        typeView;
+
+        private LinearLayout    labelLayout;
+
+        private TextView        nameView;
+        private TextView        labelView;
+
+
+        // CONSTRUCTORS
+        // -------------------------------------------------------------------------------------
 
         public VariableViewHolder(final View itemView)
         {
@@ -168,29 +230,50 @@ public class ActiveSearchResultsRecyclerViewAdapter
 
             this.typeView = (TextView) itemView.findViewById(R.id.search_result_type);
 
+            this.labelLayout =
+                    (LinearLayout) itemView.findViewById(R.id.search_result_label_layout);
+
             this.nameView = (TextView) itemView.findViewById(R.id.search_result_variable_name);
             this.labelView = (TextView) itemView.findViewById(R.id.search_result_variable_label);
         }
 
-        public void setType(int typeStringId)
+        // API
+        // -------------------------------------------------------------------------------------
+
+        public void setType(String typeString)
         {
-            this.typeView.setText(typeStringId);
+            this.typeView.setText(typeString);
         }
 
-        public void setName(String name)
+
+        public void setName(String name, boolean highlight)
         {
-            this.nameView.setText(name);
+            if (highlight)
+                this.nameView.setText(searchHighlightSpan(name));
+            else
+                this.nameView.setText(name);
         }
 
-        public void setLabel(String label)
+
+        public void setLabel(String label, boolean highlight)
         {
-            this.labelView.setText(label);
+            if (label != null)
+            {
+                if (highlight)
+                    this.labelView.setText(searchHighlightSpan(label));
+                else
+                    this.labelView.setText(label);
+            }
+            else
+            {
+                this.labelLayout.setVisibility(View.GONE);
+            }
         }
 
     }
 
 
-    // MECHANIC VIEW HOLDER
+    // MECHANIC_VIEW VIEW HOLDER
     // -----------------------------------------------------------------------------------------
 
     /**
@@ -199,12 +282,25 @@ public class ActiveSearchResultsRecyclerViewAdapter
     public class MechanicViewHolder extends RecyclerView.ViewHolder
     {
 
+        // PROPERTIES
+        // -------------------------------------------------------------------------------------
+
         private LinearLayout layout;
 
         private TextView     typeView;
 
+
         private TextView     nameView;
+
         private TextView     labelView;
+        private LinearLayout labelLayout;
+
+        private TextView     variablesView;
+        private LinearLayout variablesLayout;
+
+
+        // CONSTRUCTORS
+        // -------------------------------------------------------------------------------------
 
         public MechanicViewHolder(final View itemView)
         {
@@ -215,23 +311,77 @@ public class ActiveSearchResultsRecyclerViewAdapter
             this.typeView = (TextView) itemView.findViewById(R.id.search_result_type);
 
             this.nameView = (TextView) itemView.findViewById(R.id.search_result_mechanic_name);
+
+            this.labelLayout =
+                    (LinearLayout) itemView.findViewById(R.id.search_result_label_layout);
             this.labelView = (TextView) itemView.findViewById(R.id.search_result_mechanic_label);
+
+            this.variablesLayout =
+                    (LinearLayout) itemView.findViewById(R.id.search_result_variables_layout);
+            this.variablesView =
+                    (TextView) itemView.findViewById(R.id.search_result_mechanic_variables);
         }
 
-        public void setType(int typeStringId)
+
+        // API
+        // -------------------------------------------------------------------------------------
+
+        public void setType(String typeString)
         {
-            this.typeView.setText(typeStringId);
+            this.typeView.setText(typeString);
         }
 
-        public void setName(String name)
+
+        public void setName(String name, boolean highlight)
         {
-            this.nameView.setText(name);
+            if (highlight)
+                this.nameView.setText(searchHighlightSpan(name));
+            else
+                this.nameView.setText(name);
         }
 
-        public void setLabel(String label)
+
+        public void setLabel(String label, boolean highlight)
         {
-            this.labelView.setText(label);
+            if (label != null)
+            {
+                if (highlight)
+                    this.labelView.setText(searchHighlightSpan(label));
+                else
+                    this.labelView.setText(label);
+            }
+            else
+            {
+                this.labelLayout.setVisibility(View.GONE);
+            }
         }
 
+
+        public void setVariables(String variables, boolean highlight)
+        {
+            if (variables != null)
+            {
+                if (highlight)
+                    this.variablesView.setText(searchHighlightSpan(variables));
+                else
+                    this.variablesView.setText(variables);
+            }
+            else
+            {
+                this.variablesLayout.setVisibility(View.GONE);
+            }
+        }
+
+    }
+
+
+    // HELPER
+    // -----------------------------------------------------------------------------------------
+
+    private SpannableStringBuilder searchHighlightSpan(String text)
+    {
+        int hlColor = ContextCompat.getColor(this.context, HL_COLOR_RES_ID);
+        FormattedString.Span span = new FormattedString.Span(this.query, hlColor, null);
+        return FormattedString.spannableStringBuilder(text, span);
     }
 }

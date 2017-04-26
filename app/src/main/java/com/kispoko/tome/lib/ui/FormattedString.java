@@ -11,16 +11,18 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ReplacementSpan;
 import android.text.style.StyleSpan;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.widget.util.TextColor;
-import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.TextStyle;
+import com.kispoko.tome.sheet.widget.util.TextFont;
+import com.kispoko.tome.util.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.textSize;
 
 
 /**
@@ -30,10 +32,15 @@ public class FormattedString
 {
 
 
-    // TODO Use absolute size span
-    public static SpannableStringBuilder spannableStringBuilder(String text,
-                                                                List<Span> spans,
-                                                                Context context)
+    public static SpannableStringBuilder spannableStringBuilder(String text, Span span)
+    {
+        List<Span> spans = new ArrayList<>();
+        spans.add(span);
+        return FormattedString.spannableStringBuilder(text, spans);
+    }
+
+
+    public static SpannableStringBuilder spannableStringBuilder(String text, List<Span> spans)
     {
         SpannableStringBuilder spanBuilder = new SpannableStringBuilder(text);
 
@@ -74,15 +81,16 @@ public class FormattedString
             int spanTextIndex  = currentText.indexOf(span.text());
             int spanTextLength = span.text().length();
 
-            if (spanTextIndex >= 0) {
+            if (spanTextIndex >= 0)
+            {
                 formatSpan(spanBuilder, spanTextIndex, spanTextLength,
-                           span.format(), context);
-
+                        span.textColor(), span.textSize(), span.font());
             }
 
             // (3) Background
             // ---------------------------------------------------------------------------------
 
+            /*
             if (span.backgroundStyle() != null)
             {
                 switch (span.backgroundStyle())
@@ -98,6 +106,8 @@ public class FormattedString
                 }
             }
 
+            */
+
         }
 
         return spanBuilder;
@@ -107,43 +117,50 @@ public class FormattedString
     public static void formatSpan(SpannableStringBuilder spanBuilder,
                                   int spanStart,
                                   int spanLength,
-                                  TextStyle spanStyle,
-                                  Context context)
+                                  Integer color,
+                                  Float textSizeDp,
+                                  TextFont font)
     {
         // > Typeface
         // -------------------------------------------------------------------------------------
 
-        switch (spanStyle.font())
+        if (font != null)
         {
-            case BOLD:
-                StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
-                spanBuilder.setSpan(valueBoldSpan, spanStart, spanStart + spanLength, 0);
-                break;
-            case ITALIC:
-                StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
-                spanBuilder.setSpan(valueItalicSpan, spanStart, spanStart + spanLength, 0);
-                break;
-            case BOLD_ITALIC:
-                StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
-                spanBuilder.setSpan(valueBoldItalicSpan, spanStart, spanStart + spanLength, 0);
-                break;
+            switch (font)
+            {
+                case BOLD:
+                    StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
+                    spanBuilder.setSpan(valueBoldSpan, spanStart, spanStart + spanLength, 0);
+                    break;
+                case ITALIC:
+                    StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
+                    spanBuilder.setSpan(valueItalicSpan, spanStart, spanStart + spanLength, 0);
+                    break;
+                case BOLD_ITALIC:
+                    StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
+                    spanBuilder.setSpan(valueBoldItalicSpan, spanStart, spanStart + spanLength, 0);
+                    break;
+            }
         }
 
         // > Color
         // -------------------------------------------------------------------------------------
-        spanBuilder.setSpan(spanStyle.color().foregroundColorSpan(context),
-                            spanStart, spanStart + spanLength, 0);
+
+        if (color != null)
+        {
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(color);
+            spanBuilder.setSpan(colorSpan, spanStart, spanStart + spanLength, 0);
+        }
 
         // > Size
         // -------------------------------------------------------------------------------------
 
-        int textSizeResourceId = spanStyle.size().resourceId();
-        int textSizePx = context.getResources().getDimensionPixelSize(textSizeResourceId);
-        AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(textSizePx, true);
-        spanBuilder.setSpan(sizeSpan, spanStart, spanStart + spanLength, 0);
-
-        // RelativeSizeSpan sizeSpan = spanStyle.size().relativeSizeSpan(baseTextSize, context);
-//        spanBuilder.setSpan(sizeSpan, spanStart, spanStart + spanLength, 0);
+        if (textSizeDp != null)
+        {
+            int textSizePx = Util.dpToPixel(textSizeDp);
+            AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(textSizePx, true);
+            spanBuilder.setSpan(sizeSpan, spanStart, spanStart + spanLength, 0);
+        }
     }
 
 
@@ -159,42 +176,46 @@ public class FormattedString
 
         private String              placeholder;
         private String              text;
-        private TextStyle           format;
-        private TextSize            baseTextSize;
-        private TextColor           backgroundColor;
-        private SpanBackgroundStyle backgroundStyle;
+
+        private TextFont            textFont;
+        private Integer             textColor;
+        private Float               textSize;
 
 
         // CONSTRUCTORS
         // -----------------------------------------------------------------------------------------
 
-        public Span(String placeholder,
-                    String text,
-                    TextStyle format,
-                    TextSize baseTextSize,
-                    TextColor backgroundColor,
-                    SpanBackgroundStyle backgroundStyle)
+        public Span(String text, Integer color, Float size)
         {
-            this.placeholder     = placeholder;
-            this.text            = text;
-            this.format          = format;
-            this.baseTextSize    = baseTextSize;
-            this.backgroundColor = backgroundColor;
-            this.backgroundStyle = backgroundStyle;
+            this.placeholder    = null;
+
+            this.text           = text;
+
+            this.textColor      = color;
+            this.textSize       = size;
+            this.textFont       = null;
         }
 
 
-        public Span(String placeholder,
-                    String text,
-                    TextStyle format,
-                    TextSize baseTextSize)
+        public Span(String text, String placeholder, Integer color, Float size, TextFont textFont)
         {
-            this.placeholder     = placeholder;
-            this.text            = text;
-            this.format          = format;
-            this.baseTextSize    = baseTextSize;
-            this.backgroundColor = null;
-            this.backgroundStyle = null;
+            this.text           = text;
+            this.placeholder    = placeholder;
+
+            this.textColor      = color;
+            this.textSize       = size;
+            this.textFont       = textFont;
+        }
+
+
+        public Span(String text, Integer color, Float size, TextFont textFont)
+        {
+            this.text           = text;
+            this.placeholder    = null;
+
+            this.textColor      = color;
+            this.textSize       = size;
+            this.textFont       = textFont;
         }
 
 
@@ -213,27 +234,21 @@ public class FormattedString
         }
 
 
-        public TextStyle format()
+        public Float textSize()
         {
-            return this.format;
+            return this.textSize;
         }
 
 
-        public TextSize baseTextSize()
+        public TextFont font()
         {
-            return this.baseTextSize;
+            return this.textFont;
         }
 
 
-        public TextColor backgroundColor()
+        public int textColor()
         {
-            return this.backgroundColor;
-        }
-
-
-        public SpanBackgroundStyle backgroundStyle()
-        {
-            return this.backgroundStyle;
+            return this.textColor;
         }
 
     }

@@ -687,16 +687,17 @@ public class NumberWidget extends Widget
             List<FormattedString.Span> spans = new ArrayList<>();
 
             FormattedString.Span labelSpan =
-                    new FormattedString.Span(null,
-                                             this.format().insideLabel(),
-                                             this.format().insideLabelStyle(),
-                                             this.format().descriptionStyle().size());
+                new FormattedString.Span(this.format().insideLabel(),
+                                         this.format().insideLabelStyle().color().color(context),
+                                         this.format().descriptionStyle().size().size(context),
+                                         this.format().insideLabelStyle().font());
 
             FormattedString.Span valueSpan =
-                    new FormattedString.Span(context.getString(R.string.placeholder_value),
-                                             this.valueString(),
-                                             this.format().valueStyle(),
-                                             this.format().descriptionStyle().size());
+                    new FormattedString.Span(this.valueString(),
+                                             context.getString(R.string.placeholder_value),
+                                             this.format().valueStyle().color().color(context),
+                                             this.format().descriptionStyle().size().size(context),
+                                             this.format().valueStyle().font());
 
             if (this.format().insideLabel() != null)
                 spans.add(labelSpan);
@@ -704,8 +705,7 @@ public class NumberWidget extends Widget
             spans.add(valueSpan);
 
             value.textSpan  = FormattedString.spannableStringBuilder(this.description(),
-                                                                     spans,
-                                                                     context);
+                                                                     spans);
         }
         else
         {

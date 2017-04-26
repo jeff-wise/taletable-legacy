@@ -21,10 +21,10 @@ public class EngineActiveSearchResult
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private Type type;
+    private Type                        type;
 
-    private ActiveVariableSearchResult variableResult;
-    private ActiveMechanicSearchResult mechanicResult;
+    private ActiveVariableSearchResult  variableResult;
+    private ActiveMechanicSearchResult  mechanicResult;
 
 
     // CONSTRUCTORS

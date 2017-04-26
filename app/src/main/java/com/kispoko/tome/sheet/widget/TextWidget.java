@@ -601,16 +601,17 @@ public class TextWidget extends Widget
             List<FormattedString.Span> spans = new ArrayList<>();
 
             FormattedString.Span labelSpan =
-                    new FormattedString.Span(null,
-                                             this.format().insideLabel(),
-                                             this.format().insideLabelStyle(),
-                                             this.format().descriptionStyle().size());
+                new FormattedString.Span(this.format().insideLabel(),
+                                         this.format().insideLabelStyle().color().color(context),
+                                         this.format().descriptionStyle().size().size(context),
+                                         this.format().insideLabelStyle().font());
 
             FormattedString.Span valueSpan =
-                    new FormattedString.Span(context.getString(R.string.placeholder_value),
-                                             this.value(),
-                                             this.format().valueStyle(),
-                                             this.format().descriptionStyle().size());
+                    new FormattedString.Span(this.value(),
+                                             context.getString(R.string.placeholder_value),
+                                             this.format().valueStyle().color().color(context),
+                                             this.format().descriptionStyle().size().size(context),
+                                             this.format().valueStyle().font());
 
             if (this.format().insideLabel() != null)
                 spans.add(labelSpan);
@@ -618,8 +619,7 @@ public class TextWidget extends Widget
             spans.add(valueSpan);
 
             value.textSpan  = FormattedString.spannableStringBuilder(this.description(),
-                                                                     spans,
-                                                                     context);
+                                                                     spans);
         }
         else
         {

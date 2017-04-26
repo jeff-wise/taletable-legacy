@@ -717,12 +717,15 @@ public class OptionWidget extends Widget implements Serializable
                 int valueItemIndex = placeholderIndex +
                                      this.valueStringListIndexMap.get(valueItemString);
 
-                if (valueItemIndex >= 0) {
-                    FormattedString.formatSpan(spanBuilder,
-                                               valueItemIndex,
-                                               valueItemString.length(),
-                                               this.format().valueItemStyle(),
-                                               context);
+                if (valueItemIndex >= 0)
+                {
+                    FormattedString.formatSpan(
+                                        spanBuilder,
+                                        valueItemIndex,
+                                        valueItemString.length(),
+                                        this.format().valueItemStyle().color().color(context),
+                                        this.format().valueItemStyle().size().size(context),
+                                        this.format().valueItemStyle().font());
                 }
 
             }
@@ -736,8 +739,9 @@ public class OptionWidget extends Widget implements Serializable
                 FormattedString.formatSpan(spanBuilder,
                                            valueIndex,
                                            valueIndex + valueString.length() - 4,
-                                           this.format().valueStyle(),
-                                           context);
+                                           this.format().valueStyle().color().color(context),
+                                           this.format().valueItemStyle().size().size(context),
+                                           this.format().valueItemStyle().font());
             }
 
         }

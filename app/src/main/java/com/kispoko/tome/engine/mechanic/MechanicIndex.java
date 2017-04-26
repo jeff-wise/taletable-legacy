@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.mechanic;
 
 
+import android.text.TextUtils;
+
 import com.kispoko.tome.engine.search.EngineActiveSearchResult;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import static java.util.Collections.addAll;
 
 
 /**
@@ -57,8 +60,9 @@ public class MechanicIndex extends Model
     // **  Search Indexes
     // ------------------------------------------------------------------------------------------
 
-    private PatriciaTrie<Mechanic> activeMechanicNameTrie;
-    private PatriciaTrie<Mechanic> activeMechanicLabelTrie;
+    private PatriciaTrie<Mechanic>      activeMechanicNameTrie;
+    private PatriciaTrie<Mechanic>      activeMechanicLabelTrie;
+    private PatriciaTrie<Set<Mechanic>> activeMechanicVariablesTrie;
 
 
     // CONSTRUCTORS
@@ -159,7 +163,7 @@ public class MechanicIndex extends Model
 
 
     // > State
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Get the mechanics in the index.
@@ -174,12 +178,18 @@ public class MechanicIndex extends Model
     public void onVariableUpdate(String variableName)
     {
         // [1] Update any mechanics that require this variable
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         if (this.requirementToListeners.containsKey(variableName))
         {
-            for (Mechanic mechanic : this.requirementToListeners.get(variableName)) {
-                mechanic.onRequirementUpdate();
+            for (Mechanic mechanic : this.requirementToListeners.get(variableName))
+            {
+                Mechanic.UpdateStatus updateStatus = mechanic.onRequirementUpdate();
+
+                if (updateStatus == Mechanic.UpdateStatus.ADDED_TO_STATE)
+                    this.indexActiveMechanic(mechanic);
+//                else if (updateStatus == Mechanic.UpdateStatus.REMOVED_FROM_STATE)
+//                    this.unindexActiveMechanic(mechanic);
             }
         }
     }
@@ -223,29 +233,102 @@ public class MechanicIndex extends Model
 
     public Collection<EngineActiveSearchResult> search(String query)
     {
-
-        Set<Mechanic> matches = new HashSet<>();
-        matches.addAll(this.activeMechanicNameTrie.prefixMap(query).values());
-        matches.addAll(this.activeMechanicLabelTrie.prefixMap(query).values());
-
         Map<String,ActiveMechanicSearchResult> resultsByMechanicName = new HashMap<>();
 
-        for (Mechanic mechanic : matches)
+        // > Name
+        // -------------------------------------------------------------------------------------
+
+        Collection<Mechanic> nameMatches = this.activeMechanicNameTrie.prefixMap(query).values();
+        for (Mechanic mechanic : nameMatches)
         {
             String mechanicName  = mechanic.name();
-            String mechanicLabel = mechanic.label();
 
-            if (resultsByMechanicName.containsKey(mechanicName)) {
-                ActiveMechanicSearchResult result = resultsByMechanicName.get(mechanicName);
+            ActiveMechanicSearchResult result;
+            if (resultsByMechanicName.containsKey(mechanicName))
+            {
+                result = resultsByMechanicName.get(mechanicName);
                 result.addToRanking(1f);
             }
             else
             {
-                ActiveMechanicSearchResult result =
-                                new ActiveMechanicSearchResult(mechanicName, mechanicLabel, 1f);
+                // GET mechanic result data
+                String mechanicLabel = mechanic.label();
+                String mechanicVariables = TextUtils.join(", ", mechanic.variableNames());
+
+                // CREATE mechanic search result
+                result = new ActiveMechanicSearchResult(mechanicName,
+                                                        mechanicLabel,
+                                                        mechanicVariables);
                 resultsByMechanicName.put(mechanicName, result);
             }
+
+            result.setNameIsMatch();
         }
+
+        // > Label
+        // -------------------------------------------------------------------------------------
+
+        Collection<Mechanic> labelMatches = this.activeMechanicLabelTrie.prefixMap(query).values();
+        for (Mechanic mechanic : labelMatches)
+        {
+            String mechanicName  = mechanic.name();
+
+            ActiveMechanicSearchResult result;
+            if (resultsByMechanicName.containsKey(mechanicName))
+            {
+                result = resultsByMechanicName.get(mechanicName);
+                result.addToRanking(1f);
+            }
+            else
+            {
+                // GET mechanic result data
+                String mechanicLabel = mechanic.label();
+                String mechanicVariables = TextUtils.join(", ", mechanic.variableNames());
+
+                // CREATE mechanic search result
+                result = new ActiveMechanicSearchResult(mechanicName,
+                                                        mechanicLabel,
+                                                        mechanicVariables);
+                resultsByMechanicName.put(mechanicName, result);
+            }
+
+            result.setLabelIsMatch();
+        }
+
+        // > By Variable
+        Set<Mechanic> variableMatches = new HashSet<>();
+        Collection<Set<Mechanic>> matchCollection =
+                                    this.activeMechanicVariablesTrie.prefixMap(query).values();
+        for (Set<Mechanic> mechanicSet : matchCollection) {
+            variableMatches.addAll(mechanicSet);
+        }
+
+        for (Mechanic mechanic : variableMatches)
+        {
+            String mechanicName  = mechanic.name();
+
+            ActiveMechanicSearchResult result;
+            if (resultsByMechanicName.containsKey(mechanicName))
+            {
+                result = resultsByMechanicName.get(mechanicName);
+                result.addToRanking(1f);
+            }
+            else
+            {
+                // GET mechanic result data
+                String mechanicLabel = mechanic.label();
+                String mechanicVariables = TextUtils.join(", ", mechanic.variableNames());
+
+                // CREATE mechanic search result
+                result = new ActiveMechanicSearchResult(mechanicName,
+                                                        mechanicLabel,
+                                                        mechanicVariables);
+                resultsByMechanicName.put(mechanicName, result);
+            }
+
+            result.setVariablesIsMatch();
+        }
+
 
         Collection<EngineActiveSearchResult> results = new ArrayList<>();
         for (ActiveMechanicSearchResult mechanicSearchResult : resultsByMechanicName.values()) {
@@ -253,6 +336,24 @@ public class MechanicIndex extends Model
         }
 
         return results;
+    }
+
+
+    public void indexActiveMechanic(Mechanic mechanic)
+    {
+        this.activeMechanicNameTrie.put(mechanic.name(), mechanic);
+
+        this.activeMechanicLabelTrie.put(mechanic.label(), mechanic);
+
+        for (String variableName : mechanic.variableNames())
+        {
+            if (!this.activeMechanicVariablesTrie.containsKey(variableName))
+                this.activeMechanicVariablesTrie.put(variableName, new HashSet<Mechanic>());
+
+            Set<Mechanic> mechanicsWithVariable =
+                                                this.activeMechanicVariablesTrie.get(variableName);
+            mechanicsWithVariable.add(mechanic);
+        }
     }
 
 
@@ -264,8 +365,9 @@ public class MechanicIndex extends Model
         // Initialize search indexes
         // --------------------------------------------------------------------------------------
 
-        this.activeMechanicNameTrie  = new PatriciaTrie<>();
-        this.activeMechanicLabelTrie = new PatriciaTrie<>();
+        this.activeMechanicNameTrie      = new PatriciaTrie<>();
+        this.activeMechanicLabelTrie     = new PatriciaTrie<>();
+        this.activeMechanicVariablesTrie = new PatriciaTrie<>();
 
         // Index mechanic requirements
         // --------------------------------------------------------------------------------------

@@ -17,25 +17,31 @@ public class ActiveVariableSearchResult implements EngineSearchResult
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private String variableName;
-    private String variableLabel;
+    private String      name;
+    private boolean     nameIsMatched;
+
+    private String      label;
+    private boolean     labelIsMatched;
 
 
     // > Search Result
     // -----------------------------------------------------------------------------------------
 
-    private float    ranking;
+    private float       ranking;
 
 
     // CONSTRUCTOR
     // -----------------------------------------------------------------------------------------
 
-    public ActiveVariableSearchResult(String variableName, String variableLabel, float ranking)
+    public ActiveVariableSearchResult(String name, String label)
     {
-        this.variableName   = variableName;
-        this.variableLabel  = variableLabel;
+        this.name           = name;
+        this.nameIsMatched  = false;
 
-        this.ranking        = ranking;
+        this.label          = label;
+        this.labelIsMatched = false;
+
+        this.ranking        = 1f;
     }
 
 
@@ -45,23 +51,53 @@ public class ActiveVariableSearchResult implements EngineSearchResult
     // > State
     // -----------------------------------------------------------------------------------------
 
+    // ** Variable Name
+    // -----------------------------------------------------------------------------------------
+
     /**
      * The result variable's name.
      * @return The variable name String.
      */
-    public String variableName()
+    public String name()
     {
-        return this.variableName;
+        return this.name;
     }
 
+
+    public boolean nameIsMatched()
+    {
+        return this.nameIsMatched;
+    }
+
+
+    public void setNameIsMatched()
+    {
+        this.nameIsMatched = true;
+    }
+
+
+    // ** Variable Label
+    // -----------------------------------------------------------------------------------------
 
     /**
      * The result variable's label.
      * @return The variable label String.
      */
-    public String variableLabel()
+    public String label()
     {
-        return this.variableLabel;
+        return this.label;
+    }
+
+
+    public boolean labelIsMatched()
+    {
+        return this.labelIsMatched;
+    }
+
+
+    public void setLabelIsMatched()
+    {
+        this.labelIsMatched = true;
     }
 
 

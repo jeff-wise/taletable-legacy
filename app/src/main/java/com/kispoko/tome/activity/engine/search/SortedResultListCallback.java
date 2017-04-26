@@ -89,16 +89,16 @@ public class SortedResultListCallback extends SortedList.Callback<EngineActiveSe
         if (result1.type() == EngineActiveSearchResult.Type.VARIABLE &&
             result2.type() == EngineActiveSearchResult.Type.VARIABLE)
         {
-            if (result1.variableSearchResult().variableName() ==
-                result2.variableSearchResult().variableName()) {
+            if (result1.variableSearchResult().name() ==
+                result2.variableSearchResult().name()) {
                 return true;
             }
         }
         else if (result1.type() == EngineActiveSearchResult.Type.MECHANIC &&
                 result2.type() == EngineActiveSearchResult.Type.MECHANIC)
         {
-            if (result1.mechanicSearchResult().mechanicName() ==
-                result2.mechanicSearchResult().mechanicName()) {
+            if (result1.mechanicSearchResult().name() ==
+                result2.mechanicSearchResult().name()) {
                 return true;
             }
         }

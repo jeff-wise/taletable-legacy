@@ -26,10 +26,12 @@ import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.search.EngineActiveSearchResult;
 import com.kispoko.tome.lib.ui.SearchView;
 import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
-import java.util.List;
 import java.util.Set;
+
+import static com.kispoko.tome.activity.SheetActivity.viewPager;
 
 
 /**
@@ -113,6 +115,7 @@ public class EngineActivity extends AppCompatActivity
         RelativeLayout searchView = SearchView.searchBarView(this);
         final EditText searchFieldView = (EditText) searchView.findViewById(R.id.search_field);
         ImageView searchExitButtonView = (ImageView) searchView.findViewById(R.id.search_exit);
+        ImageView searchClearButtonView = (ImageView) searchView.findViewById(R.id.search_clear);
 
         RecyclerView searchResultsView = (RecyclerView) findViewById(R.id.search_results);
 
@@ -133,6 +136,13 @@ public class EngineActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 disableSearchMode();
+            }
+        });
+
+        searchClearButtonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchFieldView.setText("");
             }
         });
 
@@ -160,8 +170,7 @@ public class EngineActivity extends AppCompatActivity
                 {
                     String query = searchFieldView.getText().toString();
                     Set<EngineActiveSearchResult> searchResults = engine.searchActive(query);
-                    Log.d("***ENGINE_ACTIVITY", "results " + Integer.toString(searchResults.size()));
-                    searchResultsAdapter.updateSearchResults(searchResults);
+                    searchResultsAdapter.updateSearchResults(searchResults, query);
                 }
             }
 
@@ -177,25 +186,28 @@ public class EngineActivity extends AppCompatActivity
 
         searchResultsView.setLayoutManager(new LinearLayoutManager(this));
 
-        this.searchResultsAdapter = new ActiveSearchResultsRecyclerViewAdapter();
+        this.searchResultsAdapter = new ActiveSearchResultsRecyclerViewAdapter(this);
         searchResultsView.setAdapter(this.searchResultsAdapter);
 
-//        SimpleDividerItemDecoration dividerItemDecoration =
-//                new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_85);
-//        recyclerView.addItemDecoration(dividerItemDecoration);
+        SimpleDividerItemDecoration dividerItemDecoration =
+                            new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_86);
+        searchResultsView.addItemDecoration(dividerItemDecoration);
     }
 
 
     private void disableSearchMode()
     {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         RelativeLayout toolbarLayout = (RelativeLayout) findViewById(R.id.toolbar_layout);
+        RelativeLayout searchView = (RelativeLayout) findViewById(R.id.search_view);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+        RecyclerView searchResultsView = (RecyclerView) findViewById(R.id.search_results);
 
-        toolbar.removeAllViews();
-
+        searchView.setVisibility(View.GONE);
+        searchResultsView.setVisibility(View.GONE);
         tabLayout.setVisibility(View.VISIBLE);
         toolbarLayout.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
     }
 
 }

@@ -196,6 +196,12 @@ public enum TextColor implements ToYaml
     }
 
 
+    public int color(Context context)
+    {
+        return ContextCompat.getColor(context, this.resourceId());
+    }
+
+
     public ForegroundColorSpan foregroundColorSpan(Context context)
     {
         int colorId = this.resourceId();

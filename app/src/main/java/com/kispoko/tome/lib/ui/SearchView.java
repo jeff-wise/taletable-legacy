@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import com.kispoko.tome.R;
 
 
+
 /**
  * Search View
  */
@@ -35,6 +36,8 @@ public class SearchView
     private static RelativeLayout searchBarViewLayout(Context context)
     {
         RelativeLayoutBuilder layout = new RelativeLayoutBuilder();
+
+        layout.id                   = R.id.search_view;
 
         layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -78,6 +81,8 @@ public class SearchView
     private static ImageView clearButtonView(Context context)
     {
         ImageViewBuilder button = new ImageViewBuilder();
+
+        button.id               = R.id.search_clear;
 
         button.layoutType       = LayoutType.RELATIVE;
         button.width            = RelativeLayout.LayoutParams.WRAP_CONTENT;
