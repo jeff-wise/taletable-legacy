@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.dictionary;
+package com.kispoko.tome.activity.engine.dictionary;
 
 
 import android.content.Context;
@@ -85,11 +85,11 @@ public class ValueSetRowView
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         header.id                   = R.id.value_set_row_header;
-        header.sizeSp               = 17f;
+        header.sizeSp               = 16f;
         header.color                = R.color.gold_light;
         header.font                 = Font.serifFontRegular(context);
 
-        header.margin.bottom        = R.dimen.dictionary_item_header_margin_bottom;
+        header.margin.bottomDp      = 7f;
 
         // [3 B] Description
         // --------------------------------------------------------------------------------------
@@ -116,13 +116,13 @@ public class ValueSetRowView
         count.gravity               = Gravity.CENTER;
 
         count.id                    = R.id.value_set_row_items;
-        count.font                  = Font.serifFontBold(context);
+        count.font                  = Font.serifFontRegular(context);
         count.color                 = R.color.dark_blue_hlx_4;
         count.sizeSp                = 15f;
 
         count.backgroundResource    = R.drawable.bg_value_set_size;
 
-        count.margin.right          = R.dimen.dictionary_item_count_margin_right;
+        count.margin.rightDp        = 15f;
 
         return count.textView(context);
     }

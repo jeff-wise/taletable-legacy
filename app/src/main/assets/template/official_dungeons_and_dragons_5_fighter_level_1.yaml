@@ -725,7 +725,7 @@ engine:
   mechanics:
   - name: armor_scalemail
     label: Scalemail
-    type: armor
+    type: Armor
     requirements:
     - has_armor_scalemail
     - scalemail.equipped
@@ -740,7 +740,7 @@ engine:
         - armor_class_bonus
   - name: shield
     label: Shield
-    type: shield
+    type: Shield
     requirements:
     - has_shield
     - shield.equipped
@@ -755,7 +755,7 @@ engine:
         - armor_class_bonus
   - name: weapon_longsword
     label: Longsword
-    type: weapon
+    type: Weapon
     requirements:
     - has_weapon_longsword
     variables:
@@ -777,7 +777,7 @@ engine:
             quantity: 1
   - name: weapon_heavy_crossbow
     label: Heavy Crossbow
-    type: weapon
+    type: Weapon
     requirements:
     - has_weapon_heavy_crossbow
     variables:
@@ -791,7 +791,7 @@ engine:
             quantity: 1
   - name: weapon_dagger
     label: Dagger
-    type: weapon
+    type: Weapon
     requirements:
     - has_weapon_dagger
     variables:
@@ -807,7 +807,7 @@ engine:
     label: Ability Score Increase
     summary: Your ability scores each increase by 1.
     description: Your ability scores each increase by 1.
-    type: race
+    type: Race
     requirements:
     - is_race_human
     variables:
@@ -832,14 +832,14 @@ engine:
      learn the languages of other peoples they deal with, including obscure dialects. They are fond
      of sprinkling their speech with words borrowed from other tongues: Orc curses, Elvish musical
      expressions, Dwarvish military phrases, and so on.
-    type: race
+    type: Race
     requirements:
     - is_race_human
   - name: class_fighter_fighting_style_archery
     label: 'Fighting Style: Archery'
     summary: +2 bonus on attacks with ranged weapons
     description: You gain a +2 bonus to attack rolls you make with ranged weapons.
-    type: class
+    type: Class
     requirements:
     - is_class_fighter
     - has_fighting_style_archery
@@ -857,7 +857,7 @@ engine:
     label: 'Fighting Style: Defense'
     summary: +1 bonus to AC while wearing armor
     description: While you are wearing armor, you gain a +1 bonus to AC
-    type: class
+    type: Class
     requirements:
     - is_class_fighter
     - has_fighting_style_defense
@@ -877,7 +877,7 @@ engine:
     description: >
       When you are wielding a melee weapon in one hand and no other weapons, you gain a +2 bonus
       to damage rolls with that weapon
-    type: class
+    type: Class
     requirements:
     - is_class_fighter
     - has_fighting_style_dueling
@@ -899,7 +899,7 @@ engine:
       are wielding with two hands, you can reroll the die and must use the new roll, even if the
       new roll is a 1 or a 2. The weapon must have the two-handed or versatile property for you to
       gain this benefit
-    type: class
+    type: Class
     requirements:
     - is_class_fighter
     - has_fighting_style_great_weapon_fighting
@@ -911,7 +911,7 @@ engine:
       When a creature you can see attacks a target other than you that is within 5 feet of you,
       you can use your reaction to impose disadvantage on the attack roll. You must be wielding a
       shield
-    type: class
+    type: Class
     requirements:
     - is_class_fighter
     - has_fighting_style_protection
@@ -921,7 +921,7 @@ engine:
     summary: Add your ability modifier to your off-hand attacks.
     description: >
       When you engage in two-weapon fighting, you can add your ability modifier.
-    type: class
+    type: Class
     requirements:
     - is_class_fighter
     - has_fighting_style_two_handed_weapon
@@ -933,7 +933,7 @@ engine:
       You have a limited well of stamina that you can draw on to protect yourself from harm. On
       your turn, you can use a bonus action to regain hit points equal to 1d10 + your fighter level.
       Once you use this feature, you must finish a short or long rest before you can use it again
-    type: class
+    type: Class
     requirements:
     - is_class_fighter
     - is_level_one

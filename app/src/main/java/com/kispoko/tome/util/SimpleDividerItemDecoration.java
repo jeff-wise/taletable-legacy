@@ -39,6 +39,11 @@ public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration
         this.divider = dividerDrawable;
     }
 
+    public SimpleDividerItemDecoration(Context context, int colorId, float width)
+    {
+
+    }
+
 
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state)

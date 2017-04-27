@@ -1,23 +1,19 @@
 
-package com.kispoko.tome.activity;
+package com.kispoko.tome.activity.engine.valueset;
 
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.valueset.ValueListActivity;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.BaseValueSet;
 import com.kispoko.tome.engine.value.ValueSetType;
@@ -38,9 +34,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

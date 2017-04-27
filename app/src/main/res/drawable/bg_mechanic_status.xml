@@ -4,14 +4,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <!--<solid-->
-        <!--android:color="@color/dark_theme_primary_78">-->
-    <!--</solid>-->
+    <solid
+        android:color="@color/dark_blue_7">
+    </solid>
 
-    <stroke
-        android:width="1dp"
-        android:color="@color/dark_theme_primary_86">
-    </stroke>
+    <!--<stroke-->
+        <!--android:width="1dp"-->
+        <!--android:color="@color/dark_blue_10">-->
+    <!--</stroke>-->
 
     <corners
         android:radius="3dp" >

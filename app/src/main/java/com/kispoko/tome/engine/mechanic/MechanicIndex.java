@@ -17,6 +17,7 @@ import org.apache.commons.collections4.trie.PatriciaTrie;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static java.util.Collections.addAll;
 
 
 /**
@@ -162,7 +162,7 @@ public class MechanicIndex extends Model
     }
 
 
-    // > State
+    // > Mechanics
     // -----------------------------------------------------------------------------------------
 
     /**
@@ -171,9 +171,51 @@ public class MechanicIndex extends Model
      */
     public List<Mechanic> mechanics()
     {
+        return Collections.unmodifiableList(this.mechanics.getValue());
+    }
+
+
+    private List<Mechanic> mechanicsMutable()
+    {
         return this.mechanics.getValue();
     }
 
+
+    /**
+     * Return a list of the mechanics in the category separated by strings of their category. This
+     * method is used for the Recycler View. For example, this method could return:
+     *
+     * "Weapons"
+     * Mechanic: Sword
+     * Mechanic: Spear
+     * Mechanic: Bow
+     * "Spells"
+     * Mechanic: Fireball
+     * Mechanic: Magic Missle
+     * @return The list of mechanics and their categories
+     */
+    public List<Object> mechanicByCategoryList()
+    {
+        List<Object> items = new ArrayList<>();
+
+        for (Map.Entry<String,Set<Mechanic>> entry : this.mechanicsByCategory.entrySet())
+        {
+            String        category    = entry.getKey();
+            Set<Mechanic> mechanicSet = entry.getValue();
+
+            items.add(category);
+
+            for (Mechanic mechanic : mechanicSet) {
+                items.add(mechanic);
+            }
+        }
+
+        return items;
+    }
+
+
+    // > Updates
+    // -----------------------------------------------------------------------------------------
 
     public void onVariableUpdate(String variableName)
     {
@@ -225,6 +267,20 @@ public class MechanicIndex extends Model
         }
 
         return activeMechanics;
+    }
+
+
+    // > Active Mechanics
+    // ------------------------------------------------------------------------------------------
+
+    public boolean mechanicIsActive(String mechanicName)
+    {
+        Mechanic mechanic = this.mechanicWithName(mechanicName);
+
+        if (mechanic != null && mechanic.active())
+            return true;
+
+        return false;
     }
 
 

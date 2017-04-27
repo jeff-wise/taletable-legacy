@@ -59,11 +59,12 @@
     <item name="statement_list_item_parameter3_value" type="id"/>
     <item name="statement_list_item_parameter3_type" type="id"/>
 
-    <!-- MECHANIC LIST ITEM -->
+    <!-- MECHANIC INDEX -->
     <item name="mechanic_list_item_layout" type="id"/>
-    <item name="mechanic_list_item_name" type="id"/>
-    <item name="mechanic_list_item_variables_count" type="id"/>
-    <item name="mechanic_list_item_variables_label" type="id"/>
+    <item name="mechanic_category_header" type="id"/>
+    <item name="mechanic_name" type="id"/>
+    <item name="mechanic_status" type="id"/>
+    <item name="mechanic_summary" type="id"/>
 
     <!-- VARIABLE LIST ITEM -->
     <item name="variable_list_item_layout" type="id"/>
@@ -152,6 +153,7 @@
     <item name="search_result_mechanic_variables" type="id"/>
     <item name="search_result_label_layout" type="id"/>
     <item name="search_result_variables_layout" type="id"/>
+
 
     <!-- FIELD -->
     <item name="field_value" type="id"/>

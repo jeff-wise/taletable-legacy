@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.mechanic;
+package com.kispoko.tome.activity.engine.mechanic;
 
 
 import android.support.v4.app.Fragment;
@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.kispoko.tome.activity.variable.VariableListFragment;
 import com.kispoko.tome.engine.mechanic.Mechanic;
 
-import static com.kispoko.tome.activity.mechanic.DataFragment.newInstance;
+import static com.kispoko.tome.activity.engine.mechanic.DataFragment.newInstance;
 
 
 /**

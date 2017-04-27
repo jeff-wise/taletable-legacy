@@ -190,7 +190,7 @@ public class DiceRollActivity extends AppCompatActivity
 
         layout.orientation      = LinearLayout.VERTICAL;
 
-        layout.backgroundColor  = R.color.dark_theme_primary_85;
+        layout.backgroundColor  = R.color.dark_theme_primary_84;
 
         return layout.linearLayout(context);
     }
@@ -360,11 +360,11 @@ public class DiceRollActivity extends AppCompatActivity
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
         layout.backgroundResource   = R.drawable.bg_roll_view;
-        layout.backgroundColor      = R.color.dark_theme_primary_83;
+        layout.backgroundColor      = R.color.dark_theme_primary_81;
 
         layout.margin.rightDp       = 7f;
         layout.margin.leftDp        = 7f;
-        layout.margin.topDp         = 7f;
+        layout.margin.topDp         = 10f;
 
         layout.padding.topDp        = 5f;
         layout.padding.bottomDp     = 5f;

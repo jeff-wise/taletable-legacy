@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.dictionary;
+package com.kispoko.tome.activity.engine.dictionary;
 
 
 import android.content.Context;
@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.BaseValueSetEditorActivity;
+import com.kispoko.tome.activity.engine.valueset.BaseValueSetEditorActivity;
 import com.kispoko.tome.engine.value.ValueSet;
 import com.kispoko.tome.engine.value.ValueSetUnion;
 

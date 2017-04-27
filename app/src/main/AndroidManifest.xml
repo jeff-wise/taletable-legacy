@@ -64,30 +64,30 @@
         android:label="Edit Number" />
 
     <activity
-        android:name=".activity.DictionaryActivity"
+        android:name=".activity.engine.dictionary.DictionaryActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Dictionary" />
 
     <activity
-        android:name=".activity.BaseValueSetEditorActivity"
+        android:name=".activity.engine.valueset.BaseValueSetEditorActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="adjustPan"
         android:label="Value Set" />
 
     <activity
-        android:name=".activity.valueset.ValueListActivity"
+        android:name=".activity.engine.valueset.ValueListActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="adjustPan"
         android:label="Values" />
 
     <activity
-        android:name=".activity.TextValueEditorActivity"
+        android:name=".activity.engine.value.TextValueEditorActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="adjustPan"
         android:label="Values" />
 
     <activity
-        android:name=".activity.NumberValueEditorActivity"
+        android:name=".activity.engine.value.NumberValueEditorActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="adjustPan"
         android:label="Values" />
@@ -121,18 +121,18 @@
         android:label="Statement" />
 
     <activity
-        android:name=".activity.MechanicIndexActivity"
+        android:name=".activity.engine.mechanicindex.MechanicIndexActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Mechanics" />
 
     <activity
-        android:name=".activity.MechanicActivity"
+        android:name=".activity.engine.mechanic.MechanicActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Mechanic" />
 
     <activity
-        android:name=".activity.TextVariableActivity"
+        android:name=".activity.engine.variable.TextVariableActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Text Variable" />
@@ -150,7 +150,7 @@
         android:label="Boolean Variable" />
 
     <activity
-        android:name=".activity.DiceVariableActivity"
+        android:name=".activity.engine.variable.DiceVariableActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Dice Variable" />

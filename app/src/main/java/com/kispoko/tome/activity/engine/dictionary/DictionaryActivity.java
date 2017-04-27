@@ -1,27 +1,23 @@
 
-package com.kispoko.tome.activity;
+package com.kispoko.tome.activity.engine.dictionary;
 
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.dictionary.ValueSetsRecyclerViewAdapter;
+import com.kispoko.tome.activity.engine.valueset.BaseValueSetEditorActivity;
 import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
+
 
 
 /**
@@ -107,7 +103,7 @@ public class DictionaryActivity extends AppCompatActivity
         recyclerView.setAdapter(this.valueSetsAdapter);
 
         SimpleDividerItemDecoration dividerItemDecoration =
-                new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_85);
+                new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_86);
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         FloatingActionButton addValueSetButton =

@@ -1,19 +1,16 @@
 
-package com.kispoko.tome.activity;
+package com.kispoko.tome.activity.engine.mechanic;
 
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.mechanic.MechanicPagerAdapter;
 import com.kispoko.tome.engine.function.Tuple;
 import com.kispoko.tome.engine.mechanic.Mechanic;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;

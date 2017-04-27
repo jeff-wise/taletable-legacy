@@ -1,20 +1,18 @@
-package com.kispoko.tome.activity;
+
+package com.kispoko.tome.activity.engine.mechanicindex;
 
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.mechanicindex.MechanicListRecyclerViewAdapter;
+import com.kispoko.tome.activity.engine.mechanic.MechanicActivity;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
@@ -28,7 +26,13 @@ import com.kispoko.tome.util.UI;
 public class MechanicIndexActivity extends AppCompatActivity
 {
 
-    // ACTIVITY LIFECYCLE EVENTS
+    // PROPERTIES
+    // ------------------------------------------------------------------------------------------
+
+    private MechanicListRecyclerViewAdapter mechanicListAdapter;
+
+
+    // ACTIVITY API
     // ------------------------------------------------------------------------------------------
 
     @Override
@@ -36,12 +40,17 @@ public class MechanicIndexActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        // [1] Set Content View
+        // -------------------------------------------------------------------------------------
+
         setContentView(R.layout.activity_mechanic_index);
+
+        // [2] Initialize UI
+        // -------------------------------------------------------------------------------------
 
         initializeToolbar();
 
         MechanicIndex mechanicIndex = SheetManager.currentSheet().engine().mechanicIndex();
-
         initializeView(mechanicIndex);
     }
 
@@ -56,28 +65,19 @@ public class MechanicIndexActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_choose_template, menu);
+        getMenuInflater().inflate(R.menu.empty, menu);
         return true;
     }
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    public void onWindowFocusChanged(boolean hasFocus)
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        super.onWindowFocusChanged(hasFocus);
 
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.action_settings:
-                return true;
+        if (this.mechanicListAdapter != null) {
+            this.mechanicListAdapter.notifyDataSetChanged();
         }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -89,8 +89,7 @@ public class MechanicIndexActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = "Mechanics";
-
+        String title = getString(R.string.mechanics);
         UI.initializeToolbar(this, title);
     }
 
@@ -100,12 +99,16 @@ public class MechanicIndexActivity extends AppCompatActivity
      */
     private void initializeView(MechanicIndex mechanicIndex)
     {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.mechanic_index_list_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.mechanic_list_view);
+
+        this.mechanicListAdapter =
+                new MechanicListRecyclerViewAdapter(mechanicIndex.mechanicByCategoryList(), this);
+        recyclerView.setAdapter(this.mechanicListAdapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-        recyclerView.setAdapter(
-                new MechanicListRecyclerViewAdapter(mechanicIndex.mechanics(), this));
+
+        recyclerView.addItemDecoration(
+                new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_86));
 
         FloatingActionButton addValueSetButton =
                 (FloatingActionButton) findViewById(R.id.button_new_mechanic);

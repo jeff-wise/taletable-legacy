@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.TextVariableActivity;
+import com.kispoko.tome.activity.engine.variable.TextVariableActivity;
 import com.kispoko.tome.engine.variable.VariableUnion;
 
 import java.util.List;

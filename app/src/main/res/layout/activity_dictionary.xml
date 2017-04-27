@@ -17,13 +17,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/dark_blue_9">
+            android:background="@color/dark_theme_primary_84">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/dark_blue_13"
+                android:background="@color/dark_theme_primary_88"
                 app:contentInsetStart="0dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
@@ -45,7 +45,7 @@
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:layout_gravity="center"
-                        android:textSize="20sp"
+                        android:textSize="19sp"
                         android:textColor="@color/dark_blue_hlx_5"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"

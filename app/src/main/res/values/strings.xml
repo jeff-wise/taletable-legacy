@@ -23,6 +23,8 @@
     <string name="variables">Variables</string>
     <string name="mechanic">Mechanic</string>
 
+    <string name="active">Active</string>
+
     <string name="action_delete">DELETE</string>
 
     <string name="create_account">Create Account</string>

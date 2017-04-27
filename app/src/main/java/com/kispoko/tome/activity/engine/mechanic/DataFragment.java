@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.mechanic;
+package com.kispoko.tome.activity.engine.mechanic;
 
 
 import android.content.Context;

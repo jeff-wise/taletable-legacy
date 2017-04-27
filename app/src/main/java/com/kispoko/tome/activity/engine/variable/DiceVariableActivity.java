@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity;
+package com.kispoko.tome.activity.engine.variable;
 
 
 import android.support.v7.app.AppCompatActivity;

@@ -1,9 +1,8 @@
 
-package com.kispoko.tome.activity;
+package com.kispoko.tome.activity.engine.variable;
 
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;

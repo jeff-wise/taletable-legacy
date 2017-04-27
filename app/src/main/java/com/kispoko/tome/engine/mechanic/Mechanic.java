@@ -55,7 +55,7 @@ public class Mechanic extends Model
      */
     private PrimitiveFunctor<String>            description;
 
-    private PrimitiveFunctor<String>            type;
+    private PrimitiveFunctor<String>            category;
 
     /**
      * A requirement is the name of a boolean variable. If all the requiremnet variable values are
@@ -83,10 +83,10 @@ public class Mechanic extends Model
         this.label          = new PrimitiveFunctor<>(null, String.class);
         this.summary        = new PrimitiveFunctor<>(null, String.class);
         this.description    = new PrimitiveFunctor<>(null, String.class);
-        this.type           = new PrimitiveFunctor<>(null, String.class);
+        this.category       = new PrimitiveFunctor<>(null, String.class);
         this.requirements   = new PrimitiveFunctor<>(null, String[].class);
 
-        this.variables    = CollectionFunctor.empty(VariableUnion.class);
+        this.variables      = CollectionFunctor.empty(VariableUnion.class);
     }
 
 
@@ -95,7 +95,7 @@ public class Mechanic extends Model
                     String label,
                     String summary,
                     String description,
-                    String type,
+                    String category,
                     List<String> requirements,
                     List<VariableUnion> variables)
     {
@@ -105,7 +105,7 @@ public class Mechanic extends Model
         this.label          = new PrimitiveFunctor<>(label, String.class);
         this.summary        = new PrimitiveFunctor<>(summary, String.class);
         this.description    = new PrimitiveFunctor<>(description, String.class);
-        this.type           = new PrimitiveFunctor<>(type, String.class);
+        this.category       = new PrimitiveFunctor<>(category, String.class);
 
         String[] requirementsArray = new String[requirements.size()];
         requirements.toArray(requirementsArray);
@@ -261,7 +261,7 @@ public class Mechanic extends Model
      */
     public String type()
     {
-        return this.type.getValue();
+        return this.category.getValue();
     }
 
 

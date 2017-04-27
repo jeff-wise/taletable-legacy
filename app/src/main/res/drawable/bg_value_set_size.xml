@@ -6,7 +6,7 @@
 
 
     <solid
-        android:color="@color/dark_blue_9">
+        android:color="@color/dark_theme_primary_84">
     </solid>
 
     <stroke

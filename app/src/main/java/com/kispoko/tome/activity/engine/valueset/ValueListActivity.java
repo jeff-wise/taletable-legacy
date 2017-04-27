@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.valueset;
+package com.kispoko.tome.activity.engine.valueset;
 
 
 import android.content.Intent;
@@ -10,17 +10,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.NumberValueEditorActivity;
-import com.kispoko.tome.activity.TextValueEditorActivity;
+import com.kispoko.tome.activity.engine.value.NumberValueEditorActivity;
+import com.kispoko.tome.activity.engine.value.TextValueEditorActivity;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.BaseValueSet;
 import com.kispoko.tome.engine.value.ValueSetType;
 import com.kispoko.tome.engine.value.ValueSetUnion;
-import com.kispoko.tome.lib.ui.ActivityCommon;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
