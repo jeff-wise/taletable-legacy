@@ -21,7 +21,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/dark_blue_13"
+                android:background="@color/dark_theme_primary_88"
                 app:contentInsetStart="0dp"
                 android:theme="@style/AppTheme.NoActionBar" >
 
@@ -73,7 +73,7 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/dark_blue_13"
+                android:background="@color/dark_theme_primary_88"
                 app:tabGravity="fill"
                 app:tabMode="scrollable"
                 app:tabTextColor="@color/dark_blue_hl_8"

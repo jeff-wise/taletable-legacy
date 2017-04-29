@@ -71,6 +71,19 @@
     <item name="variable_list_item_name" type="id"/>
     <item name="variable_list_item_type" type="id"/>
     <item name="variable_list_item_kind" type="id"/>
+    <item name="variable_list_item_description" type="id"/>
+    <item name="variable_list_item_value_layout" type="id"/>
+    <item name="variable_list_item_value" type="id"/>
+
+    <!-- DICE QUANTITY LIST ITEM -->
+    <item name="dice_quantity_list_item_layout" type="id"/>
+    <item name="dice_quantity_list_item_quantity" type="id"/>
+    <item name="dice_quantity_list_item_description" type="id"/>
+
+    <!-- ROLL MODIFIER LIST ITEM -->
+    <item name="roll_modifier_list_item_layout" type="id"/>
+    <item name="roll_modifier_list_item_modifier" type="id"/>
+    <item name="roll_modifier_list_item_name" type="id"/>
 
     <!-- PAGE LIST ITEM -->
     <item name="page_list_item_layout" type="id"/>

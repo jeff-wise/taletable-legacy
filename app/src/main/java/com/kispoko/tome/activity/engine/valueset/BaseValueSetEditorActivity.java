@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.engine.value.ValueListActivity;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.BaseValueSet;
 import com.kispoko.tome.engine.value.ValueSetType;

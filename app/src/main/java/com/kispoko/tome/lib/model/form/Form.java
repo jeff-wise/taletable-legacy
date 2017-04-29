@@ -3,6 +3,7 @@ package com.kispoko.tome.lib.model.form;
 
 
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;

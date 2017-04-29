@@ -54,14 +54,14 @@ public class MechanicListItemView
     {
         TextViewBuilder category = new TextViewBuilder();
 
-        category.id                 = R.id.mechanic_category_header;
+        category.id             = R.id.mechanic_category_header;
 
-        category.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
-        category.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        category.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
+        category.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        category.font               = Font.serifFontBoldItalic(context);
-        category.color              = R.color.dark_theme_primary_12;
-        category.sizeSp             = 16.5f;
+        category.font           = Font.serifFontBoldItalic(context);
+        category.color          = R.color.dark_theme_primary_12;
+        category.sizeSp         = 16.5f;
 
         return category.textView(context);
     }

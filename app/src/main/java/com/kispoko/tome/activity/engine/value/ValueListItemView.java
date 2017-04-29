@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.engine.valueset;
+package com.kispoko.tome.activity.engine.value;
 
 
 import android.content.Context;

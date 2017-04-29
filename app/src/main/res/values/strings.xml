@@ -58,6 +58,10 @@
     <string name="text_editor">Text Editor</string>
     <string name="quote_editor">Quote Editor</string>
     <string name="variable_reference_editor">Variable Reference Editor</string>
+    <string name="roll_modifier_editor">Roll Modifier Editor</string>
+
+    <string name="mechanic_editor">Mechanic Editor</string>
+    <string name="variable_list_editor">Variable List Editor</string>
 
     <string name="edit_item">Edit Item</string>
     <string name="new_item">New Item</string>
@@ -119,6 +123,11 @@
 
     <string name="options">Options</string>
 
+    <string name="dice_quantities_editor">Dice Quantities Editor</string>
+    <string name="dice_quantity_editor">Dice Quantity Editor</string>
+    <string name="dice_modifiers_editor">Dice Modifiers Editor</string>
+    <string name="dice_modifier_editor">Dice Modifier Editor</string>
+
     <string name="learn_about_value_sets">Learn about Value Sets</string>
 
     <string name="value_set_editor">Value Set Editor</string>
@@ -165,6 +174,7 @@
     <string name="widget_text">Text Widget</string>
 
     <string name="number_variable">Number Variable</string>
+    <string name="dice_variable">Dice Variable</string>
     <string name="text_variable">Text Variable</string>
 
     <string name="conditional_value">Conditional Value</string>
@@ -172,6 +182,7 @@
     <string name="number">Number</string>
 
     <string name="dice_roll_term_editor">Dice Roll Term Editor</string>
+    <string name="dice_roll_editor">Dice Roll Editor</string>
 
     <string name="column">Column</string>
 
@@ -512,9 +523,19 @@
         The mechanic name (meant to be read by people).
     </string>
 
-    <string name="mechanic_field_type_label">Type</string>
-    <string name="mechanic_field_type_description">
-        The type of mechanic i.e. a category that the mechanic belongs to.
+    <string name="mechanic_field_summary_label">Summary</string>
+    <string name="mechanic_field_summary_description">
+        A short description of the mechanic.
+    </string>
+
+    <string name="mechanic_field_description_label">Description</string>
+    <string name="mechanic_field_description_description">
+        A long or detailed description of the mechanic.
+    </string>
+
+    <string name="mechanic_field_category_label">Type</string>
+    <string name="mechanic_field_category_description">
+        The category that the mechanic is in.
     </string>
 
     <string name="mechanic_field_reqs_label">Requirements</string>
@@ -522,6 +543,12 @@
         Each requirement is the name of a boolean variable. If the values of all the requirement
         values are true then the mechanic is considered active, and its variables are added to the
         system.
+    </string>
+
+    <string name="mechanic_field_variables_label">Variables</string>
+    <string name="mechanic_field_variables_description">
+        The mechanic\'s variables. When the mechanic is active these variables are added to the
+        state. When the mechanic is active, they are removed.
     </string>
 
 
@@ -537,6 +564,11 @@
     <string name="variable_field_label_label">Label</string>
     <string name="variable_field_label_description">
         The variable name (meant to be read by people).
+    </string>
+
+    <string name="variable_field_description_label">Description</string>
+    <string name="variable_field_description_description">
+        A description of the variable e.g. its purpose or the information it contains.
     </string>
 
     <string name="variable_field_is_namespaced_label">Is Namespaced?</string>
@@ -593,10 +625,61 @@
         A summation of numerical values from different sources.
     </string>
 
+
+    <!-- ACTIVITY: VARIABLE: NUMBER -->
+    <!-- ==================================================================================== -->
+
+    <string name="dice_roll_variable_field_value_dice_label">Dice Roll</string>
+    <string name="dice_roll_variable_field_value_dice_description">
+        The dice roll value.
+    </string>
+
+
     <!-- ACTIVITY: MANAGE SHEETS -->
     <!-- ==================================================================================== -->
 
     <string name="activity_manage_sheets_title">Manage Sheets</string>
+
+    <!-- ACTIVITY: DICE ROLL EDITOR -->
+    <!-- ==================================================================================== -->
+
+    <string name="dice_roll_field_quantities_label">Dice</string>
+    <string name="dice_roll_field_quantities_description">
+        The dice quantities used in the roll e.g. 2d6 and 1d10
+    </string>
+
+    <string name="dice_roll_field_modifiers_label">Modifiers</string>
+    <string name="dice_roll_field_modifiers_description">
+        Modifiers on the dice roll e.g. +3 fire damage and +3 necrotic damage.
+    </string>
+
+
+    <!-- ACTIVITY: DICE QUANTITY EDITOR -->
+    <!-- ==================================================================================== -->
+
+    <string name="dice_quantity_field_dice_sides_label">Die Number of Sides</string>
+    <string name="dice_quantity_field_dice_sides_description">
+        The number of sides of the die to roll.
+    </string>
+
+    <string name="dice_quantity_field_quantity_label">Roll Quantity</string>
+    <string name="dice_quantity_field_quantity_description">
+        How many times to roll the die.
+    </string>
+
+
+    <!-- ACTIVITY: ROLL MODIFIER EDITOR -->
+    <!-- ==================================================================================== -->
+
+    <string name="roll_modifier_field_value_label">Modifier</string>
+    <string name="roll_modifier_field_value_description">
+        The modifier added to the dice roll.
+    </string>
+
+    <string name="roll_modifier_field_name_label">Name</string>
+    <string name="roll_modifier_field_name_description">
+        The modifier name.
+    </string>
 
 
     <!-- ACTIVITY: PAGE LIST -->

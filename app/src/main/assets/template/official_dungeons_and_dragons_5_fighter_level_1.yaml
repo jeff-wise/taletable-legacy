@@ -755,6 +755,7 @@ engine:
         - armor_class_bonus
   - name: weapon_longsword
     label: Longsword
+    summary: Longsword weapon mechanics.
     type: Weapon
     requirements:
     - has_weapon_longsword
@@ -763,6 +764,7 @@ engine:
       value:
         name: weapon_longsword_damage
         label: Longsword Damage
+        description: The longsword damage die
         dice:
           quantities:
           - sides: 8
@@ -771,12 +773,14 @@ engine:
       value:
         name: weapon_longsword_two_handed_damage
         label: Longsword Damage (Two-Handed)
+        description: The longsword damage die when used with two hands.
         dice:
           quantities:
           - sides: 10
             quantity: 1
   - name: weapon_heavy_crossbow
     label: Heavy Crossbow
+    summary: Heavy Crossbow weapon mechanics.
     type: Weapon
     requirements:
     - has_weapon_heavy_crossbow
@@ -791,6 +795,7 @@ engine:
             quantity: 1
   - name: weapon_dagger
     label: Dagger
+    summary: Dagger weapon mechanics.
     type: Weapon
     requirements:
     - has_weapon_dagger

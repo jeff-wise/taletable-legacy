@@ -2,6 +2,7 @@
 package com.kispoko.tome.mechanic.dice;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.yaml.ToYaml;
@@ -12,7 +13,6 @@ import com.kispoko.tome.lib.yaml.YamlParser;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 
@@ -40,8 +40,6 @@ public class DiceQuantity extends Model
     private PrimitiveFunctor<Integer>   quantity;
 
 
-
-
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
@@ -51,6 +49,8 @@ public class DiceQuantity extends Model
 
         this.diceSides  = new PrimitiveFunctor<>(null, Integer.class);
         this.quantity   = new PrimitiveFunctor<>(null, Integer.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -62,6 +62,8 @@ public class DiceQuantity extends Model
         this.quantity   = new PrimitiveFunctor<>(quantity, Integer.class);
 
         this.setQuantity(quantity);
+
+        this.initializeFunctors();
     }
 
 
@@ -178,6 +180,22 @@ public class DiceQuantity extends Model
     }
 
 
+    // > Description
+    // ------------------------------------------------------------------------------------------
+
+    public String description()
+    {
+        String description = "";
+
+        description += "Roll a 1d";
+        description += Integer.toString(this.diceSides());
+        description += " ";
+        description += Integer.toString(this.quantity());
+        description += " times";
+
+        return description;
+    }
+
     // > To String
     // ------------------------------------------------------------------------------------------
 
@@ -220,6 +238,26 @@ public class DiceQuantity extends Model
         }
 
         return new RollSummary(results);
+    }
+
+
+    // INTERNAL
+    // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeFunctors()
+    {
+        // Dice Sides
+        this.diceSides.setName("dice_sides");
+        this.diceSides.setLabelId(R.string.dice_quantity_field_dice_sides_label);
+        this.diceSides.setDescriptionId(R.string.dice_quantity_field_dice_sides_description);
+
+        // Quantity
+        this.quantity.setName("quantity");
+        this.quantity.setLabelId(R.string.dice_quantity_field_quantity_label);
+        this.quantity.setDescriptionId(R.string.dice_quantity_field_quantity_description);
     }
 
 }

@@ -92,6 +92,7 @@ public class MechanicListRecyclerViewAdapter
             MechanicViewHolder mechanicViewHolder = (MechanicViewHolder) viewHolder;
             mechanicViewHolder.setName(mechanic.label());
             mechanicViewHolder.setSummary(mechanic.summary());
+            mechanicViewHolder.setOnClick(mechanic.name(), this.context);
 
             MechanicIndex mechanicIndex = SheetManager.mechanicIndex();
             if (mechanicIndex != null)

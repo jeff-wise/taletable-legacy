@@ -2,8 +2,8 @@
 package com.kispoko.tome.engine.variable;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.mechanic.dice.DiceRoll;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.ModelFunctor;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.yaml.ToYaml;
@@ -39,6 +39,7 @@ public class DiceVariable extends Variable
 
     private PrimitiveFunctor<String>    name;
     private PrimitiveFunctor<String>    label;
+    private PrimitiveFunctor<String>    description;
 
     private ModelFunctor<DiceRoll>      diceRoll;
 
@@ -54,24 +55,31 @@ public class DiceVariable extends Variable
 
         this.name           = new PrimitiveFunctor<>(null, String.class);
         this.label          = new PrimitiveFunctor<>(null, String.class);
+        this.description    = new PrimitiveFunctor<>(null, String.class);
 
         this.diceRoll       = ModelFunctor.empty(DiceRoll.class);
 
         this.isNamespaced   = new PrimitiveFunctor<>(null, Boolean.class);
+
+        this.initializeFunctors();
     }
 
 
-    public DiceVariable(UUID id, String name, String label, DiceRoll diceRoll, Boolean isNamespaced)
+    public DiceVariable(UUID id, String name, String label, String description,
+                        DiceRoll diceRoll, Boolean isNamespaced)
     {
         this.id             = id;
 
         this.name           = new PrimitiveFunctor<>(name, String.class);
         this.label          = new PrimitiveFunctor<>(label, String.class);
+        this.description    = new PrimitiveFunctor<>(description, String.class);
 
         this.diceRoll       = ModelFunctor.full(diceRoll, DiceRoll.class);
 
         if (isNamespaced == null) isNamespaced = false;
         this.isNamespaced   = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -91,11 +99,12 @@ public class DiceVariable extends Variable
 
         String   name           = yaml.atMaybeKey("name").getString();
         String   label          = yaml.atMaybeKey("label").getString();
+        String   description    = yaml.atMaybeKey("description").getString();
 
         DiceRoll diceRoll       = DiceRoll.fromYaml(yaml.atKey("dice"));
         Boolean  isNamespaced   = yaml.atMaybeKey("namespaced").getBoolean();
 
-        return new DiceVariable(id, name, label, diceRoll, isNamespaced);
+        return new DiceVariable(id, name, label, description, diceRoll, isNamespaced);
     }
 
 
@@ -173,6 +182,13 @@ public class DiceVariable extends Variable
 
 
     @Override
+    public String description()
+    {
+        return this.description.getValue();
+    }
+
+
+    @Override
     public boolean isNamespaced()
     {
         return this.isNamespaced.getValue();
@@ -215,6 +231,35 @@ public class DiceVariable extends Variable
     public void initialize()
     {
 
+    }
+
+
+    private void initializeFunctors()
+    {
+        // Name
+        this.name.setName("name");
+        this.name.setLabelId(R.string.variable_field_name_label);
+        this.name.setDescriptionId(R.string.variable_field_name_description);
+
+        // Label
+        this.label.setName("label");
+        this.label.setLabelId(R.string.variable_field_label_label);
+        this.label.setDescriptionId(R.string.variable_field_label_description);
+
+        // Description
+        this.description.setName("description");
+        this.description.setLabelId(R.string.variable_field_description_label);
+        this.description.setDescriptionId(R.string.variable_field_description_description);
+
+        // Dice Roll
+        this.diceRoll.setName("dice_roll");
+        this.diceRoll.setLabelId(R.string.dice_roll_variable_field_value_dice_label);
+        this.diceRoll.setDescriptionId(R.string.dice_roll_variable_field_value_dice_description);
+
+        // Is Namespaced?
+        this.isNamespaced.setName("is_namespaced");
+        this.isNamespaced.setLabelId(R.string.variable_field_is_namespaced_label);
+        this.isNamespaced.setDescriptionId(R.string.variable_field_is_namespaced_description);
     }
 
 

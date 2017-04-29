@@ -44,6 +44,7 @@ public class BooleanVariable extends Variable
 
     private PrimitiveFunctor<String>    name;
     private PrimitiveFunctor<String>    label;
+    private PrimitiveFunctor<String>    description;
 
     private PrimitiveFunctor<Boolean>   literalValue;
     private ModelFunctor<Invocation>    invocationValue;
@@ -72,6 +73,7 @@ public class BooleanVariable extends Variable
 
         this.name                   = new PrimitiveFunctor<>(null, String.class);
         this.label                  = new PrimitiveFunctor<>(null, String.class);
+        this.description            = new PrimitiveFunctor<>(null, String.class);
 
         this.literalValue           = new PrimitiveFunctor<>(null, Boolean.class);
         this.invocationValue        = ModelFunctor.empty(Invocation.class);
@@ -96,6 +98,7 @@ public class BooleanVariable extends Variable
     private BooleanVariable(UUID id,
                             String name,
                             String label,
+                            String description,
                             Object value,
                             Kind kind,
                             Boolean isNamespaced,
@@ -107,7 +110,7 @@ public class BooleanVariable extends Variable
 
         this.name                   = new PrimitiveFunctor<>(name, String.class);
         this.label                  = new PrimitiveFunctor<>(label, String.class);
-
+        this.description            = new PrimitiveFunctor<>(description, String.class);
 
         this.literalValue           = new PrimitiveFunctor<>(null, Boolean.class);
         this.invocationValue        = ModelFunctor.full(null, Invocation.class);
@@ -153,11 +156,13 @@ public class BooleanVariable extends Variable
     public static BooleanVariable asBoolean(UUID id,
                                             String name,
                                             String label,
+                                            String description,
                                             Boolean booleanValue,
                                             Boolean isNamespaced,
                                             List<String> tags)
     {
-        return new BooleanVariable(id, name, label, booleanValue, Kind.LITERAL, isNamespaced, tags);
+        return new BooleanVariable(id, name, label, description, booleanValue, Kind.LITERAL,
+                                   isNamespaced, tags);
     }
 
 
@@ -170,7 +175,7 @@ public class BooleanVariable extends Variable
     public static BooleanVariable asBoolean(UUID id,
                                             Boolean booleanValue)
     {
-        return new BooleanVariable(id, null, null, booleanValue, Kind.LITERAL, null, null);
+        return new BooleanVariable(id, null, null, null, booleanValue, Kind.LITERAL, null, null);
     }
 
 
@@ -183,11 +188,13 @@ public class BooleanVariable extends Variable
     public static BooleanVariable asProgram(UUID id,
                                             String name,
                                             String label,
+                                            String description,
                                             Invocation invocation,
                                             Boolean isNamespaced,
                                             List<String> tags)
     {
-        return new BooleanVariable(id, name, label, invocation, Kind.PROGRAM, isNamespaced, tags);
+        return new BooleanVariable(id, name, label, description, invocation,
+                                   Kind.PROGRAM, isNamespaced, tags);
     }
 
 
@@ -206,6 +213,7 @@ public class BooleanVariable extends Variable
         UUID         id                 = UUID.randomUUID();
         String       name               = yaml.atMaybeKey("name").getString();
         String       label              = yaml.atMaybeKey("label").getString();
+        String       description        = yaml.atMaybeKey("description").getString();
         Kind         kind               = Kind.fromYaml(yaml.atKey("type"));
         Boolean      isNamespaced       = yaml.atMaybeKey("namespaced").getBoolean();
         List<String> tags               = yaml.atMaybeKey("tags").getStringList();
@@ -214,10 +222,12 @@ public class BooleanVariable extends Variable
         {
             case LITERAL:
                 Boolean booleanValue  = yaml.atKey("value").getBoolean();
-                return BooleanVariable.asBoolean(id, name, label, booleanValue, isNamespaced, tags);
+                return BooleanVariable.asBoolean(id, name, label, description, booleanValue,
+                                                 isNamespaced, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return BooleanVariable.asProgram(id, name, label, invocation, isNamespaced, tags);
+                return BooleanVariable.asProgram(id, name, label, description, invocation,
+                                                 isNamespaced, tags);
         }
 
         // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
@@ -275,6 +285,7 @@ public class BooleanVariable extends Variable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putString("label", this.label())
+                .putString("description", this.description())
                 .putYaml("type", this.kind())
                 .putBoolean("namespaced", this.isNamespaced())
                 .putStringList("tags", this.tags());
@@ -309,6 +320,13 @@ public class BooleanVariable extends Variable
     public void setLabel(String label)
     {
         this.label.setValue(label);
+    }
+
+
+    @Override
+    public String description()
+    {
+        return this.description.getValue();
     }
 
 

@@ -2,9 +2,9 @@
 package com.kispoko.tome.mechanic.dice;
 
 
-import android.support.v4.content.IntentCompat;
 import android.util.Log;
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.yaml.ToYaml;
@@ -28,23 +28,23 @@ public class DiceRoll extends Model
 {
 
     // PROPERTIES
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     // > Model
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private UUID                            id;
 
 
     // > Functors
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private CollectionFunctor<DiceQuantity> quantities;
     private CollectionFunctor<RollModifier> modifiers;
 
 
     // CONSTRUCTORS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     public DiceRoll()
     {
@@ -52,6 +52,8 @@ public class DiceRoll extends Model
 
         this.quantities = CollectionFunctor.empty(DiceQuantity.class);
         this.modifiers  = CollectionFunctor.empty(RollModifier.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -63,6 +65,8 @@ public class DiceRoll extends Model
 
         this.quantities = CollectionFunctor.full(quantities, DiceQuantity.class);
         this.modifiers  = CollectionFunctor.full(modifiers, RollModifier.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -292,7 +296,7 @@ public class DiceRoll extends Model
 
 
     // > Add Roll
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Add another dice roll to this dice roll.
@@ -308,22 +312,23 @@ public class DiceRoll extends Model
     }
 
 
-    // COMPARATOR
-    // ------------------------------------------------------------------------------------------
+    // INTERNAL
+    // -----------------------------------------------------------------------------------------
 
-    /*
-    public static class DiceRollComparator implements Comparator<DiceRoll>
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeFunctors()
     {
-        @Override
-        public int compare(DiceRoll diceRoll1, DiceRoll diceRoll2)
-        {
-            Integer diceRoll1Value = sides(diceRoll1.diceType());
-            Integer diceRoll2Value = sides(diceRoll2.diceType());
+        // Quantities
+        this.quantities.setName("quantities");
+        this.quantities.setLabelId(R.string.dice_roll_field_quantities_label);
+        this.quantities.setDescriptionId(R.string.dice_roll_field_quantities_description);
 
-            return diceRoll1Value.compareTo(diceRoll2Value);
-        }
+        // Modifiers
+        this.modifiers.setName("modifiers");
+        this.modifiers.setLabelId(R.string.dice_roll_field_modifiers_label);
+        this.modifiers.setDescriptionId(R.string.dice_roll_field_modifiers_description);
     }
-    */
-
 
 }

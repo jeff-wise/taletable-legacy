@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.engine.valueset;
+package com.kispoko.tome.activity.engine.value;
 
 
 import android.content.Intent;
@@ -13,8 +13,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.engine.value.NumberValueEditorActivity;
-import com.kispoko.tome.activity.engine.value.TextValueEditorActivity;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.engine.value.BaseValueSet;
 import com.kispoko.tome.engine.value.ValueSetType;
@@ -25,12 +23,12 @@ import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
 
+
 /**
  * Value List Activity
  */
 public class ValueListActivity extends AppCompatActivity
 {
-
 
     // PROPERTIES
     // ------------------------------------------------------------------------------------------

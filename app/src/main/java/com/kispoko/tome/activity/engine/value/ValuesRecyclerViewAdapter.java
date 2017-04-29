@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.engine.valueset;
+package com.kispoko.tome.activity.engine.value;
 
 
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.engine.value.TextValueEditorActivity;
 import com.kispoko.tome.engine.value.BaseValueSet;
 import com.kispoko.tome.engine.value.ValueReference;
 import com.kispoko.tome.engine.value.ValueType;

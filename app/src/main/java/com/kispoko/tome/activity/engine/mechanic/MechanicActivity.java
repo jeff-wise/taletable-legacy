@@ -2,20 +2,33 @@
 package com.kispoko.tome.activity.engine.mechanic;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
+import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.function.Tuple;
+import com.kispoko.tome.activity.engine.variable.VariableListActivity;
 import com.kispoko.tome.engine.mechanic.Mechanic;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;
+import com.kispoko.tome.lib.functor.FunctorException;
+import com.kispoko.tome.lib.model.Model;
+import com.kispoko.tome.lib.model.form.Field;
+import com.kispoko.tome.lib.model.form.Form;
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.UI;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 
 
@@ -28,36 +41,48 @@ public class MechanicActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Mechanic             mechanic;
+    private Mechanic            mechanic;
 
-    private FloatingActionButton addVariableButton;
+    // > Form
+    // -----------------------------------------------------------------------------------------
+
+    private Map<String,Field>   fieldByName;
 
 
     // ACTIVITY LIFECYCLE EVENTS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_mechanic);
+        // [1] Set Content View
+        // -------------------------------------------------------------------------------------
 
-        // > Read Parameters
+        setContentView(R.layout.activity_form_basic);
+
+        // [2] Get Parameters
+        // -------------------------------------------------------------------------------------
+
         String mechanicName = null;
         if (getIntent().hasExtra("mechanic_name")) {
             mechanicName = getIntent().getStringExtra("mechanic_name");
         }
 
         // > Lookup Mechanic
-        MechanicIndex mechanicIndex = SheetManager.currentSheet().engine().mechanicIndex();
-        this.mechanic = mechanicIndex.mechanicWithName(mechanicName);
+        MechanicIndex mechanicIndex = SheetManager.mechanicIndex();
+        if (mechanicIndex != null && mechanicName != null)
+            this.mechanic = mechanicIndex.mechanicWithName(mechanicName);
+        else
+            this.mechanic = null;
+
+        // [3] Initialize UI
+        // -------------------------------------------------------------------------------------
 
         initializeToolbar();
-
+        initializeData();
         initializeView();
-
-        setupTabs();
     }
 
 
@@ -72,27 +97,8 @@ public class MechanicActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_choose_template, menu);
+        getMenuInflater().inflate(R.menu.empty, menu);
         return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.action_settings:
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 
@@ -104,89 +110,146 @@ public class MechanicActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.mechanic.label();
-
-        UI.initializeToolbar(this, title);
+        UI.initializeToolbar(this, getString(R.string.mechanic_editor));
     }
 
 
     private void initializeView()
     {
-        // > Store reference to FAB
-        this.addVariableButton =
-                (FloatingActionButton) findViewById(R.id.button_new_variable);
-        this.addVariableButton.hide();
-
-//        this.addTupleButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                NewValueDialogFragment newFragment = new NewValueDialogFragment();
-//                newFragment.show(getSupportFragmentManager(), "new_value");
-//            }
-//        });
+        ScrollView scrollView = (ScrollView) findViewById(R.id.content);
+        scrollView.addView(this.view(this));
     }
 
 
-    private void setupTabs()
-    {
-        // > Create Pager Adapter
-        // --------------------------------------------------------------------------------------
-
-        MechanicPagerAdapter mechanicPagerAdapter
-                = new MechanicPagerAdapter(getSupportFragmentManager(), this.mechanic);
-
-        // > Configure Pager
-        // --------------------------------------------------------------------------------------
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.mechanic_pager);
-        viewPager.setAdapter(mechanicPagerAdapter);
-
-        // > Configure Pager Tabs
-        // --------------------------------------------------------------------------------------
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.mechanic_tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
-
-
-        // > View Pager Listener
-        // --------------------------------------------------------------------------------------
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
-        {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
-            {
-
-            }
-
-            @Override
-            public void onPageSelected(int position)
-            {
-                if (position == 1) {
-                    addVariableButton.show();
-                }
-                else {
-                    addVariableButton.hide();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state)
-            {
-
-            }
-        });
-    }
-
-
-    // NEW VALUE DIALOG LISTENER
+    // VIEWS
     // ------------------------------------------------------------------------------------------
 
-    public void onNewTuple(Tuple tuple)
+    private void initializeData()
     {
+        // [1] Initialize indexes
+        // -------------------------------------------------------------------------------------
+
+        this.fieldByName = new HashMap<>();
+
+        // [2] Get & Index Fields
+        // -------------------------------------------------------------------------------------
+
+        if (this.mechanic == null)
+            return;
+
+        Collection<Field> fields = new ArrayList<>();
+
+        // GENERATE fields from Value Set
+        try {
+            fields.addAll(Model.fields(this.mechanic, this));
+        }
+        catch (FunctorException exception) {
+            ApplicationFailure.functor(exception);
+        }
+
+        // INDEX fields by name
+        for (Field field : fields) {
+            this.fieldByName.put(field.name(), field);
+        }
     }
 
 
+    // VIEWS
+    // ------------------------------------------------------------------------------------------
 
+    private LinearLayout view(Context context)
+    {
+        LinearLayout layout = this.viewLayout(context);
+
+        // > Toolbar
+        layout.addView(Form.toolbarView(context));
+
+        // > Form
+        layout.addView(this.formView(context));
+
+        return layout;
+    }
+
+
+    private LinearLayout viewLayout(Context context)
+    {
+        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+
+        layout.orientation          = LinearLayout.VERTICAL;
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.backgroundColor      = R.color.dark_theme_primary_84;
+
+        return layout.linearLayout(context);
+    }
+
+
+    private LinearLayout formView(Context context)
+    {
+        LinearLayout layout = Form.layout(context);
+
+        // > Form Structure
+        // -------------------------------------------------------------------------------------
+
+        layout.addView(Form.headerView("Descriptive Properties", context));
+
+        this.addFieldView("label", layout);
+        layout.addView(Form.dividerView(context));
+        this.addFieldView("category", layout);
+        layout.addView(Form.dividerView(context));
+        this.addFieldView("summary", layout);
+        layout.addView(Form.dividerView(context));
+        this.addFieldView("description", layout);
+
+        layout.addView(Form.headerView("Functional Properties", context));
+
+        this.addFieldView("requirements", layout);
+        layout.addView(Form.dividerView(context));
+        this.addFieldView("variables", layout);
+
+        layout.addView(Form.headerView("Other Properties", context));
+
+        this.addFieldView("name", layout);
+
+        // > Click Events
+        // -------------------------------------------------------------------------------------
+
+        this.setOnVariableListClickListener(context);
+
+
+        return layout;
+    }
+
+
+    private void setOnVariableListClickListener(final Context context)
+    {
+        Field field = this.fieldByName.get("variables");
+
+        if (field != null)
+        {
+            field.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View view)
+                {
+                    Intent intent = new Intent(MechanicActivity.this, VariableListActivity.class);
+                    intent.putExtra("variables", (Serializable) mechanic.variables());
+                    context.startActivity(intent);
+                }
+            });
+        }
+    }
+
+
+    private void addFieldView(String fieldName, LinearLayout layout)
+    {
+        Field field = this.fieldByName.get(fieldName);
+
+        if (field != null) {
+            LinearLayout fieldView = field.view(this);
+            layout.addView(fieldView);
+        }
+    }
 
 }

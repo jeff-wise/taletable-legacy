@@ -3,6 +3,7 @@ package com.kispoko.tome.engine.mechanic;
 
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.R;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.mechanic.error.NonBooleanRequirementError;
 import com.kispoko.tome.engine.variable.VariableType;
@@ -87,6 +88,8 @@ public class Mechanic extends Model
         this.requirements   = new PrimitiveFunctor<>(null, String[].class);
 
         this.variables      = CollectionFunctor.empty(VariableUnion.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -112,6 +115,8 @@ public class Mechanic extends Model
         this.requirements = new PrimitiveFunctor<>(requirementsArray, String[].class);
 
         this.variables    = CollectionFunctor.full(variables, VariableUnion.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -291,16 +296,6 @@ public class Mechanic extends Model
     }
 
 
-    /**
-     * The number of variables defined by the mechanic.
-     * @return The variable count.
-     */
-    public Integer variableCount()
-    {
-        return this.variables().size();
-    }
-
-
     public List<String> variableNames()
     {
         List<String> names = new ArrayList<>();
@@ -338,6 +333,46 @@ public class Mechanic extends Model
         validateRequirements();
 
         onRequirementUpdate();
+    }
+
+
+    private void initializeFunctors()
+    {
+
+        // Name
+        this.name.setName("name");
+        this.name.setLabelId(R.string.mechanic_field_name_label);
+        this.name.setDescriptionId(R.string.mechanic_field_name_description);
+
+        // Label
+        this.label.setName("label");
+        this.label.setLabelId(R.string.mechanic_field_label_label);
+        this.label.setDescriptionId(R.string.mechanic_field_label_description);
+
+        // Summary
+        this.summary.setName("summary");
+        this.summary.setLabelId(R.string.mechanic_field_summary_label);
+        this.summary.setDescriptionId(R.string.mechanic_field_summary_description);
+
+        // Description
+        this.description.setName("description");
+        this.description.setLabelId(R.string.mechanic_field_description_label);
+        this.description.setDescriptionId(R.string.mechanic_field_description_description);
+
+        // Category
+        this.category.setName("category");
+        this.category.setLabelId(R.string.mechanic_field_category_label);
+        this.category.setDescriptionId(R.string.mechanic_field_category_description);
+
+        // Requirements
+        this.requirements.setName("requirements");
+        this.requirements.setLabelId(R.string.mechanic_field_reqs_label);
+        this.requirements.setDescriptionId(R.string.mechanic_field_reqs_description);
+
+        // Variables
+        this.variables.setName("variables");
+        this.variables.setLabelId(R.string.mechanic_field_variables_label);
+        this.variables.setDescriptionId(R.string.mechanic_field_variables_description);
     }
 
 

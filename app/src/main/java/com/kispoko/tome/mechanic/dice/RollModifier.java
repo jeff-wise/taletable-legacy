@@ -2,6 +2,7 @@
 package com.kispoko.tome.mechanic.dice;
 
 
+import com.kispoko.tome.R;
 import com.kispoko.tome.lib.functor.PrimitiveFunctor;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.yaml.ToYaml;
@@ -46,6 +47,8 @@ public class RollModifier extends Model
 
         this.value  = new PrimitiveFunctor<>(null, Integer.class);
         this.name   = new PrimitiveFunctor<>(null, String.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -55,6 +58,8 @@ public class RollModifier extends Model
 
         this.value  = new PrimitiveFunctor<>(value, Integer.class);
         this.name   = new PrimitiveFunctor<>(name, String.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -162,6 +167,35 @@ public class RollModifier extends Model
     public String name()
     {
         return this.name.getValue();
+    }
+
+
+    // > Value Plus String
+    // ------------------------------------------------------------------------------------------
+
+    public String valuePlusString()
+    {
+        return "+" + Integer.toString(this.value());
+    }
+
+
+    // INTERNAL
+    // -----------------------------------------------------------------------------------------
+
+    // > Initialize
+    // -----------------------------------------------------------------------------------------
+
+    private void initializeFunctors()
+    {
+        // Value
+        this.value.setName("value");
+        this.value.setLabelId(R.string.roll_modifier_field_value_label);
+        this.value.setDescriptionId(R.string.roll_modifier_field_value_description);
+
+        // Name
+        this.name.setName("name");
+        this.name.setLabelId(R.string.roll_modifier_field_name_label);
+        this.name.setDescriptionId(R.string.roll_modifier_field_name_description);
     }
 
 }

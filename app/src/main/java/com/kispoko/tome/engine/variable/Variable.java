@@ -22,6 +22,7 @@ public abstract class Variable extends Model
     public abstract void                    setName(String name);
     public abstract String                  label();
     public abstract void                    setLabel(String label);
+    public abstract String                  description();
     public abstract boolean                 isNamespaced();
     public abstract void                    setIsNamespaced(Boolean isNamespaced);
     public abstract List<VariableReference> dependencies();

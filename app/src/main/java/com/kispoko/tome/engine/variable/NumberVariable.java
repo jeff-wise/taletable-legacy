@@ -58,6 +58,7 @@ public class NumberVariable extends Variable
 
     private PrimitiveFunctor<String>        name;
     private PrimitiveFunctor<String>        label;
+    private PrimitiveFunctor<String>        description;
 
     private PrimitiveFunctor<Integer>       literalValue;
     private PrimitiveFunctor<String>        variableReference;
@@ -89,6 +90,7 @@ public class NumberVariable extends Variable
 
         this.name               = new PrimitiveFunctor<>(null, String.class);
         this.label              = new PrimitiveFunctor<>(null, String.class);
+        this.description        = new PrimitiveFunctor<>(null, String.class);
 
         this.literalValue       = new PrimitiveFunctor<>(null, Integer.class);
         this.variableReference  = new PrimitiveFunctor<>(null, String.class);
@@ -118,6 +120,7 @@ public class NumberVariable extends Variable
     private NumberVariable(UUID id,
                            String name,
                            String label,
+                           String description,
                            Object value,
                            Kind kind,
                            Boolean isNamespaced,
@@ -129,6 +132,7 @@ public class NumberVariable extends Variable
 
         this.name                   = new PrimitiveFunctor<>(name, String.class);
         this.label                  = new PrimitiveFunctor<>(label, String.class);
+        this.description            = new PrimitiveFunctor<>(description, String.class);
 
         this.literalValue           = new PrimitiveFunctor<>(null, Integer.class);
         this.variableReference      = new PrimitiveFunctor<>(null, String.class);
@@ -186,11 +190,13 @@ public class NumberVariable extends Variable
     public static NumberVariable asInteger(UUID id,
                                            String name,
                                            String label,
+                                           String description,
                                            Integer integerValue,
                                            Boolean isNamespaced,
                                            List<String> tags)
     {
-        return new NumberVariable(id, name, label, integerValue, Kind.LITERAL, isNamespaced, tags);
+        return new NumberVariable(id, name, label, description, integerValue, Kind.LITERAL,
+                                  isNamespaced, tags);
     }
 
 
@@ -203,7 +209,7 @@ public class NumberVariable extends Variable
     public static NumberVariable asInteger(UUID id,
                                            Integer integerValue)
     {
-        return new NumberVariable(id, null, null, integerValue, Kind.LITERAL, null, null);
+        return new NumberVariable(id, null, null, null, integerValue, Kind.LITERAL, null, null);
     }
 
 
@@ -218,11 +224,13 @@ public class NumberVariable extends Variable
     public static NumberVariable asVariable(UUID id,
                                            String name,
                                            String label,
+                                           String description,
                                            String variableName,
                                            Boolean isNamespaced,
                                            List<String> tags)
     {
-        return new NumberVariable(id, name, label, variableName, Kind.VARIABLE, isNamespaced, tags);
+        return new NumberVariable(id, name, label, description, variableName, Kind.VARIABLE,
+                                  isNamespaced, tags);
     }
 
 
@@ -235,11 +243,13 @@ public class NumberVariable extends Variable
     public static NumberVariable asProgram(UUID id,
                                            String name,
                                            String label,
+                                           String description,
                                            Invocation invocation,
                                            Boolean isNamespaced,
                                            List<String> tags)
     {
-        return new NumberVariable(id, name, label, invocation, Kind.PROGRAM, isNamespaced, tags);
+        return new NumberVariable(id, name, label, description, invocation, Kind.PROGRAM,
+                                  isNamespaced, tags);
     }
 
 
@@ -252,13 +262,14 @@ public class NumberVariable extends Variable
     public static NumberVariable asValue(UUID id,
                                          String name,
                                          String label,
+                                         String description,
                                          ValueReference valueReference,
                                          Boolean isNamespaced,
                                          List<String> tags)
     {
-        return new NumberVariable(id, name, label, valueReference, Kind.VALUE, isNamespaced, tags);
+        return new NumberVariable(id, name, label, description, valueReference, Kind.VALUE,
+                                  isNamespaced, tags);
     }
-
 
 
     /**
@@ -270,11 +281,13 @@ public class NumberVariable extends Variable
     public static NumberVariable asSummation(UUID id,
                                              String name,
                                              String label,
+                                             String description,
                                              Summation summation,
                                              Boolean isNamespaced,
                                              List<String> tags)
     {
-        return new NumberVariable(id, name, label, summation, Kind.SUMMATION, isNamespaced, tags);
+        return new NumberVariable(id, name, label, description, summation, Kind.SUMMATION,
+                                  isNamespaced, tags);
     }
 
 
@@ -293,6 +306,7 @@ public class NumberVariable extends Variable
         UUID         id           = UUID.randomUUID();
         String       name         = yaml.atMaybeKey("name").getString();
         String       label        = yaml.atMaybeKey("label").getString();
+        String       description  = yaml.atMaybeKey("description").getString();
         Kind         kind         = Kind.fromYaml(yaml.atKey("type"));
         Boolean      isNamespaced = yaml.atMaybeKey("namespaced").getBoolean();
         List<String> tags         = yaml.atMaybeKey("tags").getStringList();
@@ -301,19 +315,24 @@ public class NumberVariable extends Variable
         {
             case LITERAL:
                 Integer integerValue  = yaml.atKey("value").getInteger();
-                return NumberVariable.asInteger(id, name, label, integerValue, isNamespaced, tags);
+                return NumberVariable.asInteger(id, name, label, description, integerValue,
+                                                isNamespaced, tags);
             case VARIABLE:
                 String variableName = yaml.atKey("value").getString();
-                return NumberVariable.asVariable(id, name, label, variableName, isNamespaced, tags);
+                return NumberVariable.asVariable(id, name, label, description, variableName,
+                                                 isNamespaced, tags);
             case PROGRAM:
                 Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asProgram(id, name, label, invocation, isNamespaced, tags);
+                return NumberVariable.asProgram(id, name, label, description, invocation,
+                                                isNamespaced, tags);
             case VALUE:
                 ValueReference valueReference = ValueReference.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asValue(id, name, label, valueReference, isNamespaced, tags);
+                return NumberVariable.asValue(id, name, label, description, valueReference,
+                                              isNamespaced, tags);
             case SUMMATION:
                 Summation summation = Summation.fromYaml(yaml.atKey("value"));
-                return NumberVariable.asSummation(id, name, label, summation, isNamespaced, tags);
+                return NumberVariable.asSummation(id, name, label, description, summation,
+                                                  isNamespaced, tags);
         }
 
         return null;
@@ -370,6 +389,7 @@ public class NumberVariable extends Variable
         return YamlBuilder.map()
                 .putString("name", this.name())
                 .putString("label", this.label())
+                .putString("description", this.description())
                 .putYaml("type", this.kind())
                 .putBoolean("namespaced", this.isNamespaced())
                 .putStringList("tags", this.tags());
@@ -487,6 +507,13 @@ public class NumberVariable extends Variable
     public void setLabel(String label)
     {
         this.label.setValue(label);
+    }
+
+
+    @Override
+    public String description()
+    {
+        return this.description.getValue();
     }
 
 
@@ -728,6 +755,11 @@ public class NumberVariable extends Variable
         this.label.setName("label");
         this.label.setLabelId(R.string.variable_field_label_label);
         this.label.setDescriptionId(R.string.variable_field_label_description);
+
+        // Description
+        this.description.setName("description");
+        this.description.setLabelId(R.string.variable_field_description_label);
+        this.description.setDescriptionId(R.string.variable_field_description_description);
 
         // Is Namespaced
         this.isNamespaced.setName("is_namespaced");

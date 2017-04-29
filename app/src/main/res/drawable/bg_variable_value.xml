@@ -4,11 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/dark_blue_7">
+    <solid
+        android:color="@color/dark_theme_primary_86">
     </solid>
 
     <corners
-        android:radius="3dp">
+        android:radius="6dp" >
     </corners>
 
 </shape>

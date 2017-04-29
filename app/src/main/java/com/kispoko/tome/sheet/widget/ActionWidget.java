@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.sheet.DiceRollActivity;
+import com.kispoko.tome.activity.sheet.DiceRollerActivity;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.variable.NullVariableException;
@@ -619,7 +619,7 @@ public class ActionWidget extends Widget
         {
             Summation summation = this.modifierVariable().summation();
 
-            Intent intent = new Intent(context, DiceRollActivity.class);
+            Intent intent = new Intent(context, DiceRollerActivity.class);
             intent.putExtra("summation", summation);
 
             if (!this.actionName.isNull())

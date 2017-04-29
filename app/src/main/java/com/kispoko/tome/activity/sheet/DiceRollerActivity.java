@@ -44,7 +44,7 @@ import java.util.UUID;
 /**
  * Dice Roll Activity
  */
-public class DiceRollActivity extends AppCompatActivity
+public class DiceRollerActivity extends AppCompatActivity
 {
 
     // PROPERTIES

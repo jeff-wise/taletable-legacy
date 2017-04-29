@@ -75,7 +75,7 @@
         android:label="Value Set" />
 
     <activity
-        android:name=".activity.engine.valueset.ValueListActivity"
+        android:name=".activity.engine.value.ValueListActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="adjustPan"
         android:label="Values" />
@@ -239,7 +239,7 @@
         android:label="Quote Editor" />
 
     <activity
-        android:name=".activity.sheet.DiceRollActivity"
+        android:name=".activity.sheet.DiceRollerActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Dice Roller" />
@@ -251,10 +251,46 @@
         android:label="Dice Roll Term Editor" />
 
     <activity
+        android:name=".activity.mechanic.DiceRollEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Dice Roll Editor" />
+
+    <activity
+        android:name=".activity.mechanic.quantity.DiceQuantityEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Dice Quantity Editor" />
+
+    <activity
+        android:name=".activity.mechanic.quantity.DiceQuantityListActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Dice Quantity List Editor" />
+
+    <activity
+        android:name=".activity.mechanic.modifiers.DiceModifierListActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Modifiers List Editor" />
+
+    <activity
+        android:name=".activity.mechanic.modifiers.RollModifierEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Roll Modifier Editor" />
+
+    <activity
         android:name=".activity.engine.variable.VariableReferenceActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Variable Reference Editor" />
+
+    <activity
+        android:name=".activity.engine.variable.VariableListActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Variable List Editor" />
 
 </application>
 
