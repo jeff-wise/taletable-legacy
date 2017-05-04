@@ -2,6 +2,8 @@
 package com.kispoko.tome.engine.program;
 
 
+import com.kispoko.tome.R;
+import com.kispoko.tome.engine.EngineDataType;
 import com.kispoko.tome.engine.program.statement.Statement;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
@@ -32,21 +34,21 @@ public class Program extends Model
     // > Model
     // ------------------------------------------------------------------------------------------
 
-    private UUID                                    id;
+    private UUID                                id;
 
 
     // > Functor
     // ------------------------------------------------------------------------------------------
 
-    private PrimitiveFunctor<String>                name;
-    private PrimitiveFunctor<String>                label;
-    private PrimitiveFunctor<String>                description;
+    private PrimitiveFunctor<String>            name;
+    private PrimitiveFunctor<String>            label;
+    private PrimitiveFunctor<String>            description;
 
-    private PrimitiveFunctor<ProgramValueType[]>    parameterTypes;
-    private PrimitiveFunctor<ProgramValueType>      resultType;
+    private PrimitiveFunctor<EngineDataType[]>  parameterTypes;
+    private PrimitiveFunctor<EngineDataType>    resultType;
 
-    private CollectionFunctor<Statement>            statements;
-    private ModelFunctor<Statement>                 resultStatement;
+    private CollectionFunctor<Statement>        statements;
+    private ModelFunctor<Statement>             resultStatement;
 
 
     // CONSTRUCTORS
@@ -66,16 +68,18 @@ public class Program extends Model
         this.description     = new PrimitiveFunctor<>(null, String.class);
 
         // ** Parameter Types
-        this.parameterTypes  = new PrimitiveFunctor<>(null, ProgramValueType[].class);
+        this.parameterTypes  = new PrimitiveFunctor<>(null, EngineDataType[].class);
 
         // ** Result ErrorType
-        this.resultType      = new PrimitiveFunctor<>(null, ProgramValueType.class);
+        this.resultType      = new PrimitiveFunctor<>(null, EngineDataType.class);
 
         // **  Statements
         this.statements      = CollectionFunctor.empty(Statement.class);
 
         // **  Result Statement
         this.resultStatement = ModelFunctor.empty(Statement.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -83,8 +87,8 @@ public class Program extends Model
                    String name,
                    String label,
                    String description,
-                   List<ProgramValueType> parameterTypes,
-                   ProgramValueType resultType,
+                   List<EngineDataType> parameterTypes,
+                   EngineDataType resultType,
                    List<Statement> statements,
                    Statement resultStatement)
     {
@@ -100,18 +104,20 @@ public class Program extends Model
         this.description     = new PrimitiveFunctor<>(description, String.class);
 
         // ** Parameter Types
-        ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
-                                                    new ProgramValueType[parameterTypes.size()]);
-        this.parameterTypes  = new PrimitiveFunctor<>(parameterTypeArray, ProgramValueType[].class);
+        EngineDataType[] parameterTypeArray = parameterTypes.toArray(
+                                                    new EngineDataType[parameterTypes.size()]);
+        this.parameterTypes  = new PrimitiveFunctor<>(parameterTypeArray, EngineDataType[].class);
 
         // ** Result ErrorType
-        this.resultType      = new PrimitiveFunctor<>(resultType, ProgramValueType.class);
+        this.resultType      = new PrimitiveFunctor<>(resultType, EngineDataType.class);
 
         // **  Statements
         this.statements      = CollectionFunctor.full(statements, Statement.class);
 
         // **  Result Statement
         this.resultStatement = ModelFunctor.full(resultStatement, Statement.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -138,16 +144,16 @@ public class Program extends Model
         if (description != null)  description = description.trim();
 
         // ** Parameter Types
-        List<ProgramValueType> parameterTypes
-                = yaml.atKey("parameter_types").forEach(new YamlParser.ForEach<ProgramValueType>() {
+        List<EngineDataType> parameterTypes
+                = yaml.atKey("parameter_types").forEach(new YamlParser.ForEach<EngineDataType>() {
             @Override
-            public ProgramValueType forEach(YamlParser yaml, int index) throws YamlParseException {
-                return ProgramValueType.fromYaml(yaml);
+            public EngineDataType forEach(YamlParser yaml, int index) throws YamlParseException {
+                return EngineDataType.fromYaml(yaml);
             }
         });
 
         // ** Result ErrorType
-        ProgramValueType resultType = ProgramValueType.fromYaml(yaml.atKey("result_type"));
+        EngineDataType resultType = EngineDataType.fromYaml(yaml.atKey("result_type"));
 
         // ** Statements
         List<Statement>  statements =
@@ -271,7 +277,7 @@ public class Program extends Model
      * Get the parameter types of the program.
      * @return The program's parameter type list.
      */
-    public List<ProgramValueType> parameterTypes()
+    public List<EngineDataType> parameterTypes()
     {
         return Arrays.asList(this.parameterTypes.getValue());
     }
@@ -281,7 +287,7 @@ public class Program extends Model
      * Set the parameter types of the program.
      * @param parameterTypes The types of the parameters that are passed to the program.
      */
-    public void setParameterTypes(ProgramValueType[] parameterTypes)
+    public void setParameterTypes(EngineDataType[] parameterTypes)
     {
         this.parameterTypes.setValue(parameterTypes);
     }
@@ -294,7 +300,7 @@ public class Program extends Model
      * Get the result type of the program.
      * @return The program's result type.
      */
-    public ProgramValueType resultType()
+    public EngineDataType resultType()
     {
         return this.resultType.getValue();
     }
@@ -304,7 +310,7 @@ public class Program extends Model
      * Set the result type of the program.
      * @param resultType The type of the value that the program computes.
      */
-    public void setResultType(ProgramValueType resultType)
+    public void setResultType(EngineDataType resultType)
     {
         this.resultType.setValue(resultType);
     }
@@ -359,5 +365,39 @@ public class Program extends Model
         return this.parameterTypes().size();
     }
 
+
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    private void initializeFunctors()
+    {
+        // Name
+        this.name.setName("name");
+        this.name.setLabelId(R.string.program_field_name_label);
+        this.name.setDescriptionId(R.string.program_field_name_description);
+
+        // Label
+        this.label.setName("label");
+        this.label.setLabelId(R.string.program_field_label_label);
+        this.label.setDescriptionId(R.string.program_field_label_description);
+
+        // Description
+        this.description.setName("description");
+        this.description.setLabelId(R.string.program_field_description_label);
+        this.description.setDescriptionId(R.string.program_field_description_description);
+
+        // Parameter Types
+        this.parameterTypes.setName("parameter_types");
+        this.parameterTypes.setLabelId(R.string.function_field_parameter_types_label);
+        this.parameterTypes.setDescriptionId(R.string.function_field_parameter_types_description);
+
+        // Result Type
+        this.resultType.setName("result_type");
+        this.resultType.setLabelId(R.string.function_field_result_type_label);
+        this.resultType.setDescriptionId(R.string.function_field_result_type_description);
+    }
 
 }

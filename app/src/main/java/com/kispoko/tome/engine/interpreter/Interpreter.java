@@ -3,9 +3,8 @@ package com.kispoko.tome.engine.interpreter;
 
 
 
-import android.util.Log;
-
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.EngineValueUnion;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.engine.function.builtin.BuiltInFunction;
 import com.kispoko.tome.engine.function.builtin.BuiltInFunctionException;
@@ -20,11 +19,9 @@ import com.kispoko.tome.engine.program.invocation.InvocationParameterUnion;
 import com.kispoko.tome.engine.program.Program;
 import com.kispoko.tome.engine.program.ProgramIndex;
 import com.kispoko.tome.engine.program.invocation.Invocation;
-import com.kispoko.tome.engine.program.ProgramValueUnion;
 import com.kispoko.tome.engine.program.statement.Parameter;
 import com.kispoko.tome.engine.program.statement.Statement;
 import com.kispoko.tome.engine.variable.NullVariableException;
-import com.kispoko.tome.engine.variable.VariableException;
 import com.kispoko.tome.engine.variable.VariableUnion;
 import com.kispoko.tome.util.tuple.Tuple2;
 
@@ -63,14 +60,14 @@ public class Interpreter implements Serializable
     // API
     // ------------------------------------------------------------------------------------------
 
-    public ProgramValueUnion evaluate(Invocation invocation)
+    public EngineValueUnion evaluate(Invocation invocation)
            throws InterpreterException
     {
-        Tuple2<Program, List<ProgramValueUnion>> evaluationParameters =
+        Tuple2<Program, List<EngineValueUnion>> evaluationParameters =
                                                 evaluateProgramInvocation(invocation);
 
         Program            program    = evaluationParameters.getItem1();
-        List<ProgramValueUnion> parameters = evaluationParameters.getItem2();
+        List<EngineValueUnion> parameters = evaluationParameters.getItem2();
 
         return evaluateProgram(program, parameters);
     }
@@ -79,7 +76,7 @@ public class Interpreter implements Serializable
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private Tuple2<Program, List<ProgramValueUnion>>
+    private Tuple2<Program, List<EngineValueUnion>>
                     evaluateProgramInvocation(Invocation invocation)
             throws InterpreterException
     {
@@ -95,7 +92,7 @@ public class Interpreter implements Serializable
 
         // > Evaluate Parameters
         // ----------------------------------------------------------------------------------
-        List<ProgramValueUnion> parameters = new ArrayList<>();
+        List<EngineValueUnion> parameters = new ArrayList<>();
 
         for (InvocationParameterUnion invocationParameter : invocation.parameters())
         {
@@ -119,12 +116,12 @@ public class Interpreter implements Serializable
                     }
 
                     // Assign parameter from variable value
-                    ProgramValueUnion programValueUnion = null;
+                    EngineValueUnion programValueUnion = null;
                     switch (variableUnion.type())
                     {
                         case TEXT:
                             try {
-                                programValueUnion = ProgramValueUnion.asString(
+                                programValueUnion = EngineValueUnion.asString(
                                         variableUnion.textVariable().value());
                             }
                             catch (NullVariableException exception) {
@@ -133,7 +130,7 @@ public class Interpreter implements Serializable
                             break;
                         case NUMBER:
                             try {
-                                programValueUnion = ProgramValueUnion.asInteger(
+                                programValueUnion = EngineValueUnion.asInteger(
                                                     variableUnion.numberVariable().value());
                             }
                             catch (NullVariableException exception) {
@@ -141,7 +138,7 @@ public class Interpreter implements Serializable
                             }
                             break;
                         case BOOLEAN:
-                            programValueUnion = ProgramValueUnion.asBoolean(
+                            programValueUnion = EngineValueUnion.asBoolean(
                                                     variableUnion.booleanVariable().value());
                             break;
                     }
@@ -155,35 +152,35 @@ public class Interpreter implements Serializable
     }
 
 
-    private ProgramValueUnion evaluateProgram(Program program, List<ProgramValueUnion> parameters)
+    private EngineValueUnion evaluateProgram(Program program, List<EngineValueUnion> parameters)
             throws InterpreterException
     {
-        Map<String,ProgramValueUnion> context = new HashMap<>();
+        Map<String,EngineValueUnion> context = new HashMap<>();
 
         // Evaluate Statements
         for (Statement statement : program.statements())
         {
             String variableName = statement.variableName();
-            ProgramValueUnion statementValue = evaluateStatement(statement, parameters, context);
+            EngineValueUnion statementValue = evaluateStatement(statement, parameters, context);
 
             context.put(variableName, statementValue);
         }
 
-        ProgramValueUnion resultValue = evaluateStatement(program.resultStatement(),
+        EngineValueUnion resultValue = evaluateStatement(program.resultStatement(),
                                                      parameters,
                                                      context);
         return resultValue;
     }
 
 
-    private ProgramValueUnion evaluateStatement(Statement statement,
-                                                List<ProgramValueUnion> programParameters,
-                                                Map<String,ProgramValueUnion> context)
+    private EngineValueUnion evaluateStatement(Statement statement,
+                                               List<EngineValueUnion> programParameters,
+                                               Map<String,EngineValueUnion> context)
                           throws InterpreterException
     {
         String functionName = statement.functionName();
 
-        List<ProgramValueUnion> parameters = new ArrayList<>();
+        List<EngineValueUnion> parameters = new ArrayList<>();
         for (Parameter parameter : statement.parameters())
         {
             parameters.add(evaluateParameter(parameter, programParameters, context));
@@ -193,9 +190,9 @@ public class Interpreter implements Serializable
     }
 
 
-    private ProgramValueUnion evaluateParameter(Parameter parameter,
-                                                List<ProgramValueUnion> programParameters,
-                                                Map<String,ProgramValueUnion> context)
+    private EngineValueUnion evaluateParameter(Parameter parameter,
+                                               List<EngineValueUnion> programParameters,
+                                               Map<String,EngineValueUnion> context)
                           throws InterpreterException
     {
         switch (parameter.type())
@@ -214,19 +211,19 @@ public class Interpreter implements Serializable
                 }
             case LITERAL_STRING:
                 String stringLiteral = parameter.stringLiteral();
-                return ProgramValueUnion.asString(stringLiteral);
+                return EngineValueUnion.asString(stringLiteral);
         }
 
         return null;
     }
 
 
-    private ProgramValueUnion evaluateFunction(String functionName,
-                                               List<ProgramValueUnion> parameters,
-                                               Map<String,ProgramValueUnion> context)
+    private EngineValueUnion evaluateFunction(String functionName,
+                                              List<EngineValueUnion> parameters,
+                                              Map<String,EngineValueUnion> context)
                           throws InterpreterException
     {
-        ProgramValueUnion result;
+        EngineValueUnion result;
 
         // [1] Check built-in function first
         // --------------------------------------------------------------------------------------

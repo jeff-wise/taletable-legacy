@@ -112,18 +112,16 @@ public class Field implements Serializable
 
     /**
      * Create a model field.
-     * @param modelId The model ID.
      * @param fieldName The field name.
      * @param fieldLabel The field label.
      * @param fieldDescription The field description.
      * @return The model Field.
      */
-    public static Field model(UUID modelId,
-                              String fieldName,
+    public static Field model(String fieldName,
                               String fieldLabel,
                               String fieldDescription)
     {
-        return new Field(modelId, fieldName, fieldLabel, fieldDescription, null, Type.MODEL);
+        return new Field(null, fieldName, fieldLabel, fieldDescription, null, Type.MODEL);
     }
 
 

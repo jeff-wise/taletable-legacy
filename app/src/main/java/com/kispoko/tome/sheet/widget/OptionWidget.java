@@ -724,7 +724,7 @@ public class OptionWidget extends Widget implements Serializable
                                         valueItemIndex,
                                         valueItemString.length(),
                                         this.format().valueItemStyle().color().color(context),
-                                        this.format().valueItemStyle().size().size(context),
+                                        this.format().valueItemStyle().size().size(),
                                         this.format().valueItemStyle().font());
                 }
 
@@ -740,7 +740,7 @@ public class OptionWidget extends Widget implements Serializable
                                            valueIndex,
                                            valueIndex + valueString.length() - 4,
                                            this.format().valueStyle().color().color(context),
-                                           this.format().valueItemStyle().size().size(context),
+                                           this.format().valueItemStyle().size().size(),
                                            this.format().valueItemStyle().font());
             }
 

@@ -49,7 +49,7 @@
         android:label="Choose Template" />
 
     <activity
-        android:name=".activity.GamesActivity"
+        android:name=".activity.OfficialGamesActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Choose Template" />
 
@@ -93,23 +93,23 @@
         android:label="Values" />
 
     <activity
-        android:name=".activity.FunctionIndexActivity"
+        android:name=".activity.engine.functionindex.FunctionIndexActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Functions" />
 
     <activity
-        android:name=".activity.FunctionActivity"
+        android:name=".activity.engine.function.FunctionEditorActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Function" />
 
     <activity
-        android:name=".activity.ProgramIndexActivity"
+        android:name=".activity.engine.programindex.ProgramIndexActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Programs" />
 
     <activity
-        android:name=".activity.ProgramActivity"
+        android:name=".activity.engine.program.ProgramEditorActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Program" />
@@ -291,6 +291,18 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden"
         android:label="Variable List Editor" />
+
+    <activity
+        android:name=".activity.engine.function.TuplesEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Tuples Editor" />
+
+    <activity
+        android:name=".activity.engine.program.StatementsEditorActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:windowSoftInputMode="stateHidden"
+        android:label="Program Statements Editor" />
 
 </application>
 

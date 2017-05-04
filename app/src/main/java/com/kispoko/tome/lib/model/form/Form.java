@@ -37,6 +37,8 @@ public class Form
         layout.padding.topDp        = 5f;
         layout.padding.bottomDp     = 15f;
 
+        layout.backgroundColor      = R.color.dark_theme_primary_84;
+
         return layout.linearLayout(context);
     }
 
@@ -72,11 +74,6 @@ public class Form
         header.font             = Font.serifFontBold(context);
         header.color            = R.color.dark_theme_primary_55;
         header.sizeSp           = 12f;
-
-        header.shadowColor      = R.color.dark_theme_primary_89;
-        header.shadowRadius     = 6f;
-        header.shadowDx         = 3f;
-        header.shadowDy         = 3f;
 
         header.margin.topDp     = 25f;
         header.margin.bottomDp  = 5f;

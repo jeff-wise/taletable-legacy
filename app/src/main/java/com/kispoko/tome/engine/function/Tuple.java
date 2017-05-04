@@ -2,8 +2,8 @@
 package com.kispoko.tome.engine.function;
 
 
-import com.kispoko.tome.engine.program.ProgramValueUnion;
-import com.kispoko.tome.engine.program.ProgramValueType;
+import com.kispoko.tome.engine.EngineType;
+import com.kispoko.tome.engine.EngineValueUnion;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
 import com.kispoko.tome.lib.functor.ModelFunctor;
@@ -37,8 +37,8 @@ public class Tuple extends Model
     // > Functors
     // ------------------------------------------------------------------------------------------
 
-    private CollectionFunctor<ProgramValueUnion>    parameters;
-    private ModelFunctor<ProgramValueUnion>         result;
+    private CollectionFunctor<EngineValueUnion>    parameters;
+    private ModelFunctor<EngineValueUnion>         result;
 
 
     // CONSTRUCTORS
@@ -48,41 +48,42 @@ public class Tuple extends Model
     {
         this.id         = null;
 
-        this.parameters = CollectionFunctor.empty(ProgramValueUnion.class);
+        this.parameters = CollectionFunctor.empty(EngineValueUnion.class);
 
-        this.result     = ModelFunctor.empty(ProgramValueUnion.class);
+        this.result     = ModelFunctor.empty(EngineValueUnion.class);
     }
 
 
-    public Tuple(UUID id, List<ProgramValueUnion> parameters, ProgramValueUnion result)
+    public Tuple(UUID id, List<EngineValueUnion> parameters, EngineValueUnion result)
     {
         this.id         = id;
 
-        this.parameters = CollectionFunctor.full(parameters, ProgramValueUnion.class);
+        this.parameters = CollectionFunctor.full(parameters, EngineValueUnion.class);
 
-        this.result     = ModelFunctor.full(result, ProgramValueUnion.class);
+        this.result     = ModelFunctor.full(result, EngineValueUnion.class);
 
     }
 
 
     public static Tuple fromYaml(YamlParser yaml,
-                                 final List<ProgramValueType> parameterTypes,
-                                 ProgramValueType resultType)
+                                 final List<EngineType> parameterTypes,
+                                 EngineType resultType)
                   throws YamlParseException
     {
         UUID id = UUID.randomUUID();
 
         // ** Parameters
-        List<ProgramValueUnion> parameters = yaml.atKey("parameters")
-                                            .forEach(new YamlParser.ForEach<ProgramValueUnion>() {
+        List<EngineValueUnion> parameters = yaml.atKey("parameters")
+                                            .forEach(new YamlParser.ForEach<EngineValueUnion>() {
             @Override
-            public ProgramValueUnion forEach(YamlParser yaml, int index) throws YamlParseException {
-                return ProgramValueUnion.fromYaml(yaml, parameterTypes.get(index));
+            public EngineValueUnion forEach(YamlParser yaml, int index) throws YamlParseException {
+                return EngineValueUnion.fromYaml(yaml, parameterTypes.get(index).dataType());
             }
         });
 
         // ** Result
-        ProgramValueUnion result = ProgramValueUnion.fromYaml(yaml.atKey("result"), resultType);
+        EngineValueUnion result =
+                            EngineValueUnion.fromYaml(yaml.atKey("result"), resultType.dataType());
 
         return new Tuple(id, parameters, result);
     }
@@ -148,7 +149,7 @@ public class Tuple extends Model
      * Get the tuple parameters. These represent the input to one case of a function.
      * @return List of ordered tuple parameters.
      */
-    public List<ProgramValueUnion> parameters()
+    public List<EngineValueUnion> parameters()
     {
         return this.parameters.getValue();
     }
@@ -157,9 +158,9 @@ public class Tuple extends Model
     /**
      * Get the tuple result. Represents the result of one case of the function, determined
      * by the inputs.
-     * @return ProgramValueUnion result of the tuple.
+     * @return EngineValueUnion result of the tuple.
      */
-    public ProgramValueUnion result()
+    public EngineValueUnion result()
     {
         return this.result.getValue();
     }

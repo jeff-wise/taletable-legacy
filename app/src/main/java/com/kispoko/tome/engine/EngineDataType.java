@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.engine.program;
+package com.kispoko.tome.engine;
 
 
 import com.kispoko.tome.exception.InvalidDataException;
@@ -17,7 +17,7 @@ import com.kispoko.tome.lib.yaml.error.InvalidEnumError;
 /**
  * Program Value ErrorType
  */
-public enum ProgramValueType implements ToYaml
+public enum EngineDataType implements ToYaml
 {
 
     // VALUES
@@ -33,36 +33,21 @@ public enum ProgramValueType implements ToYaml
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public static ProgramValueType fromString(String typeString)
+    public static EngineDataType fromString(String typeString)
                   throws InvalidDataException
     {
-        return EnumUtils.fromString(ProgramValueType.class, typeString);
+        return EnumUtils.fromString(EngineDataType.class, typeString);
     }
 
 
-    public static ProgramValueType fromYaml(YamlParser yaml)
+    public static EngineDataType fromYaml(YamlParser yaml)
                   throws YamlParseException
     {
         String typeString = yaml.getString();
         try {
-            return ProgramValueType.fromString(typeString);
+            return EngineDataType.fromString(typeString);
         } catch (InvalidDataException e) {
             throw YamlParseException.invalidEnum(new InvalidEnumError(typeString));
-        }
-    }
-
-
-    public static ProgramValueType fromSQLValue(SQLValue sqlValue)
-                  throws DatabaseException
-    {
-        String enumString = "";
-        try {
-            enumString = sqlValue.getText();
-            ProgramValueType programValueType = ProgramValueType.fromString(enumString);
-            return programValueType;
-        } catch (InvalidDataException e) {
-            throw DatabaseException.invalidEnum(
-                    new com.kispoko.tome.lib.database.error.InvalidEnumError(enumString));
         }
     }
 

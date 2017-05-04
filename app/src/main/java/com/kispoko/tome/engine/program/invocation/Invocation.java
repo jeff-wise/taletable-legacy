@@ -26,9 +26,9 @@ public class Invocation extends Model
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private UUID id;
+    private UUID                                        id;
 
-    private PrimitiveFunctor<String> programName;
+    private PrimitiveFunctor<String>                    programName;
     private CollectionFunctor<InvocationParameterUnion> parameters;
 
 

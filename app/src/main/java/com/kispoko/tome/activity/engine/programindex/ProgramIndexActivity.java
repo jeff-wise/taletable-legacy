@@ -1,21 +1,18 @@
 
-package com.kispoko.tome.activity;
+package com.kispoko.tome.activity.engine.programindex;
 
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.programindex.ProgramListRecyclerViewAdapter;
+import com.kispoko.tome.activity.engine.program.ProgramEditorActivity;
 import com.kispoko.tome.engine.program.ProgramIndex;
 import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
@@ -37,12 +34,20 @@ public class ProgramIndexActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        // [1] Set Content View
+        // -------------------------------------------------------------------------------------
+
         setContentView(R.layout.activity_program_index);
 
-        initializeToolbar();
+        // [2] Get Program Index
+        // -------------------------------------------------------------------------------------
 
         ProgramIndex programIndex = SheetManager.currentSheet().engine().programIndex();
 
+        // [3] Initialize UI
+        // -------------------------------------------------------------------------------------
+
+        initializeToolbar();
         initializeView(programIndex);
     }
 
@@ -58,41 +63,20 @@ public class ProgramIndexActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_choose_template, menu);
+        getMenuInflater().inflate(R.menu.empty, menu);
         return true;
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.action_settings:
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
     // INTERNAL
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     /**
      * Initialize the toolbar.
      */
     private void initializeToolbar()
     {
-        String title = "Programs";
-
-        UI.initializeToolbar(this, title);
+        UI.initializeToolbar(this, getString(R.string.programs));
     }
 
 
@@ -101,19 +85,26 @@ public class ProgramIndexActivity extends AppCompatActivity
      */
     private void initializeView(ProgramIndex programIndex)
     {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.program_index_list_view);
+        // [1] Configure Program List View
+        // -------------------------------------------------------------------------------------
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.program_list_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        recyclerView.addItemDecoration(
+                new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_86));
         recyclerView.setAdapter(
                 new ProgramListRecyclerViewAdapter(programIndex.programs(), this));
+
+        // [2] Configure New Program FAB
+        // -------------------------------------------------------------------------------------
 
         FloatingActionButton addValueSetButton =
                 (FloatingActionButton) findViewById(R.id.button_new_program);
         addValueSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProgramIndexActivity.this, ProgramActivity.class);
+                Intent intent = new Intent(ProgramIndexActivity.this, ProgramEditorActivity.class);
                 startActivity(intent);
             }
         });

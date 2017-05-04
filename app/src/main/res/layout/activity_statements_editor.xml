@@ -40,13 +40,13 @@
                         android:layout_marginStart="15dp"
                         android:background="#00000000"
                         android:src="@drawable/ic_toolbar_back"
-                        android:tint="@color/dark_blue_hlx_5" />
+                        android:tint="@color/dark_theme_primary_25" />
 
                     <TextView
                         android:id="@+id/toolbar_title"
                         android:layout_gravity="center"
                         android:textSize="18sp"
-                        android:textColor="@color/dark_blue_hlx_5"
+                        android:textColor="@color/dark_theme_primary_25"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
@@ -62,10 +62,9 @@
                         android:layout_marginEnd="15dp"
                         android:paddingTop="4dp"
                         android:src="@drawable/ic_toolbar_search"
-                        android:tint="@color/dark_blue_hlx_5" />
+                        android:tint="@color/dark_theme_primary_25" />
 
                 </RelativeLayout>
-
 
             </android.support.v7.widget.Toolbar>
 
@@ -74,26 +73,24 @@
                 android:layout_height="match_parent">
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/value_set_list_view"
+                    android:id="@+id/statement_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 </android.support.v7.widget.RecyclerView>
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/button_new_value_set"
+                    android:id="@+id/button_new_statement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:clickable="true"
                     android:src="@drawable/ic_fab_add"
-                    app:layout_anchor="@id/value_set_list_view"
+                    app:layout_anchor="@id/statement_list_view"
                     app:layout_anchorGravity="bottom|right"
                     app:backgroundTint="@color/green_medium_dark"
                     app:rippleColor="#FFF" />
 
             </android.support.design.widget.CoordinatorLayout>
-
-
 
         </LinearLayout>
 

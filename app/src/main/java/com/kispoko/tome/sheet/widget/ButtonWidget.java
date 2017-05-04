@@ -580,7 +580,7 @@ public class ButtonWidget extends Widget implements Serializable
                     new FormattedString.Span(this.label(),
                                              labelPlaceholder,
                                              this.format().labelStyle().color().color(context),
-                                             this.format().descriptionStyle().size().size(context),
+                                             this.format().descriptionStyle().size().size(),
                                              this.format().labelStyle().font());
             spans.add(labelSpan);
 

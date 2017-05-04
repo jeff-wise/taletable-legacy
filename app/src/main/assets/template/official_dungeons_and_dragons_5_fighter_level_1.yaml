@@ -24,11 +24,11 @@ engine:
     description:
       The modifier applied to dice rolls that are relevant to the ability.
     parameter_types:
-    - integer
-    result_type: integer
-    parameter_names:
-    - Ability Score
-    result_name: Ability Modifier
+    - type: integer
+      short_name: Score
+    result_type:
+      type: integer
+      short_name: Modifier
     tuples:
     - parameters:
       - 1
@@ -125,11 +125,11 @@ engine:
     description:
       The proficiency bonus for each level.
     parameter_types:
-    - integer
-    result_type: integer
-    parameter_names:
-    - Level
-    result_name: Proficiency Bonus
+    - type: integer
+      short_name: Level
+    result_type:
+      type: integer
+      short_name: Bonus
     tuples:
     - parameters:
       - 1
@@ -196,11 +196,11 @@ engine:
     description:
       The dice that each class uses to calculate hit points each level.
     parameter_types:
-    - string
-    result_type: dice
-    parameter_names:
-    - Class
-    result_name: Hit Dice
+    - type: string
+      short_name: Class
+    result_type:
+      type: dice
+      short_name: Hit Dice
     tuples:
     - parameters:
       - barbarian
@@ -279,11 +279,11 @@ engine:
     description:
       The ability saving throws that each class has automatic proficiency with.
     parameter_types:
-    - string
-    result_type: list
-    parameter_names:
-    - Class
-    result_name: Saving Throws
+    - type: string
+      short_name: Class
+    result_type:
+      type: list
+      short_name: Saving Throws
     tuples:
     - parameters:
       - barbarian
@@ -350,11 +350,11 @@ engine:
     description:
       The damage dice for the Rogue's sneak attack ability by level.
     parameter_types:
-    - integer
-    result_type: dice
-    parameter_names:
-    - Level
-    result_name: Damage
+    - type: integer
+      short_name: Level
+    result_type:
+      type: dice
+      short_name: Damage Dice
     tuples:
     - parameters:
       - 1
@@ -481,11 +481,11 @@ engine:
     description:
       The number of rages a Barbarian can do without a long rest by level.
     parameter_types:
-    - integer
-    result_type: integer
-    parameter_names:
-    - Level
-    result_name: Rages Per Day
+    - type: integer
+      short_name: Level
+    result_type:
+      type: integer
+      short_name: Rages
     tuples:
     - parameters:
       - 1
@@ -552,11 +552,11 @@ engine:
     description:
       The number of cantrips a Warlock knows each level.
     parameter_types:
-    - integer
-    result_type: integer
-    parameter_names:
-    - Level
-    result_name: Cantrips Known
+    - type: integer
+      short_name: Level
+    result_type:
+      type: integer
+      short_name: Cantrips Known
     tuples:
     - parameters:
       - 1
@@ -623,11 +623,11 @@ engine:
     description:
       The number of spells a Warlock knows each level.
     parameter_types:
-    - integer
-    result_type: integer
-    parameter_names:
-    - Level
-    result_name: Spells Known
+    - type: integer
+      short_name: Level
+    result_type:
+      type: integer
+      short_name: Spells Known
     tuples:
     - parameters:
       - 1

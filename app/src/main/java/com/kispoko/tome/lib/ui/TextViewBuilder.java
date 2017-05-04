@@ -45,6 +45,9 @@ public class TextViewBuilder implements ViewBuilder
     public Integer                  maxEms;
     public Integer                  ems;
 
+    public Float                    lineSpacingAdd;
+    public Float                    lineSpacingMult;
+
     public Integer                  gravity;
     public Integer                  layoutGravity;
     public Integer                  visibility;
@@ -105,6 +108,9 @@ public class TextViewBuilder implements ViewBuilder
         this.minEms             = null;
         this.maxEms             = null;
         this.ems                = null;
+
+        this.lineSpacingAdd     = null;
+        this.lineSpacingMult    = null;
 
         this.gravity            = null;
         this.layoutGravity      = null;
@@ -210,6 +216,12 @@ public class TextViewBuilder implements ViewBuilder
 
         if (this.ems != null)
             textView.setEms(this.ems);
+
+        // > Line Spacing
+        // --------------------------------------------------------------------------------------
+
+        if (this.lineSpacingAdd != null && this.lineSpacingMult != null)
+            textView.setLineSpacing(this.lineSpacingAdd, this.lineSpacingMult);
 
         // > Visibility
         // --------------------------------------------------------------------------------------

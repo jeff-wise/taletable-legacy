@@ -6,8 +6,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
+import com.kispoko.tome.engine.EngineDataType;
+import com.kispoko.tome.engine.EngineType;
 import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
-import com.kispoko.tome.engine.program.ProgramValueType;
 import com.kispoko.tome.engine.program.statement.ParameterType;
 import com.kispoko.tome.engine.summation.term.BooleanTermValue;
 import com.kispoko.tome.engine.summation.term.DiceRollTermValue;
@@ -16,7 +17,6 @@ import com.kispoko.tome.engine.value.ValueType;
 import com.kispoko.tome.engine.variable.BooleanVariable;
 import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.engine.variable.TextVariable;
-import com.kispoko.tome.engine.variable.VariableReferenceType;
 import com.kispoko.tome.engine.variable.VariableType;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.sheet.DividerType;
@@ -153,7 +153,7 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(ProgramValueType[].class))
+        else if (valueClass.isAssignableFrom(EngineDataType[].class))
         {
             return SQLValue.Type.TEXT;
         }
@@ -231,9 +231,9 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String arrayString = TextUtils.join("***", ((String[]) this.getValue()));
             return SQLValue.newText(arrayString);
         }
-        else if (this.getValue() instanceof ProgramValueType[])
+        else if (this.getValue() instanceof EngineDataType[])
         {
-            ProgramValueType[] programValueTypeArray = (ProgramValueType[]) this.getValue();
+            EngineDataType[] programValueTypeArray = (EngineDataType[]) this.getValue();
             List<String> programValueTypeStrings = new ArrayList<>();
             for (int i = 0; i < programValueTypeArray.length; i++) {
                 programValueTypeStrings.add(programValueTypeArray[i].name().toLowerCase());
@@ -363,27 +363,22 @@ public class PrimitiveFunctor<A> extends Functor<A>
             Corners corners = Corners.fromSQLValue(sqlValue);
             this.setValue((A) corners);
         }
-        else if (this.valueClass.isAssignableFrom(ProgramValueType.class))
-        {
-            ProgramValueType programValueType = ProgramValueType.fromSQLValue(sqlValue);
-            this.setValue((A) programValueType);
-        }
-        else if (this.valueClass.isAssignableFrom(ProgramValueType[].class))
-        {
-            String arrayString = sqlValue.getText();
-            if (arrayString != null) {
-                String[] stringArray = TextUtils.split(arrayString, "\\*\\*\\*");
-                ProgramValueType[] programValueTypes = new ProgramValueType[stringArray.length];
-                for (int i = 0; i < stringArray.length; i++) {
-                    programValueTypes[i] = ProgramValueType.fromSQLValue(
-                                                                SQLValue.newText(stringArray[i]));
-                }
-                this.setValue((A) programValueTypes);
-            }
-            else {
-                this.setValue(null);
-            }
-        }
+//        else if (this.valueClass.isAssignableFrom(EngineDataType[].class))
+//        {
+//            String arrayString = sqlValue.getText();
+//            if (arrayString != null) {
+//                String[] stringArray = TextUtils.split(arrayString, "\\*\\*\\*");
+//                EngineDataType[] programValueTypes = new EngineDataType[stringArray.length];
+//                for (int i = 0; i < stringArray.length; i++) {
+//                    programValueTypes[i] = EngineDataType.fromSQLValue(
+//                                                                SQLValue.newText(stringArray[i]));
+//                }
+//                this.setValue((A) programValueTypes);
+//            }
+//            else {
+//                this.setValue(null);
+//            }
+//        }
         else if (this.valueClass.isAssignableFrom(SerialBitmap.class))
         {
             byte[] bitmapBlob = sqlValue.getBlob();
@@ -479,6 +474,28 @@ public class PrimitiveFunctor<A> extends Functor<A>
             if (stringArray.length == 0)
                 return null;
             return TextUtils.join(", ", stringArray);
+        }
+        else if (this.value instanceof EngineType)
+        {
+            EngineType engineType = (EngineType) this.value;
+            return engineType.dataType().toString();
+        }
+        else if (this.value instanceof EngineType[])
+        {
+            EngineType[] typeArray = (EngineType[]) this.value;
+
+            if (typeArray.length == 0)
+                return null;
+
+            String typeListString = "";
+            for (int i = 0; i < typeArray.length; i++)
+            {
+                if (i > 0)
+                    typeListString += ", ";
+                typeListString += typeArray[i].dataType().toString();
+            }
+
+            return typeListString;
         }
         else
         {

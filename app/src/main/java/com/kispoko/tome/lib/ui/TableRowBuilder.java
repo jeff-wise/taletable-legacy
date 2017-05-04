@@ -63,7 +63,7 @@ public class TableRowBuilder implements ViewBuilder
 
         this.visibility         = null;
 
-        this.layoutType         = LayoutType.TABLE_ROW;
+        this.layoutType         = LayoutType.TABLE;
 
         this.gravity            = null;
         this.layoutGravity      = null;

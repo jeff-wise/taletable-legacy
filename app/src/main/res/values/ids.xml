@@ -130,6 +130,15 @@
     <item name="sheet_summary_list_item_feature3_name" type="id"/>
     <item name="sheet_summary_list_item_feature3_value" type="id"/>
 
+    <!-- SHEET SUMMARY LIST ITEM -->
+    <item name="game_summary_layout" type="id"/>
+    <item name="game_summary_name" type="id"/>
+    <item name="game_summary_description" type="id"/>
+    <item name="game_summary_genre" type="id"/>
+    <item name="game_summary_players" type="id"/>
+    <item name="game_summary_created" type="id"/>
+    <item name="game_summary_creators" type="id"/>
+
     <!-- DRAGGABLE CARD -->
     <item name="draggable_card_layout" type="id"/>
     <item name="draggable_card_title" type="id"/>
@@ -139,6 +148,14 @@
     <item name="dialog_visibility_button" type="id"/>
     <item name="dialog_info_button" type="id"/>
 
+    <!-- TABLE COLUMN -->
+    <item name="table_column_1" type="id"/>
+    <item name="table_column_2" type="id"/>
+    <item name="table_column_3" type="id"/>
+    <item name="table_column_4" type="id"/>
+
+    <item name="table_header_column_1" type="id"/>
+    <item name="table_header_column_2" type="id"/>
 
     <item name="type_list_item_name" type="id"/>
     <item name="type_list_item_icon" type="id"/>

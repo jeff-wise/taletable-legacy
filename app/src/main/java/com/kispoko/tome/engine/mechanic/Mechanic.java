@@ -56,6 +56,7 @@ public class Mechanic extends Model
      */
     private PrimitiveFunctor<String>            description;
 
+    // TODO seperate name vs label
     private PrimitiveFunctor<String>            category;
 
     /**

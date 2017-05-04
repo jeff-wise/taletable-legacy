@@ -70,7 +70,7 @@ public class IntegerTermValue extends Model
 
         this.name               = new PrimitiveFunctor<>(null, String.class);
 
-        this.type = new PrimitiveFunctor<>(null, Type.class);
+        this.type               = new PrimitiveFunctor<>(null, Type.class);
     }
 
 

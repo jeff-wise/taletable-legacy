@@ -3,7 +3,6 @@ package com.kispoko.tome.sheet.widget.util;
 
 
 import android.content.Context;
-import android.text.style.RelativeSizeSpan;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.exception.InvalidDataException;
@@ -135,9 +134,35 @@ public enum TextSize implements ToYaml
     }
 
 
-    public float size(Context context)
+    public float size()
     {
-        return context.getResources().getDimension(this.resourceId());
+        switch (this)
+        {
+            case SUPER_SMALL:
+                return 3f;
+            case VERY_SMALL:
+                return 3.3f;
+            case SMALL:
+                return 3.7f;
+            case MEDIUM_SMALL:
+                return 4.2f;
+            case MEDIUM:
+                return 4.6f;
+            case MEDIUM_LARGE:
+                return 5f;
+            case LARGE:
+                return 6.2f;
+            case VERY_LARGE:
+                return 7.5f;
+            case HUGE:
+                return 9f;
+            case GARGANTUAN:
+                return 11;
+            case COLOSSAL:
+                return 13f;
+            default:
+                return 4.2f;
+        }
     }
 
 

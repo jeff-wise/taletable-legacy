@@ -308,7 +308,7 @@ public class ModelFunctor<A extends Model> extends Functor<A>
             fieldDescription = context.getString(this.descriptionId());
 
 
-        return Field.model(modelId, fieldName, fieldLabel, fieldDescription);
+        return Field.model(fieldName, fieldLabel, fieldDescription);
     }
 
 

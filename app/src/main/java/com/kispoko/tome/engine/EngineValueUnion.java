@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.engine.program;
+package com.kispoko.tome.engine;
 
 
 import com.kispoko.tome.ApplicationFailure;
@@ -27,7 +27,7 @@ import java.util.UUID;
 /**
  * Function Value
  */
-public class ProgramValueUnion extends Model
+public class EngineValueUnion extends Model
                                implements ToYaml, Serializable
 {
 
@@ -49,13 +49,13 @@ public class ProgramValueUnion extends Model
     private ModelFunctor<DiceRoll>              diceValue;
     private PrimitiveFunctor<String[]>          listValue;
 
-    private PrimitiveFunctor<ProgramValueType>  valueType;
+    private PrimitiveFunctor<EngineDataType>    valueType;
 
 
     // CONSTRUCTORS
     // ------------------------------------------------------------------------------------------
 
-    public ProgramValueUnion()
+    public EngineValueUnion()
     {
         this.id             = null;
 
@@ -65,18 +65,18 @@ public class ProgramValueUnion extends Model
         this.diceValue      = ModelFunctor.empty(DiceRoll.class);
         this.listValue      = new PrimitiveFunctor<>(null, String[].class);
 
-        this.valueType      = new PrimitiveFunctor<>(null, ProgramValueType.class);
+        this.valueType      = new PrimitiveFunctor<>(null, EngineDataType.class);
     }
 
 
     /**
-     * Create a new ProgramValueUnion. This constructor is private to force use of the safe constructors,
+     * Create a new EngineValueUnion. This constructor is private to force use of the safe constructors,
      * which only permit valid value/type associations.
      * @param id The model id.
-     * @param value The ProgramValueUnion encapsulated value.
-     * @param valueType The type of ProgramValueUnion (integer/string/etc..)
+     * @param value The EngineValueUnion encapsulated value.
+     * @param valueType The type of EngineValueUnion (integer/string/etc..)
      */
-    private ProgramValueUnion(UUID id, Object value, ProgramValueType valueType)
+    private EngineValueUnion(UUID id, Object value, EngineDataType valueType)
     {
         this.id           = id;
 
@@ -86,7 +86,7 @@ public class ProgramValueUnion extends Model
         this.diceValue    = ModelFunctor.full(null, DiceRoll.class);
         this.listValue    = new PrimitiveFunctor<>(null, String[].class);
 
-        this.valueType    = new PrimitiveFunctor<>(valueType, ProgramValueType.class);
+        this.valueType    = new PrimitiveFunctor<>(valueType, EngineDataType.class);
 
         // Set the value
         switch (valueType)
@@ -115,15 +115,15 @@ public class ProgramValueUnion extends Model
      * @param integerValue The integer value.
      * @return A Program Value as the integer case.
      */
-    public static ProgramValueUnion asInteger(UUID id, Integer integerValue)
+    public static EngineValueUnion asInteger(UUID id, Integer integerValue)
     {
-        return new ProgramValueUnion(id, integerValue, ProgramValueType.INTEGER);
+        return new EngineValueUnion(id, integerValue, EngineDataType.INTEGER);
     }
 
 
-    public static ProgramValueUnion asInteger(Integer integerValue)
+    public static EngineValueUnion asInteger(Integer integerValue)
     {
-        return new ProgramValueUnion(null, integerValue, ProgramValueType.INTEGER);
+        return new EngineValueUnion(null, integerValue, EngineDataType.INTEGER);
     }
 
 
@@ -132,15 +132,15 @@ public class ProgramValueUnion extends Model
      * @param stringValue The string value.
      * @return A Program Value as the string case.
      */
-    public static ProgramValueUnion asString(UUID id, String stringValue)
+    public static EngineValueUnion asString(UUID id, String stringValue)
     {
-        return new ProgramValueUnion(id, stringValue, ProgramValueType.STRING);
+        return new EngineValueUnion(id, stringValue, EngineDataType.STRING);
     }
 
 
-    public static ProgramValueUnion asString(String stringValue)
+    public static EngineValueUnion asString(String stringValue)
     {
-        return new ProgramValueUnion(null, stringValue, ProgramValueType.STRING);
+        return new EngineValueUnion(null, stringValue, EngineDataType.STRING);
     }
 
 
@@ -149,15 +149,15 @@ public class ProgramValueUnion extends Model
      * @param booleanValue The boolean value.
      * @return A Program Value as the boolean case.
      */
-    public static ProgramValueUnion asBoolean(UUID id, Boolean booleanValue)
+    public static EngineValueUnion asBoolean(UUID id, Boolean booleanValue)
     {
-        return new ProgramValueUnion(id, booleanValue, ProgramValueType.BOOLEAN);
+        return new EngineValueUnion(id, booleanValue, EngineDataType.BOOLEAN);
     }
 
 
-    public static ProgramValueUnion asBoolean(Boolean booleanValue)
+    public static EngineValueUnion asBoolean(Boolean booleanValue)
     {
-        return new ProgramValueUnion(null, booleanValue, ProgramValueType.BOOLEAN);
+        return new EngineValueUnion(null, booleanValue, EngineDataType.BOOLEAN);
     }
 
 
@@ -166,9 +166,9 @@ public class ProgramValueUnion extends Model
      * @param diceValue The dice value.
      * @return A Program Value "dice" case.
      */
-    public static ProgramValueUnion asDice(UUID id, DiceRoll diceValue)
+    public static EngineValueUnion asDice(UUID id, DiceRoll diceValue)
     {
-        return new ProgramValueUnion(id, diceValue, ProgramValueType.DICE);
+        return new EngineValueUnion(id, diceValue, EngineDataType.DICE);
     }
 
 
@@ -177,9 +177,9 @@ public class ProgramValueUnion extends Model
      * @param diceValue The dice value.
      * @return A Program Value "dice" case.
      */
-    public static ProgramValueUnion asDice(DiceRoll diceValue)
+    public static EngineValueUnion asDice(DiceRoll diceValue)
     {
-        return new ProgramValueUnion(null, diceValue, ProgramValueType.DICE);
+        return new EngineValueUnion(null, diceValue, EngineDataType.DICE);
     }
 
 
@@ -188,11 +188,11 @@ public class ProgramValueUnion extends Model
      * @param listValue The list value.
      * @return A Program Value "list" case.
      */
-    public static ProgramValueUnion asList(UUID id, List<String> listValue)
+    public static EngineValueUnion asList(UUID id, List<String> listValue)
     {
         String[] stringArray = new String[listValue.size()];
         listValue.toArray(stringArray);
-        return new ProgramValueUnion(id, stringArray, ProgramValueType.LIST);
+        return new EngineValueUnion(id, stringArray, EngineDataType.LIST);
     }
 
 
@@ -201,22 +201,22 @@ public class ProgramValueUnion extends Model
      * @param listValue The list value.
      * @return A Program Value "list" case.
      */
-    public static ProgramValueUnion asList(List<String> listValue)
+    public static EngineValueUnion asList(List<String> listValue)
     {
         String[] stringArray = new String[listValue.size()];
         listValue.toArray(stringArray);
-        return new ProgramValueUnion(null, stringArray, ProgramValueType.LIST);
+        return new EngineValueUnion(null, stringArray, EngineDataType.LIST);
     }
 
 
     /**
-     * Create a ProgramValueUnion from its Yaml representation.
+     * Create a EngineValueUnion from its Yaml representation.
      * @param yaml The yaml parser.
      * @param valueType The type of Program VAlue.
-     * @return The parsed ProgramValueUnion.
+     * @return The parsed EngineValueUnion.
      * @throws YamlParseException
      */
-    public static ProgramValueUnion fromYaml(YamlParser yaml, ProgramValueType valueType)
+    public static EngineValueUnion fromYaml(YamlParser yaml, EngineDataType valueType)
                   throws YamlParseException
     {
         UUID id = UUID.randomUUID();
@@ -224,18 +224,18 @@ public class ProgramValueUnion extends Model
         switch (valueType)
         {
             case STRING:
-                return ProgramValueUnion.asString(id, yaml.getString());
+                return EngineValueUnion.asString(id, yaml.getString());
             case INTEGER:
-                return ProgramValueUnion.asInteger(id, yaml.getInteger());
+                return EngineValueUnion.asInteger(id, yaml.getInteger());
             case BOOLEAN:
-                return ProgramValueUnion.asBoolean(id, yaml.getBoolean());
+                return EngineValueUnion.asBoolean(id, yaml.getBoolean());
             case DICE:
-                return ProgramValueUnion.asDice(id, DiceRoll.fromYaml(yaml));
+                return EngineValueUnion.asDice(id, DiceRoll.fromYaml(yaml));
             case LIST:
-                return ProgramValueUnion.asList(id, yaml.getStringList());
+                return EngineValueUnion.asList(id, yaml.getStringList());
         }
 
-        // Shouldn't be possible for ProgramValueType to be null
+        // Shouldn't be possible for EngineDataType to be null
         return null;
     }
 
@@ -302,7 +302,7 @@ public class ProgramValueUnion extends Model
             default:
                 ApplicationFailure.union(
                         UnionException.unknownVariant(
-                                new UnknownVariantError(ProgramValueType.class.getName())));
+                                new UnknownVariantError(EngineDataType.class.getName())));
         }
 
         return null;
@@ -313,17 +313,17 @@ public class ProgramValueUnion extends Model
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Get the type of this ProgramValueUnion.
-     * @return The ProgramValueType.
+     * Get the type of this EngineValueUnion.
+     * @return The EngineDataType.
      */
-    public ProgramValueType type()
+    public EngineDataType type()
     {
         return this.valueType.getValue();
     }
 
 
     /**
-     * Get the integer value case for this ProgramValueUnion.
+     * Get the integer value case for this EngineValueUnion.
      * @return The Integer value.
      */
     public Integer integerValue()
@@ -333,7 +333,7 @@ public class ProgramValueUnion extends Model
 
 
     /**
-     * Get the string value case for this ProgramValueUnion
+     * Get the string value case for this EngineValueUnion
      * @return The String value.
      */
     public String stringValue()
@@ -343,7 +343,7 @@ public class ProgramValueUnion extends Model
 
 
     /**
-     * Get the boolean value case for this ProgramValueUnion
+     * Get the boolean value case for this EngineValueUnion
      * @return The Boolean value.
      */
     public Boolean booleanValue()
@@ -405,11 +405,11 @@ public class ProgramValueUnion extends Model
 
         if (o == this) return true;
 
-        if (!(o instanceof ProgramValueUnion)) {
+        if (!(o instanceof EngineValueUnion)) {
             return false;
         }
 
-        ProgramValueUnion functionValue = (ProgramValueUnion) o;
+        EngineValueUnion functionValue = (EngineValueUnion) o;
 
         if (functionValue.type() != this.type())
             return false;

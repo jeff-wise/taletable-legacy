@@ -603,14 +603,14 @@ public class TextWidget extends Widget
             FormattedString.Span labelSpan =
                 new FormattedString.Span(this.format().insideLabel(),
                                          this.format().insideLabelStyle().color().color(context),
-                                         this.format().descriptionStyle().size().size(context),
+                                         this.format().descriptionStyle().size().size(),
                                          this.format().insideLabelStyle().font());
 
             FormattedString.Span valueSpan =
                     new FormattedString.Span(this.value(),
                                              context.getString(R.string.placeholder_value),
                                              this.format().valueStyle().color().color(context),
-                                             this.format().descriptionStyle().size().size(context),
+                                             this.format().descriptionStyle().size().size(),
                                              this.format().valueStyle().font());
 
             if (this.format().insideLabel() != null)

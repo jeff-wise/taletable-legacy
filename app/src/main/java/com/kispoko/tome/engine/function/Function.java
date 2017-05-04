@@ -4,8 +4,9 @@ package com.kispoko.tome.engine.function;
 
 import android.util.Log;
 
-import com.kispoko.tome.engine.program.ProgramValueUnion;
-import com.kispoko.tome.engine.program.ProgramValueType;
+import com.kispoko.tome.R;
+import com.kispoko.tome.engine.EngineType;
+import com.kispoko.tome.engine.EngineValueUnion;
 import com.kispoko.tome.engine.function.error.InvalidTupleLengthError;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
@@ -48,17 +49,15 @@ public class Function extends Model
     private PrimitiveFunctor<String>                name;
     private PrimitiveFunctor<String>                label;
     private PrimitiveFunctor<String>                description;
-    private PrimitiveFunctor<ProgramValueType[]>    parameterTypes;
-    private PrimitiveFunctor<ProgramValueType>      resultType;
-    private PrimitiveFunctor<String[]>              parameterNames;
-    private PrimitiveFunctor<String>                resultName;
+    private PrimitiveFunctor<EngineType[]>          parameterTypes;
+    private PrimitiveFunctor<EngineType>            resultType;
     private CollectionFunctor<Tuple>                tuples;
 
 
     // > Internal
     // ------------------------------------------------------------------------------------------
 
-    private Map<Parameters,ProgramValueUnion>       functionMap;
+    private Map<Parameters,EngineValueUnion>       functionMap;
 
 
     // CONSTRUCTORS
@@ -70,12 +69,12 @@ public class Function extends Model
         this.name           = new PrimitiveFunctor<>(null, String.class);
         this.label          = new PrimitiveFunctor<>(null, String.class);
         this.description    = new PrimitiveFunctor<>(null, String.class);
-        this.parameterTypes = new PrimitiveFunctor<>(null, ProgramValueType[].class);
-        this.resultType     = new PrimitiveFunctor<>(null, ProgramValueType.class);
-        this.parameterNames = new PrimitiveFunctor<>(null, String[].class);
-        this.resultName     = new PrimitiveFunctor<>(null, String.class);
+        this.parameterTypes = new PrimitiveFunctor<>(null, EngineType[].class);
+        this.resultType     = new PrimitiveFunctor<>(null, EngineType.class);
 
         this.tuples         = CollectionFunctor.empty(Tuple.class);
+
+        this.initializeFunctors();
     }
 
 
@@ -83,10 +82,8 @@ public class Function extends Model
                     String name,
                     String label,
                     String description,
-                    List<ProgramValueType> parameterTypes,
-                    ProgramValueType resultType,
-                    List<String> parameterNames,
-                    String resultName,
+                    List<EngineType> parameterTypes,
+                    EngineType resultType,
                     List<Tuple> tuples)
            throws InvalidFunctionException
     {
@@ -103,20 +100,12 @@ public class Function extends Model
         this.description    = new PrimitiveFunctor<>(description, String.class);
 
         // ** Parameter Types
-        ProgramValueType[] parameterTypeArray = parameterTypes.toArray(
-                                                    new ProgramValueType[parameterTypes.size()]);
-        this.parameterTypes = new PrimitiveFunctor<>(parameterTypeArray, ProgramValueType[].class);
+        EngineType[] parameterTypeArray = parameterTypes.toArray(
+                                                    new EngineType[parameterTypes.size()]);
+        this.parameterTypes = new PrimitiveFunctor<>(parameterTypeArray, EngineType[].class);
 
         // ** Result Type
-        this.resultType     = new PrimitiveFunctor<>(resultType, ProgramValueType.class);
-
-        // ** Parameter Names
-        String[] parameterNameArray = new String[parameterNames.size()];
-        parameterNames.toArray(parameterNameArray);
-        this.parameterNames = new PrimitiveFunctor<>(parameterNameArray, String[].class);
-
-        // ** Result Name
-        this.resultName     = new PrimitiveFunctor<>(resultName, String.class);
+        this.resultType     = new PrimitiveFunctor<>(resultType, EngineType.class);
 
         // ** Tuples
         this.tuples         = CollectionFunctor.full(tuples, Tuple.class);
@@ -126,6 +115,8 @@ public class Function extends Model
 
         // > Index the tuples
         indexTuples();
+
+        this.initializeFunctors();
     }
 
 
@@ -147,22 +138,16 @@ public class Function extends Model
         if (description != null)  description = description.trim();
 
         // ** Parameter Types
-        final List<ProgramValueType> parameterTypes
-                = yaml.atKey("parameter_types").forEach(new YamlParser.ForEach<ProgramValueType>() {
+        final List<EngineType> parameterTypes
+                = yaml.atKey("parameter_types").forEach(new YamlParser.ForEach<EngineType>() {
             @Override
-            public ProgramValueType forEach(YamlParser yaml, int index) throws YamlParseException {
-                return ProgramValueType.fromYaml(yaml);
+            public EngineType forEach(YamlParser yaml, int index) throws YamlParseException {
+                return EngineType.fromYaml(yaml);
             }
         });
 
         // ** Result Type
-        final ProgramValueType resultType = ProgramValueType.fromYaml(yaml.atKey("result_type"));
-
-        // ** Parameter Names
-        List<String> parameterNames = yaml.atMaybeKey("parameter_names").getStringList();
-
-        // ** Result Name
-        String resultName = yaml.atMaybeKey("result_name").getString();
+        final EngineType resultType = EngineType.fromYaml(yaml.atKey("result_type"));
 
         // ** Tuples
         List<Tuple> tuples = yaml.atKey("tuples").forEach(new YamlParser.ForEach<Tuple>() {
@@ -172,8 +157,7 @@ public class Function extends Model
             }
         });
 
-        return new Function(id, name, label, description, parameterTypes, resultType,
-                            parameterNames, resultName, tuples);
+        return new Function(id, name, label, description, parameterTypes, resultType, tuples);
     }
 
 
@@ -233,8 +217,6 @@ public class Function extends Model
                 .putString("description", this.description())
                 .putList("parameter_types", this.parameterTypes())
                 .putYaml("result_type", this.resultType())
-                .putStringList("parameter_names", this.parameterNames())
-                .putString("result_name", this.resultName())
                 .putList("tuples", this.tuples());
     }
 
@@ -276,7 +258,7 @@ public class Function extends Model
      * Get the function's parameter type list.
      * @return The parameter type list.
      */
-    public List<ProgramValueType> parameterTypes()
+    public List<EngineType> parameterTypes()
     {
         return Arrays.asList(this.parameterTypes.getValue());
     }
@@ -286,29 +268,9 @@ public class Function extends Model
      * Get the function's result type.
      * @return The function's result type.
      */
-    public ProgramValueType resultType()
+    public EngineType resultType()
     {
         return this.resultType.getValue();
-    }
-
-
-    /**
-     * The function's parameter names.
-     * @return The List of names.
-     */
-    public List<String> parameterNames()
-    {
-        return Arrays.asList(this.parameterNames.getValue());
-    }
-
-
-    /**
-     * The name of the function's result.
-     * @return The reuslt name.
-     */
-    public String resultName()
-    {
-        return this.resultName.getValue();
     }
 
 
@@ -336,19 +298,59 @@ public class Function extends Model
     // ------------------------------------------------------------------------------------------
 
     /**
-     * Execute the function. Returns a ProgramValueUnion based on the provided parameters. If the
+     * Execute the function. Returns a EngineValueUnion based on the provided parameters. If the
      * function does not have a case for the given parameters, it returns null.
      * @param parameters
      * @return
      */
-    public ProgramValueUnion execute(List<ProgramValueUnion> parameters)
+    public EngineValueUnion execute(List<EngineValueUnion> parameters)
     {
-        ProgramValueUnion result = this.functionMap.get(new Parameters(parameters));
+        EngineValueUnion result = this.functionMap.get(new Parameters(parameters));
         return result;
     }
 
 
     // INTERNAL
+    // ------------------------------------------------------------------------------------------
+
+    // > Initialize
+    // ------------------------------------------------------------------------------------------
+
+    private void initializeFunctors()
+    {
+        // Name
+        this.name.setName("name");
+        this.name.setLabelId(R.string.function_field_name_label);
+        this.name.setDescriptionId(R.string.function_field_name_description);
+
+        // Label
+        this.label.setName("label");
+        this.label.setLabelId(R.string.function_field_label_label);
+        this.label.setDescriptionId(R.string.function_field_label_description);
+
+        // Description
+        this.description.setName("description");
+        this.description.setLabelId(R.string.function_field_description_label);
+        this.description.setDescriptionId(R.string.function_field_description_description);
+
+        // Parameter Types
+        this.parameterTypes.setName("parameter_types");
+        this.parameterTypes.setLabelId(R.string.function_field_parameter_types_label);
+        this.parameterTypes.setDescriptionId(R.string.function_field_parameter_types_description);
+
+        // Result Type
+        this.resultType.setName("result_type");
+        this.resultType.setLabelId(R.string.function_field_result_type_label);
+        this.resultType.setDescriptionId(R.string.function_field_result_type_description);
+
+        // Tuples
+        this.tuples.setName("tuples");
+        this.tuples.setLabelId(R.string.function_field_tuples_label);
+        this.tuples.setDescriptionId(R.string.function_field_tuples_description);
+    }
+
+
+    // > Validate
     // ------------------------------------------------------------------------------------------
 
     private void validate()
@@ -393,13 +395,13 @@ public class Function extends Model
      */
     public void logFunction()
     {
-        for (Map.Entry<Parameters,ProgramValueUnion> e : this.functionMap.entrySet())
+        for (Map.Entry<Parameters,EngineValueUnion> e : this.functionMap.entrySet())
         {
             Parameters params = e.getKey();
-            ProgramValueUnion res = e.getValue();
+            EngineValueUnion res = e.getValue();
 
             StringBuilder row = new StringBuilder();
-            for (ProgramValueUnion param : params.getValues()) {
+            for (EngineValueUnion param : params.getValues()) {
                 row.append(param.type().toString());
                 row.append("  ");
                 row.append(param.toString());
@@ -423,13 +425,13 @@ public class Function extends Model
         // PROPERTIES
         // ------------------------------------------------------------------------------------------
 
-        private List<ProgramValueUnion> values;
+        private List<EngineValueUnion> values;
 
 
         // CONSTRUCTORS
         // ------------------------------------------------------------------------------------------
 
-        public Parameters(List<ProgramValueUnion> parameterValues)
+        public Parameters(List<EngineValueUnion> parameterValues)
         {
             values = parameterValues;
         }
@@ -441,7 +443,7 @@ public class Function extends Model
         // > Values
         // ------------------------------------------------------------------------------------------
 
-        public List<ProgramValueUnion> getValues()
+        public List<EngineValueUnion> getValues()
         {
             return this.values;
         }
@@ -489,7 +491,7 @@ public class Function extends Model
         {
             HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(17, 37);
 
-            for (ProgramValueUnion value : this.values)
+            for (EngineValueUnion value : this.values)
             {
                 switch (value.type())
                 {

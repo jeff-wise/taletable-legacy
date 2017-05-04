@@ -9,6 +9,7 @@ import android.util.Log;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.engine.RulesEngine;
 import com.kispoko.tome.engine.mechanic.MechanicIndex;
+import com.kispoko.tome.engine.program.ProgramIndex;
 import com.kispoko.tome.engine.value.Dictionary;
 import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.exception.TemplateFileException;
@@ -257,6 +258,19 @@ public class SheetManager
             RulesEngine engine = currentSheet().engine();
             if (engine != null) {
                 return engine.mechanicIndex();
+            }
+        }
+
+        return null;
+    }
+
+
+    public static ProgramIndex programIndex()
+    {
+        if (currentSheet() != null) {
+            RulesEngine engine = currentSheet().engine();
+            if (engine != null) {
+                return engine.programIndex();
             }
         }
 

@@ -2,13 +2,13 @@
 package com.kispoko.tome.engine.function.builtin;
 
 
+import com.kispoko.tome.engine.EngineDataType;
+import com.kispoko.tome.engine.EngineValueUnion;
 import com.kispoko.tome.engine.function.builtin.error.InvalidParameterTypeError;
 import com.kispoko.tome.engine.function.builtin.error.WrongNumberOfParametersError;
 import com.kispoko.tome.engine.interpreter.InterpreterException;
 import com.kispoko.tome.engine.interpreter.error.UndefinedProgramVariableError;
 import com.kispoko.tome.engine.interpreter.error.UnexpectedProgramVariableTypeError;
-import com.kispoko.tome.engine.program.ProgramValueUnion;
-import com.kispoko.tome.engine.program.ProgramValueType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,8 +54,8 @@ public class BuiltInFunction
     }
 
 
-    public static ProgramValueUnion execute(String functionName, List<ProgramValueUnion> parameters,
-                                            Map<String,ProgramValueUnion> context)
+    public static EngineValueUnion execute(String functionName, List<EngineValueUnion> parameters,
+                                           Map<String,EngineValueUnion> context)
                                 throws BuiltInFunctionException,
             InterpreterException
     {
@@ -74,7 +74,7 @@ public class BuiltInFunction
     // INTERNAL
     // ------------------------------------------------------------------------------------------
 
-    private static ProgramValueUnion modifierString(List<ProgramValueUnion> parameters)
+    private static EngineValueUnion modifierString(List<EngineValueUnion> parameters)
                    throws BuiltInFunctionException
     {
         // Sanity check parameters and extract integer value
@@ -83,13 +83,13 @@ public class BuiltInFunction
                     new WrongNumberOfParametersError(parameters.size(), 1));
         }
 
-        ProgramValueUnion modifierFunctionValue = parameters.get(0);
+        EngineValueUnion modifierFunctionValue = parameters.get(0);
 
-        if (modifierFunctionValue.type() != ProgramValueType.INTEGER) {
+        if (modifierFunctionValue.type() != EngineDataType.INTEGER) {
             throw BuiltInFunctionException.invalidParameterType(
                     new InvalidParameterTypeError(1,
                                                   modifierFunctionValue.type(),
-                                                  ProgramValueType.INTEGER));
+                                                  EngineDataType.INTEGER));
         }
 
         int modifier = modifierFunctionValue.integerValue();
@@ -102,12 +102,12 @@ public class BuiltInFunction
         else
             modifierString = "+" + Integer.toString(modifier);
 
-        return ProgramValueUnion.asString(modifierString);
+        return EngineValueUnion.asString(modifierString);
     }
 
 
-    private static ProgramValueUnion stringTemplate(List<ProgramValueUnion> parameters,
-                                                    Map<String,ProgramValueUnion> context)
+    private static EngineValueUnion stringTemplate(List<EngineValueUnion> parameters,
+                                                   Map<String,EngineValueUnion> context)
                                  throws BuiltInFunctionException,
             InterpreterException
     {
@@ -120,13 +120,13 @@ public class BuiltInFunction
                     new WrongNumberOfParametersError(parameters.size(), 1));
         }
 
-        ProgramValueUnion templateFunctionValue = parameters.get(0);
+        EngineValueUnion templateFunctionValue = parameters.get(0);
 
-        if (templateFunctionValue.type() != ProgramValueType.STRING) {
+        if (templateFunctionValue.type() != EngineDataType.STRING) {
             throw BuiltInFunctionException.invalidParameterType(
                     new InvalidParameterTypeError(1,
                                                   templateFunctionValue.type(),
-                                                  ProgramValueType.STRING));
+                                                  EngineDataType.STRING));
         }
 
 
@@ -152,12 +152,12 @@ public class BuiltInFunction
             String variableValue;
             if (context.containsKey(templateVariableName))
             {
-                ProgramValueUnion variableFunctionValue = context.get(templateVariableName);
-                if (variableFunctionValue.type() != ProgramValueType.STRING) {
+                EngineValueUnion variableFunctionValue = context.get(templateVariableName);
+                if (variableFunctionValue.type() != EngineDataType.STRING) {
                     throw InterpreterException.unexpectedProgramVariableType(
                             new UnexpectedProgramVariableTypeError(templateVariableName,
                                                                    variableFunctionValue.type(),
-                                                                   ProgramValueType.STRING));
+                                                                   EngineDataType.STRING));
                 }
                 else {
                     variableValue = variableFunctionValue.stringValue();
@@ -175,7 +175,7 @@ public class BuiltInFunction
             templateString = variableMatcher.replaceFirst(variableValue);
         }
 
-        return ProgramValueUnion.asString(templateString);
+        return EngineValueUnion.asString(templateString);
     }
 
 

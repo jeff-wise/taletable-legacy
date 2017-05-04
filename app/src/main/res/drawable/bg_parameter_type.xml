@@ -13,13 +13,6 @@
         <!--android:color="@color/dark_blue_hl_7">-->
     <!--</stroke>-->
 
-    <padding
-        android:left="14dp"
-        android:top="9dp"
-        android:right="14dp"
-        android:bottom="9dp">
-    </padding>
-
     <corners
         android:radius="2dp" >
     </corners>

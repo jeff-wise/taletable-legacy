@@ -5,10 +5,10 @@ package com.kispoko.tome.engine.variable;
 import android.util.Log;
 
 import com.kispoko.tome.ApplicationFailure;
+import com.kispoko.tome.engine.EngineValueUnion;
 import com.kispoko.tome.engine.interpreter.Interpreter;
 import com.kispoko.tome.engine.interpreter.InterpreterException;
 import com.kispoko.tome.engine.program.invocation.Invocation;
-import com.kispoko.tome.engine.program.ProgramValueUnion;
 import com.kispoko.tome.sheet.SheetManager;
 
 import java.io.Serializable;
@@ -64,7 +64,7 @@ public class ReactiveValue<A> implements Serializable
 
             try
             {
-                ProgramValueUnion result = interpreter.evaluate(this.invocation);
+                EngineValueUnion result = interpreter.evaluate(this.invocation);
 
                 switch (this.type)
                 {

@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.functionindex;
+package com.kispoko.tome.activity.engine.programindex;
 
 
 import android.content.Context;
@@ -12,24 +12,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.FunctionActivity;
-import com.kispoko.tome.engine.function.Function;
+import com.kispoko.tome.activity.engine.program.ProgramEditorActivity;
+import com.kispoko.tome.engine.program.Program;
 
 import java.util.List;
 
 
 
 /**
- * Function List RecyclerView Adapter
+ * Program List Recycler View Adpater
  */
-public class FunctionListRecyclerViewAdapter
-       extends RecyclerView.Adapter<FunctionListRecyclerViewAdapter.ViewHolder>
+public class ProgramListRecyclerViewAdapter
+       extends RecyclerView.Adapter<ProgramListRecyclerViewAdapter.ViewHolder>
 {
 
     // PROPERTIES
     // -------------------------------------------------------------------------------------------
 
-    private List<Function>  functionList;
+    private List<Program>   programList;
 
     private Context         context;
 
@@ -37,9 +37,9 @@ public class FunctionListRecyclerViewAdapter
     // CONSTRUCTORS
     // -------------------------------------------------------------------------------------------
 
-    public FunctionListRecyclerViewAdapter(List<Function> functionList, Context context)
+    public ProgramListRecyclerViewAdapter(List<Program> programList, Context context)
     {
-        this.functionList   = functionList;
+        this.programList    = programList;
         this.context        = context;
     }
 
@@ -47,40 +47,40 @@ public class FunctionListRecyclerViewAdapter
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = FunctionListItemView.view(parent.getContext());
+        View itemView = ProgramListItemView.view(parent.getContext());
         return new ViewHolder(itemView);
     }
 
 
     @Override
-    public void onBindViewHolder(FunctionListRecyclerViewAdapter.ViewHolder viewHolder,
+    public void onBindViewHolder(ProgramListRecyclerViewAdapter.ViewHolder viewHolder,
                                  int position)
     {
-        Function function = this.functionList.get(position);
+        Program program = this.programList.get(position);
 
-        // > Header
-        viewHolder.setHeaderText(function.label());
+        // > Label
+        viewHolder.setHeaderText(program.label());
 
         // > Description
-        viewHolder.setDescriptionText(function.description());
+        viewHolder.setDescriptionText(program.description());
 
         // > Parameter Types
-        int arity = function.arity();
+        int arity = program.arity();
 
         if (arity >= 1)
-            viewHolder.setParameterType1(function.parameterTypes().get(0).toString().toUpperCase());
+            viewHolder.setParameterType1(program.parameterTypes().get(0).toString().toUpperCase());
 
         if (arity >= 2)
-            viewHolder.setParameterType2(function.parameterTypes().get(1).toString().toUpperCase());
+            viewHolder.setParameterType2(program.parameterTypes().get(1).toString().toUpperCase());
 
         if (arity >= 3)
-            viewHolder.setParameterType3(function.parameterTypes().get(2).toString().toUpperCase());
+            viewHolder.setParameterType3(program.parameterTypes().get(2).toString().toUpperCase());
 
         // > Result Type
-        viewHolder.setResultType(function.resultType().toString().toUpperCase());
+        viewHolder.setResultType(program.resultType().toString().toUpperCase());
 
         // > On Click Listener
-        viewHolder.setOnClick(function.name(), this.context);
+        viewHolder.setOnClick(program.name(), this.context);
     }
 
 
@@ -88,7 +88,7 @@ public class FunctionListRecyclerViewAdapter
     @Override
     public int getItemCount()
     {
-        return this.functionList.size();
+        return this.programList.size();
     }
 
 
@@ -98,37 +98,37 @@ public class FunctionListRecyclerViewAdapter
     public class ViewHolder extends RecyclerView.ViewHolder
     {
 
-        private LinearLayout layoutView;
-        private TextView     headerView;
-        private TextView     descriptionView;
+        private LinearLayout    layoutView;
+        private TextView        headerView;
+        private TextView        descriptionView;
 
-        private TextView     parameterType1View;
-        private TextView     parameterType2View;
-        private TextView     parameterType3View;
+        private TextView        parameterType1View;
+        private TextView        parameterType2View;
+        private TextView        parameterType3View;
 
-        private TextView     resultTypeView;
+        private TextView        resultTypeView;
 
 
         public ViewHolder(final View itemView)
         {
             super(itemView);
 
-            this.layoutView  = (LinearLayout) itemView.findViewById(R.id.function_list_item_layout);
-            this.headerView     = (TextView) itemView.findViewById(R.id.function_list_item_header);
+            this.layoutView  = (LinearLayout) itemView.findViewById(R.id.program_list_item_layout);
+            this.headerView     = (TextView) itemView.findViewById(R.id.program_list_item_header);
             this.descriptionView =
-                    (TextView) itemView.findViewById(R.id.function_list_item_description);
+                    (TextView) itemView.findViewById(R.id.program_list_item_description);
 
             this.parameterType1View =
-                    (TextView) itemView.findViewById(R.id.function_list_item_parameter_type_1);
+                    (TextView) itemView.findViewById(R.id.program_list_item_parameter_type_1);
 
             this.parameterType2View =
-                    (TextView) itemView.findViewById(R.id.function_list_item_parameter_type_2);
+                    (TextView) itemView.findViewById(R.id.program_list_item_parameter_type_2);
 
             this.parameterType3View =
-                    (TextView) itemView.findViewById(R.id.function_list_item_parameter_type_3);
+                    (TextView) itemView.findViewById(R.id.program_list_item_parameter_type_3);
 
             this.resultTypeView =
-                    (TextView) itemView.findViewById(R.id.function_list_item_result_type);
+                    (TextView) itemView.findViewById(R.id.program_list_item_result_type);
         }
 
 
@@ -170,17 +170,17 @@ public class FunctionListRecyclerViewAdapter
         }
 
 
-        public void setOnClick(final String functionName, final Context context)
+        public void setOnClick(final String programName, final Context context)
         {
             this.layoutView.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View view)
                 {
-                    Intent intent = new Intent(context, FunctionActivity.class);
+                    Intent intent = new Intent(context, ProgramEditorActivity.class);
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("function_name", functionName);
+                    bundle.putString("program_name", programName);
                     intent.putExtras(bundle);
 
                     context.startActivity(intent);
@@ -189,7 +189,5 @@ public class FunctionListRecyclerViewAdapter
         }
 
     }
-
-
 
 }

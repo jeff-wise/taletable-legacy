@@ -14,7 +14,7 @@ import com.kispoko.tome.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.program.invocation.Invocation;
 import com.kispoko.tome.engine.program.ProgramIndex;
 import com.kispoko.tome.engine.program.invocation.InvocationParameterUnion;
-import com.kispoko.tome.engine.program.ProgramValueUnion;
+import com.kispoko.tome.engine.EngineValueUnion;
 import com.kispoko.tome.engine.program.statement.Parameter;
 import com.kispoko.tome.engine.summation.Summation;
 import com.kispoko.tome.engine.summation.term.BooleanTermValue;
@@ -229,7 +229,7 @@ public class DatabaseManager extends SQLiteOpenHelper
             modelClasses.add(Parameter.class);
             modelClasses.add(Invocation.class);
             modelClasses.add(InvocationParameterUnion.class);
-            modelClasses.add(ProgramValueUnion.class);
+            modelClasses.add(EngineValueUnion.class);
 
             // ** Function
             modelClasses.add(Function.class);

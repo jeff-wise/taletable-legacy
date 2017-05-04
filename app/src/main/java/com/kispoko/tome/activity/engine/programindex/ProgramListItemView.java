@@ -1,4 +1,4 @@
-package com.kispoko.tome.activity.programindex;
+package com.kispoko.tome.activity.engine.programindex;
 
 
 import android.content.Context;
@@ -44,15 +44,17 @@ public class ProgramListItemView
     {
         LinearLayoutBuilder layout = new LinearLayoutBuilder();
 
-        layout.id                       = R.id.program_list_item_layout;
-        layout.orientation              = LinearLayout.VERTICAL;
-        layout.width                    = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height                   = LinearLayout.LayoutParams.WRAP_CONTENT;
+        layout.id               = R.id.program_list_item_layout;
 
-        layout.padding.left             = R.dimen.function_list_item_padding_horz;
-        layout.padding.right            = R.dimen.function_list_item_padding_horz;
-        layout.padding.top              = R.dimen.function_list_item_padding_vert;
-        layout.padding.bottom           = R.dimen.function_list_item_padding_vert;
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        layout.orientation      = LinearLayout.VERTICAL;
+
+        layout.padding.leftDp   = 12f;
+        layout.padding.rightDp  = 12f;
+        layout.padding.topDp    = 18f;
+        layout.padding.bottomDp = 18f;
 
         return layout.linearLayout(context);
     }
@@ -63,14 +65,15 @@ public class ProgramListItemView
         TextViewBuilder header = new TextViewBuilder();
 
         header.id                   = R.id.program_list_item_header;
+
         header.width                = LinearLayout.LayoutParams.MATCH_PARENT;
         header.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        header.font                 = Font.sansSerifFontBold(context);
+        header.font                 = Font.serifFontRegular(context);
         header.color                = R.color.gold_light;
-        header.size                 = R.dimen.program_list_item_header_text_size;
+        header.sizeSp               = 15f;
 
-        header.margin.bottom        = R.dimen.program_list_item_header_margin_bottom;
+        header.margin.bottomDp      = 10f;
 
         return header.textView(context);
     }
@@ -81,14 +84,15 @@ public class ProgramListItemView
         TextViewBuilder description = new TextViewBuilder();
 
         description.id                  = R.id.program_list_item_description;
+
         description.width               = LinearLayout.LayoutParams.MATCH_PARENT;
         description.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        description.font                = Font.sansSerifFontRegular(context);
-        description.color               = R.color.dark_blue_hl_8;
-        description.size                = R.dimen.program_list_item_description_text_size;
+        description.font                = Font.serifFontRegular(context);
+        description.color               = R.color.dark_theme_primary_50;
+        description.sizeSp              = 13f;
 
-        description.margin.bottom       = R.dimen.program_list_item_description_margin_bottom;
+        description.margin.bottomDp     = 11f;
 
         return description.textView(context);
     }
@@ -135,7 +139,7 @@ public class ProgramListItemView
 
         arrow.image             = R.drawable.ic_type_arrow;
 
-        arrow.margin.right      = R.dimen.program_list_item_type_margin_right;
+        arrow.margin.rightDp    = 6f;
 
         return arrow.imageView(context);
     }
@@ -148,14 +152,21 @@ public class ProgramListItemView
         type.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
         type.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        type.color              = R.color.dark_blue_hl_8;
-        type.font               = Font.sansSerifFontRegular(context);
-        type.size               = R.dimen.program_list_item_type_text_size;
+        type.color              = R.color.dark_theme_primary_30;
+        type.font               = Font.serifFontRegular(context);
+        type.sizeSp             = 11f;
 
         type.backgroundResource = R.drawable.bg_parameter_type;
+        type.backgroundColor    = R.color.dark_theme_primary_80;
+
         type.visibility         = View.GONE;
 
-        type.margin.right       = R.dimen.program_list_item_type_margin_right;
+        type.margin.rightDp     = 6f;
+
+        type.padding.topDp      = 6f;
+        type.padding.bottomDp   = 6f;
+        type.padding.leftDp     = 9f;
+        type.padding.rightDp    = 9f;
 
         // > Set the id
         switch (parameterIndex)
@@ -180,18 +191,24 @@ public class ProgramListItemView
         TextViewBuilder type = new TextViewBuilder();
 
         type.id                 = R.id.program_list_item_result_type;
+
         type.width              = LinearLayout.LayoutParams.WRAP_CONTENT;
         type.height             = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        type.color              = R.color.dark_blue_hl_8;
-        type.font               = Font.sansSerifFontRegular(context);
-        type.size               = R.dimen.program_list_item_type_text_size;
+        type.color              = R.color.dark_theme_primary_30;
+        type.font               = Font.serifFontRegular(context);
+        type.sizeSp             = 11.5f;
 
         type.backgroundResource = R.drawable.bg_result_type;
+        type.backgroundColor    = R.color.dark_theme_primary_80;
+
+        type.padding.topDp      = 6f;
+        type.padding.bottomDp   = 6f;
+        type.padding.leftDp     = 9f;
+        type.padding.rightDp    = 9f;
 
         return type.textView(context);
     }
-
 
 
 }

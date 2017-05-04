@@ -2,8 +2,7 @@
 package com.kispoko.tome.engine.function.builtin.error;
 
 
-import com.kispoko.tome.engine.program.ProgramValueType;
-
+import com.kispoko.tome.engine.EngineDataType;
 
 
 /**
@@ -16,16 +15,16 @@ public class InvalidParameterTypeError
     // --------------------------------------------------------------------------------------
 
     private int              parameterIndex;
-    private ProgramValueType actualParameterType;
-    private ProgramValueType expectedParameterType;
+    private EngineDataType actualParameterType;
+    private EngineDataType expectedParameterType;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
     public InvalidParameterTypeError(int parameterIndex,
-                                     ProgramValueType actualParameterType,
-                                     ProgramValueType expectedParameterType)
+                                     EngineDataType actualParameterType,
+                                     EngineDataType expectedParameterType)
     {
         this.parameterIndex        = parameterIndex;
         this.actualParameterType   = actualParameterType;

@@ -2,8 +2,7 @@
 package com.kispoko.tome.engine.interpreter.error;
 
 
-import com.kispoko.tome.engine.program.ProgramValueType;
-
+import com.kispoko.tome.engine.EngineDataType;
 
 
 /**
@@ -16,16 +15,16 @@ public class UnexpectedProgramVariableTypeError
     // --------------------------------------------------------------------------------------
 
     private String           variableName;
-    private ProgramValueType actualVariableType;
-    private ProgramValueType expectedVariableType;
+    private EngineDataType actualVariableType;
+    private EngineDataType expectedVariableType;
 
 
     // CONSTRUCTORS
     // --------------------------------------------------------------------------------------
 
     public UnexpectedProgramVariableTypeError(String variableName,
-                                              ProgramValueType actualVariableType,
-                                              ProgramValueType expectedVariableType)
+                                              EngineDataType actualVariableType,
+                                              EngineDataType expectedVariableType)
     {
         this.variableName         = variableName;
         this.actualVariableType   = actualVariableType;

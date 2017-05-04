@@ -109,7 +109,7 @@ public class ManageSheetsActivity extends AppCompatActivity
 //        addValueSetButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(FunctionIndexActivity.this, FunctionActivity.class);
+//                Intent intent = new Intent(FunctionIndexActivity.this, FunctionEditorActivity.class);
 //                startActivity(intent);
 //            }
 //        });

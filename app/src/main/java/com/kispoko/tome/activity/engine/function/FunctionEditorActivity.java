@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity.engine.variable;
+package com.kispoko.tome.activity.engine.function;
 
 
 import android.content.Context;
@@ -13,12 +13,13 @@ import android.widget.ScrollView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.summation.term.DiceRollTerm;
+import com.kispoko.tome.engine.function.Function;
+import com.kispoko.tome.engine.function.FunctionIndex;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
@@ -29,24 +30,25 @@ import java.util.Map;
 
 
 /**
- * Dice Roll Term Activity
+ * Function Activity
  */
-public class DiceRollTermActivity extends AppCompatActivity
+public class FunctionEditorActivity extends AppCompatActivity
 {
 
-    // PROPERTEIS
+    // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private DiceRollTerm        diceRollTerm;
+    private Function            function;
 
-    // > Form
+
+    // > Functors
     // -----------------------------------------------------------------------------------------
 
     private Map<String,Field>   fieldByName;
 
 
     // ACTIVITY LIFECYCLE EVENTS
-    // ------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -54,20 +56,24 @@ public class DiceRollTermActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // [1] Set activity view
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
         setContentView(R.layout.activity_form_basic);
 
         // [2] Read parameters
-        // --------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------
 
-        this.diceRollTerm = null;
-        if (getIntent().hasExtra("dice_roll_term")) {
-            this.diceRollTerm = (DiceRollTerm) getIntent().getSerializableExtra("dice_roll_term");
+        String functionName = null;
+        if (getIntent().hasExtra("function_name")) {
+            functionName = getIntent().getStringExtra("function_name");
         }
 
-        // [3] Initialize UI components
-        // -------------------------------------------------------------------------------------
+        // > Lookup Function
+        FunctionIndex functionIndex = SheetManager.currentSheet().engine().functionIndex();
+        this.function = functionIndex.functionWithName(functionName);
+
+        // [3] Initialize UI
+        // --------------------------------------------------------------------------------------
 
         this.initializeToolbar();
         this.initializeData();
@@ -91,21 +97,18 @@ public class DiceRollTermActivity extends AppCompatActivity
     }
 
 
-    // UI
-    // -----------------------------------------------------------------------------------------
+    // INTERNAL
+    // ------------------------------------------------------------------------------------------
 
     /**
      * Initialize the toolbar.
      */
     private void initializeToolbar()
     {
-        UI.initializeToolbar(this, getString(R.string.dice_roll_term_editor));
+        UI.initializeToolbar(this, getString(R.string.function_editor));
     }
 
 
-    /**
-     * Initialize the template list view.
-     */
     private void initializeView()
     {
         ScrollView scrollView = (ScrollView) findViewById(R.id.content);
@@ -123,15 +126,14 @@ public class DiceRollTermActivity extends AppCompatActivity
         // [2] Get & Index Fields
         // -------------------------------------------------------------------------------------
 
-        if (this.diceRollTerm == null || this.diceRollTerm.termValue() == null)
+        if (this.function == null)
             return;
 
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
         try {
-            fields.addAll(Model.fields(this.diceRollTerm, this));
-            fields.addAll(Model.fields(this.diceRollTerm.termValue(), this));
+            fields.addAll(Model.fields(this.function, this));
         }
         catch (FunctorException exception) {
             ApplicationFailure.functor(exception);
@@ -149,7 +151,7 @@ public class DiceRollTermActivity extends AppCompatActivity
 
     private LinearLayout view(Context context)
     {
-        LinearLayout layout = this.viewLayout(context);
+        LinearLayout layout = Form.layout(context);
 
         // > Toolbar
         layout.addView(Form.toolbarView(context));
@@ -161,20 +163,6 @@ public class DiceRollTermActivity extends AppCompatActivity
     }
 
 
-    private LinearLayout viewLayout(Context context)
-    {
-        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        layout.backgroundColor      = R.color.dark_theme_primary_84;
-
-        return layout.linearLayout(context);
-    }
-
-
     private LinearLayout formView(Context context)
     {
         LinearLayout layout = Form.layout(context);
@@ -182,46 +170,50 @@ public class DiceRollTermActivity extends AppCompatActivity
         // > Form Structure
         // -------------------------------------------------------------------------------------
 
-        layout.addView(Form.headerView("Properties", context));
+        layout.addView(Form.headerView("General Properties", context));
 
-        this.addFieldView("value_name", layout);
+        this.addFieldView("name", layout);
         layout.addView(Form.dividerView(context));
-        this.addFieldView("type", layout);
+        this.addFieldView("label", layout);
+        layout.addView(Form.dividerView(context));
+        this.addFieldView("description", layout);
+
+        layout.addView(Form.headerView("Definition Properties", context));
+
+        this.addFieldView("parameter_types", layout);
+        layout.addView(Form.dividerView(context));
+        this.addFieldView("result_type", layout);
+        layout.addView(Form.dividerView(context));
+        this.addFieldView("tuples", layout);
+
 
         // > Click Events
         // -------------------------------------------------------------------------------------
 
-        this.setValueListeners();
+        this.setTuplesOnClickListener();
 
 
         return layout;
     }
 
 
-    private void setValueListeners()
+    private void setTuplesOnClickListener()
     {
-        Field typeField = this.fieldByName.get("type");
+        Field field = this.fieldByName.get("tuples");
 
-        if (typeField == null)
+        if (field == null)
             return;
 
         // > Variable Reference
-        typeField.setCaseOnClickListener("variable", new View.OnClickListener()
+        field.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(DiceRollTermActivity.this,
-                                           VariableReferenceActivity.class);
-
-                if (diceRollTerm != null &&
-                    diceRollTerm.termValue() != null &&
-                    diceRollTerm.termValue().variableReference() != null)
-                {
-                    intent.putExtra("variable_reference",
-                                    diceRollTerm.termValue().variableReference());
-                }
-
+                Intent intent = new Intent(FunctionEditorActivity.this,
+                                           TuplesEditorActivity.class);
+                if (function != null)
+                    intent.putExtra("function_name", function.name());
                 startActivity(intent);
             }
         });
