@@ -46,7 +46,7 @@ public class FormattedString
 
         // This string builder mimics the span builder content because SpannableStringBuilder does
         // not have indexOf method
-        StringBuilder          currentText = new StringBuilder(text);
+        StringBuilder          currentText = new StringBuilder(text.toLowerCase());
 
         for (Span span : spans)
         {
@@ -78,7 +78,7 @@ public class FormattedString
             //     Find it and then format it.
             // ---------------------------------------------------------------------------------
 
-            int spanTextIndex  = currentText.indexOf(span.text());
+            int spanTextIndex  = currentText.indexOf(span.text().toLowerCase());
             int spanTextLength = span.text().length();
 
             if (spanTextIndex >= 0)
@@ -184,6 +184,30 @@ public class FormattedString
 
         // CONSTRUCTORS
         // -----------------------------------------------------------------------------------------
+
+        public Span(String text, Integer color)
+        {
+            this.placeholder    = null;
+
+            this.text           = text;
+
+            this.textColor      = color;
+            this.textSize       = null;
+            this.textFont       = null;
+        }
+
+
+        public Span(String text, Integer color, TextFont textFont)
+        {
+            this.placeholder    = null;
+
+            this.text           = text;
+
+            this.textColor      = color;
+            this.textSize       = null;
+            this.textFont       = textFont;
+        }
+
 
         public Span(String text, Integer color, Float size)
         {

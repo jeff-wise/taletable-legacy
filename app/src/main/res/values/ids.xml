@@ -185,6 +185,12 @@
     <item name="search_result_variables_layout" type="id"/>
 
 
+    <!-- ACTIVITY: OFFICIAL TEMPLATES -->
+    <item name="official_templates_summary_layout" type="id"/>
+    <item name="official_templates_summary_name" type="id"/>
+    <item name="official_templates_summary_description" type="id"/>
+
+
     <!-- FIELD -->
     <item name="field_value" type="id"/>
 

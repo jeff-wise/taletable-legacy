@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.activity;
+package com.kispoko.tome.activity.official;
 
 
 import android.content.Context;
@@ -13,26 +13,19 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.engine.dictionary.ValueSetRowView;
-import com.kispoko.tome.activity.engine.dictionary.ValueSetsRecyclerViewAdapter;
-import com.kispoko.tome.activity.engine.valueset.BaseValueSetEditorActivity;
-import com.kispoko.tome.engine.value.ValueSet;
-import com.kispoko.tome.engine.value.ValueSetUnion;
+import com.kispoko.tome.activity.official.template.OfficialTemplatesActivity;
 import com.kispoko.tome.game.Game;
 import com.kispoko.tome.game.GameIndex;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.lib.yaml.YamlParseException;
 
-import java.util.List;
 
 
 /**
@@ -42,13 +35,13 @@ public class OfficialGamesActivity extends AppCompatActivity
 {
 
     // PROPERTIES
-    // -------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     private GameIndex gameIndex;
 
 
     // ACTIVITY LIFECYCLE
-    // -------------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -254,8 +247,9 @@ public class OfficialGamesActivity extends AppCompatActivity
                 @Override
                 public void onClick(View view)
                 {
-                    Intent intent = new Intent(OfficialGamesActivity.this, TemplatesActivity.class);
-                    intent.putExtra("game_name", gameName);
+                    Intent intent = new Intent(OfficialGamesActivity.this,
+                                               OfficialTemplatesActivity.class);
+                    intent.putExtra("game", com.kispoko.tome.official.template.Game.SRD_5);
                     startActivity(intent);
                 }
             });

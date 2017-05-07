@@ -44,12 +44,17 @@
         android:label="Engine" />
 
     <activity
-        android:name=".activity.TemplatesActivity"
+        android:name=".activity.official.template.OfficialTemplatesActivity"
         android:theme="@style/AppTheme.NoActionBar"
-        android:label="Choose Template" />
+        android:label="Templates" />
 
     <activity
-        android:name=".activity.OfficialGamesActivity"
+        android:name=".activity.official.template.OfficialTemplateActivity"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="Template" />
+
+    <activity
+        android:name=".activity.official.OfficialGamesActivity"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="Choose Template" />
 

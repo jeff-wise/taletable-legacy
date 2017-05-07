@@ -381,7 +381,7 @@ public class ActiveSearchResultsRecyclerViewAdapter
     private SpannableStringBuilder searchHighlightSpan(String text)
     {
         int hlColor = ContextCompat.getColor(this.context, HL_COLOR_RES_ID);
-        FormattedString.Span span = new FormattedString.Span(this.query, hlColor, null);
+        FormattedString.Span span = new FormattedString.Span(this.query, hlColor);
         return FormattedString.spannableStringBuilder(text, span);
     }
 }

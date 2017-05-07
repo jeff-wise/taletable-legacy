@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.activity.official.OfficialGamesActivity;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;

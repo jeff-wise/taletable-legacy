@@ -91,7 +91,7 @@ public class SheetActivity
     private PagePagerAdapter    pagePagerAdapter;
 
 
-    public static ViewPager viewPager;
+    public static ViewPager     viewPager;
 
 
     // ACTIVITY EVENTS
@@ -261,17 +261,7 @@ public class SheetActivity
     private void initializeToolbar()
     {
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         UI.initializeToolbar(this, null);
-
-//        setSupportActionBar(toolbar);
-//        ActionBar actionBar = getSupportActionBar();
-//        //actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.setDisplayShowTitleEnabled(false);
-//        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
-//
-//        TextView titleView = (TextView) this.toolbar.findViewById(R.id.page_title);
-//        titleView.setTypeface(Font.serifFontRegular(this));
     }
 
 
@@ -392,8 +382,8 @@ public class SheetActivity
     {
         // If previous activity was template chooser, get id of chosen template
         String templateId = null;
-        if (getIntent().hasExtra("TEMPLATE_ID"))
-            templateId = getIntent().getStringExtra("TEMPLATE_ID");
+        if (getIntent().hasExtra("official_template_id"))
+            templateId = getIntent().getStringExtra("official_template_id");
 
         CampaignIndex.initialize(this.getApplicationContext());
 

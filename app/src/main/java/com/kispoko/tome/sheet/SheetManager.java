@@ -102,6 +102,8 @@ public class SheetManager
     {
         final String templateFileName = "template/" + templateId + ".yaml";
 
+        Log.d("***SHEETMANAGER", "template file name " + templateFileName);
+
         new AsyncTask<Void,Void,Object>()
         {
 
