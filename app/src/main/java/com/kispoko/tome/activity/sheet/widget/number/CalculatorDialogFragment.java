@@ -22,8 +22,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.dialog.DialogOptionButton;
-import com.kispoko.tome.engine.variable.NullVariableException;
-import com.kispoko.tome.engine.variable.NumberVariable;
+import com.kispoko.tome.model.engine.variable.NullVariableException;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
 import com.kispoko.tome.lib.ui.Font;

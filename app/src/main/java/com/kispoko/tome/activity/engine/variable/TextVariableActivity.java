@@ -11,10 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.value.TextValue;
-import com.kispoko.tome.engine.value.ValueReference;
-import com.kispoko.tome.engine.variable.TextVariable;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.model.engine.value.TextValue;
+import com.kispoko.tome.model.engine.variable.TextVariable;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
@@ -154,7 +153,7 @@ public class TextVariableActivity extends AppCompatActivity
         String valueString = "";
         ValueReference valueReference = this.variable.valueReference();
         if (valueReference != null) {
-            TextValue textValue = SheetManager.currentSheet().engine().dictionary()
+            TextValue textValue = SheetManagerOld.currentSheet().engine().dictionary()
                                               .textValue(valueReference);
             valueString = textValue.value();
         }

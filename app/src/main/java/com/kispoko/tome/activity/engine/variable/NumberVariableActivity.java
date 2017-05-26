@@ -14,7 +14,6 @@ import android.widget.ScrollView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.SummationActivity;
-import com.kispoko.tome.engine.variable.NumberVariable;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;

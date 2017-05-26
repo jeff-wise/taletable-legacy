@@ -7,17 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.Summary;
+import com.kispoko.tome.model.sheet.Summary;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.TimeZone;
-
-import static android.R.attr.name;
 
 
 /**

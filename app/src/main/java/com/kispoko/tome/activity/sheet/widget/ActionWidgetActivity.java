@@ -10,21 +10,19 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.activity.engine.variable.NumberVariableActivity;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-import com.kispoko.tome.lib.ui.ScrollViewBuilder;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.ActionWidget;
-import com.kispoko.tome.sheet.widget.WidgetType;
-import com.kispoko.tome.sheet.widget.WidgetUnion;
+import com.kispoko.tome.model.sheet.widget.ActionWidget;
+import com.kispoko.tome.model.sheet.widget.WidgetType;
+import com.kispoko.tome.model.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
@@ -75,7 +73,7 @@ public class ActionWidgetActivity extends AppCompatActivity
 
         if (widgetId != null)
         {
-            WidgetUnion widgetUnion = SheetManager.currentSheet().widgetWithId(widgetId);
+            WidgetUnion widgetUnion = SheetManagerOld.currentSheet().widgetWithId(widgetId);
 
             if (widgetUnion != null && widgetUnion.type() == WidgetType.ACTION)
                 actionWidget = widgetUnion.actionWidget();

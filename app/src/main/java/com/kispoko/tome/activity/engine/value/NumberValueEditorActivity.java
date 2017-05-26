@@ -7,23 +7,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.engine.value.NumberValue;
-import com.kispoko.tome.engine.value.ValueReference;
-import com.kispoko.tome.lib.ui.ActivityCommon;
+import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.model.engine.value.Dictionary;
+import com.kispoko.tome.model.engine.value.NumberValue;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.UI;
 
 
@@ -55,7 +50,7 @@ public class NumberValueEditorActivity extends AppCompatActivity
                     (ValueReference) getIntent().getSerializableExtra("value_reference");
         }
 
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
 
         this.numberValue = null;
         if (this.valueReference != null)

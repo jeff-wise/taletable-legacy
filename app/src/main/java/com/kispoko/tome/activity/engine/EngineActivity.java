@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -22,16 +21,14 @@ import android.widget.RelativeLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.search.ActiveSearchResultsRecyclerViewAdapter;
-import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.model.engine.Engine;
 import com.kispoko.tome.engine.search.EngineActiveSearchResult;
 import com.kispoko.tome.lib.ui.SearchView;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
 import java.util.Set;
-
-import static com.kispoko.tome.activity.SheetActivity.viewPager;
 
 
 /**
@@ -165,7 +162,7 @@ public class EngineActivity extends AppCompatActivity
             @Override
             public void afterTextChanged(Editable editable)
             {
-                RulesEngine engine = SheetManager.currentSheet().engine();
+                Engine engine = SheetManagerOld.currentSheet().engine();
                 if (engine != null)
                 {
                     String query = searchFieldView.getText().toString();

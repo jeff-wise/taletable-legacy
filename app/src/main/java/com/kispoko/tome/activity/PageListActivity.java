@@ -5,22 +5,16 @@ package com.kispoko.tome.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.pagelist.PageListRecyclerViewAdpater;
-import com.kispoko.tome.sheet.Section;
-import com.kispoko.tome.sheet.SectionType;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.util.UI;
-
+import com.kispoko.tome.model.sheet.section.Section;
 
 
 /**
@@ -53,10 +47,10 @@ public class PageListActivity extends AppCompatActivity
         switch (sectionType)
         {
             case PROFILE:
-                this.section = SheetManager.currentSheet().profileSection();
+                //this.section = SheetManagerOld.currentSheet().profileSection();
                 break;
             case ENCOUNTER:
-                this.section = SheetManager.currentSheet().encounterSection();
+                // this.section = SheetManagerOld.currentSheet().encounterSection();
                 break;
             case CAMPAIGN:
                 break;
@@ -111,9 +105,9 @@ public class PageListActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.section.type().toString(this) + " Pages";
+    //    String title = this.section.type().toString(this) + " Pages";
 
-        UI.initializeToolbar(this, title);
+       // UI.initializeToolbar(this, title);
     }
 
 

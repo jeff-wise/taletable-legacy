@@ -9,8 +9,6 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.sheet.widget.NumberWidget;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 

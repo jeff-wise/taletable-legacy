@@ -15,10 +15,10 @@ import android.widget.TextView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.value.ValueListActivity;
-import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.engine.value.BaseValueSet;
-import com.kispoko.tome.engine.value.ValueSetType;
-import com.kispoko.tome.engine.value.ValueSetUnion;
+import com.kispoko.tome.model.engine.value.Dictionary;
+import com.kispoko.tome.model.engine.value.BaseValueSet;
+import com.kispoko.tome.model.engine.value.ValueSetType;
+import com.kispoko.tome.model.engine.value.ValueSetUnion;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
@@ -26,7 +26,7 @@ import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.UI;
 
 import org.greenrobot.eventbus.EventBus;
@@ -203,7 +203,7 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
         // [2] Lookup ValueSet
         // -------------------------------------------------------------------------------------
 
-        Dictionary dictionary = SheetManager.dictionary();
+        Dictionary dictionary = SheetManagerOld.dictionary();
         if (this.valueSetName != null && dictionary != null)
         {
             ValueSetUnion valueSetUnion = dictionary.lookup(this.valueSetName);

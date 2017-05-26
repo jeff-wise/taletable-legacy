@@ -11,10 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.engine.RulesEngine;
+import com.kispoko.tome.model.engine.Engine;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
-import com.kispoko.tome.sheet.Page;
-
 
 
 /**
@@ -27,7 +25,7 @@ public class PageFragment extends Fragment
     // ------------------------------------------------------------------------------------------
 
     private Page page;
-    private RulesEngine rulesEngine;
+    private Engine rulesEngine;
 
 
     // CONSTRUCTORS
@@ -45,7 +43,7 @@ public class PageFragment extends Fragment
      * @return A new instance of ProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PageFragment newInstance(Page page, RulesEngine rulesEngine)
+    public static PageFragment newInstance(Page page, Engine rulesEngine)
     {
         PageFragment fragment = new PageFragment();
         Bundle args = new Bundle();
@@ -65,7 +63,7 @@ public class PageFragment extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             page = (Page) getArguments().getSerializable("PAGE");
-            rulesEngine = (RulesEngine) getArguments().getSerializable("RULES");
+            rulesEngine = (Engine) getArguments().getSerializable("RULES");
         }
     }
 

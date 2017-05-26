@@ -21,16 +21,13 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.variable.NullVariableException;
-import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.model.engine.variable.NullVariableException;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.SwitchBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.widget.ListWidget;
-
 
 
 /**

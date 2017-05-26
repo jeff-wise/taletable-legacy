@@ -13,13 +13,13 @@ import android.widget.ScrollView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.program.Program;
-import com.kispoko.tome.engine.program.ProgramIndex;
+import com.kispoko.tome.model.engine.program.Program;
+import com.kispoko.tome.model.engine.program.ProgramIndex;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class ProgramEditorActivity extends AppCompatActivity
         }
 
         // > Lookup Program
-        ProgramIndex programIndex = SheetManager.currentSheet().engine().programIndex();
+        ProgramIndex programIndex = SheetManagerOld.currentSheet().engine().programIndex();
         this.program = programIndex.programWithName(programName);
 
         // [3] Initialize UI

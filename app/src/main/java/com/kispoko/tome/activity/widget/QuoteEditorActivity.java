@@ -4,9 +4,7 @@ package com.kispoko.tome.activity.widget;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -23,8 +21,6 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.widget.QuoteWidget;
-import com.kispoko.tome.sheet.widget.TextWidget;
 import com.kispoko.tome.util.UI;
 
 

@@ -15,7 +15,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
-import com.kispoko.tome.sheet.Spacing;
+import com.kispoko.tome.model.sheet.Spacing;
 
 import java.util.ArrayList;
 import java.util.List;

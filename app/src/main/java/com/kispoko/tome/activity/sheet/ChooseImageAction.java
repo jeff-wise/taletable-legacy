@@ -5,8 +5,6 @@ package com.kispoko.tome.activity.sheet;
 import android.net.Uri;
 
 import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.sheet.widget.ImageWidget;
-
 
 
 /**

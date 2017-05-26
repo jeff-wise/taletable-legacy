@@ -18,19 +18,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.SheetActivity;
-import com.kispoko.tome.activity.official.OfficialGamesActivity;
-import com.kispoko.tome.game.Game;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.FormattedString;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.official.template.SkillLevel;
 import com.kispoko.tome.official.template.Template;
-import com.kispoko.tome.official.template.TemplateIndex;
-import com.kispoko.tome.sheet.widget.util.TextFont;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 
 import java.io.Serializable;

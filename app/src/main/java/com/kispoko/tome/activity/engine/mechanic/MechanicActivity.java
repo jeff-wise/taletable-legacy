@@ -13,15 +13,15 @@ import android.widget.ScrollView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.activity.engine.variable.VariableListActivity;
-import com.kispoko.tome.engine.mechanic.Mechanic;
-import com.kispoko.tome.engine.mechanic.MechanicIndex;
+import com.kispoko.tome.model.engine.mechanic.Mechanic;
+import com.kispoko.tome.model.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-import com.kispoko.tome.sheet.SheetManager;
 import com.kispoko.tome.util.UI;
 
 import java.io.Serializable;
@@ -71,7 +71,7 @@ public class MechanicActivity extends AppCompatActivity
         }
 
         // > Lookup Mechanic
-        MechanicIndex mechanicIndex = SheetManager.mechanicIndex();
+        MechanicIndex mechanicIndex = SheetManagerOld.mechanicIndex();
         if (mechanicIndex != null && mechanicName != null)
             this.mechanic = mechanicIndex.mechanicWithName(mechanicName);
         else

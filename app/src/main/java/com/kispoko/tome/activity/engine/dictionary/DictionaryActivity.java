@@ -13,8 +13,8 @@ import android.view.View;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.valueset.BaseValueSetEditorActivity;
-import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.model.engine.value.Dictionary;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
@@ -44,7 +44,7 @@ public class DictionaryActivity extends AppCompatActivity
 
         initializeToolbar();
 
-        Dictionary dictionary = SheetManager.currentSheet().engine().dictionary();
+        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
 
         initializeView(dictionary);
     }

@@ -12,9 +12,9 @@ import android.view.Menu;
 import android.view.View;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.activity.engine.program.ProgramEditorActivity;
-import com.kispoko.tome.engine.program.ProgramIndex;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.model.engine.program.ProgramIndex;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
@@ -42,7 +42,7 @@ public class ProgramIndexActivity extends AppCompatActivity
         // [2] Get Program Index
         // -------------------------------------------------------------------------------------
 
-        ProgramIndex programIndex = SheetManager.currentSheet().engine().programIndex();
+        ProgramIndex programIndex = SheetManagerOld.currentSheet().engine().programIndex();
 
         // [3] Initialize UI
         // -------------------------------------------------------------------------------------

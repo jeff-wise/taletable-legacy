@@ -2,19 +2,15 @@
 package com.kispoko.tome.activity;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.SectionType;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.SectionCard;
@@ -114,14 +110,14 @@ public class SectionsActivity extends AppCompatActivity
                                  SectionCard.Color.GOLD,
                                  this);
 
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SectionsActivity.this, PageListActivity.class);
-                intent.putExtra("section_type", SectionType.PROFILE);
-                startActivity(intent);
-            }
-        });
+//        profileButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(SectionsActivity.this, PageListActivity.class);
+//                intent.putExtra("section_type", SectionType.PROFILE);
+//                startActivity(intent);
+//            }
+//        });
 
         // [1 B] Encounter Button
         // -------------------------------------------------------------------------------------

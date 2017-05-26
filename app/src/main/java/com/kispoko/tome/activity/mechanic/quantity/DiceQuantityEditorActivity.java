@@ -16,7 +16,6 @@ import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-import com.kispoko.tome.mechanic.dice.DiceQuantity;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;

@@ -20,7 +20,7 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.model.sheet.Sheet;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.query.CountQuery;

@@ -4,25 +4,22 @@ package com.kispoko.tome.engine.interpreter;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.EngineValueUnion;
+import com.kispoko.tome.model.engine.EngineValueUnion;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.function.builtin.BuiltInFunction;
-import com.kispoko.tome.engine.function.builtin.BuiltInFunctionException;
+import com.kispoko.tome.model.engine.function.builtin.BuiltInFunction;
+import com.kispoko.tome.model.engine.function.builtin.BuiltInFunctionException;
 import com.kispoko.tome.engine.interpreter.error.FunctionNotFoundError;
 import com.kispoko.tome.engine.interpreter.error.NullResultError;
 import com.kispoko.tome.engine.interpreter.error.NullVariableError;
 import com.kispoko.tome.engine.interpreter.error.UndefinedProgramError;
 import com.kispoko.tome.engine.interpreter.error.UndefinedProgramVariableError;
 import com.kispoko.tome.engine.interpreter.error.UndefinedVariableError;
-import com.kispoko.tome.engine.function.FunctionIndex;
-import com.kispoko.tome.engine.program.invocation.InvocationParameterUnion;
-import com.kispoko.tome.engine.program.Program;
-import com.kispoko.tome.engine.program.ProgramIndex;
-import com.kispoko.tome.engine.program.invocation.Invocation;
-import com.kispoko.tome.engine.program.statement.Parameter;
-import com.kispoko.tome.engine.program.statement.Statement;
-import com.kispoko.tome.engine.variable.NullVariableException;
-import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.model.engine.function.FunctionIndex;
+import com.kispoko.tome.model.engine.program.Program;
+import com.kispoko.tome.model.engine.program.ProgramIndex;
+import com.kispoko.tome.model.engine.program.statement.Parameter;
+import com.kispoko.tome.model.engine.program.statement.Statement;
+import com.kispoko.tome.model.engine.variable.NullVariableException;
 import com.kispoko.tome.util.tuple.Tuple2;
 
 import java.io.Serializable;

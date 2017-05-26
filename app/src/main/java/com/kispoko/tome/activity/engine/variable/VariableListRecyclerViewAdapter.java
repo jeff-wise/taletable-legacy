@@ -4,7 +4,6 @@ package com.kispoko.tome.activity.engine.variable;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.variable.DiceVariable;
-import com.kispoko.tome.engine.variable.NullVariableException;
-import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.model.engine.variable.NullVariableException;
 
 import java.util.List;
 

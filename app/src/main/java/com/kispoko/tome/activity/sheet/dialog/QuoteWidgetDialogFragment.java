@@ -26,7 +26,6 @@ import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.widget.QuoteWidget;
 
 import org.greenrobot.eventbus.EventBus;
 

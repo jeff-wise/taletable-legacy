@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.group.GroupRow;
+import com.kispoko.tome.model.sheet.group.GroupRow;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
 

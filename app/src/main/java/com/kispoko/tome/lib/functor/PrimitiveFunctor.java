@@ -6,32 +6,17 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import com.kispoko.tome.engine.EngineDataType;
-import com.kispoko.tome.engine.EngineType;
-import com.kispoko.tome.engine.program.invocation.InvocationParameterType;
-import com.kispoko.tome.engine.program.statement.ParameterType;
-import com.kispoko.tome.engine.summation.term.BooleanTermValue;
-import com.kispoko.tome.engine.summation.term.DiceRollTermValue;
-import com.kispoko.tome.engine.summation.term.TermType;
-import com.kispoko.tome.engine.value.ValueType;
-import com.kispoko.tome.engine.variable.BooleanVariable;
-import com.kispoko.tome.engine.variable.NumberVariable;
-import com.kispoko.tome.engine.variable.TextVariable;
-import com.kispoko.tome.engine.variable.VariableType;
+import com.kispoko.tome.model.engine.EngineDataType;
+import com.kispoko.tome.model.engine.EngineType;
+import com.kispoko.tome.model.engine.program.statement.ParameterType;
+import com.kispoko.tome.model.engine.value.ValueType;
+import com.kispoko.tome.model.engine.variable.BooleanVariable;
+import com.kispoko.tome.model.engine.variable.TextVariable;
 import com.kispoko.tome.lib.model.form.Field;
-import com.kispoko.tome.sheet.DividerType;
-import com.kispoko.tome.sheet.SectionType;
-import com.kispoko.tome.sheet.Alignment;
-import com.kispoko.tome.sheet.widget.WidgetType;
-import com.kispoko.tome.sheet.widget.table.cell.CellType;
-import com.kispoko.tome.sheet.widget.table.column.ColumnType;
-import com.kispoko.tome.sheet.BackgroundColor;
-import com.kispoko.tome.sheet.Corners;
-import com.kispoko.tome.sheet.widget.util.Height;
-import com.kispoko.tome.sheet.widget.util.Position;
-import com.kispoko.tome.sheet.widget.util.TextFont;
-import com.kispoko.tome.sheet.widget.util.TextSize;
-import com.kispoko.tome.sheet.widget.util.TextColor;
+import com.kispoko.tome.model.sheet.DividerType;
+import com.kispoko.tome.model.sheet.widget.WidgetType;
+import com.kispoko.tome.model.sheet.widget.table.cell.CellType;
+import com.kispoko.tome.model.sheet.BackgroundColor;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.lib.database.DatabaseException;
@@ -312,11 +297,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             TextFont textFont = TextFont.fromSQLValue(sqlValue);
             this.setValue((A) textFont);
         }
-        else if (this.valueClass.isAssignableFrom(SectionType.class))
-        {
-            SectionType sectionType = SectionType.fromSQLValue(sqlValue);
-            this.setValue((A) sectionType);
-        }
         else if (this.valueClass.isAssignableFrom(ColumnType.class))
         {
             ColumnType columnType = ColumnType.fromSQLValue(sqlValue);
@@ -424,16 +404,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             BooleanTermValue.Kind kind = BooleanTermValue.Kind.fromSQLValue(sqlValue);
             this.setValue((A) kind);
-        }
-        else if (this.valueClass.isAssignableFrom(DiceRollTermValue.Type.class))
-        {
-            DiceRollTermValue.Type type = DiceRollTermValue.Type.fromSQLValue(sqlValue);
-            this.setValue((A) type);
-        }
-        else if (this.valueClass.isAssignableFrom(TermType.class))
-        {
-            TermType termType = TermType.fromSQLValue(sqlValue);
-            this.setValue((A) termType);
         }
         else if (this.valueClass.isAssignableFrom(InvocationParameterType.class))
         {

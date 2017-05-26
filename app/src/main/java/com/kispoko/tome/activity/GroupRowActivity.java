@@ -6,15 +6,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.grouprow.GroupRowPagerAdapter;
-import com.kispoko.tome.sheet.group.GroupRow;
+import com.kispoko.tome.model.sheet.group.GroupRow;
 import com.kispoko.tome.util.UI;
 
 

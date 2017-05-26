@@ -9,8 +9,9 @@ import android.util.Log;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.error.TemplateFileReadError;
 import com.kispoko.tome.exception.TemplateFileException;
-import com.kispoko.tome.sheet.Sheet;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.model.campaign.Campaign;
+import com.kispoko.tome.model.sheet.Sheet;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.query.CountQuery;
 import com.kispoko.tome.lib.functor.CollectionFunctor;
@@ -235,7 +236,7 @@ public class CampaignIndex
             campaignByName.put(campaign.name(), campaign);
         }
 
-        SheetManager.campaignIndexReady();
+        SheetManagerOld.campaignIndexReady();
     }
 
 

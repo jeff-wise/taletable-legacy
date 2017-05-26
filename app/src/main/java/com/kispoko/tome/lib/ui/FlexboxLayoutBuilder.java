@@ -10,7 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.kispoko.tome.sheet.Spacing;
+import com.kispoko.tome.model.sheet.Spacing;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,8 +3,8 @@ package com.kispoko.tome.engine.search;
 
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.mechanic.ActiveMechanicSearchResult;
-import com.kispoko.tome.engine.variable.ActiveVariableSearchResult;
+import com.kispoko.tome.model.engine.mechanic.ActiveMechanicSearchResult;
+import com.kispoko.tome.engine.ActiveVariableSearchResult;
 import com.kispoko.tome.error.InvalidCaseError;
 import com.kispoko.tome.exception.UnionException;
 

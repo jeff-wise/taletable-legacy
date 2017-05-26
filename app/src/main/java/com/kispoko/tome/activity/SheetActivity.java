@@ -26,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.activity.engine.dictionary.DictionaryActivity;
 import com.kispoko.tome.activity.engine.EngineActivity;
 import com.kispoko.tome.activity.engine.functionindex.FunctionIndexActivity;
@@ -35,23 +36,20 @@ import com.kispoko.tome.activity.sheet.ChooseImageAction;
 import com.kispoko.tome.activity.sheet.page.PagePagerAdapter;
 import com.kispoko.tome.campaign.CampaignIndex;
 import com.kispoko.tome.engine.State;
-import com.kispoko.tome.engine.variable.NullVariableException;
-import com.kispoko.tome.engine.variable.TextVariable;
-import com.kispoko.tome.sheet.Page;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.TableWidget;
-import com.kispoko.tome.sheet.widget.TextWidget;
-import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.model.engine.variable.NullVariableException;
+import com.kispoko.tome.model.engine.variable.TextVariable;
+import com.kispoko.tome.model.sheet.widget.TextWidget;
+import com.kispoko.tome.model.sheet.Sheet;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.widget.WidgetType;
-import com.kispoko.tome.sheet.widget.WidgetUnion;
-import com.kispoko.tome.sheet.widget.table.cell.CellType;
-import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
-import com.kispoko.tome.sheet.widget.table.cell.TextCell;
+import com.kispoko.tome.model.sheet.widget.WidgetType;
+import com.kispoko.tome.model.sheet.widget.WidgetUnion;
+import com.kispoko.tome.model.sheet.widget.table.cell.CellType;
+import com.kispoko.tome.model.sheet.widget.table.cell.CellUnion;
+import com.kispoko.tome.model.sheet.widget.table.cell.TextCell;
 import com.kispoko.tome.util.UI;
 
 import org.greenrobot.eventbus.EventBus;
@@ -220,7 +218,7 @@ public class SheetActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTextWidgetUpdateLiteralEvent(TextWidget.UpdateLiteralEvent event)
     {
-        WidgetUnion widgetUnion = SheetManager.currentSheet().widgetWithId(event.widgetId());
+        WidgetUnion widgetUnion = SheetManagerOld.currentSheet().widgetWithId(event.widgetId());
 
         if (widgetUnion != null && widgetUnion.type() == WidgetType.TEXT)
         {
@@ -233,7 +231,7 @@ public class SheetActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTextCellUpdateLiteralEvent(TextCell.UpdateLiteralEvent event)
     {
-        WidgetUnion widgetUnion = SheetManager.currentSheet().widgetWithId(event.tableWidgetId());
+        WidgetUnion widgetUnion = SheetManagerOld.currentSheet().widgetWithId(event.tableWidgetId());
 
         if (widgetUnion != null && widgetUnion.type() == WidgetType.TABLE)
         {
@@ -334,13 +332,13 @@ public class SheetActivity
                 switch (item.getItemId())
                 {
                     case R.id.button_section_profile:
-                        SheetManager.currentSheet().profileSection().render(pagePagerAdapter);
+                        SheetManagerOld.currentSheet().profileSection().render(pagePagerAdapter);
                         break;
                     case R.id.button_section_encounter:
-                        SheetManager.currentSheet().encounterSection().render(pagePagerAdapter);
+                        SheetManagerOld.currentSheet().encounterSection().render(pagePagerAdapter);
                         break;
                     case R.id.button_section_campaign:
-                        SheetManager.currentSheet().campaignSection().render(pagePagerAdapter);
+                        SheetManagerOld.currentSheet().campaignSection().render(pagePagerAdapter);
                         break;
                 }
                 return true;
@@ -389,10 +387,10 @@ public class SheetActivity
 
         // > This will be a new character sheet
         if (templateId != null)
-            SheetManager.goToTemplate(this, templateId, this);
+            SheetManagerOld.goToTemplate(this, templateId, this);
         // > Load the most recently used character sheet
         else
-            SheetManager.goToMostRecent(this, this);
+            SheetManagerOld.goToMostRecent(this, this);
     }
 
 

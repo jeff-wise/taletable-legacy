@@ -14,7 +14,6 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.mechanic.dice.DiceQuantity;
 
 import java.util.List;
 

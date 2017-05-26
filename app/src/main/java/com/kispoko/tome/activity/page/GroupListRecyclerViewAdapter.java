@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.GroupActivity;
-import com.kispoko.tome.sheet.group.Group;
+import com.kispoko.tome.model.sheet.group.Group;
 
 import java.util.List;
 

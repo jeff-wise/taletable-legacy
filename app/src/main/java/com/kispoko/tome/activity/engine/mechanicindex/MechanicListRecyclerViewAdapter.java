@@ -9,19 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.activity.engine.mechanic.MechanicActivity;
-import com.kispoko.tome.activity.sheet.widget.dialog.ChooseValueDialogFragment;
-import com.kispoko.tome.engine.mechanic.Mechanic;
-import com.kispoko.tome.engine.mechanic.MechanicIndex;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.model.engine.mechanic.Mechanic;
+import com.kispoko.tome.model.engine.mechanic.MechanicIndex;
 
 import java.util.List;
-
-import static com.kispoko.tome.R.string.mechanic;
 
 
 /**
@@ -94,7 +90,7 @@ public class MechanicListRecyclerViewAdapter
             mechanicViewHolder.setSummary(mechanic.summary());
             mechanicViewHolder.setOnClick(mechanic.name(), this.context);
 
-            MechanicIndex mechanicIndex = SheetManager.mechanicIndex();
+            MechanicIndex mechanicIndex = SheetManagerOld.mechanicIndex();
             if (mechanicIndex != null)
             {
                 boolean isActive = mechanicIndex.mechanicIsActive(mechanic.name());

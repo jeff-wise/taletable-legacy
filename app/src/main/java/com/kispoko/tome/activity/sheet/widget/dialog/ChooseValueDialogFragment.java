@@ -25,9 +25,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.value.CompoundValueSet;
-import com.kispoko.tome.engine.value.ValueSetUnion;
-import com.kispoko.tome.engine.value.ValueUnion;
+import com.kispoko.tome.model.engine.value.CompoundValueSet;
+import com.kispoko.tome.model.engine.value.ValueSetUnion;
+import com.kispoko.tome.model.engine.value.ValueUnion;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;

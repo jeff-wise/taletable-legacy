@@ -19,8 +19,6 @@ import com.kispoko.tome.activity.TextColumnActivity;
 import com.kispoko.tome.activity.sheet.grouprow.WidgetListItemView;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.sheet.widget.table.column.ColumnType;
-import com.kispoko.tome.sheet.widget.table.column.ColumnUnion;
 
 import java.io.Serializable;
 import java.util.List;

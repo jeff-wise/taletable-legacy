@@ -5,22 +5,17 @@ package com.kispoko.tome.engine;
 import android.support.annotation.Nullable;
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.engine.mechanic.MechanicIndex;
+import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.model.engine.mechanic.MechanicIndex;
 import com.kispoko.tome.engine.search.EngineActiveSearchResult;
-import com.kispoko.tome.engine.variable.ActiveVariableSearchResult;
-import com.kispoko.tome.engine.variable.BooleanVariable;
-import com.kispoko.tome.engine.variable.DiceVariable;
-import com.kispoko.tome.engine.variable.NullVariableException;
-import com.kispoko.tome.engine.variable.NumberVariable;
-import com.kispoko.tome.engine.variable.TextVariable;
-import com.kispoko.tome.engine.variable.Variable;
-import com.kispoko.tome.engine.variable.VariableException;
-import com.kispoko.tome.engine.variable.VariableReference;
-import com.kispoko.tome.engine.variable.VariableType;
-import com.kispoko.tome.engine.variable.VariableUnion;
-import com.kispoko.tome.engine.variable.error.UndefinedVariableError;
-import com.kispoko.tome.engine.variable.error.UnexpectedVariableTypeError;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.model.engine.variable.BooleanVariable;
+import com.kispoko.tome.model.engine.variable.NullVariableException;
+import com.kispoko.tome.model.engine.variable.TextVariable;
+import com.kispoko.tome.model.engine.variable.Variable;
+import com.kispoko.tome.model.engine.variable.VariableException;
+import com.kispoko.tome.model.engine.variable.VariableReference;
+import com.kispoko.tome.model.engine.variable.error.UndefinedVariableError;
+import com.kispoko.tome.model.engine.variable.error.UnexpectedVariableTypeError;
 import com.kispoko.tome.util.tuple.Tuple2;
 
 import org.apache.commons.collections4.trie.PatriciaTrie;
@@ -328,7 +323,7 @@ public class State
 
         // TODO casues concurrent mod error
         // whole system needs to be more understandable
-        MechanicIndex mechanicIndex = SheetManager.currentSheet().engine().mechanicIndex();
+        MechanicIndex mechanicIndex = SheetManagerOld.currentSheet().engine().mechanicIndex();
         for (VariableUnion variableUnion : variableByName.values()) {
             mechanicIndex.onVariableUpdate(variableUnion.variable().name());
         }
@@ -337,7 +332,7 @@ public class State
 
     public static void updateMechanics(String variableName)
     {
-        MechanicIndex mechanicIndex = SheetManager.currentSheet().engine().mechanicIndex();
+        MechanicIndex mechanicIndex = SheetManagerOld.currentSheet().engine().mechanicIndex();
         mechanicIndex.onVariableUpdate(variableName);
     }
 

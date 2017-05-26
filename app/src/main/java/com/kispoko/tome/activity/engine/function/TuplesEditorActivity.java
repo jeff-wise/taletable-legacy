@@ -16,11 +16,11 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.EngineType;
-import com.kispoko.tome.engine.EngineValueUnion;
-import com.kispoko.tome.engine.function.Function;
-import com.kispoko.tome.engine.function.FunctionIndex;
-import com.kispoko.tome.engine.function.Tuple;
+import com.kispoko.tome.model.engine.EngineType;
+import com.kispoko.tome.model.engine.EngineValueUnion;
+import com.kispoko.tome.model.engine.function.Function;
+import com.kispoko.tome.model.engine.function.FunctionIndex;
+import com.kispoko.tome.model.engine.function.Tuple;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
@@ -28,7 +28,7 @@ import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TableLayoutBuilder;
 import com.kispoko.tome.lib.ui.TableRowBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.UI;
 
 
@@ -67,7 +67,7 @@ public class TuplesEditorActivity extends AppCompatActivity
         }
 
         // > Lookup Function
-        FunctionIndex functionIndex = SheetManager.currentSheet().engine().functionIndex();
+        FunctionIndex functionIndex = SheetManagerOld.currentSheet().engine().functionIndex();
         this.function = functionIndex.functionWithName(functionName);
 
         // [3] Initialize UI

@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.official.template.OfficialTemplatesActivity;
-import com.kispoko.tome.game.Game;
-import com.kispoko.tome.game.GameIndex;
+import com.kispoko.tome.official.game.GameSummary;
+import com.kispoko.tome.official.game.GameSummaryIndex;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.Font;
@@ -29,7 +29,7 @@ import com.kispoko.tome.lib.yaml.YamlParseException;
 
 
 /**
- * Choose Template Game Activity
+ * Choose Template GameSummary Activity
  */
 public class OfficialGamesActivity extends AppCompatActivity
 {
@@ -37,7 +37,7 @@ public class OfficialGamesActivity extends AppCompatActivity
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private GameIndex gameIndex;
+    private GameSummaryIndex gameIndex;
 
 
     // ACTIVITY LIFECYCLE
@@ -57,7 +57,7 @@ public class OfficialGamesActivity extends AppCompatActivity
         // -------------------------------------------------------------------------------------
 
         try {
-            this.gameIndex = GameIndex.fromManifest(this);
+            this.gameIndex = GameSummaryIndex.fromManifest(this);
         } catch (YamlParseException e) {
             Log.d("***CHOOSEGAME", e.errorMessage(), e);
         } catch (Exception e) {
@@ -139,7 +139,7 @@ public class OfficialGamesActivity extends AppCompatActivity
         public void onBindViewHolder(ViewHolder viewHolder,
                                      int position)
         {
-            Game game = gameIndex.games().get(position);
+            GameSummary game = gameIndex.games().get(position);
 
             viewHolder.setOnClick(game.name());
 

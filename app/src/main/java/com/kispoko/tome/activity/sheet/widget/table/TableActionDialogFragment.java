@@ -23,11 +23,10 @@ import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.sheet.SheetManager;
-import com.kispoko.tome.sheet.widget.TableWidget;
-import com.kispoko.tome.sheet.widget.WidgetType;
-import com.kispoko.tome.sheet.widget.WidgetUnion;
-import com.kispoko.tome.sheet.widget.table.cell.CellUnion;
+import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.model.sheet.widget.WidgetType;
+import com.kispoko.tome.model.sheet.widget.WidgetUnion;
+import com.kispoko.tome.model.sheet.widget.table.cell.CellUnion;
 
 import java.util.UUID;
 
@@ -137,7 +136,7 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
         if (this.tableWidgetId != null && this.cellId != null)
         {
             // [1] Find Widget
-            WidgetUnion widgetUnion = SheetManager.currentSheet().widgetWithId(this.tableWidgetId);
+            WidgetUnion widgetUnion = SheetManagerOld.currentSheet().widgetWithId(this.tableWidgetId);
 
             if (widgetUnion.type() == WidgetType.TABLE)
             {

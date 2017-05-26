@@ -12,9 +12,9 @@ import android.view.Menu;
 import android.view.View;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.activity.engine.function.FunctionEditorActivity;
-import com.kispoko.tome.engine.function.FunctionIndex;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.model.engine.function.FunctionIndex;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
@@ -42,7 +42,7 @@ public class FunctionIndexActivity extends AppCompatActivity
         // [2] Get Function Index
         // -------------------------------------------------------------------------------------
 
-        FunctionIndex functionIndex = SheetManager.currentSheet().engine().functionIndex();
+        FunctionIndex functionIndex = SheetManagerOld.currentSheet().engine().functionIndex();
 
         // [3] Initialize UI
         // -------------------------------------------------------------------------------------

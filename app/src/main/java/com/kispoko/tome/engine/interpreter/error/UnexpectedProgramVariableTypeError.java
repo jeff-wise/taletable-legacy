@@ -2,7 +2,7 @@
 package com.kispoko.tome.engine.interpreter.error;
 
 
-import com.kispoko.tome.engine.EngineDataType;
+import com.kispoko.tome.model.engine.EngineDataType;
 
 
 /**

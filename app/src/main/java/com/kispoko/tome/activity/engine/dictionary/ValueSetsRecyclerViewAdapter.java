@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.valueset.BaseValueSetEditorActivity;
-import com.kispoko.tome.engine.value.ValueSet;
-import com.kispoko.tome.engine.value.ValueSetUnion;
+import com.kispoko.tome.model.engine.value.ValueSet;
+import com.kispoko.tome.model.engine.value.ValueSetUnion;
 
 import java.util.List;
 

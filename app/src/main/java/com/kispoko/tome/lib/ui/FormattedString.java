@@ -16,13 +16,10 @@ import android.text.style.ReplacementSpan;
 import android.text.style.StyleSpan;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.sheet.widget.util.TextFont;
 import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.attr.textSize;
 
 
 /**

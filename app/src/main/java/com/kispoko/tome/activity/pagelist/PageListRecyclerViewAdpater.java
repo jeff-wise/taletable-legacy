@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.PageActivity;
-import com.kispoko.tome.sheet.Page;
 
 import java.util.List;
 

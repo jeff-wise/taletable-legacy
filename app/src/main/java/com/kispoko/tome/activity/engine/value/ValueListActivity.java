@@ -13,12 +13,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.engine.value.BaseValueSet;
-import com.kispoko.tome.engine.value.ValueSetType;
-import com.kispoko.tome.engine.value.ValueSetUnion;
+import com.kispoko.tome.model.engine.value.Dictionary;
+import com.kispoko.tome.model.engine.value.BaseValueSet;
+import com.kispoko.tome.model.engine.value.ValueSetType;
+import com.kispoko.tome.model.engine.value.ValueSetUnion;
 import com.kispoko.tome.lib.ui.Font;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
@@ -57,7 +57,7 @@ public class ValueListActivity extends AppCompatActivity
         // > Lookup ValueSet
         // -------------------------------------------------------------------------------------
 
-        Dictionary dictionary = SheetManager.dictionary();
+        Dictionary dictionary = SheetManagerOld.dictionary();
 
         if (dictionary != null)
         {

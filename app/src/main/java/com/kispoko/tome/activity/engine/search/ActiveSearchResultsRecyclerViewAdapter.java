@@ -4,7 +4,6 @@ package com.kispoko.tome.activity.engine.search;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.IntentCompat;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
@@ -15,9 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.mechanic.ActiveMechanicSearchResult;
+import com.kispoko.tome.model.engine.mechanic.ActiveMechanicSearchResult;
 import com.kispoko.tome.engine.search.EngineActiveSearchResult;
-import com.kispoko.tome.engine.variable.ActiveVariableSearchResult;
+import com.kispoko.tome.engine.ActiveVariableSearchResult;
 import com.kispoko.tome.lib.ui.FormattedString;
 
 import java.util.Set;

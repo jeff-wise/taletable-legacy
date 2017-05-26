@@ -14,8 +14,6 @@ import android.widget.ScrollView;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.mechanic.DiceRollEditorActivity;
-import com.kispoko.tome.activity.sheet.DiceRollerActivity;
-import com.kispoko.tome.engine.variable.DiceVariable;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;

@@ -10,12 +10,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.kispoko.tome.sheet.Spacing;
+import com.kispoko.tome.model.sheet.Spacing;
 import com.kispoko.tome.util.Util;
 
 import java.util.List;
-
-import static android.icu.lang.UCharacter.JoiningGroup.FE;
 
 
 /**

@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.DatabaseManager;
 import com.kispoko.tome.Global;
-import com.kispoko.tome.sheet.Sheet;
+import com.kispoko.tome.model.sheet.Sheet;
 import com.kispoko.tome.lib.database.DatabaseException;
 import com.kispoko.tome.lib.database.SQL;
 import com.kispoko.tome.lib.database.query.CountQuery;

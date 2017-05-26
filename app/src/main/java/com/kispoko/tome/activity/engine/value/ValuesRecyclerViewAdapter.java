@@ -11,10 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.value.BaseValueSet;
-import com.kispoko.tome.engine.value.ValueReference;
-import com.kispoko.tome.engine.value.ValueType;
-import com.kispoko.tome.engine.value.ValueUnion;
+import com.kispoko.tome.model.engine.value.BaseValueSet;
+import com.kispoko.tome.model.engine.value.ValueType;
+import com.kispoko.tome.model.engine.value.ValueUnion;
 
 
 

@@ -7,36 +7,31 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.engine.value.Dictionary;
-import com.kispoko.tome.engine.value.TextValue;
-import com.kispoko.tome.engine.value.ValueReference;
-import com.kispoko.tome.engine.value.BaseValueSet;
-import com.kispoko.tome.engine.value.ValueSetType;
-import com.kispoko.tome.engine.value.ValueSetUnion;
-import com.kispoko.tome.engine.variable.VariableUnion;
+import com.kispoko.tome.model.engine.value.Dictionary;
+import com.kispoko.tome.model.engine.value.TextValue;
+import com.kispoko.tome.model.engine.value.BaseValueSet;
+import com.kispoko.tome.model.engine.value.ValueSetType;
+import com.kispoko.tome.model.engine.value.ValueSetUnion;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
-import com.kispoko.tome.lib.ui.ActivityCommon;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
-import com.kispoko.tome.sheet.SheetManager;
+import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.util.tuple.Tuple2;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -92,7 +87,7 @@ public class TextValueEditorActivity extends AppCompatActivity
         // [2] Lookup Value/Set from Dictionary
         // -------------------------------------------------------------------------------------
 
-        Dictionary dictionary = SheetManager.dictionary();
+        Dictionary dictionary = SheetManagerOld.dictionary();
 
         // [2] Find ValueSet
         if (this.valueSetName != null && dictionary != null)

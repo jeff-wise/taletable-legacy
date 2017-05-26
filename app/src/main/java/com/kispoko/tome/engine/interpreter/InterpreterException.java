@@ -2,7 +2,7 @@
 package com.kispoko.tome.engine.interpreter;
 
 
-import com.kispoko.tome.engine.function.builtin.BuiltInFunctionException;
+import com.kispoko.tome.model.engine.function.builtin.BuiltInFunctionException;
 import com.kispoko.tome.engine.interpreter.error.FunctionNotFoundError;
 import com.kispoko.tome.engine.interpreter.error.NullResultError;
 import com.kispoko.tome.engine.interpreter.error.NullVariableError;
