@@ -21,8 +21,6 @@ import com.kispoko.tome.activity.TableWidgetActivity;
 import com.kispoko.tome.activity.TextWidgetActivity;
 import com.kispoko.tome.error.UnknownVariantError;
 import com.kispoko.tome.exception.UnionException;
-import com.kispoko.tome.model.sheet.widget.WidgetType;
-import com.kispoko.tome.model.sheet.widget.WidgetUnion;
 
 import java.io.Serializable;
 import java.util.List;

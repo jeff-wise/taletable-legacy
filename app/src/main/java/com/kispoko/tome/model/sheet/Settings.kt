@@ -21,7 +21,7 @@ import java.util.*
  */
 data class Settings(override val id : UUID,
                     val themeType : Func<ThemeType>,
-                    val customTheme : Func<Theme>) : Model(id)
+                    val customTheme : Func<Theme>) : Model
 {
 
     companion object : Factory<Settings>

@@ -21,8 +21,6 @@ import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.model.sheet.widget.ActionWidget;
-import com.kispoko.tome.model.sheet.widget.WidgetType;
-import com.kispoko.tome.model.sheet.widget.WidgetUnion;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;

@@ -14,8 +14,6 @@ import com.kispoko.tome.model.engine.variable.BooleanVariable;
 import com.kispoko.tome.model.engine.variable.TextVariable;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.model.sheet.DividerType;
-import com.kispoko.tome.model.sheet.widget.WidgetType;
-import com.kispoko.tome.model.sheet.widget.table.cell.CellType;
 import com.kispoko.tome.model.sheet.BackgroundColor;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;

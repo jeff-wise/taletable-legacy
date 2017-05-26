@@ -24,9 +24,6 @@ import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
 import com.kispoko.tome.SheetManagerOld;
-import com.kispoko.tome.model.sheet.widget.WidgetType;
-import com.kispoko.tome.model.sheet.widget.WidgetUnion;
-import com.kispoko.tome.model.sheet.widget.table.cell.CellUnion;
 
 import java.util.UUID;
 

@@ -38,18 +38,12 @@ import com.kispoko.tome.campaign.CampaignIndex;
 import com.kispoko.tome.engine.State;
 import com.kispoko.tome.model.engine.variable.NullVariableException;
 import com.kispoko.tome.model.engine.variable.TextVariable;
-import com.kispoko.tome.model.sheet.widget.TextWidget;
 import com.kispoko.tome.model.sheet.Sheet;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.model.sheet.widget.WidgetType;
-import com.kispoko.tome.model.sheet.widget.WidgetUnion;
-import com.kispoko.tome.model.sheet.widget.table.cell.CellType;
-import com.kispoko.tome.model.sheet.widget.table.cell.CellUnion;
-import com.kispoko.tome.model.sheet.widget.table.cell.TextCell;
 import com.kispoko.tome.util.UI;
 
 import org.greenrobot.eventbus.EventBus;

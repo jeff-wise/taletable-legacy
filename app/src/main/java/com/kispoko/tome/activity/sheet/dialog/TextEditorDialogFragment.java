@@ -20,14 +20,12 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.widget.text.TextEditorActivity;
-import com.kispoko.tome.model.sheet.widget.TextWidget;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.model.sheet.widget.table.cell.TextCell;
 
 import org.greenrobot.eventbus.EventBus;
 

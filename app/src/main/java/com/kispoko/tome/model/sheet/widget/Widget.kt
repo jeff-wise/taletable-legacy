@@ -9,9 +9,11 @@ import com.kispoko.tome.model.engine.mechanic.MechanicCategory
 import com.kispoko.tome.model.engine.value.ValueSetName
 import com.kispoko.tome.model.engine.variable.BooleanVariable
 import com.kispoko.tome.model.engine.variable.NumberVariable
+import com.kispoko.tome.model.engine.variable.TextVariable
 import com.kispoko.tome.model.engine.variable.Variable
 import com.kispoko.tome.model.sheet.group.Group
-import com.kispoko.tome.model.sheet.style.TextFormat
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -530,8 +532,8 @@ data class OptionWidget(override val id : UUID,
                                 valueResult<Func<OptionDescription>>(Null()),
                                 fun(d : SpecDoc) : ValueParser<Func<OptionDescription>> =
                                         effApply(::Prim, OptionDescription.fromDocument(d))),
-                        // ValueSet Name
-                        split(doc.maybeAt("value_set_name"),
+                          // ValueSet Name
+                          split(doc.maybeAt("value_set_name"),
                                 valueResult<Func<ValueSetName>>(Null()),
                                 fun(d : SpecDoc) : ValueParser<Func<ValueSetName>> =
                                         effApply(::Prim, ValueSetName.fromDocument(d)))
@@ -609,6 +611,40 @@ data class TableWidget(override val id : UUID,
                        val columns : Coll<TableWidgetColumn>,
                        val rows : Coll<TableWidgetRow>) : Widget()
 {
+
+    companion object : Factory<TableWidget>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<TableWidget>  = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply5(::TableWidget,
+                          // Model Id
+                          valueResult(UUID.randomUUID()),
+                          // Widget Name
+                          doc.at("name") ap {
+                              effApply(::Prim, WidgetName.fromDocument(it))
+                          },
+                          // Format
+                          split(doc.maybeAt("format"),
+                                valueResult<Func<TableWidgetFormat>>(Null()),
+                                fun(d : SpecDoc) : ValueParser<Func<TableWidgetFormat>> =
+                                        effApply(::Comp, TableWidgetFormat.fromDocument(d))),
+                          // Columns
+                          doc.list("columns") ap { docList ->
+                              effApply(::Coll,
+                                      docList.map { TableWidgetColumn.fromDocument(it) })
+                          },
+                          // Rows
+                          doc.list("rows") ap { docList ->
+                              effApply(::Coll,
+                                  docList.map { TableWidgetRow.fromDocument(it) })
+                          })
+            }
+            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+        }
+    }
+
     override fun onLoad() { }
 }
 
@@ -616,18 +652,101 @@ data class TableWidget(override val id : UUID,
 /**
  * Tab Widget
  */
-data class TabWidget(override val id : UUID) : Widget()
+data class TabWidget(override val id : UUID,
+                     val name : Func<WidgetName>,
+                     val format : Func<TabWidgetFormat>,
+                     val tabs : Coll<Tab>,
+                     val defaultSelected : Func<Int>) : Widget()
 {
+
+    companion object : Factory<TabWidget>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<TabWidget>  = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply5(::TabWidget,
+                          // Model Id
+                          valueResult(UUID.randomUUID()),
+                          // Widget Name
+                          doc.at("name") ap {
+                              effApply(::Prim, WidgetName.fromDocument(it))
+                          },
+                          // Format
+                          split(doc.maybeAt("format"),
+                                valueResult<Func<TabWidgetFormat>>(Null()),
+                                fun(d : SpecDoc) : ValueParser<Func<TabWidgetFormat>> =
+                                        effApply(::Comp, TabWidgetFormat.fromDocument(d))),
+                          // Tabs
+                          doc.list("tabs") ap { docList ->
+                              effApply(::Coll,
+                                      docList.map { Tab.fromDocument(it) })
+                          },
+                          // Default Selected
+                          split(doc.maybeInt("default_selected"),
+                                valueResult<Func<Int>>(Null()),
+                                { valueResult(Prim(it)) })
+                          )
+            }
+            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+        }
+    }
+
     override fun onLoad() { }
+
 }
 
 
 /**
  * Text Widget
  */
-data class TextWidget(override val id : UUID) : Widget()
+data class TextWidget(override val id : UUID,
+                      val name : Func<WidgetName>,
+                      val format : Func<TextWidgetFormat>,
+                      val description : Func<TextDescription>,
+                      val value : Func<TextVariable>,
+                      val variables : Coll<Variable>) : Widget()
 {
+
+    companion object : Factory<TextWidget>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<TextWidget>  = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply6(::TextWidget,
+                          // Model Id
+                          valueResult(UUID.randomUUID()),
+                          // Widget Name
+                          doc.at("name") ap {
+                              effApply(::Prim, WidgetName.fromDocument(it))
+                          },
+                          // Format
+                          split(doc.maybeAt("format"),
+                                valueResult<Func<TextWidgetFormat>>(Null()),
+                                fun(d : SpecDoc) : ValueParser<Func<TextWidgetFormat>> =
+                                        effApply(::Comp, TextWidgetFormat.fromDocument(d))),
+                          // Description
+                          split(doc.maybeAt("description"),
+                                valueResult<Func<TextDescription>>(Null()),
+                                fun(d : SpecDoc) : ValueParser<Func<TextDescription>> =
+                                        effApply(::Prim, TextDescription.fromDocument(d))),
+                          // Value
+                          doc.at("value") ap {
+                              effApply(::Comp, TextVariable.fromDocument(it))
+                          },
+                          // Variables
+                          doc.list("variables") ap { docList ->
+                              effApply(::Coll,
+                                 docList.map { Variable.fromDocument(it) })
+                          })
+            }
+            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+        }
+    }
+
     override fun onLoad() { }
+
 }
 
 

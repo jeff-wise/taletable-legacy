@@ -11,10 +11,7 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.*
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SpecDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import lulo.value.valueResult
@@ -23,33 +20,30 @@ import java.util.*
 
 
 /**
- * Number Widget Format
+ * Text Widget Format
  */
-data class NumberWidgetFormat(override val id : UUID,
-                              val widgetFormat : Func<WidgetFormat>,
-                              val insideLabel : Func<String>,
-                              val insideLabelFormat : Func<TextFormat>,
-                              val outsideLabel : Func<String>,
-                              val outsideLabelFormat : Func<TextFormat>,
-                              val valueFormat : Func<TextFormat>,
-                              val descriptionStyle : Func<TextStyle>,
-                              val valuePrefixStyle : Func<TextStyle>,
-                              val valuePostfixStyle : Func<TextStyle>,
-                              val valueSeparator : Func<String>,
-                              val valueSeparatorFormat : Func<TextFormat>) : Model
+data class TextWidgetFormat(override val id : UUID,
+                            val widgetFormat : Func<WidgetFormat>,
+                            val insideLabel : Func<String>,
+                            val insideLabelFormat : Func<TextFormat>,
+                            val outsideLabel : Func<String>,
+                            val outsideLabelFormat : Func<TextFormat>,
+                            val valueFormat : Func<TextFormat>,
+                            val descriptionStyle : Func<TextStyle>) : Model
 {
 
-    companion object : Factory<NumberWidgetFormat>
+    companion object : Factory<TextWidgetFormat>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberWidgetFormat> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TextWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply12(::NumberWidgetFormat,
+            is DocDict -> effApply8(::TextWidgetFormat,
                                      // Model Id
                                      valueResult(UUID.randomUUID()),
                                      // Widget Format
-                                     doc.at("widget_format") ap {
-                                         effApply(::Comp, WidgetFormat.fromDocument(it))
-                                     },
+                                     split(doc.maybeAt("widget_format"),
+                                           valueResult<Func<WidgetFormat>>(Null()),
+                                           fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
+                                              effApply(::Comp, WidgetFormat.fromDocument(d))),
                                      // Inside Label
                                      split(doc.maybeText("inside_label"),
                                            valueResult<Func<String>>(Null()),
@@ -77,26 +71,7 @@ data class NumberWidgetFormat(override val id : UUID,
                                      split(doc.maybeAt("description_style"),
                                            valueResult<Func<TextStyle>>(Null()),
                                            fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                               effApply(::Comp, TextStyle.fromDocument(d))),
-                                     // Value Prefix Style
-                                     split(doc.maybeAt("value_prefix_format"),
-                                           valueResult<Func<TextStyle>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                               effApply(::Comp, TextStyle.fromDocument(d))),
-                                     // Value Postfix Style
-                                     split(doc.maybeAt("value_postfix_format"),
-                                           valueResult<Func<TextStyle>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                               effApply(::Comp, TextStyle.fromDocument(d))),
-                                     // Value Separator
-                                     split(doc.maybeText("value_separator"),
-                                           valueResult<Func<String>>(Null()),
-                                           { valueResult(Prim(it))  }),
-                                     // Outside Label Format
-                                     split(doc.maybeAt("outside_label_format"),
-                                           valueResult<Func<TextFormat>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                               effApply(::Comp, TextFormat.fromDocument(d)))
+                                               effApply(::Comp, TextStyle.fromDocument(d)))
                                      )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
@@ -106,67 +81,63 @@ data class NumberWidgetFormat(override val id : UUID,
 
 }
 
+
+
+/**
+ * Text Description
+ */
+data class TextDescription(val value : String)
+{
+
+    companion object : Factory<TextDescription>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<TextDescription> = when (doc)
+        {
+            is DocText -> valueResult(TextDescription(doc.text))
+            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+        }
+    }
+}
+
+
+
 //
 //
-//
-//
-//    // ** Base Value Variable Name
-//    // -----------------------------------------------------------------------------------------
-//
-//    @Nullable
-//    private String baseValueVariableName()
-//    {
-//        return this.baseValueVariableName.getValue();
-//    }
-//
-//
-//    private Integer baseValue()
-//    {
-//        if (this.baseValueVariableName.isNull())
-//            return 0;
-//
-//        try
-//        {
-//            NumberVariable numberVariable =
-//                                State.numberVariableWithName(this.baseValueVariableName());
-//            return numberVariable.value();
-//        }
-//        catch (VariableException exception)
-//        {
-//            ApplicationFailure.variable(exception);
-//            return 0;
-//        }
-//        catch (NullVariableException exception)
-//        {
-//            ApplicationFailure.nullVariable(exception);
-//            return 0;
-//        }
-//    }
-//
-//
-//    // ** Description
-//    // -----------------------------------------------------------------------------------------
+/// ** Initialize
+//    // ------------------------------------------------------------------------------------------
 //
 //    /**
-//     * The number description.
-//     * @return The description.
+//     * Initialize the text widget.
 //     */
-//    public String description()
+//    @Override
+//    public void initialize(GroupParent groupParent, Context context)
 //    {
-//        return this.description.getValue();
-//    }
+//        // [1] Initialize the value variable
+//        // --------------------------------------------------------------------------------------
 //
+//        // > If the variable is non-null
+//        if (!this.valueVariable.isNull())
+//        {
+//            this.valueVariable().initialize();
 //
-//    // ** Variables
-//    // -----------------------------------------------------------------------------------------
+//            this.valueVariable().setOnUpdateListener(new Variable.OnUpdateListener() {
+//                @Override
+//                public void onUpdate() {
+//                    onValueUpdate();
+//                }
+//            });
 //
-//    /**
-//     * Get the text widget's helper variables.
-//     * @return The list of variables.
-//     */
-//    public List<VariableUnion> variables()
-//    {
-//        return this.variables.getValue();
+//            // > Add to the state
+//            State.addVariable(this.valueVariable());
+//        }
+//
+//        // [2] Initialize the helper variables
+//        // -------------------------------------------------------------------------------------
+//
+//        for (VariableUnion variableUnion : this.variables()) {
+//            State.addVariable(variableUnion);
+//        }
+//
 //    }
 //
 //
@@ -176,7 +147,7 @@ data class NumberWidgetFormat(override val id : UUID,
 //    // > Initialize
 //    // -----------------------------------------------------------------------------------------
 //
-//    private void initializeNumberWidget()
+//    private void initializeTextWidget()
 //    {
 //        // [1] Apply default format values
 //        // -------------------------------------------------------------------------------------
@@ -197,16 +168,38 @@ data class NumberWidgetFormat(override val id : UUID,
 //        if (this.data().format().underlineThicknessIsDefault())
 //            this.data().format().setUnderlineThickness(0);
 //
+//
+//        this.valueViewId = null;
 //    }
 //
+//
+//    // > Value Update
 //    // -----------------------------------------------------------------------------------------
+//
+//    /**
+//     * When the text widget's valueVariable is updated.
+//     */
+//    private void onValueUpdate()
+//    {
+//        if (this.valueViewId != null && !this.valueVariable.isNull())
+//        {
+//            Activity activity = (Activity) SheetManagerOld.currentSheetContext();
+//            TextView textView = (TextView) activity.findViewById(this.valueViewId);
+//
+//            String value = this.value();
+//
+//            if (value != null)
+//                textView.setText(value);
+//        }
+//    }
+//
+//
+//    // > Views
+//    // ------------------------------------------------------------------------------------------
 //
 //    private View widgetView(boolean rowHasLabel, Context context)
 //    {
 //        LinearLayout layout = this.layout(rowHasLabel, context);
-//
-//        this.widgetViewId   = Util.generateViewId();
-//        layout.setId(this.widgetViewId);
 //
 //        layout.addView(mainView(context));
 //
@@ -256,8 +249,7 @@ data class NumberWidgetFormat(override val id : UUID,
 //        layout.orientation          = this.format().outsideLabelPosition()
 //                                          .linearLayoutOrientation();
 //
-//        layout.gravity              = this.data().format().alignment().gravityConstant()
-//                                        | Gravity.CENTER_VERTICAL;
+//        layout.gravity              = this.data().format().alignment().gravityConstant();
 //
 //        layout.marginSpacing        = this.data().format().margins();
 //
@@ -282,7 +274,7 @@ data class NumberWidgetFormat(override val id : UUID,
 //            }
 //        }
 //
-//        layout.addView(valueView(context));
+//        layout.addView(valueTextView(context));
 //
 //        // > Inside Bottom/Right Label View
 //        if (this.format().insideLabel() != null && this.description() == null) {
@@ -301,20 +293,12 @@ data class NumberWidgetFormat(override val id : UUID,
 //        LinearLayoutBuilder layout = new LinearLayoutBuilder();
 //
 //        layout.orientation          = this.format().insideLabelPosition().linearLayoutOrientation();
+//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
+//        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
 //
-//        // > Width
-//        //   If no padding is specified, the value (and its background) stretches to fill the
-//        //   space. Otherwise it only stretches as far as the padding allows
-//        // -------------------------------------------------------------------------------------
-//        if (this.format().valuePaddingHorizontal() != null ||
-//            this.data().format().background() == BackgroundColor.EMPTY) {
-//            layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        }
-//        else {
-//            layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        }
+//        if (this.data().format().background() == BackgroundColor.EMPTY)
+//            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
 //
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
 //
 //
 //        if (this.data().format().underlineThickness() > 0)
@@ -338,59 +322,21 @@ data class NumberWidgetFormat(override val id : UUID,
 //            }
 //        }
 //
-//
 //        if (this.format().valueHeight() == Height.WRAP)
 //        {
 //            layout.padding.topDp    = this.format().valuePaddingVertical().floatValue();
 //            layout.padding.bottomDp = this.format().valuePaddingVertical().floatValue();
 //        }
 //
-//
 //        layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
-//                                        | Gravity.CENTER_VERTICAL;
-//
-//        // > Padding
-//        // -------------------------------------------------------------------------------------
-//        if (this.format().valuePaddingHorizontal() != null)
-//        {
-//            layout.padding.leftDp   = this.format().valuePaddingHorizontal().floatValue();
-//            layout.padding.rightDp  = this.format().valuePaddingHorizontal().floatValue();
-//        }
+//                | Gravity.CENTER_VERTICAL;
 //
 //        layout.onClick              = new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                onNumberWidgetShortClick(context);
+//                onTextWidgetShortClick(context);
 //            }
 //        };
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout valueView(Context context)
-//    {
-//        LinearLayout layout = valueViewLayout(context);
-//
-//        // > Value
-//        layout.addView(valueTextView(context));
-//
-//        // > Base Value
-//        if (this.baseValueVariableName() != null)
-//            layout.addView(baseValueView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout valueViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.HORIZONTAL;
-//
-//        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
 //
 //        return layout.linearLayout(context);
 //    }
@@ -413,11 +359,11 @@ data class NumberWidgetFormat(override val id : UUID,
 //
 //        if (this.description() != null)
 //        {
-//            value.layoutGravity = this.format().descriptionStyle().alignment().gravityConstant()
-//                                    | Gravity.CENTER_VERTICAL;
-//            value.gravity       = this.format().descriptionStyle().alignment().gravityConstant();
+//            value.font          = Font.serifFontRegular(context);
 //
-//            this.format().descriptionStyle().styleTextViewBuilder(value, context);
+//            value.color     = this.format().descriptionStyle().color().resourceId();
+//            value.size      = this.format().descriptionStyle().size().resourceId();
+//
 //
 //            List<FormattedString.Span> spans = new ArrayList<>();
 //
@@ -428,7 +374,7 @@ data class NumberWidgetFormat(override val id : UUID,
 //                                         this.format().insideLabelStyle().font());
 //
 //            FormattedString.Span valueSpan =
-//                    new FormattedString.Span(this.valueString(),
+//                    new FormattedString.Span(this.value(),
 //                                             context.getString(R.string.placeholder_value),
 //                                             this.format().valueStyle().color().color(context),
 //                                             this.format().descriptionStyle().size().size(),
@@ -444,75 +390,11 @@ data class NumberWidgetFormat(override val id : UUID,
 //        }
 //        else
 //        {
-//            value.text      = this.valueString();
+//            value.text      = this.value();
 //            value.color     = this.format().valueStyle().color().resourceId();
 //            value.size      = this.format().valueStyle().size().resourceId();
 //            value.font      = this.format().valueStyle().typeface(context);
 //        }
-//
-//        return value.textView(context);
-//    }
-//
-//
-//    private LinearLayout baseValueView(Context context)
-//    {
-//        LinearLayout layout = this.baseValueViewLayout(context);
-//
-//        // > Separator
-//        layout.addView(baseValueSeparatorView(context));
-//
-//        // > Value
-//        layout.addView(baseValueTextView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout baseValueViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = LinearLayout.HORIZONTAL;
-//
-//        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.layoutGravity        = this.format().baseValueVerticalAlignment().gravityConstant();
-//        layout.gravity              = Gravity.CENTER_VERTICAL;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private TextView baseValueSeparatorView(Context context)
-//    {
-//        TextViewBuilder separator = new TextViewBuilder();
-//
-//        separator.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        separator.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        separator.text          = this.format().baseValueSeparator();
-//
-//        this.format().baseValueSeparatorStyle().styleTextViewBuilder(separator, context);
-//
-//        separator.marginSpacing = this.format().baseValueSeparatorMargins();
-//
-//        return separator.textView(context);
-//    }
-//
-//
-//    private TextView baseValueTextView(Context context)
-//    {
-//        TextViewBuilder value = new TextViewBuilder();
-//
-//        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        value.text          = this.baseValue().toString();
-//
-//        this.format().baseValueStyle().styleTextViewBuilder(value, context);
-//
-//        value.marginSpacing = this.format().baseValueMargins();
 //
 //        return value.textView(context);
 //    }
@@ -525,8 +407,7 @@ data class NumberWidgetFormat(override val id : UUID,
 //        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
 //        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
 //
-//        label.layoutGravity     = this.format().outsideLabelStyle().alignment().gravityConstant()
-//                                    | Gravity.CENTER_VERTICAL;
+//        label.layoutGravity     = this.format().outsideLabelStyle().alignment().gravityConstant();
 //
 //        label.text              = this.format().outsideLabel();
 //
@@ -547,9 +428,6 @@ data class NumberWidgetFormat(override val id : UUID,
 //
 //        label.text              = this.format().insideLabel();
 //
-//        label.layoutGravity     = this.format().insideLabelStyle().alignment().gravityConstant()
-//                                        | Gravity.CENTER_VERTICAL;
-//
 //        this.format().insideLabelStyle().styleTextViewBuilder(label, context);
 //
 //        label.marginSpacing     = this.format().insideLabelMargins();
@@ -562,71 +440,107 @@ data class NumberWidgetFormat(override val id : UUID,
 //    // -----------------------------------------------------------------------------------------
 //
 //    /**
-//     * When the number widget is clicked once, open a quick edit/view dialog.
-//     * @param context The context
+//     * On a short click, open the value editor.
 //     */
-//    private void onNumberWidgetShortClick(Context context)
+//    private void onTextWidgetShortClick(Context context)
 //    {
 //        SheetActivity sheetActivity = (SheetActivity) context;
 //
 //        switch (this.valueVariable().kind())
 //        {
+//
+//            // OPEN the Quick Text Edit Dialog
 //            case LITERAL:
-//                ArrayList<DialogOptionButton> dialogButtons = new ArrayList<>();
-//
-//                DialogOptionButton styleButton =
-//                        new DialogOptionButton(R.string.style, R.drawable.ic_dialog_style, null);
-//
-//                DialogOptionButton widgetButton =
-//                        new DialogOptionButton(R.string.widget, R.drawable.ic_dialog_widget, null);
-//
-//                dialogButtons.add(styleButton);
-//                dialogButtons.add(widgetButton);
-//
-//                CalculatorDialogFragment dialog =
-//                            CalculatorDialogFragment.newInstance(valueVariable(), dialogButtons);
-//                dialog.show(sheetActivity.getSupportFragmentManager(), "");
+//                // If the string is short, edit in DIALOG
+//                if (this.value().length() < 145)
+//                {
+//                    TextEditorDialogFragment textDialog =
+//                            TextEditorDialogFragment.forTextWidget(this);
+//                    textDialog.show(sheetActivity.getSupportFragmentManager(), "");
+//                }
+//                // ...otherwise, edit in ACTIVITY
+//                else
+//                {
+//                    Intent intent = new Intent(context, TextEditorActivity.class);
+//                    intent.putExtra("text_widget", this);
+//                    context.startActivity(intent);
+//                }
 //                break;
 //
-//            // OPEN the summation preview dialog
-//            case SUMMATION:
-//                Summation summation      = this.valueVariable().summation();
+//            // OPEN the Choose Value Set Dialog
+//            case VALUE:
 //
-//                String    summationLabel = "";
-//                if (this.data().name() != null)
-//                    summationLabel = this.data().name();
-//                else if (this.valueVariable().label() != null)
-//                    summationLabel = this.valueVariable().label();
+//                Dictionary dictionary         = SheetManagerOld.dictionary();
 //
-//                SummationDialogFragment summationDialog =
-//                                    SummationDialogFragment.newInstance(summation, summationLabel);
-//                summationDialog.show(sheetActivity.getSupportFragmentManager(), "");
+//                if (this.valueVariable() == null || dictionary == null)
+//                    break;
+//
+//                String         valueSetName   = this.valueVariable().valueSetName();
+//                ValueReference valueReference = this.valueVariable().valueReference();
+//
+//                ValueSetUnion valueSetUnion = dictionary.lookup(valueSetName);
+//                ValueUnion valueUnion    = dictionary.valueUnion(valueReference);
+//
+//                if (valueSetUnion == null) {
+//                    ApplicationFailure.sheet(
+//                            SheetException.undefinedValueSet(
+//                                    new UndefinedValueSetError("Text Widget", valueSetName)));
+//                    break;
+//                }
+//
+//                if (valueUnion == null) {
+//                    ApplicationFailure.value(
+//                            ValueException.undefinedValue(
+//                                    new UndefinedValueError(valueSetName,
+//                                                            valueReference.valueName())));
+//                    break;
+//                }
+//
+//                ChooseValueDialogFragment chooseDialog =
+//                        ChooseValueDialogFragment.newInstance(valueSetUnion, valueUnion);
+//                chooseDialog.show(sheetActivity.getSupportFragmentManager(), "");
+//                break;
+//
+//            case PROGRAM:
 //                break;
 //        }
 //    }
 //
 //
-//
-//    // > Value Updates
+//    // UPDATE EVENT
 //    // -----------------------------------------------------------------------------------------
 //
-//
-//    /**
-//     * Update the value view section of the widget view to reflect a new value.
-//     * @param context The context
-//     */
-//    private void updateValueView(Context context)
+//    public static class UpdateLiteralEvent
 //    {
-//        if (this.widgetViewId != null)
+//
+//        // PROPERTIES
+//        // -------------------------------------------------------------------------------------
+//
+//        private UUID   widgetId;
+//        private String newValue;
+//
+//
+//        // CONSTRUCTORS
+//        // -------------------------------------------------------------------------------------
+//
+//        public UpdateLiteralEvent(UUID widgetId, String newValue)
 //        {
-//            Activity activity = (Activity) SheetManagerOld.currentSheetContext();
-//            LinearLayout widgetView = (LinearLayout) activity.findViewById(this.widgetViewId);
-//
-//            if (widgetView != null) {
-//                widgetView.removeAllViews();
-//                widgetView.addView(this.mainView(context));
-//            }
+//            this.widgetId   = widgetId;
+//            this.newValue   = newValue;
 //        }
-//    }
 //
+//        // API
+//        // -------------------------------------------------------------------------------------
+//
+//        public UUID widgetId()
+//        {
+//            return this.widgetId;
+//        }
+
+//        public String newValue()
+//        {
+//            return this.newValue;
+//        }
+//
+//    }
 
