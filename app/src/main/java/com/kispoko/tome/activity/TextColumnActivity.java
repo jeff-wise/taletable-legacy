@@ -23,7 +23,7 @@ public class TextColumnActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private TextColumn textColumn;
+    //private TextColumn textColumn;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -37,9 +37,9 @@ public class TextColumnActivity extends AppCompatActivity
         setContentView(R.layout.activity_column);
 
         // > Read Parameters
-        if (getIntent().hasExtra("column")) {
-            this.textColumn = (TextColumn) getIntent().getSerializableExtra("column");
-        }
+//        if (getIntent().hasExtra("column")) {
+//            this.textColumn = (TextColumn) getIntent().getSerializableExtra("column");
+//        }
 
         initializeToolbar();
 
@@ -90,9 +90,9 @@ public class TextColumnActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.textColumn.name() + getString(R.string.column);
-
-        UI.initializeToolbar(this, title);
+//        String title = this.textColumn.name() + getString(R.string.column);
+//
+//        UI.initializeToolbar(this, title);
     }
 
 
@@ -116,7 +116,7 @@ public class TextColumnActivity extends AppCompatActivity
         // > Name Field
         // -------------------------------------------------------------------------------------
 
-        String name = this.textColumn.name();
+//        String name = this.textColumn.name();
 
 //        LinearLayout nameField =
 //                Form.field(

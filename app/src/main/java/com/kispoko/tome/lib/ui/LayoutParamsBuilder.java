@@ -10,7 +10,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.kispoko.tome.model.sheet.Spacing;
+import com.kispoko.tome.model.sheet.style.Spacing;
 import com.kispoko.tome.util.Util;
 
 import java.util.List;
@@ -334,43 +334,43 @@ public class LayoutParamsBuilder
         }
     }
 
-
-    public void setMargins(Spacing spacing)
-    {
-        switch (this.layoutType)
-        {
-            case LINEAR:
-                this.linearLayoutParams.setMargins(spacing.leftPx(),
-                                                   spacing.topPx(),
-                                                   spacing.rightPx(),
-                                                   spacing.bottomPx());
-                break;
-            case RELATIVE:
-                this.relativeLayoutParams.setMargins(spacing.leftPx(),
-                                                     spacing.topPx(),
-                                                     spacing.rightPx(),
-                                                     spacing.bottomPx());
-                break;
-            case TABLE:
-                this.tableLayoutParams.setMargins(spacing.leftPx(),
-                                                  spacing.topPx(),
-                                                  spacing.rightPx(),
-                                                  spacing.bottomPx());
-                break;
-            case TABLE_ROW:
-                this.tableRowLayoutParams.setMargins(spacing.leftPx(),
-                                                     spacing.topPx(),
-                                                     spacing.rightPx(),
-                                                     spacing.bottomPx());
-                break;
-            case FLEXBOX:
-                this.flexboxLayoutParams.setMargins(spacing.leftPx(),
-                                                    spacing.topPx(),
-                                                    spacing.rightPx(),
-                                                    spacing.bottomPx());
-                break;
-        }
-    }
+//
+//    public void setMargins(Spacing spacing)
+//    {
+//        switch (this.layoutType)
+//        {
+//            case LINEAR:
+//                this.linearLayoutParams.setMargins(spacing.leftPx(),
+//                                                   spacing.topPx(),
+//                                                   spacing.rightPx(),
+//                                                   spacing.bottomPx());
+//                break;
+//            case RELATIVE:
+//                this.relativeLayoutParams.setMargins(spacing.leftPx(),
+//                                                     spacing.topPx(),
+//                                                     spacing.rightPx(),
+//                                                     spacing.bottomPx());
+//                break;
+//            case TABLE:
+//                this.tableLayoutParams.setMargins(spacing.leftPx(),
+//                                                  spacing.topPx(),
+//                                                  spacing.rightPx(),
+//                                                  spacing.bottomPx());
+//                break;
+//            case TABLE_ROW:
+//                this.tableRowLayoutParams.setMargins(spacing.leftPx(),
+//                                                     spacing.topPx(),
+//                                                     spacing.rightPx(),
+//                                                     spacing.bottomPx());
+//                break;
+//            case FLEXBOX:
+//                this.flexboxLayoutParams.setMargins(spacing.leftPx(),
+//                                                    spacing.topPx(),
+//                                                    spacing.rightPx(),
+//                                                    spacing.bottomPx());
+//                break;
+//        }
+//    }
 
 
     public void setRules(List<Integer> rules)

@@ -76,30 +76,30 @@ data class QuoteWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<QuoteWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply5(::QuoteWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    split(doc.maybeAt("widget_format"),
-                                          valueResult<Func<WidgetFormat>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
-                                              effApply(::Comp, WidgetFormat.fromDocument(d))),
-                                    // Quote Style
-                                    split(doc.maybeAt("quote_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // Source Style
-                                    split(doc.maybeAt("source_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // Icon Color
-                                    split(doc.maybeAt("icon_color"),
-                                          valueResult<Func<ColorId>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
-                                              effApply(::Prim, ColorId.fromDocument(d)))
-                                    )
+            is DocDict -> effApply(::QuoteWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   split(doc.maybeAt("widget_format"),
+                                         valueResult<Func<WidgetFormat>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
+                                             effApply(::Comp, WidgetFormat.fromDocument(d))),
+                                   // Quote Style
+                                   split(doc.maybeAt("quote_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Source Style
+                                   split(doc.maybeAt("source_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Icon Color
+                                   split(doc.maybeAt("icon_color"),
+                                         valueResult<Func<ColorId>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
+                                             effApply(::Prim, ColorId.fromDocument(d)))
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -344,7 +344,7 @@ data class QuoteWidgetFormat(override val id : UUID,
 //
 //    private void onQuoteWidgetShortClick(Context context)
 //    {
-//        SheetActivity sheetActivity = (SheetActivity) context;
+//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
 //
 //        if (this.quote().length() > 145 || this.source() != null)
 //        {

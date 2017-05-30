@@ -23,7 +23,6 @@ import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.SheetManagerOld;
 
 import java.util.UUID;
 
@@ -133,23 +132,23 @@ public class TableActionDialogFragment extends android.support.v4.app.DialogFrag
         if (this.tableWidgetId != null && this.cellId != null)
         {
             // [1] Find Widget
-            WidgetUnion widgetUnion = SheetManagerOld.currentSheet().widgetWithId(this.tableWidgetId);
-
-            if (widgetUnion.type() == WidgetType.TABLE)
-            {
-                // [2] Get Table Widget
-                TableWidget tableWidget = widgetUnion.tableWidget();
-
-                // [3] Get Table Cell
-                CellUnion cellUnion = tableWidget.cellWithId(this.cellId);
-
-                if (cellUnion != null)
-                {
-                    cellUnion.cell().openEditor(activity);
-                    this.dismiss();
-                }
-
-            }
+//            WidgetUnion widgetUnion = SheetManagerOld.currentSheet().widgetWithId(this.tableWidgetId);
+//
+//            if (widgetUnion.type() == WidgetType.TABLE)
+//            {
+//                // [2] Get Table Widget
+//                TableWidget tableWidget = widgetUnion.tableWidget();
+//
+//                // [3] Get Table Cell
+//                CellUnion cellUnion = tableWidget.cellWithId(this.cellId);
+//
+//                if (cellUnion != null)
+//                {
+//                    cellUnion.cell().openEditor(activity);
+//                    this.dismiss();
+//                }
+//
+//            }
         }
 
     }

@@ -43,34 +43,34 @@ data class OptionWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<OptionWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply6(::OptionWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    split(doc.maybeAt("widget_format"),
-                                          valueResult<Func<WidgetFormat>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
-                                              effApply(::Comp, WidgetFormat.fromDocument(d))),
-                                    // Description Style
-                                    split(doc.maybeAt("description_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // Value Style
-                                    split(doc.maybeAt("value_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // Value Item Style
-                                    split(doc.maybeAt("value_item_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // Height
-                                    split(doc.maybeEnum<Height>("height"),
-                                          valueResult<Func<Height>>(Null()),
-                                          { valueResult(Prim(it))  })
-                                    )
+            is DocDict -> effApply(::OptionWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   split(doc.maybeAt("widget_format"),
+                                         valueResult<Func<WidgetFormat>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
+                                             effApply(::Comp, WidgetFormat.fromDocument(d))),
+                                   // Description Style
+                                   split(doc.maybeAt("description_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Value Style
+                                   split(doc.maybeAt("value_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Value Item Style
+                                   split(doc.maybeAt("value_item_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Height
+                                   split(doc.maybeEnum<Height>("height"),
+                                         valueResult<Func<Height>>(Null()),
+                                         { valueResult(Prim(it))  })
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -170,7 +170,7 @@ data class OptionDescription(val value : String)
 //
 //        if (this.valueReference() != null && dictionary != null)
 //        {
-//            ValueSetUnion valueSetUnion = dictionary.lookup(this.valueReference().valueSetName());
+//            ValueSetUnion valueSetUnion = dictionary.lookup(this.valueReference().valueSetId());
 //            if (valueSetUnion != null)
 //            {
 //                this.valueSet = valueSetUnion.valueSet();

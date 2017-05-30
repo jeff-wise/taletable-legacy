@@ -15,7 +15,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
-import com.kispoko.tome.model.sheet.Spacing;
+
+import com.kispoko.tome.model.sheet.style.Spacing;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class TextViewBuilder implements ViewBuilder
     public SpannableStringBuilder   textSpan;
 
     public Padding                  padding;
-    public Spacing                  paddingSpacing;
+    public Spacing paddingSpacing;
 
     public Margins                  margin;
     public Spacing                  marginSpacing;
@@ -232,19 +233,19 @@ public class TextViewBuilder implements ViewBuilder
         // > Padding
         // --------------------------------------------------------------------------------------
 
-        if (this.paddingSpacing != null) {
-            textView.setPadding(this.paddingSpacing.leftPx(),
-                                this.paddingSpacing.topPx(),
-                                this.paddingSpacing.rightPx(),
-                                this.paddingSpacing.bottomPx());
-        }
-        else
-        {
-            textView.setPadding(this.padding.left(context),
-                                this.padding.top(context),
-                                this.padding.right(context),
-                                this.padding.bottom(context));
-        }
+//        if (this.paddingSpacing != null) {
+//            textView.setPadding(this.paddingSpacing.leftPx(),
+//                                this.paddingSpacing.topPx(),
+//                                this.paddingSpacing.rightPx(),
+//                                this.paddingSpacing.bottomPx());
+//        }
+//        else
+//        {
+//            textView.setPadding(this.padding.left(context),
+//                                this.padding.top(context),
+//                                this.padding.right(context),
+//                                this.padding.bottom(context));
+//        }
 
 
         // > On Click Listener
@@ -401,10 +402,10 @@ public class TextViewBuilder implements ViewBuilder
         // > Margins
         // --------------------------------------------------------------------------------------
 
-        if (this.marginSpacing != null)
-            layoutParamsBuilder.setMargins(this.marginSpacing);
-        else
-            layoutParamsBuilder.setMargins(this.margin);
+//        if (this.marginSpacing != null)
+//            layoutParamsBuilder.setMargins(this.marginSpacing);
+//        else
+//            layoutParamsBuilder.setMargins(this.margin);
 
         // > Rules (Relative Layout Only)
         // --------------------------------------------------------------------------------------

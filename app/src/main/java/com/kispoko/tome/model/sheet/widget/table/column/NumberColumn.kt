@@ -33,20 +33,20 @@ data class NumberColumnFormat(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply3(::NumberColumnFormat,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Column Format
-                          split(doc.maybeAt("column_format"),
-                                valueResult<Func<ColumnFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<ColumnFormat>> =
-                                    effApply(::Comp, ColumnFormat.fromDocument(d))),
-                          // Default Value Prefix
-                          split(doc.maybeAt("default_value_prefix"),
-                                valueResult<Func<DefaultValuePrefix>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<DefaultValuePrefix>> =
-                                    effApply(::Prim, DefaultValuePrefix.fromDocument(d)))
-                          )
+                effApply(::NumberColumnFormat,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Column Format
+                         split(doc.maybeAt("column_format"),
+                               valueResult<Func<ColumnFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<ColumnFormat>> =
+                                   effApply(::Comp, ColumnFormat.fromDocument(d))),
+                         // Default Value Prefix
+                         split(doc.maybeAt("default_value_prefix"),
+                               valueResult<Func<DefaultValuePrefix>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<DefaultValuePrefix>> =
+                                   effApply(::Prim, DefaultValuePrefix.fromDocument(d)))
+                         )
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }

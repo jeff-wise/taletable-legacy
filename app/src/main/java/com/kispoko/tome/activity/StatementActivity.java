@@ -7,12 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.program.statement.Parameter;
-import com.kispoko.tome.model.engine.program.statement.Statement;
+import com.kispoko.tome.model.game.engine.program.Statement;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
@@ -45,9 +42,9 @@ public class StatementActivity extends AppCompatActivity
 
         // > Read Parameters
         this.statement = null;
-        if (getIntent().hasExtra("statement")) {
-            this.statement = (Statement) getIntent().getSerializableExtra("statement");
-        }
+//        if (getIntent().hasExtra("statement")) {
+//            this.statement = (Statement) getIntent().getSerializableExtra("statement");
+//        }
 
         initializeToolbar();
 
@@ -134,9 +131,9 @@ public class StatementActivity extends AppCompatActivity
                                                           this);
 
         List<LinearLayout> functionButtons = Arrays.asList(builtInButton, definedButton);
-        LinearLayout inputView = Form.textInput(this.statement.functionName(),
-                                                functionButtons,
-                                                this);
+//        LinearLayout inputView = Form.textInput(this.statement.functionName(),
+//                                                functionButtons,
+//                                                this);
 
 //        LinearLayout functionField = Form.field(R.string.statement_field_function_label,
 //                                                R.string.statement_field_function_description,
@@ -149,16 +146,16 @@ public class StatementActivity extends AppCompatActivity
         List<String> columnNames = Arrays.asList("Value", "Type");
         TableLayout parametersTable = Form.tableInput(columnNames, this);
 
-        for (Parameter parameter : this.statement.parameters())
-        {
-            LinearLayout valueCell = Form.textInputCell(parameter.valueString(), this);
-            TextView typeCell = Form.buttonInputCell(parameter.typeString(), this);
-            TableRow parameterRow = Form.tableInputRow(this);
-            parameterRow.addView(valueCell);
-            parameterRow.addView(typeCell);
-
-            parametersTable.addView(parameterRow);
-        }
+//        for (Parameter parameter : this.statement.parameters())
+//        {
+//            LinearLayout valueCell = Form.textInputCell(parameter.valueString(), this);
+//            TextView typeCell = Form.buttonInputCell(parameter.typeString(), this);
+//            TableRow parameterRow = Form.tableInputRow(this);
+//            parameterRow.addView(valueCell);
+//            parameterRow.addView(typeCell);
+//
+//            parametersTable.addView(parameterRow);
+//        }
 
 //        LinearLayout parametersField =
 //                Form.field(R.string.statement_field_parameters_label,

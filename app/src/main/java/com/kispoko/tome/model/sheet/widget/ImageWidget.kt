@@ -108,7 +108,7 @@ package com.kispoko.tome.model.sheet.widget
 //
 //    private void chooseImageDialog()
 //    {
-//        SheetActivity sheetActivity = (SheetActivity) SheetManagerOld.currentSheetContext();
+//        SheetActivityOld sheetActivity = (SheetActivityOld) SheetManagerOld.currentSheetContext();
 //
 //        Intent intent;
 //
@@ -127,7 +127,7 @@ package com.kispoko.tome.model.sheet.widget
 //
 //        sheetActivity.setChooseImageAction(new ChooseImageAction(this));
 //
-//        sheetActivity.startActivityForResult(intent, SheetActivity.CHOOSE_IMAGE_FROM_FILE);
+//        sheetActivity.startActivityForResult(intent, SheetActivityOld.CHOOSE_IMAGE_FROM_FILE);
 //    }
 //
 //

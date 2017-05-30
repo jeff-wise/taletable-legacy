@@ -3,22 +3,17 @@ package com.kispoko.tome.activity.engine.variable;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.SummationActivity;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.model.game.engine.variable.NumberVariable;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
@@ -37,7 +32,7 @@ public class NumberVariableActivity extends AppCompatActivity
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private NumberVariable              numberVariable;
+    private NumberVariable numberVariable;
 
 
     // > Form
@@ -62,10 +57,10 @@ public class NumberVariableActivity extends AppCompatActivity
         // [2] Read Parameters
         // -------------------------------------------------------------------------------------
         this.numberVariable = null;
-        if (getIntent().hasExtra("number_variable")) {
-            this.numberVariable =
-                    (NumberVariable) getIntent().getSerializableExtra("number_variable");
-        }
+//        if (getIntent().hasExtra("number_variable")) {
+//            this.numberVariable =
+//                    (NumberVariable) getIntent().getSerializableExtra("number_variable");
+//        }
 
         // [3] Initialize data
         // -------------------------------------------------------------------------------------
@@ -133,12 +128,12 @@ public class NumberVariableActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields = Model.fields(this.numberVariable, this);
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields = Model.fields(this.numberVariable, this);
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {
@@ -218,17 +213,17 @@ public class NumberVariableActivity extends AppCompatActivity
             return;
 
         // > Summation Value
-        kindField.setCaseOnClickListener("summation", new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(NumberVariableActivity.this,
-                                           SummationActivity.class);
-                intent.putExtra("summation", numberVariable.summation());
-                startActivity(intent);
-            }
-        });
+//        kindField.setCaseOnClickListener("summation", new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                Intent intent = new Intent(NumberVariableActivity.this,
+//                                           SummationActivity.class);
+//                intent.putExtra("summation", numberVariable.summation());
+//                startActivity(intent);
+//            }
+//        });
     }
 
 

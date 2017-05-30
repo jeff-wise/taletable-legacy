@@ -9,19 +9,18 @@ import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.model.game.engine.dice.RollModifier;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 
 
 /**
@@ -33,7 +32,7 @@ public class RollModifierEditorActivity extends AppCompatActivity
     // PROPERTEIS
     // -----------------------------------------------------------------------------------------
 
-    private RollModifier        rollModifier;
+    private RollModifier rollModifier;
 
     // > Form
     // -----------------------------------------------------------------------------------------
@@ -58,9 +57,9 @@ public class RollModifierEditorActivity extends AppCompatActivity
         // --------------------------------------------------------------------------------------
 
         this.rollModifier = null;
-        if (getIntent().hasExtra("roll_modifier")) {
-            this.rollModifier = (RollModifier) getIntent().getSerializableExtra("roll_modifier");
-        }
+//        if (getIntent().hasExtra("roll_modifier")) {
+//            this.rollModifier = (RollModifier) getIntent().getSerializableExtra("roll_modifier");
+//        }
 
         // [3] Initialize UI components
         // -------------------------------------------------------------------------------------
@@ -125,12 +124,12 @@ public class RollModifierEditorActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields.addAll(Model.fields(this.rollModifier, this));
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields.addAll(Model.fields(this.rollModifier, this));
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {

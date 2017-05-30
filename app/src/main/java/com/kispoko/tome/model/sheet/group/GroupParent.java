@@ -2,7 +2,6 @@
 package com.kispoko.tome.model.sheet.group;
 
 
-import com.kispoko.tome.model.sheet.BackgroundColor;
 
 
 
@@ -12,7 +11,7 @@ import com.kispoko.tome.model.sheet.BackgroundColor;
  * Interface for a group that is a parent of some descendant UI object
  *  e.g. Group Row, Widget, etc..
  */
-public interface GroupParent
-{
-    BackgroundColor background();
-}
+//public interface GroupParent
+//{
+//    BackgroundColor background();
+//}

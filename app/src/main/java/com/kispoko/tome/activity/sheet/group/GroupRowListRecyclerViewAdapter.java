@@ -70,7 +70,7 @@ public class GroupRowListRecyclerViewAdapter
         viewHolder.setIndexString(indexString);
 
         // > Widgets
-        viewHolder.setWidgets(groupRow.widgets().size());
+        //viewHolder.setWidgets(groupRow.widgets().size());
 
         // > On Click Listener
         viewHolder.setOnClick(groupRow, this.groupName, this.context);
@@ -144,7 +144,7 @@ public class GroupRowListRecyclerViewAdapter
                     Intent intent = new Intent(context, GroupRowActivity.class);
 
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("group_row", groupRow);
+//                    bundle.putSerializable("group_row", groupRow);
                     bundle.putString("group_name", groupName);
                     intent.putExtras(bundle);
 

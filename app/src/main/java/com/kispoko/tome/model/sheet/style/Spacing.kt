@@ -8,7 +8,6 @@ import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import effect.Err
 import effect.effApply
-import effect.effApply5
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
@@ -27,24 +26,24 @@ data class Spacing(override val id : UUID,
                    val left : Func<Int>,
                    val top : Func<Int>,
                    val right : Func<Int>,
-                   val bottom : Func<Int>) : Model(id)
+                   val bottom : Func<Int>) : Model
 {
 
     companion object : Factory<Spacing>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Spacing> = when (doc)
         {
-            is DocDict -> effApply5(::Spacing,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Left
-                                    effApply(::Prim, doc.int("left")),
-                                    // Top
-                                    effApply(::Prim, doc.int("top")),
-                                    // Right
-                                    effApply(::Prim, doc.int("right")),
-                                    // Bottom
-                                    effApply(::Prim, doc.int("bottom")))
+            is DocDict -> effApply(::Spacing,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Left
+                                   effApply(::Prim, doc.int("left")),
+                                   // Top
+                                   effApply(::Prim, doc.int("top")),
+                                   // Right
+                                   effApply(::Prim, doc.int("right")),
+                                   // Bottom
+                                   effApply(::Prim, doc.int("bottom")))
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

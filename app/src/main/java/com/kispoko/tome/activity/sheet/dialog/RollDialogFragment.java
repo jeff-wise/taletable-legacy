@@ -20,8 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.summation.term.TermSummary;
-import com.kispoko.tome.util.tuple.Tuple2;
+import com.kispoko.tome.model.game.engine.summation.Summation;
+import com.kispoko.tome.model.game.engine.variable.NumberVariable;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
@@ -56,7 +56,7 @@ public class RollDialogFragment extends DialogFragment
 
         Bundle args = new Bundle();
         args.putString("action_name", actionName);
-        args.putSerializable("number_variable", numberVariable);
+//        args.putSerializable("number_variable", numberVariable);
         rollDialogFragment.setArguments(args);
 
         return rollDialogFragment;
@@ -85,7 +85,7 @@ public class RollDialogFragment extends DialogFragment
 
         // > Read State
         this.actionName     = getArguments().getString("action_name");
-        this.numberVariable = (NumberVariable) getArguments().getSerializable("number_variable");
+    //j    this.numberVariable = (NumberVariable) getArguments().getSerializable("number_variable");
 
         return dialog;
     }
@@ -138,9 +138,9 @@ public class RollDialogFragment extends DialogFragment
         layout.addView(rollsView(context));
 
         // > Components View
-        if (this.numberVariable.kind() == NumberVariable.Kind.SUMMATION) {
-            layout.addView(componentsView(this.numberVariable.summation(), context));
-        }
+//        if (this.numberVariable.kind() == NumberVariable.Kind.SUMMATION) {
+//            layout.addView(componentsView(this.numberVariable.summation(), context));
+//        }
 
         // > Button View
         layout.addView(rollButtonView(context));
@@ -282,32 +282,32 @@ public class RollDialogFragment extends DialogFragment
     {
         LinearLayout layout = componentsViewLayout(context);
 
-        for (TermSummary summary: summation.summary()) {
-            layout.addView(componentView(summary, context));
-        }
+//        for (com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary: summation.summary()) {
+//            layout.addView(componentView(summary, context));
+//        }
 
         return layout;
     }
 
 
-    private LinearLayout componentView(TermSummary summary, Context context)
-    {
-        LinearLayout layout = componentViewLayout(context);
-
-        if (summary.name() != null)
-            layout.addView(componentHeaderView(summary.name(), context));
-
-        for (Tuple2<String,String> component : summary.components())
-        {
-            String name  = component.getItem1();
-            String value = component.getItem2();
-            layout.addView(componentItemView(name, value, context));
-        }
-
-        layout.addView(componentDividerView(context));
-
-        return layout;
-    }
+//    private LinearLayout componentView(com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary, Context context)
+//    {
+//        LinearLayout layout = componentViewLayout(context);
+//
+//        if (summary.name() != null)
+//            layout.addView(componentHeaderView(summary.name(), context));
+//
+//        for (Tuple2<String,String> component : summary.components())
+//        {
+//            String name  = component.getItem1();
+//            String value = component.getItem2();
+//            layout.addView(componentItemView(name, value, context));
+//        }
+//
+//        layout.addView(componentDividerView(context));
+//
+//        return layout;
+//    }
 
 
     private LinearLayout componentDividerView(Context context)

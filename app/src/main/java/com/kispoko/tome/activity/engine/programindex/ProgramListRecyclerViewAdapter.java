@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.program.ProgramEditorActivity;
-import com.kispoko.tome.model.engine.program.Program;
+import com.kispoko.tome.model.game.engine.program.Program;
 
 import java.util.List;
 
@@ -59,28 +59,28 @@ public class ProgramListRecyclerViewAdapter
         Program program = this.programList.get(position);
 
         // > Label
-        viewHolder.setHeaderText(program.label());
-
-        // > Description
-        viewHolder.setDescriptionText(program.description());
-
-        // > Parameter Types
-        int arity = program.arity();
-
-        if (arity >= 1)
-            viewHolder.setParameterType1(program.parameterTypes().get(0).toString().toUpperCase());
-
-        if (arity >= 2)
-            viewHolder.setParameterType2(program.parameterTypes().get(1).toString().toUpperCase());
-
-        if (arity >= 3)
-            viewHolder.setParameterType3(program.parameterTypes().get(2).toString().toUpperCase());
-
-        // > Result Type
-        viewHolder.setResultType(program.resultType().toString().toUpperCase());
-
-        // > On Click Listener
-        viewHolder.setOnClick(program.name(), this.context);
+//        viewHolder.setHeaderText(program.label());
+//
+//        // > Description
+//        viewHolder.setDescriptionText(program.description());
+//
+//        // > Parameter Types
+//        int arity = program.arity();
+//
+//        if (arity >= 1)
+//            viewHolder.setParameterType1(program.parameterTypes().get(0).toString().toUpperCase());
+//
+//        if (arity >= 2)
+//            viewHolder.setParameterType2(program.parameterTypes().get(1).toString().toUpperCase());
+//
+//        if (arity >= 3)
+//            viewHolder.setParameterType3(program.parameterTypes().get(2).toString().toUpperCase());
+//
+//        // > Result Type
+//        viewHolder.setResultType(program.resultType().toString().toUpperCase());
+//
+//        // > On Click Listener
+//        viewHolder.setOnClick(program.name(), this.context);
     }
 
 

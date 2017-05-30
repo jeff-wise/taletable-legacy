@@ -3,23 +3,16 @@ package com.kispoko.tome.activity.engine.program;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.program.Program;
-import com.kispoko.tome.model.engine.program.ProgramIndex;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
-import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.model.game.engine.program.Program;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
@@ -38,7 +31,7 @@ public class ProgramEditorActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Program             program;
+    private Program program;
 
 
     // > Functors
@@ -69,8 +62,8 @@ public class ProgramEditorActivity extends AppCompatActivity
         }
 
         // > Lookup Program
-        ProgramIndex programIndex = SheetManagerOld.currentSheet().engine().programIndex();
-        this.program = programIndex.programWithName(programName);
+//        ProgramIndex programIndex = SheetManagerOld.currentSheet().engine().programIndex();
+//        this.program = programIndex.programWithName(programName);
 
         // [3] Initialize UI
         // --------------------------------------------------------------------------------------
@@ -132,12 +125,12 @@ public class ProgramEditorActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields.addAll(Model.fields(this.program, this));
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields.addAll(Model.fields(this.program, this));
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // Add custom field for statements
         fields.add(Field.model("statements",
@@ -210,18 +203,18 @@ public class ProgramEditorActivity extends AppCompatActivity
         if (field == null)
             return;
 
-        field.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(ProgramEditorActivity.this,
-                                           StatementsEditorActivity.class);
-                if (program != null)
-                    intent.putExtra("program_name", program.name());
-                startActivity(intent);
-            }
-        });
+//        field.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                Intent intent = new Intent(ProgramEditorActivity.this,
+//                                           StatementsEditorActivity.class);
+//                if (program != null)
+//                    intent.putExtra("program_name", program.name());
+//                startActivity(intent);
+//            }
+//        });
     }
 
 

@@ -19,15 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.variable.NullVariableException;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.SwitchBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.model.sheet.widget.ListWidget;
 
 
 /**
@@ -116,25 +115,25 @@ public class ListWidgetDialogFragment extends DialogFragment
 
     private String itemClickedValueString()
     {
-        if (this.listWidget != null)
-        {
-            if (this.itemClicked > 0 &&
-                this.itemClicked <= this.listWidget.values().size())
-            {
-                // > Get value variable union
-                VariableUnion itemVariableUnion = this.listWidget.values()
-                                                      .get(this.itemClicked - 1);
-
-                // > Get its value string
-                try {
-                    return itemVariableUnion.variable().valueString();
-                }
-                catch (NullVariableException exception) {
-                    ApplicationFailure.nullVariable(exception);
-                    return "";
-                }
-            }
-        }
+//        if (this.listWidget != null)
+//        {
+//            if (this.itemClicked > 0 &&
+//                this.itemClicked <= this.listWidget.values().size())
+//            {
+//                // > Get value variable union
+//                VariableUnion itemVariableUnion = this.listWidget.values()
+//                                                      .get(this.itemClicked - 1);
+//
+//                // > Get its value string
+//                try {
+//                    return itemVariableUnion.variable().valueString();
+//                }
+//                catch (NullVariableException exception) {
+//                    ApplicationFailure.nullVariable(exception);
+//                    return "";
+//                }
+//            }
+//        }
 
         return "";
     }
@@ -362,13 +361,13 @@ public class ListWidgetDialogFragment extends DialogFragment
 
     private View itemValueView(Context context)
     {
-        if (this.listWidget != null)
-        {
-            if (this.listWidget.valueSetName() != null)
-                return this.valueChooserButtonView(context);
-            else
-                return this.defaultValueView(context);
-        }
+//        if (this.listWidget != null)
+//        {
+//            if (this.listWidget.valueSetName() != null)
+//                return this.valueChooserButtonView(context);
+//            else
+//                return this.defaultValueView(context);
+//        }
 
         return null;
     }

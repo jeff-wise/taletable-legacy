@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.model.game.engine.dice.DiceQuantity;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
@@ -114,8 +115,8 @@ public class DiceQuantityListActivity extends AppCompatActivity
                         new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_86);
         recyclerView.addItemDecoration(dividerItemDecoration);
 
-        this.recyclerViewAdapter = new DiceQuantityRecyclerViewAdapter(this.quantities, this);
-        recyclerView.setAdapter(this.recyclerViewAdapter);
+//        this.recyclerViewAdapter = new DiceQuantityRecyclerViewAdapter(this.quantities, this);
+//        recyclerView.setAdapter(this.recyclerViewAdapter);
 
         // [2] Initalize Floating Action Button
         // -------------------------------------------------------------------------------------

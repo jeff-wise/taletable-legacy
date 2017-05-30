@@ -1,7 +1,7 @@
 
 ---
 
-version: 1.0
+version: '1.0'
 name: Sheet
 authors:
   - name: 'Jeff Wise'
@@ -35,7 +35,7 @@ types:
       The sections.
   - name: settings
     type: settings
-    presence: required
+    presence: optional
     description: >
       The sheet settings.
 - name: settings
@@ -84,7 +84,7 @@ types:
   - name: pages
     type: list
     of: page
-    presence: required
+    presence: optional
     description: >
       The section's pages.
 - name: section_name
@@ -101,34 +101,22 @@ types:
   group: Page
   type: product
   fields:
-  - name: id
-    type: page_id
+  - name: name
+    type: string
     presence: required
     description: >
-      The id
+      The page name.
   - name: format
     type: page_format
     presence: optional
     description: >
       The page format.
-  - name: index
-    type: integer
-    presence: required
-    description: >
-      The index of the page.
   - name: groups
     type: list
     of: group
     presence: required
     description: >
       The groups in the page.
-- name: page_id
-  label: Page Identifier
-  description: >
-    The unique identifier of a page.
-  group: Page
-  type: simple
-  base_type: string
 - name: color_id
   label: Color Identifier
   description: >
@@ -155,34 +143,17 @@ types:
   group: Group
   type: product
   fields:
-  - name: id
-    type: group_id
-    presence: required
-    description: >
-      The group id.
   - name: format
     type: group_format
     presence: optional
     description: >
       The group format.
-  - name: index
-    type: integer
-    presence: required
-    description: >
-      The index of the group.
   - name: rows
     type: list
     of: group_row
     presence: required
     description: >
       The rows in the group.
-- name: group_id
-  label: Group Identifier
-  description: >
-    The unique identifier of a group.
-  group: Group
-  type: simple
-  base_type: string
 - name: group_format
   label: Group Format
   description: >
@@ -210,42 +181,6 @@ types:
     presence: optional
     description: >
       The corners on the group border.
-- name: spacing
-  label: Spacing
-  description: >
-    The spacing around an element
-  group: Style
-  type: product
-  fields:
-  - name: left
-    type: integer
-    presence: optional
-    description:
-      The space on the left.
-  - name: top
-    type: integer
-    presence: optional
-    description:
-      The space on the top.
-  - name: right
-    type: integer
-    presence: optional
-    description:
-      The space on the right.
-  - name: bottom
-    type: integer
-    presence: optional
-    description:
-      The space on the bottom.
-- name: corners
-  label: Corners
-  description: >
-    The types of corners.
-  group: Style
-  type: simple
-  base_type: string
-  constraints:
-  - corners_type 
 - name: group_row
   label: Group Row
   description: >
@@ -253,16 +188,6 @@ types:
   group: Group Row
   type: product
   fields:
-  - name: id
-    type: group_row_id
-    presence: required
-    description: >
-      The group row identifier.
-  - name: index
-    type: integer
-    presence: required
-    description: >
-      The group row index.
   - name: format
     type: group_row_format
     presence: optional
@@ -1195,59 +1120,7 @@ types:
     presence: required
     description: >
       The column name.
-  - name: format
-    type: table_widget_number_column_format
-    presence: optional
-    description: >
-      The column format.
-  - name: default_value
-    type: number
-    presence: optional
-    description: >
-      The column default value.
-  - name: default_label
-    type: string
-    presence: optional
-    description: >
-      The column default label.
-  - name: is_namespaced
-    type: boolean
-    presence: optional
-    description: >
-      Are cell in this column namespaced?
-- name: table_widget_number_column_format
-  label: Number Column Format
-  description: >
-    Number table column format.
-  group: Widget
-  type: product
-  fields:
-  - name: alignment
-    type: alignment
-    presence: optional
-    description: >
-      The column alignment.
-  - name: width
-    type: integer
-    presence: optional
-    description: >
-      The column width.
-  - name: background
-    type: color_id
-    presence: optional
-    description: >
-      The column background color.
-  - name: text_style
-    type: text_style
-    presence: optional
-    description: >
-      The column text style.
-  - name: value_prefix
-    type: string
-    presence: optional
-    description: >
-      The value prefix before all cell values in the column.
-- name: table_widget_text_column
+- name: widget_text_column
   label: Text Column
   description: >
     Table column with text values.
@@ -1570,7 +1443,7 @@ types:
       The widget identifier.
   - name: format
     type: text_widget_format
-    presence: required
+    presence: optional
     description: >
       The text widget formatting options.
   - name: value
@@ -1580,13 +1453,13 @@ types:
       The text value.
   - name: description
     type: string
-    presence: required
+    presence: optional
     description: >
       The description.
   - name: variables
     type: list
     of: variable
-    presence: required
+    presence: optional
     description: >
       The variables active when the widget is present.
 - name: text_widget_format
@@ -1745,6 +1618,42 @@ types:
     presence: optional
     description: >
       The text background color.
+- name: spacing
+  label: Spacing
+  description: >
+    The spacing around an element
+  group: Style
+  type: product
+  fields:
+  - name: left
+    type: integer
+    presence: optional
+    description:
+      The space on the left.
+  - name: top
+    type: integer
+    presence: optional
+    description:
+      The space on the top.
+  - name: right
+    type: integer
+    presence: optional
+    description:
+      The space on the right.
+  - name: bottom
+    type: integer
+    presence: optional
+    description:
+      The space on the bottom.
+- name: corners
+  label: Corners
+  description: >
+    The types of corners.
+  group: Style
+  type: simple
+  base_type: string
+  constraints:
+  - corners_type 
 - name: alignment
   label: Alignment
   description: >

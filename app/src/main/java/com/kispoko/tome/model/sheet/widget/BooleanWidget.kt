@@ -7,11 +7,9 @@ import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
 import effect.effApply
-import effect.effApply5
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
@@ -36,21 +34,21 @@ data class BooleanWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply5(::BooleanWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    doc.at("widget_format") ap {
-                                        effApply(::Comp, WidgetFormat.fromDocument(it))
-                                    },
-                                    // Text Style
-                                    doc.at("text_style") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    // True Text
-                                    effApply(::Prim, doc.text("true_text")),
-                                    // False Text
-                                    effApply(::Prim, doc.text("false_text")))
+            is DocDict -> effApply(::BooleanWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   },
+                                   // Text Style
+                                   doc.at("text_style") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   // True Text
+                                   effApply(::Prim, doc.text("true_text")),
+                                   // False Text
+                                   effApply(::Prim, doc.text("false_text")))
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

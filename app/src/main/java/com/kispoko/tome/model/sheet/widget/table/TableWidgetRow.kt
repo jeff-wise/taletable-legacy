@@ -31,19 +31,19 @@ data class TableWidgetRow(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply3(::TableWidgetRow,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<TableWidgetRowFormat>>(Null()),
-                                 fun(d : SpecDoc) : ValueParser<Func<TableWidgetRowFormat>> =
-                                     effApply(::Comp, TableWidgetRowFormat.fromDocument(d))),
-                          // Format
-                          doc.list("cells") ap { docList ->
-                              effApply(::Coll,
-                                       docList.map { TableWidgetCell.Companion.fromDocument(it) })
-                          })
+                effApply(::TableWidgetRow,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<TableWidgetRowFormat>>(Null()),
+                                fun(d : SpecDoc) : ValueParser<Func<TableWidgetRowFormat>> =
+                                    effApply(::Comp, TableWidgetRowFormat.fromDocument(d))),
+                         // Format
+                         doc.list("cells") ap { docList ->
+                             effApply(::Coll,
+                                      docList.map { TableWidgetCell.Companion.fromDocument(it) })
+                         })
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
@@ -66,14 +66,14 @@ data class TableWidgetRowFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetRowFormat> = when (doc)
         {
-            is DocDict -> effApply2(::TableWidgetRowFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Cell Height
-                                    split(doc.maybeEnum<Height>("cell_height"),
-                                          valueResult<Func<Height>>(Null()),
-                                          { valueResult(Prim(it))  })
-                                    )
+            is DocDict -> effApply(::TableWidgetRowFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Cell Height
+                                   split(doc.maybeEnum<Height>("cell_height"),
+                                         valueResult<Func<Height>>(Null()),
+                                         { valueResult(Prim(it))  })
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

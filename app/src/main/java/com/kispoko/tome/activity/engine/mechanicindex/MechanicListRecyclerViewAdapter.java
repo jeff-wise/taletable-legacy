@@ -12,10 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.activity.engine.mechanic.MechanicActivity;
-import com.kispoko.tome.model.engine.mechanic.Mechanic;
-import com.kispoko.tome.model.engine.mechanic.MechanicIndex;
+import com.kispoko.tome.model.game.engine.mechanic.Mechanic;
 
 import java.util.List;
 
@@ -85,19 +83,19 @@ public class MechanicListRecyclerViewAdapter
         {
             Mechanic mechanic = (Mechanic) item;
 
-            MechanicViewHolder mechanicViewHolder = (MechanicViewHolder) viewHolder;
-            mechanicViewHolder.setName(mechanic.label());
-            mechanicViewHolder.setSummary(mechanic.summary());
-            mechanicViewHolder.setOnClick(mechanic.name(), this.context);
-
-            MechanicIndex mechanicIndex = SheetManagerOld.mechanicIndex();
-            if (mechanicIndex != null)
-            {
-                boolean isActive = mechanicIndex.mechanicIsActive(mechanic.name());
-
-                if (isActive)
-                    mechanicViewHolder.setActive();
-            }
+//            MechanicViewHolder mechanicViewHolder = (MechanicViewHolder) viewHolder;
+//            mechanicViewHolder.setName(mechanic.label());
+//            mechanicViewHolder.setSummary(mechanic.summary());
+//            mechanicViewHolder.setOnClick(mechanic.name(), this.context);
+//
+//            MechanicIndex mechanicIndex = SheetManagerOld.mechanicIndex();
+//            if (mechanicIndex != null)
+//            {
+//                boolean isActive = mechanicIndex.mechanicIsActive(mechanic.name());
+//
+//                if (isActive)
+//                    mechanicViewHolder.setActive();
+//            }
         }
     }
 

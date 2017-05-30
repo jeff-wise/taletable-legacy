@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.kispoko.tome.model.sheet.page.Page;
+
 
 /**
  * Pager Pager Adapter
@@ -48,7 +50,7 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
         switch (position)
         {
             case 0:
-                return DataFragment.newInstance(this.page);
+                //return DataFragment.newInstance(this.page);
             case 1:
                 return GroupListFragment.newInstance(this.page);
             default:

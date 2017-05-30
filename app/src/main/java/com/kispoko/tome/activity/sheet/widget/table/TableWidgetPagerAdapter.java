@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.kispoko.tome.model.sheet.widget.TableWidget;
+
 
 /**
  * Table Widget Pager Adapter
@@ -47,10 +49,10 @@ public class TableWidgetPagerAdapter extends FragmentStatePagerAdapter
     {
         switch (position)
         {
-            case 0:
-                return SettingsFragment.newInstance(this.tableWidget);
-            case 1:
-                return ColumnListFragment.newInstance(this.tableWidget);
+//            case 0:
+//                return SettingsFragment.newInstance(this.tableWidget);
+//            case 1:
+//                return ColumnListFragment.newInstance(this.tableWidget);
             default:
                 return null;
         }

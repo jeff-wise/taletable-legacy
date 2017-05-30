@@ -26,6 +26,7 @@ import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.model.sheet.widget.QuoteWidget;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -112,10 +113,10 @@ public class QuoteWidgetDialogFragment extends DialogFragment
 
     private void sendQuoteWidgetUpdate(String newValue)
     {
-        QuoteWidget.UpdateQuoteEvent event =
-                new QuoteWidget.UpdateQuoteEvent(this.quoteWidget.getId(), newValue);
-
-        EventBus.getDefault().post(event);
+//        QuoteWidget.UpdateQuoteEvent event =
+//                new QuoteWidget.UpdateQuoteEvent(this.quoteWidget.getId(), newValue);
+//
+//        EventBus.getDefault().post(event);
     }
 
 
@@ -272,8 +273,8 @@ public class QuoteWidgetDialogFragment extends DialogFragment
         value.width                 = LinearLayout.LayoutParams.MATCH_PARENT;
         value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        if (this.quoteWidget != null)
-            value.text              = this.quoteWidget.quote();
+//        if (this.quoteWidget != null)
+//            value.text              = this.quoteWidget.quote();
 
         value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_blue_hl_1;

@@ -14,6 +14,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.model.game.engine.dice.DiceQuantity;
 
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class DiceQuantityRecyclerViewAdapter
         DiceQuantity diceQuantity = this.quantities.get(position);
 
         viewHolder.setQuantity(diceQuantity.toString());
-        viewHolder.setDescription(diceQuantity.description());
+//        viewHolder.setDescription(diceQuantity.description());
 
         viewHolder.setOnClick(diceQuantity, this.context);
     }
@@ -126,7 +127,7 @@ public class DiceQuantityRecyclerViewAdapter
                 public void onClick(View view)
                 {
                     Intent intent = new Intent(context, DiceQuantityEditorActivity.class);
-                    intent.putExtra("dice_quantity", diceQuantity);
+//                    intent.putExtra("dice_quantity", diceQuantity);
                     context.startActivity(intent);
                 }
             });

@@ -57,7 +57,7 @@ public class NewCharacterActivity extends AppCompatActivity
         // [2] Query Models
         // -------------------------------------------------------------------------------------
 
-        CountQuery.fromModel(Sheet.class).run(this);
+        //CountQuery.fromModel(Sheet.class).run(this);
 
         // [3] Initialize UI
         // -------------------------------------------------------------------------------------

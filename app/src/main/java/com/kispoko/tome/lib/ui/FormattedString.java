@@ -16,6 +16,7 @@ import android.text.style.ReplacementSpan;
 import android.text.style.StyleSpan;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.model.sheet.style.TextFont;
 import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
@@ -229,15 +230,15 @@ public class FormattedString
         }
 
 
-        public Span(String text, Integer color, Float size, TextFont textFont)
-        {
-            this.text           = text;
-            this.placeholder    = null;
-
-            this.textColor      = color;
-            this.textSize       = size;
-            this.textFont       = textFont;
-        }
+//        public Span(String text, Integer color, Float size, TextFont textFont)
+//        {
+//            this.text           = text;
+//            this.placeholder    = null;
+//
+//            this.textColor      = color;
+//            this.textSize       = size;
+//            this.textFont       = textFont;
+//        }
 
 
         // API

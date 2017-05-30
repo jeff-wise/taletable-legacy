@@ -36,24 +36,24 @@ data class Group(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Group> = when (doc)
         {
-            is DocDict -> effApply5(::Group,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Name
-                                    doc.at("name") ap {
-                                        effApply(::Prim, GroupName.fromDocument(it))
-                                    },
-                                    // Format
-                                    doc.at("format") ap {
-                                        effApply(::Comp, GroupFormat.fromDocument(it))
-                                    },
-                                    // Index
-                                    effApply(::Prim, doc.int("index")),
-                                    // Groups
-                                    doc.list("rows") ap { docList ->
-                                        effApply(::Coll,
-                                                 docList.map { GroupRow.fromDocument(it) })
-                                    })
+            is DocDict -> effApply(::Group,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Name
+                                   doc.at("name") ap {
+                                       effApply(::Prim, GroupName.fromDocument(it))
+                                   },
+                                   // Format
+                                   doc.at("format") ap {
+                                       effApply(::Comp, GroupFormat.fromDocument(it))
+                                   },
+                                   // Index
+                                   effApply(::Prim, doc.int("index")),
+                                   // Groups
+                                   doc.list("rows") ap { docList ->
+                                       effApply(::Coll,
+                                                docList.map { GroupRow.fromDocument(it) })
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -96,35 +96,35 @@ data class GroupFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<GroupFormat> = when (doc)
         {
-            is DocDict -> effApply8(::GroupFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Background Color
-                                    doc.at("background_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    },
-                                    // Margins
-                                    doc.at("margins") ap {
-                                        effApply(::Comp, Spacing.fromDocument(it))
-                                    },
-                                    // Padding
-                                    doc.at("padding") ap {
-                                        effApply(::Comp, Spacing.fromDocument(it))
-                                    },
-                                    // Corners
-                                    effApply(::Prim, doc.enum<Corners>("corners")),
-                                    // Divider Color
-                                    doc.at("divider_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    },
-                                    // Divider Margins
-                                    doc.at("divider_margins") ap {
-                                        effApply(::Prim, DividerMargin.fromDocument(it))
-                                    },
-                                    // Divider Thickness
-                                    doc.at("divider_thickness") ap {
-                                        effApply(::Prim, DividerThickness.fromDocument(it))
-                                    })
+            is DocDict -> effApply(::GroupFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Background Color
+                                   doc.at("background_color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   },
+                                   // Margins
+                                   doc.at("margins") ap {
+                                       effApply(::Comp, Spacing.fromDocument(it))
+                                   },
+                                   // Padding
+                                   doc.at("padding") ap {
+                                       effApply(::Comp, Spacing.fromDocument(it))
+                                   },
+                                   // Corners
+                                   effApply(::Prim, doc.enum<Corners>("corners")),
+                                   // Divider Color
+                                   doc.at("divider_color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   },
+                                   // Divider Margins
+                                   doc.at("divider_margins") ap {
+                                       effApply(::Prim, DividerMargin.fromDocument(it))
+                                   },
+                                   // Divider Thickness
+                                   doc.at("divider_thickness") ap {
+                                       effApply(::Prim, DividerThickness.fromDocument(it))
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

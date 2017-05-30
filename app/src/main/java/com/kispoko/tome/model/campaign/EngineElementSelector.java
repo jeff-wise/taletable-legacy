@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Engine Element Selector
  */
-public class EngineElementSelector extends Model
+public class EngineElementSelector
                                    implements Serializable
 {
 

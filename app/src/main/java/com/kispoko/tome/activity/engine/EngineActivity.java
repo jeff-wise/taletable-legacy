@@ -21,14 +21,9 @@ import android.widget.RelativeLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.search.ActiveSearchResultsRecyclerViewAdapter;
-import com.kispoko.tome.model.engine.Engine;
-import com.kispoko.tome.engine.search.EngineActiveSearchResult;
 import com.kispoko.tome.lib.ui.SearchView;
-import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
-
-import java.util.Set;
 
 
 /**
@@ -162,13 +157,13 @@ public class EngineActivity extends AppCompatActivity
             @Override
             public void afterTextChanged(Editable editable)
             {
-                Engine engine = SheetManagerOld.currentSheet().engine();
-                if (engine != null)
-                {
-                    String query = searchFieldView.getText().toString();
-                    Set<EngineActiveSearchResult> searchResults = engine.searchActive(query);
-                    searchResultsAdapter.updateSearchResults(searchResults, query);
-                }
+//                Engine engine = SheetManagerOld.currentSheet().engine();
+//                if (engine != null)
+//                {
+//                    String query = searchFieldView.getText().toString();
+//                    Set<EngineActiveSearchResult> searchResults = engine.searchActive(query);
+//                    searchResultsAdapter.updateSearchResults(searchResults, query);
+//                }
             }
 
         });

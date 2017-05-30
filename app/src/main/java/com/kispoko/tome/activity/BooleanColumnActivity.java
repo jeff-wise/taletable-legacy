@@ -23,7 +23,7 @@ public class BooleanColumnActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private BooleanColumn booleanColumn;
+    //private BooleanColumn booleanColumn;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -37,9 +37,9 @@ public class BooleanColumnActivity extends AppCompatActivity
         setContentView(R.layout.activity_column);
 
         // > Read Parameters
-        if (getIntent().hasExtra("column")) {
-            this.booleanColumn = (BooleanColumn) getIntent().getSerializableExtra("column");
-        }
+//        if (getIntent().hasExtra("column")) {
+//            this.booleanColumn = (BooleanColumn) getIntent().getSerializableExtra("column");
+//        }
 
         initializeToolbar();
 
@@ -90,9 +90,9 @@ public class BooleanColumnActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.booleanColumn.name() + " " + getString(R.string.column);
-
-        UI.initializeToolbar(this, title);
+//        String title = this.booleanColumn.name() + " " + getString(R.string.column);
+//
+//        UI.initializeToolbar(this, title);
     }
 
 
@@ -116,7 +116,7 @@ public class BooleanColumnActivity extends AppCompatActivity
         // > Name Field
         // -------------------------------------------------------------------------------------
 
-        String name = this.booleanColumn.name();
+        //String name = this.booleanColumn.name();
 
 //        LinearLayout nameField =
 //                Form.field(

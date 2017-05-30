@@ -9,5 +9,6 @@ package com.kispoko.tome.app
 interface ApplicationError
 {
     fun userMessage() : String
+    fun debugMessage() : String
     fun logMessage() : String
 }

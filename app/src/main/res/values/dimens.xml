@@ -563,7 +563,6 @@
     <dimen name="dialog_summ_components_margin_top">10dp</dimen>
 
 
-
     <!-- INCREMENT DIALOG -->
     <dimen name="dialog_increment_value_padding_top">25dp</dimen>
     <dimen name="dialog_increment_value_padding_bottom">25dp</dimen>
@@ -582,7 +581,6 @@
     <dimen name="dialog_heading_text_size">3.2dp</dimen>
     <dimen name="dialog_padding_horz">15dp</dimen>
     <dimen name="dialog_padding_bottom">15dp</dimen>
-
 
 
     <!-- DIALOG: EDIT TEXT -->

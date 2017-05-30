@@ -43,61 +43,61 @@ data class NumberWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply12(::NumberWidgetFormat,
-                                     // Model Id
-                                     valueResult(UUID.randomUUID()),
-                                     // Widget Format
-                                     doc.at("widget_format") ap {
-                                         effApply(::Comp, WidgetFormat.fromDocument(it))
-                                     },
-                                     // Inside Label
-                                     split(doc.maybeText("inside_label"),
-                                           valueResult<Func<String>>(Null()),
-                                           { valueResult(Prim(it))  }),
-                                     // Inside Label Format
-                                     split(doc.maybeAt("inside_label_format"),
-                                           valueResult<Func<TextFormat>>(Null()),
-                                            fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                                effApply(::Comp, TextFormat.fromDocument(d))),
-                                     // Outside Label
-                                     split(doc.maybeText("outside_label"),
-                                           valueResult<Func<String>>(Null()),
-                                           { valueResult(Prim(it))  }),
-                                     // Outside Label Format
-                                     split(doc.maybeAt("outside_label_format"),
-                                           valueResult<Func<TextFormat>>(Null()),
-                                            fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                                effApply(::Comp, TextFormat.fromDocument(d))),
-                                     // Value Format
-                                     split(doc.maybeAt("value_format"),
-                                           valueResult<Func<TextFormat>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                               effApply(::Comp, TextFormat.fromDocument(d))),
-                                     // Description Style
-                                     split(doc.maybeAt("description_style"),
-                                           valueResult<Func<TextStyle>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                               effApply(::Comp, TextStyle.fromDocument(d))),
-                                     // Value Prefix Style
-                                     split(doc.maybeAt("value_prefix_format"),
-                                           valueResult<Func<TextStyle>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                               effApply(::Comp, TextStyle.fromDocument(d))),
-                                     // Value Postfix Style
-                                     split(doc.maybeAt("value_postfix_format"),
-                                           valueResult<Func<TextStyle>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                               effApply(::Comp, TextStyle.fromDocument(d))),
-                                     // Value Separator
-                                     split(doc.maybeText("value_separator"),
-                                           valueResult<Func<String>>(Null()),
-                                           { valueResult(Prim(it))  }),
-                                     // Outside Label Format
-                                     split(doc.maybeAt("outside_label_format"),
-                                           valueResult<Func<TextFormat>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                               effApply(::Comp, TextFormat.fromDocument(d)))
-                                     )
+            is DocDict -> effApply(::NumberWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   },
+                                   // Inside Label
+                                   split(doc.maybeText("inside_label"),
+                                         valueResult<Func<String>>(Null()),
+                                         { valueResult(Prim(it))  }),
+                                   // Inside Label Format
+                                   split(doc.maybeAt("inside_label_format"),
+                                         valueResult<Func<TextFormat>>(Null()),
+                                          fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
+                                              effApply(::Comp, TextFormat.fromDocument(d))),
+                                   // Outside Label
+                                   split(doc.maybeText("outside_label"),
+                                         valueResult<Func<String>>(Null()),
+                                         { valueResult(Prim(it))  }),
+                                   // Outside Label Format
+                                   split(doc.maybeAt("outside_label_format"),
+                                         valueResult<Func<TextFormat>>(Null()),
+                                          fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
+                                              effApply(::Comp, TextFormat.fromDocument(d))),
+                                   // Value Format
+                                   split(doc.maybeAt("value_format"),
+                                         valueResult<Func<TextFormat>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
+                                             effApply(::Comp, TextFormat.fromDocument(d))),
+                                   // Description Style
+                                   split(doc.maybeAt("description_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Value Prefix Style
+                                   split(doc.maybeAt("value_prefix_format"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Value Postfix Style
+                                   split(doc.maybeAt("value_postfix_format"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Value Separator
+                                   split(doc.maybeText("value_separator"),
+                                         valueResult<Func<String>>(Null()),
+                                         { valueResult(Prim(it))  }),
+                                   // Outside Label Format
+                                   split(doc.maybeAt("outside_label_format"),
+                                         valueResult<Func<TextFormat>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
+                                             effApply(::Comp, TextFormat.fromDocument(d)))
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -567,7 +567,7 @@ data class NumberWidgetFormat(override val id : UUID,
 //     */
 //    private void onNumberWidgetShortClick(Context context)
 //    {
-//        SheetActivity sheetActivity = (SheetActivity) context;
+//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
 //
 //        switch (this.valueVariable().kind())
 //        {

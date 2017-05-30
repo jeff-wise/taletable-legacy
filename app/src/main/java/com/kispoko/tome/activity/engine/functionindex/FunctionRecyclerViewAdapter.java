@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.function.FunctionEditorActivity;
-import com.kispoko.tome.model.engine.function.Function;
+import com.kispoko.tome.model.game.engine.function.Function;
 
 import java.util.List;
 
@@ -58,58 +58,58 @@ public class FunctionRecyclerViewAdapter
     {
         Function function = this.functionList.get(position);
 
-        // > Header
-        viewHolder.setHeaderText(function.label());
-
-        // > Description
-        viewHolder.setDescriptionText(function.description());
-
-        // > Parameter Types
-        int arity = function.arity();
-
-        if (arity >= 1)
-        {
-            String label;
-            if (function.parameterTypes().get(0).shortName() != null)
-                label = function.parameterTypes().get(0).shortName().toUpperCase();
-            else
-                label = function.parameterTypes().get(0).dataType().toString().toUpperCase();
-
-            viewHolder.setParameterType1(label);
-        }
-
-        if (arity >= 2)
-        {
-            String label;
-            if (function.parameterTypes().get(1).shortName() != null)
-                label = function.parameterTypes().get(1).shortName().toUpperCase();
-            else
-                label = function.parameterTypes().get(1).dataType().toString().toUpperCase();
-
-            viewHolder.setParameterType2(label);
-        }
-
-        if (arity >= 3)
-        {
-            String label;
-            if (function.parameterTypes().get(2).shortName() != null)
-                label = function.parameterTypes().get(2).shortName().toUpperCase();
-            else
-                label = function.parameterTypes().get(2).dataType().toString().toUpperCase();
-
-            viewHolder.setParameterType3(label);
-        }
-
-        // > Result Type
-        String resultLabel;
-        if (function.resultType().shortName() != null)
-            resultLabel = function.resultType().shortName().toUpperCase();
-        else
-            resultLabel = function.resultType().dataType().toString().toUpperCase();
-        viewHolder.setResultType(resultLabel);
-
-        // > On Click Listener
-        viewHolder.setOnClick(function.name(), this.context);
+//        // > Header
+//        viewHolder.setHeaderText(function.label());
+//
+//        // > Description
+//        viewHolder.setDescriptionText(function.description());
+//
+//        // > Parameter Types
+//        int arity = function.arity();
+//
+//        if (arity >= 1)
+//        {
+//            String label;
+//            if (function.parameterTypes().get(0).shortName() != null)
+//                label = function.parameterTypes().get(0).shortName().toUpperCase();
+//            else
+//                label = function.parameterTypes().get(0).dataType().toString().toUpperCase();
+//
+//            viewHolder.setParameterType1(label);
+//        }
+//
+//        if (arity >= 2)
+//        {
+//            String label;
+//            if (function.parameterTypes().get(1).shortName() != null)
+//                label = function.parameterTypes().get(1).shortName().toUpperCase();
+//            else
+//                label = function.parameterTypes().get(1).dataType().toString().toUpperCase();
+//
+//            viewHolder.setParameterType2(label);
+//        }
+//
+//        if (arity >= 3)
+//        {
+//            String label;
+//            if (function.parameterTypes().get(2).shortName() != null)
+//                label = function.parameterTypes().get(2).shortName().toUpperCase();
+//            else
+//                label = function.parameterTypes().get(2).dataType().toString().toUpperCase();
+//
+//            viewHolder.setParameterType3(label);
+//        }
+//
+//        // > Result Type
+//        String resultLabel;
+//        if (function.resultType().shortName() != null)
+//            resultLabel = function.resultType().shortName().toUpperCase();
+//        else
+//            resultLabel = function.resultType().dataType().toString().toUpperCase();
+//        viewHolder.setResultType(resultLabel);
+//
+//        // > On Click Listener
+//        viewHolder.setOnClick(function.name(), this.context);
     }
 
 

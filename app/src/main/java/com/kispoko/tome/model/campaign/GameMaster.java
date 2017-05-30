@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Game Master
  */
-public class GameMaster extends Model
+public class GameMaster// extends Model
                         implements Serializable
 {
 

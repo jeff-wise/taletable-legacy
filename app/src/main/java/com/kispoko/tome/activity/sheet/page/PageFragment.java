@@ -11,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.model.engine.Engine;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
+import com.kispoko.tome.model.game.engine.Engine;
+import com.kispoko.tome.model.sheet.page.Page;
 
 
 /**
@@ -47,8 +48,8 @@ public class PageFragment extends Fragment
     {
         PageFragment fragment = new PageFragment();
         Bundle args = new Bundle();
-        args.putSerializable("PAGE", page);
-        args.putSerializable("RULES", rulesEngine);
+//        args.putSerializable("PAGE", page);
+//        args.putSerializable("RULES", rulesEngine);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,8 +63,8 @@ public class PageFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            page = (Page) getArguments().getSerializable("PAGE");
-            rulesEngine = (Engine) getArguments().getSerializable("RULES");
+//            page = (Page) getArguments().getSerializable("PAGE");
+//            rulesEngine = (Engine) getArguments().getSerializable("RULES");
         }
     }
 
@@ -74,8 +75,8 @@ public class PageFragment extends Fragment
     {
         ScrollView fragmentView = this.scrollView(getContext());
 
-        View pageView = this.page.view();
-        fragmentView.addView(pageView);
+    //    View pageView = this.page.view();
+     //   fragmentView.addView(pageView);
 
         return fragmentView;
     }

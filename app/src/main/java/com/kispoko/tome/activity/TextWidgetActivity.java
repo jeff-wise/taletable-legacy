@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.model.sheet.widget.TextWidget;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
@@ -89,11 +90,11 @@ public class TextWidgetActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.textWidget.data().format().label();
-        if (title == null)
-            title = "Text Widget";
-
-        UI.initializeToolbar(this, title);
+//        String title = this.textWidget.data().format().label();
+//        if (title == null)
+//            title = "Text Widget";
+//
+//        UI.initializeToolbar(this, title);
     }
 
 
@@ -117,7 +118,7 @@ public class TextWidgetActivity extends AppCompatActivity
         // > Name Field
         // -------------------------------------------------------------------------------------
 
-        String name = this.textWidget.data().format().label();
+//        String name = this.textWidget.data().format().label();
 
 //        LinearLayout nameField =
 //                Form.field(

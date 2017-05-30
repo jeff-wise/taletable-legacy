@@ -5,12 +5,12 @@ package com.kispoko.tome.model.sheet.widget
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.engine.mechanic.MechanicCategory
-import com.kispoko.tome.model.engine.value.ValueSetName
-import com.kispoko.tome.model.engine.variable.BooleanVariable
-import com.kispoko.tome.model.engine.variable.NumberVariable
-import com.kispoko.tome.model.engine.variable.TextVariable
-import com.kispoko.tome.model.engine.variable.Variable
+import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
+import com.kispoko.tome.model.game.engine.value.ValueSetId
+import com.kispoko.tome.model.game.engine.variable.BooleanVariable
+import com.kispoko.tome.model.game.engine.variable.NumberVariable
+import com.kispoko.tome.model.game.engine.variable.TextVariable
+import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
@@ -98,37 +98,37 @@ data class ActionWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply8(::ActionWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          doc.at("format") ap {
-                              effApply(::Comp, ActionWidgetFormat.fromDocument(it))
-                          },
-                          // Modifier
-                          doc.at("modifier") ap {
-                              effApply(::Comp, NumberVariable.fromDocument(it))
-                          },
-                          // Description
-                          doc.at("description") ap {
-                              effApply(::Prim, ActionDescription.fromDocument(it))
-                          },
-                          // Description Highlight
-                          doc.at("description_highlight") ap {
-                              effApply(::Prim, ActionDescriptionHighlight.fromDocument(it))
-                          },
-                          // Action Name
-                          doc.at("action_name") ap {
-                              effApply(::Prim, ActionName.fromDocument(it))
-                          },
-                          // Action Result
-                          doc.at("action_result") ap {
-                              effApply(::Prim, ActionResult.fromDocument(it))
-                          })
+                effApply(::ActionWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         doc.at("format") ap {
+                             effApply(::Comp, ActionWidgetFormat.fromDocument(it))
+                         },
+                         // Modifier
+                         doc.at("modifier") ap {
+                             effApply(::Comp, NumberVariable.fromDocument(it))
+                         },
+                         // Description
+                         doc.at("description") ap {
+                             effApply(::Prim, ActionDescription.fromDocument(it))
+                         },
+                         // Description Highlight
+                         doc.at("description_highlight") ap {
+                             effApply(::Prim, ActionDescriptionHighlight.fromDocument(it))
+                         },
+                         // Action Name
+                         doc.at("action_name") ap {
+                             effApply(::Prim, ActionName.fromDocument(it))
+                         },
+                         // Action Result
+                         doc.at("action_result") ap {
+                             effApply(::Prim, ActionResult.fromDocument(it))
+                         })
             }
 
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
@@ -155,23 +155,22 @@ data class BooleanWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply4(::BooleanWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          doc.at("format") ap {
-                              effApply(::Comp, BooleanWidgetFormat.fromDocument(it))
-                          },
-                          // Value
-                          doc.at("value") ap {
-                              effApply(::Comp, BooleanVariable.fromDocument(it))
-                          })
+                effApply(::BooleanWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         doc.at("format") ap {
+                             effApply(::Comp, BooleanWidgetFormat.fromDocument(it))
+                         },
+                         // Value
+                         doc.at("value") ap {
+                             effApply(::Comp, BooleanVariable.fromDocument(it))
+                         })
             }
-
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -199,29 +198,29 @@ data class ButtonWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply7(::ButtonWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          doc.at("format") ap {
-                              effApply(::Comp, ButtonWidgetFormat.fromDocument(it))
-                          },
-                          // View Type
-                          effApply(::Prim, doc.enum<ButtonViewType>("view_type")),
-                          // Label
-                          doc.at("label") ap {
-                              effApply(::Prim, ButtonLabel.fromDocument(it))
-                          },
-                          // Description
-                          doc.at("description") ap {
-                              effApply(::Prim, ButtonDescription.fromDocument(it))
-                          },
-                          // Icon
-                          effApply(::Prim, doc.enum<ButtonIcon>("icon")))
+                effApply(::ButtonWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         doc.at("format") ap {
+                             effApply(::Comp, ButtonWidgetFormat.fromDocument(it))
+                         },
+                         // View Type
+                         effApply(::Prim, doc.enum<ButtonViewType>("view_type")),
+                         // Label
+                         doc.at("label") ap {
+                             effApply(::Prim, ButtonLabel.fromDocument(it))
+                         },
+                         // Description
+                         doc.at("description") ap {
+                             effApply(::Prim, ButtonDescription.fromDocument(it))
+                         },
+                         // Icon
+                         effApply(::Prim, doc.enum<ButtonIcon>("icon")))
             }
 
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
@@ -248,28 +247,27 @@ data class ExpanderWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply5(::ExpanderWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          doc.at("format") ap {
-                              effApply(::Comp, ExpanderWidgetFormat.fromDocument(it))
-                          },
-                          // Label
-                          doc.at("label") ap {
-                              effApply(::Prim, ExpanderLabel.fromDocument(it))
-                          },
-                          // Groups
-                          doc.list("groups") ap { docList ->
-                              effApply(::Coll,
-                                  docList.map { Group.fromDocument(it) })
-                          })
+                effApply(::ExpanderWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         doc.at("format") ap {
+                             effApply(::Comp, ExpanderWidgetFormat.fromDocument(it))
+                         },
+                         // Label
+                         doc.at("label") ap {
+                             effApply(::Prim, ExpanderLabel.fromDocument(it))
+                         },
+                         // Groups
+                         doc.list("groups") ap { docList ->
+                             effApply(::Coll,
+                                 docList.map { Group.fromDocument(it) })
+                         })
             }
-
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -291,15 +289,14 @@ data class ImageWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply2(::ImageWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          })
+                effApply(::ImageWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         })
             }
-
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -314,7 +311,7 @@ data class ImageWidget(override val id : UUID,
 data class ListWidget(override val id : UUID,
                       val name : Func<WidgetName>,
                       val format : Func<ListWidgetFormat>,
-                      val valueSetName : Func<ValueSetName>,
+                      val valueSetId: Func<ValueSetId>,
                       val values : Coll<Variable>) : Widget()
 {
 
@@ -324,28 +321,27 @@ data class ListWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply5(::ListWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          doc.at("format") ap {
-                              effApply(::Comp, ListWidgetFormat.fromDocument(it))
-                          },
-                          // ValueSet Name
-                          doc.at("value_set_name") ap {
-                              effApply(::Prim, ValueSetName.fromDocument(it))
-                          },
-                          // Groups
-                          doc.list("values") ap { docList ->
-                              effApply(::Coll,
-                                  docList.map { Variable.fromDocument(it) })
-                          })
+                effApply(::ListWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         doc.at("format") ap {
+                             effApply(::Comp, ListWidgetFormat.fromDocument(it))
+                         },
+                         // ValueSet Name
+                         doc.at("value_set_name") ap {
+                             effApply(::Prim, ValueSetId.fromDocument(it))
+                         },
+                         // Groups
+                         doc.list("values") ap { docList ->
+                             effApply(::Coll,
+                                 docList.map { Variable.fromDocument(it) })
+                         })
             }
-
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -369,24 +365,23 @@ data class LogWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply4(::LogWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          doc.at("format") ap {
-                              effApply(::Comp, LogWidgetFormat.fromDocument(it))
-                          },
-                          // Entries
-                          doc.list("entries") ap { docList ->
-                              effApply(::Coll,
-                                  docList.map { LogEntry.fromDocument(it) })
-                          })
+                effApply(::LogWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         doc.at("format") ap {
+                             effApply(::Comp, LogWidgetFormat.fromDocument(it))
+                         },
+                         // Entries
+                         doc.list("entries") ap { docList ->
+                             effApply(::Coll,
+                                 docList.map { LogEntry.fromDocument(it) })
+                         })
             }
-
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -410,19 +405,18 @@ data class MechanicWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply3(::MechanicWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Category
-                          doc.at("category") ap {
-                              effApply(::Prim, MechanicCategory.fromDocument(it))
-                          })
+                effApply(::MechanicWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Category
+                         doc.at("category") ap {
+                             effApply(::Prim, MechanicCategory.fromDocument(it))
+                         })
             }
-
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -451,41 +445,40 @@ data class NumberWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply8(::NumberWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<NumberWidgetFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<NumberWidgetFormat>> =
-                                        effApply(::Comp, NumberWidgetFormat.fromDocument(d))),
-                          // Value
-                          doc.at("value") ap {
-                              effApply(::Comp, NumberVariable.fromDocument(it))
-                          },
-                          // Value Prefix
-                          split(doc.maybeText("value_prefix"),
-                                valueResult<Func<String>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Value Prefix
-                          split(doc.maybeText("value_postfix"),
-                                valueResult<Func<String>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Description
-                          split(doc.maybeText("description"),
-                                valueResult<Func<String>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Variables
-                          doc.list("variables") ap { docList ->
-                              effApply(::Coll,
-                                  docList.map { Variable.fromDocument(it) })
-                          })
+                effApply(::NumberWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<NumberWidgetFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<NumberWidgetFormat>> =
+                                       effApply(::Comp, NumberWidgetFormat.fromDocument(d))),
+                         // Value
+                         doc.at("value") ap {
+                             effApply(::Comp, NumberVariable.fromDocument(it))
+                         },
+                         // Value Prefix
+                         split(doc.maybeText("value_prefix"),
+                               valueResult<Func<String>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Value Prefix
+                         split(doc.maybeText("value_postfix"),
+                               valueResult<Func<String>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Description
+                         split(doc.maybeText("description"),
+                               valueResult<Func<String>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Variables
+                         doc.list("variables") ap { docList ->
+                             effApply(::Coll,
+                                 docList.map { Variable.fromDocument(it) })
+                         })
             }
-
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -502,7 +495,7 @@ data class OptionWidget(override val id : UUID,
                         val format : Func<OptionWidgetFormat>,
                         val viewType : Func<OptionViewType>,
                         val description : Func<OptionDescription>,
-                        val valueSet : Func<ValueSetName>) : Widget()
+                        val valueSet : Func<ValueSetId>) : Widget()
 {
 
     companion object : Factory<OptionWidget>
@@ -511,32 +504,32 @@ data class OptionWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply6(::OptionWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<OptionWidgetFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<OptionWidgetFormat>> =
-                                        effApply(::Comp, OptionWidgetFormat.fromDocument(d))),
-                          // View Type
-                          split(doc.maybeEnum<OptionViewType>("view_type"),
-                                valueResult<Func<OptionViewType>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Description
-                          split(doc.maybeAt("description"),
-                                valueResult<Func<OptionDescription>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<OptionDescription>> =
-                                        effApply(::Prim, OptionDescription.fromDocument(d))),
-                          // ValueSet Name
-                          split(doc.maybeAt("value_set_name"),
-                                valueResult<Func<ValueSetName>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<ValueSetName>> =
-                                        effApply(::Prim, ValueSetName.fromDocument(d)))
+                effApply(::OptionWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<OptionWidgetFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<OptionWidgetFormat>> =
+                                       effApply(::Comp, OptionWidgetFormat.fromDocument(d))),
+                         // View Type
+                         split(doc.maybeEnum<OptionViewType>("view_type"),
+                               valueResult<Func<OptionViewType>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Description
+                         split(doc.maybeAt("description"),
+                               valueResult<Func<OptionDescription>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<OptionDescription>> =
+                                       effApply(::Prim, OptionDescription.fromDocument(d))),
+                         // ValueSet Name
+                         split(doc.maybeAt("value_set_name"),
+                               valueResult<Func<ValueSetId>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<ValueSetId>> =
+                                       effApply(::Prim, ValueSetId.fromDocument(d)))
                         )
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
@@ -565,32 +558,32 @@ data class QuoteWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply6(::QuoteWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<QuoteWidgetFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<QuoteWidgetFormat>> =
-                                        effApply(::Comp, QuoteWidgetFormat.fromDocument(d))),
-                          // View Type
-                          split(doc.maybeEnum<QuoteViewType>("view_type"),
-                                valueResult<Func<QuoteViewType>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Quote
-                          split(doc.maybeAt("quote"),
-                                valueResult<Func<Quote>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<Quote>> =
-                                        effApply(::Prim, Quote.fromDocument(d))),
-                          // Quote Source
-                          split(doc.maybeAt("source"),
-                                valueResult<Func<QuoteSource>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<QuoteSource>> =
-                                        effApply(::Prim, QuoteSource.fromDocument(d)))
+                effApply(::QuoteWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<QuoteWidgetFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<QuoteWidgetFormat>> =
+                                       effApply(::Comp, QuoteWidgetFormat.fromDocument(d))),
+                         // View Type
+                         split(doc.maybeEnum<QuoteViewType>("view_type"),
+                               valueResult<Func<QuoteViewType>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Quote
+                         split(doc.maybeAt("quote"),
+                               valueResult<Func<Quote>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<Quote>> =
+                                       effApply(::Prim, Quote.fromDocument(d))),
+                         // Quote Source
+                         split(doc.maybeAt("source"),
+                               valueResult<Func<QuoteSource>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<QuoteSource>> =
+                                       effApply(::Prim, QuoteSource.fromDocument(d)))
                         )
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
@@ -618,28 +611,28 @@ data class TableWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply5(::TableWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<TableWidgetFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<TableWidgetFormat>> =
-                                        effApply(::Comp, TableWidgetFormat.fromDocument(d))),
-                          // Columns
-                          doc.list("columns") ap { docList ->
-                              effApply(::Coll,
-                                      docList.map { TableWidgetColumn.fromDocument(it) })
-                          },
-                          // Rows
-                          doc.list("rows") ap { docList ->
-                              effApply(::Coll,
-                                  docList.map { TableWidgetRow.fromDocument(it) })
-                          })
+                effApply(::TableWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<TableWidgetFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TableWidgetFormat>> =
+                                       effApply(::Comp, TableWidgetFormat.fromDocument(d))),
+                         // Columns
+                         doc.list("columns") ap { docList ->
+                             effApply(::Coll,
+                                     docList.map { TableWidgetColumn.fromDocument(it) })
+                         },
+                         // Rows
+                         doc.list("rows") ap { docList ->
+                             effApply(::Coll,
+                                 docList.map { TableWidgetRow.fromDocument(it) })
+                         })
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
@@ -665,28 +658,28 @@ data class TabWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply5(::TabWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<TabWidgetFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<TabWidgetFormat>> =
-                                        effApply(::Comp, TabWidgetFormat.fromDocument(d))),
-                          // Tabs
-                          doc.list("tabs") ap { docList ->
-                              effApply(::Coll,
-                                      docList.map { Tab.fromDocument(it) })
-                          },
-                          // Default Selected
-                          split(doc.maybeInt("default_selected"),
-                                valueResult<Func<Int>>(Null()),
-                                { valueResult(Prim(it)) })
-                          )
+                effApply(::TabWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<TabWidgetFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TabWidgetFormat>> =
+                                       effApply(::Comp, TabWidgetFormat.fromDocument(d))),
+                         // Tabs
+                         doc.list("tabs") ap { docList ->
+                             effApply(::Coll,
+                                     docList.map { Tab.fromDocument(it) })
+                         },
+                         // Default Selected
+                         split(doc.maybeInt("default_selected"),
+                               valueResult<Func<Int>>(Null()),
+                               { valueResult(Prim(it)) })
+                         )
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
@@ -714,32 +707,32 @@ data class TextWidget(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply6(::TextWidget,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Widget Name
-                          doc.at("name") ap {
-                              effApply(::Prim, WidgetName.fromDocument(it))
-                          },
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<TextWidgetFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<TextWidgetFormat>> =
-                                        effApply(::Comp, TextWidgetFormat.fromDocument(d))),
-                          // Description
-                          split(doc.maybeAt("description"),
-                                valueResult<Func<TextDescription>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<TextDescription>> =
-                                        effApply(::Prim, TextDescription.fromDocument(d))),
-                          // Value
-                          doc.at("value") ap {
-                              effApply(::Comp, TextVariable.fromDocument(it))
-                          },
-                          // Variables
-                          doc.list("variables") ap { docList ->
-                              effApply(::Coll,
-                                 docList.map { Variable.fromDocument(it) })
-                          })
+                effApply(::TextWidget,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Widget Name
+                         doc.at("name") ap {
+                             effApply(::Prim, WidgetName.fromDocument(it))
+                         },
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<TextWidgetFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TextWidgetFormat>> =
+                                       effApply(::Comp, TextWidgetFormat.fromDocument(d))),
+                         // Description
+                         split(doc.maybeAt("description"),
+                               valueResult<Func<TextDescription>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TextDescription>> =
+                                       effApply(::Prim, TextDescription.fromDocument(d))),
+                         // Value
+                         doc.at("value") ap {
+                             effApply(::Comp, TextVariable.fromDocument(it))
+                         },
+                         // Variables
+                         doc.list("variables") ap { docList ->
+                             effApply(::Coll,
+                                docList.map { Variable.fromDocument(it) })
+                         })
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }

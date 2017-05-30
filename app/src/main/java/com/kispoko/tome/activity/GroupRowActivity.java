@@ -43,9 +43,9 @@ public class GroupRowActivity extends AppCompatActivity
         setContentView(R.layout.activity_group_row);
 
         // > Read Parameters
-        if (getIntent().hasExtra("group_row")) {
-            this.groupRow = (GroupRow) getIntent().getSerializableExtra("group_row");
-        }
+//        if (getIntent().hasExtra("group_row")) {
+//            this.groupRow = (GroupRow) getIntent().getSerializableExtra("group_row");
+//        }
 
         if (getIntent().hasExtra("group_name")) {
             this.groupName = getIntent().getStringExtra("group_name");
@@ -102,10 +102,10 @@ public class GroupRowActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        Integer rowIndex = this.groupRow.index() + 1;
-        String title = this.groupName + " " + getString(R.string.row) + " " + rowIndex.toString();
+    //    Integer rowIndex = this.groupRow.index() + 1;
+     //   String title = this.groupName + " " + getString(R.string.row) + " " + rowIndex.toString();
 
-        UI.initializeToolbar(this, title);
+      //  UI.initializeToolbar(this, title);
     }
 
 

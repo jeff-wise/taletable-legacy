@@ -30,15 +30,15 @@ data class TextCellFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextCellFormat> = when (doc)
         {
-            is DocDict -> effApply2(::TextCellFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Cell Format
-                                    split(doc.maybeAt("cell_format"),
-                                          valueResult<Func<CellFormat>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<CellFormat>> =
-                                              effApply(::Comp, CellFormat.fromDocument(d)))
-                                    )
+            is DocDict -> effApply(::TextCellFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Cell Format
+                                   split(doc.maybeAt("cell_format"),
+                                         valueResult<Func<CellFormat>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<CellFormat>> =
+                                             effApply(::Comp, CellFormat.fromDocument(d)))
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -269,9 +269,9 @@ data class TextCellFormat(override val id : UUID,
 //                    break;
 //
 //                ValueReference valueReference = this.valueVariable().valueReference();
-//                String         valueSetName   = this.valueVariable().valueSetName();
+//                String         valueSetId   = this.valueVariable().valueSetId();
 //
-//                ValueSetUnion valueSetUnion  = dictionary.lookup(valueSetName);
+//                ValueSetUnion valueSetUnion  = dictionary.lookup(valueSetId);
 //                ValueUnion valueUnion     = dictionary.valueUnion(valueReference);
 //
 //                if (valueSetUnion == null || valueUnion == null)

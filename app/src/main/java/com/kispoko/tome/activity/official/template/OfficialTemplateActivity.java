@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.SheetActivity;
+import com.kispoko.tome.activity.SheetActivityOld;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
@@ -282,7 +282,7 @@ public class OfficialTemplateActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent(OfficialTemplateActivity.this, SheetActivity.class);
+                Intent intent = new Intent(OfficialTemplateActivity.this, SheetActivityOld.class);
                 intent.putExtra("official_template_id", template.id(variantName));
                 startActivity(intent);
             }

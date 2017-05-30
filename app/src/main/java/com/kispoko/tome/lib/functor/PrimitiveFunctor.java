@@ -6,15 +6,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import com.kispoko.tome.model.engine.EngineDataType;
-import com.kispoko.tome.model.engine.EngineType;
-import com.kispoko.tome.model.engine.program.statement.ParameterType;
-import com.kispoko.tome.model.engine.value.ValueType;
-import com.kispoko.tome.model.engine.variable.BooleanVariable;
-import com.kispoko.tome.model.engine.variable.TextVariable;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.model.sheet.DividerType;
-import com.kispoko.tome.model.sheet.BackgroundColor;
 import com.kispoko.tome.util.SerialBitmap;
 import com.kispoko.tome.util.Util;
 import com.kispoko.tome.lib.database.DatabaseException;
@@ -23,11 +16,8 @@ import com.kispoko.tome.lib.database.error.ValueNotSerializableError;
 import com.kispoko.tome.lib.database.sql.SQLValue;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.UUID;
-
 
 
 /**
@@ -136,10 +126,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             return SQLValue.Type.TEXT;
         }
-        else if (valueClass.isAssignableFrom(EngineDataType[].class))
-        {
-            return SQLValue.Type.TEXT;
-        }
         else
         {
             // value not serializable to
@@ -214,16 +200,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
             String arrayString = TextUtils.join("***", ((String[]) this.getValue()));
             return SQLValue.newText(arrayString);
         }
-        else if (this.getValue() instanceof EngineDataType[])
-        {
-            EngineDataType[] programValueTypeArray = (EngineDataType[]) this.getValue();
-            List<String> programValueTypeStrings = new ArrayList<>();
-            for (int i = 0; i < programValueTypeArray.length; i++) {
-                programValueTypeStrings.add(programValueTypeArray[i].name().toLowerCase());
-            }
-            String arrayString = TextUtils.join("***", programValueTypeStrings);
-            return SQLValue.newText(arrayString);
-        }
         else
         {
             throw DatabaseException.valueNotSerializable(
@@ -275,31 +251,6 @@ public class PrimitiveFunctor<A> extends Functor<A>
         {
             this.setValue((A) sqlValue.getBlob());
         }
-        else if (this.valueClass.isAssignableFrom(CellType.class))
-        {
-            CellType cellType = CellType.fromSQLValue(sqlValue);
-            this.setValue((A) cellType);
-        }
-        else if (this.valueClass.isAssignableFrom(Position.class))
-        {
-            Position position = Position.fromSQLValue(sqlValue);
-            this.setValue((A) position);
-        }
-        else if (this.valueClass.isAssignableFrom(Height.class))
-        {
-            Height height = Height.fromSQLValue(sqlValue);
-            this.setValue((A) height);
-        }
-        else if (this.valueClass.isAssignableFrom(TextFont.class))
-        {
-            TextFont textFont = TextFont.fromSQLValue(sqlValue);
-            this.setValue((A) textFont);
-        }
-        else if (this.valueClass.isAssignableFrom(ColumnType.class))
-        {
-            ColumnType columnType = ColumnType.fromSQLValue(sqlValue);
-            this.setValue((A) columnType);
-        }
         else if (this.valueClass.isAssignableFrom(String[].class))
         {
             String arrayString = sqlValue.getText();
@@ -311,36 +262,12 @@ public class PrimitiveFunctor<A> extends Functor<A>
                 this.setValue(null);
             }
         }
-        else if (this.valueClass.isAssignableFrom(TextSize.class))
-        {
-            TextSize size = TextSize.fromSQLValue(sqlValue);
-            this.setValue((A) size);
-        }
-        else if (this.valueClass.isAssignableFrom(BackgroundColor.class))
-        {
-            BackgroundColor background = BackgroundColor.fromSQLValue(sqlValue);
-            this.setValue((A) background);
-        }
         else if (this.valueClass.isAssignableFrom(DividerType.class))
         {
             DividerType dividerType = DividerType.fromSQLValue(sqlValue);
             this.setValue((A) dividerType);
         }
-        else if (this.valueClass.isAssignableFrom(Alignment.class))
-        {
-            Alignment alignment = Alignment.fromSQLValue(sqlValue);
-            this.setValue((A) alignment);
-        }
-        else if (this.valueClass.isAssignableFrom(TextColor.class))
-        {
-            TextColor tint = TextColor.fromSQLValue(sqlValue);
-            this.setValue((A) tint);
-        }
-        else if (this.valueClass.isAssignableFrom(Corners.class))
-        {
-            Corners corners = Corners.fromSQLValue(sqlValue);
-            this.setValue((A) corners);
-        }
+
 //        else if (this.valueClass.isAssignableFrom(EngineDataType[].class))
 //        {
 //            String arrayString = sqlValue.getText();
@@ -368,52 +295,52 @@ public class PrimitiveFunctor<A> extends Functor<A>
                 this.setValue(null);
             }
         }
-        else if (this.valueClass.isAssignableFrom(VariableType.class))
-        {
-            VariableType variableType = VariableType.fromSQLValue(sqlValue);
-            this.setValue((A) variableType);
-        }
-        else if (this.valueClass.isAssignableFrom(WidgetType.class))
-        {
-            WidgetType widgetType = WidgetType.fromSQLValue(sqlValue);
-            this.setValue((A) widgetType);
-        }
-        else if (this.valueClass.isAssignableFrom(ValueType.class))
-        {
-            ValueType valueType = ValueType.fromSQLValue(sqlValue);
-            this.setValue((A) valueType);
-        }
-        else if (this.valueClass.isAssignableFrom(TextVariable.Kind.class))
-        {
-            TextVariable.Kind kind = TextVariable.Kind.fromSQLValue(sqlValue);
-            this.setValue((A) kind);
-        }
-        else if (this.valueClass.isAssignableFrom(NumberVariable.Kind.class))
-        {
-            NumberVariable.Kind kind = NumberVariable.Kind.fromSQLValue(sqlValue);
-            this.setValue((A) kind);
-        }
-        else if (this.valueClass.isAssignableFrom(BooleanVariable.Kind.class))
-        {
-            BooleanVariable.Kind kind = BooleanVariable.Kind.fromSQLValue(sqlValue);
-            this.setValue((A) kind);
-        }
-        else if (this.valueClass.isAssignableFrom(BooleanTermValue.Kind.class))
-        {
-            BooleanTermValue.Kind kind = BooleanTermValue.Kind.fromSQLValue(sqlValue);
-            this.setValue((A) kind);
-        }
-        else if (this.valueClass.isAssignableFrom(InvocationParameterType.class))
-        {
-            InvocationParameterType invocationParameterType =
-                    InvocationParameterType.fromSQLValue(sqlValue);
-            this.setValue((A) invocationParameterType);
-        }
-        else if (this.valueClass.isAssignableFrom(ParameterType.class))
-        {
-            ParameterType parameterType = ParameterType.fromSQLValue(sqlValue);
-            this.setValue((A) parameterType);
-        }
+//        else if (this.valueClass.isAssignableFrom(VariableType.class))
+//        {
+//            VariableType variableType = VariableType.fromSQLValue(sqlValue);
+//            this.setValue((A) variableType);
+//        }
+//        else if (this.valueClass.isAssignableFrom(WidgetType.class))
+//        {
+//            WidgetType widgetType = WidgetType.fromSQLValue(sqlValue);
+//            this.setValue((A) widgetType);
+//        }
+//        else if (this.valueClass.isAssignableFrom(ValueType.class))
+//        {
+//            ValueType valueType = ValueType.fromSQLValue(sqlValue);
+//            this.setValue((A) valueType);
+//        }
+//        else if (this.valueClass.isAssignableFrom(TextVariable.Kind.class))
+//        {
+//            TextVariable.Kind kind = TextVariable.Kind.fromSQLValue(sqlValue);
+//            this.setValue((A) kind);
+//        }
+//        else if (this.valueClass.isAssignableFrom(NumberVariable.Kind.class))
+//        {
+//            NumberVariable.Kind kind = NumberVariable.Kind.fromSQLValue(sqlValue);
+//            this.setValue((A) kind);
+//        }
+//        else if (this.valueClass.isAssignableFrom(BooleanVariable.Kind.class))
+//        {
+//            BooleanVariable.Kind kind = BooleanVariable.Kind.fromSQLValue(sqlValue);
+//            this.setValue((A) kind);
+//        }
+//        else if (this.valueClass.isAssignableFrom(BooleanTermValue.Kind.class))
+//        {
+//            BooleanTermValue.Kind kind = BooleanTermValue.Kind.fromSQLValue(sqlValue);
+//            this.setValue((A) kind);
+//        }
+//        else if (this.valueClass.isAssignableFrom(InvocationParameterType.class))
+//        {
+//            InvocationParameterType invocationParameterType =
+//                    InvocationParameterType.fromSQLValue(sqlValue);
+//            this.setValue((A) invocationParameterType);
+//        }
+//        else if (this.valueClass.isAssignableFrom(ParameterType.class))
+//        {
+//            ParameterType parameterType = ParameterType.fromSQLValue(sqlValue);
+//            this.setValue((A) parameterType);
+//        }
         else
         {
             throw DatabaseException.valueNotSerializable(
@@ -443,28 +370,28 @@ public class PrimitiveFunctor<A> extends Functor<A>
                 return null;
             return TextUtils.join(", ", stringArray);
         }
-        else if (this.value instanceof EngineType)
-        {
-            EngineType engineType = (EngineType) this.value;
-            return engineType.dataType().toString();
-        }
-        else if (this.value instanceof EngineType[])
-        {
-            EngineType[] typeArray = (EngineType[]) this.value;
-
-            if (typeArray.length == 0)
-                return null;
-
-            String typeListString = "";
-            for (int i = 0; i < typeArray.length; i++)
-            {
-                if (i > 0)
-                    typeListString += ", ";
-                typeListString += typeArray[i].dataType().toString();
-            }
-
-            return typeListString;
-        }
+//        else if (this.value instanceof EngineType)
+//        {
+//            EngineType engineType = (EngineType) this.value;
+//            return engineType.dataType().toString();
+//        }
+//        else if (this.value instanceof EngineType[])
+//        {
+//            EngineType[] typeArray = (EngineType[]) this.value;
+//
+//            if (typeArray.length == 0)
+//                return null;
+//
+//            String typeListString = "";
+//            for (int i = 0; i < typeArray.length; i++)
+//            {
+//                if (i > 0)
+//                    typeListString += ", ";
+//                typeListString += typeArray[i].dataType().toString();
+//            }
+//
+//            return typeListString;
+//        }
         else
         {
             return this.value.toString();

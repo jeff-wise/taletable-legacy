@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-
+import com.kispoko.tome.model.sheet.page.Page;
 
 
 /**
@@ -35,7 +35,7 @@ public class DataFragment extends Fragment
         DataFragment dataFragment = new DataFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("page", page);
+//        args.putSerializable("page", page);
         dataFragment.setArguments(args);
 
         return dataFragment;
@@ -49,7 +49,7 @@ public class DataFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.page = (Page) getArguments().getSerializable("page");
+    //    this.page = (Page) getArguments().getSerializable("page");
     }
 
 

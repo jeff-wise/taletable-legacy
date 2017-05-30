@@ -13,13 +13,12 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorId
 import effect.Err
 import effect.effApply
-import effect.effApply5
-import effect.effApply8
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import lulo.value.valueResult
 import java.util.*
+
 
 
 /**
@@ -95,33 +94,33 @@ data class ButtonWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<ButtonWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply8(::ButtonWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    doc.at("widget_format") ap {
-                                        effApply(::Comp, WidgetFormat.fromDocument(it))
-                                    },
-                                    // Height
-                                    effApply(::Prim, doc.enum<Height>("height")),
-                                    // Label Style
-                                    doc.at("label_style") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    // Description Style
-                                    doc.at("description_style") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    // Description Position
-                                    effApply(::Prim, doc.enum<Position>("position")),
-                                    // Button Color
-                                    doc.at("button_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    },
-                                    // Icon Color
-                                    doc.at("icon_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    })
+            is DocDict -> effApply(::ButtonWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   },
+                                   // Height
+                                   effApply(::Prim, doc.enum<Height>("height")),
+                                   // Label Style
+                                   doc.at("label_style") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   // Description Style
+                                   doc.at("description_style") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   // Description Position
+                                   effApply(::Prim, doc.enum<Position>("position")),
+                                   // Button Color
+                                   doc.at("button_color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   },
+                                   // Icon Color
+                                   doc.at("icon_color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

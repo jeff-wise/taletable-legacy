@@ -1,314 +1,264 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kispoko.tome">
 
-<application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:supportsRtl="true"
-    android:theme="@style/AppTheme">
-
-    <activity
-        android:name=".activity.LaunchActivity"
-        android:theme="@style/AppTheme.NoActionBar" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
-
-    <activity
-        android:name=".activity.SheetActivity"
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustResize">
-    </activity>
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activity.LaunchActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-    <activity
-        android:name=".activity.ManageSheetsActivity"
-        android:label="Characters"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustPan" />
-
-    <activity
-        android:name=".activity.NewCharacterActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="New Character" />
-
-    <activity
-        android:name=".activity.engine.EngineActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Engine" />
-
-    <activity
-        android:name=".activity.official.template.OfficialTemplatesActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Templates" />
-
-    <activity
-        android:name=".activity.official.template.OfficialTemplateActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Template" />
-
-    <activity
-        android:name=".activity.official.OfficialGamesActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Choose Template" />
-
-    <activity
-        android:name=".activity.SummationActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Summation" />
-
-    <activity
-        android:name=".activity.NumberActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Edit Number" />
-
-    <activity
-        android:name=".activity.engine.dictionary.DictionaryActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Dictionary" />
-
-    <activity
-        android:name=".activity.engine.valueset.BaseValueSetEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustPan"
-        android:label="Value Set" />
-
-    <activity
-        android:name=".activity.engine.value.ValueListActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustPan"
-        android:label="Values" />
-
-    <activity
-        android:name=".activity.engine.value.TextValueEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustPan"
-        android:label="Values" />
-
-    <activity
-        android:name=".activity.engine.value.NumberValueEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="adjustPan"
-        android:label="Values" />
-
-    <activity
-        android:name=".activity.engine.functionindex.FunctionIndexActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Functions" />
-
-    <activity
-        android:name=".activity.engine.function.FunctionEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Function" />
-
-    <activity
-        android:name=".activity.engine.programindex.ProgramIndexActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Programs" />
-
-    <activity
-        android:name=".activity.engine.program.ProgramEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Program" />
-
-    <activity
-        android:name=".activity.StatementActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Statement" />
-
-    <activity
-        android:name=".activity.engine.mechanicindex.MechanicIndexActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Mechanics" />
-
-    <activity
-        android:name=".activity.engine.mechanic.MechanicActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Mechanic" />
-
-    <activity
-        android:name=".activity.engine.variable.TextVariableActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Text Variable" />
-
-    <activity
-        android:name=".activity.engine.variable.NumberVariableActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Number Variable" />
-
-    <activity
-        android:name=".activity.BooleanVariableActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Boolean Variable" />
-
-    <activity
-        android:name=".activity.engine.variable.DiceVariableActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Dice Variable" />
-
-    <activity
-        android:name=".activity.PageListActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Pages" />
-
-    <activity
-        android:name=".activity.GroupListActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.SectionsActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.PageActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.GroupActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.GroupRowActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.sheet.widget.ActionWidgetActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.BooleanWidgetActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.ImageWidgetActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.NumberWidgetActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.TableWidgetActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.TextWidgetActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Groups" />
-
-    <activity
-        android:name=".activity.sheet.widget.text.TextEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Text Editor" />
-
-    <activity
-        android:name=".activity.widget.QuoteEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Quote Editor" />
-
-    <activity
-        android:name=".activity.sheet.DiceRollerActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Dice Roller" />
-
-    <activity
-        android:name=".activity.engine.variable.DiceRollTermActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Dice Roll Term Editor" />
-
-    <activity
-        android:name=".activity.mechanic.DiceRollEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Dice Roll Editor" />
-
-    <activity
-        android:name=".activity.mechanic.quantity.DiceQuantityEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Dice Quantity Editor" />
-
-    <activity
-        android:name=".activity.mechanic.quantity.DiceQuantityListActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Dice Quantity List Editor" />
-
-    <activity
-        android:name=".activity.mechanic.modifiers.DiceModifierListActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Modifiers List Editor" />
-
-    <activity
-        android:name=".activity.mechanic.modifiers.RollModifierEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Roll Modifier Editor" />
-
-    <activity
-        android:name=".activity.engine.variable.VariableReferenceActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Variable Reference Editor" />
-
-    <activity
-        android:name=".activity.engine.variable.VariableListActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Variable List Editor" />
-
-    <activity
-        android:name=".activity.engine.function.TuplesEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Tuples Editor" />
-
-    <activity
-        android:name=".activity.engine.program.StatementsEditorActivity"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:windowSoftInputMode="stateHidden"
-        android:label="Program Statements Editor" />
-
-</application>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.SheetActivityOld"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity
+            android:name=".activity.ManageSheetsActivity"
+            android:label="Characters"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.NewCharacterActivity"
+            android:label="New Character"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.engine.EngineActivity"
+            android:label="Engine"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.official.template.OfficialTemplatesActivity"
+            android:label="Templates"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.official.template.OfficialTemplateActivity"
+            android:label="Template"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.official.OfficialGamesActivity"
+            android:label="Choose Template"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.SummationActivity"
+            android:label="Summation"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.NumberActivity"
+            android:label="Edit Number"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.engine.dictionary.DictionaryActivity"
+            android:label="Dictionary"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.engine.valueset.BaseValueSetEditorActivity"
+            android:label="Value Set"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.engine.value.ValueListActivity"
+            android:label="Values"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.engine.value.TextValueEditorActivity"
+            android:label="Values"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.engine.value.NumberValueEditorActivity"
+            android:label="Values"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.engine.functionindex.FunctionIndexActivity"
+            android:label="Functions"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.engine.function.FunctionEditorActivity"
+            android:label="Function"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.programindex.ProgramIndexActivity"
+            android:label="Programs"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.engine.program.ProgramEditorActivity"
+            android:label="Program"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.StatementActivity"
+            android:label="Statement"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.mechanicindex.MechanicIndexActivity"
+            android:label="Mechanics"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.engine.mechanic.MechanicActivity"
+            android:label="Mechanic"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.variable.TextVariableActivity"
+            android:label="Text Variable"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.variable.NumberVariableActivity"
+            android:label="Number Variable"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.BooleanVariableActivity"
+            android:label="Boolean Variable"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.variable.DiceVariableActivity"
+            android:label="Dice Variable"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.PageListActivity"
+            android:label="Pages"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.GroupListActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.SectionsActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.PageActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.GroupActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.GroupRowActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.sheet.widget.ActionWidgetActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.BooleanWidgetActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.ImageWidgetActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.NumberWidgetActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.TableWidgetActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.TextWidgetActivity"
+            android:label="Groups"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.sheet.widget.text.TextEditorActivity"
+            android:label="Text Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.widget.QuoteEditorActivity"
+            android:label="Quote Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.sheet.DiceRollerActivity"
+            android:label="Dice Roller"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.variable.DiceRollTermActivity"
+            android:label="Dice Roll Term Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.mechanic.DiceRollEditorActivity"
+            android:label="Dice Roll Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.mechanic.quantity.DiceQuantityEditorActivity"
+            android:label="Dice Quantity Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.mechanic.quantity.DiceQuantityListActivity"
+            android:label="Dice Quantity List Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.mechanic.modifiers.DiceModifierListActivity"
+            android:label="Modifiers List Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.mechanic.modifiers.RollModifierEditorActivity"
+            android:label="Roll Modifier Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.variable.VariableReferenceActivity"
+            android:label="Variable Reference Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.variable.VariableListActivity"
+            android:label="Variable List Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.function.TuplesEditorActivity"
+            android:label="Tuples Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.engine.program.StatementsEditorActivity"
+            android:label="Program Statements Editor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.sheet.SheetActivity"
+            android:label="@string/title_activity_sheet"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    </application>
 
 </manifest>

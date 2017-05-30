@@ -11,17 +11,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.mechanic.quantity.DiceQuantityListActivity;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.model.game.engine.dice.DiceRoll;
 import com.kispoko.tome.util.UI;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,7 +35,7 @@ public class DiceRollEditorActivity extends AppCompatActivity
     // PROPERTEIS
     // -----------------------------------------------------------------------------------------
 
-    private DiceRoll            diceRoll;
+    private DiceRoll diceRoll;
 
     // > Form
     // -----------------------------------------------------------------------------------------
@@ -63,9 +60,9 @@ public class DiceRollEditorActivity extends AppCompatActivity
         // --------------------------------------------------------------------------------------
 
         this.diceRoll = null;
-        if (getIntent().hasExtra("dice_roll")) {
-            this.diceRoll = (DiceRoll) getIntent().getSerializableExtra("dice_roll");
-        }
+//        if (getIntent().hasExtra("dice_roll")) {
+//            this.diceRoll = (DiceRoll) getIntent().getSerializableExtra("dice_roll");
+//        }
 
         // [3] Initialize UI components
         // -------------------------------------------------------------------------------------
@@ -130,12 +127,12 @@ public class DiceRollEditorActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields.addAll(Model.fields(this.diceRoll, this));
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields.addAll(Model.fields(this.diceRoll, this));
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {
@@ -211,7 +208,7 @@ public class DiceRollEditorActivity extends AppCompatActivity
                 {
                     Intent intent = new Intent(DiceRollEditorActivity.this,
                                                DiceQuantityListActivity.class);
-                    intent.putExtra("quantities", (Serializable) diceRoll.quantities());
+        //            intent.putExtra("quantities", (Serializable) diceRoll.quantities());
                     context.startActivity(intent);
                 }
             });

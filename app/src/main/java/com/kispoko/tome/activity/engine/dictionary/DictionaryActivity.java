@@ -13,11 +13,10 @@ import android.view.View;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.valueset.BaseValueSetEditorActivity;
-import com.kispoko.tome.model.engine.value.Dictionary;
-import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
+import java.util.Dictionary;
 
 
 /**
@@ -29,7 +28,7 @@ public class DictionaryActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ValueSetsRecyclerViewAdapter valueSetsAdapter;
+    //private ValueSetsRecyclerViewAdapter valueSetsAdapter;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -44,9 +43,9 @@ public class DictionaryActivity extends AppCompatActivity
 
         initializeToolbar();
 
-        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
+//        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
 
-        initializeView(dictionary);
+//        initializeView(dictionary);
     }
 
 
@@ -71,9 +70,9 @@ public class DictionaryActivity extends AppCompatActivity
     {
         super.onWindowFocusChanged(hasFocus);
 
-        if (this.valueSetsAdapter != null) {
-            this.valueSetsAdapter.notifyDataSetChanged();
-        }
+//        if (this.valueSetsAdapter != null) {
+//            this.valueSetsAdapter.notifyDataSetChanged();
+//        }
     }
 
 
@@ -97,10 +96,10 @@ public class DictionaryActivity extends AppCompatActivity
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.value_set_list_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        dictionary.sortAscByLabel();
-        this.valueSetsAdapter = new ValueSetsRecyclerViewAdapter(dictionary.valueSets(), this);
-        recyclerView.setAdapter(this.valueSetsAdapter);
+//
+//        dictionary.sortAscByLabel();
+//        this.valueSetsAdapter = new ValueSetsRecyclerViewAdapter(dictionary.valueSets(), this);
+//        recyclerView.setAdapter(this.valueSetsAdapter);
 
         SimpleDividerItemDecoration dividerItemDecoration =
                 new SimpleDividerItemDecoration(this, R.color.dark_theme_primary_86);

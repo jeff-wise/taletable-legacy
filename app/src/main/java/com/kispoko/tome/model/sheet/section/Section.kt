@@ -10,7 +10,6 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.page.Page
 import effect.Err
 import effect.effApply
-import effect.effApply3
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -24,24 +23,24 @@ import java.util.*
  */
 data class Section(override val id : UUID,
                    val name : Func<SectionName>,
-                   val pages : Coll<Page>) : Model(id)
+                   val pages : Coll<Page>) : Model
 {
     companion object : Factory<Section>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Section> = when (doc)
         {
-            is DocDict -> effApply3(::Section,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Campaign Name
-                                    doc.at("name") ap {
-                                        effApply(::Prim, SectionName.fromDocument(it))
-                                    },
-                                    // Page List
-                                    doc.list("pages") ap { docList ->
-                                        effApply(::Coll,
-                                                docList.map { Page.fromDocument(it) })
-                                    })
+            is DocDict -> effApply(::Section,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Campaign Name
+                                   doc.at("name") ap {
+                                       effApply(::Prim, SectionName.fromDocument(it))
+                                   },
+                                   // Page List
+                                   doc.list("pages") ap { docList ->
+                                       effApply(::Coll,
+                                               docList.map { Page.fromDocument(it) })
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

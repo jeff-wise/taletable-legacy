@@ -6,7 +6,7 @@ import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.kispoko.tome.engine.search.EngineActiveSearchResult;
+import com.kispoko.tome.rts.game.engine.search.EngineActiveSearchResult;
 
 
 /**

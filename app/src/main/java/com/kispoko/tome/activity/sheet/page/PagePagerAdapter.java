@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.model.sheet.page.Page;
 
 import java.util.List;
 
@@ -63,18 +63,19 @@ public class PagePagerAdapter extends FragmentStatePagerAdapter
     @Override
     public Fragment getItem(int position)
     {
-        return PageFragment.newInstance(this.pages.get(position),
-                                        SheetManagerOld.currentSheet().engine());
+//        return PageFragment.newInstance(this.pages.get(position),
+//                                        SheetManagerOld.currentSheet().engine());
+        return null;
     }
 
 
     @Override
     public CharSequence getPageTitle(int position)
     {
-        String pageLabel = this.pages.get(position).name();
-        if (pageLabel != null)
-            return pageLabel;
-        else
+//        String pageLabel = this.pages.get(position).name();
+//        if (pageLabel != null)
+//            return pageLabel;
+//        else
             return "";
     }
 

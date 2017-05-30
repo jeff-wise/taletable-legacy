@@ -39,22 +39,22 @@ public class PageListActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_page_list);
 
-        SectionType sectionType = null;
-        if (getIntent().hasExtra("section_type")) {
-            sectionType = (SectionType) getIntent().getSerializableExtra("section_type");
-        }
-
-        switch (sectionType)
-        {
-            case PROFILE:
-                //this.section = SheetManagerOld.currentSheet().profileSection();
-                break;
-            case ENCOUNTER:
-                // this.section = SheetManagerOld.currentSheet().encounterSection();
-                break;
-            case CAMPAIGN:
-                break;
-        }
+//        SectionType sectionType = null;
+//        if (getIntent().hasExtra("section_type")) {
+//            sectionType = (SectionType) getIntent().getSerializableExtra("section_type");
+//        }
+//
+//        switch (sectionType)
+//        {
+//            case PROFILE:
+//                //this.section = SheetManagerOld.currentSheet().profileSection();
+//                break;
+//            case ENCOUNTER:
+//                // this.section = SheetManagerOld.currentSheet().encounterSection();
+//                break;
+//            case CAMPAIGN:
+//                break;
+//        }
 
         initializeToolbar();
 
@@ -120,7 +120,7 @@ public class PageListActivity extends AppCompatActivity
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-        recyclerView.setAdapter(new PageListRecyclerViewAdpater(this.section.pages(), this));
+        //recyclerView.setAdapter(new PageListRecyclerViewAdpater(this.section.pages(), this));
 
         FloatingActionButton addValueSetButton =
                 (FloatingActionButton) findViewById(R.id.button_new_page);

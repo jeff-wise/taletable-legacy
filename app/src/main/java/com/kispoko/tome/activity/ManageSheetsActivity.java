@@ -10,8 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.managesheets.SheetSummaryRecyclerViewAdpater;
-import com.kispoko.tome.model.sheet.Summary;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.database.DatabaseException;
@@ -94,13 +92,13 @@ public class ManageSheetsActivity extends AppCompatActivity
     /**
      * Initialize the template list view.
      */
-    private void initializeView(List<Summary> summaryList)
+    private void initializeView()
     {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.sheet_list_view);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-        recyclerView.setAdapter(new SheetSummaryRecyclerViewAdpater(summaryList, this));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+//        recyclerView.setAdapter(new SheetSummaryRecyclerViewAdpater(summaryList, this));
 
 //        FloatingActionButton addValueSetButton =
 //                (FloatingActionButton) findViewById(R.id.button_new_function);
@@ -117,28 +115,28 @@ public class ManageSheetsActivity extends AppCompatActivity
 
     private void loadSummaries()
     {
-        CollectionFunctor<Summary> summaries = CollectionFunctor.empty(Summary.class);
-
-        summaries.setOnLoadListener(new CollectionFunctor.OnLoadListener<Summary>()
-        {
-            @Override
-            public void onLoad(List<Summary> value)
-            {
-                initializeView(value);
-            }
-
-            @Override
-            public void onLoadDBError(DatabaseException exception)
-            {
-                // TODO
-            }
-
-            @Override
-            public void onLoadError(Exception exception)
-            {
-                // TODO
-            }
-        });
+//        CollectionFunctor<Summary> summaries = CollectionFunctor.empty(Summary.class);
+//
+//        summaries.setOnLoadListener(new CollectionFunctor.OnLoadListener<Summary>()
+//        {
+//            @Override
+//            public void onLoad(List<Summary> value)
+//            {
+//                initializeView(value);
+//            }
+//
+//            @Override
+//            public void onLoadDBError(DatabaseException exception)
+//            {
+//                // TODO
+//            }
+//
+//            @Override
+//            public void onLoadError(Exception exception)
+//            {
+//                // TODO
+//            }
+//        });
 
         //summaries.load();
     }

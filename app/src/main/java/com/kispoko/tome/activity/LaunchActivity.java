@@ -3,16 +3,12 @@ package com.kispoko.tome.activity;
 
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.kispoko.tome.ApplicationFailure;
-import com.kispoko.tome.DatabaseManager;
-import com.kispoko.tome.Global;
-import com.kispoko.tome.model.sheet.Sheet;
+import com.kispoko.tome.activity.sheet.SheetActivity;
 import com.kispoko.tome.lib.database.DatabaseException;
-import com.kispoko.tome.lib.database.SQL;
 import com.kispoko.tome.lib.database.query.CountQuery;
 
 
@@ -33,14 +29,18 @@ public class LaunchActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        SQL.initialize();
+        // SQL.initialize();
 
         // Create database reference and save it for use in application lifecycle.
-        DatabaseManager databaseManager = new DatabaseManager(this);
-        SQLiteDatabase database = databaseManager.getWritableDatabase();
-        Global.setDatabase(database);
+//        DatabaseManager databaseManager = new DatabaseManager(this);
+//        SQLiteDatabase database = databaseManager.getWritableDatabase();
+//        Global.setDatabase(database);
+//
+//        CountQuery.fromModel(Sheet.class).run(this);
 
-        CountQuery.fromModel(Sheet.class).run(this);
+
+        Intent intent = new Intent(this, SheetActivity.class);
+        startActivity(intent);
     }
 
 
@@ -53,19 +53,19 @@ public class LaunchActivity extends AppCompatActivity
     public void onCountResult(String modelName, Integer result)
     {
 
-        Intent intent;
-        // No characters exist, go to New Character Activity
-        if (result == 0)
-        {
-            intent = new Intent(this, NewCharacterActivity.class);
-        }
-        // Characters found, go to sheet of last used character
-        else
-        {
-            intent = new Intent(this, SheetActivity.class);
-        }
+ //       Intent intent;
+//        // No characters exist, go to New Character Activity
+//        if (result == 0)
+//        {
+  //          intent = new Intent(this, NewCharacterActivity.class);
+//        }
+//        // Characters found, go to sheet of last used character
+//        else
+//        {
+//            intent = new Intent(this, SheetActivityOld.class);
+        //}
 
-        startActivity(intent);
+//        startActivity(intent);
     }
 
 

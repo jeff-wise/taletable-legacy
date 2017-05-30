@@ -38,43 +38,42 @@ data class TextFormat(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply8(::TextFormat,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Style
-                          split(doc.maybeAt("style"),
-                                valueResult<Func<TextStyle>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                    effApply(::Comp, TextStyle.fromDocument(d))),
-                          // Position
-                          split(doc.maybeEnum<Position>("position"),
-                                valueResult<Func<Position>>(Null()),
-                                { valueResult(Prim(it))  }),
-                          // Height
-                          split(doc.maybeEnum<Height>("height"),
-                                valueResult<Func<Height>>(Null()),
-                                { valueResult(Prim(it))  }),
-                          // Padding
-                          split(doc.maybeAt("padding"),
-                                valueResult<Func<Spacing>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<Spacing>> =
-                                    effApply(::Comp, Spacing.fromDocument(d))),
-                          // Margins
-                          split(doc.maybeAt("margins"),
-                                valueResult<Func<Spacing>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<Spacing>> =
-                                    effApply(::Comp, Spacing.fromDocument(d))),
-                          // Alignment
-                          split(doc.maybeEnum<Alignment>("alignment"),
-                                valueResult<Func<Alignment>>(Null()),
-                                { valueResult(Prim(it))  }),
-                          // Vertical Alignment
-                          split(doc.maybeEnum<VerticalAlignment>("vertical_alignment"),
-                                valueResult<Func<VerticalAlignment>>(Null()),
-                                { valueResult(Prim(it))  })
-                          )
+                effApply(::TextFormat,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Style
+                         split(doc.maybeAt("style"),
+                               valueResult<Func<TextStyle>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                   effApply(::Comp, TextStyle.fromDocument(d))),
+                         // Position
+                         split(doc.maybeEnum<Position>("position"),
+                               valueResult<Func<Position>>(Null()),
+                               { valueResult(Prim(it))  }),
+                         // Height
+                         split(doc.maybeEnum<Height>("height"),
+                               valueResult<Func<Height>>(Null()),
+                               { valueResult(Prim(it))  }),
+                         // Padding
+                         split(doc.maybeAt("padding"),
+                               valueResult<Func<Spacing>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<Spacing>> =
+                                   effApply(::Comp, Spacing.fromDocument(d))),
+                         // Margins
+                         split(doc.maybeAt("margins"),
+                               valueResult<Func<Spacing>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<Spacing>> =
+                                   effApply(::Comp, Spacing.fromDocument(d))),
+                         // Alignment
+                         split(doc.maybeEnum<Alignment>("alignment"),
+                               valueResult<Func<Alignment>>(Null()),
+                               { valueResult(Prim(it))  }),
+                         // Vertical Alignment
+                         split(doc.maybeEnum<VerticalAlignment>("vertical_alignment"),
+                               valueResult<Func<VerticalAlignment>>(Null()),
+                               { valueResult(Prim(it))  })
+                         )
             }
-
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -100,27 +99,27 @@ data class TextStyle(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextStyle> = when (doc)
         {
-            is DocDict -> effApply7(::TextStyle,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Color
-                                    doc.at("color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    },
-                                    // Size
-                                    doc.at("size") ap {
-                                        effApply(::Prim, TextSize.fromDocument(it))
-                                    },
-                                    // Font
-                                    effApply(::Prim, doc.enum<TextFont>("font")),
-                                    // Is Underlined?
-                                    effApply(::Prim, doc.boolean("is_underlined")),
-                                    // Alignment
-                                    effApply(::Prim, doc.enum<Alignment>("alignment")),
-                                    // Color
-                                    doc.at("background_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    })
+            is DocDict -> effApply(::TextStyle,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Color
+                                   doc.at("color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   },
+                                   // Size
+                                   doc.at("size") ap {
+                                       effApply(::Prim, TextSize.fromDocument(it))
+                                   },
+                                   // Font
+                                   effApply(::Prim, doc.enum<TextFont>("font")),
+                                   // Is Underlined?
+                                   effApply(::Prim, doc.boolean("is_underlined")),
+                                   // Alignment
+                                   effApply(::Prim, doc.enum<Alignment>("alignment")),
+                                   // Color
+                                   doc.at("background_color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

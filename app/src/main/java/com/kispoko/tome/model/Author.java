@@ -17,7 +17,7 @@ import java.util.UUID;
  *
  * An author of a game, campaign, or other Tome object.
  */
-public class Author extends Model
+public class Author
                     implements Serializable
 {
 

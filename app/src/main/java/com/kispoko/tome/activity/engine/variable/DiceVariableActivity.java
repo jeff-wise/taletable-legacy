@@ -38,7 +38,7 @@ public class DiceVariableActivity extends AppCompatActivity
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private DiceVariable        diceVariable;
+    // private DiceVariable        diceVariable;
 
 
     // > Form
@@ -62,10 +62,10 @@ public class DiceVariableActivity extends AppCompatActivity
         // [2] Read Parameters
         // -------------------------------------------------------------------------------------
 
-        this.diceVariable = null;
-        if (getIntent().hasExtra("dice_variable")) {
-            this.diceVariable = (DiceVariable) getIntent().getSerializableExtra("dice_variable");
-        }
+//        this.diceVariable = null;
+//        if (getIntent().hasExtra("dice_variable")) {
+//            this.diceVariable = (DiceVariable) getIntent().getSerializableExtra("dice_variable");
+//        }
 
         // [3] Initialize data
         // -------------------------------------------------------------------------------------
@@ -126,18 +126,17 @@ public class DiceVariableActivity extends AppCompatActivity
         // [2] Get & Index Fields
         // -------------------------------------------------------------------------------------
 
-        if (this.diceVariable == null)
-            return;
+//        if (this.diceVariable == null) //            return;
 
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields = Model.fields(this.diceVariable, this);
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields = Model.fields(this.diceVariable, this);
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {
@@ -215,18 +214,18 @@ public class DiceVariableActivity extends AppCompatActivity
         if (field != null)
         {
             // > Summation Value
-            field.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    Intent intent = new Intent(DiceVariableActivity.this,
-                                               DiceRollEditorActivity.class);
-                    if (diceVariable.diceRoll() != null)
-                        intent.putExtra("dice_roll", diceVariable.diceRoll());
-                    startActivity(intent);
-                }
-            });
+//            field.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override
+//                public void onClick(View view)
+//                {
+//                    Intent intent = new Intent(DiceVariableActivity.this,
+//                                               DiceRollEditorActivity.class);
+//                    if (diceVariable.diceRoll() != null)
+//                        intent.putExtra("dice_roll", diceVariable.diceRoll());
+//                    startActivity(intent);
+//                }
+//            });
         }
     }
 

@@ -6,21 +6,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.SheetManagerOld;
-import com.kispoko.tome.model.engine.value.TextValue;
-import com.kispoko.tome.model.engine.variable.TextVariable;
-import com.kispoko.tome.util.UI;
-import com.kispoko.tome.lib.ui.form.Form;
+import com.kispoko.tome.model.game.engine.variable.TextVariable;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
-
-import java.util.Arrays;
-import java.util.List;
-
 
 
 /**
@@ -46,9 +36,9 @@ public class TextVariableActivity extends AppCompatActivity
         setContentView(R.layout.activity_variable);
 
         // > Read Parameters
-        if (getIntent().hasExtra("text_variable")) {
-            this.variable = (TextVariable) getIntent().getSerializableExtra("text_variable");
-        }
+//        if (getIntent().hasExtra("text_variable")) {
+//            this.variable = (TextVariable) getIntent().getSerializableExtra("text_variable");
+//        }
 
         initializeToolbar();
 
@@ -99,9 +89,9 @@ public class TextVariableActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.variable.label();
+//        String title = this.variable.label();
 
-        UI.initializeToolbar(this, title);
+ //       UI.initializeToolbar(this, title);
     }
 
 
@@ -143,38 +133,38 @@ public class TextVariableActivity extends AppCompatActivity
         // -------------------------------------------------------------------------------------
 
         // ** Literal Tab View
-        String literalValue = "";
-        if (this.variable.kind() == TextVariable.Kind.LITERAL)
-            literalValue = this.variable.stringLiteral();
+//        String literalValue = "";
+//        if (this.variable.kind() == TextVariable.Kind.LITERAL)
+//            literalValue = this.variable.stringLiteral();
+//
+//        LinearLayout literalValueInput = Form.textInput(literalValue, this);
+//
+//        // ** Value Tab View
+//        String valueString = "";
+//        ValueReference valueReference = this.variable.valueReference();
+//        if (valueReference != null) {
+//            TextValue textValue = SheetManagerOld.currentSheet().engine().dictionary()
+//                                              .textValue(valueReference);
+//            valueString = textValue.value();
+//        }
+//        else {
+//            valueString = "Select Value";
+//        }
 
-        LinearLayout literalValueInput = Form.textInput(literalValue, this);
+//        TextView valueInput = Form.buttonInput(valueString, this);
+//
+//        // ** Program Tab View
+//        String programString = "";
+//        if (this.variable.kind() == TextVariable.Kind.PROGRAM)
+//            programString = "VIEW";
+//        else
+//            programString = "CREATE";
 
-        // ** Value Tab View
-        String valueString = "";
-        ValueReference valueReference = this.variable.valueReference();
-        if (valueReference != null) {
-            TextValue textValue = SheetManagerOld.currentSheet().engine().dictionary()
-                                              .textValue(valueReference);
-            valueString = textValue.value();
-        }
-        else {
-            valueString = "Select Value";
-        }
-
-        TextView valueInput = Form.buttonInput(valueString, this);
-
-        // ** Program Tab View
-        String programString = "";
-        if (this.variable.kind() == TextVariable.Kind.PROGRAM)
-            programString = "VIEW";
-        else
-            programString = "CREATE";
-
-        TextView programInvocationInput = Form.buttonInput(programString, this);
-
-
-        List<String> tabNames = Arrays.asList("Text", "Value", "Computation");
-        List<View> tabViews = Arrays.asList(literalValueInput, valueInput, programInvocationInput);
+//        TextView programInvocationInput = Form.buttonInput(programString, this);
+//
+//
+//        List<String> tabNames = Arrays.asList("Text", "Value", "Computation");
+//        List<View> tabViews = Arrays.asList(literalValueInput, valueInput, programInvocationInput);
 
 //        LinearLayout valueField =
 //                Form.field(R.string.text_variable_field_value_label,

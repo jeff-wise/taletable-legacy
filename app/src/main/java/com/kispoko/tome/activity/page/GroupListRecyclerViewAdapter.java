@@ -59,10 +59,10 @@ public class GroupListRecyclerViewAdapter
         Group group = this.groupList.get(position);
 
         // > Name
-        viewHolder.setName(group.name());
-
-        // > Rows
-        viewHolder.setRows(group.rows().size());
+//        viewHolder.setName(group.name());
+//
+//        // > Rows
+//        viewHolder.setRows(group.rows().size());
 
         // > On Click Listener
         viewHolder.setOnClick(group, this.context);
@@ -134,7 +134,7 @@ public class GroupListRecyclerViewAdapter
                     Intent intent = new Intent(context, GroupActivity.class);
 
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("group", group);
+      //              bundle.putSerializable("group", group);
                     intent.putExtras(bundle);
 
                     context.startActivity(intent);

@@ -13,8 +13,7 @@ import android.view.View;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.engine.mechanic.MechanicActivity;
-import com.kispoko.tome.model.engine.mechanic.MechanicIndex;
-import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.rts.game.engine.MechanicIndex;
 import com.kispoko.tome.util.SimpleDividerItemDecoration;
 import com.kispoko.tome.util.UI;
 
@@ -50,8 +49,8 @@ public class MechanicIndexActivity extends AppCompatActivity
 
         initializeToolbar();
 
-        MechanicIndex mechanicIndex = SheetManagerOld.currentSheet().engine().mechanicIndex();
-        initializeView(mechanicIndex);
+//        MechanicIndex mechanicIndex = SheetManagerOld.currentSheet().engine().mechanicIndex();
+ //       initializeView(mechanicIndex);
     }
 
 

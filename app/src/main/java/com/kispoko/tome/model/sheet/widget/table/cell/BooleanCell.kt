@@ -12,7 +12,6 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.CellFormat
 import effect.Err
 import effect.effApply
-import effect.effApply6
 import effect.split
 import lulo.document.DocDict
 import lulo.document.DocType
@@ -40,33 +39,33 @@ data class BooleanCellFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanCellFormat> = when (doc)
         {
-            is DocDict -> effApply6(::BooleanCellFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Column Format
-                                    split(doc.maybeAt("cell_format"),
-                                          valueResult<Func<CellFormat>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<CellFormat>> =
-                                              effApply(::Comp, CellFormat.fromDocument(d))),
-                                    // True Style
-                                    split(doc.maybeAt("true_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // False Style
-                                    split(doc.maybeAt("false_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // Show True Icon?
-                                    split(doc.maybeBoolean("show_true_icon"),
-                                          valueResult<Func<Boolean>>(Null()),
-                                          { valueResult(Prim(it))  }),
-                                    // Show True Icon?
-                                    split(doc.maybeBoolean("show_false_icon"),
-                                          valueResult<Func<Boolean>>(Null()),
-                                          { valueResult(Prim(it))  })
-                                    )
+            is DocDict -> effApply(::BooleanCellFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Column Format
+                                   split(doc.maybeAt("cell_format"),
+                                         valueResult<Func<CellFormat>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<CellFormat>> =
+                                             effApply(::Comp, CellFormat.fromDocument(d))),
+                                   // True Style
+                                   split(doc.maybeAt("true_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // False Style
+                                   split(doc.maybeAt("false_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Show True Icon?
+                                   split(doc.maybeBoolean("show_true_icon"),
+                                         valueResult<Func<Boolean>>(Null()),
+                                         { valueResult(Prim(it))  }),
+                                   // Show True Icon?
+                                   split(doc.maybeBoolean("show_false_icon"),
+                                         valueResult<Func<Boolean>>(Null()),
+                                         { valueResult(Prim(it))  })
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

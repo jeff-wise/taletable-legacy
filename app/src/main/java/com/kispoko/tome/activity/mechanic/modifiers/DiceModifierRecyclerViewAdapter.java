@@ -14,6 +14,7 @@ import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.model.game.engine.dice.RollModifier;
 
 import java.util.List;
 
@@ -57,9 +58,9 @@ public class DiceModifierRecyclerViewAdapter
                                  int position)
     {
         RollModifier rollModifier = this.modifierList.get(position);
-
-        viewHolder.setModifier(rollModifier.valuePlusString());
-        viewHolder.setName(rollModifier.name());
+//
+//        viewHolder.setModifier(rollModifier.valuePlusString());
+//        viewHolder.setName(rollModifier.name());
 
         viewHolder.setOnClick(rollModifier, this.context);
     }
@@ -126,7 +127,7 @@ public class DiceModifierRecyclerViewAdapter
                 public void onClick(View view)
                 {
                     Intent intent = new Intent(context, RollModifierEditorActivity.class);
-                    intent.putExtra("roll_modifier", rollModifier);
+//                    intent.putExtra("roll_modifier", rollModifier);
                     context.startActivity(intent);
                 }
             });

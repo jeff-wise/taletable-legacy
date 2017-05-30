@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.page.PagePagerAdapter;
 import com.kispoko.tome.model.sheet.group.Group;
+import com.kispoko.tome.model.sheet.page.Page;
 import com.kispoko.tome.util.UI;
 
 
@@ -26,7 +27,7 @@ public class PageActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Page                    page;
+    private Page page;
 
     private FloatingActionButton    addGroupButton;
 
@@ -42,9 +43,9 @@ public class PageActivity extends AppCompatActivity
         setContentView(R.layout.activity_page);
 
         // > Read Parameters
-        if (getIntent().hasExtra("page")) {
-            this.page = (Page) getIntent().getSerializableExtra("page");
-        }
+//        if (getIntent().hasExtra("page")) {
+//            this.page = (Page) getIntent().getSerializableExtra("page");
+//        }
 
         initializeToolbar();
 
@@ -97,9 +98,9 @@ public class PageActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.page.name() + " " + getString(R.string.page);
-
-        UI.initializeToolbar(this, title);
+//        String title = this.page.name() + " " + getString(R.string.page);
+//
+//        UI.initializeToolbar(this, title);
     }
 
 

@@ -8,9 +8,9 @@ import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Null
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.engine.variable.BooleanVariable
-import com.kispoko.tome.model.engine.variable.NumberVariable
-import com.kispoko.tome.model.engine.variable.TextVariable
+import com.kispoko.tome.model.game.engine.variable.BooleanVariable
+import com.kispoko.tome.model.game.engine.variable.NumberVariable
+import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.cell.BooleanCellFormat
@@ -73,18 +73,18 @@ data class TableWidgetBooleanCell(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply3(::TableWidgetBooleanCell,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<BooleanCellFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<BooleanCellFormat>> =
-                                    effApply(::Comp, BooleanCellFormat.fromDocument(d))),
-                          // Value
-                          doc.at("value") ap {
-                              effApply(::Comp, BooleanVariable.fromDocument(it))
-                          })
+                effApply(::TableWidgetBooleanCell,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<BooleanCellFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<BooleanCellFormat>> =
+                                   effApply(::Comp, BooleanCellFormat.fromDocument(d))),
+                         // Value
+                         doc.at("value") ap {
+                             effApply(::Comp, BooleanVariable.fromDocument(it))
+                         })
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
@@ -109,18 +109,18 @@ sealed class TableWidgetNumberCell(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply3(::TableWidgetNumberCell,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<NumberCellFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<NumberCellFormat>> =
-                                    effApply(::Comp, NumberCellFormat.fromDocument(d))),
-                          // Value
-                          doc.at("value") ap {
-                              effApply(::Comp, NumberVariable.fromDocument(it))
-                          })
+                effApply(::TableWidgetNumberCell,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<NumberCellFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<NumberCellFormat>> =
+                                   effApply(::Comp, NumberCellFormat.fromDocument(d))),
+                         // Value
+                         doc.at("value") ap {
+                             effApply(::Comp, NumberVariable.fromDocument(it))
+                         })
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
@@ -143,18 +143,18 @@ sealed class TableWidgetTextCell(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply3(::TableWidgetTextCell,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<TextCellFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<TextCellFormat>> =
-                                    effApply(::Comp, TextCellFormat.fromDocument(d))),
-                          // Value
-                          doc.at("value") ap {
-                              effApply(::Comp, TextVariable.fromDocument(it))
-                          })
+                effApply(::TableWidgetTextCell,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<TextCellFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TextCellFormat>> =
+                                   effApply(::Comp, TextCellFormat.fromDocument(d))),
+                         // Value
+                         doc.at("value") ap {
+                             effApply(::Comp, TextVariable.fromDocument(it))
+                         })
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
@@ -176,24 +176,24 @@ data class CellFormat(override val id : UUID,
         override fun fromDocument(doc : SpecDoc)
                       : ValueParser<CellFormat> = when (doc)
         {
-            is DocDict -> effApply4(::CellFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Text Style
-                                    split(doc.maybeAt("text_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // Alignment
-                                    split(doc.maybeEnum<Alignment>("alignment"),
-                                          valueResult<Func<Alignment>>(Null()),
-                                          { valueResult(Prim(it)) }),
-                                    // Background Color
-                                    split(doc.maybeAt("background_color"),
-                                          valueResult<Func<ColorId>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
-                                              effApply(::Prim, ColorId.fromDocument(d)))
-                                    )
+            is DocDict -> effApply(::CellFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Text Style
+                                   split(doc.maybeAt("text_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Alignment
+                                   split(doc.maybeEnum<Alignment>("alignment"),
+                                         valueResult<Func<Alignment>>(Null()),
+                                         { valueResult(Prim(it)) }),
+                                   // Background Color
+                                   split(doc.maybeAt("background_color"),
+                                         valueResult<Func<ColorId>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
+                                             effApply(::Prim, ColorId.fromDocument(d)))
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

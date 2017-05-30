@@ -208,37 +208,37 @@ public class ORM
                List<ModelFunctor<?>>,
                List<CollectionFunctor<?>>> functorsTuple;
 
-        try {
-            functorsTuple = Model.propertyFunctors(model);
-        }
-        catch (FunctorException exception) {
-            throw DatabaseException.functor(new FunctorError(exception));
-        }
-
-        final List<ModelFunctor<?>>      modelFunctors      = functorsTuple.getItem3();
-        final List<CollectionFunctor<?>> collectionFunctors = functorsTuple.getItem4();
-
-
-        // [2] Save Shared Value Rows
-        // --------------------------------------------------------------------------------------
-
-        for (final ModelFunctor<? extends Model> modelFunctor : modelFunctors)
-        {
-            modelFunctor.save();
-        }
-
-
-        // [B 3] Save Collection Values
-        // --------------------------------------------------------------------------------------
-
-        for (final CollectionFunctor<? extends Model> collectionFunctor : collectionFunctors)
-        {
-            List<OneToManyRelation> parentRelations = new ArrayList<>();
-            parentRelations.add(new OneToManyRelation(ORM.name(model),
-                                                      collectionFunctor.name(),
-                                                      model.getId()));
-            collectionFunctor.save(parentRelations);
-        }
+//        try {
+//            functorsTuple = Model.propertyFunctors(model);
+//        }
+//        catch (FunctorException exception) {
+//            throw DatabaseException.functor(new FunctorError(exception));
+//        }
+//
+//        final List<ModelFunctor<?>>      modelFunctors      = functorsTuple.getItem3();
+//        final List<CollectionFunctor<?>> collectionFunctors = functorsTuple.getItem4();
+//
+//
+//        // [2] Save Shared Value Rows
+//        // --------------------------------------------------------------------------------------
+//
+//        for (final ModelFunctor<? extends Model> modelFunctor : modelFunctors)
+//        {
+//            modelFunctor.save();
+//        }
+//
+//
+//        // [B 3] Save Collection Values
+//        // --------------------------------------------------------------------------------------
+//
+//        for (final CollectionFunctor<? extends Model> collectionFunctor : collectionFunctors)
+//        {
+//            List<OneToManyRelation> parentRelations = new ArrayList<>();
+//            parentRelations.add(new OneToManyRelation(ORM.name(model),
+//                                                      collectionFunctor.name(),
+//                                                      model.getId()));
+//            collectionFunctor.save(parentRelations);
+//        }
     }
 
 
@@ -264,72 +264,72 @@ public class ORM
                List<ModelFunctor<?>>,
                List<CollectionFunctor<?>>> functorsTuple;
 
-        try {
-            functorsTuple = Model.propertyFunctors(model);
-        }
-        catch (FunctorException exception) {
-            throw DatabaseException.functor(new FunctorError(exception));
-        }
-
-        List<PrimitiveFunctor<?>>  primitiveFunctors  = functorsTuple.getItem1();
-        List<OptionFunctor<?>>     optionFunctors     = functorsTuple.getItem2();
-        List<ModelFunctor<?>>      modelFunctors      = functorsTuple.getItem3();
-        List<CollectionFunctor<?>> collectionFunctors = functorsTuple.getItem4();
-
-
-        // [B 1] Evaluate model values
-        // ----------------------------------------------------------------------------------
-
-        SQLValue idSqlValue = row.getSQLValue("_id");
-        model.setId(UUID.fromString(idSqlValue.getText()));
-
-
-        // [B 2] Evaluate primitive model values
-        // ----------------------------------------------------------------------------------
-
-        for (PrimitiveFunctor<?> primitiveFunctor : primitiveFunctors)
-        {
-            String columnName = primitiveFunctor.sqlColumnName();
-            primitiveFunctor.fromSQLValue(row.getSQLValue(columnName));
-        }
-
-        // [B 3] Evaluate option functors
-        // ----------------------------------------------------------------------------------
-
-        for (OptionFunctor<?> optionFunctor : optionFunctors)
-        {
-            String columnName = optionFunctor.sqlColumnName();
-            optionFunctor.fromSQLValue(row.getSQLValue(columnName));
-        }
-
-        // [B 4] Evaluate model functors
-        // ----------------------------------------------------------------------------------
-
-        for (final ModelFunctor<?> modelFunctor : modelFunctors)
-        {
-            String modelForeignKeyColumnName = modelFunctor.sqlColumnName();
-            SQLValue modelIdSqlValue = row.getSQLValue(modelForeignKeyColumnName);
-
-            // If the model does not exist at this time (the foreign key is NULL)
-            if (modelIdSqlValue.isNull())
-                continue;
-
-            UUID modelValueId = UUID.fromString(modelIdSqlValue.getText());
-            ModelQueryParameters queryParameters =
-                    new ModelQueryParameters(new ModelQueryParameters.PrimaryKey(modelValueId),
-                                             ModelQueryParameters.Type.PRIMARY_KEY);
-
-            modelFunctor.load(queryParameters);
-        }
-
-
-        // [B 2] Evaluate collection values (one-to-many values)
-        // ----------------------------------------------------------------------------------
-
-        for (final CollectionFunctor<? extends Model> collectionFunctor : collectionFunctors)
-        {
-            collectionFunctor.load(model);
-        }
+//        try {
+//            functorsTuple = Model.propertyFunctors(model);
+//        }
+//        catch (FunctorException exception) {
+//            throw DatabaseException.functor(new FunctorError(exception));
+//        }
+//
+//        List<PrimitiveFunctor<?>>  primitiveFunctors  = functorsTuple.getItem1();
+//        List<OptionFunctor<?>>     optionFunctors     = functorsTuple.getItem2();
+//        List<ModelFunctor<?>>      modelFunctors      = functorsTuple.getItem3();
+//        List<CollectionFunctor<?>> collectionFunctors = functorsTuple.getItem4();
+//
+//
+//        // [B 1] Evaluate model values
+//        // ----------------------------------------------------------------------------------
+//
+//        SQLValue idSqlValue = row.getSQLValue("_id");
+//        model.setId(UUID.fromString(idSqlValue.getText()));
+//
+//
+//        // [B 2] Evaluate primitive model values
+//        // ----------------------------------------------------------------------------------
+//
+//        for (PrimitiveFunctor<?> primitiveFunctor : primitiveFunctors)
+//        {
+//            String columnName = primitiveFunctor.sqlColumnName();
+//            primitiveFunctor.fromSQLValue(row.getSQLValue(columnName));
+//        }
+//
+//        // [B 3] Evaluate option functors
+//        // ----------------------------------------------------------------------------------
+//
+//        for (OptionFunctor<?> optionFunctor : optionFunctors)
+//        {
+//            String columnName = optionFunctor.sqlColumnName();
+//            optionFunctor.fromSQLValue(row.getSQLValue(columnName));
+//        }
+//
+//        // [B 4] Evaluate model functors
+//        // ----------------------------------------------------------------------------------
+//
+//        for (final ModelFunctor<?> modelFunctor : modelFunctors)
+//        {
+//            String modelForeignKeyColumnName = modelFunctor.sqlColumnName();
+//            SQLValue modelIdSqlValue = row.getSQLValue(modelForeignKeyColumnName);
+//
+//            // If the model does not exist at this time (the foreign key is NULL)
+//            if (modelIdSqlValue.isNull())
+//                continue;
+//
+//            UUID modelValueId = UUID.fromString(modelIdSqlValue.getText());
+//            ModelQueryParameters queryParameters =
+//                    new ModelQueryParameters(new ModelQueryParameters.PrimaryKey(modelValueId),
+//                                             ModelQueryParameters.Type.PRIMARY_KEY);
+//
+//            modelFunctor.load(queryParameters);
+//        }
+//
+//
+//        // [B 2] Evaluate collection values (one-to-many values)
+//        // ----------------------------------------------------------------------------------
+//
+//        for (final CollectionFunctor<? extends Model> collectionFunctor : collectionFunctors)
+//        {
+//            collectionFunctor.load(model);
+//        }
 
 
         return model;
@@ -352,12 +352,12 @@ public class ORM
                List<ModelFunctor<?>>,
                List<CollectionFunctor<?>>> functorsTuple;
 
-        try {
-            functorsTuple = Model.propertyFunctors(model);
-        }
-        catch (FunctorException exception) {
-            throw DatabaseException.functor(new FunctorError(exception));
-        }
+//        try {
+//            functorsTuple = Model.propertyFunctors(model);
+//        }
+//        catch (FunctorException exception) {
+//            throw DatabaseException.functor(new FunctorError(exception));
+//        }
 
         // Get all of model's database columns. Both primitive values and model values have
         // column representations
@@ -367,25 +367,25 @@ public class ORM
         columns.add(new Tuple2<>("_id", SQLValue.Type.TEXT));
 
         // > Add PRIMITIVE VALUE columns
-        for (PrimitiveFunctor<?> primitiveValue : functorsTuple.getItem1())
-        {
-            columns.add(new Tuple2<>(primitiveValue.sqlColumnName(),
-                                     primitiveValue.sqlType()));
-        }
+//        for (PrimitiveFunctor<?> primitiveValue : functorsTuple.getItem1())
+//        {
+//            columns.add(new Tuple2<>(primitiveValue.sqlColumnName(),
+//                                     primitiveValue.sqlType()));
+//        }
 
-        // > Add OPTION VALUE columns
-        for (OptionFunctor<?> optionFunctor : functorsTuple.getItem2())
-        {
-            columns.add(new Tuple2<>(optionFunctor.sqlColumnName(),
-                                     SQLValue.Type.TEXT));
-        }
-
-        // > Add MODEL VALUE columns
-        for (ModelFunctor<?> modelFunctor : functorsTuple.getItem3())
-        {
-            columns.add(new Tuple2<>(modelFunctor.sqlColumnName(),
-                                     SQLValue.Type.TEXT));
-        }
+//        // > Add OPTION VALUE columns
+//        for (OptionFunctor<?> optionFunctor : functorsTuple.getItem2())
+//        {
+//            columns.add(new Tuple2<>(optionFunctor.sqlColumnName(),
+//                                     SQLValue.Type.TEXT));
+//        }
+//
+//        // > Add MODEL VALUE columns
+//        for (ModelFunctor<?> modelFunctor : functorsTuple.getItem3())
+//        {
+//            columns.add(new Tuple2<>(modelFunctor.sqlColumnName(),
+//                                     SQLValue.Type.TEXT));
+//        }
 
         return columns;
     }
@@ -444,40 +444,40 @@ public class ORM
     {
         Map<String,List<Tuple2<String,String>>> relationMap = new HashMap<>();
 
-        for (Class<? extends Model> modelClass : modelClasses)
-        {
-            Model dummyModel = ORM.newModel(modelClass);
+//        for (Class<? extends Model> modelClass : modelClasses)
+//        {
+//            Model dummyModel = ORM.newModel(modelClass);
+//
+//            Tuple4<List<PrimitiveFunctor<?>>,
+//                   List<OptionFunctor<?>>,
+//                   List<ModelFunctor<?>>,
+//                   List<CollectionFunctor<?>>> functorsTuple;
 
-            Tuple4<List<PrimitiveFunctor<?>>,
-                   List<OptionFunctor<?>>,
-                   List<ModelFunctor<?>>,
-                   List<CollectionFunctor<?>>> functorsTuple;
+//            try {
+//                functorsTuple = Model.propertyFunctors(dummyModel);
+//            }
+//            catch (FunctorException exception) {
+//                throw DatabaseException.functor(new FunctorError(exception));
+//            }
 
-            try {
-                functorsTuple = Model.propertyFunctors(dummyModel);
-            }
-            catch (FunctorException exception) {
-                throw DatabaseException.functor(new FunctorError(exception));
-            }
+//            List<CollectionFunctor<?>> collectionValues = functorsTuple.getItem4();
 
-            List<CollectionFunctor<?>> collectionValues = functorsTuple.getItem4();
+            //String parentName = ORM.name(modelClass);
 
-            String parentName = ORM.name(modelClass);
-
-            for (CollectionFunctor<?> collectionFunctor : collectionValues)
-            {
-                String collectionName = collectionFunctor.name();
-
-                String childModelName = ORM.name(collectionFunctor.modelClass());
-
-                if (!relationMap.containsKey(childModelName))
-                    relationMap.put(childModelName, new ArrayList<Tuple2<String, String>>());
-
-                List<Tuple2<String,String>> parents = relationMap.get(childModelName);
-                parents.add(new Tuple2<>(parentName, collectionName));
-                relationMap.put(childModelName, parents);
-            }
-        }
+//            for (CollectionFunctor<?> collectionFunctor : collectionValues)
+//            {
+//                String collectionName = collectionFunctor.name();
+//
+//                String childModelName = ORM.name(collectionFunctor.modelClass());
+//
+//                if (!relationMap.containsKey(childModelName))
+//                    relationMap.put(childModelName, new ArrayList<Tuple2<String, String>>());
+//
+//                List<Tuple2<String,String>> parents = relationMap.get(childModelName);
+//                parents.add(new Tuple2<>(parentName, collectionName));
+//                relationMap.put(childModelName, parents);
+//            }
+//        }
 
         return relationMap;
     }
@@ -509,72 +509,72 @@ public class ORM
                List<ModelFunctor<?>>,
                List<CollectionFunctor<?>>> functorsTuple;
 
-        try {
-            functorsTuple = Model.propertyFunctors(dummyModel);
-        }
-        catch (FunctorException exception) {
-            throw DatabaseException.functor(new FunctorError(exception));
-        }
+//        try {
+//            functorsTuple = Model.propertyFunctors(dummyModel);
+//        }
+//        catch (FunctorException exception) {
+//            throw DatabaseException.functor(new FunctorError(exception));
+//        }
 
-        List<PrimitiveFunctor<?>> primitiveFunctors = functorsTuple.getItem1();
-        List<OptionFunctor<?>>    optionFunctors    = functorsTuple.getItem2();
-        List<ModelFunctor<?>>     modelFunctors     = functorsTuple.getItem3();
-
-        // ** Model Id
-        tableBuilder.append("_id");
-        tableBuilder.append(" ");
-        tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
-        tableBuilder.append(" PRIMARY KEY");
-
-        // ** Primitive Values
-        for (PrimitiveFunctor<?> primitiveFunctor : primitiveFunctors)
-        {
-            String        columnName = primitiveFunctor.sqlColumnName();
-            SQLValue.Type columnType = primitiveFunctor.sqlType();
-
-            tableBuilder.append(", ");
-            tableBuilder.append(columnName);
-            tableBuilder.append(" ");
-            tableBuilder.append(columnType.name().toUpperCase());
-        }
-
-        // ** Option Values
-        for (OptionFunctor<?> optionFunctor : optionFunctors)
-        {
-            String        columnName = optionFunctor.sqlColumnName();
-            SQLValue.Type columnType = SQLValue.Type.TEXT;
-
-            tableBuilder.append(", ");
-            tableBuilder.append(columnName);
-            tableBuilder.append(" ");
-            tableBuilder.append(columnType.name().toUpperCase());
-        }
-
-        // ** Model Values
-        for (ModelFunctor<?> modelFunctor : modelFunctors)
-        {
-            String columnName = modelFunctor.sqlColumnName();
-
-            tableBuilder.append(", ");
-            tableBuilder.append(columnName);
-            tableBuilder.append(" ");
-            tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
-        }
-
-
-        // ** Collection Value parents
-        for (Tuple2<String,String> parentInfo : parentRelations)
-        {
-            String parentName     = parentInfo.getItem1();
-            String collectionName = parentInfo.getItem2();
-
-            String columnName = "parent_" + collectionName + "_" + parentName + "_id";
-
-            tableBuilder.append(", ");
-            tableBuilder.append(columnName);
-            tableBuilder.append(" ");
-            tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
-        }
+//        List<PrimitiveFunctor<?>> primitiveFunctors = functorsTuple.getItem1();
+//        List<OptionFunctor<?>>    optionFunctors    = functorsTuple.getItem2();
+//        List<ModelFunctor<?>>     modelFunctors     = functorsTuple.getItem3();
+//
+//        // ** Model Id
+//        tableBuilder.append("_id");
+//        tableBuilder.append(" ");
+//        tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
+//        tableBuilder.append(" PRIMARY KEY");
+//
+//        // ** Primitive Values
+//        for (PrimitiveFunctor<?> primitiveFunctor : primitiveFunctors)
+//        {
+//            String        columnName = primitiveFunctor.sqlColumnName();
+//            SQLValue.Type columnType = primitiveFunctor.sqlType();
+//
+//            tableBuilder.append(", ");
+//            tableBuilder.append(columnName);
+//            tableBuilder.append(" ");
+//            tableBuilder.append(columnType.name().toUpperCase());
+//        }
+//
+//        // ** Option Values
+//        for (OptionFunctor<?> optionFunctor : optionFunctors)
+//        {
+//            String        columnName = optionFunctor.sqlColumnName();
+//            SQLValue.Type columnType = SQLValue.Type.TEXT;
+//
+//            tableBuilder.append(", ");
+//            tableBuilder.append(columnName);
+//            tableBuilder.append(" ");
+//            tableBuilder.append(columnType.name().toUpperCase());
+//        }
+//
+//        // ** Model Values
+//        for (ModelFunctor<?> modelFunctor : modelFunctors)
+//        {
+//            String columnName = modelFunctor.sqlColumnName();
+//
+//            tableBuilder.append(", ");
+//            tableBuilder.append(columnName);
+//            tableBuilder.append(" ");
+//            tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
+//        }
+//
+//
+//        // ** Collection Value parents
+//        for (Tuple2<String,String> parentInfo : parentRelations)
+//        {
+//            String parentName     = parentInfo.getItem1();
+//            String collectionName = parentInfo.getItem2();
+//
+//            String columnName = "parent_" + collectionName + "_" + parentName + "_id";
+//
+//            tableBuilder.append(", ");
+//            tableBuilder.append(columnName);
+//            tableBuilder.append(" ");
+//            tableBuilder.append(SQLValue.Type.TEXT.name().toUpperCase());
+//        }
 
         // [2] End
         // --------------------------------------------------------------------------------------
@@ -640,123 +640,123 @@ public class ORM
                List<ModelFunctor<?>>,
                List<CollectionFunctor<?>>> functorsTuple;
 
-        try {
-            functorsTuple = Model.propertyFunctors(model);
-        }
-        catch (FunctorException exception) {
-            throw DatabaseException.functor(new FunctorError(exception));
-        }
+//        try {
+//            functorsTuple = Model.propertyFunctors(model);
+//        }
+//        catch (FunctorException exception) {
+//            throw DatabaseException.functor(new FunctorError(exception));
+//        }
 
-        final List<PrimitiveFunctor<?>>  primitiveFunctors = functorsTuple.getItem1();
-        final List<OptionFunctor<?>>     optionFunctors    = functorsTuple.getItem2();
-        final List<ModelFunctor<?>>      modelFunctors     = functorsTuple.getItem3();
+//        final List<PrimitiveFunctor<?>>  primitiveFunctors = functorsTuple.getItem1();
+//        final List<OptionFunctor<?>>     optionFunctors    = functorsTuple.getItem2();
+//        final List<ModelFunctor<?>>      modelFunctors     = functorsTuple.getItem3();
+//
+//
+//        // [B 1] Save Model row
+//        // --------------------------------------------------------------------------------------
+//
+//        // > Save each column value into a ContentValues
+//        ContentValues row = new ContentValues();
+//
+//        // ** Save the model values
+//        row.put("_id", model.getId().toString());
+//
+//        // ** Save all of the primitive values
+//        for (PrimitiveFunctor primitiveFunctor : primitiveFunctors)
+//        {
+//            SQLValue sqlValue = primitiveFunctor.toSQLValue();
+//            String columnName = primitiveFunctor.sqlColumnName();
+//
+//            switch (sqlValue.getType()) {
+//                case INTEGER:
+//                    row.put(columnName, sqlValue.getInteger());
+//                    break;
+//                case REAL:
+//                    row.put(columnName, sqlValue.getReal());
+//                    break;
+//                case TEXT:
+//                    row.put(columnName, sqlValue.getText());
+//                    break;
+//                case BLOB:
+//                    row.put(columnName, sqlValue.getBlob());
+//                    break;
+//                case NULL:
+//                    row.putNull(columnName);
+//                    break;
+//            }
+//        }
 
-
-        // [B 1] Save Model row
-        // --------------------------------------------------------------------------------------
-
-        // > Save each column value into a ContentValues
-        ContentValues row = new ContentValues();
-
-        // ** Save the model values
-        row.put("_id", model.getId().toString());
-
-        // ** Save all of the primitive values
-        for (PrimitiveFunctor primitiveFunctor : primitiveFunctors)
-        {
-            SQLValue sqlValue = primitiveFunctor.toSQLValue();
-            String columnName = primitiveFunctor.sqlColumnName();
-
-            switch (sqlValue.getType()) {
-                case INTEGER:
-                    row.put(columnName, sqlValue.getInteger());
-                    break;
-                case REAL:
-                    row.put(columnName, sqlValue.getReal());
-                    break;
-                case TEXT:
-                    row.put(columnName, sqlValue.getText());
-                    break;
-                case BLOB:
-                    row.put(columnName, sqlValue.getBlob());
-                    break;
-                case NULL:
-                    row.putNull(columnName);
-                    break;
-            }
-        }
-
-
-        for (OptionFunctor optionFunctor : optionFunctors)
-        {
-            SQLValue sqlValue = optionFunctor.toSQLValue();
-            String columnName = optionFunctor.sqlColumnName();
-
-            switch (sqlValue.getType())
-            {
-                case TEXT:
-                    row.put(columnName, sqlValue.getText());
-                    break;
-                case NULL:
-                    row.putNull(columnName);
-                    break;
-                default:
-                    row.putNull(columnName);
-            }
-        }
-
-
-        // [B 2] Save all child models in the row by foreign key
-        // --------------------------------------------------------------------------------------
-
-        for (ModelFunctor<? extends Model> modelFunctor : modelFunctors)
-        {
-            String columnName = modelFunctor.sqlColumnName();
-
-            if (modelFunctor.isNull())
-            {
-                row.putNull(columnName);
-            }
-            else
-            {
-                UUID modelId = modelFunctor.getValue().getId();
-
-                if (modelId == null) {
-                    throw DatabaseException.nullModelId(
-                            new NullModelIdentifierError(
-                                        modelFunctor.getValue().getClass().getName()));
-                }
-
-                row.put(columnName, modelFunctor.getValue().getId().toString());
-            }
-
-        }
-
-
-        // [B 3] Save all parent models in the row by foreign key
-        // --------------------------------------------------------------------------------------
-
-        for (OneToManyRelation parentRelation : parentRelations)
-        {
-            row.put(parentRelation.childSQLColumnName(),
-                    parentRelation.getParentId().toString());
-        }
-
-        // > Save the row, creating a new one if necessary.
-        String tableName = ORM.name(model);
-        UpsertQuery upsertQuery = new UpsertQuery(ORM.name(model), model.getId(), row);
-
-        Long startTime = System.nanoTime();
-
-        upsertQuery.run();
-
-        Long endTime = System.nanoTime();
-
-        String timeString = Util.timeDifferenceString(startTime, endTime);
-        String eventMessage = "Table: " + tableName + "  " +
-                              "Id: " + model.getId().toString() + "  " +
-                              timeString + " ms";
-        EventLog.add(EventLog.EventType.ROW_INSERT, eventMessage);
+//
+//        for (OptionFunctor optionFunctor : optionFunctors)
+//        {
+//            SQLValue sqlValue = optionFunctor.toSQLValue();
+//            String columnName = optionFunctor.sqlColumnName();
+//
+//            switch (sqlValue.getType())
+//            {
+//                case TEXT:
+//                    row.put(columnName, sqlValue.getText());
+//                    break;
+//                case NULL:
+//                    row.putNull(columnName);
+//                    break;
+//                default:
+//                    row.putNull(columnName);
+//            }
+//        }
+//
+//
+//        // [B 2] Save all child models in the row by foreign key
+//        // --------------------------------------------------------------------------------------
+//
+//        for (ModelFunctor<? extends Model> modelFunctor : modelFunctors)
+//        {
+//            String columnName = modelFunctor.sqlColumnName();
+//
+//            if (modelFunctor.isNull())
+//            {
+//                row.putNull(columnName);
+//            }
+//            else
+//            {
+//                UUID modelId = modelFunctor.getValue().getId();
+//
+//                if (modelId == null) {
+//                    throw DatabaseException.nullModelId(
+//                            new NullModelIdentifierError(
+//                                        modelFunctor.getValue().getClass().getName()));
+//                }
+//
+//                row.put(columnName, modelFunctor.getValue().getId().toString());
+//            }
+//
+//        }
+//
+//
+//        // [B 3] Save all parent models in the row by foreign key
+//        // --------------------------------------------------------------------------------------
+//
+//        for (OneToManyRelation parentRelation : parentRelations)
+//        {
+//            row.put(parentRelation.childSQLColumnName(),
+//                    parentRelation.getParentId().toString());
+//        }
+//
+//        // > Save the row, creating a new one if necessary.
+//        String tableName = ORM.name(model);
+//        UpsertQuery upsertQuery = new UpsertQuery(ORM.name(model), model.getId(), row);
+//
+//        Long startTime = System.nanoTime();
+//
+//        upsertQuery.run();
+//
+//        Long endTime = System.nanoTime();
+//
+//        String timeString = Util.timeDifferenceString(startTime, endTime);
+//        String eventMessage = "Table: " + tableName + "  " +
+//                              "Id: " + model.getId().toString() + "  " +
+//                              timeString + " ms";
+//        EventLog.add(EventLog.EventType.ROW_INSERT, eventMessage);
     }
 
 

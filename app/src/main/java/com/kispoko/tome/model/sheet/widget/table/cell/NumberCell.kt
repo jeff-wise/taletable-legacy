@@ -33,19 +33,19 @@ data class NumberCellFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberCellFormat> = when (doc)
         {
-            is DocDict -> effApply3(::NumberCellFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Cell Format
-                                    split(doc.maybeAt("cell_format"),
-                                          valueResult<Func<CellFormat>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<CellFormat>> =
-                                              effApply(::Comp, CellFormat.fromDocument(d))),
-                                    // Value Prefix
-                                    split(doc.maybeText("value_prefix"),
-                                          valueResult<Func<String>>(Null()),
-                                          { valueResult(Prim(it)) })
-                                    )
+            is DocDict -> effApply(::NumberCellFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Cell Format
+                                   split(doc.maybeAt("cell_format"),
+                                         valueResult<Func<CellFormat>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<CellFormat>> =
+                                             effApply(::Comp, CellFormat.fromDocument(d))),
+                                   // Value Prefix
+                                   split(doc.maybeText("value_prefix"),
+                                         valueResult<Func<String>>(Null()),
+                                         { valueResult(Prim(it)) })
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -173,7 +173,7 @@ data class NumberCellFormat(override val id : UUID,
 //     */
 //    private void onNumberCellShortClick(Context context)
 //    {
-//        SheetActivity sheetActivity = (SheetActivity) context;
+//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
 //
 //        switch (this.editDialogType())
 //        {

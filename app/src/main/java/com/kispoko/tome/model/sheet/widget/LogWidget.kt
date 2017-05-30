@@ -2,14 +2,11 @@
 package com.kispoko.tome.model.sheet.widget
 
 
-import android.widget.LinearLayout
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.lib.ui.LinearLayoutBuilder
-import com.kispoko.tome.model.sheet.BackgroundColor
 import com.kispoko.tome.model.theme.ColorId
 import effect.*
 import lulo.document.DocDict
@@ -36,17 +33,17 @@ data class LogEntry(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<LogEntry> = when (doc)
         {
-            is DocDict -> effApply5(::LogEntry,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Title
-                                    effApply(::Prim, doc.text("title")),
-                                    // Author
-                                    effApply(::Prim, doc.text("author")),
-                                    // Summary
-                                    effApply(::Prim, doc.text("summary")),
-                                    // text
-                                    effApply(::Prim, doc.text("text")))
+            is DocDict -> effApply(::LogEntry,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Title
+                                   effApply(::Prim, doc.text("title")),
+                                   // Author
+                                   effApply(::Prim, doc.text("author")),
+                                   // Summary
+                                   effApply(::Prim, doc.text("summary")),
+                                   // text
+                                   effApply(::Prim, doc.text("text")))
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -67,17 +64,17 @@ data class LogWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<LogWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply3(::LogWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    doc.at("widget_format") ap {
-                                        effApply(::Comp, WidgetFormat.fromDocument(it))
-                                    },
-                                    // Divider Color
-                                    doc.at("divider_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    })
+            is DocDict -> effApply(::LogWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   },
+                                   // Divider Color
+                                   doc.at("divider_color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

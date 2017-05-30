@@ -92,11 +92,11 @@ public class BooleanWidgetActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.booleanWidget.data().format().label();
-        if (title == null)
-            title = "Boolean Widget";
-
-        UI.initializeToolbar(this, title);
+//        String title = this.booleanWidget.data().format().label();
+//        if (title == null)
+//            title = "Boolean Widget";
+//
+//        UI.initializeToolbar(this, title);
     }
 
 
@@ -120,7 +120,7 @@ public class BooleanWidgetActivity extends AppCompatActivity
         // > Name Field
         // -------------------------------------------------------------------------------------
 
-        String name = this.booleanWidget.data().format().label();
+//        String name = this.booleanWidget.data().format().label();
 
 //        LinearLayout nameField =
 //                Form.field(
@@ -144,7 +144,7 @@ public class BooleanWidgetActivity extends AppCompatActivity
         // > Width
         // -------------------------------------------------------------------------------------
 
-        String width = this.booleanWidget.data().format().width().toString();
+//        String width = this.booleanWidget.data().format().width().toString();
 
 //        LinearLayout widthField =
 //                Form.field(

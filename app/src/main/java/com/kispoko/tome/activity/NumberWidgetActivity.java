@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.model.sheet.widget.NumberWidget;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
@@ -94,11 +95,11 @@ public class NumberWidgetActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.numberWidget.data().format().label();
-        if (title == null)
-            title = "Number Widget";
-
-        UI.initializeToolbar(this, title);
+//        String title = this.numberWidget.data().format().label();
+//        if (title == null)
+//            title = "Number Widget";
+//
+//        UI.initializeToolbar(this, title);
     }
 
 
@@ -125,7 +126,7 @@ public class NumberWidgetActivity extends AppCompatActivity
         // > Name Field
         // -------------------------------------------------------------------------------------
 
-        String name = this.numberWidget.data().format().label();
+//        String name = this.numberWidget.data().format().label();
 
 //        LinearLayout nameField =
 //                Form.field(
@@ -162,7 +163,7 @@ public class NumberWidgetActivity extends AppCompatActivity
         // > Width
         // -------------------------------------------------------------------------------------
 
-        String width = this.numberWidget.data().format().width().toString();
+        //String width = this.numberWidget.data().format().width().toString();
 
 //        LinearLayout widthField =
 //                Form.field(
@@ -204,10 +205,10 @@ public class NumberWidgetActivity extends AppCompatActivity
         // > Variables Field
         // -------------------------------------------------------------------------------------
 
-        List<String> variableNames = new ArrayList<>();
-        for (VariableUnion variableUnion : this.numberWidget.variables()) {
-            variableNames.add(variableUnion.variable().label());
-        }
+//        List<String> variableNames = new ArrayList<>();
+//        for (VariableUnion variableUnion : this.numberWidget.variables()) {
+//            variableNames.add(variableUnion.variable().label());
+//        }
 
 //        LinearLayout variablesField =
 //                Form.field(R.string.number_widget_field_variables_label,

@@ -31,18 +31,18 @@ data class Tab(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply3(::Tab,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Tab Name
-                          doc.at("name") ap {
-                              effApply(::Prim, TabName.fromDocument(it))
-                          },
-                          // Groups
-                          doc.list("groups") ap { docList ->
-                              effApply(::Coll,
-                                  docList.map { Group.fromDocument(it) })
-                          })
+                effApply(::Tab,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Tab Name
+                         doc.at("name") ap {
+                             effApply(::Prim, TabName.fromDocument(it))
+                         },
+                         // Groups
+                         doc.list("groups") ap { docList ->
+                             effApply(::Coll,
+                                 docList.map { Group.fromDocument(it) })
+                         })
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
@@ -91,50 +91,50 @@ data class TabWidgetFormat(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply10(::TabWidgetFormat,
-                           // Model Id
-                           valueResult(UUID.randomUUID()),
-                           // Tab Default Style
-                           split(doc.maybeAt("tab_default_style"),
-                                 valueResult<Func<TextStyle>>(Null()),
-                                 fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                     effApply(::Comp, TextStyle.fromDocument(d))),
-                           // Tab Default Style
-                           split(doc.maybeAt("tab_selected_style"),
-                                 valueResult<Func<TextStyle>>(Null()),
-                                 fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                     effApply(::Comp, TextStyle.fromDocument(d))),
-                           // Underline Selected?
-                           split(doc.maybeBoolean("underline_selected"),
-                                 valueResult<Func<Boolean>>(Null()),
-                                 { valueResult(Prim(it)) }),
-                           // Underline Thickness
-                           split(doc.maybeInt("underline_thickness"),
-                                 valueResult<Func<Int>>(Null()),
-                                 { valueResult(Prim(it)) }),
-                           // Margins
-                           split(doc.maybeAt("tab_margins"),
-                                 valueResult<Func<Spacing>>(Null()),
-                                 fun(d : SpecDoc) : ValueParser<Func<Spacing>> =
-                                     effApply(::Comp, Spacing.fromDocument(d))),
-                           // Tab Padding Vertical
-                           split(doc.maybeInt("tab_padding_vertical"),
-                                 valueResult<Func<Int>>(Null()),
-                                 { valueResult(Prim(it)) }),
-                           // Tab Height
-                           split(doc.maybeEnum<Height>("tab_height"),
-                                 valueResult<Func<Height>>(Null()),
-                                 { valueResult(Prim(it)) }),
-                           // Background Color
-                           split(doc.maybeAt("background_color"),
-                                 valueResult<Func<ColorId>>(Null()),
-                                 fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
-                                     effApply(::Prim, ColorId.fromDocument(d))),
-                           // Tab Corners
-                           split(doc.maybeEnum<Corners>("tab_corners"),
-                                 valueResult<Func<Corners>>(Null()),
-                                 { valueResult(Prim(it)) })
-                        )
+                effApply(::TabWidgetFormat,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Tab Default Style
+                         split(doc.maybeAt("tab_default_style"),
+                               valueResult<Func<TextStyle>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                   effApply(::Comp, TextStyle.fromDocument(d))),
+                         // Tab Default Style
+                         split(doc.maybeAt("tab_selected_style"),
+                               valueResult<Func<TextStyle>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                   effApply(::Comp, TextStyle.fromDocument(d))),
+                         // Underline Selected?
+                         split(doc.maybeBoolean("underline_selected"),
+                               valueResult<Func<Boolean>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Underline Thickness
+                         split(doc.maybeInt("underline_thickness"),
+                               valueResult<Func<Int>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Margins
+                         split(doc.maybeAt("tab_margins"),
+                               valueResult<Func<Spacing>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<Spacing>> =
+                                   effApply(::Comp, Spacing.fromDocument(d))),
+                         // Tab Padding Vertical
+                         split(doc.maybeInt("tab_padding_vertical"),
+                               valueResult<Func<Int>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Tab Height
+                         split(doc.maybeEnum<Height>("tab_height"),
+                               valueResult<Func<Height>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Background Color
+                         split(doc.maybeAt("background_color"),
+                               valueResult<Func<ColorId>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
+                                   effApply(::Prim, ColorId.fromDocument(d))),
+                         // Tab Corners
+                         split(doc.maybeEnum<Corners>("tab_corners"),
+                               valueResult<Func<Corners>>(Null()),
+                               { valueResult(Prim(it)) })
+                      )
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }

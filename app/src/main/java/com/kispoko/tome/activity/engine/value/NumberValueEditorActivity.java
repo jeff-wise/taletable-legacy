@@ -11,14 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.SheetManagerOld;
-import com.kispoko.tome.model.engine.value.Dictionary;
-import com.kispoko.tome.model.engine.value.NumberValue;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.model.game.engine.value.ValueReference;
 import com.kispoko.tome.util.UI;
 
 
@@ -28,9 +26,9 @@ public class NumberValueEditorActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private ValueReference  valueReference;
+    private ValueReference valueReference;
 
-    private NumberValue     numberValue;
+    //private NumberValue     numberValue;
 
 
     // ACTIVITY LIFECYCLE EVENTS
@@ -44,17 +42,17 @@ public class NumberValueEditorActivity extends AppCompatActivity
         setContentView(R.layout.activity_value);
 
         // > Read Parameters
-        this.valueReference = null;
-        if (getIntent().hasExtra("value_reference")) {
-            this.valueReference =
-                    (ValueReference) getIntent().getSerializableExtra("value_reference");
-        }
-
-        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
-
-        this.numberValue = null;
-        if (this.valueReference != null)
-            this.numberValue = dictionary.numberValue(this.valueReference);
+//        this.valueReference = null;
+//        if (getIntent().hasExtra("value_reference")) {
+//            this.valueReference =
+//                    (ValueReference) getIntent().getSerializableExtra("value_reference");
+//        }
+//
+//        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
+//
+//        this.numberValue = null;
+//        if (this.valueReference != null)
+//            this.numberValue = dictionary.numberValue(this.valueReference);
 
         initializeToolbar();
 

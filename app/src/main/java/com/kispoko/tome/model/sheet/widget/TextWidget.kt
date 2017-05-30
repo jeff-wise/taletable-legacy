@@ -36,43 +36,43 @@ data class TextWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply8(::TextWidgetFormat,
-                                     // Model Id
-                                     valueResult(UUID.randomUUID()),
-                                     // Widget Format
-                                     split(doc.maybeAt("widget_format"),
-                                           valueResult<Func<WidgetFormat>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
-                                              effApply(::Comp, WidgetFormat.fromDocument(d))),
-                                     // Inside Label
-                                     split(doc.maybeText("inside_label"),
-                                           valueResult<Func<String>>(Null()),
-                                           { valueResult(Prim(it))  }),
-                                     // Inside Label Format
-                                     split(doc.maybeAt("inside_label_format"),
-                                           valueResult<Func<TextFormat>>(Null()),
-                                            fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                                effApply(::Comp, TextFormat.fromDocument(d))),
-                                     // Outside Label
-                                     split(doc.maybeText("outside_label"),
-                                           valueResult<Func<String>>(Null()),
-                                           { valueResult(Prim(it))  }),
-                                     // Outside Label Format
-                                     split(doc.maybeAt("outside_label_format"),
-                                           valueResult<Func<TextFormat>>(Null()),
-                                            fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                                effApply(::Comp, TextFormat.fromDocument(d))),
-                                     // Value Format
-                                     split(doc.maybeAt("value_format"),
-                                           valueResult<Func<TextFormat>>(Null()),
+            is DocDict -> effApply(::TextWidgetFormat,
+                                    // Model Id
+                                    valueResult(UUID.randomUUID()),
+                                    // Widget Format
+                                    split(doc.maybeAt("widget_format"),
+                                          valueResult<Func<WidgetFormat>>(Null()),
+                                          fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
+                                             effApply(::Comp, WidgetFormat.fromDocument(d))),
+                                    // Inside Label
+                                    split(doc.maybeText("inside_label"),
+                                          valueResult<Func<String>>(Null()),
+                                          { valueResult(Prim(it))  }),
+                                    // Inside Label Format
+                                    split(doc.maybeAt("inside_label_format"),
+                                          valueResult<Func<TextFormat>>(Null()),
                                            fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
                                                effApply(::Comp, TextFormat.fromDocument(d))),
-                                     // Description Style
-                                     split(doc.maybeAt("description_style"),
-                                           valueResult<Func<TextStyle>>(Null()),
-                                           fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                               effApply(::Comp, TextStyle.fromDocument(d)))
-                                     )
+                                    // Outside Label
+                                    split(doc.maybeText("outside_label"),
+                                          valueResult<Func<String>>(Null()),
+                                          { valueResult(Prim(it))  }),
+                                    // Outside Label Format
+                                    split(doc.maybeAt("outside_label_format"),
+                                          valueResult<Func<TextFormat>>(Null()),
+                                           fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
+                                               effApply(::Comp, TextFormat.fromDocument(d))),
+                                    // Value Format
+                                    split(doc.maybeAt("value_format"),
+                                          valueResult<Func<TextFormat>>(Null()),
+                                          fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
+                                              effApply(::Comp, TextFormat.fromDocument(d))),
+                                    // Description Style
+                                    split(doc.maybeAt("description_style"),
+                                          valueResult<Func<TextStyle>>(Null()),
+                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                              effApply(::Comp, TextStyle.fromDocument(d)))
+                                    )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -444,7 +444,7 @@ data class TextDescription(val value : String)
 //     */
 //    private void onTextWidgetShortClick(Context context)
 //    {
-//        SheetActivity sheetActivity = (SheetActivity) context;
+//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
 //
 //        switch (this.valueVariable().kind())
 //        {
@@ -475,24 +475,24 @@ data class TextDescription(val value : String)
 //                if (this.valueVariable() == null || dictionary == null)
 //                    break;
 //
-//                String         valueSetName   = this.valueVariable().valueSetName();
+//                String         valueSetId   = this.valueVariable().valueSetId();
 //                ValueReference valueReference = this.valueVariable().valueReference();
 //
-//                ValueSetUnion valueSetUnion = dictionary.lookup(valueSetName);
+//                ValueSetUnion valueSetUnion = dictionary.lookup(valueSetId);
 //                ValueUnion valueUnion    = dictionary.valueUnion(valueReference);
 //
 //                if (valueSetUnion == null) {
 //                    ApplicationFailure.sheet(
 //                            SheetException.undefinedValueSet(
-//                                    new UndefinedValueSetError("Text Widget", valueSetName)));
+//                                    new UndefinedValueSetError("Text Widget", valueSetId)));
 //                    break;
 //                }
 //
 //                if (valueUnion == null) {
 //                    ApplicationFailure.value(
 //                            ValueException.undefinedValue(
-//                                    new UndefinedValueError(valueSetName,
-//                                                            valueReference.valueName())));
+//                                    new UndefinedValueError(valueSetId,
+//                                                            valueReference.valueId())));
 //                    break;
 //                }
 //

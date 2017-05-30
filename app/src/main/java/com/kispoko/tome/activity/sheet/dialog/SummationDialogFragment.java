@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.summation.term.TermSummary;
 import com.kispoko.tome.lib.ui.EditDialog;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
@@ -27,8 +26,7 @@ import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.util.tuple.Tuple2;
-
+import com.kispoko.tome.model.game.engine.summation.Summation;
 
 
 /**
@@ -55,7 +53,7 @@ public class SummationDialogFragment extends DialogFragment
         SummationDialogFragment summationDialogFragment = new SummationDialogFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("summation", summation);
+//        args.putSerializable("summation", summation);
         args.putString("summation_label", summationLabel);
         summationDialogFragment.setArguments(args);
 
@@ -84,7 +82,7 @@ public class SummationDialogFragment extends DialogFragment
         dialog.getWindow().setLayout(width, height);
 
         // > Read State
-        this.summation      = (Summation) getArguments().getSerializable("summation");
+//        this.summation      = (Summation) getArguments().getSerializable("summation");
         this.summationLabel = getArguments().getString("summation_label");
 
         return dialog;
@@ -293,10 +291,10 @@ public class SummationDialogFragment extends DialogFragment
     {
         LinearLayout layout = this.componentsViewLayout(context);
 
-        // > Components
-        for (TermSummary summary: this.summation.summary()) {
-            layout.addView(componentView(summary, context));
-        }
+//        // > Components
+//        for (com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary: this.summation.summary()) {
+//            layout.addView(componentView(summary, context));
+//        }
 
         return layout;
     }
@@ -314,24 +312,24 @@ public class SummationDialogFragment extends DialogFragment
     }
 
 
-    private LinearLayout componentView(TermSummary summary, Context context)
-    {
-        LinearLayout layout = this.componentViewLayout(context);
-
-        if (summary.name() != null)
-            layout.addView(this.componentHeaderView(summary.name(), context));
-
-
-        for (Tuple2<String,String> component : summary.components())
-        {
-            String name  = component.getItem1();
-            String value = component.getItem2();
-
-            layout.addView(componentItemView(name, value, context));
-        }
-
-        return layout;
-    }
+//    private LinearLayout componentView(com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary, Context context)
+//    {
+//        LinearLayout layout = this.componentViewLayout(context);
+//
+//        if (summary.name() != null)
+//            layout.addView(this.componentHeaderView(summary.name(), context));
+//
+//
+//        for (Tuple2<String,String> component : summary.components())
+//        {
+//            String name  = component.getItem1();
+//            String value = component.getItem2();
+//
+//            layout.addView(componentItemView(name, value, context));
+//        }
+//
+//        return layout;
+//    }
 
 
     private LinearLayout componentViewLayout(Context context)
@@ -462,7 +460,7 @@ public class SummationDialogFragment extends DialogFragment
 
         total.layoutGravity     = Gravity.CENTER_HORIZONTAL;
 
-        total.text              = this.summation.valueString();
+        //total.text              = this.summation.valueString();
 
         total.font              = Font.serifFontRegular(context);
         total.color             = R.color.gold_medium_light;

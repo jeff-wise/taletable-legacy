@@ -11,7 +11,6 @@ import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
 import effect.effApply
-import effect.effApply5
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -103,22 +102,22 @@ data class ActionWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<ActionWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply5(::ActionWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    doc.at("widget_format") ap {
-                                        effApply(::Comp, WidgetFormat.fromDocument(it))
-                                    },
-                                    // Description Style
-                                    doc.at("description_style") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    // Action Style
-                                    doc.at("action_style") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    effApply(::Prim, doc.enum<Height>("height")))
+            is DocDict -> effApply(::ActionWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   },
+                                   // Description Style
+                                   doc.at("description_style") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   // Action Style
+                                   doc.at("action_style") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   effApply(::Prim, doc.enum<Height>("height")))
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

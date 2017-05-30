@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
-
+import com.kispoko.tome.model.sheet.widget.TableWidget;
 
 
 /**
@@ -78,9 +78,9 @@ public class ColumnListFragment extends Fragment
         recyclerView.layoutManager      = new LinearLayoutManager(context);
 
         // > Adapter
-        recyclerView.adapter            = new ColumnListRecyclerViewAdapter(
-                                                                this.tableWidget.columns(),
-                                                                getContext());
+//        recyclerView.adapter            = new ColumnListRecyclerViewAdapter(
+//                                                                this.tableWidget.columns(),
+//                                                                getContext());
 
         recyclerView.padding.top        = R.dimen.draggable_list_padding_top;
 

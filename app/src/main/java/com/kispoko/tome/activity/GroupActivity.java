@@ -42,9 +42,9 @@ public class GroupActivity extends AppCompatActivity
         setContentView(R.layout.activity_group);
 
         // > Read Parameters
-        if (getIntent().hasExtra("group")) {
-            this.group = (Group) getIntent().getSerializableExtra("group");
-        }
+//        if (getIntent().hasExtra("group")) {
+//            this.group = (Group) getIntent().getSerializableExtra("group");
+//        }
 
         initializeToolbar();
 
@@ -97,9 +97,9 @@ public class GroupActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.group.name() + " " + getString(R.string.group);
-
-        UI.initializeToolbar(this, title);
+//        String title = this.group.name() + " " + getString(R.string.group);
+//
+//        UI.initializeToolbar(this, title);
     }
 
 

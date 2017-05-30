@@ -5,8 +5,8 @@ package com.kispoko.tome.model.sheet
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.theme.Theme
-import com.kispoko.tome.theme.ThemeType
+import com.kispoko.tome.model.theme.Theme
+import com.kispoko.tome.model.theme.ThemeType
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -30,18 +30,17 @@ data class Settings(override val id : UUID,
         {
             is DocDict ->
             {
-                effApply3(::Settings,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Theme Type
-                          effApply(::Prim, doc.enum<ThemeType>("theme_type")),
-                          // Custom Theme?
-                          split(doc.maybeAt("theme"),
-                                valueResult<Func<Theme>>(Null()),
-                                fun(doc : SpecDoc) : ValueParser<Func<Theme>> =
-                                    effApply(::Comp, Theme.fromDocument(doc))
-                          )
-                )
+                effApply(::Settings,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Theme Type
+                         effApply(::Prim, doc.enum<ThemeType>("theme_type")),
+                         // Custom Theme?
+                         split(doc.maybeAt("theme"),
+                               valueResult<Func<Theme>>(Null()),
+                               fun(doc : SpecDoc) : ValueParser<Func<Theme>> =
+                                   effApply(::Comp, Theme.fromDocument(doc))
+                         ))
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }

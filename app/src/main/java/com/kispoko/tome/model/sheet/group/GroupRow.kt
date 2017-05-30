@@ -36,20 +36,20 @@ data class GroupRow(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<GroupRow> = when (doc)
         {
-            is DocDict -> effApply4(::GroupRow,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Format
-                                    doc.at("format") ap {
-                                        effApply(::Comp, GroupRowFormat.fromDocument(it))
-                                    },
-                                    // Index
-                                    effApply(::Prim, doc.int("index")),
-                                    // Widgets
-                                    doc.list("widgets") ap { docList ->
-                                        effApply(::Coll,
-                                                 docList.map { Widget.fromDocument(it) })
-                                    })
+            is DocDict -> effApply(::GroupRow,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Format
+                                   doc.at("format") ap {
+                                       effApply(::Comp, GroupRowFormat.fromDocument(it))
+                                   },
+                                   // Index
+                                   effApply(::Prim, doc.int("index")),
+                                   // Widgets
+                                   doc.list("widgets") ap { docList ->
+                                       effApply(::Coll,
+                                                docList.map { Widget.fromDocument(it) })
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -74,27 +74,27 @@ data class GroupRowFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<GroupRowFormat> = when (doc)
         {
-            is DocDict -> effApply6(::GroupRowFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Alignment
-                                    effApply(::Prim, doc.enum<Alignment>("alignment")),
-                                    // Background Color
-                                    doc.at("background_color") ap {
+            is DocDict -> effApply(::GroupRowFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Alignment
+                                   effApply(::Prim, doc.enum<Alignment>("alignment")),
+                                   // Background Color
+                                   doc.at("background_color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   },
+                                   // Margins
+                                   doc.at("margins") ap {
+                                       effApply(::Comp, Spacing.fromDocument(it))
+                                   },
+                                   // Padding
+                                   doc.at("padding") ap {
+                                       effApply(::Comp, Spacing.fromDocument(it))
+                                   },
+                                   // Divider Color
+                                   doc.at("divider_color") ap {
                                         effApply(::Prim, ColorId.fromDocument(it))
-                                    },
-                                    // Margins
-                                    doc.at("margins") ap {
-                                        effApply(::Comp, Spacing.fromDocument(it))
-                                    },
-                                    // Padding
-                                    doc.at("padding") ap {
-                                        effApply(::Comp, Spacing.fromDocument(it))
-                                    },
-                                    // Divider Color
-                                    doc.at("divider_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    })
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

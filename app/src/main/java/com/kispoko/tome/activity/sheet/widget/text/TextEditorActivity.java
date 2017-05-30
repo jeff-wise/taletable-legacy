@@ -14,6 +14,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.model.sheet.widget.TextWidget;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
 import com.kispoko.tome.lib.ui.Font;
@@ -231,9 +232,9 @@ public class TextEditorActivity extends AppCompatActivity
 
         name.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
         name.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        if (this.textWidget != null)
-            name.text           = this.textWidget.data().name();
+//
+//        if (this.textWidget != null)
+//            name.text           = this.textWidget.data().name();
 
         name.font           = Font.serifFontRegular(context);
         name.color          = R.color.dark_blue_hl_5;
@@ -266,8 +267,8 @@ public class TextEditorActivity extends AppCompatActivity
         text.backgroundColor    = R.color.dark_blue_9;
         text.backgroundResource = R.drawable.bg_edit_text_no_style;
 
-        if (this.textWidget != null)
-            text.text           = this.textWidget.value();
+//        if (this.textWidget != null)
+//            text.text           = this.textWidget.value();
 
         text.font               = Font.serifFontRegular(context);
         text.color              = R.color.dark_blue_hl_2;

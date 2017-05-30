@@ -9,12 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.program.Program;
-import com.kispoko.tome.model.engine.program.ProgramIndex;
-import com.kispoko.tome.model.engine.value.Dictionary;
-import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.model.game.engine.program.Program;
 import com.kispoko.tome.util.UI;
 
+import java.util.Dictionary;
 
 
 /**
@@ -51,8 +49,8 @@ public class StatementsEditorActivity extends AppCompatActivity
         }
 
         // > Lookup Program
-        ProgramIndex programIndex = SheetManagerOld.programIndex();
-        this.program = programIndex.programWithName(programName);
+        //ProgramIndex programIndex = SheetManagerOld.programIndex();
+        //t/his.program = programIndex.programWithName(programName);
 
         // [3] Initialize UI
         // -------------------------------------------------------------------------------------

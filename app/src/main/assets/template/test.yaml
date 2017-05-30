@@ -1,0 +1,18 @@
+campaign_name: black
+sections:
+- name: Profile
+  pages:
+  - name: Overview
+    groups:
+    - rows:
+      - widgets: 
+        - type: widget_text
+          widget_text: 
+            id: name
+            value:
+              id: name
+              value: 
+                type: literal
+                variable_text_value: 'Character Name' 
+- name: Encounter
+- name: Campaign

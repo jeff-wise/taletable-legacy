@@ -14,19 +14,11 @@ import android.widget.TextView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.engine.value.ValueListActivity;
-import com.kispoko.tome.model.engine.value.Dictionary;
-import com.kispoko.tome.model.engine.value.BaseValueSet;
-import com.kispoko.tome.model.engine.value.ValueSetType;
-import com.kispoko.tome.model.engine.value.ValueSetUnion;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
-import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.util.UI;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,6 +27,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -51,7 +44,7 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
     // ------------------------------------------------------------------------------------------
 
     private String                      valueSetName;
-    private BaseValueSet                valueSet;
+    //private BaseValueSet                valueSet;
 
     private Map<String,Field>           fieldByName;
     private Map<String,LinearLayout>    fieldViewByName;
@@ -133,31 +126,31 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTextFieldUpdate(Field.TextUpdateEvent event)
     {
-        if (this.valueSet != null && event.modelId().equals(this.valueSet.getId()))
-        {
-            try
-            {
-                Model.updateProperty(this.valueSet, event.fieldName(), event.text());
-
-                Field updatedfield = this.fieldByName.get(event.fieldName());
-                LinearLayout updatedFieldView = this.fieldViewByName.get(event.fieldName());
-
-                if (updatedfield != null && updatedFieldView !=  null)
-                {
-                    updatedfield.setValue(event.text(), updatedFieldView);
-
-                    if (event.fieldName().equals("label")) {
-                        TextView titleView = (TextView) findViewById(R.id.value_set_name);
-                        titleView.setText(this.valueSet.label());
-                    }
-                }
-
-            }
-            catch (FunctorException exception)
-            {
-                ApplicationFailure.functor(exception);
-            }
-        }
+//        if (this.valueSet != null && event.modelId().equals(this.valueSet.getId()))
+//        {
+//            try
+//            {
+//                Model.updateProperty(this.valueSet, event.fieldName(), event.text());
+//
+//                Field updatedfield = this.fieldByName.get(event.fieldName());
+//                LinearLayout updatedFieldView = this.fieldViewByName.get(event.fieldName());
+//
+//                if (updatedfield != null && updatedFieldView !=  null)
+//                {
+//                    updatedfield.setValue(event.text(), updatedFieldView);
+//
+//                    if (event.fieldName().equals("label")) {
+//                        TextView titleView = (TextView) findViewById(R.id.value_set_name);
+//                        titleView.setText(this.valueSet.label());
+//                    }
+//                }
+//
+//            }
+//            catch (FunctorException exception)
+//            {
+//                ApplicationFailure.functor(exception);
+//            }
+//        }
     }
 
 
@@ -175,8 +168,8 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
         // -------------------------------------------------------------------------------------
         TextView nameView = (TextView) findViewById(R.id.value_set_name);
         nameView.setTypeface(Font.serifFontBold(this));
-        if (this.valueSet != null)
-            nameView.setText(this.valueSet.label());
+//        if (this.valueSet != null)
+//            nameView.setText(this.valueSet.label());
 
     }
 
@@ -203,19 +196,19 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
         // [2] Lookup ValueSet
         // -------------------------------------------------------------------------------------
 
-        Dictionary dictionary = SheetManagerOld.dictionary();
-        if (this.valueSetName != null && dictionary != null)
-        {
-            ValueSetUnion valueSetUnion = dictionary.lookup(this.valueSetName);
-            if (valueSetUnion.type() == ValueSetType.BASE)
-                this.valueSet = valueSetUnion.base();
-        }
-
-        // If value set is NULL, assume we creating a new one
-        if (this.valueSet == null) {
-            this.valueSet = new BaseValueSet();
-            this.valueSet.setId(UUID.randomUUID());
-        }
+//        Dictionary dictionary = SheetManagerOld.dictionary();
+//        if (this.valueSetName != null && dictionary != null)
+//        {
+//            ValueSetUnion valueSetUnion = dictionary.lookup(this.valueSetName);
+//            if (valueSetUnion.type() == ValueSetType.BASE)
+//                this.valueSet = valueSetUnion.base();
+//        }
+//
+//        // If value set is NULL, assume we creating a new one
+//        if (this.valueSet == null) {
+//            this.valueSet = new BaseValueSet();
+//            this.valueSet.setId(UUID.randomUUID());
+//        }
 
         // [3] Get & Index Fields
         // -------------------------------------------------------------------------------------
@@ -223,12 +216,12 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields = Model.fields(this.valueSet, this);
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields = Model.fields(this.valueSet, this);
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {
@@ -310,17 +303,17 @@ public class BaseValueSetEditorActivity extends AppCompatActivity
         LinearLayout valuesFieldView = this.fieldViewByName.get("values");
         if (valuesFieldView != null)
         {
-            valuesFieldView.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    Intent intent = new Intent(BaseValueSetEditorActivity.this,
-                                               ValueListActivity.class);
-                    intent.putExtra("value_set_name", valueSet.name());
-                    startActivity(intent);
-                }
-            });
+//            valuesFieldView.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override
+//                public void onClick(View view)
+//                {
+//                    Intent intent = new Intent(BaseValueSetEditorActivity.this,
+//                                               ValueListActivity.class);
+//        //            intent.putExtra("value_set_name", valueSet.name());
+//                    startActivity(intent);
+//                }
+//            });
         }
 
         return layout;

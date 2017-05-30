@@ -3,28 +3,19 @@ package com.kispoko.tome.activity.engine.mechanic;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.SheetManagerOld;
-import com.kispoko.tome.activity.engine.variable.VariableListActivity;
-import com.kispoko.tome.model.engine.mechanic.Mechanic;
-import com.kispoko.tome.model.engine.mechanic.MechanicIndex;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.model.game.engine.mechanic.Mechanic;
 import com.kispoko.tome.util.UI;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,7 +32,7 @@ public class MechanicActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private Mechanic            mechanic;
+    private Mechanic mechanic;
 
     // > Form
     // -----------------------------------------------------------------------------------------
@@ -71,11 +62,11 @@ public class MechanicActivity extends AppCompatActivity
         }
 
         // > Lookup Mechanic
-        MechanicIndex mechanicIndex = SheetManagerOld.mechanicIndex();
-        if (mechanicIndex != null && mechanicName != null)
-            this.mechanic = mechanicIndex.mechanicWithName(mechanicName);
-        else
-            this.mechanic = null;
+//        MechanicIndex mechanicIndex = SheetManagerOld.mechanicIndex();
+//        if (mechanicIndex != null && mechanicName != null)
+//            this.mechanic = mechanicIndex.mechanicWithName(mechanicName);
+//        else
+//            this.mechanic = null;
 
         // [3] Initialize UI
         // -------------------------------------------------------------------------------------
@@ -140,12 +131,12 @@ public class MechanicActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields.addAll(Model.fields(this.mechanic, this));
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            //fields.addAll(Model.fields(this.mechanic, this));
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {
@@ -228,16 +219,16 @@ public class MechanicActivity extends AppCompatActivity
 
         if (field != null)
         {
-            field.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    Intent intent = new Intent(MechanicActivity.this, VariableListActivity.class);
-                    intent.putExtra("variables", (Serializable) mechanic.variables());
-                    context.startActivity(intent);
-                }
-            });
+//            field.setOnClickListener(new View.OnClickListener()
+//            {
+//                @Override
+//                public void onClick(View view)
+//                {
+//                    Intent intent = new Intent(MechanicActivity.this, VariableListActivity.class);
+//                    intent.putExtra("variables", (Serializable) mechanic.variables());
+//                    context.startActivity(intent);
+//                }
+//            });
         }
     }
 

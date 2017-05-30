@@ -14,7 +14,6 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorId
 import effect.Err
 import effect.effApply
-import effect.effApply9
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -40,37 +39,37 @@ data class WidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<WidgetFormat> = when (doc)
         {
-            is DocDict -> effApply9(::WidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Label
-                                    doc.at("label") ap {
-                                        effApply(::Prim, WidgetLabel.fromDocument(it))
-                                    },
-                                    // Width
-                                    doc.at("width") ap {
-                                        effApply(::Prim, WidgetWidth.fromDocument(it))
-                                    },
-                                    // Alignment
-                                    effApply(::Prim, doc.enum<Alignment>("alignment")),
-                                    // Label Style
-                                    doc.at("label_style") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    // Background Color
-                                    doc.at("background_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                    },
-                                    // Corners
-                                    effApply(::Prim, doc.enum<Corners>("corners")),
-                                    // Margins
-                                    doc.at("margins") ap {
-                                        effApply(::Prim, Spacing.fromDocument(it))
-                                    },
-                                    // Padding
-                                    doc.at("padding") ap {
-                                        effApply(::Prim, Spacing.fromDocument(it))
-                                    })
+            is DocDict -> effApply(::WidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Label
+                                   doc.at("label") ap {
+                                       effApply(::Prim, WidgetLabel.fromDocument(it))
+                                   },
+                                   // Width
+                                   doc.at("width") ap {
+                                       effApply(::Prim, WidgetWidth.fromDocument(it))
+                                   },
+                                   // Alignment
+                                   effApply(::Prim, doc.enum<Alignment>("alignment")),
+                                   // Label Style
+                                   doc.at("label_style") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   // Background Color
+                                   doc.at("background_color") ap {
+                                       effApply(::Prim, ColorId.fromDocument(it))
+                                   },
+                                   // Corners
+                                   effApply(::Prim, doc.enum<Corners>("corners")),
+                                   // Margins
+                                   doc.at("margins") ap {
+                                       effApply(::Prim, Spacing.fromDocument(it))
+                                   },
+                                   // Padding
+                                   doc.at("padding") ap {
+                                       effApply(::Prim, Spacing.fromDocument(it))
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

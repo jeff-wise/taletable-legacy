@@ -10,7 +10,6 @@ import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
 import effect.effApply
-import effect.effApply5
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -52,24 +51,24 @@ data class ExpanderWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<ExpanderWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply5(::ExpanderWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    doc.at("widget_format") ap {
-                                        effApply(::Comp, WidgetFormat.fromDocument(it))
-                                    },
-                                    // Name Style Closed
-                                    doc.at("name_style_closed") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    // Name Style Open
-                                    doc.at("name_style_open") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    // Header Padding
-                                    doc.at("header_padding") ap {
-                                        effApply(::Comp, Spacing.fromDocument(it))
+            is DocDict -> effApply(::ExpanderWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   },
+                                   // Name Style Closed
+                                   doc.at("name_style_closed") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   // Name Style Open
+                                   doc.at("name_style_open") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   // Header Padding
+                                   doc.at("header_padding") ap {
+                                       effApply(::Comp, Spacing.fromDocument(it))
                                     })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }

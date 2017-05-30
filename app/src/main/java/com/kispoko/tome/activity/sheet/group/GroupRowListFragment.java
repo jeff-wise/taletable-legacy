@@ -38,7 +38,7 @@ public class GroupRowListFragment extends Fragment
         GroupRowListFragment groupRowListFragment = new GroupRowListFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("group", group);
+        //args.putSerializable("group", group);
         groupRowListFragment.setArguments(args);
 
         return groupRowListFragment;
@@ -52,7 +52,7 @@ public class GroupRowListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.group = (Group) getArguments().getSerializable("group");
+    //    this.group = (Group) getArguments().getSerializable("group");
     }
 
 
@@ -80,9 +80,9 @@ public class GroupRowListFragment extends Fragment
         recyclerView.layoutManager      = new LinearLayoutManager(context);
 
         // > Adapter
-        recyclerView.adapter            = new GroupRowListRecyclerViewAdapter(this.group.rows(),
-                                                                              this.group.name(),
-                                                                              getContext());
+//        recyclerView.adapter            = new GroupRowListRecyclerViewAdapter(this.group.rows(),
+//                                                                              this.group.name(),
+//                                                                              getContext());
 
         recyclerView.padding.top        = R.dimen.group_row_list_padding_top;
 

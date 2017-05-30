@@ -9,13 +9,11 @@ import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
+import com.kispoko.tome.model.game.engine.dice.DiceQuantity;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
@@ -34,7 +32,7 @@ public class DiceQuantityEditorActivity extends AppCompatActivity
     // PROPERTEIS
     // -----------------------------------------------------------------------------------------
 
-    private DiceQuantity        diceQuantity;
+    private DiceQuantity diceQuantity;
 
     // > Form
     // -----------------------------------------------------------------------------------------
@@ -59,9 +57,9 @@ public class DiceQuantityEditorActivity extends AppCompatActivity
         // --------------------------------------------------------------------------------------
 
         this.diceQuantity = null;
-        if (getIntent().hasExtra("dice_quantity")) {
-            this.diceQuantity = (DiceQuantity) getIntent().getSerializableExtra("dice_quantity");
-        }
+//        if (getIntent().hasExtra("dice_quantity")) {
+//            this.diceQuantity = (DiceQuantity) getIntent().getSerializableExtra("dice_quantity");
+//        }
 
         // [3] Initialize UI components
         // -------------------------------------------------------------------------------------
@@ -126,12 +124,12 @@ public class DiceQuantityEditorActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields.addAll(Model.fields(this.diceQuantity, this));
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields.addAll(Model.fields(this.diceQuantity, this));
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {

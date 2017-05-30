@@ -8,7 +8,6 @@ import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Null
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.engine.variable.DefinesNamespace
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
@@ -79,40 +78,40 @@ data class TableWidgetBooleanColumn(
         {
             is DocDict ->
             {
-                effApply8(::TableWidgetBooleanColumn,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Name
-                          doc.at("name") ap {
-                              effApply(::Prim, ColumnName.fromDocument(it))
-                          },
-                          // Default Value Label
-                          split(doc.maybeAt("default_value_label"),
-                                valueResult<Func<DefaultValueLabel>>(Null()),
-                                 fun(d : SpecDoc) : ValueParser<Func<DefaultValueLabel>> =
-                                     effApply(::Prim, DefaultValueLabel.fromDocument(d))),
-                          // Is Column Namespaced
-                          split(doc.maybeAt("is_namespaced"),
-                                valueResult<Func<IsColumnNamespaced>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<IsColumnNamespaced>> =
-                                    effApply(::Prim, IsColumnNamespaced.fromDocument(d))),
-                          // Default Value
-                          split(doc.maybeBoolean("default_value"),
-                                valueResult<Func<Boolean>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<BooleanColumnFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<BooleanColumnFormat>> =
-                                    effApply(::Comp, BooleanColumnFormat.fromDocument(d))),
-                          // True Text
-                          split(doc.maybeText("true_text"),
-                                valueResult<Func<String>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Default Value
-                          split(doc.maybeText("false_text"),
-                                valueResult<Func<String>>(Null()),
-                                { valueResult(Prim(it)) })
+                effApply(::TableWidgetBooleanColumn,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Name
+                         doc.at("name") ap {
+                             effApply(::Prim, ColumnName.fromDocument(it))
+                         },
+                         // Default Value Label
+                         split(doc.maybeAt("default_value_label"),
+                               valueResult<Func<DefaultValueLabel>>(Null()),
+                                fun(d : SpecDoc) : ValueParser<Func<DefaultValueLabel>> =
+                                    effApply(::Prim, DefaultValueLabel.fromDocument(d))),
+                         // Is Column Namespaced
+                         split(doc.maybeAt("is_namespaced"),
+                               valueResult<Func<IsColumnNamespaced>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<IsColumnNamespaced>> =
+                                   effApply(::Prim, IsColumnNamespaced.fromDocument(d))),
+                         // Default Value
+                         split(doc.maybeBoolean("default_value"),
+                               valueResult<Func<Boolean>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<BooleanColumnFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<BooleanColumnFormat>> =
+                                   effApply(::Comp, BooleanColumnFormat.fromDocument(d))),
+                         // True Text
+                         split(doc.maybeText("true_text"),
+                               valueResult<Func<String>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Default Value
+                         split(doc.maybeText("false_text"),
+                               valueResult<Func<String>>(Null()),
+                               { valueResult(Prim(it)) })
                         )
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
@@ -145,32 +144,32 @@ data class TableWidgetNumberColumn(
         {
             is DocDict ->
             {
-                effApply6(::TableWidgetNumberColumn,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Name
-                          doc.at("name") ap {
-                              effApply(::Prim, ColumnName.fromDocument(it))
-                          },
-                          // Default Value Label
-                          split(doc.maybeAt("default_value_label"),
-                                valueResult<Func<DefaultValueLabel>>(Null()),
-                                 fun(d : SpecDoc) : ValueParser<Func<DefaultValueLabel>> =
-                                     effApply(::Prim, DefaultValueLabel.fromDocument(d))),
-                          // Is Column Namespaced
-                          split(doc.maybeAt("is_namespaced"),
-                                valueResult<Func<IsColumnNamespaced>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<IsColumnNamespaced>> =
-                                    effApply(::Prim, IsColumnNamespaced.fromDocument(d))),
-                          // Default Value
-                          split(doc.maybeDouble("default_value"),
-                                valueResult<Func<Double>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<NumberColumnFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<NumberColumnFormat>> =
-                                    effApply(::Comp, NumberColumnFormat.fromDocument(d)))
+                effApply(::TableWidgetNumberColumn,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Name
+                         doc.at("name") ap {
+                             effApply(::Prim, ColumnName.fromDocument(it))
+                         },
+                         // Default Value Label
+                         split(doc.maybeAt("default_value_label"),
+                               valueResult<Func<DefaultValueLabel>>(Null()),
+                                fun(d : SpecDoc) : ValueParser<Func<DefaultValueLabel>> =
+                                    effApply(::Prim, DefaultValueLabel.fromDocument(d))),
+                         // Is Column Namespaced
+                         split(doc.maybeAt("is_namespaced"),
+                               valueResult<Func<IsColumnNamespaced>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<IsColumnNamespaced>> =
+                                   effApply(::Prim, IsColumnNamespaced.fromDocument(d))),
+                         // Default Value
+                         split(doc.maybeDouble("default_value"),
+                               valueResult<Func<Double>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<NumberColumnFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<NumberColumnFormat>> =
+                                   effApply(::Comp, NumberColumnFormat.fromDocument(d)))
                         )
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
@@ -203,37 +202,37 @@ data class TableWidgetTextColumn(
         {
             is DocDict ->
             {
-                effApply7(::TableWidgetTextColumn,
-                          // Model Id
-                          valueResult(UUID.randomUUID()),
-                          // Name
-                          doc.at("name") ap {
-                              effApply(::Prim, ColumnName.fromDocument(it))
-                          },
-                          // Default Value Label
-                          split(doc.maybeAt("default_value_label"),
-                                valueResult<Func<DefaultValueLabel>>(Null()),
-                                 fun(d : SpecDoc) : ValueParser<Func<DefaultValueLabel>> =
-                                     effApply(::Prim, DefaultValueLabel.fromDocument(d))),
-                          // Is Column Namespaced
-                          split(doc.maybeAt("is_namespaced"),
-                                valueResult<Func<IsColumnNamespaced>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<IsColumnNamespaced>> =
-                                    effApply(::Prim, IsColumnNamespaced.fromDocument(d))),
-                          // Default Value
-                          split(doc.maybeText("default_value"),
-                                valueResult<Func<String>>(Null()),
-                                { valueResult(Prim(it)) }),
-                          // Format
-                          split(doc.maybeAt("format"),
-                                valueResult<Func<TextColumnFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<TextColumnFormat>> =
-                                    effApply(::Comp, TextColumnFormat.fromDocument(d))),
-                          // Defines Namespace?
-                          split(doc.maybeAt("defines_namespace"),
-                                valueResult<Func<ColumnDefinesNamespace>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<ColumnDefinesNamespace>> =
-                                        effApply(::Prim, ColumnDefinesNamespace.fromDocument(d)))
+                effApply(::TableWidgetTextColumn,
+                         // Model Id
+                         valueResult(UUID.randomUUID()),
+                         // Name
+                         doc.at("name") ap {
+                             effApply(::Prim, ColumnName.fromDocument(it))
+                         },
+                         // Default Value Label
+                         split(doc.maybeAt("default_value_label"),
+                               valueResult<Func<DefaultValueLabel>>(Null()),
+                                fun(d : SpecDoc) : ValueParser<Func<DefaultValueLabel>> =
+                                    effApply(::Prim, DefaultValueLabel.fromDocument(d))),
+                         // Is Column Namespaced
+                         split(doc.maybeAt("is_namespaced"),
+                               valueResult<Func<IsColumnNamespaced>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<IsColumnNamespaced>> =
+                                   effApply(::Prim, IsColumnNamespaced.fromDocument(d))),
+                         // Default Value
+                         split(doc.maybeText("default_value"),
+                               valueResult<Func<String>>(Null()),
+                               { valueResult(Prim(it)) }),
+                         // Format
+                         split(doc.maybeAt("format"),
+                               valueResult<Func<TextColumnFormat>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<TextColumnFormat>> =
+                                   effApply(::Comp, TextColumnFormat.fromDocument(d))),
+                         // Defines Namespace?
+                         split(doc.maybeAt("defines_namespace"),
+                               valueResult<Func<ColumnDefinesNamespace>>(Null()),
+                               fun(d : SpecDoc) : ValueParser<Func<ColumnDefinesNamespace>> =
+                                       effApply(::Prim, ColumnDefinesNamespace.fromDocument(d)))
                         )
             }
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
@@ -327,28 +326,28 @@ data class ColumnFormat(override val id : UUID,
         override fun fromDocument(doc : SpecDoc)
                       : ValueParser<ColumnFormat> = when (doc)
         {
-            is DocDict -> effApply5(::ColumnFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Text Style
-                                    split(doc.maybeAt("text_style"),
-                                          valueResult<Func<TextStyle>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                              effApply(::Comp, TextStyle.fromDocument(d))),
-                                    // Alignment
-                                    split(doc.maybeEnum<Alignment>("alignment"),
-                                          valueResult<Func<Alignment>>(Null()),
-                                          { valueResult(Prim(it)) }),
-                                    // Width
-                                    split(doc.maybeInt("width"),
-                                          valueResult<Func<Int>>(Null()),
-                                          { valueResult(Prim(it)) }),
-                                    // Background Color
-                                    split(doc.maybeAt("background_color"),
-                                          valueResult<Func<ColorId>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
-                                              effApply(::Prim, ColorId.fromDocument(d)))
-                                    )
+            is DocDict -> effApply(::ColumnFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Text Style
+                                   split(doc.maybeAt("text_style"),
+                                         valueResult<Func<TextStyle>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
+                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                   // Alignment
+                                   split(doc.maybeEnum<Alignment>("alignment"),
+                                         valueResult<Func<Alignment>>(Null()),
+                                         { valueResult(Prim(it)) }),
+                                   // Width
+                                   split(doc.maybeInt("width"),
+                                         valueResult<Func<Int>>(Null()),
+                                         { valueResult(Prim(it)) }),
+                                   // Background Color
+                                   split(doc.maybeAt("background_color"),
+                                         valueResult<Func<ColorId>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
+                                             effApply(::Prim, ColorId.fromDocument(d)))
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

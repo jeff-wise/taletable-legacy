@@ -3,23 +3,16 @@ package com.kispoko.tome.activity.engine.function;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
-import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.SheetManagerOld;
-import com.kispoko.tome.model.engine.function.Function;
-import com.kispoko.tome.model.engine.function.FunctionIndex;
-import com.kispoko.tome.lib.functor.FunctorException;
-import com.kispoko.tome.lib.model.Model;
 import com.kispoko.tome.lib.model.form.Field;
 import com.kispoko.tome.lib.model.form.Form;
+import com.kispoko.tome.model.game.engine.function.Function;
 import com.kispoko.tome.util.UI;
 
 import java.util.ArrayList;
@@ -38,7 +31,7 @@ public class FunctionEditorActivity extends AppCompatActivity
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    private Function            function;
+    private Function function;
 
 
     // > Functors
@@ -69,8 +62,8 @@ public class FunctionEditorActivity extends AppCompatActivity
         }
 
         // > Lookup Function
-        FunctionIndex functionIndex = SheetManagerOld.currentSheet().engine().functionIndex();
-        this.function = functionIndex.functionWithName(functionName);
+//        FunctionIndex functionIndex = SheetManagerOld.currentSheet().engine().functionIndex();
+//        this.function = functionIndex.functionWithName(functionName);
 
         // [3] Initialize UI
         // --------------------------------------------------------------------------------------
@@ -132,12 +125,12 @@ public class FunctionEditorActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields.addAll(Model.fields(this.function, this));
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields.addAll(Model.fields(this.function, this));
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {
@@ -205,18 +198,18 @@ public class FunctionEditorActivity extends AppCompatActivity
             return;
 
         // > Variable Reference
-        field.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(FunctionEditorActivity.this,
-                                           TuplesEditorActivity.class);
-                if (function != null)
-                    intent.putExtra("function_name", function.name());
-                startActivity(intent);
-            }
-        });
+//        field.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                Intent intent = new Intent(FunctionEditorActivity.this,
+//                                           TuplesEditorActivity.class);
+//                if (function != null)
+//                    intent.putExtra("function_name", function.name());
+//                startActivity(intent);
+//            }
+//        });
     }
 
 

@@ -424,7 +424,7 @@
 
     <!--<string name="widget_action_field_widget_data_label">Format</string>-->
     <!--<string name="widget_action_field_widget_data_description">-->
-        <!--Formatting options.-->
+    <!--Formatting options.-->
     <!--</string>-->
 
     <!-- ACTIVITY: VALUE -->
@@ -521,7 +521,6 @@
     <string name="program_field_statements_description">
         The program statements.
     </string>
-
 
 
     <string name="statement_result_header">RESULT</string>
@@ -1067,5 +1066,6 @@
     <string name="section_profile">Profile</string>
     <string name="section_encounter">Encounter</string>
     <string name="section_campaign">Campaign</string>
+    <string name="title_activity_sheet">SheetActivity</string>
 
 </resources>

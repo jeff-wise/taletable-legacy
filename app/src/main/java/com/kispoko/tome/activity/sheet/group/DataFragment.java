@@ -36,7 +36,7 @@ public class DataFragment extends Fragment
         DataFragment dataFragment = new DataFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("group", group);
+//        args.putSerializable("group", group);
         dataFragment.setArguments(args);
 
         return dataFragment;
@@ -50,7 +50,7 @@ public class DataFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.group = (Group) getArguments().getSerializable("group");
+        // this.group = (Group) getArguments().getSerializable("group");
     }
 
 

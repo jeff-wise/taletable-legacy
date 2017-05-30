@@ -17,7 +17,7 @@ object ApplicationLog
 
     fun error(error : ApplicationError)
     {
-        Log.d("***TOME LOG", error.userMessage())
+        Log.d("***TOME LOG", error.debugMessage())
     }
 
 }

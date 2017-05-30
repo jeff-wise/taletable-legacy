@@ -38,7 +38,7 @@ public class WidgetListFragment extends Fragment
         WidgetListFragment widgetListFragment = new WidgetListFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("group_row", groupRow);
+        //args.putSerializable("group_row", groupRow);
         widgetListFragment.setArguments(args);
 
         return widgetListFragment;
@@ -52,7 +52,7 @@ public class WidgetListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.groupRow = (GroupRow) getArguments().getSerializable("group_row");
+        //this.groupRow = (GroupRow) getArguments().getSerializable("group_row");
     }
 
 
@@ -80,8 +80,8 @@ public class WidgetListFragment extends Fragment
         recyclerView.layoutManager      = new LinearLayoutManager(context);
 
         // > Adapter
-        recyclerView.adapter            = new WidgetListRecyclerViewAdapter(this.groupRow.widgets(),
-                                                                            getContext());
+//        recyclerView.adapter            = new WidgetListRecyclerViewAdapter(this.groupRow.widgets(),
+//                                                                            getContext());
 
         recyclerView.padding.top        = R.dimen.group_row_widget_list_padding_top;
 

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.sheet.widget.table.TableWidgetPagerAdapter;
+import com.kispoko.tome.model.sheet.widget.TableWidget;
 import com.kispoko.tome.util.UI;
 
 
@@ -25,7 +26,7 @@ public class TableWidgetActivity extends AppCompatActivity
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private TableWidget          tableWidget;
+    private TableWidget tableWidget;
 
     private FloatingActionButton addColumnButton;
 
@@ -96,11 +97,11 @@ public class TableWidgetActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.tableWidget.data().format().label();
-        if (title == null)
-            title = "Table Widget";
+//        String title = this.tableWidget.data().format().label();
+//        if (title == null)
+//            title = "Table Widget";
 
-        UI.initializeToolbar(this, title);
+        //UI.initializeToolbar(this, title);
     }
 
 
@@ -175,10 +176,6 @@ public class TableWidgetActivity extends AppCompatActivity
 
     // NEW COLUMN DIALOG LISTENER
     // ------------------------------------------------------------------------------------------
-
-    public void onNewColumn(ColumnUnion columnUnion)
-    {
-    }
 
 
 }

@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.value.ValueUnion;
 import com.kispoko.tome.lib.ui.EditTextBuilder;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
@@ -35,7 +34,7 @@ public class NewValueDialogFragment extends DialogFragment
     // PROPERTIES
     // ------------------------------------------------------------------------------------------
 
-    private NewValueDialogListener newValueDialogListener;
+    //private NewValueDialogListener newValueDialogListener;
 
     private EditText               newValueInput;
 
@@ -79,23 +78,23 @@ public class NewValueDialogFragment extends DialogFragment
     {
         super.onAttach(context);
 
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            this.newValueDialogListener = (NewValueDialogListener) context;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(context.toString()
-                    + " must implement NewValueDialogListener");
-        }
+//        try {
+//            // Instantiate the NoticeDialogListener so we can send events to the host
+//            this.newValueDialogListener = (NewValueDialogListener) context;
+//        } catch (ClassCastException e) {
+//            // The activity doesn't implement the interface, throw exception
+//            throw new ClassCastException(context.toString()
+//                    + " must implement NewValueDialogListener");
+//        }
     }
 
 
     // NEW VALUE DIAGLOG LISTENER
     // ------------------------------------------------------------------------------------------
 
-    public interface NewValueDialogListener {
-        public void onNewValue(ValueUnion newValue);
-    }
+//    public interface NewValueDialogListener {
+//        public void onNewValue(ValueUnion newValue);
+//    }
 
 
     // VIEWS

@@ -8,8 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.summation.term.TermSummary;
-import com.kispoko.tome.util.tuple.Tuple2;
+import com.kispoko.tome.model.game.engine.summation.Summation;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
@@ -30,37 +29,37 @@ public class SummationView
     {
         LinearLayout layout = componentsViewLayout(context);
 
-        // > Components
-        for (TermSummary summary: summation.summary()) {
-            layout.addView(componentView(summary, context));
-        }
+//        // > Components
+//        for (com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary: summation.summary()) {
+//            layout.addView(componentView(summary, context));
+//        }
 
         // > Total
-        layout.addView(totalView(summationLabel, summation.value().toString(), context));
+//        layout.addView(totalView(summationLabel, summation.value().toString(), context));
 
         return layout;
     }
 
-
-    private static LinearLayout componentView(TermSummary summary, Context context)
-    {
-        LinearLayout layout = componentViewLayout(context);
-
-        if (summary.name() != null)
-            layout.addView(componentHeaderView(summary.name(), context));
-
-        for (Tuple2<String,String> component : summary.components())
-        {
-            String name  = component.getItem1();
-            String value = component.getItem2();
-            layout.addView(componentItemView(name, value, context));
-        }
-
-        layout.addView(componentDividerView(context));
-
-        return layout;
-    }
-
+//
+//    private static LinearLayout componentView(com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary, Context context)
+//    {
+//        LinearLayout layout = componentViewLayout(context);
+//
+//        if (summary.name() != null)
+//            layout.addView(componentHeaderView(summary.name(), context));
+//
+//        for (Tuple2<String,String> component : summary.components())
+//        {
+//            String name  = component.getItem1();
+//            String value = component.getItem2();
+//            layout.addView(componentItemView(name, value, context));
+//        }
+//
+//        layout.addView(componentDividerView(context));
+//
+//        return layout;
+//    }
+//
 
     public static LinearLayout componentDividerView(Context context)
     {

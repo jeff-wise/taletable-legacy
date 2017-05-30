@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.activity.PageActivity;
+import com.kispoko.tome.model.sheet.page.Page;
 
 import java.util.List;
 
@@ -59,10 +60,10 @@ public class PageListRecyclerViewAdpater
         Page page = this.pageList.get(position);
 
         // > Name
-        viewHolder.setName(page.name());
-
-        // > Group Count
-        viewHolder.setGroupCount(page.groups().size());
+//        viewHolder.setName(page.name());
+//
+//        // > Group Count
+//        viewHolder.setGroupCount(page.groups().size());
 
         // > On Click Listener
         viewHolder.setOnClick(page, this.context);
@@ -129,7 +130,7 @@ public class PageListRecyclerViewAdpater
                     Intent intent = new Intent(context, PageActivity.class);
 
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("page", page);
+//                    bundle.putSerializable("page", page);
                     intent.putExtras(bundle);
 
                     context.startActivity(intent);

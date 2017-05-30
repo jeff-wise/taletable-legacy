@@ -16,11 +16,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.EngineType;
-import com.kispoko.tome.model.engine.EngineValueUnion;
-import com.kispoko.tome.model.engine.function.Function;
-import com.kispoko.tome.model.engine.function.FunctionIndex;
-import com.kispoko.tome.model.engine.function.Tuple;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
@@ -28,7 +23,8 @@ import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TableLayoutBuilder;
 import com.kispoko.tome.lib.ui.TableRowBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.SheetManagerOld;
+import com.kispoko.tome.model.game.engine.function.Function;
+import com.kispoko.tome.model.game.engine.function.Tuple;
 import com.kispoko.tome.util.UI;
 
 
@@ -67,8 +63,8 @@ public class TuplesEditorActivity extends AppCompatActivity
         }
 
         // > Lookup Function
-        FunctionIndex functionIndex = SheetManagerOld.currentSheet().engine().functionIndex();
-        this.function = functionIndex.functionWithName(functionName);
+//        FunctionIndex functionIndex = SheetManagerOld.currentSheet().engine().functionIndex();
+//        this.function = functionIndex.functionWithName(functionName);
 
         // [3] Initialize UI
         // --------------------------------------------------------------------------------------
@@ -204,12 +200,12 @@ public class TuplesEditorActivity extends AppCompatActivity
         if (function != null)
         {
             int i = 1;
-            for (EngineType parameterType : function.parameterTypes()) {
-                row.addView(headerCellView(parameterType.shortName(), i, context));
-                i++;
-            }
-
-            row.addView(headerCellView(function.resultType().shortName(), i, context));
+//            for (EngineType parameterType : function.parameterTypes()) {
+//                row.addView(headerCellView(parameterType.shortName(), i, context));
+//                i++;
+//            }
+//
+//            row.addView(headerCellView(function.resultType().shortName(), i, context));
         }
 
         return row;
@@ -290,9 +286,9 @@ public class TuplesEditorActivity extends AppCompatActivity
     {
         TableLayout layout = this.tableRowsViewLayout(context);
 
-        for (Tuple tuple : function.tuples()) {
-            layout.addView(this.tableRowView(tuple, context));
-        }
+//        for (Tuple tuple : function.tuples()) {
+//            layout.addView(this.tableRowView(tuple, context));
+//        }
 
         return layout;
     }
@@ -321,12 +317,12 @@ public class TuplesEditorActivity extends AppCompatActivity
         TableRow row = this.tableRowTableRowView(context);
 
         int i = 1;
-        for (EngineValueUnion valueUnion : tuple.parameters()) {
-            row.addView(this.tupleCellView(valueUnion.toString(), i, context));
-            i++;
-        }
+//        for (EngineValueUnion valueUnion : tuple.parameters()) {
+//            row.addView(this.tupleCellView(valueUnion.toString(), i, context));
+//            i++;
+//        }
 
-        row.addView(this.tupleCellView(tuple.result().toString(), i, context));
+        //row.addView(this.tupleCellView(tuple.result().toString(), i, context));
 
         return row;
     }

@@ -181,10 +181,10 @@ public class TemplateListFragment extends Fragment
         public void setName(String name, String label)
         {
             int spanColor = ContextCompat.getColor(this.context, R.color.gold_light);
-            FormattedString.Span span = new FormattedString.Span(name, spanColor, TextFont.BOLD);
-            SpannableStringBuilder spannableStringBuilder =
-                                    FormattedString.spannableStringBuilder(label, span);
-            this.nameView.setText(spannableStringBuilder);
+            //FormattedString.Span span = new FormattedString.Span(name, spanColor, TextFont.BOLD);
+//            SpannableStringBuilder spannableStringBuilder =
+//                                    FormattedString.spannableStringBuilder(label, span);
+            //this.nameView.setText(spannableStringBuilder);
         }
 
 

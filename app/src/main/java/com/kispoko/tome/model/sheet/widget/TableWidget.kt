@@ -32,28 +32,28 @@ data class TableWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply5(::TableWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    split(doc.maybeAt("widget_format"),
-                                          valueResult<Func<WidgetFormat>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
-                                              effApply(::Comp, WidgetFormat.fromDocument(d))),
-                                    // Show Divider
-                                    split(doc.maybeBoolean("show_divider"),
-                                          valueResult<Func<Boolean>>(Null()),
-                                          { valueResult(Prim(it)) }),
-                                    // Divider Color
-                                    split(doc.maybeAt("divider_color"),
-                                          valueResult<Func<ColorId>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
-                                              effApply(::Prim, ColorId.fromDocument(d))),
-                                    // Height
-                                    split(doc.maybeEnum<Height>("height"),
-                                          valueResult<Func<Height>>(Null()),
-                                          { valueResult(Prim(it))  })
-                                    )
+            is DocDict -> effApply(::TableWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   split(doc.maybeAt("widget_format"),
+                                         valueResult<Func<WidgetFormat>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
+                                             effApply(::Comp, WidgetFormat.fromDocument(d))),
+                                   // Show Divider
+                                   split(doc.maybeBoolean("show_divider"),
+                                         valueResult<Func<Boolean>>(Null()),
+                                         { valueResult(Prim(it)) }),
+                                   // Divider Color
+                                   split(doc.maybeAt("divider_color"),
+                                         valueResult<Func<ColorId>>(Null()),
+                                         fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
+                                             effApply(::Prim, ColorId.fromDocument(d))),
+                                   // Height
+                                   split(doc.maybeEnum<Height>("height"),
+                                         valueResult<Func<Height>>(Null()),
+                                         { valueResult(Prim(it))  })
+                                   )
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }

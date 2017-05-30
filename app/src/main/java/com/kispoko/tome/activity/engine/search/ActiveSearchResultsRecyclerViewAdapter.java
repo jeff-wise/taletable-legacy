@@ -14,9 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.model.engine.mechanic.ActiveMechanicSearchResult;
-import com.kispoko.tome.engine.search.EngineActiveSearchResult;
-import com.kispoko.tome.engine.ActiveVariableSearchResult;
+import com.kispoko.tome.model.game.engine.mechanic.ActiveMechanicSearchResult;
+import com.kispoko.tome.rts.game.engine.search.EngineActiveSearchResult;
+import com.kispoko.tome.rts.game.engine.ActiveVariableSearchResult;
 import com.kispoko.tome.lib.ui.FormattedString;
 
 import java.util.Set;

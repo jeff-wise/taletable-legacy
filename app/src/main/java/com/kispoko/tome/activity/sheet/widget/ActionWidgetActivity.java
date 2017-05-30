@@ -13,7 +13,6 @@ import android.widget.ScrollView;
 
 import com.kispoko.tome.ApplicationFailure;
 import com.kispoko.tome.R;
-import com.kispoko.tome.SheetManagerOld;
 import com.kispoko.tome.activity.engine.variable.NumberVariableActivity;
 import com.kispoko.tome.lib.functor.FunctorException;
 import com.kispoko.tome.lib.model.Model;
@@ -71,10 +70,10 @@ public class ActionWidgetActivity extends AppCompatActivity
 
         if (widgetId != null)
         {
-            WidgetUnion widgetUnion = SheetManagerOld.currentSheet().widgetWithId(widgetId);
-
-            if (widgetUnion != null && widgetUnion.type() == WidgetType.ACTION)
-                actionWidget = widgetUnion.actionWidget();
+//            WidgetUnion widgetUnion = SheetManagerOld.currentSheet().widgetWithId(widgetId);
+//
+//            if (widgetUnion != null && widgetUnion.type() == WidgetType.ACTION)
+//                actionWidget = widgetUnion.actionWidget();
         }
 
         // [3] Initialize data
@@ -142,12 +141,12 @@ public class ActionWidgetActivity extends AppCompatActivity
         Collection<Field> fields = new ArrayList<>();
 
         // GENERATE fields from Value Set
-        try {
-            fields = Model.fields(this.actionWidget, this);
-        }
-        catch (FunctorException exception) {
-            ApplicationFailure.functor(exception);
-        }
+//        try {
+//            fields = Model.fields(this.actionWidget, this);
+//        }
+//        catch (FunctorException exception) {
+//            ApplicationFailure.functor(exception);
+//        }
 
         // INDEX fields by name
         for (Field field : fields) {
@@ -234,7 +233,7 @@ public class ActionWidgetActivity extends AppCompatActivity
             {
                 Intent intent = new Intent(ActionWidgetActivity.this,
                                            NumberVariableActivity.class);
-                intent.putExtra("number_variable", actionWidget.modifierVariable());
+            //    intent.putExtra("number_variable", actionWidget.modifierVariable());
                 startActivity(intent);
             }
         });

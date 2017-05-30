@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
-
+import com.kispoko.tome.model.sheet.page.Page;
 
 
 /**
@@ -37,7 +37,7 @@ public class GroupListFragment extends Fragment
         GroupListFragment groupListFragment = new GroupListFragment();
 
         Bundle args = new Bundle();
-        args.putSerializable("page", page);
+//        args.putSerializable("page", page);
         groupListFragment.setArguments(args);
 
         return groupListFragment;
@@ -51,7 +51,7 @@ public class GroupListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.page = (Page) getArguments().getSerializable("page");
+//j        this.page = (Page) getArguments().getSerializable("page");
     }
 
 
@@ -79,8 +79,8 @@ public class GroupListFragment extends Fragment
         recyclerView.layoutManager      = new LinearLayoutManager(context);
 
         // > Adapter
-        recyclerView.adapter            = new GroupListRecyclerViewAdapter(this.page.groups(),
-                                                                           getContext());
+//        recyclerView.adapter            = new GroupListRecyclerViewAdapter(this.page.groups(),
+//                                                                           getContext());
 
         recyclerView.padding.top        = R.dimen.page_group_list_padding_top;
 

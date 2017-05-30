@@ -9,7 +9,6 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
 import effect.effApply
-import effect.effApply4
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
@@ -34,21 +33,21 @@ data class ListWidgetFormat(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<ListWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply4(::ListWidgetFormat,
-                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
-                                    // Widget Format
-                                    doc.at("widget_format") ap {
-                                        effApply(::Comp, WidgetFormat.fromDocument(it))
-                                    },
-                                    // List Style
-                                    doc.at("list_style") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    },
-                                    // Annotation Style
-                                    doc.at("annotation_style") ap {
-                                        effApply(::Comp, TextStyle.fromDocument(it))
-                                    })
+            is DocDict -> effApply(::ListWidgetFormat,
+                                   // Model Id
+                                   valueResult(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   },
+                                   // List Style
+                                   doc.at("list_style") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   },
+                                   // Annotation Style
+                                   doc.at("annotation_style") ap {
+                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   })
             else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
         }
     }
@@ -239,7 +238,7 @@ data class ListWidgetFormat(override val id : UUID,
 //     */
 //    private void onListWidgetShortClick(Integer itemClicked, Context context)
 //    {
-//        SheetActivity sheetActivity = (SheetActivity) context;
+//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
 //
 //        ListWidgetDialogFragment dialog = ListWidgetDialogFragment.newInstance(this, itemClicked);
 //        dialog.show(sheetActivity.getSupportFragmentManager(), "");

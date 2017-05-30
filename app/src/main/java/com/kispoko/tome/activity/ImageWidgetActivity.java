@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import com.kispoko.tome.R;
+import com.kispoko.tome.model.sheet.widget.ImageWidget;
 import com.kispoko.tome.util.UI;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 
@@ -90,11 +91,11 @@ public class ImageWidgetActivity extends AppCompatActivity
      */
     private void initializeToolbar()
     {
-        String title = this.imageWidget.data().format().label();
-        if (title == null)
-            title = "Image Widget";
-
-        UI.initializeToolbar(this, title);
+//        String title = this.imageWidget.data().format().label();
+//        if (title == null)
+//            title = "Image Widget";
+//
+//        UI.initializeToolbar(this, title);
     }
 
 
@@ -118,7 +119,7 @@ public class ImageWidgetActivity extends AppCompatActivity
         // > Name Field
         // -------------------------------------------------------------------------------------
 
-        String name = this.imageWidget.data().format().label();
+        //String name = this.imageWidget.data().format().label();
 
 //        LinearLayout nameField =
 //                Form.field(
@@ -130,7 +131,7 @@ public class ImageWidgetActivity extends AppCompatActivity
         // > Width
         // -------------------------------------------------------------------------------------
 
-        String width = this.imageWidget.data().format().width().toString();
+        //String width = this.imageWidget.data().format().width().toString();
 
 //        LinearLayout widthField =
 //                Form.field(

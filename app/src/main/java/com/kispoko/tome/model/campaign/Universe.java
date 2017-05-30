@@ -15,7 +15,7 @@ import java.util.UUID;
  *
  * A game world.
  */
-public class Universe extends Model
+public class Universe
                       implements Serializable
 {
 

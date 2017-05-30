@@ -30,8 +30,10 @@ import com.kispoko.tome.lib.ui.LayoutType;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
-import com.kispoko.tome.model.engine.dice.DieRollResult;
-import com.kispoko.tome.model.engine.dice.RollSummary;
+import com.kispoko.tome.model.game.engine.dice.DieRollResult;
+import com.kispoko.tome.model.game.engine.dice.RollModifier;
+import com.kispoko.tome.model.game.engine.dice.RollSummary;
+import com.kispoko.tome.model.game.engine.summation.Summation;
 import com.kispoko.tome.util.UI;
 
 import java.util.UUID;
@@ -49,7 +51,7 @@ public class DiceRollerActivity extends AppCompatActivity
 
     private String       rollName;
     private String       rollDescription;
-    private Summation    summation;
+    private Summation summation;
 
     private UUID         actionWidgetId;
 
@@ -72,10 +74,10 @@ public class DiceRollerActivity extends AppCompatActivity
         // [2] Read Parameters
         // -------------------------------------------------------------------------------------
 
-        this.summation = null;
-        if (getIntent().hasExtra("summation")) {
-            this.summation = (Summation) getIntent().getSerializableExtra("summation");
-        }
+//        this.summation = null;
+//        if (getIntent().hasExtra("summation")) {
+//            this.summation = (Summation) getIntent().getSerializableExtra("summation");
+//        }
 
         this.rollName = "";
         if (getIntent().hasExtra("roll_name")) {
@@ -211,20 +213,20 @@ public class DiceRollerActivity extends AppCompatActivity
         LinearLayout rollButton =  this.rollButtonView(context);
         layout.addView(rollButton);
 
-        rollButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                if (summation != null && summation.diceRoll() != null)
-                {
-                    DiceRoll diceRoll = summation.diceRoll();
-                    RollSummary rollSummary = diceRoll.rollAsSummary();
-                    LinearLayout rollView = rollView(rollSummary, context);
-                    rollsView.addView(rollView);
-                }
-            }
-        });
+//        rollButton.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                if (summation != null && summation.diceRoll() != null)
+//                {
+//                    DiceRoll diceRoll = summation.diceRoll();
+//                    RollSummary rollSummary = diceRoll.rollAsSummary();
+//                    LinearLayout rollView = rollView(rollSummary, context);
+//                    rollsView.addView(rollView);
+//                }
+//            }
+//        });
 
         return layout;
     }
@@ -315,8 +317,8 @@ public class DiceRollerActivity extends AppCompatActivity
         label.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         label.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        if (this.summation != null && this.summation.diceRoll() != null)
-            label.text              = this.summation.diceRoll().toString(true);
+//        if (this.summation != null && this.summation.diceRoll() != null)
+//            label.text              = this.summation.diceRoll().toString(true);
 
         label.font                  = Font.serifFontRegular(context);
         //label.color                 = R.color.gold_light;
@@ -655,7 +657,7 @@ public class DiceRollerActivity extends AppCompatActivity
         name.width                  = LinearLayout.LayoutParams.WRAP_CONTENT;
         name.height                 = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        name.text                   = rollModifier.name();
+ //       name.text                   = rollModifier.name();
 
         name.font                   = Font.serifFontRegular(context);
         name.color                  = R.color.dark_theme_primary_60;
@@ -669,7 +671,7 @@ public class DiceRollerActivity extends AppCompatActivity
         value.width                 = LinearLayout.LayoutParams.WRAP_CONTENT;
         value.height                = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        value.text                  = Integer.toString(rollModifier.value());
+//        value.text                  = Integer.toString(rollModifier.value());
 
         value.font                  = Font.serifFontRegular(context);
         value.color                 = R.color.dark_theme_primary_35;

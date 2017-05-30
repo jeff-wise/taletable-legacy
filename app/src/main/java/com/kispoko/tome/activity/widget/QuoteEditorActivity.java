@@ -21,6 +21,7 @@ import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RelativeLayoutBuilder;
 import com.kispoko.tome.lib.ui.ScrollViewBuilder;
 import com.kispoko.tome.lib.ui.TextViewBuilder;
+import com.kispoko.tome.model.sheet.widget.QuoteWidget;
 import com.kispoko.tome.util.UI;
 
 
@@ -233,8 +234,8 @@ public class QuoteEditorActivity extends AppCompatActivity
         name.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
         name.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
 
-        if (this.quoteWidget != null)
-            name.text       = this.quoteWidget.data().name();
+//        if (this.quoteWidget != null)
+//            name.text       = this.quoteWidget.data().name();
 
         name.font           = Font.serifFontRegular(context);
         name.color          = R.color.dark_blue_hl_5;
@@ -266,8 +267,8 @@ public class QuoteEditorActivity extends AppCompatActivity
 
         // > Edit Text
         String sourceValue = "";
-        if (this.quoteWidget != null)
-            sourceValue = this.quoteWidget.source();
+//        if (this.quoteWidget != null)
+//            sourceValue = this.quoteWidget.source();
         layout.addView(this.editTextView(sourceValue, context));
 
         return layout;
@@ -283,8 +284,8 @@ public class QuoteEditorActivity extends AppCompatActivity
 
         // > Edit Text
         String quoteValue = "";
-        if (this.quoteWidget != null)
-            quoteValue = this.quoteWidget.quote();
+//        if (this.quoteWidget != null)
+//            quoteValue = this.quoteWidget.quote();
         layout.addView(this.editTextView(quoteValue, context));
 
         return layout;
