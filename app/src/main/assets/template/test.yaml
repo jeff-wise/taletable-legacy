@@ -11,8 +11,12 @@ sections:
             id: name
             value:
               id: name
-              value: 
-                type: literal
-                variable_text_value: 'Character Name' 
+              value:
+                type: text_literal
+                text_literal: 'Character Name'
+              tags:
+            variables:
 - name: Encounter
+  pages:
 - name: Campaign
+  pages:

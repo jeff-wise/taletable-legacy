@@ -36,11 +36,11 @@ sealed class Value(open val valueId : Func<ValueId>,
                                     as ValueParser<Value>
                     "text"   -> ValueText.fromDocument(doc)
                                     as ValueParser<Value>
-                    else     -> Err<ValueError, DocPath,Value>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else     -> effError<ValueError,Value>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -66,7 +66,7 @@ data class ValueNumber(override val id : UUID,
         {
             is DocDict -> effApply(::ValueNumber,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value Id
                                    doc.at("value_id") ap {
                                        effApply(::Prim, ValueId.fromDocument(it))
@@ -82,7 +82,7 @@ data class ValueNumber(override val id : UUID,
                                        effApply(::Coll,
                                            docList.map { Variable.fromDocument(it) })
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -108,7 +108,7 @@ data class ValueText(override val id : UUID,
         {
             is DocDict -> effApply(::ValueText,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value Id
                                    doc.at("value_id") ap {
                                        effApply(::Prim, ValueId.fromDocument(it))
@@ -124,7 +124,7 @@ data class ValueText(override val id : UUID,
                                        effApply(::Coll,
                                            docList.map { Variable.fromDocument(it) })
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -147,7 +147,7 @@ data class ValueReference(override val id : UUID,
         {
             is DocDict -> effApply(::ValueReference,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // ValueSet Name
                                    doc.at("value_set_name") ap {
                                        effApply(::Prim, ValueSetId.fromDocument(it))
@@ -156,7 +156,7 @@ data class ValueReference(override val id : UUID,
                                    doc.at("value_name") ap {
                                        effApply(::Prim, ValueId.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 
@@ -174,8 +174,8 @@ data class ValueId(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ValueId> = when (doc)
         {
-            is DocText -> valueResult(ValueId(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ValueId(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -191,8 +191,8 @@ data class ValueDescription(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ValueDescription> = when (doc)
         {
-            is DocText -> valueResult(ValueDescription(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ValueDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }

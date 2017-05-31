@@ -11,12 +11,12 @@ import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
-
 
 
 /**
@@ -29,8 +29,8 @@ data class ActionDescription(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ActionDescription> = when (doc)
         {
-            is DocText -> valueResult(ActionDescription(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ActionDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -47,8 +47,8 @@ data class ActionDescriptionHighlight(val value : String)
         override fun fromDocument(doc: SpecDoc)
                       : ValueParser<ActionDescriptionHighlight> = when (doc)
         {
-            is DocText -> valueResult(ActionDescriptionHighlight(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ActionDescriptionHighlight(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -65,8 +65,8 @@ data class ActionName(val value : String)
         override fun fromDocument(doc: SpecDoc)
                       : ValueParser<ActionName> = when (doc)
         {
-            is DocText -> valueResult(ActionName(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ActionName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -82,8 +82,8 @@ data class ActionResult(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<ActionResult> = when (doc)
         {
-            is DocText -> valueResult(ActionResult(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ActionResult(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -104,7 +104,7 @@ data class ActionWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::ActionWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    doc.at("widget_format") ap {
                                        effApply(::Comp, WidgetFormat.fromDocument(it))
@@ -118,7 +118,7 @@ data class ActionWidgetFormat(override val id : UUID,
                                        effApply(::Comp, TextStyle.fromDocument(it))
                                    },
                                    effApply(::Prim, doc.enum<Height>("height")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

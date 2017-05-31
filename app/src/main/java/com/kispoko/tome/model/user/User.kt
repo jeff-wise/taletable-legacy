@@ -1,5 +1,5 @@
 
-package com.kispoko.tome.model.theme
+package com.kispoko.tome.model.user
 
 
 import com.kispoko.tome.lib.Factory
@@ -16,17 +16,19 @@ import lulo.value.ValueParser
 
 
 /**
- * Color Id
+ * User Name
  */
-data class ColorId(val id : String)
+data class UserName(val value : String)
 {
 
-    companion object : Factory<ColorId>
+    companion object : Factory<UserName>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ColorId> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<UserName> = when (doc)
         {
-            is DocText -> effValue(ColorId(doc.text))
+            is DocText -> effValue(UserName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
 }
+

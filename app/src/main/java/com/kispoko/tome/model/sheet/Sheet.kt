@@ -7,15 +7,13 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.campaign.CampaignName
 import com.kispoko.tome.model.sheet.section.Section
-import effect.Err
-import effect.effApply
+import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -35,7 +33,7 @@ data class Sheet(override val id : UUID,
         {
             is DocDict -> effApply(::Sheet,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Campaign Name
                                    doc.at("campaign_name") ap {
                                        effApply(::Prim, CampaignName.fromDocument(it))
@@ -46,15 +44,28 @@ data class Sheet(override val id : UUID,
                                                 docList.map { Section.fromDocument(it) })
                                    },
                                    // Sheet Settings
-                                   doc.at("settings") ap {
-                                       effApply(::Comp, Settings.fromDocument(it))
-                                   })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+                                   split(doc.maybeAt("description"),
+                                         nullEff<Settings>(),
+                                         { effApply(::Comp, Settings.fromDocument(it)) })
+                                   )
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
+
+    // ON ACTIVE
+    // -----------------------------------------------------------------------------------------
+
+    fun onActive()
+    {
+        sections.list.forEach { it.onActive() }
+    }
 }
 
 

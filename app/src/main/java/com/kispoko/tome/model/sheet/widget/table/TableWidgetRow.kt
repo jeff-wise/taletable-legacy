@@ -1,6 +1,7 @@
 
 package com.kispoko.tome.model.sheet.widget.table
 
+
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -12,7 +13,6 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -33,19 +33,18 @@ data class TableWidgetRow(override val id : UUID,
             {
                 effApply(::TableWidgetRow,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<TableWidgetRowFormat>>(Null()),
-                                fun(d : SpecDoc) : ValueParser<Func<TableWidgetRowFormat>> =
-                                    effApply(::Comp, TableWidgetRowFormat.fromDocument(d))),
+                               nullEff<TableWidgetRowFormat>(),
+                               { effApply(::Comp, TableWidgetRowFormat.fromDocument(it)) }),
                          // Format
                          doc.list("cells") ap { docList ->
                              effApply(::Coll,
                                       docList.map { TableWidgetCell.Companion.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -68,13 +67,13 @@ data class TableWidgetRowFormat(override val id : UUID,
         {
             is DocDict -> effApply(::TableWidgetRowFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Cell Height
                                    split(doc.maybeEnum<Height>("cell_height"),
-                                         valueResult<Func<Height>>(Null()),
-                                         { valueResult(Prim(it))  })
+                                         nullEff<Height>(),
+                                         { effValue(Prim(it))  })
                                    )
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

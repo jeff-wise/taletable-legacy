@@ -36,11 +36,11 @@ sealed class Variable(open val variableId : Func<VariableId>,
                     "dice_roll" -> DiceRollVariable.fromDocument(doc) as ValueParser<Variable>
                     "number"    -> NumberVariable.fromDocument(doc) as ValueParser<Variable>
                     "text"      -> TextVariable.fromDocument(doc) as ValueParser<Variable>
-                    else          -> Err<ValueError, DocPath, Variable>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else        -> effError<ValueError, Variable>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -65,13 +65,13 @@ data class BooleanVariable(override val id : UUID,
         {
             is DocDict -> effApply(::BooleanVariable,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Id
                                    doc.at("name") ap {
                                        val variableId =
                                            effApply(::VariableId,
-                                                    valueResult(UUID.randomUUID()),
-                                                    valueResult(Null<VariableNameSpace>()),
+                                                    effValue(UUID.randomUUID()),
+                                                    effValue(Null<VariableNameSpace>()),
                                                     effApply(::Prim,
                                                              VariableName.fromDocument(it)))
                                        effApply(::Comp, variableId)
@@ -93,7 +93,7 @@ data class BooleanVariable(override val id : UUID,
                                    doc.at("value") ap {
                                        effApply(::Comp, BooleanVariableValue.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -120,13 +120,13 @@ data class DiceRollVariable(override val id : UUID,
         {
             is DocDict -> effApply(::DiceRollVariable,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Id
                                    doc.at("name") ap {
                                        val variableId =
                                            effApply(::VariableId,
-                                                    valueResult(UUID.randomUUID()),
-                                                    valueResult(Null<VariableNameSpace>()),
+                                                    effValue(UUID.randomUUID()),
+                                                    effValue(Null<VariableNameSpace>()),
                                                     effApply(::Prim,
                                                              VariableName.fromDocument(it)))
                                        effApply(::Comp, variableId)
@@ -148,7 +148,7 @@ data class DiceRollVariable(override val id : UUID,
                                    doc.at("value") ap {
                                         effApply(::Comp, DiceVariableValue.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -176,13 +176,13 @@ data class NumberVariable(override val id : UUID,
         {
             is DocDict -> effApply(::NumberVariable,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Id
                                    doc.at("name") ap {
                                        val variableId =
                                            effApply(::VariableId,
-                                                    valueResult(UUID.randomUUID()),
-                                                    valueResult(Null<VariableNameSpace>()),
+                                                    effValue(UUID.randomUUID()),
+                                                    effValue(Null<VariableNameSpace>()),
                                                     effApply(::Prim,
                                                              VariableName.fromDocument(it)))
                                        effApply(::Comp, variableId)
@@ -204,7 +204,7 @@ data class NumberVariable(override val id : UUID,
                                    doc.at("value") ap {
                                        effApply(::Comp, NumberVariableValue.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -231,44 +231,47 @@ data class TextVariable(override val id : UUID,
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextVariable> = when (doc)
         {
-            is DocDict -> effApply(::TextVariable,
-                                   // Model Id
-                                   valueResult(UUID.randomUUID()),
-                                   // Variable Id
-                                   doc.at("name") ap {
-                                       val variableId =
-                                           effApply(::VariableId,
-                                                    valueResult(UUID.randomUUID()),
-                                                    valueResult(Null<VariableNameSpace>()),
-                                                    effApply(::Prim,
-                                                             VariableName.fromDocument(it)))
-                                       effApply(::Comp, variableId)
-                                   },
-                                   // Label
-                                   doc.at("label") ap {
-                                       effApply(::Prim, VariableLabel.fromDocument(it))
-                                   },
-                                   // Description
-                                   doc.at("description") ap {
-                                       effApply(::Prim, VariableDescription.fromDocument(it))
-                                   },
-                                   // Tags
-                                   doc.list("tags") ap { docList ->
-                                       effApply(::Prim,
-                                                docList.map { VariableTag.fromDocument(it) })
-                                   },
-                                   // Value
-                                   doc.at("value") ap {
-                                       effApply(::Comp, TextVariableValue.fromDocument(it))
-                                   },
-                                   // Defines Namespace
-                                   doc.at("defines_namespace") ap {
-                                       effApply(::Prim, DefinesNamespace.fromDocument(it))
-                                   })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            is DocDict ->
+            {
+                effApply(::TextVariable,
+                         // Model Id
+                         effValue(UUID.randomUUID()),
+                         // Variable Id
+                         doc.at("id") ap {
+                             val variableId =
+                                 effApply(::VariableId,
+                                          effValue(UUID.randomUUID()),
+                                          effValue(Null<VariableNameSpace>()),
+                                          effApply(::Prim,
+                                                   VariableName.fromDocument(it)))
+                             effApply(::Comp, variableId)
+                         },
+                         // Label
+                         split(doc.maybeAt("label"),
+                               nullEff<VariableLabel>(),
+                               { effApply(::Prim, VariableLabel.fromDocument(it)) }),
+                         // Description
+                         split(doc.maybeAt("description"),
+                               nullEff<VariableDescription>(),
+                               { effApply(::Prim, VariableDescription.fromDocument(it)) }),
+                         // Tags
+                         doc.list("tags") ap { docList ->
+                             effApply(::Prim,
+                                      docList.map { VariableTag.fromDocument(it) })
+                         },
+                         // Value
+                         doc.at("value") ap {
+                             effApply(::Prim, TextVariableValue.fromDocument(it))
+                         },
+                         // Defines Namespace
+                         split(doc.maybeAt("defines_namespace"),
+                               nullEff<DefinesNamespace>(),
+                               { effApply(::Prim, DefinesNamespace.fromDocument(it)) })
+                         )
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
-
 
     override fun onLoad() {}
 
@@ -298,8 +301,8 @@ data class VariableNameSpace(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<VariableNameSpace> = when (doc)
         {
-            is DocText -> valueResult(VariableNameSpace(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(VariableNameSpace(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -315,8 +318,8 @@ data class VariableName(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<VariableName> = when (doc)
         {
-            is DocText -> valueResult(VariableName(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(VariableName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -332,8 +335,8 @@ data class VariableTag(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<VariableTag> = when (doc)
         {
-            is DocText -> valueResult(VariableTag(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(VariableTag(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -349,8 +352,8 @@ data class VariableLabel(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<VariableLabel> = when (doc)
         {
-            is DocText -> valueResult(VariableLabel(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(VariableLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -366,8 +369,8 @@ data class VariableDescription(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<VariableDescription> = when (doc)
         {
-            is DocText -> valueResult(VariableDescription(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(VariableDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -383,8 +386,8 @@ data class DefinesNamespace(val value : Boolean)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<DefinesNamespace> = when (doc)
         {
-            is DocBoolean -> valueResult(DefinesNamespace(doc.boolean))
-            else          -> Err(UnexpectedType(DocType.BOOLEAN, docType(doc)), doc.path)
+            is DocBoolean -> effValue(DefinesNamespace(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
 }
@@ -404,9 +407,10 @@ sealed class VariableReference : Model
             {
                 "name" -> VariableReferenceName.fromDocument(doc)
                 "tag"  -> VariableReferenceTag.fromDocument(doc)
-                else   -> Err<ValueError,DocPath,VariableReference>(UnknownCase(doc.case()), doc.path)
+                else   -> effError<ValueError,VariableReference>(
+                                    UnknownCase(doc.case(), doc.path))
             }
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -422,12 +426,12 @@ data class VariableReferenceName(override val id : UUID,
         {
             is DocDict -> effApply(::VariableReferenceName,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Name
                                    doc.at("name") ap {
                                        effApply(::Prim, VariableName.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 
@@ -445,12 +449,12 @@ data class VariableReferenceTag(override val id : UUID,
         {
             is DocDict -> effApply(::VariableReferenceTag,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Name
                                    doc.at("tag") ap {
                                        effApply(::Prim, VariableTag.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 

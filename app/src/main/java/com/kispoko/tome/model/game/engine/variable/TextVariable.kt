@@ -2,42 +2,50 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import android.util.Log
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
-import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
-import java.util.*
 
 
 
 /**
  * Text Variable Value
  */
-sealed class TextVariableValue : Model
+sealed class TextVariableValue
 {
 
      companion object : Factory<TextVariableValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TextVariableValue> = when (doc)
-        {
-            is DocDict -> when (doc.case())
+        override fun fromDocument(doc: SpecDoc): ValueParser<TextVariableValue> =
+            when (doc.case)
             {
-                "literal" -> TextVariableLiteralValue.fromDocument(doc)
-                "value"   -> TextVariableValueReference.fromDocument(doc)
-                "program" -> TextVariableProgramValue.fromDocument(doc)
-                else      -> Err<ValueError, DocPath,TextVariableValue>(
-                                    UnknownCase(doc.case()), doc.path)
+                "text_literal"       -> TextVariableLiteralValue.fromDocument(doc)
+                "value_reference"    -> TextVariableValueReference.fromDocument(doc)
+                "program_invocation" -> TextVariableProgramValue.fromDocument(doc)
+                else                 -> effError<ValueError,TextVariableValue>(
+                                            UnknownCase(doc.case, doc.path))
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
-        }
+
+
+
+//                = when (doc)
+//        {
+//            is DocDict -> when (doc.case())
+//            {
+//            }
+//            else       ->
+//            {
+//                Log.d("***TEXTVARIABLE", doc.toString())
+//                effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+//            }
+//        }
     }
 }
 
@@ -45,8 +53,7 @@ sealed class TextVariableValue : Model
 /**
  * Literal Value
  */
-data class TextVariableLiteralValue(override val id : UUID,
-                                    val value : Func<String>) : TextVariableValue()
+data class TextVariableLiteralValue(val value : String) : TextVariableValue()
 {
 
     companion object : Factory<TextVariableValue>
@@ -54,66 +61,35 @@ data class TextVariableLiteralValue(override val id : UUID,
         override fun fromDocument(doc : SpecDoc)
                       : ValueParser<TextVariableValue> = when (doc)
         {
-            is DocDict -> effApply(::TextVariableLiteralValue,
-                                   // Model Id
-                                   valueResult(UUID.randomUUID()),
-                                   // Value
-                                   effApply(::Prim, doc.text("value")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            is DocText -> effValue(TextVariableLiteralValue(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
-
-    override fun onLoad() { }
 
 }
 
 
-data class TextVariableValueReference(override val id : UUID,
-                                      val reference : Func<ValueReference>) : TextVariableValue()
+data class TextVariableValueReference(val reference : ValueReference) : TextVariableValue()
 {
 
     companion object : Factory<TextVariableValue>
     {
         override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<TextVariableValue> = when (doc)
-        {
-            is DocDict -> effApply(::TextVariableValueReference,
-                                   // Model Id
-                                   valueResult(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("reference") ap {
-                                       effApply(::Comp, ValueReference.fromDocument(it) )
-                                   })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
-        }
+                      : ValueParser<TextVariableValue> =
+                effApply(::TextVariableValueReference, ValueReference.fromDocument(doc))
     }
-
-    override fun onLoad() { }
 
 }
 
 
-data class TextVariableProgramValue(override val id : UUID,
-                                    val invocation : Func<Invocation>) : TextVariableValue()
+data class TextVariableProgramValue(val invocation : Invocation) : TextVariableValue()
 {
 
     companion object : Factory<TextVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<TextVariableValue> = when (doc)
-        {
-            is DocDict -> effApply(::TextVariableProgramValue,
-                                   // Model Id
-                                   valueResult(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("invocation") ap {
-                                       effApply(::Comp, Invocation.fromDocument(it) )
-                                   })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TextVariableValue> =
+                effApply(::TextVariableProgramValue, Invocation.fromDocument(doc))
     }
-
-    override fun onLoad() { }
 
 }
 

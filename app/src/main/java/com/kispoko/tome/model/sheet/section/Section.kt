@@ -8,12 +8,12 @@ import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.page.Page
-import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -31,22 +31,34 @@ data class Section(override val id : UUID,
         {
             is DocDict -> effApply(::Section,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Campaign Name
                                    doc.at("name") ap {
                                        effApply(::Prim, SectionName.fromDocument(it))
                                    },
                                    // Page List
                                    doc.list("pages") ap { docList ->
-                                       effApply(::Coll,
-                                               docList.map { Page.fromDocument(it) })
+                                       effApply(::Coll, docList.mapIndexed {
+                                           doc, index -> Page.fromDocument(doc, index) })
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
+
+    // ON ACTIVE
+    // -----------------------------------------------------------------------------------------
+
+    fun onActive()
+    {
+        this.pages.list.forEach { it.onActive() }
+    }
 }
 
 
@@ -60,8 +72,8 @@ data class SectionName(val name : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<SectionName> = when (doc)
         {
-            is DocText -> valueResult(SectionName(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(SectionName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }

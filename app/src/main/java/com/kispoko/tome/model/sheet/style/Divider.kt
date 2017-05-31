@@ -4,10 +4,11 @@ package com.kispoko.tome.model.sheet.style
 
 import com.kispoko.tome.lib.Factory
 import effect.Err
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 
 
 
@@ -21,8 +22,8 @@ data class DividerMargin(val value : Long)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<DividerMargin> = when (doc)
         {
-            is DocInteger -> valueResult(DividerMargin(doc.integer))
-            else          -> Err(UnexpectedType(DocType.INTEGER, docType(doc)), doc.path)
+            is DocInteger -> effValue(DividerMargin(doc.integer))
+            else          -> effError(UnexpectedType(DocType.INTEGER, docType(doc), doc.path))
         }
     }
 }
@@ -38,8 +39,8 @@ data class DividerThickness(val value : Long)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<DividerThickness> = when (doc)
         {
-            is DocInteger -> valueResult(DividerThickness(doc.integer))
-            else          -> Err(UnexpectedType(DocType.INTEGER, docType(doc)), doc.path)
+            is DocInteger -> effValue(DividerThickness(doc.integer))
+            else          -> effError(UnexpectedType(DocType.INTEGER, docType(doc), doc.path))
         }
     }
 }

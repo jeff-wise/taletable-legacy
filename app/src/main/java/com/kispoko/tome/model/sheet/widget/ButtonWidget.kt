@@ -13,10 +13,11 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorId
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -42,8 +43,8 @@ data class ButtonLabel(val value : String)
         override fun fromDocument(doc: SpecDoc)
                       : ValueParser<ButtonLabel> = when (doc)
         {
-            is DocText -> valueResult(ButtonLabel(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ButtonLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -60,8 +61,8 @@ data class ButtonDescription(val value : String)
         override fun fromDocument(doc: SpecDoc)
                       : ValueParser<ButtonDescription> = when (doc)
         {
-            is DocText -> valueResult(ButtonDescription(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ButtonDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -96,7 +97,7 @@ data class ButtonWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::ButtonWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    doc.at("widget_format") ap {
                                        effApply(::Comp, WidgetFormat.fromDocument(it))
@@ -121,7 +122,7 @@ data class ButtonWidgetFormat(override val id : UUID,
                                    doc.at("icon_color") ap {
                                        effApply(::Prim, ColorId.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

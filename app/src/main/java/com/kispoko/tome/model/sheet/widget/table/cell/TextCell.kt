@@ -1,10 +1,12 @@
 
 package com.kispoko.tome.model.sheet.widget.table.cell
 
+
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Null
+import com.kispoko.tome.lib.functor.nullEff
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.widget.table.CellFormat
 import effect.*
@@ -14,7 +16,6 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -32,14 +33,13 @@ data class TextCellFormat(override val id : UUID,
         {
             is DocDict -> effApply(::TextCellFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Cell Format
                                    split(doc.maybeAt("cell_format"),
-                                         valueResult<Func<CellFormat>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<CellFormat>> =
-                                             effApply(::Comp, CellFormat.fromDocument(d)))
+                                         nullEff<CellFormat>(),
+                                         { effApply(::Comp, CellFormat.fromDocument(it)) })
                                    )
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

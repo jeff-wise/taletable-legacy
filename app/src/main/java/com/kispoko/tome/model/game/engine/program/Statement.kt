@@ -10,12 +10,13 @@ import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.reference.*
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -37,7 +38,7 @@ data class Statement(override val id : UUID,
             {
                 effApply(::Statement,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Binding
                          doc.at("binding") ap {
                              effApply(::Prim, StatementBinding.fromDocument(it))
@@ -52,7 +53,7 @@ data class Statement(override val id : UUID,
                                  docList.map { StatementParameter.fromDocument(it) })
                          })
             }
-            else       -> Err(lulo.value.UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -71,8 +72,8 @@ data class StatementBinding(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<StatementBinding> = when (doc)
         {
-            is DocText -> valueResult(StatementBinding(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(StatementBinding(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -97,11 +98,11 @@ sealed class StatementParameter
                                     as ValueParser<StatementParameter>
                     "reference" -> StatementParameterReference.fromDocument(doc)
                                     as ValueParser<StatementParameter>
-                    else        -> Err<ValueError, DocPath,StatementParameter>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else        -> effError<ValueError,StatementParameter>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -118,7 +119,7 @@ data class StatementParameterBinding(val binding : Func<StatementBinding>) : Sta
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameterBinding> =
             StatementBinding.fromDocument(doc) ap {
-                valueResult(StatementParameterBinding(Prim(it)))
+                effValue<ValueError,StatementParameterBinding>(StatementParameterBinding(Prim(it)))
             }
     }
 
@@ -135,7 +136,7 @@ data class StatementParameterReference(val reference : Func<ValueReference>) : S
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameterReference> =
             ValueReference.fromDocument(doc) ap {
-                valueResult(StatementParameterReference(Prim(it)))
+                effValue<ValueError,StatementParameterReference>(StatementParameterReference(Prim(it)))
             }
     }
 

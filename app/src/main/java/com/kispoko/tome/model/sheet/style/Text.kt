@@ -3,10 +3,7 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.VerticalAlignment
 import com.kispoko.tome.model.theme.ColorId
@@ -14,7 +11,6 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -40,41 +36,38 @@ data class TextFormat(override val id : UUID,
             {
                 effApply(::TextFormat,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Style
                          split(doc.maybeAt("style"),
-                               valueResult<Func<TextStyle>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                   effApply(::Comp, TextStyle.fromDocument(d))),
+                               nullEff<TextStyle>(),
+                               { effApply(::Comp, TextStyle.fromDocument(it)) }),
                          // Position
                          split(doc.maybeEnum<Position>("position"),
-                               valueResult<Func<Position>>(Null()),
-                               { valueResult(Prim(it))  }),
+                               nullEff<Position>(),
+                               { effValue(Prim(it)) }),
                          // Height
                          split(doc.maybeEnum<Height>("height"),
-                               valueResult<Func<Height>>(Null()),
-                               { valueResult(Prim(it))  }),
+                               nullEff<Height>(),
+                               { effValue(Prim(it)) }),
                          // Padding
                          split(doc.maybeAt("padding"),
-                               valueResult<Func<Spacing>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<Spacing>> =
-                                   effApply(::Comp, Spacing.fromDocument(d))),
+                               nullEff<Spacing>(),
+                               { effApply(::Comp, Spacing.fromDocument(it)) }),
                          // Margins
                          split(doc.maybeAt("margins"),
-                               valueResult<Func<Spacing>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<Spacing>> =
-                                   effApply(::Comp, Spacing.fromDocument(d))),
+                               nullEff<Spacing>(),
+                               { effApply(::Comp, Spacing.fromDocument(it)) }),
                          // Alignment
                          split(doc.maybeEnum<Alignment>("alignment"),
-                               valueResult<Func<Alignment>>(Null()),
-                               { valueResult(Prim(it))  }),
+                               nullEff<Alignment>(),
+                               { effValue(Prim(it)) }),
                          // Vertical Alignment
                          split(doc.maybeEnum<VerticalAlignment>("vertical_alignment"),
-                               valueResult<Func<VerticalAlignment>>(Null()),
-                               { valueResult(Prim(it))  })
+                               nullEff<VerticalAlignment>(),
+                               { effValue(Prim(it))  })
                          )
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -101,7 +94,7 @@ data class TextStyle(override val id : UUID,
         {
             is DocDict -> effApply(::TextStyle,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Color
                                    doc.at("color") ap {
                                        effApply(::Prim, ColorId.fromDocument(it))
@@ -120,7 +113,7 @@ data class TextStyle(override val id : UUID,
                                    doc.at("background_color") ap {
                                        effApply(::Prim, ColorId.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -139,8 +132,8 @@ data class TextSize(val value : Double)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<TextSize> = when (doc)
         {
-            is DocNumber -> valueResult(TextSize(doc.number))
-            else         -> Err(UnexpectedType(DocType.NUMBER, docType(doc)), doc.path)
+            is DocNumber -> effValue(TextSize(doc.number))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
 }

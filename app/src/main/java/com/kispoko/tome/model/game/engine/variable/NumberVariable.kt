@@ -12,12 +12,13 @@ import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -39,10 +40,10 @@ sealed class NumberVariableValue : Model
                 "program"   -> NumberVariableProgramValue.fromDocument(doc)
                 "value"     -> NumberVariableValueValue.fromDocument(doc)
                 "summation" -> NumberVariableSummationValue.fromDocument(doc)
-                else        -> Err<ValueError, DocPath,NumberVariableValue>(
-                                    UnknownCase(doc.case()), doc.path)
+                else        -> effError<ValueError,NumberVariableValue>(
+                                    UnknownCase(doc.case(), doc.path))
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -64,10 +65,10 @@ data class NumberVariableLiteralIntegerValue(
         {
             is DocDict -> effApply(::NumberVariableLiteralIntegerValue,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    effApply(::Prim, doc.int("value")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -91,12 +92,12 @@ data class NumberVariableVariableValue(
         {
             is DocDict -> effApply(::NumberVariableVariableValue,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Reference
                                    doc.at("reference") ap {
                                        effApply(::Comp, VariableReference.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -120,12 +121,12 @@ data class NumberVariableProgramValue(
         {
             is DocDict -> effApply(::NumberVariableProgramValue,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Reference
                                    doc.at("invocation") ap {
                                        effApply(::Comp, Invocation.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -149,12 +150,12 @@ data class NumberVariableValueValue(
         {
             is DocDict -> effApply(::NumberVariableValueValue,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Reference
                                    doc.at("reference") ap {
                                        effApply(::Comp, ValueReference.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -178,12 +179,12 @@ data class NumberVariableSummationValue(
         {
             is DocDict -> effApply(::NumberVariableSummationValue,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Reference
                                    doc.at("summation") ap {
                                        effApply(::Comp, Summation.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

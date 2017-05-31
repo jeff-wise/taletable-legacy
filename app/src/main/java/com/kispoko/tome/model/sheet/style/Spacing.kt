@@ -8,13 +8,14 @@ import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -35,7 +36,7 @@ data class Spacing(override val id : UUID,
         {
             is DocDict -> effApply(::Spacing,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Left
                                    effApply(::Prim, doc.int("left")),
                                    // Top
@@ -44,7 +45,7 @@ data class Spacing(override val id : UUID,
                                    effApply(::Prim, doc.int("right")),
                                    // Bottom
                                    effApply(::Prim, doc.int("bottom")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

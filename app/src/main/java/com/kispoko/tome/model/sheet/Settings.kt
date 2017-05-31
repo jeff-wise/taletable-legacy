@@ -11,7 +11,6 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -32,17 +31,16 @@ data class Settings(override val id : UUID,
             {
                 effApply(::Settings,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Theme Type
                          effApply(::Prim, doc.enum<ThemeType>("theme_type")),
                          // Custom Theme?
                          split(doc.maybeAt("theme"),
-                               valueResult<Func<Theme>>(Null()),
-                               fun(doc : SpecDoc) : ValueParser<Func<Theme>> =
-                                   effApply(::Comp, Theme.fromDocument(doc))
-                         ))
+                               nullEff<Theme>(),
+                               { effApply(::Comp, Theme.fromDocument(doc)) })
+                         )
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

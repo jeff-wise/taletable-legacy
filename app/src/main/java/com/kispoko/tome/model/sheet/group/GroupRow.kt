@@ -3,10 +3,7 @@ package com.kispoko.tome.model.sheet.group
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Spacing
@@ -19,7 +16,6 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -30,31 +26,44 @@ import java.util.*
 data class GroupRow(override val id : UUID,
                     val format : Func<GroupRowFormat>,
                     val index : Func<Int>,
-                    val rows : Coll<Widget>) : Model
+                    val widgets : Coll<Widget>) : Model
 {
-    companion object : Factory<GroupRow>
+    companion object
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<GroupRow> = when (doc)
+        fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<GroupRow> = when (doc)
         {
             is DocDict -> effApply(::GroupRow,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Format
-                                   doc.at("format") ap {
-                                       effApply(::Comp, GroupRowFormat.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("format"),
+                                         nullEff<GroupRowFormat>(),
+                                         { effApply(::Comp, GroupRowFormat.fromDocument(it))}),
                                    // Index
-                                   effApply(::Prim, doc.int("index")),
+                                   effValue(Prim(index)),
                                    // Widgets
                                    doc.list("widgets") ap { docList ->
                                        effApply(::Coll,
                                                 docList.map { Widget.fromDocument(it) })
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // ON ACTIVE
+    // -----------------------------------------------------------------------------------------
+
+    fun onActive()
+    {
+        this.widgets.list.forEach { it.onActive() }
+    }
 
 }
 
@@ -76,7 +85,7 @@ data class GroupRowFormat(override val id : UUID,
         {
             is DocDict -> effApply(::GroupRowFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Alignment
                                    effApply(::Prim, doc.enum<Alignment>("alignment")),
                                    // Background Color
@@ -95,7 +104,7 @@ data class GroupRowFormat(override val id : UUID,
                                    doc.at("divider_color") ap {
                                         effApply(::Prim, ColorId.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

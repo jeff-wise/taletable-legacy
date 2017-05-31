@@ -10,12 +10,13 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.program.Invocation
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -34,10 +35,10 @@ sealed class BooleanVariableValue : Model
             {
                 "literal" -> BooleanVariableLiteralValue.fromDocument(doc)
                 "program" -> BooleanVariableProgramValue.fromDocument(doc)
-                else      -> Err<ValueError, DocPath,BooleanVariableValue>(
-                                    UnknownCase(doc.case()), doc.path)
+                else      -> effError<ValueError, BooleanVariableValue>(
+                                    UnknownCase(doc.case(), doc.path))
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 }
@@ -57,10 +58,10 @@ data class BooleanVariableLiteralValue(override val id : UUID,
         {
             is DocDict -> effApply(::BooleanVariableLiteralValue,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    effApply(::Prim, doc.boolean("value")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -83,12 +84,12 @@ data class BooleanVariableProgramValue(override val id : UUID,
         {
             is DocDict -> effApply(::BooleanVariableProgramValue,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("invocation") ap {
                                        effApply(::Comp, Invocation.fromDocument(it) )
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

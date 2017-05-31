@@ -11,6 +11,8 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -31,9 +33,10 @@ data class Invocation(override val id : UUID,
         override fun fromDocument(doc: SpecDoc) : ValueParser<Invocation> = when (doc)
         {
             is DocDict ->
+            {
                 effApply(::Invocation,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Program Name
                          doc.at("program_name") ap {
                              effApply(::Prim, ProgramId.fromDocument(it))
@@ -43,7 +46,9 @@ data class Invocation(override val id : UUID,
                              effApply(::Coll,
                                      docList.map { InvocationParameter.fromDocument(it) })
                          })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            }
+
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -66,10 +71,10 @@ sealed class InvocationParameter : Model
             is DocDict -> when (doc.case())
             {
                 "variable" -> InvocationParameterVariable.fromDocument(doc)
-                else       -> Err<ValueError,DocPath,InvocationParameter>(
-                                    UnknownCase(doc.case()), doc.path)
+                else       -> effError<ValueError,InvocationParameter>(
+                                    UnknownCase(doc.case(), doc.path))
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 }
@@ -87,12 +92,12 @@ data class InvocationParameterVariable(override val id : UUID,
         {
             is DocDict -> effApply(::InvocationParameterVariable,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Variable Reference
                                    doc.at("reference") ap {
                                        effApply(::Comp, VariableReference.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

@@ -3,19 +3,14 @@ package com.kispoko.tome.model.sheet.page
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.theme.ColorId
-import effect.Err
-import effect.effApply
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -27,36 +22,48 @@ data class Page(override val id : UUID,
                 val name : Func<PageName>,
                 val format : Func<PageFormat>,
                 val index : Func<Int>,
-                val pages : Coll<Group>) : Model
+                val groups : Coll<Group>) : Model
 {
-    companion object : Factory<Page>
+    companion object
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Page> = when (doc)
+        fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<Page> = when (doc)
         {
             is DocDict -> effApply(::Page,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Name
                                    doc.at("name") ap {
                                        effApply(::Prim, PageName.fromDocument(it))
                                    },
                                    // Format
-                                   doc.at("format") ap {
-                                       effApply(::Comp, PageFormat.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("format"),
+                                         nullEff<PageFormat>(),
+                                         { effApply(::Comp, PageFormat.fromDocument(it)) }),
                                    // Index
-                                   effApply(::Prim, doc.int("index")),
+                                   effValue(Prim(index)),
                                    // Groups
                                    doc.list("groups") ap { docList ->
-                                       effApply(::Coll,
-                                                docList.map { Group.fromDocument(it) })
+                                       effApply(::Coll, docList.mapIndexed {
+                                           doc, index -> Group.fromDocument(doc,index) })
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
+
+    // ON ACTIVE
+    // -----------------------------------------------------------------------------------------
+
+    fun onActive()
+    {
+        this.groups.list.forEach { it.onActive() }
+    }
 }
 
 
@@ -70,8 +77,8 @@ data class PageName(val name : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<PageName> = when (doc)
         {
-            is DocText -> valueResult(PageName(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(PageName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -89,12 +96,12 @@ data class PageFormat(override val id : UUID,
         {
             is DocDict -> effApply(::PageFormat,
                                    // Model Id
-                                    valueResult(UUID.randomUUID()),
+                                    effValue(UUID.randomUUID()),
                                    // Background Color
                                    doc.at("background_color") ap {
                                        effApply(::Prim, ColorId.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

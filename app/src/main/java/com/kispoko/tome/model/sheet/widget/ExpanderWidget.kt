@@ -10,10 +10,11 @@ import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -29,8 +30,8 @@ data class ExpanderLabel(val value : String)
         override fun fromDocument(doc: SpecDoc)
                       : ValueParser<ExpanderLabel> = when (doc)
         {
-            is DocText -> valueResult(ExpanderLabel(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ExpanderLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -53,7 +54,7 @@ data class ExpanderWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::ExpanderWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    doc.at("widget_format") ap {
                                        effApply(::Comp, WidgetFormat.fromDocument(it))
@@ -70,7 +71,7 @@ data class ExpanderWidgetFormat(override val id : UUID,
                                    doc.at("header_padding") ap {
                                        effApply(::Comp, Spacing.fromDocument(it))
                                     })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

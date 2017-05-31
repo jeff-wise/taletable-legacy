@@ -10,12 +10,13 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -37,11 +38,11 @@ sealed class BooleanReference : Model
                 {
                     "literal"  -> BooleanReferenceLiteral.fromDocument(doc)
                     "variable" -> BooleanReferenceVariable.fromDocument(doc)
-                    else       -> Err<ValueError, DocPath,BooleanReference>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else       -> effError<ValueError,BooleanReference>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -63,10 +64,10 @@ data class BooleanReferenceLiteral(override val id : UUID,
         {
             is DocDict -> effApply(::BooleanReferenceLiteral,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    effApply(::Prim, doc.boolean("value")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -89,12 +90,12 @@ data class BooleanReferenceVariable(
         {
             is DocDict -> effApply(::BooleanReferenceVariable,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("reference") ap {
                                        effApply(::Comp, VariableReference.fromDocument(it ))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

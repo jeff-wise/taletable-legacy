@@ -11,6 +11,8 @@ import com.kispoko.tome.model.game.engine.reference.DiceRollReference
 import com.kispoko.tome.model.game.engine.reference.NumberReference
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -36,11 +38,11 @@ sealed class SummationTerm : Model
                     "integer"     -> SummationNumberTerm.fromDocument(doc)
                     "dice"        -> SummationDiceRollTerm.fromDocument(doc)
                     "conditional" -> SummationConditionalTerm.fromDocument(doc)
-                    else          -> Err<ValueError, DocPath,SummationTerm>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else          -> effError<ValueError,SummationTerm>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -59,12 +61,12 @@ data class SummationNumberTerm(override val id : UUID,
         {
             is DocDict -> effApply(::SummationNumberTerm,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("reference") ap {
                                        effApply(::Comp, NumberReference.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -83,12 +85,12 @@ data class SummationDiceRollTerm(override val id : UUID,
         {
             is DocDict -> effApply(::SummationDiceRollTerm,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("reference") ap {
                                        effApply(::Comp, DiceRollReference.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -110,7 +112,7 @@ data class SummationConditionalTerm(
         {
             is DocDict -> effApply(::SummationConditionalTerm,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Conditional
                                    doc.at("conditional") ap {
                                         effApply(::Comp, BooleanReference.fromDocument(it))
@@ -123,7 +125,7 @@ data class SummationConditionalTerm(
                                    doc.at("when_false") ap {
                                        effApply(::Comp, NumberReference.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

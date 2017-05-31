@@ -14,10 +14,11 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorId
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -41,7 +42,7 @@ data class WidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::WidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Label
                                    doc.at("label") ap {
                                        effApply(::Prim, WidgetLabel.fromDocument(it))
@@ -70,7 +71,7 @@ data class WidgetFormat(override val id : UUID,
                                    doc.at("padding") ap {
                                        effApply(::Prim, Spacing.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -89,8 +90,8 @@ data class WidgetLabel(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<WidgetLabel> = when (doc)
         {
-            is DocText -> valueResult(WidgetLabel(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(WidgetLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -106,8 +107,8 @@ data class WidgetWidth(val value : Int)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<WidgetWidth> = when (doc)
         {
-            is DocInteger -> valueResult(WidgetWidth(doc.integer.toInt()))
-            else          -> Err(UnexpectedType(DocType.INTEGER, docType(doc)), doc.path)
+            is DocInteger -> effValue(WidgetWidth(doc.integer.toInt()))
+            else          -> effError(UnexpectedType(DocType.INTEGER, docType(doc), doc.path))
         }
     }
 }

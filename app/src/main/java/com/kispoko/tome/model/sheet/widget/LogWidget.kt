@@ -15,7 +15,6 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -35,7 +34,7 @@ data class LogEntry(override val id : UUID,
         {
             is DocDict -> effApply(::LogEntry,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Title
                                    effApply(::Prim, doc.text("title")),
                                    // Author
@@ -44,7 +43,7 @@ data class LogEntry(override val id : UUID,
                                    effApply(::Prim, doc.text("summary")),
                                    // text
                                    effApply(::Prim, doc.text("text")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -66,7 +65,7 @@ data class LogWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::LogWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    doc.at("widget_format") ap {
                                        effApply(::Comp, WidgetFormat.fromDocument(it))
@@ -75,7 +74,7 @@ data class LogWidgetFormat(override val id : UUID,
                                    doc.at("divider_color") ap {
                                        effApply(::Prim, ColorId.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

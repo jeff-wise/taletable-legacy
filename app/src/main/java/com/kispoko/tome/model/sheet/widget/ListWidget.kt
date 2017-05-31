@@ -9,13 +9,14 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -35,7 +36,7 @@ data class ListWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::ListWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    doc.at("widget_format") ap {
                                        effApply(::Comp, WidgetFormat.fromDocument(it))
@@ -48,7 +49,7 @@ data class ListWidgetFormat(override val id : UUID,
                                    doc.at("annotation_style") ap {
                                        effApply(::Comp, TextStyle.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

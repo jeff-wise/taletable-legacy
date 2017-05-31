@@ -3,10 +3,7 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
@@ -17,7 +14,6 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -45,60 +41,53 @@ data class NumberWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::NumberWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    doc.at("widget_format") ap {
                                        effApply(::Comp, WidgetFormat.fromDocument(it))
                                    },
                                    // Inside Label
                                    split(doc.maybeText("inside_label"),
-                                         valueResult<Func<String>>(Null()),
-                                         { valueResult(Prim(it))  }),
+                                         nullEff<String>(),
+                                         { effValue(Prim(it))  }),
                                    // Inside Label Format
                                    split(doc.maybeAt("inside_label_format"),
-                                         valueResult<Func<TextFormat>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                              effApply(::Comp, TextFormat.fromDocument(d))),
+                                         nullEff<TextFormat>(),
+                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
                                    // Outside Label
                                    split(doc.maybeText("outside_label"),
-                                         valueResult<Func<String>>(Null()),
-                                         { valueResult(Prim(it))  }),
+                                         nullEff<String>(),
+                                         { effValue(Prim(it))  }),
                                    // Outside Label Format
                                    split(doc.maybeAt("outside_label_format"),
-                                         valueResult<Func<TextFormat>>(Null()),
-                                          fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                              effApply(::Comp, TextFormat.fromDocument(d))),
+                                         nullEff<TextFormat>(),
+                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
                                    // Value Format
                                    split(doc.maybeAt("value_format"),
-                                         valueResult<Func<TextFormat>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                             effApply(::Comp, TextFormat.fromDocument(d))),
+                                         nullEff<TextFormat>(),
+                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
                                    // Description Style
                                    split(doc.maybeAt("description_style"),
-                                         valueResult<Func<TextStyle>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                         nullEff<TextStyle>(),
+                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
                                    // Value Prefix Style
                                    split(doc.maybeAt("value_prefix_format"),
-                                         valueResult<Func<TextStyle>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                         nullEff<TextStyle>(),
+                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
                                    // Value Postfix Style
                                    split(doc.maybeAt("value_postfix_format"),
-                                         valueResult<Func<TextStyle>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                         nullEff<TextStyle>(),
+                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
                                    // Value Separator
                                    split(doc.maybeText("value_separator"),
-                                         valueResult<Func<String>>(Null()),
-                                         { valueResult(Prim(it))  }),
+                                         nullEff<String>(),
+                                         { effValue(Prim(it)) }),
                                    // Outside Label Format
                                    split(doc.maybeAt("outside_label_format"),
-                                         valueResult<Func<TextFormat>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextFormat>> =
-                                             effApply(::Comp, TextFormat.fromDocument(d)))
+                                         nullEff<TextFormat>(),
+                                         { effApply(::Comp, TextFormat.fromDocument(it))})
                                    )
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

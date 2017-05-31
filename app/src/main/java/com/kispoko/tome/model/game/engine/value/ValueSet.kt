@@ -3,10 +3,7 @@ package com.kispoko.tome.model.game.engine.value
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.EngineValueType
 import effect.*
@@ -15,7 +12,6 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -43,11 +39,11 @@ sealed class ValueSet(open val valueSetId : Func<ValueSetId>,
                                     as ValueParser<ValueSet>
                     "compound" -> ValueSetCompound.fromDocument(doc)
                                     as ValueParser<ValueSet>
-                    else       -> Err<ValueError, DocPath,ValueSet>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else       -> effError<ValueError,ValueSet>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -77,37 +73,34 @@ data class ValueSetBase(override val id : UUID,
             {
                 effApply(::ValueSetBase,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Value Set Id
                          doc.at("value_set_id") ap {
                              effApply(::Prim, ValueSetId.fromDocument(it))
                          },
                          // Label
                          split(doc.maybeAt("label"),
-                               valueResult<Func<ValueSetLabel>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ValueSetLabel>> =
-                                   effApply(::Prim, ValueSetLabel.fromDocument(d))),
+                               nullEff<ValueSetLabel>(),
+                               { effApply(::Prim, ValueSetLabel.fromDocument(it)) }),
                          // Label Singular
                          split(doc.maybeAt("label_singular"),
-                               valueResult<Func<ValueSetLabelSingular>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ValueSetLabelSingular>> =
-                                       effApply(::Prim, ValueSetLabelSingular.fromDocument(d))),
+                               nullEff<ValueSetLabelSingular>(),
+                               { effApply(::Prim, ValueSetLabelSingular.fromDocument(it)) }),
                          // Description
                          split(doc.maybeAt("description"),
-                               valueResult<Func<ValueSetDescription>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ValueSetDescription>> =
-                                       effApply(::Prim, ValueSetDescription.fromDocument(d))),
+                               nullEff<ValueSetDescription>(),
+                               { effApply(::Prim, ValueSetDescription.fromDocument(it)) }),
                          // Value Type
                          split(doc.maybeEnum<EngineValueType>("value_type"),
-                               valueResult<Func<EngineValueType>>(Null()),
-                               { valueResult(Prim(it)) }),
+                               nullEff<EngineValueType>(),
+                               { effValue(Prim(it)) }),
                          // Values,
                          doc.list("values") ap { docList ->
                              effApply(::Coll,
                                  docList.map { Value.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -137,37 +130,34 @@ data class ValueSetCompound(override val id : UUID,
             {
                 effApply(::ValueSetCompound,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Value Set Id
                          doc.at("value_set_id") ap {
                              effApply(::Prim, ValueSetId.fromDocument(it))
                          },
                          // Label
                          split(doc.maybeAt("label"),
-                               valueResult<Func<ValueSetLabel>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ValueSetLabel>> =
-                                   effApply(::Prim, ValueSetLabel.fromDocument(d))),
+                               nullEff<ValueSetLabel>(),
+                               { effApply(::Prim, ValueSetLabel.fromDocument(it)) }),
                          // Label Singular
                          split(doc.maybeAt("label_singular"),
-                               valueResult<Func<ValueSetLabelSingular>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ValueSetLabelSingular>> =
-                                   effApply(::Prim, ValueSetLabelSingular.fromDocument(d))),
+                               nullEff<ValueSetLabelSingular>(),
+                               { effApply(::Prim, ValueSetLabelSingular.fromDocument(it)) }),
                          // Description
                          split(doc.maybeAt("description"),
-                               valueResult<Func<ValueSetDescription>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ValueSetDescription>> =
-                                   effApply(::Prim, ValueSetDescription.fromDocument(d))),
+                               nullEff<ValueSetDescription>(),
+                               { effApply(::Prim, ValueSetDescription.fromDocument(it)) }),
                          // Value Type
                          split(doc.maybeEnum<EngineValueType>("value_type"),
-                               valueResult<Func<EngineValueType>>(Null()),
-                               { valueResult(Prim(it)) }),
+                               nullEff<EngineValueType>(),
+                               { effValue(Prim(it)) }),
                          // Value Set Ids
                          doc.list("value_set_ids") ap { docList ->
                              effApply(::Prim,
                                  docList.map { ValueSetId.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -186,8 +176,8 @@ data class ValueSetId(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetId> = when (doc)
         {
-            is DocText -> valueResult(ValueSetId(doc.text))
-            else       -> Err(lulo.value.UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ValueSetId(doc.text))
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -203,8 +193,8 @@ data class ValueSetLabel(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetLabel> = when (doc)
         {
-            is DocText -> valueResult(ValueSetLabel(doc.text))
-            else       -> Err(lulo.value.UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ValueSetLabel(doc.text))
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -220,8 +210,8 @@ data class ValueSetLabelSingular(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetLabelSingular> = when (doc)
         {
-            is DocText -> valueResult(ValueSetLabelSingular(doc.text))
-            else       -> Err(lulo.value.UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ValueSetLabelSingular(doc.text))
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -237,8 +227,8 @@ data class ValueSetDescription(val value : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetDescription> = when (doc)
         {
-            is DocText -> valueResult(ValueSetDescription(doc.text))
-            else       -> Err(lulo.value.UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ValueSetDescription(doc.text))
+            else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }

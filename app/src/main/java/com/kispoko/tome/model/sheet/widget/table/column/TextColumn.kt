@@ -6,6 +6,7 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Null
+import com.kispoko.tome.lib.functor.nullEff
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
@@ -15,7 +16,6 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -35,15 +35,14 @@ data class TextColumnFormat(override val id : UUID,
             {
                 effApply(::TextColumnFormat,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Column Format
                          split(doc.maybeAt("column_format"),
-                               valueResult<Func<ColumnFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ColumnFormat>> =
-                                   effApply(::Comp, ColumnFormat.fromDocument(d)))
+                               nullEff<ColumnFormat>(),
+                               { effApply(::Comp, ColumnFormat.fromDocument(it)) })
                          )
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

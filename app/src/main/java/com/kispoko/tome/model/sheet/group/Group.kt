@@ -3,22 +3,18 @@ package com.kispoko.tome.model.sheet.group
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.page.PageName
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.DividerMargin
 import com.kispoko.tome.model.sheet.style.DividerThickness
 import com.kispoko.tome.model.sheet.style.Spacing
+import com.kispoko.tome.model.sheet.widget.NumberWidgetFormat
 import com.kispoko.tome.model.theme.ColorId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -27,55 +23,45 @@ import java.util.*
  * Group
  */
 data class Group(override val id : UUID,
-                 val name : Func<GroupName>,
                  val format : Func<GroupFormat>,
                  val index : Func<Int>,
                  val rows : Coll<GroupRow>) : Model
 {
-    companion object : Factory<Group>
+    companion object
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<Group> = when (doc)
+        fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<Group> = when (doc)
         {
             is DocDict -> effApply(::Group,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
-                                   // Name
-                                   doc.at("name") ap {
-                                       effApply(::Prim, GroupName.fromDocument(it))
-                                   },
+                                   effValue(UUID.randomUUID()),
                                    // Format
-                                   doc.at("format") ap {
-                                       effApply(::Comp, GroupFormat.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("format"),
+                                         nullEff<GroupFormat>(),
+                                         { effApply(::Comp, GroupFormat.fromDocument(it))}),
                                    // Index
-                                   effApply(::Prim, doc.int("index")),
+                                   effValue(Prim(index)),
                                    // Groups
                                    doc.list("rows") ap { docList ->
-                                       effApply(::Coll,
-                                                docList.map { GroupRow.fromDocument(it) })
+                                       effApply(::Coll, docList.mapIndexed {
+                                           doc, index -> GroupRow.fromDocument(doc, index) })
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
-}
 
+    // ON ACTIVE
+    // -----------------------------------------------------------------------------------------
 
-/**
- * Group Name
- */
-data class GroupName(val name : String)
-{
-
-    companion object : Factory<GroupName>
+    fun onActive()
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<GroupName> = when (doc)
-        {
-            is DocText -> valueResult(GroupName(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
-        }
+        this.rows.list.forEach { it.onActive() }
     }
 }
 
@@ -98,7 +84,7 @@ data class GroupFormat(override val id : UUID,
         {
             is DocDict -> effApply(::GroupFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Background Color
                                    doc.at("background_color") ap {
                                        effApply(::Prim, ColorId.fromDocument(it))
@@ -125,7 +111,7 @@ data class GroupFormat(override val id : UUID,
                                    doc.at("divider_thickness") ap {
                                        effApply(::Prim, DividerThickness.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

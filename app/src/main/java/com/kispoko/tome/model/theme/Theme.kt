@@ -8,10 +8,11 @@ import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -29,12 +30,12 @@ data class Theme(override val id : UUID,
         {
             is DocDict -> effApply(::Theme,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Campaign Name
                                    doc.at("name") ap {
                                        effApply(::Prim, ThemeName.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -53,8 +54,8 @@ data class ThemeName(val name : String)
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeName> = when (doc)
         {
-            is DocText -> valueResult(ThemeName(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(ThemeName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }

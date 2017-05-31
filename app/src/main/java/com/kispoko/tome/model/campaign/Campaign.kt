@@ -3,11 +3,11 @@ package com.kispoko.tome.model.campaign
 
 
 import com.kispoko.tome.lib.Factory
-import effect.Err
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 
 
 
@@ -21,8 +21,8 @@ data class CampaignName(val name : String)
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<CampaignName> = when (doc)
         {
-            is DocText -> valueResult(CampaignName(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(CampaignName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }

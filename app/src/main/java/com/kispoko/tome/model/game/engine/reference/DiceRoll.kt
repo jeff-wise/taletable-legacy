@@ -10,12 +10,13 @@ import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -37,11 +38,11 @@ sealed class DiceRollReference : Model
                 {
                     "literal"  -> DiceRollReferenceLiteral.fromDocument(doc)
                     "variable" -> DiceRollReferenceVariable.fromDocument(doc)
-                    else       -> Err<ValueError, DocPath,DiceRollReference>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else       -> effError<ValueError,DiceRollReference>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -63,12 +64,12 @@ data class DiceRollReferenceLiteral(override val id : UUID,
         {
             is DocDict -> effApply(::DiceRollReferenceLiteral,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("dice_roll") ap {
                                        effApply(::Comp, DiceRoll.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -91,12 +92,12 @@ data class DiceRollReferenceVariable(
         {
             is DocDict -> effApply(::DiceRollReferenceVariable,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("reference") ap {
                                        effApply(::Comp, VariableReference.fromDocument(it ))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

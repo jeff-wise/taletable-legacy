@@ -1,11 +1,9 @@
 
 package com.kispoko.tome.model.sheet.widget
 
+
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextStyle
@@ -14,8 +12,8 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
+
 
 
 /**
@@ -39,8 +37,8 @@ data class Quote(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<Quote> = when (doc)
         {
-            is DocText -> valueResult(Quote(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(Quote(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -56,8 +54,8 @@ data class QuoteSource(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<QuoteSource> = when (doc)
         {
-            is DocText -> valueResult(QuoteSource(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(QuoteSource(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -78,29 +76,25 @@ data class QuoteWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::QuoteWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    split(doc.maybeAt("widget_format"),
-                                         valueResult<Func<WidgetFormat>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
-                                             effApply(::Comp, WidgetFormat.fromDocument(d))),
+                                         nullEff<WidgetFormat>(),
+                                         { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
                                    // Quote Style
                                    split(doc.maybeAt("quote_style"),
-                                         valueResult<Func<TextStyle>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                         nullEff<TextStyle>(),
+                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
                                    // Source Style
                                    split(doc.maybeAt("source_style"),
-                                         valueResult<Func<TextStyle>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                         nullEff<TextStyle>(),
+                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
                                    // Icon Color
                                    split(doc.maybeAt("icon_color"),
-                                         valueResult<Func<ColorId>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
-                                             effApply(::Prim, ColorId.fromDocument(d)))
+                                         nullEff<ColorId>(),
+                                         { effApply(::Prim, ColorId.fromDocument(it)) })
                                    )
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

@@ -10,13 +10,14 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -36,7 +37,7 @@ data class BooleanWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::BooleanWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    doc.at("widget_format") ap {
                                        effApply(::Comp, WidgetFormat.fromDocument(it))
@@ -49,7 +50,7 @@ data class BooleanWidgetFormat(override val id : UUID,
                                    effApply(::Prim, doc.text("true_text")),
                                    // False Text
                                    effApply(::Prim, doc.text("false_text")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

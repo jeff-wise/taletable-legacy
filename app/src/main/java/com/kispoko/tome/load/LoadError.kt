@@ -70,7 +70,7 @@ data class DocumentParseError(val docType : String, val error : ValueError) : Lo
     override fun debugMessage(): String =
             """
             Load Error: Could not parse $docType from Lulo document
-                error: $error
+                $error
             """
 
     override fun logMessage(): String = userMessage()

@@ -3,10 +3,7 @@ package com.kispoko.tome.model.sheet.widget
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.theme.ColorId
@@ -14,7 +11,6 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -34,27 +30,25 @@ data class TableWidgetFormat(override val id : UUID,
         {
             is DocDict -> effApply(::TableWidgetFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    split(doc.maybeAt("widget_format"),
-                                         valueResult<Func<WidgetFormat>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<WidgetFormat>> =
-                                             effApply(::Comp, WidgetFormat.fromDocument(d))),
+                                         nullEff<WidgetFormat>(),
+                                         { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
                                    // Show Divider
                                    split(doc.maybeBoolean("show_divider"),
-                                         valueResult<Func<Boolean>>(Null()),
-                                         { valueResult(Prim(it)) }),
+                                         nullEff<Boolean>(),
+                                         { effValue(Prim(it)) }),
                                    // Divider Color
                                    split(doc.maybeAt("divider_color"),
-                                         valueResult<Func<ColorId>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
-                                             effApply(::Prim, ColorId.fromDocument(d))),
+                                         nullEff<ColorId>(),
+                                         { effApply(::Prim, ColorId.fromDocument(it)) }),
                                    // Height
                                    split(doc.maybeEnum<Height>("height"),
-                                         valueResult<Func<Height>>(Null()),
-                                         { valueResult(Prim(it))  })
+                                         nullEff<Height>(),
+                                         { effValue(Prim(it))  })
                                    )
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

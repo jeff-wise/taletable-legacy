@@ -9,10 +9,11 @@ import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -32,7 +33,7 @@ data class DiceRoll(override val id : UUID,
         {
             is DocDict -> effApply(::DiceRoll,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Quantity
                                    doc.list("quantity") ap { docList ->
                                        effApply(::Coll,
@@ -43,7 +44,7 @@ data class DiceRoll(override val id : UUID,
                                        effApply(::Coll,
                                                docList.map { RollModifier.fromDocument(it) })
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -67,14 +68,14 @@ data class DiceQuantity(override val id : UUID,
         {
             is DocDict -> effApply(::DiceQuantity,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Sides
                                    doc.at("sides") ap {
                                        effApply(::Prim, DiceSides.fromDocument(it))
                                    },
                                    // Quantity
                                    effApply(::Prim, doc.int("quantity")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -93,8 +94,8 @@ data class DiceSides(val value : Int)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<DiceSides> = when (doc)
         {
-            is DocInteger -> valueResult(DiceSides(doc.integer.toInt()))
-            else          -> Err(UnexpectedType(DocType.INTEGER, docType(doc)), doc.path)
+            is DocInteger -> effValue(DiceSides(doc.integer.toInt()))
+            else          -> effError(UnexpectedType(DocType.INTEGER, docType(doc), doc.path))
         }
     }
 }
@@ -115,12 +116,12 @@ data class RollModifier(override val id : UUID,
         {
             is DocDict -> effApply(::RollModifier,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    effApply(::Prim, doc.int("value")),
                                    // Name
                                    effApply(::Prim, doc.text("name")))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

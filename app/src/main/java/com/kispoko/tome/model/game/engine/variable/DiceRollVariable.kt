@@ -9,12 +9,13 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -32,10 +33,10 @@ sealed class DiceVariableValue : Model
             is DocDict -> when (doc.case())
             {
                 "literal" -> DiceVariableLiteralValue.fromDocument(doc)
-                else      -> Err<ValueError, DocPath,DiceVariableValue>(
-                                    UnknownCase(doc.case()), doc.path)
+                else      -> effError<ValueError,DiceVariableValue>(
+                                    UnknownCase(doc.case(), doc.path))
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -56,12 +57,12 @@ data class DiceVariableLiteralValue(override val id : UUID,
         {
             is DocDict -> effApply(::DiceVariableLiteralValue,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("value") ap {
                                        effApply(::Comp, DiceRoll.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

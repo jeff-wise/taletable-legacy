@@ -14,6 +14,7 @@ import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
+import com.kispoko.tome.rts.Stateful
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -27,7 +28,7 @@ import java.util.*
  * Widget
  */
 @Suppress("UNCHECKED_CAST")
-sealed class Widget : Model, Serializable
+sealed class Widget : Model, Stateful, Serializable
 {
     companion object : Factory<Widget>
     {
@@ -35,27 +36,35 @@ sealed class Widget : Model, Serializable
         {
             is DocDict ->
             {
+                // TODO avoid hard coding this
                 when (doc.case())
                 {
-                    "action"   -> ActionWidget.fromDocument(doc)
-                    "boolean"  -> BooleanWidget.fromDocument(doc)
-                    "button"   -> ButtonWidget.fromDocument(doc)
-                    "expander" -> ExpanderWidget.fromDocument(doc)
-                    "image"    -> ImageWidget.fromDocument(doc)
-                    "list"     -> ListWidget.fromDocument(doc)
-                    "log"      -> LogWidget.fromDocument(doc) as ValueParser<Widget>
-                    "mechanic" -> ActionWidget.fromDocument(doc)
-                    "number"   -> ActionWidget.fromDocument(doc)
-                    "option"   -> ActionWidget.fromDocument(doc)
-                    "quote"    -> ActionWidget.fromDocument(doc)
-                    "table"    -> ActionWidget.fromDocument(doc)
-                    "tab"      -> ActionWidget.fromDocument(doc)
-                    "text"     -> ActionWidget.fromDocument(doc)
-                    else       -> Err<ValueError, DocPath, Widget>(
-                                        UnknownCase(doc.case()), doc.path)
+                    "widget_action"   -> ActionWidget.fromDocument(doc)
+                    "widget_boolean"  -> BooleanWidget.fromDocument(doc)
+                    "widget_button"   -> ButtonWidget.fromDocument(doc)
+                    "widget_expander" -> ExpanderWidget.fromDocument(doc)
+                    "widget_image"    -> ImageWidget.fromDocument(doc)
+                    "widget_list"     -> ListWidget.fromDocument(doc)
+                    "widget_log"      -> LogWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
+                    "widget_mechanic" -> MechanicWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
+                    "widget_number"   -> NumberWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
+                    "widget_option"   -> OptionWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
+                    "widget_quote"    -> QuoteWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
+                    "widget_table"    -> TableWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
+                    "widget_tab"      -> TabWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
+                    "widget_text"     -> TextWidget.fromDocument(doc)
+                                            as ValueParser<Widget>
+                    else       -> effError<ValueError,Widget>(UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -65,15 +74,15 @@ sealed class Widget : Model, Serializable
 /**
  * Widget Name
  */
-data class WidgetName(val value : String)
+data class WidgetId(val value : String)
 {
 
-    companion object : Factory<WidgetName>
+    companion object : Factory<WidgetId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<WidgetName> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<WidgetId> = when (doc)
         {
-            is DocText -> valueResult(WidgetName(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(WidgetId(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -83,7 +92,7 @@ data class WidgetName(val value : String)
  * Action Widget
  */
 data class ActionWidget(override val id : UUID,
-                        val name : Func<WidgetName>,
+                        val name : Func<WidgetId>,
                         val format : Func<ActionWidgetFormat>,
                         val modifier : Func<NumberVariable>,
                         val description : Func<ActionDescription>,
@@ -100,10 +109,10 @@ data class ActionWidget(override val id : UUID,
             {
                 effApply(::ActionWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          doc.at("format") ap {
@@ -131,12 +140,21 @@ data class ActionWidget(override val id : UUID,
                          })
             }
 
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 }
 
 
@@ -144,7 +162,7 @@ data class ActionWidget(override val id : UUID,
  * Boolean Widget
  */
 data class BooleanWidget(override val id : UUID,
-                         val name : Func<WidgetName>,
+                         val name : Func<WidgetId>,
                          val format : Func<BooleanWidgetFormat>,
                          val value : Func<BooleanVariable>) : Widget()
 {
@@ -157,10 +175,10 @@ data class BooleanWidget(override val id : UUID,
             {
                 effApply(::BooleanWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          doc.at("format") ap {
@@ -171,12 +189,21 @@ data class BooleanWidget(override val id : UUID,
                              effApply(::Comp, BooleanVariable.fromDocument(it))
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 }
 
 
@@ -184,7 +211,7 @@ data class BooleanWidget(override val id : UUID,
  * Button Widget
  */
 data class ButtonWidget(override val id : UUID,
-                        val name : Func<WidgetName>,
+                        val name : Func<WidgetId>,
                         val format : Func<ButtonWidgetFormat>,
                         val viewType : Func<ButtonViewType>,
                         val label : Func<ButtonLabel>,
@@ -200,10 +227,10 @@ data class ButtonWidget(override val id : UUID,
             {
                 effApply(::ButtonWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          doc.at("format") ap {
@@ -223,11 +250,22 @@ data class ButtonWidget(override val id : UUID,
                          effApply(::Prim, doc.enum<ButtonIcon>("icon")))
             }
 
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
+
 }
 
 
@@ -235,7 +273,7 @@ data class ButtonWidget(override val id : UUID,
  * Expander Widget
  */
 data class ExpanderWidget(override val id : UUID,
-                          val name : Func<WidgetName>,
+                          val name : Func<WidgetId>,
                           val format : Func<ExpanderWidgetFormat>,
                           val label : Func<ExpanderLabel>,
                           val groups: Coll<Group>) : Widget()
@@ -249,10 +287,10 @@ data class ExpanderWidget(override val id : UUID,
             {
                 effApply(::ExpanderWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          doc.at("format") ap {
@@ -264,15 +302,26 @@ data class ExpanderWidget(override val id : UUID,
                          },
                          // Groups
                          doc.list("groups") ap { docList ->
-                             effApply(::Coll,
-                                 docList.map { Group.fromDocument(it) })
+                             effApply(::Coll, docList.mapIndexed {
+                                 doc,index -> Group.fromDocument(doc,index) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
+
 }
 
 
@@ -280,7 +329,7 @@ data class ExpanderWidget(override val id : UUID,
  * Image Widget
  */
 data class ImageWidget(override val id : UUID,
-                       val name : Func<WidgetName>) : Widget()
+                       val name : Func<WidgetId>) : Widget()
 {
 
     companion object : Factory<Widget>
@@ -291,17 +340,28 @@ data class ImageWidget(override val id : UUID,
             {
                 effApply(::ImageWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
+
 }
 
 
@@ -309,7 +369,7 @@ data class ImageWidget(override val id : UUID,
  * List Widget
  */
 data class ListWidget(override val id : UUID,
-                      val name : Func<WidgetName>,
+                      val name : Func<WidgetId>,
                       val format : Func<ListWidgetFormat>,
                       val valueSetId: Func<ValueSetId>,
                       val values : Coll<Variable>) : Widget()
@@ -323,10 +383,10 @@ data class ListWidget(override val id : UUID,
             {
                 effApply(::ListWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          doc.at("format") ap {
@@ -342,11 +402,21 @@ data class ListWidget(override val id : UUID,
                                  docList.map { Variable.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 }
 
 
@@ -354,7 +424,7 @@ data class ListWidget(override val id : UUID,
  * Log Widget
  */
 data class LogWidget(override val id : UUID,
-                     val name : Func<WidgetName>,
+                     val name : Func<WidgetId>,
                      val format : Func<LogWidgetFormat>,
                      val entries : Coll<LogEntry>) : Widget()
 {
@@ -367,10 +437,10 @@ data class LogWidget(override val id : UUID,
             {
                 effApply(::LogWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          doc.at("format") ap {
@@ -382,11 +452,21 @@ data class LogWidget(override val id : UUID,
                                  docList.map { LogEntry.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 
 }
 
@@ -395,7 +475,7 @@ data class LogWidget(override val id : UUID,
  * Mechanic Widget
  */
 data class MechanicWidget(override val id : UUID,
-                          val name : Func<WidgetName>,
+                          val name : Func<WidgetId>,
                           val category : Func<MechanicCategory>) : Widget()
 {
 
@@ -407,21 +487,31 @@ data class MechanicWidget(override val id : UUID,
             {
                 effApply(::MechanicWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Category
                          doc.at("category") ap {
                              effApply(::Prim, MechanicCategory.fromDocument(it))
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 
 }
 
@@ -430,7 +520,7 @@ data class MechanicWidget(override val id : UUID,
  * Number Widget
  */
 data class NumberWidget(override val id : UUID,
-                        val name : Func<WidgetName>,
+                        val name : Func<WidgetId>,
                         val format : Func<NumberWidgetFormat>,
                         val value : Func<NumberVariable>,
                         val valuePrefix : Func<String>,
@@ -447,43 +537,53 @@ data class NumberWidget(override val id : UUID,
             {
                 effApply(::NumberWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<NumberWidgetFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<NumberWidgetFormat>> =
-                                       effApply(::Comp, NumberWidgetFormat.fromDocument(d))),
+                               nullEff<NumberWidgetFormat>(),
+                               { effApply(::Comp, NumberWidgetFormat.fromDocument(it))}),
                          // Value
                          doc.at("value") ap {
                              effApply(::Comp, NumberVariable.fromDocument(it))
                          },
                          // Value Prefix
                          split(doc.maybeText("value_prefix"),
-                               valueResult<Func<String>>(Null()),
-                               { valueResult(Prim(it)) }),
+                               nullEff<String>(),
+                               { effValue(Prim(it)) }),
                          // Value Prefix
                          split(doc.maybeText("value_postfix"),
-                               valueResult<Func<String>>(Null()),
-                               { valueResult(Prim(it)) }),
+                               nullEff<String>(),
+                               { effValue(Prim(it)) }),
                          // Description
                          split(doc.maybeText("description"),
-                               valueResult<Func<String>>(Null()),
-                               { valueResult(Prim(it)) }),
+                               nullEff<String>(),
+                               { effValue(Prim(it)) }),
                          // Variables
                          doc.list("variables") ap { docList ->
                              effApply(::Coll,
                                  docList.map { Variable.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
+
 }
 
 
@@ -491,7 +591,7 @@ data class NumberWidget(override val id : UUID,
  * Option Widget
  */
 data class OptionWidget(override val id : UUID,
-                        val name : Func<WidgetName>,
+                        val name : Func<WidgetId>,
                         val format : Func<OptionWidgetFormat>,
                         val viewType : Func<OptionViewType>,
                         val description : Func<OptionDescription>,
@@ -506,37 +606,44 @@ data class OptionWidget(override val id : UUID,
             {
                 effApply(::OptionWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<OptionWidgetFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<OptionWidgetFormat>> =
-                                       effApply(::Comp, OptionWidgetFormat.fromDocument(d))),
+                               nullEff<OptionWidgetFormat>(),
+                               { effApply(::Comp, OptionWidgetFormat.fromDocument(it)) }),
                          // View Type
                          split(doc.maybeEnum<OptionViewType>("view_type"),
-                               valueResult<Func<OptionViewType>>(Null()),
-                               { valueResult(Prim(it)) }),
+                               nullEff<OptionViewType>(),
+                               { effValue(Prim(it)) }),
                          // Description
                          split(doc.maybeAt("description"),
-                               valueResult<Func<OptionDescription>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<OptionDescription>> =
-                                       effApply(::Prim, OptionDescription.fromDocument(d))),
+                               nullEff<OptionDescription>(),
+                                 { effApply(::Prim, OptionDescription.fromDocument(it))}),
                          // ValueSet Name
                          split(doc.maybeAt("value_set_name"),
-                               valueResult<Func<ValueSetId>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ValueSetId>> =
-                                       effApply(::Prim, ValueSetId.fromDocument(d)))
+                               nullEff<ValueSetId>(),
+                               { effApply(::Prim, ValueSetId.fromDocument(it))})
                         )
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 
 }
 
@@ -545,7 +652,7 @@ data class OptionWidget(override val id : UUID,
  * Quote Widget
  */
 data class QuoteWidget(override val id : UUID,
-                       val name : Func<WidgetName>,
+                       val name : Func<WidgetId>,
                        val format : Func<QuoteWidgetFormat>,
                        val viewType : Func<QuoteViewType>,
                        val quote : Func<Quote>,
@@ -560,37 +667,44 @@ data class QuoteWidget(override val id : UUID,
             {
                 effApply(::QuoteWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<QuoteWidgetFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<QuoteWidgetFormat>> =
-                                       effApply(::Comp, QuoteWidgetFormat.fromDocument(d))),
+                               nullEff<QuoteWidgetFormat>(),
+                               { effApply(::Comp, QuoteWidgetFormat.fromDocument(it)) }),
                          // View Type
                          split(doc.maybeEnum<QuoteViewType>("view_type"),
-                               valueResult<Func<QuoteViewType>>(Null()),
-                               { valueResult(Prim(it)) }),
+                               nullEff<QuoteViewType>(),
+                               { effValue(Prim(it)) }),
                          // Quote
                          split(doc.maybeAt("quote"),
-                               valueResult<Func<Quote>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<Quote>> =
-                                       effApply(::Prim, Quote.fromDocument(d))),
+                               nullEff<Quote>(),
+                               { effApply(::Prim, Quote.fromDocument(it)) }),
                          // Quote Source
                          split(doc.maybeAt("source"),
-                               valueResult<Func<QuoteSource>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<QuoteSource>> =
-                                       effApply(::Prim, QuoteSource.fromDocument(d)))
+                               nullEff<QuoteSource>(),
+                               { effApply(::Prim, QuoteSource.fromDocument(it)) })
                         )
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 
 }
 
@@ -599,7 +713,7 @@ data class QuoteWidget(override val id : UUID,
  * Table Widget
  */
 data class TableWidget(override val id : UUID,
-                       val name : Func<WidgetName>,
+                       val name : Func<WidgetId>,
                        val format : Func<TableWidgetFormat>,
                        val columns : Coll<TableWidgetColumn>,
                        val rows : Coll<TableWidgetRow>) : Widget()
@@ -613,16 +727,15 @@ data class TableWidget(override val id : UUID,
             {
                 effApply(::TableWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<TableWidgetFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<TableWidgetFormat>> =
-                                       effApply(::Comp, TableWidgetFormat.fromDocument(d))),
+                               nullEff<TableWidgetFormat>(),
+                               { effApply(::Comp, TableWidgetFormat.fromDocument(it)) }),
                          // Columns
                          doc.list("columns") ap { docList ->
                              effApply(::Coll,
@@ -634,11 +747,22 @@ data class TableWidget(override val id : UUID,
                                  docList.map { TableWidgetRow.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
+
 }
 
 
@@ -646,7 +770,7 @@ data class TableWidget(override val id : UUID,
  * Tab Widget
  */
 data class TabWidget(override val id : UUID,
-                     val name : Func<WidgetName>,
+                     val name : Func<WidgetId>,
                      val format : Func<TabWidgetFormat>,
                      val tabs : Coll<Tab>,
                      val defaultSelected : Func<Int>) : Widget()
@@ -660,16 +784,15 @@ data class TabWidget(override val id : UUID,
             {
                 effApply(::TabWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
                          doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<TabWidgetFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<TabWidgetFormat>> =
-                                       effApply(::Comp, TabWidgetFormat.fromDocument(d))),
+                               nullEff<TabWidgetFormat>(),
+                               { effApply(::Comp, TabWidgetFormat.fromDocument(it)) }),
                          // Tabs
                          doc.list("tabs") ap { docList ->
                              effApply(::Coll,
@@ -677,15 +800,25 @@ data class TabWidget(override val id : UUID,
                          },
                          // Default Selected
                          split(doc.maybeInt("default_selected"),
-                               valueResult<Func<Int>>(Null()),
-                               { valueResult(Prim(it)) })
+                               nullEff<Int>(),
+                               { effValue(Prim(it)) })
                          )
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 
 }
 
@@ -694,7 +827,7 @@ data class TabWidget(override val id : UUID,
  * Text Widget
  */
 data class TextWidget(override val id : UUID,
-                      val name : Func<WidgetName>,
+                      val widgetId : Func<WidgetId>,
                       val format : Func<TextWidgetFormat>,
                       val description : Func<TextDescription>,
                       val value : Func<TextVariable>,
@@ -709,21 +842,19 @@ data class TextWidget(override val id : UUID,
             {
                 effApply(::TextWidget,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Widget Name
-                         doc.at("name") ap {
-                             effApply(::Prim, WidgetName.fromDocument(it))
+                         doc.at("id") ap {
+                             effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<TextWidgetFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<TextWidgetFormat>> =
-                                       effApply(::Comp, TextWidgetFormat.fromDocument(d))),
+                               nullEff<TextWidgetFormat>(),
+                               { effApply(::Comp, TextWidgetFormat.fromDocument(it)) }),
                          // Description
                          split(doc.maybeAt("description"),
-                               valueResult<Func<TextDescription>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<TextDescription>> =
-                                       effApply(::Prim, TextDescription.fromDocument(d))),
+                               nullEff<TextDescription>(),
+                               { effApply(::Prim, TextDescription.fromDocument(it)) }),
                          // Value
                          doc.at("value") ap {
                              effApply(::Comp, TextVariable.fromDocument(it))
@@ -734,11 +865,21 @@ data class TextWidget(override val id : UUID,
                                 docList.map { Variable.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onActive() { }
 
 }
 

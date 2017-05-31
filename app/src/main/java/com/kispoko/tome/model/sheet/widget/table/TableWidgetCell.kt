@@ -3,10 +3,7 @@ package com.kispoko.tome.model.sheet.widget.table
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.variable.BooleanVariable
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
@@ -23,8 +20,8 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
+
 
 
 /**
@@ -48,11 +45,11 @@ sealed class TableWidgetCell : Model
                                     as ValueParser<TableWidgetCell>
                     "text"    -> TableWidgetTextCell.fromDocument(doc)
                                     as ValueParser<TableWidgetCell>
-                    else      -> Err<ValueError, DocPath, TableWidgetCell>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else      -> effError<ValueError, TableWidgetCell>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -75,18 +72,17 @@ data class TableWidgetBooleanCell(override val id : UUID,
             {
                 effApply(::TableWidgetBooleanCell,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<BooleanCellFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<BooleanCellFormat>> =
-                                   effApply(::Comp, BooleanCellFormat.fromDocument(d))),
+                               nullEff<BooleanCellFormat>(),
+                               { effApply(::Comp, BooleanCellFormat.fromDocument(it)) }),
                          // Value
                          doc.at("value") ap {
                              effApply(::Comp, BooleanVariable.fromDocument(it))
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -111,18 +107,17 @@ sealed class TableWidgetNumberCell(override val id : UUID,
             {
                 effApply(::TableWidgetNumberCell,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<NumberCellFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<NumberCellFormat>> =
-                                   effApply(::Comp, NumberCellFormat.fromDocument(d))),
+                               nullEff<NumberCellFormat>(),
+                               { effApply(::Comp, NumberCellFormat.fromDocument(it)) }),
                          // Value
                          doc.at("value") ap {
                              effApply(::Comp, NumberVariable.fromDocument(it))
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -145,18 +140,17 @@ sealed class TableWidgetTextCell(override val id : UUID,
             {
                 effApply(::TableWidgetTextCell,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               valueResult<Func<TextCellFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<TextCellFormat>> =
-                                   effApply(::Comp, TextCellFormat.fromDocument(d))),
+                               nullEff<TextCellFormat>(),
+                                { effApply(::Comp, TextCellFormat.fromDocument(it)) }),
                          // Value
                          doc.at("value") ap {
                              effApply(::Comp, TextVariable.fromDocument(it))
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -178,23 +172,21 @@ data class CellFormat(override val id : UUID,
         {
             is DocDict -> effApply(::CellFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Text Style
                                    split(doc.maybeAt("text_style"),
-                                         valueResult<Func<TextStyle>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                         nullEff<TextStyle>(),
+                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
                                    // Alignment
                                    split(doc.maybeEnum<Alignment>("alignment"),
-                                         valueResult<Func<Alignment>>(Null()),
-                                         { valueResult(Prim(it)) }),
+                                         nullEff<Alignment>(),
+                                         { effValue(Prim(it)) }),
                                    // Background Color
                                    split(doc.maybeAt("background_color"),
-                                         valueResult<Func<ColorId>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<ColorId>> =
-                                             effApply(::Prim, ColorId.fromDocument(d)))
+                                         nullEff<ColorId>(),
+                                         { effApply(::Prim, ColorId.fromDocument(it)) })
                                    )
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

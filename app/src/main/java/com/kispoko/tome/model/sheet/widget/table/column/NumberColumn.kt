@@ -3,10 +3,7 @@ package com.kispoko.tome.model.sheet.widget.table.column
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
@@ -14,7 +11,6 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -34,21 +30,19 @@ data class NumberColumnFormat(override val id : UUID,
             is DocDict ->
             {
                 effApply(::NumberColumnFormat,
-                         // Model Id
-                         valueResult(UUID.randomUUID()),
-                         // Column Format
-                         split(doc.maybeAt("column_format"),
-                               valueResult<Func<ColumnFormat>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<ColumnFormat>> =
-                                   effApply(::Comp, ColumnFormat.fromDocument(d))),
-                         // Default Value Prefix
-                         split(doc.maybeAt("default_value_prefix"),
-                               valueResult<Func<DefaultValuePrefix>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<DefaultValuePrefix>> =
-                                   effApply(::Prim, DefaultValuePrefix.fromDocument(d)))
-                         )
+                        // Model Id
+                        effValue(UUID.randomUUID()),
+                        // Column Format
+                        split(doc.maybeAt("column_format"),
+                                nullEff<ColumnFormat>(),
+                                { effApply(::Comp, ColumnFormat.fromDocument(it)) }),
+                        // Default Value Prefix
+                        split(doc.maybeAt("default_value_prefix"),
+                                nullEff<DefaultValuePrefix>(),
+                                { effApply(::Prim, DefaultValuePrefix.fromDocument(it)) })
+                        )
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -67,8 +61,8 @@ data class DefaultValuePrefix(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<DefaultValuePrefix> = when (doc)
         {
-            is DocText -> valueResult(DefaultValuePrefix(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(DefaultValuePrefix(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }

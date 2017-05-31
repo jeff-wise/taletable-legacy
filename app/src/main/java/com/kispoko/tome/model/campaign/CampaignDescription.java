@@ -2,17 +2,6 @@
 package com.kispoko.tome.model.campaign;
 
 
-import com.kispoko.tome.lib.functor.CollectionFunctor;
-import com.kispoko.tome.lib.functor.PrimitiveFunctor;
-import com.kispoko.tome.lib.model.Model;
-import com.kispoko.tome.model.Author;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.UUID;
-
-
-
 /**
  * Campaign Description
  */

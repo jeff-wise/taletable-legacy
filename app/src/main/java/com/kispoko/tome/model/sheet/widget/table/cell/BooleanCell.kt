@@ -3,23 +3,17 @@ package com.kispoko.tome.model.sheet.widget.table.cell
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.CellFormat
-import effect.Err
-import effect.effApply
-import effect.split
+import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -41,32 +35,29 @@ data class BooleanCellFormat(override val id : UUID,
         {
             is DocDict -> effApply(::BooleanCellFormat,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Column Format
                                    split(doc.maybeAt("cell_format"),
-                                         valueResult<Func<CellFormat>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<CellFormat>> =
-                                             effApply(::Comp, CellFormat.fromDocument(d))),
+                                         nullEff<CellFormat>(),
+                                         { effApply(::Comp, CellFormat.fromDocument(it)) }),
                                    // True Style
                                    split(doc.maybeAt("true_style"),
-                                         valueResult<Func<TextStyle>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                         nullEff<TextStyle>(),
+                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
                                    // False Style
                                    split(doc.maybeAt("false_style"),
-                                         valueResult<Func<TextStyle>>(Null()),
-                                         fun(d : SpecDoc) : ValueParser<Func<TextStyle>> =
-                                             effApply(::Comp, TextStyle.fromDocument(d))),
+                                         nullEff<TextStyle>(),
+                                         { effApply(::Comp, TextStyle.fromDocument(it))  }),
                                    // Show True Icon?
                                    split(doc.maybeBoolean("show_true_icon"),
-                                         valueResult<Func<Boolean>>(Null()),
-                                         { valueResult(Prim(it))  }),
+                                         nullEff<Boolean>(),
+                                         { effValue(Prim(it))  }),
                                    // Show True Icon?
                                    split(doc.maybeBoolean("show_false_icon"),
-                                         valueResult<Func<Boolean>>(Null()),
-                                         { valueResult(Prim(it))  })
+                                         nullEff<Boolean>(),
+                                         { effValue(Prim(it))  })
                                    )
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

@@ -8,13 +8,14 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -33,13 +34,13 @@ data class Summation(override val id : UUID,
         {
             is DocDict -> effApply(::Summation,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Terms
                                    doc.list("terms") ap { docList ->
                                        effApply(::Coll,
                                            docList.map { SummationTerm.fromDocument(it) })
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

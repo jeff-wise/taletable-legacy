@@ -3,10 +3,7 @@ package com.kispoko.tome.model.game.engine.function
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.EngineValue
 import com.kispoko.tome.model.game.engine.EngineValueType
@@ -14,7 +11,6 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -39,21 +35,19 @@ data class Function(override val id : UUID,
             {
                 effApply(::Function,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Function Id
                          doc.at("function_id") ap {
                              effApply(::Prim, FunctionId.fromDocument(it))
                          },
                          // Label
                          split(doc.maybeAt("label"),
-                               valueResult<Func<FunctionLabel>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<FunctionLabel>> =
-                                       effApply(::Prim, FunctionLabel.fromDocument(d))),
+                               nullEff<FunctionLabel>(),
+                               { effApply(::Prim, FunctionLabel.fromDocument(it)) }),
                          // Description
                          split(doc.maybeAt("description"),
-                               valueResult<Func<FunctionDescription>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<FunctionDescription>> =
-                                       effApply(::Prim, FunctionDescription.fromDocument(d))),
+                               nullEff<FunctionDescription>(),
+                               { effApply(::Prim, FunctionDescription.fromDocument(it)) }),
                          // Parameter Types
                          doc.list("parameter_types") ap { docList ->
                              effApply(::Prim, docList.enumList<EngineValueType>())
@@ -65,7 +59,7 @@ data class Function(override val id : UUID,
                              effApply(::Coll, docList.map { Tuple.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -84,8 +78,8 @@ data class FunctionId(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<FunctionId> = when (doc)
         {
-            is DocText -> valueResult(FunctionId(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(FunctionId(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -101,8 +95,8 @@ data class FunctionLabel(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<FunctionLabel> = when (doc)
         {
-            is DocText -> valueResult(FunctionLabel(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(FunctionLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -118,8 +112,8 @@ data class FunctionDescription(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<FunctionDescription> = when (doc)
         {
-            is DocText -> valueResult(FunctionDescription(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(FunctionDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -139,7 +133,7 @@ data class Tuple(override val id : UUID,
         {
             is DocDict -> effApply(::Tuple,
                                    // Model Id
-                                   valueResult(UUID.randomUUID()),
+                                   effValue(UUID.randomUUID()),
                                    // Parameters
                                    doc.list("parameters") ap { docList ->
                                        effApply(::Prim,
@@ -149,7 +143,7 @@ data class Tuple(override val id : UUID,
                                    doc.at("result") ap {
                                        effApply(::Prim, EngineValue.fromDocument(it))
                                    })
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

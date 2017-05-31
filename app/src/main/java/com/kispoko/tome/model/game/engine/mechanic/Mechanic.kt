@@ -3,10 +3,7 @@ package com.kispoko.tome.model.game.engine.mechanic
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.game.engine.variable.VariableName
@@ -14,7 +11,6 @@ import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import lulo.value.valueResult
 import java.util.*
 
 
@@ -40,31 +36,27 @@ data class Mechanic(override val id : UUID,
             {
                 effApply(::Mechanic,
                          // Model Id
-                         valueResult(UUID.randomUUID()),
+                         effValue(UUID.randomUUID()),
                          // Name
                          doc.at("name") ap {
                              effApply(::Prim, MechanicName.fromDocument(it))
                          },
                          // Label
                          split(doc.maybeAt("label"),
-                               valueResult<Func<MechanicLabel>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<MechanicLabel>> =
-                                       effApply(::Prim, MechanicLabel.fromDocument(d))),
+                               nullEff<MechanicLabel>(),
+                               { effApply(::Prim, MechanicLabel.fromDocument(it))}),
                          // Description
                          split(doc.maybeAt("description"),
-                               valueResult<Func<MechanicDescription>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<MechanicDescription>> =
-                                       effApply(::Prim, MechanicDescription.fromDocument(d))),
+                               nullEff<MechanicDescription>(),
+                               { effApply(::Prim, MechanicDescription.fromDocument(it)) }),
                          // Summary
                          split(doc.maybeAt("summary"),
-                               valueResult<Func<MechanicSummary>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<MechanicSummary>> =
-                                       effApply(::Prim, MechanicSummary.fromDocument(d))),
+                               nullEff<MechanicSummary>(),
+                               { effApply(::Prim, MechanicSummary.fromDocument(it)) }),
                          // Category
                          split(doc.maybeAt("category"),
-                               valueResult<Func<MechanicCategory>>(Null()),
-                               fun(d : SpecDoc) : ValueParser<Func<MechanicCategory>> =
-                                       effApply(::Prim, MechanicCategory.fromDocument(d))),
+                               nullEff<MechanicCategory>(),
+                               { effApply(::Prim, MechanicCategory.fromDocument(it)) }),
                          // Requirements
                          doc.list("requirements") ap { docList ->
                              effApply(::Prim,
@@ -76,7 +68,7 @@ data class Mechanic(override val id : UUID,
                                      docList.map { Variable.fromDocument(it) })
                          })
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -95,8 +87,8 @@ data class MechanicName(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<MechanicName> = when (doc)
         {
-            is DocText -> valueResult(MechanicName(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(MechanicName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -112,8 +104,8 @@ data class MechanicLabel(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<MechanicLabel> = when (doc)
         {
-            is DocText -> valueResult(MechanicLabel(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(MechanicLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -129,8 +121,8 @@ data class MechanicDescription(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<MechanicDescription> = when (doc)
         {
-            is DocText -> valueResult(MechanicDescription(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(MechanicDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -146,8 +138,8 @@ data class MechanicSummary(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<MechanicSummary> = when (doc)
         {
-            is DocText -> valueResult(MechanicSummary(doc.text))
-            else       -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(MechanicSummary(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
@@ -163,8 +155,8 @@ data class MechanicCategory(val value : String)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<MechanicCategory> = when (doc)
         {
-            is DocText -> valueResult(MechanicCategory(doc.text))
-            else -> Err(UnexpectedType(DocType.TEXT, docType(doc)), doc.path)
+            is DocText -> effValue(MechanicCategory(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }

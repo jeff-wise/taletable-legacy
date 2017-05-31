@@ -6,6 +6,8 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import effect.Err
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -33,11 +35,11 @@ sealed class ValueReference
                                     as ValueParser<ValueReference>
                     "number"    -> ValueReferenceNumber.fromDocument(doc)
                                     as ValueParser<ValueReference>
-                    else        -> Err<ValueError, DocPath,ValueReference>(
-                                            UnknownCase(doc.case()), doc.path)
+                    else        -> effError<ValueError,ValueReference>(
+                                            UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -56,9 +58,9 @@ data class ValueReferenceBoolean(val reference : Func<BooleanReference>) : Value
                         : ValueParser<ValueReferenceBoolean> = when (doc)
         {
             is DocDict -> BooleanReference.fromDocument(doc) ap {
-                              valueResult(ValueReferenceBoolean(Prim(it)))
+                              effValue<ValueError,ValueReferenceBoolean>(ValueReferenceBoolean(Prim(it)))
                           }
-            else       -> Err(lulo.value.UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -77,9 +79,9 @@ data class ValueReferenceDiceRoll(val reference : Func<DiceRollReference>) : Val
                         : ValueParser<ValueReferenceDiceRoll> = when (doc)
         {
             is DocDict -> DiceRollReference.fromDocument(doc) ap {
-                              valueResult(ValueReferenceDiceRoll(Prim(it)))
+                              effValue<ValueError,ValueReferenceDiceRoll>(ValueReferenceDiceRoll(Prim(it)))
                           }
-            else       -> Err(lulo.value.UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -98,9 +100,9 @@ data class ValueReferenceNumber(val reference : Func<NumberReference>) : ValueRe
                         : ValueParser<ValueReferenceNumber> = when (doc)
         {
             is DocDict -> NumberReference.fromDocument(doc) ap {
-                              valueResult(ValueReferenceNumber(Prim(it)))
+                              effValue<ValueError,ValueReferenceNumber>(ValueReferenceNumber(Prim(it)))
                           }
-            else       -> Err(lulo.value.UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(lulo.value.UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 

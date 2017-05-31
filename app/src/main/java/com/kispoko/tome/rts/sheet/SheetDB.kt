@@ -2,15 +2,15 @@
 package com.kispoko.tome.rts.sheet
 
 
+import com.kispoko.tome.model.sheet.Sheet
+
+
 
 /**
  * Sheet Database
  */
-
-
-object SheetDB
+class SheetDB(sheet : Sheet)
 {
-
 
 
 

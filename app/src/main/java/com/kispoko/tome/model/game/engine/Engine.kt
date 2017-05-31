@@ -5,6 +5,7 @@ package com.kispoko.tome.model.game.engine
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.model.game.Author
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
@@ -12,6 +13,8 @@ import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.game.engine.value.ValueSet
 import effect.Err
 import effect.effApply
+import effect.effError
+import effect.effValue
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -29,12 +32,33 @@ data class Engine(override val id : UUID,
                   val programs : Coll<Program>) : Model
 {
 
-    companion object : Factory<EngineNumberValue>
+    companion object : Factory<Engine>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<EngineNumberValue> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<Engine> = when (doc)
         {
-            is DocDict -> effApply(::EngineNumberValue, doc.double("value"))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            is DocDict ->
+            {
+                effApply(::Engine,
+                         // Model Id
+                         effValue(UUID.randomUUID()),
+                         // Value Sets
+                         doc.list("value_sets") apply {
+                             effApply(::Coll, it.map { ValueSet.fromDocument(it) })
+                         },
+                         // Mechanics
+                         doc.list("mechanics") apply {
+                             effApply(::Coll, it.map { Mechanic.fromDocument(it) })
+                         },
+                         // Functions
+                         doc.list("functions") apply {
+                             effApply(::Coll, it.map { Function.fromDocument(it) })
+                         },
+                         // Programs
+                         doc.list("programs") apply {
+                             effApply(::Coll, it.map { Program.fromDocument(it) })
+                         })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -81,11 +105,11 @@ sealed class EngineValue
                                     as ValueParser<EngineValue>
                     "list_text" -> EngineTextListValue.fromDocument(doc)
                                     as ValueParser<EngineValue>
-                    else        -> Err<ValueError, DocPath, EngineValue>(
-                                    UnknownCase(doc.case()), doc.path)
+                    else        -> effError<ValueError,EngineValue>(
+                                    UnknownCase(doc.case(), doc.path))
                 }
             }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -102,7 +126,7 @@ data class EngineNumberValue(val value : Double) : EngineValue()
         override fun fromDocument(doc: SpecDoc): ValueParser<EngineNumberValue> = when (doc)
         {
             is DocDict -> effApply(::EngineNumberValue, doc.double("value"))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -119,7 +143,7 @@ data class EngineTextValue(val value : String) : EngineValue()
         override fun fromDocument(doc: SpecDoc): ValueParser<EngineTextValue> = when (doc)
         {
             is DocDict -> effApply(::EngineTextValue, doc.text("value"))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -136,7 +160,7 @@ data class EngineBooleanValue(val value : Boolean) : EngineValue()
         override fun fromDocument(doc: SpecDoc): ValueParser<EngineBooleanValue> = when (doc)
         {
             is DocDict -> effApply(::EngineBooleanValue, doc.boolean("value"))
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -155,7 +179,7 @@ data class EngineDiceRollValue(val value : DiceRoll) : EngineValue()
             is DocDict -> doc.at("value") ap {
                               effApply(::EngineDiceRollValue, DiceRoll.Companion.fromDocument(it))
                           }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
@@ -174,7 +198,7 @@ data class EngineTextListValue(val value : List<String>) : EngineValue()
             is DocDict -> doc.list("value") ap {
                               effApply(::EngineTextListValue, it.stringList())
                           }
-            else       -> Err(UnexpectedType(DocType.DICT, docType(doc)), doc.path)
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
