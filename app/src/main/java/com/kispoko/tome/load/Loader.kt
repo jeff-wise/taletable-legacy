@@ -57,3 +57,10 @@ fun assetInputStream(context : Context, assetFilePath : String) : Loader<InputSt
         effError(CannotOpenTemplateFile(assetFilePath))
     }
 
+
+sealed class LoadResult<A>
+
+data class LoadResultValue<A>(val sheetRecord : A) : LoadResult<A>()
+
+data class LoadResultError<A>(val userMessage : String) : LoadResult<A>()
+

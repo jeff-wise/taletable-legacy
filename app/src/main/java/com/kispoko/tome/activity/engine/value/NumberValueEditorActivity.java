@@ -45,7 +45,7 @@ public class NumberValueEditorActivity extends AppCompatActivity
 //        this.valueReference = null;
 //        if (getIntent().hasExtra("value_reference")) {
 //            this.valueReference =
-//                    (ValueReference) getIntent().getSerializableExtra("value_reference");
+//                    (DataReference) getIntent().getSerializableExtra("value_reference");
 //        }
 //
 //        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();

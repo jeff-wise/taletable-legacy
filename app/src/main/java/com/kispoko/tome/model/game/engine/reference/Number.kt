@@ -23,55 +23,60 @@ import java.util.*
 /**
  * Number Reference
  */
-sealed class NumberReference : Model
+sealed class NumberReference
 {
 
     companion object : Factory<NumberReference>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<NumberReference> = when (doc)
-        {
-            is DocDict ->
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> =
+            when (doc.case)
             {
-                when (doc.case())
-                {
-                    "literal"  -> NumberReferenceLiteral.fromDocument(doc)
-                    "variable" -> NumberReferenceVariable.fromDocument(doc)
-                    "value"    -> NumberReferenceValue.fromDocument(doc)
-                    else       -> effError<ValueError,NumberReference>(
-                                            UnknownCase(doc.case(), doc.path))
-                }
+                "literal"  -> NumberReferenceLiteral.fromDocument(doc)
+                "value"    -> NumberReferenceValue.fromDocument(doc)
+                "variable" -> NumberReferenceVariable.fromDocument(doc)
+                else       -> effError<ValueError,NumberReference>(
+                                        UnknownCase(doc.case, doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
 
-    override fun onLoad() { }
 
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    open fun dependencies(): Set<VariableReference> = setOf()
 }
 
 
 /**
  * Literal Number Reference
  */
-data class NumberReferenceLiteral(override val id : UUID,
-                                  val value : Func<Double>) : NumberReference()
+data class NumberReferenceLiteral(val value : Double) : NumberReference()
 {
 
     companion object : Factory<NumberReference>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> = when (doc)
         {
-            is DocDict -> effApply(::NumberReferenceLiteral,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   effApply(::Prim, doc.double("value")))
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+            is DocNumber -> effValue(NumberReferenceLiteral(doc.number))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
 
-    override fun onLoad() { }
+}
+
+
+
+/**
+ * Value Number Reference
+ */
+data class NumberReferenceValue(val valueReference : ValueReference) : NumberReference()
+{
+
+    companion object : Factory<NumberReference>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> =
+                effApply(::NumberReferenceValue, ValueReference.fromDocument(doc))
+    }
 
 }
 
@@ -80,54 +85,20 @@ data class NumberReferenceLiteral(override val id : UUID,
  * Variable Number Reference
  */
 data class NumberReferenceVariable(
-                            override val id : UUID,
-                            val variableReference : Func<VariableReference>) : NumberReference()
+                val variableReference : VariableReference) : NumberReference()
 {
 
     companion object : Factory<NumberReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> = when (doc)
-        {
-            is DocDict -> effApply(::NumberReferenceVariable,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("reference") ap {
-                                       effApply(::Comp, VariableReference.fromDocument(it ))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> =
+                effApply(::NumberReferenceVariable, VariableReference.fromDocument(doc))
     }
 
-    override fun onLoad() { }
 
-}
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
 
-
-/**
- * Value Number Reference
- */
-data class NumberReferenceValue(
-                            override val id : UUID,
-                            val valueReference : Func<ValueReference>) : NumberReference()
-{
-
-    companion object : Factory<NumberReference>
-    {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberReference> = when (doc)
-        {
-            is DocDict -> effApply(::NumberReferenceValue,
-                                   // Model Id
-                                    effValue(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("reference") ap {
-                                       effApply(::Comp, ValueReference.fromDocument(it ))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
-
-    override fun onLoad() { }
+    override fun dependencies(): Set<VariableReference> = setOf(variableReference)
 
 }
 

@@ -2,10 +2,12 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
-import android.util.Log
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
+import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -21,7 +23,7 @@ import lulo.value.UnexpectedType
 sealed class TextVariableValue
 {
 
-     companion object : Factory<TextVariableValue>
+    companion object : Factory<TextVariableValue>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<TextVariableValue> =
             when (doc.case)
@@ -32,21 +34,20 @@ sealed class TextVariableValue
                 else                 -> effError<ValueError,TextVariableValue>(
                                             UnknownCase(doc.case, doc.path))
             }
-
-
-
-//                = when (doc)
-//        {
-//            is DocDict -> when (doc.case())
-//            {
-//            }
-//            else       ->
-//            {
-//                Log.d("***TEXTVARIABLE", doc.toString())
-//                effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-//            }
-//        }
     }
+
+
+    // Dependencies
+    // -----------------------------------------------------------------------------------------
+
+    open fun dependencies() : Set<VariableReference> = setOf()
+
+
+    // Value
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun value(sheetContext : SheetContext) : String?
+
 }
 
 
@@ -66,6 +67,12 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue()
         }
     }
 
+
+    // Value
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext) : String = this.value
+
 }
 
 
@@ -79,6 +86,13 @@ data class TextVariableValueReference(val reference : ValueReference) : TextVari
                 effApply(::TextVariableValueReference, ValueReference.fromDocument(doc))
     }
 
+
+    // Value
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext) : String? =
+        GameManager.textValue(sheetContext.gameId, this.reference)?.value?.value
+
 }
 
 
@@ -91,384 +105,20 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
                 effApply(::TextVariableProgramValue, Invocation.fromDocument(doc))
     }
 
+
+    // Dependencies
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
+
+
+    // Value
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext) : String? = ""
 }
 
 
-//
-//public class TextVariable extends Variable
-//                          implements ToYaml, Serializable
-//{
-//
-//    // PROPERTIES
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // ------------------------------------------------------------------------------------------
-//
-//    private UUID                            id;
-//
-//
-//    // > Functors
-//    // ------------------------------------------------------------------------------------------
-//
-//    private PrimitiveFunctor<String>        name;
-//    private PrimitiveFunctor<String>        label;
-//    private PrimitiveFunctor<String>        description;
-//
-//    private PrimitiveFunctor<String>        stringLiteral;
-//    private ModelFunctor<ValueReference>    valueReference;
-//    private ModelFunctor<Invocation>        invocation;
-//
-//    private PrimitiveFunctor<Kind>          kind;
-//
-//    private PrimitiveFunctor<String>        valueSetId;
-//
-//    private PrimitiveFunctor<Boolean>       isNamespaced;
-//    private PrimitiveFunctor<Boolean>       definesNamespace;
-//
-//    private PrimitiveFunctor<String[]>      tags;
-//
-//
-//    // > Internal
-//    // ------------------------------------------------------------------------------------------
-//
-//    private ReactiveValue<String>           reactiveValue;
-//
-//
-//    // CONSTRUCTORS
-//    // ------------------------------------------------------------------------------------------
-//
-//    public TextVariable()
-//    {
-//        super();
-//
-//        this.id                     = null;
-//
-//        this.name                   = new PrimitiveFunctor<>(null, String.class);
-//        this.label                  = new PrimitiveFunctor<>(null, String.class);
-//        this.description            = new PrimitiveFunctor<>(null, String.class);
-//
-//        this.stringLiteral          = new PrimitiveFunctor<>(null, String.class);
-//        this.valueReference         = ModelFunctor.empty(ValueReference.class);
-//        this.invocation             = ModelFunctor.empty(Invocation.class);
-//
-//        this.kind                   = new PrimitiveFunctor<>(null, Kind.class);
-//
-//        this.valueSetId           = new PrimitiveFunctor<>(null, String.class);
-//
-//        this.isNamespaced           = new PrimitiveFunctor<>(null, Boolean.class);
-//        this.definesNamespace       = new PrimitiveFunctor<>(null, Boolean.class);
-//
-//        this.tags                   = new PrimitiveFunctor<>(null, String[].class);
-//
-//        this.reactiveValue          = null;
-//    }
-//
-//
-//    /**
-//     * Create a Variable. This constructor is private to enforce use of the case specific
-//     * constructors, so only valid value/kind associations can be used.
-//     * @param id The Model id.
-//     * @param value The Variable value.
-//     * @param kind The Variable kind.
-//     */
-//    private TextVariable(UUID id,
-//                         String name,
-//                         String label,
-//                         String description,
-//                         Object value,
-//                         Kind kind,
-//                         String valueSetId,
-//                         Boolean isNamespaced,
-//                         Boolean definesNamespace,
-//                         List<String> tags)
-//    {
-//        // ** Variable Constructor
-//        super();
-//
-//        // ** Id
-//        this.id                     = id;
-//
-//        // ** Name
-//        this.name                   = new PrimitiveFunctor<>(name, String.class);
-//
-//        // ** Label
-//        this.label                  = new PrimitiveFunctor<>(label, String.class);
-//
-//        // ** Description
-//        this.description            = new PrimitiveFunctor<>(description, String.class);
-//
-//        // ** Value Variants
-//        this.stringLiteral          = new PrimitiveFunctor<>(null, String.class);
-//        this.valueReference         = ModelFunctor.full(null, ValueReference.class);
-//        this.invocation             = ModelFunctor.full(null, Invocation.class);
-//
-//        // ** Kind (Literal or Program)
-//        this.kind                   = new PrimitiveFunctor<>(kind, Kind.class);
-//
-//        // ** Value Set Name (if any)
-//        this.valueSetId           = new PrimitiveFunctor<>(valueSetId, String.class);
-//
-//        this.isNamespaced           = new PrimitiveFunctor<>(isNamespaced, Boolean.class);
-//        this.definesNamespace       = new PrimitiveFunctor<>(definesNamespace, Boolean.class);
-//
-//        // ** Tags
-//        if (tags != null) {
-//            String[] tagsArray = new String[tags.size()];
-//            tags.toArray(tagsArray);
-//            this.tags               = new PrimitiveFunctor<>(tagsArray, String[].class);
-//        }
-//        else {
-//            this.tags               = new PrimitiveFunctor<>(new String[0], String[].class);
-//        }
-//
-//        // > Set the value according to variable kind
-//        switch (kind)
-//        {
-//            case LITERAL:
-//                this.stringLiteral.setValue((String) value);
-//                break;
-//            case VALUE:
-//                this.valueReference.setValue((ValueReference) value);
-//                break;
-//            case PROGRAM:
-//                this.invocation.setValue((Invocation) value);
-//                break;
-//        }
-//
-//        this.initializeTextVariable();
-//
-//        this.setDefinesNamespace(null);
-//        this.setIsNamespaced(null);
-//    }
-//
-//
-//    /**
-//     * Create a "literal" text variable, that contains a value of kind String.
-//     * @param id The Model id.
-//     * @param stringValue The String value.
-//     * @return A new "literal" Text Variable.
-//     */
-//    public static TextVariable asText(UUID id,
-//                                      String name,
-//                                      String label,
-//                                      String description,
-//                                      String stringValue,
-//                                      Boolean isNamespaced,
-//                                      Boolean definesNamespace,
-//                                      List<String> tags)
-//    {
-//        return new TextVariable(id, name, label, description, stringValue, Kind.LITERAL, null,
-//                                isNamespaced, definesNamespace, tags);
-//    }
-//
-//
-//    /**
-//     * Create a "literal" text variable, that contains a value of kind String.
-//     * @param id The Model id.
-//     * @param stringValue The String value.
-//     * @return A new "literal" Text Variable.
-//     */
-//    public static TextVariable asText(UUID id,
-//                                      String stringValue)
-//    {
-//        return new TextVariable(id, null, null, null, stringValue,
-//                                Kind.LITERAL, null, null, null, null);
-//    }
-//
-//
-//    /**
-//     * Create the "value" case.
-//     * @param id The model id.
-//     * @param name The variable name.
-//     * @param valueReference The value reference.
-//     * @param valueSetId The value set the variable is restricted to (if any).
-//     * @param tags The variable tags.
-//     * @return The "value" Text Variable.
-//     */
-//    public static TextVariable asValue(UUID id,
-//                                       String name,
-//                                       String label,
-//                                       String description,
-//                                       ValueReference valueReference,
-//                                       String valueSetId,
-//                                       Boolean isNamespaced,
-//                                       Boolean definesNamespace,
-//                                       List<String> tags)
-//    {
-//        return new TextVariable(id, name, label, description, valueReference, Kind.VALUE,
-//                                valueSetId, isNamespaced, definesNamespace, tags);
-//    }
-//
-//
-//    /**
-//     * Create a "program" valued variable.
-//     * @param id The Model id.
-//     * @param invocation The Invocation value.
-//     * @return A new "program" variable.
-//     */
-//    public static TextVariable asProgram(UUID id,
-//                                         String name,
-//                                         String label,
-//                                         String description,
-//                                         Invocation invocation,
-//                                         Boolean isNamespaced,
-//                                         Boolean definesNamespace,
-//                                         List<String> tags)
-//    {
-//        return new TextVariable(id, name, label, description, invocation, Kind.PROGRAM, null,
-//                                isNamespaced, definesNamespace, tags);
-//    }
-//
-//
-//    /**
-//     * Create a new Variable from its Yaml representation.
-//     * @param yaml The Yaml parser.
-//     * @return The new Variable.
-//     * @throws YamlParseException
-//     */
-//    public static TextVariable fromYaml(YamlParser yaml)
-//                  throws YamlParseException
-//    {
-//        if (yaml.isNull())
-//            return null;
-//
-//        UUID         id                 = UUID.randomUUID();
-//
-//        String       name               = yaml.atMaybeKey("name").getString();
-//        String       label              = yaml.atMaybeKey("label").getString();
-//        String       description        = yaml.atMaybeKey("description").getString();
-//        Kind         kind               = Kind.fromYaml(yaml.atKey("type"));
-//        String       valueSetId       = yaml.atMaybeKey("value_set").getString();
-//        Boolean      isNamespaced       = yaml.atMaybeKey("namespaced").getBoolean();
-//        Boolean      definesNamespace   = yaml.atMaybeKey("defines_namespace").getBoolean();
-//        List<String> tags               = yaml.atMaybeKey("tags").getStringList();
-//
-//        switch (kind)
-//        {
-//            case LITERAL:
-//                String stringValue = yaml.atKey("value").getString().trim();
-//                return TextVariable.asText(id, name, label, description, stringValue, isNamespaced,
-//                                           definesNamespace, tags);
-//            case VALUE:
-//                ValueReference valueReference = ValueReference.fromYaml(yaml.atKey("value"));
-//                return TextVariable.asValue(id, name, label, description, valueReference,
-//                                            valueSetId, isNamespaced, definesNamespace, tags);
-//            case PROGRAM:
-//                Invocation invocation = Invocation.fromYaml(yaml.atKey("value"));
-//                return TextVariable.asProgram(id, name, label, description, invocation,
-//                                              isNamespaced, definesNamespace, tags);
-//        }
-//
-//        // CANNOT REACH HERE. If VariableKind is null, an InvalidEnum exception would be thrown.
-//        return null;
-//    }
-//
-//
-//    // API
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Id
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the model identifier.
-//     * @return The model UUID.
-//     */
-//    public UUID getId()
-//    {
-//        return this.id;
-//    }
-//
-//
-//    /**
-//     * Set the model identifier.
-//     * @param id The new model UUID.
-//     */
-//    public void setId(UUID id)
-//    {
-//        this.id = id;
-//    }
-//
-//
-//    // ** On Load
-//    // ------------------------------------------------------------------------------------------
-//
-//    public void onLoad()
-//    {
-//        this.initializeTextVariable();
-//    }
-//
-//
-//    // > To Yaml
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The Text Variable's yaml representation.
-//     * @return The Yaml Builder.
-//     */
-//    public YamlBuilder toYaml()
-//    {
-//        return YamlBuilder.map()
-//                .putString("name", this.name())
-//                .putString("label", this.label())
-//                .putString("description", this.description())
-//                .putYaml("type", this.kind())
-//                .putString("value_set", this.valueSetId())
-//                .putBoolean("namespaced", this.isNamespaced())
-//                .putBoolean("defines_namespace", this.definesNamespace())
-//                .putStringList("tags", this.tags());
-//    }
-//
-//
-//    // > Variable
-//    // ------------------------------------------------------------------------------------------
-//
-//    @Override
-//    public String name()
-//    {
-//        return this.name.getValue();
-//    }
-//
-//
-//    @Override
-//    public void setName(String name)
-//    {
-//        this.name.setValue(name);
-//    }
-//
-//
-//    @Override
-//    public String label()
-//    {
-//        return this.label.getValue();
-//    }
-//
-//
-//    @Override
-//    public String description()
-//    {
-//        return this.description.getValue();
-//    }
-//
-//
-//    @Override
-//    public void setLabel(String label)
-//    {
-//        this.label.setValue(label);
-//    }
-//
-//
-//    @Override
-//    public boolean isNamespaced()
-//    {
-//        return this.isNamespaced.getValue();
-//    }
-//
-//
 //    @Override
 //    public void setIsNamespaced(Boolean isNamespaced)
 //    {
@@ -492,21 +142,7 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 //    }
 //
 //
-//    @Override
-//    public List<String> tags()
-//    {
-//        return Arrays.asList(this.tags.getValue());
-//    }
-//
-//
-//    @Override
-//    public String valueString()
-//           throws NullVariableException
-//    {
-//        return this.value();
-//    }
-//
-//
+
 //    @Override
 //    public void initialize()
 //    {
@@ -591,7 +227,7 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 //     * The value reference case.
 //     * @return The value reference.
 //     */
-//    public ValueReference valueReference()
+//    public DataReference valueReference()
 //    {
 //        return this.valueReference.getValue();
 //    }
@@ -655,7 +291,7 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 //     * Set the value for the value case.
 //     * @param valueReference The value reference.
 //     */
-//    public void setValueReference(ValueReference valueReference)
+//    public void setValueReference(DataReference valueReference)
 //    {
 //        removeFromState();
 //        this.valueReference.setValue(valueReference);
@@ -772,88 +408,5 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 //        Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
 //        dictionary.textValue(this.valueReference()).removeFromState();
 //    }
-//
-//
-//    // Kind
-//    // ------------------------------------------------------------------------------------------
-//
-//    public enum Kind implements ToYaml
-//    {
-//
-//        // VALUES
-//        // --------------------------------------------------------------------------------------
-//
-//        LITERAL,
-//        VALUE,
-//        PROGRAM;
-//
-//
-//        // CONSTRUCTORS
-//        // --------------------------------------------------------------------------------------
-//
-//        public static Kind fromString(String kindString)
-//                      throws InvalidDataException
-//        {
-//            return EnumUtils.fromString(Kind.class, kindString);
-//        }
-//
-//
-//        public static Kind fromYaml(YamlParser yaml)
-//                      throws YamlParseException
-//        {
-//            String kindString = yaml.getString();
-//            try {
-//                return Kind.fromString(kindString);
-//            } catch (InvalidDataException e) {
-//                throw YamlParseException.invalidEnum(new InvalidEnumError(kindString));
-//            }
-//        }
-//
-//
-//        public static Kind fromSQLValue(SQLValue sqlValue)
-//                      throws DatabaseException
-//        {
-//            String enumString = "";
-//            try {
-//                enumString = sqlValue.getText();
-//                Kind kind = Kind.fromString(enumString);
-//                return kind;
-//            } catch (InvalidDataException e) {
-//                throw DatabaseException.invalidEnum(
-//                        new com.kispoko.tome.lib.database.error.InvalidEnumError(enumString));
-//            }
-//        }
-//
-//
-//        // TO YAML
-//        // --------------------------------------------------------------------------------------
-//
-//        public YamlBuilder toYaml()
-//        {
-//            return YamlBuilder.string(this.name().toLowerCase());
-//        }
-//
-//
-//        // TO STRING
-//        // --------------------------------------------------------------------------------------
-//
-//        @Override
-//        public String toString()
-//        {
-//            switch (this)
-//            {
-//                case LITERAL:
-//                    return "Literal";
-//                case PROGRAM:
-//                    return "Program";
-//                case VALUE:
-//                    return "Value";
-//            }
-//
-//            return "";
-//        }
-//
-//    }
-//
 //
 //}

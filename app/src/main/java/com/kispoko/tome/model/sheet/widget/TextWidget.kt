@@ -467,7 +467,7 @@ data class TextDescription(val value : String)
 //                    break;
 //
 //                String         valueSetId   = this.valueVariable().valueSetId();
-//                ValueReference valueReference = this.valueVariable().valueReference();
+//                DataReference valueReference = this.valueVariable().valueReference();
 //
 //                ValueSetUnion valueSetUnion = dictionary.lookup(valueSetId);
 //                ValueUnion valueUnion    = dictionary.valueUnion(valueReference);

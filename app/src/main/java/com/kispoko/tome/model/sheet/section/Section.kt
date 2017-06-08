@@ -8,6 +8,7 @@ import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.page.Page
+import com.kispoko.tome.rts.sheet.State
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -55,9 +56,9 @@ data class Section(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive()
+    fun onActive(state : State)
     {
-        this.pages.list.forEach { it.onActive() }
+        this.pages.list.forEach { it.onActive(state) }
     }
 }
 

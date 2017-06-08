@@ -1,0 +1,9 @@
+id: amanace
+description:
+  summary: A simple game.
+  authors:
+engine:
+  value_sets:
+  mechanics:
+  functions:
+  programs:

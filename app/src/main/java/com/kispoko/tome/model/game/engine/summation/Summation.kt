@@ -6,7 +6,7 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
-import effect.Err
+import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -44,7 +44,20 @@ data class Summation(override val id : UUID,
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    fun dependencies() : Set<VariableReference> =
+        this.terms.list.fold(setOf(), {
+            accSet, term -> accSet.plus(term.dependencies())
+        })
 
 }
 
@@ -107,16 +120,6 @@ data class Summation(override val id : UUID,
 //     * @return A list of variable names.
 //     */
 //    public List<VariableReference> variableDependencies()
-//    {
-//        List<VariableReference> variableReferences = new ArrayList<>();
-//
-//        for (TermUnion termUnion : this.terms.getValue()) {
-//            variableReferences.addAll(termUnion.term().variableDependencies());
-//        }
-//
-//        return variableReferences;
-//    }
-//
 //
 //    // ** To String
 //    // ------------------------------------------------------------------------------------------

@@ -3,12 +3,19 @@ package com.kispoko.tome.rts.sheet
 
 
 import android.content.Context
-import com.kispoko.tome.ApplicationAssets
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
+import com.kispoko.tome.model.campaign.CampaignId
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.sheet.Sheet
+import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.official.OfficialIndex
+import com.kispoko.tome.official.OfficialSheet
+import com.kispoko.tome.rts.campaign.CampaignManager
 import com.kispoko.tome.rts.game.GameManager
 import effect.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.run
 import lulo.Spec
 import lulo.document.SpecDoc
 import java.io.InputStream
@@ -24,34 +31,18 @@ import lulo.File as LuloFile
 object SheetManager
 {
 
+    // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
     private var specification : Spec? = null
 
-    private var context : Context? = null
+    private val sheet = "sheet"
+
+    private val sheetById : MutableMap<SheetId,SheetRecord> = hashMapOf()
 
 
-    // CONTEXT
     // -----------------------------------------------------------------------------------------
-
-    fun setContext(context : Context)
-    {
-        this.context = context
-    }
-
-
-    fun context() : Loader<Context>
-    {
-        val currentContext = this.context
-
-        if (currentContext != null)
-            return effValue(currentContext)
-        else
-            return effError(ContextIsNull())
-    }
-
-
     // SPECIFICATION
     // -----------------------------------------------------------------------------------------
 
@@ -85,7 +76,7 @@ object SheetManager
      */
     fun loadSpecification(context : Context)
     {
-        val specLoader = loadLuloSpecification("sheet", context)
+        val specLoader = loadLuloSpecification(sheet, context)
         when (specLoader)
         {
             is Val -> this.specification = specLoader.value
@@ -94,42 +85,55 @@ object SheetManager
     }
 
 
-    // TEMPLATES
+    // -----------------------------------------------------------------------------------------
+    // OFFICIAL
     // -----------------------------------------------------------------------------------------
 
-    fun loadSheetTemplate(templateName: String, context : Context) : TemplateSheet
+    suspend fun loadOfficialSheet(officialSheet: OfficialSheet,
+                          officialIndex : OfficialIndex,
+                          context : Context) : LoadResult<SheetRecord> = run(CommonPool,
     {
-        val sheetLoader = _loadSheetTemplate(templateName, context)
+
+        loadOfficialCampaign(officialSheet, officialIndex, context)
+
+        val sheetLoader = _loadOfficialSheet(officialSheet, context)
         when (sheetLoader)
         {
-            is Val -> return TemplateSheetValue(sheetLoader.value)
-            is Err -> {
+            is Val ->
+            {
+                val sheet = sheetLoader.value
+                val sheetRecord = SheetRecord(sheet, SheetState(sheet))
+                this.sheetById.put(sheet.sheetId.value, sheetRecord)
+                LoadResultValue(sheetRecord)
+            }
+            is Err ->
+            {
                 val loadError = sheetLoader.error
                 ApplicationLog.error(loadError)
-                return TemplateSheetError(loadError.userMessage())
+                LoadResultError<SheetRecord>(loadError.userMessage())
             }
         }
-    }
+    })
 
 
-    fun _loadSheetTemplate(templateName : String, context : Context) : Loader<Sheet>
+    private fun _loadOfficialSheet(officialSheet: OfficialSheet, context : Context) : Loader<Sheet>
     {
         // LET...
-        val templateFilePath = ApplicationAssets.templateDirectoryPath +
-                                    "/" + templateName + ".yaml"
-
         fun templateFileString(inputStream: InputStream) : Loader<String> =
             effValue(inputStream.bufferedReader().use { it.readText() })
 
         fun templateDocument(templateString : String,
                              sheetSpec : Spec,
+                             campaignSpec : Spec,
                              gameSpec : Spec) : Loader<SpecDoc>
         {
-            val docParse = sheetSpec.documentParse(templateString, listOf(gameSpec))
+            val docParse = sheetSpec.documentParse(templateString,
+                                                   listOf(campaignSpec, gameSpec))
             when (docParse)
             {
                 is Val -> return effValue(docParse.value)
-                is Err -> return effError(TemplateParseError(docParse.error))
+                is Err -> return effError(DocumentParseError(
+                                        officialSheet.sheetId.name, sheet, docParse.error))
             }
         }
 
@@ -139,28 +143,67 @@ object SheetManager
             when (sheetParse)
             {
                 is Val -> return effValue(sheetParse.value)
-                is Err -> return effError(DocumentParseError("sheet", sheetParse.error))
+                is Err -> return effError(ValueParseError(sheet, sheetParse.error))
             }
         }
 
         // DO...
-        return assetInputStream(context, templateFilePath)
+        return assetInputStream(context, officialSheet.filePath)
                 .apply(::templateFileString)
                 .applyWith(::templateDocument,
                            SheetManager.specificationLoader(context),
+                           CampaignManager.specificationLoader(context),
                            GameManager.specificationLoader(context))
                 .apply(::sheetFromDocument)
+    }
+
+
+    private suspend fun loadOfficialCampaign(officialSheet : OfficialSheet,
+                                     officialIndex : OfficialIndex,
+                                     context : Context)
+    {
+        if (!CampaignManager.hasCampaignWithId(officialSheet.campaignId))
+        {
+            val officialCampaign = officialIndex.campaignById[officialSheet.campaignId]
+            if (officialCampaign != null)
+                CampaignManager.loadOfficialCampaign(officialCampaign, officialIndex, context)
+            // TODO errors here
+        }
     }
 
 }
 
 
+// ---------------------------------------------------------------------------------------------
+// COMPONENTS
+// ---------------------------------------------------------------------------------------------
 
-sealed class TemplateSheet
+data class SheetRecord(val sheet : Sheet, val sheetState: SheetState)
+{
 
-data class TemplateSheetValue(val sheet : Sheet) : TemplateSheet()
+    init {
+        sheet.onActive(sheetState)
+    }
 
-data class TemplateSheetError(val userMessage : String) : TemplateSheet()
+
+    fun context(context : Context) : SheetContext?
+    {
+        val sheetId    = sheet.sheetId.value
+        val campaignId = sheet.campaignId.value
+        val gameId     = CampaignManager.campaignWithId(campaignId)?.gameId?.value
+
+        if (gameId != null)
+            return SheetContext(sheetId, campaignId, gameId, context)
+        else
+            return null
+    }
 
 
+}
+
+
+data class SheetContext(val sheetId : SheetId,
+                        val campaignId : CampaignId,
+                        val gameId : GameId,
+                        val context : Context)
 

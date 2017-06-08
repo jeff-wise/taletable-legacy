@@ -59,8 +59,8 @@ import lulo.ValueType;
 //        viewHolder.setValueText(valueUnion.value().valueString());
 //        viewHolder.setDescriptionText(valueUnion.value().description());
 //
-//        ValueReference valueReference =
-//                ValueReference.create(this.valueSet.name(), valueUnion.value().name());
+//        DataReference valueReference =
+//                DataReference.create(this.valueSet.name(), valueUnion.value().name());
 //        viewHolder.setOnClickListener(valueUnion.type(), valueReference);
 //    }
 //
@@ -117,7 +117,7 @@ import lulo.ValueType;
 //
 //
 //        public void setOnClickListener(final ValueType valueType,
-//                                       final ValueReference valueReference)
+//                                       final DataReference valueReference)
 //        {
 //            this.layout.setOnClickListener(new View.OnClickListener()
 //            {

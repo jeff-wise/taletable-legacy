@@ -1,0 +1,37 @@
+
+---
+
+version: '0.7'
+name: Tome Campaign Specification
+authors:
+  - name: 'Jeff Wise'
+description:
+  overview_md: >
+    A campaign is...
+root_type: campaign
+types:
+- name: campaign  
+  label: Campaign
+  description: >
+    The campaign.
+  group: Campaign
+  type: product
+  fields:
+  - name: id
+    type: campaign_id
+    presence: required
+    description: >
+      The id of the campaign.
+  - name: game_id
+    type: game_id
+    presence: required
+    description: >
+      The id of the game.
+- name: campaign_id
+  label: Campaign Id
+  description: >
+    The id of a campaign.
+  group: Campaign
+  type: simple
+  base_type: string
+

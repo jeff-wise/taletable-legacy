@@ -128,7 +128,7 @@ data class OptionDescription(val value : String)
 //     * The value reference of the option widget.
 //     * @return The value reference.
 //     */
-//    private ValueReference valueReference()
+//    private DataReference valueReference()
 //    {
 //        switch (this.valueType())
 //        {

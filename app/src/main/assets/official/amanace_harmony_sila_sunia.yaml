@@ -1,4 +1,5 @@
-campaign_name: black
+id: test
+campaign_id: harmony
 sections:
 - name: Profile
   pages:

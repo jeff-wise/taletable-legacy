@@ -3,7 +3,6 @@ package com.kispoko.tome.official.template;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.kispoko.tome.ApplicationAssets;
 import com.kispoko.tome.lib.yaml.YamlParser;
@@ -82,7 +81,7 @@ public class TemplateIndex implements Serializable
     public static TemplateIndex fromManifest(Context context)
                   throws IOException, YamlParseException
     {
-        InputStream yamlIS = context.getAssets().open(ApplicationAssets.templateManifest);
+        InputStream yamlIS = context.getAssets().open(ApplicationAssets.officialManifest);
         YamlParser yaml = YamlParser.fromFile(yamlIS);
 
         List<Template> templates = yaml.atKey("templates")

@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.lib.ui.Font;
-import com.kispoko.tome.lib.ui.FormattedString;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder;
 import com.kispoko.tome.lib.ui.RecyclerViewBuilder;
@@ -202,7 +200,7 @@ public class TemplateListFragment extends Fragment
                 public void onClick(View view)
                 {
                     Intent intent = new Intent(context, OfficialTemplateActivity.class);
-                    intent.putExtra("template", template);
+                    intent.putExtra("official", template);
                     startActivity(intent);
                 }
             });

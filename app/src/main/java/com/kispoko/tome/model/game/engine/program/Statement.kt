@@ -8,7 +8,6 @@ import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.function.FunctionId
 import com.kispoko.tome.model.game.engine.reference.*
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -129,13 +128,13 @@ data class StatementParameterBinding(val binding : Func<StatementBinding>) : Sta
 /**
  * Reference Parameter
  */
-data class StatementParameterReference(val reference : Func<ValueReference>) : StatementParameter()
+data class StatementParameterReference(val reference : Func<DataReference>) : StatementParameter()
 {
 
     companion object : Factory<StatementParameterReference>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<StatementParameterReference> =
-            ValueReference.fromDocument(doc) ap {
+            DataReference.fromDocument(doc) ap {
                 effValue<ValueError,StatementParameterReference>(StatementParameterReference(Prim(it)))
             }
     }

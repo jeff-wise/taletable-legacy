@@ -5,10 +5,12 @@ package com.kispoko.tome.model.game.engine.summation.term
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.reference.BooleanReference
 import com.kispoko.tome.model.game.engine.reference.DiceRollReference
 import com.kispoko.tome.model.game.engine.reference.NumberReference
+import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.Err
 import effect.effApply
 import effect.effError
@@ -46,13 +48,23 @@ sealed class SummationTerm : Model
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun dependencies(): Set<VariableReference>
 
 }
 
 
 data class SummationNumberTerm(override val id : UUID,
-                               val numberReference : Func<NumberReference>) : SummationTerm()
+                               val numberReference : Prim<NumberReference>) : SummationTerm()
 {
 
     companion object : Factory<SummationTerm>
@@ -64,19 +76,30 @@ data class SummationNumberTerm(override val id : UUID,
                                    effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("reference") ap {
-                                       effApply(::Comp, NumberReference.fromDocument(it))
+                                       effApply(::Prim, NumberReference.fromDocument(it))
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(): Set<VariableReference> =
+            this.numberReference.value.dependencies()
 
 }
 
 
 data class SummationDiceRollTerm(override val id : UUID,
-                                 val diceRollReference: Func<DiceRollReference>) : SummationTerm()
+                                 val diceRollReference: Prim<DiceRollReference>) : SummationTerm()
 {
 
     companion object : Factory<SummationTerm>
@@ -88,22 +111,33 @@ data class SummationDiceRollTerm(override val id : UUID,
                                    effValue(UUID.randomUUID()),
                                    // Value
                                    doc.at("reference") ap {
-                                       effApply(::Comp, DiceRollReference.fromDocument(it))
+                                       effApply(::Prim, DiceRollReference.fromDocument(it))
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(): Set<VariableReference> =
+            this.diceRollReference.value.dependencies()
 
 }
 
 
 data class SummationConditionalTerm(
                             override val id : UUID,
-                            val conditionalValueReference: Func<BooleanReference>,
-                            val trueValueReference : Func<NumberReference>,
-                            val falseValueReference: Func<NumberReference>) : SummationTerm()
+                            val conditionalValueReference: Prim<BooleanReference>,
+                            val trueValueReference : Prim<NumberReference>,
+                            val falseValueReference: Prim<NumberReference>) : SummationTerm()
 {
 
     companion object : Factory<SummationTerm>
@@ -115,21 +149,34 @@ data class SummationConditionalTerm(
                                    effValue(UUID.randomUUID()),
                                    // Conditional
                                    doc.at("conditional") ap {
-                                        effApply(::Comp, BooleanReference.fromDocument(it))
+                                        effApply(::Prim, BooleanReference.fromDocument(it))
                                    },
                                    // When True
                                    doc.at("when_true") ap {
-                                       effApply(::Comp, NumberReference.fromDocument(it))
+                                       effApply(::Prim, NumberReference.fromDocument(it))
                                    },
                                    // When False
                                    doc.at("when_false") ap {
-                                       effApply(::Comp, NumberReference.fromDocument(it))
+                                       effApply(::Prim, NumberReference.fromDocument(it))
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(): Set<VariableReference> =
+        conditionalValueReference.value.dependencies()
+            .plus(trueValueReference.value.dependencies())
+            .plus(falseValueReference.value.dependencies())
 
 }
 

@@ -9,7 +9,6 @@ import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.Engine
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -24,9 +23,9 @@ import java.util.*
  * Game
  */
 data class Game(override val id : UUID,
-                val name : Func<GameName>,
-                val description : Func<GameDescription>,
-                val engine : Func<Engine>) : Model
+                val gameId : Prim<GameId>,
+                val description : Comp<GameDescription>,
+                val engine : Comp<Engine>) : Model
 {
 
     companion object : Factory<Game>
@@ -37,8 +36,8 @@ data class Game(override val id : UUID,
                                    // Model Id
                                    effValue(UUID.randomUUID()),
                                    // Summary
-                                   doc.at("name") apply {
-                                       effApply(::Prim, GameName.fromDocument(it))
+                                   doc.at("id") apply {
+                                       effApply(::Prim, GameId.fromDocument(it))
                                    },
                                    // Description
                                    doc.at("description") apply {
@@ -60,14 +59,14 @@ data class Game(override val id : UUID,
 /**
  * Game Name
  */
-data class GameName(val value : String)
+data class GameId(val value : String)
 {
 
-    companion object : Factory<GameName>
+    companion object : Factory<GameId>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<GameName> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<GameId> = when (doc)
         {
-            is DocText -> effValue(GameName(doc.text))
+            is DocText -> effValue(GameId(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }

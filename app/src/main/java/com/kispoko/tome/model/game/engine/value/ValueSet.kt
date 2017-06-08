@@ -5,7 +5,9 @@ package com.kispoko.tome.model.game.engine.value
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.model.game.engine.EngineData
 import com.kispoko.tome.model.game.engine.EngineValueType
+import com.kispoko.tome.rts.game.GameData
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -20,7 +22,7 @@ import java.util.*
  * Value Set
  */
 @Suppress("UNCHECKED_CAST")
-sealed class ValueSet(open val valueSetId : Func<ValueSetId>,
+sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
                       open val label : Func<ValueSetLabel>,
                       open val labelSingular: Func<ValueSetLabelSingular>,
                       open val description : Func<ValueSetDescription>,
@@ -49,6 +51,13 @@ sealed class ValueSet(open val valueSetId : Func<ValueSetId>,
 
     override fun onLoad() { }
 
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun textValue(valueId : ValueId, engineData : EngineData) : ValueText?
+
 }
 
 
@@ -56,7 +65,7 @@ sealed class ValueSet(open val valueSetId : Func<ValueSetId>,
  * Base Value Set
  */
 data class ValueSetBase(override val id : UUID,
-                        override val valueSetId : Func<ValueSetId>,
+                        override val valueSetId : Prim<ValueSetId>,
                         override val label : Func<ValueSetLabel>,
                         override val labelSingular: Func<ValueSetLabelSingular>,
                         override val description: Func<ValueSetDescription>,
@@ -64,6 +73,19 @@ data class ValueSetBase(override val id : UUID,
                         val values : Coll<Value>)
                         : ValueSet(valueSetId, label, labelSingular, description, valueType)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private val valuesById : MutableMap<ValueId,Value> =
+                                        values.list.associateBy { it.valueId.value }
+                                                as MutableMap<ValueId,Value>
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueSetBase>
     {
@@ -106,6 +128,22 @@ data class ValueSetBase(override val id : UUID,
 
     override fun onLoad() { }
 
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    override fun textValue(valueId : ValueId, engineData : EngineData) : ValueText?
+    {
+        val value = valuesById[valueId]
+        when (value)
+        {
+            is ValueText -> return value
+            else         -> return null
+        }
+    }
+
+
 }
 
 
@@ -113,7 +151,7 @@ data class ValueSetBase(override val id : UUID,
  * Compound Value Set
  */
 data class ValueSetCompound(override val id : UUID,
-                            override val valueSetId : Func<ValueSetId>,
+                            override val valueSetId : Prim<ValueSetId>,
                             override val label : Func<ValueSetLabel>,
                             override val labelSingular: Func<ValueSetLabelSingular>,
                             override val description: Func<ValueSetDescription>,
@@ -121,6 +159,10 @@ data class ValueSetCompound(override val id : UUID,
                             val valueSetIds : Prim<List<ValueSetId>>)
                             : ValueSet(valueSetId, label, labelSingular, description, valueType)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueSetCompound>
     {
@@ -161,7 +203,25 @@ data class ValueSetCompound(override val id : UUID,
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * A text value in one of the value sets in the compound value set that has the given id.
+     */
+    override fun textValue(valueId : ValueId, engineData : EngineData) : ValueText? =
+        this.valueSetIds.value
+            .map { engineData.valueSet(it)?.textValue(valueId, engineData) }
+            .firstOrNull { it != null }
 
 }
 

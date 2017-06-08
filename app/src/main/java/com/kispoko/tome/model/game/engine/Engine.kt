@@ -5,13 +5,11 @@ package com.kispoko.tome.model.game.engine
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.game.Author
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.program.Program
-import com.kispoko.tome.model.game.engine.value.ValueSet
-import effect.Err
+import com.kispoko.tome.model.game.engine.value.*
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -29,12 +27,25 @@ data class Engine(override val id : UUID,
                   val valueSets : Coll<ValueSet>,
                   val mechanics : Coll<Mechanic>,
                   val functions : Coll<Function>,
-                  val programs : Coll<Program>) : Model
+                  val programs : Coll<Program>) : Model, EngineData
 {
 
-    companion object : Factory<Engine>
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private val valueSetById : MutableMap<ValueSetId,ValueSet> =
+                                            valueSets.list.associateBy { it.valueSetId.value }
+                                                as MutableMap<ValueSetId, ValueSet>
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Engine> = when (doc)
+        fun fromDocument(doc: SpecDoc) : ValueParser<Engine> = when (doc)
         {
             is DocDict ->
             {
@@ -64,7 +75,33 @@ data class Engine(override val id : UUID,
 
     override fun onLoad() { }
 
+
+    // -----------------------------------------------------------------------------------------
+    // ENGINE DATA
+    // -----------------------------------------------------------------------------------------
+
+    override fun valueSet(valueSetId : ValueSetId) : ValueSet? = this.valueSetById[valueSetId]
+
+
+    override fun textValue(valueReference : ValueReference) : ValueText? =
+        this.valueSet(valueReference.valueSetId.value)
+            ?.textValue(valueReference.valueId.value, this)
+
 }
+
+
+/**
+ * Engine Data
+ */
+interface EngineData
+{
+
+    fun valueSet(valueSetId : ValueSetId) : ValueSet?
+
+    fun textValue(valueReference : ValueReference) : Value?
+
+}
+
 
 
 /**
@@ -203,6 +240,7 @@ data class EngineTextListValue(val value : List<String>) : EngineValue()
     }
 
 }
+
 
 
 

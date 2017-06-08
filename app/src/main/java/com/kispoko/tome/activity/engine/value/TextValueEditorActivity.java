@@ -96,8 +96,8 @@ import java.util.UUID;
 //        this.textValue = null;
 //        if (this.valueSetName != null && this.valueName != null && dictionary != null)
 //        {
-//            ValueReference valueReference =
-//                                    ValueReference.create(this.valueSetName, this.valueName);
+//            DataReference valueReference =
+//                                    DataReference.create(this.valueSetName, this.valueName);
 //            this.textValue = dictionary.textValue(valueReference);
 //        }
 //

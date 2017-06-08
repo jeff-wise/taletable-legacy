@@ -1,0 +1,1035 @@
+
+---
+
+version: '0.7'
+name: Tome Game Specification
+authors:
+  - name: 'Jeff Wise'
+description:
+  overview_md: >
+    Tome is an application for creating and playing roleplaying games. The heart of Tome 
+    is a programmable roleplaying engine that allows users to program game mechanics, create 
+    items, spells, etc... and design interactive, playable templates for their game. The Tome 
+    app includes a customizable layout so the entire experience of a roleplaying game can be 
+    built and customized within Tome. Furthermore, all of that work can easily be distributed 
+    and shared with players.
+root_type: game
+types:
+- name: game  
+  label: Game
+  description: >
+    The game.
+  group: Game
+  type: product
+  fields:
+  - name: id
+    type: game_id
+    presence: required
+    description: >
+      The name of the game.
+  - name: description
+    type: game_description
+    presence: required
+    description: >
+      The name of the game.
+  - name: engine
+    type: engine
+    presence: required
+    description: >
+      The game engine.
+- name: game_id
+  label: Game Identifier
+  description: >
+    The unique game identifier.
+  group: Game
+  type: simple
+  base_type: string
+- name: game_description
+  label: Game Description
+  description: >
+    The game description.
+  group: Game
+  type: product
+  fields:
+  - name: summary
+    type: game_summary
+    presence: required
+    description: >
+      A brief description of the game.
+  - name: authors
+    type: list
+    of: author
+    presence: required
+    description: >
+      The game's authors.
+- name: game_summary
+  label: Game Summary
+  description: >
+    A brief description of a game.
+  group: Game
+  type: simple
+  base_type: string
+- name: author
+  label: Author
+  description: >
+    A game author.
+  group: Game
+  type: product
+  fields:
+  - name: name
+    type: author_name
+    presence: required
+    description: >
+      The author's name.
+  - name: organization
+    type: author_organization
+    presence: optional
+    description: >
+      The author's organization.
+  - name: user_name
+    type: user_name
+    presence: optional
+    description: >
+      The author's linked user name.
+- name: author_name
+  label: Author Name
+  description: >
+    The author's full name.
+  group: Author
+  type: simple
+  base_type: string
+- name: author_organization
+  label: Author Organization
+  description: >
+    The author's organization.
+  group: Author
+  type: simple
+  base_type: string
+- name: user_name
+  label: User Name
+  description: >
+    A user name.
+  group: User
+  type: simple
+  base_type: string
+- name: engine  
+  label: Engine
+  description: >
+    The engine contains all of the data definitions and programmable elements in Tome.
+  group: Engine
+  type: product
+  fields:
+  - name: value_sets
+    type: list
+    of: value_set
+    presence: required
+    description: >
+      The value sets.
+  - name: mechanics
+    type: list
+    of: mechanic
+    presence: required
+    description: >
+      The mechanics define groupings of variables that may be active or inactive, depending on 
+      customizable conditions. This allows the creation of different game mechanics, and permits 
+      those mechanics to be made available only in certain situations.
+  - name: functions
+    type: list
+    of: function
+    presence: required
+    description: >
+      Functions associate different sets of values. 
+  - name: programs
+    type: list
+    of: program
+    presence: required
+    description: >
+      Programs allow values on the sheet to be created from complex calculations.
+- name: function
+  label: Function
+  description: >
+    The function maps one or more sets of values to another set of values. 
+  group: Function
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      The function name. Must be unique and contain only letters, numbers and underscores. The 
+      function name is used to uniquely identify the function when programming or customizing 
+      a sheet. A typical user will not see this value.
+  - name: label
+    type: string
+    presence: optional
+    description: >
+      The function's label is the name or identifier of the function, intended for human 
+      consumption. Make it pretty! It does not need to be unique and may contain any letters 
+      or characters.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A description of the function. The description should be concise and describe the purpose 
+      of the function. It will probably be helpful to include as well situations where the 
+      function will likely be used.
+  - name: parameter_types
+    type: list
+    of: engine_type
+    presence: required
+    description: >
+      The types of the input that the function accepts. 
+  - name: result_type
+    type: engine_type
+    presence: required
+    description: >
+      The type of data returned by the function.
+  - name: tuples
+    type: list
+    of: function_tuple
+    presence: required
+    description: >
+      All of the mappings defined by the function.
+- name: function_tuple
+  label: Tuple
+  description: >
+    A function tuple is a mapping that belongs to a function. It defines which values are related.
+  group: Function
+  type: product
+  fields:
+  - name: parameters
+    type: list
+    of: any
+    presence: required
+    description: >
+      The input values of the tuple.
+  - name: result
+    type: any
+    presence: required
+    description: >
+      The tuple output value.
+- name: engine_type
+  label: Engine Type
+  description: >
+    A an engine type is a description of an Engine Value.
+  group: Engine
+  type: product
+  fields:
+  - name: data_type
+    type: engine_data_type
+    presence: required
+    description: >
+      The type of data.
+  - name: name
+    type: string
+    presence: required
+    description: >
+      A name of the data.
+- name: dice_roll
+  label: Dice Roll
+  description: >
+    A Dice Roll represents one or more dice of differents shapes plus a modifier.
+  group: Dice Roll
+  type: product
+  fields:
+  - name: quantities
+    type: list
+    of: dice_quantity
+    presence: required
+    description: >
+      The dice quantities.
+    constraints:
+    - nonempty_list
+  - name: modifiers
+    type: list
+    of: roll_modifier
+    presence: optional
+    description: >
+      The dice modifiers.
+- name: dice_quantity
+  label: Dice Quantity
+  description: >
+    A Dice Quantity is a die and a number of times that the die should be rolled. 
+  group: Dice Roll
+  type: product
+  fields:
+  - name: sides
+    type: integer
+    presence: required  
+    description: >
+      The number of sides of the die.
+    constraints:
+    - positive_integer
+  - name: quantity
+    type: positive_integer
+    presence: required  
+    description: >
+      The number of times to roll the die.
+    constraints:
+    - positive_integer
+- name: roll_modifier
+  label: Roll Modifier
+  description: >
+    A Roll Modifier is a bonus that is applied to a Dice Roll. The bonus may be 
+    associated with a name or description.
+  group: Dice Roll
+  type: product
+  fields:
+  - name: modifier
+    type: number
+    presence: required
+    description: >
+      The integer value to add to a dice roll as a modifier.
+  - name: name
+    type: string
+    presence: optional
+    description: >
+      A label for the modifier.
+- name: program
+  label: Program
+  description: >
+    Programs define complex values that may be composed of other values. They are also reactive, 
+    so if a program depends on a set of values, it updates when any one of those values changes. 
+  group: Program
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      A name of the program. Must be unique and contain only letters, numbers, and underscores. 
+      The name is used to uniquely identify the program when customizing some aspect of the 
+      sheet.
+  - name: label
+    type: string
+    presence: optional
+    description: >
+      A program label is the program's name but formatted so it is easy to read. It does not need 
+      to be unique and contain contain any letters or characters.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A concise description of what the program does, why it exists, and in what situations it 
+      could be used.
+  - name: parameter_types
+    type: list
+    of: engine_type
+    presence: required
+    description: >
+      The types of input values that the program accepts.
+    constraints:
+    - nonempty_list
+  - name: result_type
+    type: engine_type
+    presence: required
+    description: >
+      The types of data the program outputs.
+  - name: statements
+    type: list
+    of: program_statement
+    presence: required
+    description: >
+      The program's statements.
+  - name: result_statement
+    type: program_statement
+    presence: required
+    description: >
+      The program statement that calculates the program result value.
+- name: program_statement
+  label: Statement
+  description: >
+    Programs are a collection of statements. Each statement defines one value. Those values can be 
+    used in subsequent statements to calculate more values. The result of a program is just the 
+    result of the final statement.
+  group: Program
+  type: product
+  fields:
+  - name: let
+    type: string
+    presence: required
+    description: >
+      The name of the variable defined by the statement. 
+  - name: function
+    type: string
+    presence: required
+    description: >
+      The function called by the statement.
+  - name: parameters
+    type: list
+    of: function_parameter
+    presence: required
+    description: >
+      The the parameters of the function that the statement calls.
+- name: program_invocation
+  label: Program Invocation
+  description: >
+    A program invocation describes a program that should be run. 
+  group: Program
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      The unique name of the program to be invoked.
+  - name: parameters
+    type: list
+    of: variable
+    presence: optional
+    description: >
+      The parameters to give to the program.
+- name: function_parameter
+  label: Function Parameter
+  description: >
+    A function parameter describes a piece of input to a function.
+  group: Function
+  type: product
+  fields:
+  - name: type
+    type: function_parameter_type
+    presence: required
+    description: >
+      The type of the data to pass to the function.
+  - name: value
+    type: any
+    presence: optional
+    description: >
+      The value of the parameter.
+- name: mechanic
+  label: Mechanic
+  description: >
+    The concept of a mechanic is related to the idea of game mechanics. In Tome a mechanic is 
+    a collection of related variables. A mechanic is considered active or inactive. A mechanic's 
+    state is determined by a collection of true or false variables. When all of those variables 
+    are true, then the mechanic is active. If one of those varibles becomes false then the 
+    mechanic is changed to an inactive state. When a mechanic is active, then its variables are 
+    available in the programming environment (the engine.) And when the mechanic is inactive, 
+    those variables are inaccessible.
+  group: Mechanic
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      The name of the Mechanic. The name is used to uniquely identify the mechanic when 
+      programming or customizing the sheet. Therefore, the name must be unique and contain 
+      only letters, numbers, and underscores.
+  - name: label
+    type: string
+    presence: optional
+    description: >
+      The mechanic label is the name of the Mechanic formatted nicely. It does not need to be 
+      unique or contain any specific characters, but should be pleasant to read!
+  - name: summary
+    type: string
+    presence: optional
+    description: >
+      The mechanic summary is a very brief description of the mechanic. The summary is displayed 
+      alongside the mechanic label in lists.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      The description should explain what the mechanic does and how, as well as detail situations 
+      when it should be used. The description should relate the mechanic to the game rules that it 
+      was created to emulate.
+  - name: category
+    type: mechanic_category
+    presence: optional
+    description: >
+      The category of the mechanic should group the mechanic with other related mechanics.
+  - name: requirements
+    type: list
+    of: string
+    presence: required
+    description: >
+      A list of boolean variables that must be true for the mechanic to be active.
+  - name: variables
+    type: list
+    of: variable
+    presence: required
+    description: >
+      The variables that are active when the mechanic is active.
+- name: mechanic_category
+  label: Mechanic Category
+  description: >
+    Mechanics are grouped into categories to make them easier to organize and deal with. A mechanic 
+    may be created without a category, in which case it is sorted with other uncategorized 
+    mechanics.
+  group: Mechanic
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      The name of the mechanic category is used to uniquely identify the category when customizing 
+      the sheet. It must be unique and contain only letters, numbers, and underscores. What happens 
+      when not unique?
+  - name: label
+    description: >
+      The mechanic name in a form that is pleasant to read. It does not need to be unique and may 
+      contain any characters. What about the length?
+    type: string
+    presence: required
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A description of the category and the common traits that its mechanics share.
+- name: variable
+  label: Variable
+  description: >
+    A variable is the basic element of programming in the Tome engine. A variable represents a 
+    piece of data that may change over time. Variables may be declared in many places. While 
+    many variables may be defined in a Tome sheet, they may not all be active. Only active 
+    variables may be used by programs, widgets, or other Tome elements. There are a number of 
+    different situations where variables may be activated.
+  group: Variable
+  type: sum
+  cases: 
+  - name: boolean
+    type: boolean_variable 
+    description: >
+      A variable with a true/false value.
+  - name: dice
+    type: dice_variable 
+    description: >
+      A variable with a dice roll value.
+  - name: number
+    type: number_variable 
+    description: >
+      A variable with a numerical value.
+  - name: text
+    type: variable_text 
+    description: >
+      A variable with a text value.
+- name: boolean_variable
+  label: Boolean Variable
+  description: >
+    A boolean variable represents a piece of data that is either True of False. More generally, 
+    it can represent any data with two unique states.
+  group: Variable
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      The name of the Boolean Variable. The name must be unique and may only contain letters, 
+      numbers, and underscores. It is used to uniquely identify the variable when customizing 
+      the sheet or programming.
+  - name: label
+    type: string
+    presence: optional
+    description: >
+      The Boolean Variable's name in a format that is pleasant to read. The label does not need 
+      to be unique and may contain any characters.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A description of what the variable represents.
+  - name: value
+    type: boolean_variable_value
+    presence: required
+    description: >
+      The value of the variable.
+  - name: is_namespaced
+    type: boolean
+    presence: optional
+    default_value: 'false'
+    description: >
+      If true this variable may be assigned a namespace depending on its context.
+  - name: tags
+    type: string_list
+    presence: optional
+    description: >
+      Tags that can be used to place the variable in a group.
+- name: boolean_variable_value
+  label: Boolean Variable Value
+  description: >
+    The boolean variable value is the source of a Boolean Variable's value.
+  group: Variable
+  type: sum
+  cases:
+  - name: literal
+    type: boolean
+    description: >
+      A literal true/false value.
+  - name: invocation
+    type: program_invocation
+    description: >
+      A true/false value created from a program.
+- name: dice_variable
+  label: Dice Variable
+  description: >
+    A Dice Variable represents a Dice Roll value.
+  group: Variable
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      The name of the Dice Variable. The name must be unique and may only contain letters, 
+      numbers, and underscores. It is used to uniquely identify the variable when customizing 
+      the sheet or programming.
+  - name: label
+    type: string
+    presence: optional
+    description: >
+      The Dice Variable's name in a format that is pleasant to read. The label does not need 
+      to be unique and may contain any characters.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A description of what the variable represents.
+  - name: value
+    type: dice_roll
+    presence: required
+    description: >
+      A the dice roll value.
+  - name: is_namespaced
+    type: boolean
+    presence: optional
+    default_value: 'false'
+    description: >
+      If true this variable may be assigned a namespace depending on its context.
+  - name: tags
+    type: string_list
+    presence: optional
+    description: >
+      Tags that can be used to place the variable in a group.
+- name: number_variable
+  label: Number Variable
+  description: >
+    A Number Variable holds numerical data. 
+  group: Variable
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+  - name: label
+    type: string
+    presence: optional
+  - name: description
+    type: string
+    presence: optional
+  - name: value
+    type: number_variable_value
+    presence: required
+  - name: is_namespaced
+    type: boolean
+    presence: optional
+    default_value: 'false'
+    description: >
+      If true this variable may be assigned a namespace depending on its context.
+  - name: tags
+    type: string_list
+    presence: optional
+    description: >
+      Tags that can be used to place the variable in a group.
+- name: number_variable_value
+  label: Number Variable Value
+  description: >
+    A number variable value is the source of a Number Variable's value.
+  group: Variable
+  type: sum
+  cases:
+  - name: literal
+    type: boolean
+    description: >
+      A literal number.
+  - name: variable_reference
+    type: string
+    description: >
+      The value of another number variable.
+  - name: invocation
+    type: program_invocation
+    description: >
+      The value of another number variable.
+  - name: value_reference
+    type: value_reference
+    description: >
+      A value from the Dictionary.
+  - name: summation
+    type: summation
+    description: >
+      The value of a summation.
+- name: variable_id
+  label: Variable Identifier
+  description: >
+    The unique identifier of a variable.
+  group: Variable
+  type: simple
+  base_type: string
+- name: variable_text
+  label: Text Variable
+  description: >
+    A text variable contains textual data.
+  group: Variable
+  type: product
+  fields:
+  - name: id
+    type: variable_id
+    presence: required
+    description: >
+      The name of the Text Variable. The name must be unique and may only contain letters, 
+      numbers, and underscores. It is used to uniquely identify the variable when customizing 
+      the sheet or programming.
+  - name: label
+    type: string
+    presence: optional
+    description: >
+      The Text Variable's name in a format that is pleasant to read. The label does not need 
+      to be unique and may contain any characters.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A description of what the variable represents.
+  - name: value
+    type: variable_text_value
+    presence: required
+    description: >
+      The text value.
+  - name: is_namespaced
+    type: boolean
+    presence: optional
+    default_value: 'false'
+    description: >
+      If true this variable may be assigned a namespace depending on its context.
+  - name: tags
+    type: list
+    of: variable_tag
+    presence: optional
+    description: >
+      Tags that can be used to place the variable in a group.
+- name: variable_tag
+  label: Variable Tag
+  description: >
+    The unique identifier of a variable.
+  group: Variable
+  type: simple
+  base_type: string
+- name: variable_text_value
+  label: Text Variable Value
+  description: >
+    The source of a Text Variable's data.
+  group: Variable
+  type: sum
+  cases:
+  - type: text_literal
+    description: >
+      A literal text value.
+  - type: value_reference
+    description: >
+      A text value from the Dictionary.
+  - type: program_invocation
+    description: >
+      A program that returns a text value.
+- name: text_literal
+  label: Text Literal
+  description: >
+    A literal text value.
+  group: Variable
+  type: simple
+  base_type: string
+- name: summation
+  label: Summation
+  description: >
+    A summation is a numerical value that consists of the sum of other numerical values.
+  group: Summation
+  type: product
+  fields:
+  - name: terms
+    type: list
+    of: summation_term
+    presence: required
+    description: >
+      The terms of the summation.
+- name: summation_term
+  label: Summation Term
+  description: >
+    A summation term is a value that is part of a summation.
+  group: Summation
+  type: sum
+  cases:
+  - name: literal
+    type: summation_term_integer
+    description: >
+      A literal number.
+  - name: dice_roll
+    type: summation_term_dice_roll
+    description: >
+      A dice roll.
+  - name: conditional
+    type: summation_term_conditional
+    description: >
+      The value depends on if a boolean variable is true or false.
+- name: summation_term_conditional
+  label: Conditional Term
+  description: >
+    A conditional summation term is a term that can take on two different values, depending on the 
+    truthfulness of a boolean variable. 
+  group: Summation
+  type: product
+  fields:
+  - name: conditional_term_value
+    type: boolean_variable
+    presence: required
+    description: >
+      A boolean variable that is used to determine which branch to follow.
+  - name: true_term_value
+    type: number_variable
+    presence: required
+    description: >
+      The number variable to be the result when the conditional term is true.
+  - name: false_term_value
+    type: number_variable
+    presence: required
+    description: >
+      The number variable to be the result when the conditional term is false.
+- name: summation_term_integer
+  label: Integer Term
+  description: >
+    An integer term is a number that is part of a summation.
+  group: Summation
+  type: product
+  fields:
+  - name: term_value
+    type: number_variable
+    presence: required
+    description: >
+      The number variable that is the term value.
+- name: summation_term_dice_roll
+  label: Dice Roll Term
+  description: >
+    An dice roll term represents a number that is part of a summation. Depending on how the 
+    summation is used, the dice roll may be rolled to calculate an exact value for the 
+    summation or the dice roll may be preserved, in which case the summation becomes a dice 
+    roll with any non-dice roll values being modifiers to the roll.
+  group: Summation
+  type: product
+  fields:
+  - name: term_value
+    type: dice_variable
+    presence: required
+    description: >
+      The dice roll value that is the term value.
+- name: value_reference
+  label: Value Reference
+  description: >
+    A value reference is a reference to a value or value set defined in the Dictionary.
+  group: Value
+  type: product
+  fields:
+  - name: value_set_name
+    type: string
+    presence: required
+    description: >
+      The name of the value set.
+  - name: value_name
+    type: string
+    presence: optional
+    description: >
+      The name of the value.
+- name: value_set
+  label: Value Set
+  description: >
+    A value set is a set of custom values. It may simply be a collection of values or it could 
+    be a collection of value sets.
+  group: Value
+  type: sum
+  cases:
+  - name: base
+    type: value_set_base
+    description: >
+      A base value set, composed of just values.
+  - name: compound
+    type: value_set_compound
+    description: >
+      A compound value set, composed of values from multiple value sets.
+- name: value_set_base
+  label: Base Value Set
+  description: >
+    A base value set is a collection of custom defined values in Tome. 
+  group: Value
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      The name is used to uniquely identify the Base Value Set when customizing or programming. 
+      It must therefore be unique and may contain only letters, numbers, and underscores.
+  - name: label
+    type: string
+    presence: optional
+    description: >
+      The name in a format that is pleasant to read. Does not need to be unique and may contain 
+      any characters. Should be plural.
+  - name: label_singular
+    type: string
+    presence: optional
+    description: >
+      The name in a format that is pleasant to read, but in a singular form.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A concise description of the value set's purpose and of what it contains.
+  - name: value_type
+    type: value_set_value_type
+    presence: optional
+    description: >
+      The type of values in the value set.
+  - name: values
+    type: list
+    of: value
+    presence: required
+    description: >
+      The colletion of values in the set.
+- name: value_set_compound
+  label: Compound Value Set
+  description: >
+    A compound value set is a collection of other value sets.
+  group: Value
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      The name is used to uniquely identify the Base Value Set when customizing or programming. 
+      It must therefore be unique and may contain only letters, numbers, and underscores.
+  - name: label
+    type: string
+    presence: optional
+    description: >
+      The name in a format that is pleasant to read. Does not need to be unique and may contain 
+      any characters. Should be plural.
+  - name: label_singular
+    type: string
+    presence: optional
+    description: >
+      The name in a format that is pleasant to read, but in a singular form.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A concise description of the value set's purpose and of what it contains.
+  - name: value_type
+    type: value_set_value_type
+    presence: optional
+    description: >
+      The type of values in the value set.
+  - name: value_sets
+    type: list
+    of: string
+    presence: required
+    description: >
+      The names of the value sets in the compound value set.
+- name: value
+  label: Value
+  description: >
+    A value is a fundamental part of the programming engine. It permits the creation of custom 
+    data.
+  group: Value
+  type: sum
+  cases:
+  - name: text
+    type: value_text
+    description: >
+      A text value.
+  - name: number
+    type: value_number
+    description: >
+      A numerical value.
+- name: value_text
+  label: Text Value
+  description: >
+    A textual value.
+  group: Value
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      A unique identifier of the value.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A concise description of what the value represents.
+  - name: value
+    type: string
+    presence: required
+    description: >
+      The text value.
+  - name: variables
+    type: list
+    of: variable
+    presence: optional
+    description: >
+      Variables that will be active when this value is used.
+- name: value_number
+  label: Number Value
+  description: >
+    A numerical value.
+  group: Value
+  type: product
+  fields:
+  - name: name
+    type: string
+    presence: required
+    description: >
+      A unique identifier of the value.
+  - name: description
+    type: string
+    presence: optional
+    description: >
+      A concise description of what the value represents.
+  - name: value
+    type: number
+    presence: required
+    description: >
+      The number value.
+  - name: variables
+    type: list
+    of: variable
+    presence: optional
+    description: >
+      Variables that will be active when this value is used.
+constraints:
+- name: function_parameter_type
+  type: string_one_of
+  parameters:
+    set:
+    - parameter
+    - variable
+    - literal_number
+    - literal_string
+- name: value_set_value_type
+  type: string_one_of
+  parameters:
+    set:
+    - number
+    - text
+    - any
+- name: engine_data_type
+  type: string_one_of
+  parameters:
+    set:
+    - boolean
+    - dice_roll
+    - number
+    - set_number
+    - set_text
+    - text

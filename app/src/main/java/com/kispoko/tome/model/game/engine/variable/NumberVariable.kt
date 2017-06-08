@@ -3,14 +3,9 @@ package com.kispoko.tome.model.game.engine.variable
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.value.ValueReference
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -19,33 +14,35 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import java.util.*
 
 
 
 /**
  * Number Variable
  */
-sealed class NumberVariableValue : Model
+sealed class NumberVariableValue
 {
 
-     companion object : Factory<NumberVariableValue>
+    companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<NumberVariableValue> = when (doc)
-        {
-            is DocDict -> when (doc.case())
+        override fun fromDocument(doc: SpecDoc): ValueParser<NumberVariableValue> =
+            when (doc.case)
             {
-                "literal"   -> NumberVariableLiteralIntegerValue.fromDocument(doc)
+                "literal"   -> NumberVariableLiteralValue.fromDocument(doc)
                 "variable"  -> NumberVariableVariableValue.fromDocument(doc)
                 "program"   -> NumberVariableProgramValue.fromDocument(doc)
                 "value"     -> NumberVariableValueValue.fromDocument(doc)
                 "summation" -> NumberVariableSummationValue.fromDocument(doc)
                 else        -> effError<ValueError,NumberVariableValue>(
-                                    UnknownCase(doc.case(), doc.path))
+                                    UnknownCase(doc.case, doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
+
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    open fun dependencies() : Set<VariableReference> = setOf()
 
 }
 
@@ -53,26 +50,17 @@ sealed class NumberVariableValue : Model
 /**
  * Literal Value
  */
-data class NumberVariableLiteralIntegerValue(
-                            override val id : UUID,
-                            val value : Func<Int>) : NumberVariableValue()
+data class NumberVariableLiteralValue(val value : Double) : NumberVariableValue()
 {
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<NumberVariableValue> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> = when (doc)
         {
-            is DocDict -> effApply(::NumberVariableLiteralIntegerValue,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   effApply(::Prim, doc.int("value")))
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+            is DocNumber -> effValue(NumberVariableLiteralValue(doc.number))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
-
-    override fun onLoad() { }
 
 }
 
@@ -81,27 +69,20 @@ data class NumberVariableLiteralIntegerValue(
  * Variable Value
  */
 data class NumberVariableVariableValue(
-                            override val id : UUID,
-                            val variableReference : Func<VariableReference>) : NumberVariableValue()
+                        val variableReference : VariableReference) : NumberVariableValue()
 {
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<NumberVariableValue> = when (doc)
-        {
-            is DocDict -> effApply(::NumberVariableVariableValue,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Variable Reference
-                                   doc.at("reference") ap {
-                                       effApply(::Comp, VariableReference.fromDocument(it))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
+                effApply(::NumberVariableVariableValue, VariableReference.fromDocument(doc))
     }
 
-    override fun onLoad() { }
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies() : Set<VariableReference> = setOf(variableReference)
 
 }
 
@@ -109,28 +90,20 @@ data class NumberVariableVariableValue(
 /**
  * Program Value
  */
-data class NumberVariableProgramValue(
-                            override val id : UUID,
-                            val inovcation : Func<Invocation>) : NumberVariableValue()
+data class NumberVariableProgramValue(val invocation : Invocation) : NumberVariableValue()
 {
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<NumberVariableValue> = when (doc)
-        {
-            is DocDict -> effApply(::NumberVariableProgramValue,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Variable Reference
-                                   doc.at("invocation") ap {
-                                       effApply(::Comp, Invocation.fromDocument(it))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
+            effApply(::NumberVariableProgramValue, Invocation.fromDocument(doc))
     }
 
-    override fun onLoad() { }
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies() : Set<VariableReference> = invocation.dependencies()
 
 }
 
@@ -138,28 +111,14 @@ data class NumberVariableProgramValue(
 /**
  * Program Value
  */
-data class NumberVariableValueValue(
-                            override val id : UUID,
-                            val valueReference : Func<ValueReference>) : NumberVariableValue()
+data class NumberVariableValueValue(val valueReference : ValueReference) : NumberVariableValue()
 {
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<NumberVariableValue> = when (doc)
-        {
-            is DocDict -> effApply(::NumberVariableValueValue,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Variable Reference
-                                   doc.at("reference") ap {
-                                       effApply(::Comp, ValueReference.fromDocument(it))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
+                effApply(::NumberVariableValueValue, ValueReference.fromDocument(doc))
     }
-
-    override fun onLoad() { }
 
 }
 
@@ -167,28 +126,20 @@ data class NumberVariableValueValue(
 /**
  * Summation Value
  */
-data class NumberVariableSummationValue(
-                            override val id : UUID,
-                            val summation : Func<Summation>) : NumberVariableValue()
+data class NumberVariableSummationValue(val summation : Summation) : NumberVariableValue()
 {
 
     companion object : Factory<NumberVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<NumberVariableValue> = when (doc)
-        {
-            is DocDict -> effApply(::NumberVariableSummationValue,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Variable Reference
-                                   doc.at("summation") ap {
-                                       effApply(::Comp, Summation.fromDocument(it))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
+                effApply(::NumberVariableSummationValue, Summation.fromDocument(doc))
     }
 
-    override fun onLoad() { }
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies() : Set<VariableReference> = summation.dependencies()
 
 }
 

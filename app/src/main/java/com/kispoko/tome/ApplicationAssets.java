@@ -9,8 +9,8 @@ package com.kispoko.tome;
 public class ApplicationAssets
 {
 
-    public final static String templateManifest = "template/manifest.yaml";
+    public final static String officialManifest = "official/manifest.yaml";
 
     public final static String specificationDirectoryPath = "spec";
-    public final static String templateDirectoryPath = "template";
+    public final static String officialDirectoryPath = "official";
 }

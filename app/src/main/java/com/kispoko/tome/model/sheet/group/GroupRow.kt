@@ -9,6 +9,7 @@ import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.widget.Widget
 import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.rts.sheet.State
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
@@ -60,13 +61,12 @@ data class GroupRow(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive()
+    fun onActive(state : State)
     {
-        this.widgets.list.forEach { it.onActive() }
+        this.widgets.list.forEach { it.onActive(state) }
     }
 
 }
-
 
 
 /**

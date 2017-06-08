@@ -1,0 +1,9 @@
+sheets:
+- sheet_id: sila_sunia
+  campaign_id: harmony
+  game_id: amanace
+campaigns:
+- campaign_id: harmony
+  game_id: amanace
+games:
+- game_id: amanace

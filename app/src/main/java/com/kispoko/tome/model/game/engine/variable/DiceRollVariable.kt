@@ -5,9 +5,7 @@ package com.kispoko.tome.model.game.engine.variable
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -23,10 +21,10 @@ import java.util.*
 /**
  * Dice Variable Value
  */
-sealed class DiceVariableValue : Model
+sealed class DiceVariableValue
 {
 
-     companion object : Factory<DiceVariableValue>
+    companion object : Factory<DiceVariableValue>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<DiceVariableValue> = when (doc)
         {
@@ -40,33 +38,26 @@ sealed class DiceVariableValue : Model
         }
     }
 
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    open fun dependencies() : Set<VariableReference> = setOf()
+
 }
 
 
 /**
  * Literal Value
  */
-data class DiceVariableLiteralValue(override val id : UUID,
-                                    val value : Func<DiceRoll>) : DiceVariableValue()
+data class DiceVariableLiteralValue(val value : DiceRoll) : DiceVariableValue()
 {
 
     companion object : Factory<DiceVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<DiceVariableValue> = when (doc)
-        {
-            is DocDict -> effApply(::DiceVariableLiteralValue,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("value") ap {
-                                       effApply(::Comp, DiceRoll.fromDocument(it))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceVariableValue> =
+                effApply(::DiceVariableLiteralValue, DiceRoll.fromDocument(doc))
     }
-
-    override fun onLoad() { }
 
 }
 

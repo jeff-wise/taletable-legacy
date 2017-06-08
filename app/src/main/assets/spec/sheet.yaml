@@ -22,8 +22,13 @@ types:
   group: Sheet
   type: product
   fields:
-  - name: campaign_name
-    type: campaign_name
+  - name: id
+    type: sheet_id
+    presence: required
+    description: >
+      The id of the sheet.
+  - name: campaign_id
+    type: campaign_id
     presence: required
     description: >
       The name of the campaign.
@@ -38,6 +43,13 @@ types:
     presence: optional
     description: >
       The sheet settings.
+- name: sheet_id
+  label: sheet_id
+  description: >
+    The unique sheet identifier.
+  group: Sheet
+  type: simple
+  base_type: string
 - name: settings
   label: Settings
   description: >
@@ -60,13 +72,6 @@ types:
   description: >
     The name of a custom theme.
   group: Theme
-  type: simple
-  base_type: string
-- name: campaign_name
-  label: Campaign Name
-  description: >
-    The name of a campaign.
-  group: Campaign
   type: simple
   base_type: string
 - name: section

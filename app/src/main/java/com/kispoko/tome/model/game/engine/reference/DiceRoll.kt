@@ -3,50 +3,40 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.variable.*
-import effect.Err
 import effect.effApply
 import effect.effError
-import effect.effValue
 import lulo.document.*
-import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import java.util.*
 
 
 
 /**
  * Boolean Reference
  */
-sealed class DiceRollReference : Model
+sealed class DiceRollReference
 {
 
     companion object : Factory<DiceRollReference>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<DiceRollReference> = when (doc)
-        {
-            is DocDict ->
+        override fun fromDocument(doc: SpecDoc): ValueParser<DiceRollReference> =
+            when (doc.case)
             {
-                when (doc.case())
-                {
-                    "literal"  -> DiceRollReferenceLiteral.fromDocument(doc)
-                    "variable" -> DiceRollReferenceVariable.fromDocument(doc)
-                    else       -> effError<ValueError,DiceRollReference>(
-                                            UnknownCase(doc.case(), doc.path))
-                }
+                "literal"  -> DiceRollReferenceLiteral.fromDocument(doc)
+                "variable" -> DiceRollReferenceVariable.fromDocument(doc)
+                else       -> effError<ValueError,DiceRollReference>(
+                                  UnknownCase(doc.case, doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
 
-    override fun onLoad() { }
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    open fun dependencies(): Set<VariableReference> = setOf()
 
 }
 
@@ -54,26 +44,15 @@ sealed class DiceRollReference : Model
 /**
  * Literal Dice Roll Reference
  */
-data class DiceRollReferenceLiteral(override val id : UUID,
-                                    val value : Func<DiceRoll>) : DiceRollReference()
+data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference()
 {
 
     companion object : Factory<DiceRollReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollReference> = when (doc)
-        {
-            is DocDict -> effApply(::DiceRollReferenceLiteral,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("dice_roll") ap {
-                                       effApply(::Comp, DiceRoll.fromDocument(it))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollReference> =
+                effApply(::DiceRollReferenceLiteral, DiceRoll.fromDocument(doc))
 
-    override fun onLoad() { }
+    }
 
 }
 
@@ -82,26 +61,21 @@ data class DiceRollReferenceLiteral(override val id : UUID,
  * Variable Dice Roll Reference
  */
 data class DiceRollReferenceVariable(
-                            override val id : UUID,
-                            val variableReference : Func<VariableReference>) : DiceRollReference()
+                val variableReference : VariableReference) : DiceRollReference()
 {
 
     companion object : Factory<DiceRollReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollReference> = when (doc)
-        {
-            is DocDict -> effApply(::DiceRollReferenceVariable,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("reference") ap {
-                                       effApply(::Comp, VariableReference.fromDocument(it ))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollReference> =
+                effApply(::DiceRollReferenceVariable, VariableReference.fromDocument(doc))
+
     }
 
-    override fun onLoad() { }
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(): Set<VariableReference> = setOf(variableReference)
 
 }
 

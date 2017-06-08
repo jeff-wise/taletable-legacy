@@ -45,7 +45,7 @@ public class GameSummaryIndex
     public static GameSummaryIndex fromManifest(Context context)
                   throws IOException, YamlParseException
     {
-        InputStream yamlIS = context.getAssets().open(ApplicationAssets.templateManifest);
+        InputStream yamlIS = context.getAssets().open(ApplicationAssets.officialManifest);
         YamlParser yaml = YamlParser.fromFile(yamlIS);
 
         List<GameSummary> games = yaml.atKey("games").forEach(new YamlParser.ForEach<GameSummary>() {

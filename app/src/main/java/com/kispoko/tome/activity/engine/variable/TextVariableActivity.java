@@ -141,7 +141,7 @@ public class TextVariableActivity extends AppCompatActivity
 //
 //        // ** Value Tab View
 //        String valueString = "";
-//        ValueReference valueReference = this.variable.valueReference();
+//        DataReference valueReference = this.variable.valueReference();
 //        if (valueReference != null) {
 //            TextValue textValue = SheetManagerOld.currentSheet().engine().dictionary()
 //                                              .textValue(valueReference);

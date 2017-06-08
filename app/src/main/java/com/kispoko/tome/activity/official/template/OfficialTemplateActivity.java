@@ -14,7 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.SheetActivityOld;
 import com.kispoko.tome.lib.ui.Font;
 import com.kispoko.tome.lib.ui.ImageViewBuilder;
 import com.kispoko.tome.lib.ui.LayoutType;
@@ -56,8 +55,8 @@ public class OfficialTemplateActivity extends AppCompatActivity
         // ------------------------------------------------------------------------------------
 
         this.template = null;
-        if (getIntent().hasExtra("template")) {
-            this.template = (Template) getIntent().getSerializableExtra("template");
+        if (getIntent().hasExtra("official")) {
+            this.template = (Template) getIntent().getSerializableExtra("official");
         }
 
         // [3] Initialize UI
@@ -277,16 +276,16 @@ public class OfficialTemplateActivity extends AppCompatActivity
         layout.height           = 0;
         layout.weight           = 1f;
 
-        layout.onClick          = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(OfficialTemplateActivity.this, SheetActivityOld.class);
-                intent.putExtra("official_template_id", template.id(variantName));
-                startActivity(intent);
-            }
-        };
+//        layout.onClick          = new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View view)
+//            {
+//                Intent intent = new Intent(OfficialTemplateActivity.this, SheetActivityOld.class);
+//                intent.putExtra("official_template_id", template.id(variantName));
+//                startActivity(intent);
+//            }
+//        };
 
         return layout.relativeLayout(context);
     }

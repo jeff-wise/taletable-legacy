@@ -1,12 +1,179 @@
 
-package com.kispoko.tome.rts.game.engine;
+package com.kispoko.tome.rts.sheet
+
+
+import android.util.Log
+import com.kispoko.tome.model.game.engine.variable.*
+import com.kispoko.tome.model.sheet.Sheet
+import org.apache.commons.collections4.trie.PatriciaTrie
+
+
+
+/**
+ * The state interface.
+ */
+interface State
+{
+    fun addVariable(variable : Variable)
+}
+
+
+interface Stateful
+{
+    fun onActive(state : State)
+}
 
 
 /**
  * State
  *
- * Manages all of the variables.
+ * Game data for a sheet.
  */
+class SheetState(val sheet : Sheet) : State
+{
+
+    // Variable Indexes
+    // -----------------------------------------------------------------------------------------
+
+    private val variableById : MutableMap<VariableId,Variable> = mutableMapOf()
+    private val variablesByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
+
+    private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
+    private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
+
+    // Search Indexes
+    // -----------------------------------------------------------------------------------------
+
+    private val activeVariableIdTrie : PatriciaTrie<Variable> = PatriciaTrie()
+    private val activeVariableLabelTrie : PatriciaTrie<Variable> = PatriciaTrie()
+
+
+    // VARIABLES
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Add a variable to the index. If a variable with the same name already exists in the index,
+     * then the new variable replaces the old variable.
+     * @param variable The variable to add.
+    */
+    override fun addVariable(variable : Variable)
+    {
+        Log.d("***SHEET_STATE", "add variable " + variable.variableId.value)
+        val variableId = variable.variableId.value
+        val variableLabel = variable.label.value
+
+        // (1) Index variable by name
+        // -------------------------------------------------------------------------------------
+
+        variableById.put(variableId, variable)
+
+        // (2) Index variable for search
+        // -------------------------------------------------------------------------------------
+
+        activeVariableIdTrie.put(variableId.toString(), variable)
+
+        if (variableLabel != null)
+            activeVariableLabelTrie.put(variableLabel.value, variable)
+
+        // (3) Index the variable by tag
+        // -------------------------------------------------------------------------------------
+
+        for (tag in variable.tags.value)
+        {
+            if (variablesByTag.containsKey(tag))
+                variablesByTag[tag]!!.add(variable)
+            else
+                variablesByTag.put(tag, mutableSetOf(variable))
+        }
+
+        // (4) Index the variable's dependencies
+        //     For each dependency, we add this variable as a listener. That is, in the state
+        //     graph we add a forward edge from each dependency variable to this one, so that
+        //     when the dependency variable is updated it can update this variable as well.
+        // -------------------------------------------------------------------------------------
+
+        for (variableRef in variable.dependencies())
+        {
+            when (variableRef)
+            {
+                is VariableReferenceId ->
+                {
+                    if (listenersById.containsKey(variableRef.id))
+                        listenersById[variableRef.id]!!.add(variable)
+                    else
+                        listenersById.put(variableRef.id, mutableSetOf(variable))
+                }
+                is VariableReferenceTag ->
+                {
+                    if (listenersByTag.containsKey(variableRef.tag))
+                        listenersByTag[variableRef.tag]!!.add(variable)
+                    else
+                        listenersByTag.put(variableRef.tag, mutableSetOf(variable))
+                }
+            }
+        }
+
+        // (5) Notify all current listeners of this variable
+        // -------------------------------------------------------------------------------------
+
+        this.updateListeners(variable)
+
+    }
+
+
+    /**
+     * Update all listeners that the variable has been changed.
+     */
+    fun updateListeners(variable : Variable)
+    {
+        // (1) Update listeners of variable id
+        // -------------------------------------------------------------------------------------
+
+        val variableId = variable.variableId.value
+        if (listenersById.containsKey(variableId))
+        {
+            for (listener in listenersById[variableId]!!)
+            {
+                listener.onUpdate()
+                this.updateListeners(listener)
+            }
+
+        }
+
+        // (2) Update listeners of variable tag
+        // -------------------------------------------------------------------------------------
+
+        for (tag in variable.tags.value)
+        {
+            if (listenersByTag.containsKey(tag))
+            {
+                for (listener in listenersByTag[tag]!!)
+                {
+                    listener.onUpdate()
+                    this.updateListeners(listener)
+                }
+            }
+        }
+
+    }
+
+
+    fun textVariableWithId(variableId : VariableId) : TextVariable?
+    {
+        Log.d("***SHEET_STATE", "lookup text var " + variableId)
+        val variable = this.variableById[variableId]
+
+        when (variable)
+        {
+            is TextVariable -> return variable
+            else            -> return null
+        }
+    }
+
+
+}
+
+
 //public class State
 //{
 //
@@ -47,74 +214,6 @@ package com.kispoko.tome.rts.game.engine;
 //
 //    // > Engine
 //    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Add a variable to the index. If a variable with the same name already exists in the index,
-//     * then the new variable replaces the old variable.
-//     * @param variableUnion The variable union to add.
-//     */
-//    public static void addVariable(VariableUnion variableUnion)
-//    {
-//        String variableName  = variableUnion.variable().name();
-//        String variableLabel = variableUnion.variable().label();
-//
-//        // [1] Add variable to indexes.
-//        // --------------------------------------------------------------------------------------
-//
-//        // > Add to MAIN variable-by-name index
-//        if (variableName != null)
-//            variableByName.put(variableName, variableUnion);
-//
-//        // > Add to SEARCH indexes
-//        if (variableName != null)
-//            activeVariableNameTrie.put(variableName, variableUnion);
-//
-//        if (variableLabel != null)
-//            activeVariableLabelTrie.put(variableLabel, variableUnion);
-//
-//        // [2] Index the variable's dependencies
-//        // --------------------------------------------------------------------------------------
-//
-//        for (VariableReference variableReference : variableUnion.variable().dependencies())
-//        {
-//            switch (variableReference.type())
-//            {
-//                // > Index variable names to listeners
-//                case NAME:
-//                    String name = variableReference.name();
-//                    if (!variableNameToListeners.containsKey(name))
-//                        variableNameToListeners.put(name, new HashSet<Variable>());
-//                    Set<Variable> nameListeners = variableNameToListeners.get(name);
-//                    nameListeners.add(variableUnion.variable());
-//                    break;
-//                case TAG:
-//                    String tag = variableReference.tag();
-//                    if (!variableTagToListeners.containsKey(tag))
-//                        variableTagToListeners.put(tag, new HashSet<Variable>());
-//                    Set<Variable> tagListeners = variableTagToListeners.get(tag);
-//                    tagListeners.add(variableUnion.variable());
-//                    break;
-//            }
-//        }
-//
-//        // [3] Index the variable's tags
-//        // --------------------------------------------------------------------------------------
-//
-//        for (String tag : variableUnion.variable().tags())
-//        {
-//            if (!tagIndex.containsKey(tag))
-//                tagIndex.put(tag, new HashSet<VariableUnion>());
-//
-//            Set<VariableUnion> variablesWithTag = tagIndex.get(tag);
-//            variablesWithTag.add(variableUnion);
-//        }
-//
-//        // [4] Notify all current listeners of this variable
-//        // --------------------------------------------------------------------------------------
-//
-//        updateVariableDependencies(variableUnion.variable());
-//    }
-//
 //
 //    public static void addVariable(Variable variable)
 //    {
@@ -246,38 +345,6 @@ package com.kispoko.tome.rts.game.engine;
 //    public static boolean hasVariable(String variableName)
 //    {
 //        return variableByName.containsKey(variableName);
-//    }
-//
-//
-//    public static void updateVariableDependencies(Variable variable)
-//    {
-//        // [1] Call onVariableUpdate on all variables listening for that variable name.
-//        // --------------------------------------------------------------------------------------
-//
-//        if (variableNameToListeners.containsKey(variable.name()))
-//        {
-//            for (Variable listener : variableNameToListeners.get(variable.name())) {
-//                listener.onUpdate();
-//            }
-//        }
-//
-//        // [2] Call onVariableUpdate on all variables listening for any of the variable's tags
-//        // --------------------------------------------------------------------------------------
-//
-//        for (String tag : variable.tags())
-//        {
-//            if (variableTagToListeners.containsKey(tag))
-//            {
-//                for (Variable listener : variableTagToListeners.get(tag)) {
-//                    listener.onUpdate();
-//                }
-//            }
-//        }
-//
-//        // [3] Update the mechanics
-//        // --------------------------------------------------------------------------------------
-//
-//        updateMechanics(variable.name());
 //    }
 //
 //

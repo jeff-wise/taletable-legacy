@@ -191,7 +191,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 //            modelClasses.add(ValueUnion.class);
 //            modelClasses.add(TextValue.class);
 //            modelClasses.add(NumberValue.class);
-//            modelClasses.add(ValueReference.class);
+//            modelClasses.add(DataReference.class);
 
             // ** Variable
 //            modelClasses.add(VariableUnion.class);
@@ -199,7 +199,7 @@ public class DatabaseManager extends SQLiteOpenHelper
 //            modelClasses.add(NumberVariable.class);
 //            modelClasses.add(DiceVariable.class);
             modelClasses.add(BooleanVariable.class);
-            modelClasses.add(VariableReference.class);
+            //modelClasses.add(VariableReference.class);
 
             ORM.createSchema(modelClasses, database);
         }

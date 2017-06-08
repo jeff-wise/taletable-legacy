@@ -14,7 +14,8 @@ import com.kispoko.tome.model.game.engine.variable.Variable
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
-import com.kispoko.tome.rts.Stateful
+import com.kispoko.tome.rts.sheet.State
+import com.kispoko.tome.rts.sheet.Stateful
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -67,6 +68,7 @@ sealed class Widget : Model, Stateful, Serializable
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
 
 }
 
@@ -154,7 +156,7 @@ data class ActionWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 }
 
 
@@ -203,7 +205,7 @@ data class BooleanWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 }
 
 
@@ -264,7 +266,7 @@ data class ButtonWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -320,7 +322,7 @@ data class ExpanderWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -360,7 +362,7 @@ data class ImageWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -416,7 +418,8 @@ data class ListWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
+
 }
 
 
@@ -466,7 +469,7 @@ data class LogWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -511,7 +514,7 @@ data class MechanicWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -582,7 +585,7 @@ data class NumberWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -643,7 +646,7 @@ data class OptionWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -704,7 +707,7 @@ data class QuoteWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -761,7 +764,7 @@ data class TableWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -818,7 +821,7 @@ data class TabWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State) { }
 
 }
 
@@ -830,7 +833,7 @@ data class TextWidget(override val id : UUID,
                       val widgetId : Func<WidgetId>,
                       val format : Func<TextWidgetFormat>,
                       val description : Func<TextDescription>,
-                      val value : Func<TextVariable>,
+                      val value : Comp<TextVariable>,
                       val variables : Coll<Variable>) : Widget()
 {
 
@@ -879,7 +882,10 @@ data class TextWidget(override val id : UUID,
     // STATEFUL
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive() { }
+    override fun onActive(state : State)
+    {
+        state.addVariable(this.value.value)
+    }
 
 }
 

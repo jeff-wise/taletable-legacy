@@ -268,7 +268,7 @@ data class TextCellFormat(override val id : UUID,
 //                if (this.valueVariable() == null || dictionary == null)
 //                    break;
 //
-//                ValueReference valueReference = this.valueVariable().valueReference();
+//                DataReference valueReference = this.valueVariable().valueReference();
 //                String         valueSetId   = this.valueVariable().valueSetId();
 //
 //                ValueSetUnion valueSetUnion  = dictionary.lookup(valueSetId);

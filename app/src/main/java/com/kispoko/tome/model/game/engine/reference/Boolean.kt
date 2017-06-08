@@ -3,12 +3,7 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.game.engine.variable.VariableReference
-import effect.Err
+import com.kispoko.tome.model.game.engine.variable.*
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -17,36 +12,32 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import java.util.*
 
 
 
 /**
  * Boolean Reference
  */
-sealed class BooleanReference : Model
+sealed class BooleanReference
 {
 
     companion object : Factory<BooleanReference>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<BooleanReference> = when (doc)
-        {
-            is DocDict ->
+        override fun fromDocument(doc: SpecDoc): ValueParser<BooleanReference> =
+            when (doc.case)
             {
-                when (doc.case())
-                {
-                    "literal"  -> BooleanReferenceLiteral.fromDocument(doc)
-                    "variable" -> BooleanReferenceVariable.fromDocument(doc)
-                    else       -> effError<ValueError,BooleanReference>(
-                                            UnknownCase(doc.case(), doc.path))
-                }
+                "literal"  -> BooleanReferenceLiteral.fromDocument(doc)
+                "variable" -> BooleanReferenceVariable.fromDocument(doc)
+                else                 -> effError<ValueError,BooleanReference>(
+                                            UnknownCase(doc.case, doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
 
-    override fun onLoad() { }
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    open fun dependencies(): Set<VariableReference> = setOf()
 
 }
 
@@ -54,24 +45,18 @@ sealed class BooleanReference : Model
 /**
  * Literal Boolean Reference
  */
-data class BooleanReferenceLiteral(override val id : UUID,
-                                   val value : Func<Boolean>) : BooleanReference()
+data class BooleanReferenceLiteral(val value : Boolean) : BooleanReference()
 {
 
     companion object : Factory<BooleanReference>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanReference> = when (doc)
         {
-            is DocDict -> effApply(::BooleanReferenceLiteral,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   effApply(::Prim, doc.boolean("value")))
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+            is DocBoolean -> effValue(BooleanReferenceLiteral(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
 
-    override fun onLoad() { }
 
 }
 
@@ -79,27 +64,20 @@ data class BooleanReferenceLiteral(override val id : UUID,
 /**
  * Variable Boolean Reference
  */
-data class BooleanReferenceVariable(
-                            override val id : UUID,
-                            val variableReference : Func<VariableReference>) : BooleanReference()
+data class BooleanReferenceVariable(val variableReference : VariableReference) : BooleanReference()
 {
 
     companion object : Factory<BooleanReference>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanReference> = when (doc)
-        {
-            is DocDict -> effApply(::BooleanReferenceVariable,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("reference") ap {
-                                       effApply(::Comp, VariableReference.fromDocument(it ))
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanReference> =
+                effApply(::BooleanReferenceVariable, VariableReference.fromDocument(doc))
     }
 
-    override fun onLoad() { }
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies(): Set<VariableReference> = setOf(variableReference)
 
 }
 

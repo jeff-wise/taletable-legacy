@@ -5,13 +5,11 @@ package com.kispoko.tome.model.sheet
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.campaign.CampaignName
+import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.sheet.section.Section
+import com.kispoko.tome.rts.sheet.State
 import effect.*
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SpecDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.util.*
@@ -22,7 +20,8 @@ import java.util.*
  * Sheet
  */
 data class Sheet(override val id : UUID,
-                 val campaignName : Func<CampaignName>,
+                 val sheetId : Prim<SheetId>,
+                 val campaignId: Prim<CampaignId>,
                  val sections : Coll<Section>,
                  val settings : Func<Settings>) : Model
 {
@@ -34,9 +33,13 @@ data class Sheet(override val id : UUID,
             is DocDict -> effApply(::Sheet,
                                    // Model Id
                                    effValue(UUID.randomUUID()),
-                                   // Campaign Name
-                                   doc.at("campaign_name") ap {
-                                       effApply(::Prim, CampaignName.fromDocument(it))
+                                   // Sheet Id
+                                   doc.at("id") ap {
+                                       effApply(::Prim, SheetId.fromDocument(it))
+                                   },
+                                   // Campaign Id
+                                   doc.at("campaign_id") ap {
+                                       effApply(::Prim, CampaignId.fromDocument(it))
                                    },
                                    // Section List
                                    doc.list("sections") ap { docList ->
@@ -62,12 +65,28 @@ data class Sheet(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive()
+    fun onActive(state : State)
     {
-        sections.list.forEach { it.onActive() }
+        sections.list.forEach { it.onActive(state) }
     }
 }
 
+
+/**
+ * Sheet Id
+ */
+data class SheetId(val name : String)
+{
+
+    companion object : Factory<SheetId>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<SheetId> = when (doc)
+        {
+            is DocText -> effValue(SheetId(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
 
 
 

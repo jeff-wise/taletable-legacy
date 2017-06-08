@@ -11,6 +11,7 @@ import com.kispoko.tome.model.sheet.style.DividerThickness
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.widget.NumberWidgetFormat
 import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.rts.sheet.State
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -59,10 +60,11 @@ data class Group(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive()
+    fun onActive(state : State)
     {
-        this.rows.list.forEach { it.onActive() }
+        this.rows.list.forEach { it.onActive(state) }
     }
+
 }
 
 

@@ -7,6 +7,7 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.rts.sheet.State
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -60,10 +61,11 @@ data class Page(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive()
+    fun onActive(state : State)
     {
-        this.groups.list.forEach { it.onActive() }
+        this.groups.list.forEach { it.onActive(state) }
     }
+
 }
 
 

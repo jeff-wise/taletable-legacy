@@ -3,12 +3,7 @@ package com.kispoko.tome.model.game.engine.variable
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.program.Invocation
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -17,38 +12,40 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import java.util.*
 
 
 
 /**
  * Boolean Variable
  */
-sealed class BooleanVariableValue : Model
+sealed class BooleanVariableValue
 {
 
-     companion object : Factory<BooleanVariableValue>
+    companion object : Factory<BooleanVariableValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<BooleanVariableValue> = when (doc)
-        {
-            is DocDict -> when (doc.case())
+        override fun fromDocument(doc: SpecDoc): ValueParser<BooleanVariableValue> =
+            when (doc.case)
             {
-                "literal" -> BooleanVariableLiteralValue.fromDocument(doc)
-                "program" -> BooleanVariableProgramValue.fromDocument(doc)
-                else      -> effError<ValueError, BooleanVariableValue>(
-                                    UnknownCase(doc.case(), doc.path))
+                "boolean_literal"    -> BooleanVariableLiteralValue.fromDocument(doc)
+                "program_invocation" -> BooleanVariableProgramValue.fromDocument(doc)
+                else                 -> effError<ValueError,BooleanVariableValue>(
+                                            UnknownCase(doc.case, doc.path))
             }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
     }
+
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    open fun dependencies() : Set<VariableReference> = setOf()
+
 }
 
 
 /**
  * Literal Value
  */
-data class BooleanVariableLiteralValue(override val id : UUID,
-                                       val value : Func<Boolean>) : BooleanVariableValue()
+data class BooleanVariableLiteralValue(val value : String) : BooleanVariableValue()
 {
 
     companion object : Factory<BooleanVariableValue>
@@ -56,46 +53,34 @@ data class BooleanVariableLiteralValue(override val id : UUID,
         override fun fromDocument(doc : SpecDoc)
                       : ValueParser<BooleanVariableValue> = when (doc)
         {
-            is DocDict -> effApply(::BooleanVariableLiteralValue,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   effApply(::Prim, doc.boolean("value")))
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+            is DocText -> effValue(BooleanVariableLiteralValue(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
-
-    override fun onLoad() { }
 
 }
 
 
 /**
- * Program Invocation Value
+ * Program Value
  */
-data class BooleanVariableProgramValue(override val id : UUID,
-                                       val value : Func<Invocation>) : BooleanVariableValue()
+data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVariableValue()
 {
 
     companion object : Factory<BooleanVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<BooleanVariableValue> = when (doc)
-        {
-            is DocDict -> effApply(::BooleanVariableProgramValue,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value
-                                   doc.at("invocation") ap {
-                                       effApply(::Comp, Invocation.fromDocument(it) )
-                                   })
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
+        override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanVariableValue> =
+                effApply(::BooleanVariableProgramValue, Invocation.fromDocument(doc))
     }
 
-    override fun onLoad() { }
+
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
+    override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
 
 }
+
 
 
 //
@@ -419,18 +404,6 @@ data class BooleanVariableProgramValue(override val id : UUID,
 //            this.isNamespaced.setValue(false);
 //    }
 //
-//
-//    @Override
-//    public List<VariableReference> dependencies()
-//    {
-//        List<VariableReference> variableDependencies = new ArrayList<>();
-//
-//        if (this.kind.getValue() == Kind.PROGRAM) {
-//            variableDependencies = this.invocation().variableDependencies();
-//        }
-//
-//        return variableDependencies;
-//    }
 //
 //
 //    @Override

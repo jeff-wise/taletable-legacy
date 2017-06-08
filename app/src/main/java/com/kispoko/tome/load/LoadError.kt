@@ -65,7 +65,7 @@ data class SpecParseError(val error : String) : LoadError()
 }
 
 
-data class DocumentParseError(val docType : String, val error : ValueError) : LoadError()
+data class ValueParseError(val docType : String, val error : ValueError) : LoadError()
 {
     override fun debugMessage(): String =
             """
@@ -77,7 +77,9 @@ data class DocumentParseError(val docType : String, val error : ValueError) : Lo
 }
 
 
-data class TemplateParseError(val errors : List<DocParseError> ) : LoadError()
+data class DocumentParseError(val documentName: String,
+                              val specName : String,
+                              val errors : List<DocParseError> ) : LoadError()
 {
     override fun debugMessage(): String
     {
@@ -88,7 +90,7 @@ data class TemplateParseError(val errors : List<DocParseError> ) : LoadError()
         }
 
         return """
-               Load Error: Error parsing template
+               Load Error: Error parsing document '$documentName' with spec '$specName'
                    All errors:
                    $errorsString
                """

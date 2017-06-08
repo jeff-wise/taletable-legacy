@@ -20,7 +20,7 @@ import java.util.*
  * Value
  */
 @Suppress("UNCHECKED_CAST")
-sealed class Value(open val valueId : Func<ValueId>,
+sealed class Value(open val valueId : Prim<ValueId>,
                    open val description : Func<ValueDescription>) : Model
 {
 
@@ -53,7 +53,7 @@ sealed class Value(open val valueId : Func<ValueId>,
  * Number Value
  */
 data class ValueNumber(override val id : UUID,
-                       override val valueId : Func<ValueId>,
+                       override val valueId : Prim<ValueId>,
                        override val description: Func<ValueDescription>,
                        val value : Func<Double>,
                        val variables : Coll<Variable>)
@@ -95,7 +95,7 @@ data class ValueNumber(override val id : UUID,
  * Text Value
  */
 data class ValueText(override val id : UUID,
-                     override val valueId : Func<ValueId>,
+                     override val valueId : Prim<ValueId>,
                      override val description: Func<ValueDescription>,
                      val value : Func<String>,
                      val variables : Coll<Variable>)
@@ -137,8 +137,8 @@ data class ValueText(override val id : UUID,
  * Value Reference
  */
 data class ValueReference(override val id : UUID,
-                          val valueSetId: Func<ValueSetId>,
-                          val valueId: Func<ValueId>) : Model
+                          val valueSetId: Prim<ValueSetId>,
+                          val valueId: Prim<ValueId>) : Model
 {
 
     companion object : Factory<ValueReference>
