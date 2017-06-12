@@ -2,10 +2,68 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.style.Position
+import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.theme.ColorId
+import effect.effApply
+import effect.effError
+import effect.effValue
+import lulo.document.DocDict
+import lulo.document.DocType
+import lulo.document.SpecDoc
+import lulo.document.docType
+import lulo.value.UnexpectedType
+import lulo.value.ValueParser
+import java.util.*
+
+
 
 /**
- * Image Widget
+ * Image Widget Format
  */
+data class ImageWidgetFormat(override val id : UUID,
+                             val widgetFormat : Comp<WidgetFormat>) : Model
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ImageWidgetFormat>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<ImageWidgetFormat> = when (doc)
+        {
+            is DocDict -> effApply(::ImageWidgetFormat,
+                                   // Model Id
+                                   effValue(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   })
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+}
 
 
 //

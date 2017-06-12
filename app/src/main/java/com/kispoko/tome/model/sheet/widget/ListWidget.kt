@@ -7,7 +7,6 @@ import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextStyle
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -25,10 +24,14 @@ import java.util.*
  * List Widget Format
  */
 data class ListWidgetFormat(override val id : UUID,
-                            val widgetFormat : Func<WidgetFormat>,
+                            val widgetFormat : Comp<WidgetFormat>,
                             val listStyle : Func<TextStyle>,
                             val annotationStyle : Func<TextStyle>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ListWidgetFormat>
     {
@@ -52,6 +55,18 @@ data class ListWidgetFormat(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

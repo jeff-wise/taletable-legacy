@@ -42,11 +42,15 @@ data class ExpanderLabel(val value : String)
  * Button Widget Format
  */
 data class ExpanderWidgetFormat(override val id : UUID,
-                                val widgetFormat : Func<WidgetFormat>,
+                                val widgetFormat : Comp<WidgetFormat>,
                                 val nameStyleClosed : Func<TextStyle>,
                                 val nameStyleOpen : Func<TextStyle>,
                                 val headerPadding : Func<Spacing>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ExpanderWidgetFormat>
     {
@@ -74,6 +78,18 @@ data class ExpanderWidgetFormat(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

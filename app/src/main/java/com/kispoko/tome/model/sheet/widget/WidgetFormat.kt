@@ -12,7 +12,7 @@ import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorId
-import effect.Err
+import com.kispoko.tome.model.theme.ColorTheme
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -27,15 +27,32 @@ import java.util.*
  * Widget Format
  */
 data class WidgetFormat(override val id : UUID,
-                        val label : Func<WidgetLabel>,
-                        val width : Func<WidgetWidth>,
-                        val alignment : Func<Alignment>,
-                        val labelStyle : Func<TextStyle>,
-                        val backgroundColor : Func<ColorId>,
-                        val corners : Func<Corners>,
-                        val margins : Func<Spacing>,
-                        val padding : Func<Spacing>) : Model
+                        val width : Prim<WidgetWidth>,
+                        val alignment : Prim<Alignment>,
+                        val backgroundColorTheme : Prim<ColorTheme>,
+                        val corners : Prim<Corners>,
+                        val margins : Comp<Spacing>,
+                        val padding : Comp<Spacing>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widget : WidgetWidth,
+                alignment : Alignment,
+                backgroundColorTheme : ColorTheme,
+                corners : Corners,
+                margins : Spacing,
+                padding : Spacing)
+        : this(UUID.randomUUID(),
+               Prim(widget),
+               Prim(alignment),
+               Prim(backgroundColorTheme),
+               Prim(corners),
+               Comp(margins),
+               Comp(padding))
+
     companion object : Factory<WidgetFormat>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<WidgetFormat> = when (doc)
@@ -43,57 +60,56 @@ data class WidgetFormat(override val id : UUID,
             is DocDict -> effApply(::WidgetFormat,
                                    // Model Id
                                    effValue(UUID.randomUUID()),
-                                   // Label
-                                   doc.at("label") ap {
-                                       effApply(::Prim, WidgetLabel.fromDocument(it))
-                                   },
                                    // Width
                                    doc.at("width") ap {
                                        effApply(::Prim, WidgetWidth.fromDocument(it))
                                    },
                                    // Alignment
-                                   effApply(::Prim, doc.enum<Alignment>("alignment")),
-                                   // Label Style
-                                   doc.at("label_style") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
+                                   doc.at("alignment") ap {
+                                       effApply(::Prim, Alignment.fromDocument(it))
                                    },
                                    // Background Color
                                    doc.at("background_color") ap {
-                                       effApply(::Prim, ColorId.fromDocument(it))
+                                       effApply(::Prim, ColorTheme.fromDocument(it))
                                    },
                                    // Corners
-                                   effApply(::Prim, doc.enum<Corners>("corners")),
+                                   doc.at("corners") ap {
+                                       effApply(::Prim, Corners.fromDocument(it))
+                                   },
                                    // Margins
                                    doc.at("margins") ap {
-                                       effApply(::Prim, Spacing.fromDocument(it))
+                                       effApply(::Comp, Spacing.fromDocument(it))
                                    },
                                    // Padding
                                    doc.at("padding") ap {
-                                       effApply(::Prim, Spacing.fromDocument(it))
+                                       effApply(::Comp, Spacing.fromDocument(it))
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default() : WidgetFormat =
+                WidgetFormat(WidgetWidth.default,
+                             Alignment.Center(),
+                             ColorTheme.transparent,
+                             Corners.NONE(),
+                             Spacing.default(),
+                             Spacing.default())
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
-}
-
-
-/**
- * Widget Name
- */
-data class WidgetLabel(val value : String)
-{
-
-    companion object : Factory<WidgetLabel>
-    {
-        override fun fromDocument(doc: SpecDoc): ValueParser<WidgetLabel> = when (doc)
-        {
-            is DocText -> effValue(WidgetLabel(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
 }
 
 
@@ -107,9 +123,11 @@ data class WidgetWidth(val value : Int)
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<WidgetWidth> = when (doc)
         {
-            is DocInteger -> effValue(WidgetWidth(doc.integer.toInt()))
-            else          -> effError(UnexpectedType(DocType.INTEGER, docType(doc), doc.path))
+            is DocNumber -> effValue(WidgetWidth(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
+
+        val default = WidgetWidth(1)
     }
 }
 

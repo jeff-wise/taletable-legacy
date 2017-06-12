@@ -2,20 +2,27 @@
 package com.kispoko.tome.model.sheet.group
 
 
+import android.content.Context
+import android.view.View
+import android.widget.LinearLayout
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.widget.Widget
-import com.kispoko.tome.model.theme.ColorId
-import com.kispoko.tome.rts.sheet.State
+import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.SheetComponent
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -25,10 +32,11 @@ import java.util.*
  * Group Row
  */
 data class GroupRow(override val id : UUID,
-                    val format : Func<GroupRowFormat>,
-                    val index : Func<Int>,
-                    val widgets : Coll<Widget>) : Model
+                    val format : Comp<GroupRowFormat>,
+                    val index : Prim<Int>,
+                    val widgets : Coll<Widget>) : Model, SheetComponent, Comparable<GroupRow>
 {
+
     companion object
     {
         fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<GroupRow> = when (doc)
@@ -38,7 +46,7 @@ data class GroupRow(override val id : UUID,
                                    effValue(UUID.randomUUID()),
                                    // Format
                                    split(doc.maybeAt("format"),
-                                         nullEff<GroupRowFormat>(),
+                                         effValue(Comp(GroupRowFormat.default())),
                                          { effApply(::Comp, GroupRowFormat.fromDocument(it))}),
                                    // Index
                                    effValue(Prim(index)),
@@ -52,18 +60,119 @@ data class GroupRow(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : GroupRowFormat = this.format.value
+
+    fun index() : Int = this.index.value
+
+    fun widgets() : List<Widget> = this.widgets.list
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // ON ACTIVE
+    // -----------------------------------------------------------------------------------------
+    // COMPARABLE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(state : State)
+    override fun compareTo(other : GroupRow) = compareValuesBy(this, other, { it.index.value })
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(sheetContext : SheetContext)
     {
-        this.widgets.list.forEach { it.onActive(state) }
+        this.widgets.list.forEach { it.onSheetComponentActive(sheetContext) }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    override fun view(sheetContext : SheetContext) : View
+    {
+        val layout = this.viewLayout(sheetContext.context)
+
+        // > Widgets
+        layout.addView(widgetsView(sheetContext))
+
+        // > Divider
+        if (this.format().showDivider())
+            layout.addView(dividerView(sheetContext))
+
+        return layout
+    }
+
+
+
+    private fun viewLayout(context : Context) : LinearLayout
+    {
+        val layout              = LinearLayoutBuilder()
+
+        layout.orientation      = LinearLayout.VERTICAL
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.marginSpacing    = this.format().margins()
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun widgetsView(sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = this.widgetsViewLayout(sheetContext.context)
+
+//        var rowHasTopLabel = false
+//
+//        for (widget in this.widgets())
+//
+//            if (widget.widgetFormat().label() != null)
+//                rowHasTopLabel = true
+//            }
+//        }
+
+        this.widgets().forEach { layout.addView(it.view(sheetContext)) }
+
+        return layout
+    }
+
+
+    private fun widgetsViewLayout(context : Context) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.paddingSpacing   = this.format().padding()
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun dividerView(sheetContext : SheetContext) : LinearLayout
+    {
+        val divider = LinearLayoutBuilder()
+
+        divider.width           = LinearLayout.LayoutParams.MATCH_PARENT
+        divider.heightDp        = 1
+
+        divider.backgroundColor = SheetManager.color(sheetContext.sheetId,
+                                                     this.format().dividerColorTheme())
+
+        return divider.linearLayout(sheetContext.context)
     }
 
 }
@@ -73,155 +182,111 @@ data class GroupRow(override val id : UUID,
  * Group Row Format
  */
 data class GroupRowFormat(override val id : UUID,
-                          val alignment : Func<Alignment>,
-                          val backgroundColor : Func<ColorId>,
-                          val margins : Func<Spacing>,
-                          val padding : Func<Spacing>,
-                          val dividerColor : Func<ColorId>) : Model
+                          val alignment : Prim<Alignment>,
+                          val backgroundColorTheme : Prim<ColorTheme>,
+                          val margins : Comp<Spacing>,
+                          val padding : Comp<Spacing>,
+                          val showDivider : Prim<Boolean>,
+                          val dividerColorTheme : Prim<ColorTheme>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(alignment : Alignment,
+                backgroundColorTheme : ColorTheme,
+                margins : Spacing,
+                padding : Spacing,
+                showDivider : Boolean,
+                dividerColorTheme : ColorTheme)
+        : this(UUID.randomUUID(),
+               Prim(alignment),
+               Prim(backgroundColorTheme),
+               Comp(margins),
+               Comp(padding),
+               Prim(false),
+               Prim(dividerColorTheme))
+
+
     companion object : Factory<GroupRowFormat>
     {
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<GroupRowFormat> = when (doc)
         {
-            is DocDict -> effApply(::GroupRowFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Alignment
-                                   effApply(::Prim, doc.enum<Alignment>("alignment")),
-                                   // Background Color
-                                   doc.at("background_color") ap {
-                                       effApply(::Prim, ColorId.fromDocument(it))
-                                   },
-                                   // Margins
-                                   doc.at("margins") ap {
-                                       effApply(::Comp, Spacing.fromDocument(it))
-                                   },
-                                   // Padding
-                                   doc.at("padding") ap {
-                                       effApply(::Comp, Spacing.fromDocument(it))
-                                   },
-                                   // Divider Color
-                                   doc.at("divider_color") ap {
-                                        effApply(::Prim, ColorId.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                effApply(::GroupRowFormat,
+                         // Model Id
+                         effValue(UUID.randomUUID()),
+                         // Alignment
+                         split(doc.maybeAt("alignment"),
+                               effValue<ValueError,Prim<Alignment>>(Prim(Alignment.Center())),
+                               { effApply(::Prim, Alignment.fromDocument(it))}),
+                         // Background Color
+                         split(doc.maybeAt("background_color_theme"),
+                               effValue(Prim(ColorTheme.transparent)),
+                               { effApply(::Prim, ColorTheme.fromDocument(it))}),
+                         // Margins
+                         split(doc.maybeAt("margins"),
+                               effValue(Comp(Spacing.default())),
+                               { effApply(::Comp, Spacing.fromDocument(it))}),
+                         // Padding
+                         split(doc.maybeAt("padding"),
+                               effValue(Comp(Spacing.default())),
+                               { effApply(::Comp, Spacing.fromDocument(it))}),
+                        // Show Divider?
+                        split(doc.maybeBoolean("show_divider"),
+                              effValue(Prim(false)),
+                              { effValue(Prim(it)) }),
+                         // Divider Color
+                         split(doc.maybeAt("divider_color_theme"),
+                               effValue(Prim(ColorTheme.black)),
+                               { effApply(::Prim, ColorTheme.fromDocument(it))})
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default() : GroupRowFormat =
+                GroupRowFormat(Alignment.Center(),
+                               ColorTheme.transparent,
+                               Spacing.default(),
+                               Spacing.default(),
+                               false,
+                               ColorTheme.black)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun alignment() : Alignment = this.alignment.value
+
+    fun backgroundColortheme() : ColorTheme = this.backgroundColorTheme.value
+
+    fun margins() : Spacing = this.margins.value
+
+    fun padding() : Spacing = this.padding.value
+
+    fun showDivider() : Boolean = this.showDivider.value
+
+    fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 }
 
 
-//
-//public class GroupRow extends Model
-//                      implements ToYaml, Serializable
-//{
-//
-//    // PROPERTIES
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // -----------------------------------------------------------------------------------------
-//
-//    private UUID                            id;
-//
-//
-//    // > Functors
-//    // -----------------------------------------------------------------------------------------
-//
-//    private PrimitiveFunctor<Integer>       index;
-//    private ModelFunctor<GroupRowFormat>    format;
-//    private CollectionFunctor<WidgetUnion>  widgets;
-//
-//
-//    // > Internal
-//    // -----------------------------------------------------------------------------------------
-//
-//    private GroupParent                     groupParent;
-//
-//
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    public GroupRow()
-//    {
-//        this.id         = null;
-//
-//        this.index      = new PrimitiveFunctor<>(null, Integer.class);
-//        this.format     = ModelFunctor.empty(GroupRowFormat.class);
-//        this.widgets    = CollectionFunctor.empty(WidgetUnion.class);
-//    }
-//
-//
-//    public GroupRow(UUID id,
-//                    Integer index,
-//                    GroupRowFormat format,
-//                    List<WidgetUnion> widgets)
-//    {
-//        this.id         = id;
-//
-//        this.index      = new PrimitiveFunctor<>(index, Integer.class);
-//        this.format     = ModelFunctor.full(format, GroupRowFormat.class);
-//        this.widgets    = CollectionFunctor.full(widgets, WidgetUnion.class);
-//    }
-//
-//
-//    /**
-//     * Create a row from its Yaml representation.
-//     * @param yaml The yaml parser.
-//     * @return The new row.
-//     * @throws YamlParseException
-//     */
-//    public static GroupRow fromYaml(Integer index, YamlParser yaml)
-//                  throws YamlParseException
-//    {
-//        UUID              id      = UUID.randomUUID();
-//
-//        GroupRowFormat    format  = GroupRowFormat.fromyaml(yaml.atMaybeKey("format"));
-//
-//        List<WidgetUnion> widgets = yaml.atKey("widgets").forEach(
-//                                                new YamlParser.ForEach<WidgetUnion>() {
-//            @Override
-//            public WidgetUnion forEach(YamlParser yaml, int index) throws YamlParseException {
-//                return WidgetUnion.fromYaml(yaml);
-//            }
-//        }, true);
-//
-//        return new GroupRow(id, index, format, widgets);
-//    }
-//
-//
-//    // API
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Id
-//    // ------------------------------------------------------------------------------------------
-//
-//    public UUID getId()
-//    {
-//        return this.id;
-//    }
-//
-//
-//    public void setId(UUID id)
-//    {
-//        this.id = id;
-//    }
-//
-//
-//    // ** On Load
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * This method is called when the Roleplay is completely loaded for the first time.
-//     */
-//    public void onLoad() { }
-//
-//
 //    // > Initialize
 //    // ------------------------------------------------------------------------------------------
 //
@@ -240,141 +305,4 @@ data class GroupRowFormat(override val id : UUID,
 //    }
 //
 //
-//    // > Yaml
-//    // ------------------------------------------------------------------------------------------
-//
-//    public YamlBuilder toYaml()
-//    {
-//        return YamlBuilder.map()
-//                .putYaml("format", this.format())
-//                .putList("widgets", this.widgets());
-//    }
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The row index.
-//     * @return The index.
-//     */
-//    public Integer index()
-//    {
-//        return this.index.getValue();
-//    }
-//
-//
-//    /**
-//     * Get the widgets in the row.
-//     * @return A list of widgets.
-//     */
-//    public List<WidgetUnion> widgets()
-//    {
-//        return this.widgets.getValue();
-//    }
-//
-//
-//    /**
-//     * The group row formatting options.
-//     * @return The format.
-//     */
-//    public GroupRowFormat format()
-//    {
-//        return this.format.getValue();
-//    }
-//
-//
-//    // > Views
-//    // ------------------------------------------------------------------------------------------
-//
-//    public LinearLayout view(Context context)
-//    {
-//        return mainView(context);
-//    }
-//
-//
-//    // > Views
-//    // ------------------------------------------------------------------------------------------
-//
-//    private LinearLayout mainView(Context context)
-//    {
-//        LinearLayout layout = mainViewLayout(context);
-//
-//        layout.addView(widgetsView(context));
-//
-//        if (this.format().dividerType() != DividerType.NONE)
-//            layout.addView(dividerView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout mainViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation  = LinearLayout.VERTICAL;
-//        layout.width        = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height       = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.marginSpacing    = this.format().margins();
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout widgetsView(Context context)
-//    {
-//        LinearLayout layout = widgetsViewLayout(context);
-//
-//        boolean rowHasTopLabel = false;
-//
-//        for (WidgetUnion widgetUnion : this.widgets())
-//        {
-//            if (widgetUnion.widget().data().format().label() != null) {
-//                rowHasTopLabel = true;
-//            }
-//        }
-//
-//        for (WidgetUnion widgetUnion : this.widgets())
-//        {
-//            Widget widget = widgetUnion.widget();
-//
-//            layout.addView(widget.view(rowHasTopLabel, context));
-//        }
-//
-//        return layout;
-//    }
-//
-//    private LinearLayout widgetsViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.HORIZONTAL;
-//        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.paddingSpacing   = this.format().padding();
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout dividerView(Context context)
-//    {
-//        LinearLayoutBuilder divider = new LinearLayoutBuilder();
-//
-//        divider.width       = LinearLayout.LayoutParams.MATCH_PARENT;
-//        divider.height      = R.dimen.one_dp;
-//
-//        BackgroundColor backgroundColor = this.format().backgroundColor();
-//        if (this.format().backgroundColor() == BackgroundColor.EMPTY)
-//            backgroundColor = this.groupParent.background();
-//
-//        divider.backgroundColor = this.format().dividerType()
-//                                      .colorIdWithBackground(backgroundColor);
-//
-//        return divider.linearLayout(context);
-//    }
-//
-//}
+

@@ -2,16 +2,48 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import effect.effError
+import effect.effValue
+import lulo.document.DocText
+import lulo.document.DocType
+import lulo.document.SpecDoc
+import lulo.document.docType
+import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
+import lulo.value.ValueParser
+
+
 
 /**
  * Position
  */
-enum class Position
+sealed class Position
 {
-    LEFT,
-    TOP,
-    RIGHT,
-    BOTTOM
+
+    class Left : Position()
+    class Top : Position()
+    class Right : Position()
+    class Bottom : Position()
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<Position> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "left"   -> effValue<ValueError,Position>(Position.Left())
+                "top"    -> effValue<ValueError,Position>(Position.Top())
+                "right"  -> effValue<ValueError,Position>(Position.Right())
+                "bottom" -> effValue<ValueError,Position>(Position.Bottom())
+                else     -> effError<ValueError,Position>(
+                                    UnexpectedValue("Corners", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
 }
 
 

@@ -5,8 +5,7 @@ package com.kispoko.tome.model.sheet
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.theme.Theme
-import com.kispoko.tome.model.theme.ThemeType
+import com.kispoko.tome.model.theme.ThemeId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -19,30 +18,44 @@ import java.util.*
  * Sheet Settings
  */
 data class Settings(override val id : UUID,
-                    val themeType : Func<ThemeType>,
-                    val customTheme : Func<Theme>) : Model
+                    val themeId : Prim<ThemeId>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Settings>
     {
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<Settings> = when (doc)
         {
-            is DocDict ->
-            {
-                effApply(::Settings,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
-                         // Theme Type
-                         effApply(::Prim, doc.enum<ThemeType>("theme_type")),
-                         // Custom Theme?
-                         split(doc.maybeAt("theme"),
-                               nullEff<Theme>(),
-                               { effApply(::Comp, Theme.fromDocument(doc)) })
-                         )
-            }
+            is DocDict -> effApply(::Settings,
+                                   // Model Id
+                                   effValue(UUID.randomUUID()),
+                                   // Theme Type
+                                   doc.at("theme") ap {
+                                       effApply(::Prim, ThemeId.fromDocument(it))
+                                   })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default() : Settings = Settings(UUID.randomUUID(), Prim(ThemeId.Dark()))
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun themeId() : ThemeId = this.themeId.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

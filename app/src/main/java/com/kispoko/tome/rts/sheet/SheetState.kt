@@ -18,10 +18,6 @@ interface State
 }
 
 
-interface Stateful
-{
-    fun onActive(state : State)
-}
 
 
 /**

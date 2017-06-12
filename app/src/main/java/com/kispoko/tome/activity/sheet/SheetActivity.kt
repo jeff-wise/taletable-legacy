@@ -2,18 +2,17 @@
 package com.kispoko.tome.activity.sheet
 
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 
 import com.kispoko.tome.R
+import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
 import com.kispoko.tome.load.LoadResultError
 import com.kispoko.tome.load.LoadResultValue
-import com.kispoko.tome.model.campaign.CampaignId
-import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.variable.VariableId
+import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.rts.sheet.*
@@ -42,17 +41,19 @@ class SheetActivity : AppCompatActivity()
 
         setContentView(R.layout.activity_sheet)
 
-        // (2) Load Sheet
+        // (2) Configure UI
+        // -------------------------------------------------------------------------------------
+
+        this.configureToolbar("")
+
+        this.initializeViews()
+
+        // (3) Load Sheet
         // -------------------------------------------------------------------------------------
 
         val officialIndex = OfficialIndex.load(this)
         if (officialIndex != null)
             this.loadSheet(officialIndex)
-
-        // (3) Configure UI
-        // -------------------------------------------------------------------------------------
-
-        this.configureToolbar("")
 
     }
 
@@ -62,6 +63,29 @@ class SheetActivity : AppCompatActivity()
         menuInflater.inflate(R.menu.empty, menu)
         return true
     }
+
+
+    // UI
+    // -----------------------------------------------------------------------------------------
+
+    fun initializeViews()
+    {
+        val sheetPagePagerAdapter = PagePagerAdapter(supportFragmentManager, mutableListOf())
+        this.pagePagerAdapter = pagePagerAdapter;
+
+//        ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
+//        viewPager.setAdapter(pagePagerAdapter);
+//        SheetActivityOld.viewPager = viewPager;
+//
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+//        tabLayout.setupWithViewPager(viewPager);
+//
+//        TextView titleView = (TextView) findViewById(R.id.toolbar_title);
+//        titleView.setText(this.characterName);
+//    }
+//
+    }
+
 
 
     // SHEET
@@ -86,14 +110,9 @@ class SheetActivity : AppCompatActivity()
                         val nameVariable = sheetRecord.sheetState
                                                       .textVariableWithId(VariableId("name"))
                         val sheetContext = sheetRecord.context(sheetActivity)
-                        Log.d("***SHEET_ACTIVITY", "got result")
-                        if (nameVariable == null)
-                            Log.d("***SHEET_ACTIVITY", "name var is null")
-                        if (sheetContext == null)
-                            Log.d("***SHEET_ACTIVITY", "sheet context is null")
+
                         if (nameVariable != null && sheetContext != null)
                         {
-                            Log.d("***SHEET_ACTIVITY", "got herre")
                             // TODO use maybe here
                             val nameString = nameVariable.value(sheetContext)
                             if (nameString != null)
@@ -101,41 +120,23 @@ class SheetActivity : AppCompatActivity()
                             else
                                 Log.d("***SHEET_ACTIVITY", "name was null")
                         }
+
+                        SheetManager.render()
                     }
                     is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetRecordLoad.userMessage)
                 }
 
             }
 
-            //SheetManager.loadOfficialSheet(officialSheet, officialIndex, this, this)
-
         }
     }
 
 
-//    override fun onSheetFileLoad(sheetLoadResult : SheetFileLoad)
-//    {
-//        when (sheetLoadResult)
-//        {
-//            is SheetFileLoadValue ->
-//            {
-//                val sheetRecord = sheetLoadResult.sheetRecord
-//
-//                val campaignId = sheetRecord.sheet.campaignId.value
-//                val gameId = CampaignManager.campaign(campaignId)
-//                val sheetContext = SheetContext(sheetRecord.sheet.sheetId.value,
-//
-//                                                )
-//
-//                // variable id should not be model
-//
-//                val nameVar = sheetRecord.sheetState.textVariableWithId(VariableId("name"))
-//
-//                val titleView = findViewById(R.id.toolbar_title) as TextView
-//                titleView.setText(nameVar?.value?.value?.value())
-//            }
-//        }
-//    }
+    private fun renderSheet(sheet : Sheet)
+    {
+
+    }
+
 
 }
 
@@ -418,23 +419,7 @@ class SheetActivity : AppCompatActivity()
 //     * between different character sheet pages.. It is connected to a tab layout, so that users
 //     * may select the character sheet pages by name.
 //     */
-//    private void prepareSheetViews()
-//    {
-////        PagePagerAdapter pagePagerAdapter =
-////                new PagePagerAdapter(getSupportFragmentManager(), new ArrayList<Page>());
-//        this.pagePagerAdapter = pagePagerAdapter;
-//
-//        ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
-//        viewPager.setAdapter(pagePagerAdapter);
-//        SheetActivityOld.viewPager = viewPager;
-//
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-//        tabLayout.setupWithViewPager(viewPager);
-//
-//        TextView titleView = (TextView) findViewById(R.id.toolbar_title);
-//        titleView.setText(this.characterName);
-//    }
-//
+
 //
 //    // > Data
 //    // -------------------------------------------------------------------------------------------

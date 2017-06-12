@@ -7,10 +7,12 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.sheet.section.Section
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.State
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -23,7 +25,7 @@ data class Sheet(override val id : UUID,
                  val sheetId : Prim<SheetId>,
                  val campaignId: Prim<CampaignId>,
                  val sections : Coll<Section>,
-                 val settings : Func<Settings>) : Model
+                 val settings : Comp<Settings>) : Model
 {
 
     companion object : Factory<Sheet>
@@ -48,7 +50,7 @@ data class Sheet(override val id : UUID,
                                    },
                                    // Sheet Settings
                                    split(doc.maybeAt("description"),
-                                         nullEff<Settings>(),
+                                         effValue(Comp(Settings.default())),
                                          { effApply(::Comp, Settings.fromDocument(it)) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -56,6 +58,20 @@ data class Sheet(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun sheetId() : SheetId = this.sheetId.value
+
+    fun campaignId() : CampaignId = this.campaignId.value
+
+    fun sections() : List<Section> = this.sections.list
+
+    fun settings() : Settings = this.settings.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
@@ -65,10 +81,11 @@ data class Sheet(override val id : UUID,
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(state : State)
+    fun onActive(sheetContext : SheetContext)
     {
-        sections.list.forEach { it.onActive(state) }
+        sections.list.forEach { it.onSheetComponentActive(sheetContext) }
     }
+
 }
 
 
@@ -195,15 +212,3 @@ data class SheetId(val name : String)
 //    {
 //
 //    }
-//
-//
-//    // LISTENERS
-//    // ------------------------------------------------------------------------------------------
-//
-//    public interface OnSheetListener {
-//        void onSheet(Sheet sheet);
-//    }
-//
-//
-//
-//

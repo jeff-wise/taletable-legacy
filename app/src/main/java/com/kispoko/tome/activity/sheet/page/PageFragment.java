@@ -16,6 +16,7 @@ import com.kispoko.tome.model.game.engine.Engine;
 import com.kispoko.tome.model.sheet.page.Page;
 
 
+
 /**
  * Page Fragment
  */
@@ -57,56 +58,5 @@ public class PageFragment extends Fragment
 
     // API
     // ------------------------------------------------------------------------------------------
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            page = (Page) getArguments().getSerializable("PAGE");
-//            rulesEngine = (Engine) getArguments().getSerializable("RULES");
-        }
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
-        ScrollView fragmentView = this.scrollView(getContext());
-
-    //    View pageView = this.page.view();
-     //   fragmentView.addView(pageView);
-
-        return fragmentView;
-    }
-
-
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-    }
-
-
-    @Override
-    public void onDetach()
-    {
-        super.onDetach();
-    }
-
-
-    // INTERNAL
-    // ------------------------------------------------------------------------------------------
-
-    private ScrollView scrollView(Context context)
-    {
-        ScrollViewBuilder scrollView = new ScrollViewBuilder();
-
-        scrollView.width        = LinearLayout.LayoutParams.MATCH_PARENT;
-        scrollView.height       = LinearLayout.LayoutParams.MATCH_PARENT;
-
-        return scrollView.scrollView(context);
-    }
 
 }

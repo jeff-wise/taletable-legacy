@@ -1,11 +1,64 @@
 
 package com.kispoko.tome.model.sheet.widget
 
+import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.model.game.engine.mechanic.Mechanic
+import effect.effApply
+import effect.effError
+import effect.effValue
+import lulo.document.DocDict
+import lulo.document.DocType
+import lulo.document.SpecDoc
+import lulo.document.docType
+import lulo.value.UnexpectedType
+import lulo.value.ValueParser
+import java.util.*
+
 
 
 /**
- * Mechanic Widget
+ * Mechanic Widget Format
  */
+data class MechanicWidgetFormat(override val id : UUID,
+                             val widgetFormat : Comp<WidgetFormat>) : Model
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<MechanicWidgetFormat>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<MechanicWidgetFormat> = when (doc)
+        {
+            is DocDict -> effApply(::MechanicWidgetFormat,
+                                   // Model Id
+                                   effValue(UUID.randomUUID()),
+                                   // Widget Format
+                                   doc.at("widget_format") ap {
+                                       effApply(::Comp, WidgetFormat.fromDocument(it))
+                                   })
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+}
 
 
 

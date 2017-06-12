@@ -5,11 +5,12 @@ package com.kispoko.tome.model.sheet.style
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.VerticalAlignment
-import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -19,57 +20,106 @@ import java.util.*
  * Text Format
  */
 data class TextFormat(override val id : UUID,
-                      val style : Func<TextStyle>,
-                      val position : Func<Position>,
-                      val height : Func<Height>,
-                      val padding : Func<Spacing>,
-                      val margins : Func<Spacing>,
-                      val alignment: Func<Alignment>,
-                      val verticalAlignment: Func<VerticalAlignment>) : Model
+                      val style : Comp<TextStyle>,
+                      val position : Prim<Position>,
+                      val height : Prim<Height>,
+                      val padding : Comp<Spacing>,
+                      val margins : Comp<Spacing>,
+                      val alignment: Prim<Alignment>,
+                      val verticalAlignment: Prim<VerticalAlignment>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(style : TextStyle,
+                position : Position,
+                height : Height,
+                padding : Spacing,
+                margins : Spacing,
+                alignment : Alignment,
+                verticalAlignment : VerticalAlignment)
+        : this(UUID.randomUUID(),
+               Comp(style),
+               Prim(position),
+               Prim(height),
+               Comp(padding),
+               Comp(margins),
+               Prim(alignment),
+               Prim(verticalAlignment))
+
 
     companion object : Factory<TextFormat>
     {
+
+        private val defaultStyle             = TextStyle.default()
+        private val defaultPosition          = Position.Top()
+        private val defaultHeight            = Height.Wrap()
+        private val defaultPadding           = Spacing.default()
+        private val defaultMargins           = Spacing.default()
+        private val defaultAlignment         = Alignment.Center()
+        private val defaultVerticalAlignment = VerticalAlignment.Middle()
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextFormat> = when (doc)
         {
             is DocDict ->
             {
                 effApply(::TextFormat,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Style
                          split(doc.maybeAt("style"),
-                               nullEff<TextStyle>(),
-                               { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                               effValue(defaultStyle),
+                               { TextStyle.fromDocument(it) }),
                          // Position
-                         split(doc.maybeEnum<Position>("position"),
-                               nullEff<Position>(),
-                               { effValue(Prim(it)) }),
+                         split(doc.maybeAt("position"),
+                               effValue<ValueError,Position>(defaultPosition),
+                               { Position.fromDocument(it) }),
                          // Height
-                         split(doc.maybeEnum<Height>("height"),
-                               nullEff<Height>(),
-                               { effValue(Prim(it)) }),
+                         split(doc.maybeAt("height"),
+                               effValue<ValueError,Height>(defaultHeight),
+                               { Height.fromDocument(it) }),
                          // Padding
                          split(doc.maybeAt("padding"),
-                               nullEff<Spacing>(),
-                               { effApply(::Comp, Spacing.fromDocument(it)) }),
+                               effValue(defaultPadding),
+                               { Spacing.fromDocument(it) }),
                          // Margins
                          split(doc.maybeAt("margins"),
-                               nullEff<Spacing>(),
-                               { effApply(::Comp, Spacing.fromDocument(it)) }),
+                               effValue(defaultMargins),
+                               { Spacing.fromDocument(it) }),
                          // Alignment
-                         split(doc.maybeEnum<Alignment>("alignment"),
-                               nullEff<Alignment>(),
-                               { effValue(Prim(it)) }),
+                         split(doc.maybeAt("alignment"),
+                               effValue<ValueError,Alignment>(defaultAlignment),
+                               { Alignment.fromDocument(it) }),
                          // Vertical Alignment
-                         split(doc.maybeEnum<VerticalAlignment>("vertical_alignment"),
-                               nullEff<VerticalAlignment>(),
-                               { effValue(Prim(it))  })
+                         split(doc.maybeAt("vertical_alignment"),
+                               effValue<ValueError,VerticalAlignment>(defaultVerticalAlignment),
+                               { VerticalAlignment.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : TextFormat =
+                TextFormat(defaultStyle,
+                           defaultPosition,
+                           defaultHeight,
+                           defaultPadding,
+                           defaultMargins,
+                           defaultAlignment,
+                           defaultVerticalAlignment)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
@@ -80,42 +130,84 @@ data class TextFormat(override val id : UUID,
  * Text Style
  */
 data class TextStyle(override val id : UUID,
-                     val color : Func<ColorId>,
-                     val size : Func<TextSize>,
-                     val font : Func<TextFont>,
-                     val isUnderlined : Func<Boolean>,
-                     val alignment: Func<Alignment>,
-                     val backgroundColor : Func<ColorId>) : Model
+                     val colorTheme : Prim<ColorTheme>,
+                     val size : Prim<TextSize>,
+                     val font : Prim<TextFont>,
+                     val isUnderlined : Prim<IsUnderlined>,
+                     val alignment: Prim<Alignment>,
+                     val backgroundColorTheme : Prim<ColorTheme>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(colorTheme : ColorTheme,
+                size : TextSize,
+                font : TextFont,
+                isUnderlined: IsUnderlined,
+                alignment : Alignment,
+                backgroundColorTheme: ColorTheme)
+        : this(UUID.randomUUID(),
+               Prim(colorTheme),
+               Prim(size),
+               Prim(font),
+               Prim(isUnderlined),
+               Prim(alignment),
+               Prim(backgroundColorTheme))
+
 
     companion object : Factory<TextStyle>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextStyle> = when (doc)
         {
-            is DocDict -> effApply(::TextStyle,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Color
-                                   doc.at("color") ap {
-                                       effApply(::Prim, ColorId.fromDocument(it))
-                                   },
-                                   // Size
-                                   doc.at("size") ap {
-                                       effApply(::Prim, TextSize.fromDocument(it))
-                                   },
-                                   // Font
-                                   effApply(::Prim, doc.enum<TextFont>("font")),
-                                   // Is Underlined?
-                                   effApply(::Prim, doc.boolean("is_underlined")),
-                                   // Alignment
-                                   effApply(::Prim, doc.enum<Alignment>("alignment")),
-                                   // Color
-                                   doc.at("background_color") ap {
-                                       effApply(::Prim, ColorId.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                effApply(::TextStyle,
+                         // Color Theme
+                         split(doc.maybeAt("color_theme"),
+                               effValue(ColorTheme.black),
+                               { ColorTheme.fromDocument(it) }),
+                         // Size
+                         split(doc.maybeAt("size"),
+                               effValue(TextSize(5.0)),
+                               { TextSize.fromDocument(it) }),
+                         // Font
+                         split(doc.maybeAt("font"),
+                                effValue<ValueError,TextFont>(TextFont.Regular()),
+                                { TextFont.fromDocument(it) }),
+                         // Is Underlined?
+                         split(doc.maybeAt("is_underlined"),
+                               effValue(IsUnderlined(false)),
+                               { IsUnderlined.fromDocument(it) }),
+                         // Alignment
+                         split(doc.maybeAt("alignment"),
+                               effValue<ValueError,Alignment>(Alignment.Center()),
+                               { Alignment.fromDocument(it) }),
+                         // Color
+                         split(doc.maybeAt("background_color_theme"),
+                               effValue(ColorTheme.transparent),
+                               { ColorTheme.fromDocument(it) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default() : TextStyle =
+                TextStyle(ColorTheme.black,
+                          TextSize(5.0),
+                          TextFont.Regular(),
+                          IsUnderlined(false),
+                          Alignment.Center(),
+                          ColorTheme.transparent)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
@@ -125,7 +217,7 @@ data class TextStyle(override val id : UUID,
 /**
  * Text Size
  */
-data class TextSize(val value : Double)
+data class TextSize(val dp : Double)
 {
 
     companion object : Factory<TextSize>
@@ -140,15 +232,54 @@ data class TextSize(val value : Double)
 
 
 /**
+ * Is Underlined
+ */
+data class IsUnderlined(val value : Boolean)
+{
+
+    companion object : Factory<IsUnderlined>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<IsUnderlined> = when (doc)
+        {
+            is DocBoolean -> effValue(IsUnderlined(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+        }
+    }
+}
+
+
+/**
  * Text Font
  */
-enum class TextFont
+sealed class TextFont
 {
-    REGULAR,
-    BOLD,
-    ITALIC,
-    BOLD_ITALIC
+
+    class Regular : TextFont()
+    class Bold : TextFont()
+    class Italic : TextFont()
+    class BoldItalic : TextFont()
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<TextFont> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "regular"     -> effValue<ValueError,TextFont>(TextFont.Regular())
+                "bold"        -> effValue<ValueError,TextFont>(TextFont.Bold())
+                "italic"      -> effValue<ValueError,TextFont>(TextFont.Italic())
+                "bold_italic" -> effValue<ValueError,TextFont>(TextFont.BoldItalic())
+                else          -> effError<ValueError,TextFont>(
+                                    UnexpectedValue("TextFont", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
 }
+
+
 
 
 //

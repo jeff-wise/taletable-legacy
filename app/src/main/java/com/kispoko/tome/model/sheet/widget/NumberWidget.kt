@@ -8,10 +8,7 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.*
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SpecDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
 import java.util.*
@@ -22,42 +19,72 @@ import java.util.*
  * Number Widget Format
  */
 data class NumberWidgetFormat(override val id : UUID,
-                              val widgetFormat : Func<WidgetFormat>,
-                              val insideLabel : Func<String>,
-                              val insideLabelFormat : Func<TextFormat>,
-                              val outsideLabel : Func<String>,
-                              val outsideLabelFormat : Func<TextFormat>,
-                              val valueFormat : Func<TextFormat>,
-                              val descriptionStyle : Func<TextStyle>,
-                              val valuePrefixStyle : Func<TextStyle>,
-                              val valuePostfixStyle : Func<TextStyle>,
-                              val valueSeparator : Func<String>,
-                              val valueSeparatorFormat : Func<TextFormat>) : Model
+                              val widgetFormat : Comp<WidgetFormat>,
+                              val insideLabel : Prim<WidgetLabel>,
+                              val insideLabelFormat : Comp<TextFormat>,
+                              val outsideLabel : Prim<WidgetLabel>,
+                              val outsideLabelFormat : Comp<TextFormat>,
+                              val valueFormat : Comp<TextFormat>,
+                              val descriptionStyle : Comp<TextStyle>,
+                              val valuePrefixStyle : Comp<TextStyle>,
+                              val valuePostfixStyle : Comp<TextStyle>,
+                              val valueSeparator : Prim<ValueSeparator>,
+                              val valueSeparatorFormat : Comp<TextFormat>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetFormat : WidgetFormat,
+                insideLabel : WidgetLabel,
+                insideLabelFormat: TextFormat,
+                outsideLabel : WidgetLabel,
+                outsideLabelFormat: TextFormat,
+                valueFormat: TextFormat,
+                descriptionStyle: TextStyle,
+                valuePrefixStyle: TextStyle,
+                valuePostfixStyle: TextStyle,
+                valueSeparator: ValueSeparator,
+                valueSeparatorFormat: TextFormat)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Prim(insideLabel),
+               Comp(insideLabelFormat),
+               Prim(outsideLabel),
+               Comp(outsideLabelFormat),
+               Comp(valueFormat),
+               Comp(descriptionStyle),
+               Comp(valuePrefixStyle),
+               Comp(valuePostfixStyle),
+               Prim(valueSeparator),
+               Comp(valueSeparatorFormat))
+
 
     companion object : Factory<NumberWidgetFormat>
     {
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::NumberWidgetFormat,
                                    // Model Id
                                    effValue(UUID.randomUUID()),
                                    // Widget Format
-                                   doc.at("widget_format") ap {
-                                       effApply(::Comp, WidgetFormat.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("widget_format"),
+                                         effValue(Comp(WidgetFormat.default())),
+                                         { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
                                    // Inside Label
-                                   split(doc.maybeText("inside_label"),
-                                         nullEff<String>(),
-                                         { effValue(Prim(it))  }),
+                                   split(doc.maybeAt("inside_label"),
+                                         effValue(Prim(WidgetLabel(null))),
+                                         { effApply(::Prim, WidgetLabel.fromDocument(it)) }),
                                    // Inside Label Format
                                    split(doc.maybeAt("inside_label_format"),
                                          nullEff<TextFormat>(),
                                          { effApply(::Comp, TextFormat.fromDocument(it)) }),
                                    // Outside Label
-                                   split(doc.maybeText("outside_label"),
-                                         nullEff<String>(),
-                                         { effValue(Prim(it))  }),
+                                   split(doc.maybeAt("outside_label"),
+                                         nullEff<WidgetLabel>(),
+                                         { effApply(::Prim, WidgetLabel.fromDocument(it)) }),
                                    // Outside Label Format
                                    split(doc.maybeAt("outside_label_format"),
                                          nullEff<TextFormat>(),
@@ -79,9 +106,9 @@ data class NumberWidgetFormat(override val id : UUID,
                                          nullEff<TextStyle>(),
                                          { effApply(::Comp, TextStyle.fromDocument(it)) }),
                                    // Value Separator
-                                   split(doc.maybeText("value_separator"),
-                                         nullEff<String>(),
-                                         { effValue(Prim(it)) }),
+                                   split(doc.maybeAt("value_separator"),
+                                         nullEff<ValueSeparator>(),
+                                         { effApply(::Prim, ValueSeparator.fromDocument(it)) }),
                                    // Outside Label Format
                                    split(doc.maybeAt("outside_label_format"),
                                          nullEff<TextFormat>(),
@@ -89,11 +116,44 @@ data class NumberWidgetFormat(override val id : UUID,
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default() : NumberWidgetFormat =
+                NumberWidgetFormat()
     }
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 }
+
+
+/**
+ * Value Separator
+ */
+data class ValueSeparator(val sep : String)
+{
+
+    companion object : Factory<ValueSeparator>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<ValueSeparator> = when (doc)
+        {
+            is DocText -> effValue(ValueSeparator(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
 
 //
 //

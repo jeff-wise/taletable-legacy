@@ -3,7 +3,6 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.lib.Factory
-import effect.Err
 import effect.effError
 import effect.effValue
 import lulo.document.*
@@ -15,16 +14,18 @@ import lulo.value.ValueParser
 /**
  * Divider Margin
  */
-data class DividerMargin(val value : Long)
+data class DividerMargin(val value : Float)
 {
 
     companion object : Factory<DividerMargin>
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<DividerMargin> = when (doc)
         {
-            is DocInteger -> effValue(DividerMargin(doc.integer))
-            else          -> effError(UnexpectedType(DocType.INTEGER, docType(doc), doc.path))
+            is DocNumber -> effValue(DividerMargin(doc.number.toFloat()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
+
+        fun default() : DividerMargin = DividerMargin(0f)
     }
 }
 
@@ -32,16 +33,18 @@ data class DividerMargin(val value : Long)
 /**
  * Divider Thickness
  */
-data class DividerThickness(val value : Long)
+data class DividerThickness(val value : Int)
 {
 
     companion object : Factory<DividerThickness>
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<DividerThickness> = when (doc)
         {
-            is DocInteger -> effValue(DividerThickness(doc.integer))
-            else          -> effError(UnexpectedType(DocType.INTEGER, docType(doc), doc.path))
+            is DocNumber -> effValue(DividerThickness(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
+
+        fun default() : DividerThickness = DividerThickness(0)
     }
 }
 

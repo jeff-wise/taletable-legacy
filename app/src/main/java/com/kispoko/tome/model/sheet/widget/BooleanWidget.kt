@@ -26,11 +26,16 @@ import java.util.*
  * Boolean Widget Format
  */
 data class BooleanWidgetFormat(override val id : UUID,
-                               val widgetFormat : Func<WidgetFormat>,
+                               val widgetFormat : Comp<WidgetFormat>,
                                val textStyle : Func<TextStyle>,
                                val trueText : Func<String>,
                                val falseText : Func<String>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<BooleanWidgetFormat>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanWidgetFormat> = when (doc)
@@ -53,6 +58,18 @@ data class BooleanWidgetFormat(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

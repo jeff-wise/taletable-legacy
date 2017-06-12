@@ -2,20 +2,55 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import effect.effError
+import effect.effValue
+import lulo.document.DocText
+import lulo.document.DocType
+import lulo.document.SpecDoc
+import lulo.document.docType
+import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
+import lulo.value.ValueParser
+
+
 
 /**
  * Height
  */
-enum class Height
+sealed class Height
 {
-    WRAP,
-    VERY_SMALL,
-    SMALL,
-    MEDIUM_SMALL,
-    MEDIUM,
-    MEDIUM_LARGE,
-    LARGE,
-    VERY_LARGE;
+
+    class Wrap        : Height()
+    class VerySmall   : Height()
+    class Small       : Height()
+    class MediumSmall : Height()
+    class Medium      : Height()
+    class MediumLarge : Height()
+    class Large       : Height()
+    class VeryLarge   : Height()
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<Height> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "wrap"         -> effValue<ValueError,Height>(Height.Wrap())
+                "very_small"   -> effValue<ValueError,Height>(Height.VerySmall())
+                "small"        -> effValue<ValueError,Height>(Height.Small())
+                "medium_small" -> effValue<ValueError,Height>(Height.MediumSmall())
+                "medium"       -> effValue<ValueError,Height>(Height.Medium())
+                "medium_large" -> effValue<ValueError,Height>(Height.MediumLarge())
+                "large"        -> effValue<ValueError,Height>(Height.Large())
+                "very_large"   -> effValue<ValueError,Height>(Height.VeryLarge())
+                else           -> effError<ValueError,Height>(
+                                        UnexpectedValue("Height", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
 }
 
 //

@@ -6,7 +6,6 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -30,8 +29,18 @@ data class Spacing(override val id : UUID,
                    val bottom : Func<Int>) : Model
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(left : Int, top : Int, right : Int, bottom : Int)
+            : this(UUID.randomUUID(), Prim(left), Prim(top), Prim(right), Prim(bottom))
+
+
     companion object : Factory<Spacing>
     {
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<Spacing> = when (doc)
         {
             is DocDict -> effApply(::Spacing,
@@ -47,7 +56,15 @@ data class Spacing(override val id : UUID,
                                    effApply(::Prim, doc.int("bottom")))
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        fun default() : Spacing = Spacing(0, 0, 0, 0)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

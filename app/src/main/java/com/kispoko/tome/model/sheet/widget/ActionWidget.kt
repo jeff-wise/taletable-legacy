@@ -93,11 +93,16 @@ data class ActionResult(val value : String)
  * Action Widget Format
  */
 data class ActionWidgetFormat(override val id : UUID,
-                              val widgetFormat : Func<WidgetFormat>,
+                              val widgetFormat : Comp<WidgetFormat>,
                               val descriptionStyle : Func<TextStyle>,
                               val actionStyle : Func<TextStyle>,
                               val height : Func<Height>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<ActionWidgetFormat>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<ActionWidgetFormat> = when (doc)
@@ -121,6 +126,18 @@ data class ActionWidgetFormat(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

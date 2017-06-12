@@ -56,9 +56,14 @@ data class LogEntry(override val id : UUID,
  * Log Widget Format
  */
 data class LogWidgetFormat(override val id : UUID,
-                           val widgetFormat : Func<WidgetFormat>,
+                           val widgetFormat : Comp<WidgetFormat>,
                            val dividerColor : Func<ColorId>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<LogWidgetFormat>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<LogWidgetFormat> = when (doc)
@@ -77,6 +82,18 @@ data class LogWidgetFormat(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

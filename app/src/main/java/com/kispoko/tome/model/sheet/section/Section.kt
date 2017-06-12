@@ -8,6 +8,8 @@ import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.page.Page
+import com.kispoko.tome.rts.sheet.SheetComponent
+import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.State
 import effect.effApply
 import effect.effError
@@ -24,7 +26,7 @@ import java.util.*
  */
 data class Section(override val id : UUID,
                    val name : Func<SectionName>,
-                   val pages : Coll<Page>) : Model
+                   val pages : Coll<Page>) : Model, SheetComponent
 {
     companion object : Factory<Section>
     {
@@ -53,13 +55,14 @@ data class Section(override val id : UUID,
     override fun onLoad() { }
 
 
-    // ON ACTIVE
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    fun onActive(state : State)
+    override fun onSheetComponentActive(sheetContext : SheetContext)
     {
-        this.pages.list.forEach { it.onActive(state) }
+        this.pages.list.forEach { it.onSheetComponentActive(sheetContext) }
     }
+
 }
 
 

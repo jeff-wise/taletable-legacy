@@ -2,6 +2,8 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.view.View
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
@@ -11,11 +13,14 @@ import com.kispoko.tome.model.game.engine.variable.BooleanVariable
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
-import com.kispoko.tome.rts.sheet.State
-import com.kispoko.tome.rts.sheet.Stateful
+import com.kispoko.tome.rts.sheet.SheetComponent
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetDoesNotExist
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -29,8 +34,13 @@ import java.util.*
  * Widget
  */
 @Suppress("UNCHECKED_CAST")
-sealed class Widget : Model, Stateful, Serializable
+sealed class Widget : Model, SheetComponent, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<Widget>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Widget> = when (doc)
@@ -70,6 +80,28 @@ sealed class Widget : Model, Stateful, Serializable
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // WIDGET API
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun widgetFormat() : WidgetFormat
+
+
+    // -----------------------------------------------------------------------------------------
+    // INTERNAL
+    // -----------------------------------------------------------------------------------------
+
+    protected fun addVariableToState(sheetId : SheetId, variable : Variable)
+    {
+        val sheetState = SheetManager.state(sheetId)
+
+        if (sheetState != null)
+            sheetState.addVariable(variable)
+        else
+            ApplicationLog.error(
+                    SheetDoesNotExist(sheetId, Thread.currentThread().stackTrace.toString()))
+    }
+
 }
 
 
@@ -91,12 +123,29 @@ data class WidgetId(val value : String)
 
 
 /**
+ * Widget Label
+ */
+data class WidgetLabel(val value : String?)
+{
+
+    companion object : Factory<WidgetLabel>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<WidgetLabel> = when (doc)
+        {
+            is DocText -> effValue(WidgetLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
+
+/**
  * Action Widget
  */
 data class ActionWidget(override val id : UUID,
-                        val name : Func<WidgetId>,
-                        val format : Func<ActionWidgetFormat>,
-                        val modifier : Func<NumberVariable>,
+                        val name : Prim<WidgetId>,
+                        val format : Comp<ActionWidgetFormat>,
+                        val modifier : Comp<NumberVariable>,
                         val description : Func<ActionDescription>,
                         val descriptionHighlight : Func<ActionDescriptionHighlight>,
                         val actionName : Func<ActionName>,
@@ -147,16 +196,41 @@ data class ActionWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun name() : WidgetId = this.name.value
+
+    fun format() : ActionWidgetFormat = this.format.value
+
+    fun modifier() : NumberVariable = this.modifier.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
 
 
@@ -164,10 +238,14 @@ data class ActionWidget(override val id : UUID,
  * Boolean Widget
  */
 data class BooleanWidget(override val id : UUID,
-                         val name : Func<WidgetId>,
-                         val format : Func<BooleanWidgetFormat>,
-                         val value : Func<BooleanVariable>) : Widget()
+                         val widgetId : Prim<WidgetId>,
+                         val format : Comp<BooleanWidgetFormat>,
+                         val valueVariable : Comp<BooleanVariable>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Widget>
     {
@@ -196,16 +274,43 @@ data class BooleanWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : BooleanWidgetFormat = this.format.value
+
+    fun valueVariable() : BooleanVariable = this.valueVariable.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 }
 
 
@@ -213,13 +318,17 @@ data class BooleanWidget(override val id : UUID,
  * Button Widget
  */
 data class ButtonWidget(override val id : UUID,
-                        val name : Func<WidgetId>,
-                        val format : Func<ButtonWidgetFormat>,
+                        val widgetId : Prim<WidgetId>,
+                        val format : Comp<ButtonWidgetFormat>,
                         val viewType : Func<ButtonViewType>,
                         val label : Func<ButtonLabel>,
                         val description : Func<ButtonDescription>,
                         val icon : Func<ButtonIcon>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Widget>
     {
@@ -257,16 +366,38 @@ data class ButtonWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : ButtonWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat(): WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
 
@@ -275,11 +406,15 @@ data class ButtonWidget(override val id : UUID,
  * Expander Widget
  */
 data class ExpanderWidget(override val id : UUID,
-                          val name : Func<WidgetId>,
-                          val format : Func<ExpanderWidgetFormat>,
+                          val widgetId : Prim<WidgetId>,
+                          val format : Comp<ExpanderWidgetFormat>,
                           val label : Func<ExpanderLabel>,
                           val groups: Coll<Group>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Widget>
     {
@@ -312,17 +447,39 @@ data class ExpanderWidget(override val id : UUID,
         }
     }
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
 
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : ExpanderWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
 
@@ -331,7 +488,8 @@ data class ExpanderWidget(override val id : UUID,
  * Image Widget
  */
 data class ImageWidget(override val id : UUID,
-                       val name : Func<WidgetId>) : Widget()
+                       val widgetId : Prim<WidgetId>,
+                       val format : Comp<ImageWidgetFormat>) : Widget()
 {
 
     companion object : Factory<Widget>
@@ -346,6 +504,10 @@ data class ImageWidget(override val id : UUID,
                          // Widget Name
                          doc.at("name") ap {
                              effApply(::Prim, WidgetId.fromDocument(it))
+                         },
+                         // Format
+                         doc.at("format") ap {
+                             effApply(::Comp, ImageWidgetFormat.fromDocument(it))
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -353,16 +515,39 @@ data class ImageWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : ImageWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented")
+    }
 
 }
 
@@ -371,11 +556,15 @@ data class ImageWidget(override val id : UUID,
  * List Widget
  */
 data class ListWidget(override val id : UUID,
-                      val name : Func<WidgetId>,
-                      val format : Func<ListWidgetFormat>,
+                      val widgetId : Prim<WidgetId>,
+                      val format : Comp<ListWidgetFormat>,
                       val valueSetId: Func<ValueSetId>,
                       val values : Coll<Variable>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Widget>
     {
@@ -409,16 +598,40 @@ data class ListWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : ListWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented")
+    }
 
 }
 
@@ -427,10 +640,14 @@ data class ListWidget(override val id : UUID,
  * Log Widget
  */
 data class LogWidget(override val id : UUID,
-                     val name : Func<WidgetId>,
-                     val format : Func<LogWidgetFormat>,
+                     val widgetId : Prim<WidgetId>,
+                     val format : Comp<LogWidgetFormat>,
                      val entries : Coll<LogEntry>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<LogWidget>
     {
@@ -459,6 +676,25 @@ data class LogWidget(override val id : UUID,
         }
     }
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : LogWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
 
     // MODEL
     // -----------------------------------------------------------------------------------------
@@ -466,10 +702,12 @@ data class LogWidget(override val id : UUID,
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
 
@@ -478,7 +716,8 @@ data class LogWidget(override val id : UUID,
  * Mechanic Widget
  */
 data class MechanicWidget(override val id : UUID,
-                          val name : Func<WidgetId>,
+                          val widgetId : Prim<WidgetId>,
+                          val format : Comp<MechanicWidgetFormat>,
                           val category : Func<MechanicCategory>) : Widget()
 {
 
@@ -491,9 +730,13 @@ data class MechanicWidget(override val id : UUID,
                 effApply(::MechanicWidget,
                          // Model Id
                          effValue(UUID.randomUUID()),
-                         // Widget Name
-                         doc.at("name") ap {
+                         // Widget Id
+                         doc.at("id") ap {
                              effApply(::Prim, WidgetId.fromDocument(it))
+                         },
+                         // Format
+                         doc.at("format") ap {
+                             effApply(::Comp, MechanicWidgetFormat.fromDocument(it))
                          },
                          // Category
                          doc.at("category") ap {
@@ -505,16 +748,38 @@ data class MechanicWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : MechanicWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
 
@@ -523,8 +788,8 @@ data class MechanicWidget(override val id : UUID,
  * Number Widget
  */
 data class NumberWidget(override val id : UUID,
-                        val name : Func<WidgetId>,
-                        val format : Func<NumberWidgetFormat>,
+                        val widgetId : Prim<WidgetId>,
+                        val format : Comp<NumberWidgetFormat>,
                         val value : Func<NumberVariable>,
                         val valuePrefix : Func<String>,
                         val valuePostfix : Func<String>,
@@ -541,13 +806,13 @@ data class NumberWidget(override val id : UUID,
                 effApply(::NumberWidget,
                          // Model Id
                          effValue(UUID.randomUUID()),
-                         // Widget Name
-                         doc.at("name") ap {
+                         // Widget Id
+                         doc.at("id") ap {
                              effApply(::Prim, WidgetId.fromDocument(it))
                          },
                          // Format
                          split(doc.maybeAt("format"),
-                               nullEff<NumberWidgetFormat>(),
+                               effValue(Comp(NumberWidgetFormat.default())),
                                { effApply(::Comp, NumberWidgetFormat.fromDocument(it))}),
                          // Value
                          doc.at("value") ap {
@@ -576,16 +841,40 @@ data class NumberWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : NumberWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented")
+    }
 
 }
 
@@ -637,16 +926,38 @@ data class OptionWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : NumberWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
 
@@ -655,8 +966,8 @@ data class OptionWidget(override val id : UUID,
  * Quote Widget
  */
 data class QuoteWidget(override val id : UUID,
-                       val name : Func<WidgetId>,
-                       val format : Func<QuoteWidgetFormat>,
+                       val widgetId : Prim<WidgetId>,
+                       val format : Comp<QuoteWidgetFormat>,
                        val viewType : Func<QuoteViewType>,
                        val quote : Func<Quote>,
                        val source : Func<QuoteSource>) : Widget()
@@ -698,16 +1009,41 @@ data class QuoteWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : QuoteWidgetFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // WIDGET
+    // -----------------------------------------------------------------------------------------
+
+    override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
+
+
+    override fun view(sheetContext: SheetContext): View {
+        TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
 
@@ -761,10 +1097,12 @@ data class TableWidget(override val id : UUID,
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
 
@@ -818,10 +1156,12 @@ data class TabWidget(override val id : UUID,
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State) { }
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 }
 
@@ -830,10 +1170,10 @@ data class TabWidget(override val id : UUID,
  * Text Widget
  */
 data class TextWidget(override val id : UUID,
-                      val widgetId : Func<WidgetId>,
-                      val format : Func<TextWidgetFormat>,
-                      val description : Func<TextDescription>,
-                      val value : Comp<TextVariable>,
+                      val widgetId : Prim<WidgetId>,
+                      val format : Comp<TextWidgetFormat>,
+                      val description : Prim<TextDescription>,
+                      val valueVariable : Comp<TextVariable>,
                       val variables : Coll<Variable>) : Widget()
 {
 
@@ -846,7 +1186,7 @@ data class TextWidget(override val id : UUID,
                 effApply(::TextWidget,
                          // Model Id
                          effValue(UUID.randomUUID()),
-                         // Widget Name
+                         // Widget Id
                          doc.at("id") ap {
                              effApply(::Prim, WidgetId.fromDocument(it))
                          },
@@ -873,26 +1213,37 @@ data class TextWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetId() : WidgetId = this.widgetId.value
+
+    fun format() : TextWidgetFormat = this.format.value
+
+    fun description() : TextDescription = this.description.value
+
+    fun valueVariable() : TextVariable = this.valueVariable.value
+
+    fun variables() : List<Variable> = this.variables.list
+
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // STATEFUL
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onActive(state : State)
-    {
-        state.addVariable(this.value.value)
-    }
+    override fun onSheetComponentActive(sheetContext : SheetContext) =
+        this.addVariableToState(sheetContext.sheetId, this.valueVariable())
 
 }
-
-
-// sealed class Widget // : Model, Serializable
-
-//
 
 
 

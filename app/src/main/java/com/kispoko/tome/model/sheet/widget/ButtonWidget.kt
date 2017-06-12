@@ -82,7 +82,7 @@ enum class ButtonIcon
  * Button Widget Format
  */
 data class ButtonWidgetFormat(override val id : UUID,
-                              val widgetFormat : Func<WidgetFormat>,
+                              val widgetFormat : Comp<WidgetFormat>,
                               val height : Func<Height>,
                               val labelStyle : Func<TextStyle>,
                               val descriptionStyle : Func<TextStyle>,
@@ -90,6 +90,10 @@ data class ButtonWidgetFormat(override val id : UUID,
                               val buttonColor : Func<ColorId>,
                               val iconColor : Func<ColorId>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ButtonWidgetFormat>
     {
@@ -125,6 +129,18 @@ data class ButtonWidgetFormat(override val id : UUID,
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

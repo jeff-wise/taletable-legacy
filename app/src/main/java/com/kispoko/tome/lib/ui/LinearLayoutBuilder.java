@@ -56,7 +56,7 @@ public class LinearLayoutBuilder implements ViewBuilder
     public Float                    elevation;
 
     public Margins                  margin;
-    public Spacing marginSpacing;
+    public Spacing                  marginSpacing;
     public Padding                  padding;
     public Spacing                  paddingSpacing;
 
@@ -221,15 +221,16 @@ public class LinearLayoutBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            linearLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            linearLayout.setBackgroundColor(this.backgroundColor);
 
         // > Background Resource
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundResource != null && this.backgroundColor != null) {
             Drawable bgDrawable = ContextCompat.getDrawable(context, this.backgroundResource);
-            int      color      = ContextCompat.getColor(context, this.backgroundColor);
-            bgDrawable.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+            //int      color      = ContextCompat.getColor(context, this.backgroundColor);
+            bgDrawable.setColorFilter(
+                    new PorterDuffColorFilter(this.backgroundColor, PorterDuff.Mode.SRC_IN));
             linearLayout.setBackground(bgDrawable);
         }
         else if (this.backgroundResource != null) {

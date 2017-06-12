@@ -2,16 +2,18 @@
 package com.kispoko.tome.model.theme
 
 
+import android.graphics.Color
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Conj
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -21,8 +23,17 @@ import java.util.*
  * Theme
  */
 data class Theme(override val id : UUID,
-                 val name : Func<ThemeName>) : Model
+                 val themeId : Prim<ThemeId>,
+                 val palette : Conj<ThemeColor>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(themeId : ThemeId, palette: Set<ThemeColor>) :
+            this(UUID.randomUUID(), Prim(themeId), Conj(palette.toMutableSet()))
+
 
     companion object : Factory<Theme>
     {
@@ -31,186 +42,224 @@ data class Theme(override val id : UUID,
             is DocDict -> effApply(::Theme,
                                    // Model Id
                                    effValue(UUID.randomUUID()),
-                                   // Campaign Name
+                                   // Theme Id
                                    doc.at("name") ap {
-                                       effApply(::Prim, ThemeName.fromDocument(it))
+                                       effApply(::Prim, ThemeId.fromDocument(it))
+                                   },
+                                   // Theme Colors
+                                   doc.list("palette") ap {
+                                       effApply(::Conj,
+                                                it.mapSetMut { ThemeColor.fromDocument(it) })
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    private val colorById : MutableMap<ColorId,Int> = this.palette.set
+                                                          .associateBy({it.colorId}, {it.color})
+                                                          .toMutableMap()
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun themeId() : ThemeId = this.themeId.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun color(colorId : ColorId) : Int? = this.colorById[colorId]
 
 }
 
 
 
-/**
- * Section Name
- */
-data class ThemeName(val name : String)
+sealed class ThemeId
 {
-    companion object : Factory<ThemeName>
+
+
+    class Light : ThemeId()
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeName> = when (doc)
+
+        companion object
         {
-            is DocText -> effValue(ThemeName(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+
+            fun fromDocument(doc : SpecDoc) : ValueParser<ThemeId.Light> = when (doc)
+            {
+                is DocText ->
+                {
+                    when (doc.text) {
+                        "light" -> effValue<ValueError,ThemeId.Light>(ThemeId.Light())
+                        else    -> effError<ValueError,ThemeId.Light>(
+                                        UnexpectedValue("ThemeId.Light", doc.text, doc.path))
+                    }
+                }
+                else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+            }
+
+        }
+
+    }
+
+
+    class Dark : ThemeId()
+    {
+
+        companion object
+        {
+
+            fun fromDocument(doc : SpecDoc) : ValueParser<ThemeId.Dark> = when (doc)
+            {
+                is DocText ->
+                {
+                    when (doc.text) {
+                        "dark" -> effValue<ValueError,ThemeId.Dark>(ThemeId.Dark())
+                        else    -> effError<ValueError,ThemeId.Dark>(
+                                        UnexpectedValue("ThemeId.Dark", doc.text, doc.path))
+                    }
+                }
+                else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+            }
+
+        }
+
+    }
+
+
+
+    /**
+     * Custom Theme Id
+     */
+    data class Custom(val name : String) : ThemeId()
+    {
+        companion object : Factory<ThemeId.Custom>
+        {
+            override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeId.Custom> = when (doc)
+            {
+                is DocText -> effValue(Custom(doc.text))
+                else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+            }
+        }
+    }
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<ThemeId> = this.fromDocument(doc)
+    }
+
+}
+
+
+/**
+ * Theme Color Id
+ */
+data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId)
+{
+
+    companion object : Factory<ThemeColorId>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeColorId> = when (doc)
+        {
+            is DocDict -> effApply(::ThemeColorId,
+                                   // ThemeId
+                                   ThemeId.fromDocument(doc),
+                                   // ThemeId
+                                   ColorId.fromDocument(doc)
+                                   )
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 }
 
 
-enum class ThemeType
+/**
+ * Theme Color
+ */
+data class ThemeColor(val colorId : ColorId, val color : Int)
 {
-    LIGHT,
-    DARK,
-    CUSTOM;
 
+    companion object : Factory<ThemeColor>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeColor> = when (doc)
+        {
+            is DocDict -> effApply(::ThemeColor,
+                                   // Color Id
+                                   ColorId.fromDocument(doc),
+                                   // Color
+                                   effApply({Color.parseColor(it) }, doc.text("color"))
+                                   )
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
 }
 
 
-//public class Theme extends Model
-//                   implements ToYaml, Serializable
-//{
-//
-//    // PROPERTIES
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // -----------------------------------------------------------------------------------------
-//
-//    private UUID                            id;
-//
-//
-//    // > Functors
-//    // -----------------------------------------------------------------------------------------
-//
-//    private PrimitiveFunctor<String>        name;
-//    private CollectionFunctor<ThemeColor>   colors;
-//
-//
-//    // CONSTRUCTORS
-//    // -----------------------------------------------------------------------------------------
-//
-//    public Theme()
-//    {
-//        this.id     = null;
-//
-//        this.name   = new PrimitiveFunctor<>(null, String.class);
-//        this.colors = CollectionFunctor.empty(ThemeColor.class);
-//    }
-//
-//
-//    public Theme(UUID id, String name, List<ThemeColor> colors)
-//    {
-//        this.id     = id;
-//
-//        this.name   = new PrimitiveFunctor<>(name, String.class);
-//        this.colors = CollectionFunctor.full(colors, ThemeColor.class);
-//    }
-//
-//
-//    /**
-//     * Create a Theme from its yaml representation.
-//     * @param yaml The yaml parser.
-//     * @return The parsed Theme.
-//     * @throws YamlParseException
-//     */
-//    public static Theme fromYaml(YamlParser yaml)
-//                  throws YamlParseException
-//    {
-//        UUID             id     = UUID.randomUUID();
-//
-//        String           name   = yaml.atKey("name").getString();
-//
-//        List<ThemeColor> colors = yaml.atKey("colors").forEach(new YamlParser.ForEach<ThemeColor>()
-//        {
-//            @Override
-//            public ThemeColor forEach(YamlParser yaml, int index) throws YamlParseException
-//            {
-//                return ThemeColor.fromYaml(yaml);
-//            }
-//        }, true);
-//
-//        return new Theme(id, name, colors);
-//    }
-//
-//
-//    // API
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // --------------------------------------------------------------------------------------
-//
-//    // ** Id
-//    // --------------------------------------------------------------------------------------
-//
-//    public UUID getId()
-//    {
-//        return this.id;
-//    }
-//
-//
-//    public void setId(UUID id)
-//    {
-//        this.id = id;
-//    }
-//
-//
-//    // ** On Load
-//    // --------------------------------------------------------------------------------------
-//
-//    /**
-//     * Called when the Spacing is completely loaded.
-//     */
-//    public void onLoad() { }
-//
-//
-//    // > To Yaml
-//    // --------------------------------------------------------------------------------------
-//
-//    public YamlBuilder toYaml()
-//    {
-//        return YamlBuilder.map()
-//                .putString("name", this.name())
-//                .putList("colors", this.colors());
-//    }
-//
-//
-//    // > State
-//    // --------------------------------------------------------------------------------------
-//
-//    // ** Name
-//    // --------------------------------------------------------------------------------------
-//
-//    /**
-//     * The theme name.
-//     * @return The name
-//     */
-//    public String name()
-//    {
-//        return this.name.getValue();
-//    }
-//
-//
-//    // ** Colors
-//    // --------------------------------------------------------------------------------------
-//
-//    /**
-//     * The theme color palette.
-//     * @return The color list.
-//     */
-//    public List<ThemeColor> colors()
-//    {
-//        if (this.colors.isNull())
-//            return new ArrayList<>();
-//
-//        return this.colors.getValue();
-//    }
-//
-//
-//}
-//
-//
+/**
+ * Color Theme
+ *
+ * A pallette of colors for some object.
+ */
+data class ColorTheme(val themeColorIds: Set<ThemeColorId>)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ColorTheme>
+    {
+
+        override fun fromDocument(doc: SpecDoc) : ValueParser<ColorTheme> = when (doc)
+        {
+            is DocDict -> effApply(::ColorTheme,
+                                   // ThemeId
+                                   doc.list("theme_colors") ap {
+                                        it.mapSet { ThemeColorId.fromDocument(it) }
+                                   })
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+
+
+        // BUILT-IN THEMES
+        // -----------------------------------------------------------------------------------------
+
+        val transparent = ColorTheme(setOf(ThemeColorId(ThemeId.Light(), ColorId.Transparent()),
+                                           ThemeColorId(ThemeId.Dark(), ColorId.Transparent())))
+
+        val black = ColorTheme(setOf(ThemeColorId(ThemeId.Light(), ColorId.Dark()),
+                                     ThemeColorId(ThemeId.Dark(), ColorId.Dark())))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    private val colorIdByThemeId : Map<ThemeId,ColorId> =
+            this.themeColorIds.associateBy({it.themeId}, {it.colorId})
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun themeColorId(themeId : ThemeId) : ColorId? = this.colorIdByThemeId[themeId]
+
+}
 

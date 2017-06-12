@@ -65,11 +65,16 @@ data class QuoteSource(val value : String)
  * Quote Widget Format
  */
 data class QuoteWidgetFormat(override val id : UUID,
-                             val widgetFormat : Func<WidgetFormat>,
+                             val widgetFormat : Comp<WidgetFormat>,
                              val quoteStyle : Func<TextStyle>,
                              val sourceStyle : Func<TextStyle>,
                              val iconColor : Func<ColorId>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<QuoteWidgetFormat>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<QuoteWidgetFormat> = when (doc)
@@ -79,7 +84,7 @@ data class QuoteWidgetFormat(override val id : UUID,
                                    effValue(UUID.randomUUID()),
                                    // Widget Format
                                    split(doc.maybeAt("widget_format"),
-                                         nullEff<WidgetFormat>(),
+                                         effValue(Comp(WidgetFormat.default())),
                                          { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
                                    // Quote Style
                                    split(doc.maybeAt("quote_style"),
@@ -96,7 +101,20 @@ data class QuoteWidgetFormat(override val id : UUID,
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
