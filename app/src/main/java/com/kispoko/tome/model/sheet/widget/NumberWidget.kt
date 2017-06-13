@@ -64,62 +64,83 @@ data class NumberWidgetFormat(override val id : UUID,
     companion object : Factory<NumberWidgetFormat>
     {
 
+        private val defaultInsideLabel          = WidgetLabel(null)
+        private val defaultInsideLabelFormat    = TextFormat.default
+        private val defaultOutsideLabel         = WidgetLabel(null)
+        private val defaultOutsideLabelFormat   = TextFormat.default
+        private val defaultValueFormat          = TextFormat.default
+        private val defaultDescriptionStyle     = TextStyle.default
+        private val defaultValuePrefixStyle     = TextStyle.default
+        private val defaultValuePostfixStyle    = TextStyle.default
+        private val defaultValueSeparator       = ValueSeparator(null)
+        private val defaultValueSeparatorFormat = TextFormat.default
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::NumberWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    split(doc.maybeAt("widget_format"),
-                                         effValue(Comp(WidgetFormat.default())),
-                                         { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
+                                         effValue(WidgetFormat.default()),
+                                         { WidgetFormat.fromDocument(it) }),
                                    // Inside Label
                                    split(doc.maybeAt("inside_label"),
-                                         effValue(Prim(WidgetLabel(null))),
-                                         { effApply(::Prim, WidgetLabel.fromDocument(it)) }),
+                                         effValue(defaultInsideLabel),
+                                         { WidgetLabel.fromDocument(it) }),
                                    // Inside Label Format
                                    split(doc.maybeAt("inside_label_format"),
-                                         nullEff<TextFormat>(),
-                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
+                                         effValue(defaultInsideLabelFormat),
+                                         { TextFormat.fromDocument(it) }),
                                    // Outside Label
                                    split(doc.maybeAt("outside_label"),
-                                         nullEff<WidgetLabel>(),
-                                         { effApply(::Prim, WidgetLabel.fromDocument(it)) }),
+                                         effValue(defaultOutsideLabel),
+                                         { WidgetLabel.fromDocument(it) }),
                                    // Outside Label Format
                                    split(doc.maybeAt("outside_label_format"),
-                                         nullEff<TextFormat>(),
-                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
+                                         effValue(defaultOutsideLabelFormat),
+                                         { TextFormat.fromDocument(it) }),
                                    // Value Format
                                    split(doc.maybeAt("value_format"),
-                                         nullEff<TextFormat>(),
-                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
+                                         effValue(defaultValueFormat),
+                                         { TextFormat.fromDocument(it) }),
                                    // Description Style
                                    split(doc.maybeAt("description_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultDescriptionStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Value Prefix Style
                                    split(doc.maybeAt("value_prefix_format"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultValuePrefixStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Value Postfix Style
                                    split(doc.maybeAt("value_postfix_format"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultValuePostfixStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Value Separator
                                    split(doc.maybeAt("value_separator"),
-                                         nullEff<ValueSeparator>(),
-                                         { effApply(::Prim, ValueSeparator.fromDocument(it)) }),
-                                   // Outside Label Format
+                                         effValue(defaultValueSeparator),
+                                         { ValueSeparator.fromDocument(it) }),
+                                   // Value Separtaor Format
                                    split(doc.maybeAt("outside_label_format"),
-                                         nullEff<TextFormat>(),
-                                         { effApply(::Comp, TextFormat.fromDocument(it))})
+                                         effValue(defaultValueSeparatorFormat),
+                                         { TextFormat.fromDocument(it) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
         fun default() : NumberWidgetFormat =
-                NumberWidgetFormat()
+                NumberWidgetFormat(WidgetFormat.default(),
+                                   defaultInsideLabel,
+                                   defaultInsideLabelFormat,
+                                   defaultOutsideLabel,
+                                   defaultOutsideLabelFormat,
+                                   defaultValueFormat,
+                                   defaultDescriptionStyle,
+                                   defaultValuePrefixStyle,
+                                   defaultValuePostfixStyle,
+                                   defaultValueSeparator,
+                                   defaultValueSeparatorFormat)
+
     }
 
     // -----------------------------------------------------------------------------------------
@@ -141,7 +162,7 @@ data class NumberWidgetFormat(override val id : UUID,
 /**
  * Value Separator
  */
-data class ValueSeparator(val sep : String)
+data class ValueSeparator(val sep : String?)
 {
 
     companion object : Factory<ValueSeparator>

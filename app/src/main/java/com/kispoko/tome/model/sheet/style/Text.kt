@@ -194,7 +194,7 @@ data class TextStyle(override val id : UUID,
         }
 
 
-        fun default() : TextStyle =
+        val default : TextStyle =
                 TextStyle(ColorTheme.black,
                           TextSize(5.0),
                           TextFont.Regular(),

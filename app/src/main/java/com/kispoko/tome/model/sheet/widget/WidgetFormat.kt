@@ -4,14 +4,11 @@ package com.kispoko.tome.model.sheet.widget
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.Spacing
-import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.effApply
 import effect.effError
@@ -92,7 +89,7 @@ data class WidgetFormat(override val id : UUID,
                 WidgetFormat(WidgetWidth.default,
                              Alignment.Center(),
                              ColorTheme.transparent,
-                             Corners.NONE(),
+                             Corners.None(),
                              Spacing.default(),
                              Spacing.default())
     }

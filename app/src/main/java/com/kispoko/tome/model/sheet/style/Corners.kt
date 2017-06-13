@@ -22,18 +22,18 @@ import lulo.value.ValueParser
 sealed class Corners
 {
 
-    class NONE : Corners()
-    class SMALL : Corners()
-    class MEDIUM : Corners()
-    class LARGE : Corners()
+    class None : Corners()
+    class Small : Corners()
+    class Medium : Corners()
+    class Large : Corners()
 
 
     fun resourceId() : Int = when(this)
     {
-        is NONE   -> R.drawable.bg_corners_none
-        is SMALL  -> R.drawable.bg_corners_small
-        is MEDIUM -> R.drawable.bg_corners_medium
-        is LARGE  -> R.drawable.bg_corners_large
+        is None -> R.drawable.bg_corners_none
+        is Small -> R.drawable.bg_corners_small
+        is Medium -> R.drawable.bg_corners_medium
+        is Large -> R.drawable.bg_corners_large
     }
 
 
@@ -43,10 +43,10 @@ sealed class Corners
         {
             is DocText -> when (doc.text)
             {
-                "none"   -> effValue<ValueError,Corners>(Corners.NONE())
-                "small"  -> effValue<ValueError,Corners>(Corners.SMALL())
-                "medium" -> effValue<ValueError,Corners>(Corners.MEDIUM())
-                "large"  -> effValue<ValueError,Corners>(Corners.LARGE())
+                "none"   -> effValue<ValueError,Corners>(Corners.None())
+                "small"  -> effValue<ValueError,Corners>(Corners.Small())
+                "medium" -> effValue<ValueError,Corners>(Corners.Medium())
+                "large"  -> effValue<ValueError,Corners>(Corners.Large())
                 else     -> effError<ValueError,Corners>(
                                     UnexpectedValue("Corners", doc.text, doc.path))
             }

@@ -6,10 +6,11 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.Height
-import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -19,38 +20,78 @@ import java.util.*
  * Table Widget Format
  */
 data class TableWidgetFormat(override val id : UUID,
-                             val widgetFormat : Func<WidgetFormat>,
-                             val showDivider : Func<Boolean>,
-                             val dividerColor : Func<ColorId>,
-                             val cellHeight : Func<Height>) : Model
+                             val widgetFormat : Comp<WidgetFormat>,
+                             val showDivider : Prim<Boolean>,
+                             val dividerColorTheme : Prim<ColorTheme>,
+                             val cellHeight : Prim<Height>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetFormat : WidgetFormat,
+                showDivider : Boolean,
+                dividerColorTheme : ColorTheme,
+                cellHeight : Height)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Prim(showDivider),
+               Prim(dividerColorTheme),
+               Prim(cellHeight))
+
+
     companion object : Factory<TableWidgetFormat>
     {
+
+        private val defaultWidgetFormat      = WidgetFormat.default()
+        private val defaultShowDivider       = false
+        private val defaultDividerColorTheme = ColorTheme.black
+        private val defaultCellHeight        = Height.MediumSmall()
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::TableWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    split(doc.maybeAt("widget_format"),
-                                         nullEff<WidgetFormat>(),
-                                         { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
+                                         effValue(defaultWidgetFormat),
+                                         { WidgetFormat.fromDocument(it) }),
                                    // Show Divider
                                    split(doc.maybeBoolean("show_divider"),
-                                         nullEff<Boolean>(),
-                                         { effValue(Prim(it)) }),
+                                         effValue(defaultShowDivider),
+                                         { effValue(it) }),
                                    // Divider Color
                                    split(doc.maybeAt("divider_color"),
-                                         nullEff<ColorId>(),
-                                         { effApply(::Prim, ColorId.fromDocument(it)) }),
+                                         effValue(defaultDividerColorTheme),
+                                         { ColorTheme.fromDocument(it) }),
                                    // Height
-                                   split(doc.maybeEnum<Height>("height"),
-                                         nullEff<Height>(),
-                                         { effValue(Prim(it))  })
+                                   split(doc.maybeAt("height"),
+                                         effValue<ValueError,Height>(defaultCellHeight),
+                                         { Height.fromDocument(it) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : TableWidgetFormat =
+                TableWidgetFormat(defaultWidgetFormat,
+                                  defaultShowDivider,
+                                  defaultDividerColorTheme,
+                                  defaultCellHeight)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

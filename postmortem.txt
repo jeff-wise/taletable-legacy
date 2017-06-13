@@ -74,3 +74,21 @@ better to give users an interface where they can easily explore and learn than
 try to give them something that is supposed to help them. Because they will probably
 just ignore what you say and then get stuck. better if they can also just "figure things out" as
 they go. 
+
+
+everything is compositional, functions and data. everything has one responsiblity.
+this includes data. so some data should not be null, because that's doing two things at once.
+the data itself, and the uncertainty of that data. You should use a maybe type wrapped around that 
+value in the cases where it could be null. If that value could be null, then everything who uses it has 
+to assume it might be null, but it might be non-null in many use cases. are then limited ability 
+to reuse data.
+
+principle of compositional. one responsiblity
+
+composition, ways to do it, constraints without it
+
+encapsulation vs types
+
+encapsulation overly constrains, but is powerful in that it can fake a lot of what types can do.
+but find that it makes programs harder to maintain, but also harder to read because everything 
+is scoped, so have to see how everything relates within a scope.

@@ -5,12 +5,14 @@ package com.kispoko.tome.model.sheet.widget
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -19,11 +21,31 @@ import java.util.*
 /**
  * Quote View Type
  */
-enum class QuoteViewType
+sealed class QuoteViewType
 {
-    SOURCE,
-    ICON_OVER_SOURCE,
-    NO_ICON;
+
+    class Source : QuoteViewType()
+    class IconOverSource : QuoteViewType()
+    class NoIcon : QuoteViewType()
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<QuoteViewType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "source"           -> effValue<ValueError,QuoteViewType>(QuoteViewType.Source())
+                "icon_over_source" -> effValue<ValueError,QuoteViewType>(
+                                            QuoteViewType.IconOverSource())
+                "no_icon"          -> effValue<ValueError,QuoteViewType>(QuoteViewType.NoIcon())
+                else               -> effError<ValueError,QuoteViewType>(
+                                            UnexpectedValue("QuoteViewType", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
 }
 
 
@@ -66,41 +88,64 @@ data class QuoteSource(val value : String)
  */
 data class QuoteWidgetFormat(override val id : UUID,
                              val widgetFormat : Comp<WidgetFormat>,
-                             val quoteStyle : Func<TextStyle>,
-                             val sourceStyle : Func<TextStyle>,
-                             val iconColor : Func<ColorId>) : Model
+                             val quoteStyle : Comp<TextStyle>,
+                             val sourceStyle : Comp<TextStyle>,
+                             val iconColorTheme : Prim<ColorTheme>) : Model
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(widgetFormat : WidgetFormat,
+                quoteStyle : TextStyle,
+                sourceStyle : TextStyle,
+                iconColorTheme : ColorTheme)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Comp(quoteStyle),
+               Comp(sourceStyle),
+               Prim(iconColorTheme))
+
+
     companion object : Factory<QuoteWidgetFormat>
     {
+
+        val defaultWidgetFormat   = WidgetFormat.default()
+        val defaultQuoteStyle     = TextStyle.default
+        val defaultSoureStyle     = TextStyle.default
+        val defaultIconColorTheme = ColorTheme.black
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<QuoteWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::QuoteWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    split(doc.maybeAt("widget_format"),
-                                         effValue(Comp(WidgetFormat.default())),
-                                         { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
+                                         effValue(defaultWidgetFormat),
+                                         { WidgetFormat.fromDocument(it) }),
                                    // Quote Style
                                    split(doc.maybeAt("quote_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultQuoteStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Source Style
                                    split(doc.maybeAt("source_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultSoureStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Icon Color
-                                   split(doc.maybeAt("icon_color"),
-                                         nullEff<ColorId>(),
-                                         { effApply(::Prim, ColorId.fromDocument(it)) })
+                                   split(doc.maybeAt("icon_color_theme"),
+                                         effValue(defaultIconColorTheme),
+                                         { ColorTheme.fromDocument(it) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : QuoteWidgetFormat =
+                QuoteWidgetFormat(defaultWidgetFormat,
+                                  defaultQuoteStyle,
+                                  defaultSoureStyle,
+                                  defaultIconColorTheme)
 
     }
 

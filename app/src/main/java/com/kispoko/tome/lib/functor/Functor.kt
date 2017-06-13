@@ -3,9 +3,7 @@ package com.kispoko.tome.lib.functor
 
 
 import com.kispoko.tome.lib.model.Model
-import effect.Eff
-import effect.Identity
-import effect.effValue
+import effect.*
 import lulo.value.ValueError
 
 
@@ -89,3 +87,11 @@ class Null<out A : Any> : Func<A>(null)
 
 
 fun <A : Any> nullEff() : Eff<ValueError, Identity,Func<A>> = effValue(Null())
+
+
+
+fun <A : Any> maybeLiftPrim(mValue : Maybe<A>) : Maybe<Prim<A>> = when(mValue)
+{
+    is Just -> maybeApply(::Prim, mValue)
+    else    -> Nothing()
+}

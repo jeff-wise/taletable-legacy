@@ -10,6 +10,7 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -19,77 +20,147 @@ import java.util.*
  * Text Widget Format
  */
 data class TextWidgetFormat(override val id : UUID,
-                            val widgetFormat : Func<WidgetFormat>,
-                            val insideLabel : Func<String>,
-                            val insideLabelFormat : Func<TextFormat>,
-                            val outsideLabel : Func<String>,
-                            val outsideLabelFormat : Func<TextFormat>,
-                            val valueFormat : Func<TextFormat>,
-                            val descriptionStyle : Func<TextStyle>) : Model
+                            val widgetFormat : Comp<WidgetFormat>,
+                            val insideLabel : Maybe<Prim<TextWidgetLabel>>,
+                            val insideLabelFormat : Comp<TextFormat>,
+                            val outsideLabel : Maybe<Prim<TextWidgetLabel>>,
+                            val outsideLabelFormat : Comp<TextFormat>,
+                            val valueFormat : Comp<TextFormat>,
+                            val descriptionStyle : Comp<TextStyle>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetFormat : WidgetFormat,
+                insideLabel : Maybe<TextWidgetLabel>,
+                insideLabelFormat : TextFormat,
+                outsideLabel : Maybe<TextWidgetLabel>,
+                outsideLabelFormat : TextFormat,
+                valueFormat : TextFormat,
+                descriptionStyle : TextStyle)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               maybeLiftPrim(insideLabel),
+               Comp(insideLabelFormat),
+               maybeLiftPrim(outsideLabel),
+               Comp(outsideLabelFormat),
+               Comp(valueFormat),
+               Comp(descriptionStyle))
+
 
     companion object : Factory<TextWidgetFormat>
     {
+
+        private val defaultWidgetFormat       = WidgetFormat.default()
+        private val defaultInsideLabel        = Nothing<TextWidgetLabel>()
+        private val defaultInsideLabelFormat  = TextFormat.default
+        private val defaultOutsideLabel       = Nothing<TextWidgetLabel>()
+        private val defaultOutsideLabelFormat = TextFormat.default
+        private val defaultValueFormat        = TextFormat.default
+        private val defaultDescriptionStyle   = TextStyle.default
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply(::TextWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Widget Format
-                                   split(doc.maybeAt("widget_format"),
-                                         nullEff<WidgetFormat>(),
-                                         { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
-                                   // Inside Label
-                                   split(doc.maybeText("inside_label"),
-                                         nullEff<String>(),
-                                         { effValue(Prim(it))  }),
-                                   // Inside Label Format
-                                   split(doc.maybeAt("inside_label_format"),
-                                         nullEff<TextFormat>(),
-                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
-                                   // Outside Label
-                                   split(doc.maybeText("outside_label"),
-                                         nullEff<String>(),
-                                         { effValue(Prim(it))  }),
-                                   // Outside Label Format
-                                   split(doc.maybeAt("outside_label_format"),
-                                         nullEff<TextFormat>(),
-                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
-                                   // Value Format
-                                   split(doc.maybeAt("value_format"),
-                                         nullEff<TextFormat>(),
-                                         { effApply(::Comp, TextFormat.fromDocument(it)) }),
-                                   // Description Style
-                                   split(doc.maybeAt("description_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) })
-                                   )
+            is DocDict ->
+            {
+                effApply(::TextWidgetFormat,
+                         // Widget Format
+                         split(doc.maybeAt("widget_format"),
+                               effValue(defaultWidgetFormat),
+                               { WidgetFormat.fromDocument(it) }),
+                         // Inside Label
+                         split(doc.maybeAt("inside_label"),
+                               effValue<ValueError,Maybe<TextWidgetLabel>>(defaultInsideLabel),
+                               { effApply(::Just, TextWidgetLabel.fromDocument(it)) }),
+                         // Inside Label Format
+                         split(doc.maybeAt("inside_label_format"),
+                               effValue(defaultInsideLabelFormat),
+                               { TextFormat.fromDocument(it) }),
+                         // Outside Label
+                         split(doc.maybeAt("outside_label"),
+                               effValue<ValueError,Maybe<TextWidgetLabel>>(defaultOutsideLabel),
+                               { effApply(::Just, TextWidgetLabel.fromDocument(it)) }),
+                         // Outside Label Format
+                         split(doc.maybeAt("outside_label_format"),
+                               effValue(defaultOutsideLabelFormat),
+                               { TextFormat.fromDocument(it) }),
+                         // Value Format
+                         split(doc.maybeAt("value_format"),
+                               effValue(defaultValueFormat),
+                               { TextFormat.fromDocument(it) }),
+                         // Description Style
+                         split(doc.maybeAt("description_style"),
+                               effValue(defaultDescriptionStyle),
+                               { TextStyle.fromDocument(it) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : TextWidgetFormat =
+                TextWidgetFormat(defaultWidgetFormat,
+                                 defaultInsideLabel,
+                                 defaultInsideLabelFormat,
+                                 defaultOutsideLabel,
+                                 defaultOutsideLabelFormat,
+                                 defaultValueFormat,
+                                 defaultDescriptionStyle)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 }
 
 
-
 /**
- * Text Description
+ * Text Widget Description
  */
-data class TextDescription(val value : String)
+data class TextWidgetDescription(val value : String)
 {
 
-    companion object : Factory<TextDescription>
+    companion object : Factory<TextWidgetDescription>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<TextDescription> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<TextWidgetDescription> = when (doc)
         {
-            is DocText -> effValue(TextDescription(doc.text))
+            is DocText -> effValue(TextWidgetDescription(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 }
 
+
+/**
+ * Text Widget Description
+ */
+data class TextWidgetLabel(val value : String)
+{
+
+    companion object : Factory<TextWidgetLabel>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<TextWidgetLabel> = when (doc)
+        {
+            is DocText -> effValue(TextWidgetLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
 
 
 //

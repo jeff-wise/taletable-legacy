@@ -58,7 +58,7 @@ data class Spacing(override val id : UUID,
         }
 
 
-        fun default() : Spacing = Spacing(0, 0, 0, 0)
+        val default : Spacing = Spacing(0, 0, 0, 0)
     }
 
 

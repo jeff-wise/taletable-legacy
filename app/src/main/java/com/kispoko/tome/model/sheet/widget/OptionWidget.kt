@@ -10,6 +10,8 @@ import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -18,12 +20,36 @@ import java.util.*
 /**
  * Option View Type
  */
-enum class OptionViewType
+sealed class OptionViewType
 {
-    NO_ARROWS,
-    ARROWS_VERTICAL,
-    ARROWS_HORZIONTAL,
-    EXPANDED_SLASHES;
+
+    class NoArrows : OptionViewType()
+    class VerticalArrows : OptionViewType()
+    class HorizontalArrows : OptionViewType()
+    class ExpandedSlashes : OptionViewType()
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<OptionViewType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "no_arrows"         -> effValue<ValueError,OptionViewType>(
+                                            OptionViewType.NoArrows())
+                "arrows_vertical"   -> effValue<ValueError,OptionViewType>(
+                                            OptionViewType.VerticalArrows())
+                "arrows_horizontal" -> effValue<ValueError,OptionViewType>(
+                                            OptionViewType.HorizontalArrows())
+                "expanded_slashes"  -> effValue<ValueError,OptionViewType>(
+                                            OptionViewType.ExpandedSlashes())
+                else                -> effError<ValueError,OptionViewType>(
+                                            UnexpectedValue("OptionViewType", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
 }
 
 
@@ -31,43 +57,89 @@ enum class OptionViewType
  * Option Widget Format
  */
 data class OptionWidgetFormat(override val id : UUID,
-                              val widgetFormat : Func<WidgetFormat>,
-                              val descriptionStyle : Func<TextStyle>,
-                              val valueStyle : Func<TextStyle>,
-                              val valueItemStyle : Func<TextStyle>,
-                              val height : Func<Height>) : Model
+                              val widgetFormat : Comp<WidgetFormat>,
+                              val descriptionStyle : Comp<TextStyle>,
+                              val valueStyle : Comp<TextStyle>,
+                              val valueItemStyle : Comp<TextStyle>,
+                              val height : Prim<Height>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetFormat : WidgetFormat,
+                descriptionStyle : TextStyle,
+                valueStyle : TextStyle,
+                valueItemStyle : TextStyle,
+                height : Height)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Comp(descriptionStyle),
+               Comp(valueStyle),
+               Comp(valueItemStyle),
+               Prim(height))
+
+
     companion object : Factory<OptionWidgetFormat>
     {
+
+        val defaultWidgetFormat     = WidgetFormat.default()
+        val defaultDescriptionStyle = TextStyle.default
+        val defaultValueStyle       = TextStyle.default
+        val defaultValueItemStyle   = TextStyle.default
+        val defaultHeight           = Height.Wrap()
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<OptionWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::OptionWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Widget Format
                                    split(doc.maybeAt("widget_format"),
-                                         nullEff<WidgetFormat>(),
-                                         { effApply(::Comp, WidgetFormat.fromDocument(it)) }),
+                                         effValue(defaultWidgetFormat),
+                                         { WidgetFormat.fromDocument(it) }),
                                    // Description Style
                                    split(doc.maybeAt("description_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultDescriptionStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Value Style
                                    split(doc.maybeAt("value_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultValueStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Value Item Style
                                    split(doc.maybeAt("value_item_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultValueItemStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Height
-                                   split(doc.maybeEnum<Height>("height"),
-                                         nullEff<Height>(),
-                                         { effValue(Prim(it))  })
+                                   split(doc.maybeAt("height"),
+                                         effValue<ValueError,Height>(defaultHeight),
+                                         { Height.fromDocument(it) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : OptionWidgetFormat =
+                OptionWidgetFormat(defaultWidgetFormat,
+                                   defaultDescriptionStyle,
+                                   defaultValueStyle,
+                                   defaultValueItemStyle,
+                                   defaultHeight)
+
     }
+
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

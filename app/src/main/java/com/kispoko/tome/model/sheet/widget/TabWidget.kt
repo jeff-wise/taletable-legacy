@@ -8,9 +8,11 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -73,67 +75,136 @@ data class TabName(val value : String)
  * Tab Widget Row Format
  */
 data class TabWidgetFormat(override val id : UUID,
-                           val tabDefaultStyle : Func<TextStyle>,
-                           val tabSelectedStyle : Func<TextStyle>,
-                           val underlineSelected : Func<Boolean>,
-                           val underlineThickness : Func<Int>,
-                           val tabMargins : Func<Spacing>,
-                           val tabPaddingVertical : Func<Int>,
-                           val tabHeight : Func<Height>,
-                           val backgroundColor : Func<ColorId>,
-                           val tabCorners : Func<Corners>) : Model
+                           val widgetFormat : Comp<WidgetFormat>,
+                           val tabDefaultStyle : Comp<TextStyle>,
+                           val tabSelectedStyle : Comp<TextStyle>,
+                           val underlineSelected : Prim<Boolean>,
+                           val underlineThickness : Prim<Int>,
+                           val tabMargins : Comp<Spacing>,
+                           val tabPaddingVertical : Prim<Int>,
+                           val tabHeight : Prim<Height>,
+                           val backgroundColorTheme : Prim<ColorTheme>,
+                           val tabCorners : Prim<Corners>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetFormat : WidgetFormat,
+                tabDefaultStyle : TextStyle,
+                tabSelectedstyle : TextStyle,
+                underlineSelected : Boolean,
+                underlineThickness : Int,
+                tabMargins : Spacing,
+                tabPaddingVertical: Int,
+                tabHeight : Height,
+                backgroundColorTheme : ColorTheme,
+                tabCorners : Corners)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Comp(tabDefaultStyle),
+               Comp(tabSelectedstyle),
+               Prim(underlineSelected),
+               Prim(underlineThickness),
+               Comp(tabMargins),
+               Prim(tabPaddingVertical),
+               Prim(tabHeight),
+               Prim(backgroundColorTheme),
+               Prim(tabCorners))
+
 
     companion object : Factory<TabWidgetFormat>
     {
+
+        private val defaultWidgetFormat         = WidgetFormat.default()
+        private val defaultTabDefaultStyle      = TextStyle.default
+        private val defaultTabSelectedStyle     = TextStyle.default
+        private val defaultUnderlineSelected    = true
+        private val defaultUnderlineThickness   = 2
+        private val defaultTabMargins           = Spacing.default
+        private val defaultTabPaddingVertical   = 5
+        private val defaultTabHeight            = Height.MediumSmall()
+        private val defaultBackgroundColorTheme = ColorTheme.transparent
+        private val defaultTabCorners           = Corners.None()
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TabWidgetFormat> = when (doc)
         {
             is DocDict ->
             {
                 effApply(::TabWidgetFormat,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
+                         // Widget Format
+                         split(doc.maybeAt("widget_format"),
+                               effValue(defaultWidgetFormat),
+                               { WidgetFormat.fromDocument(it) }),
                          // Tab Default Style
                          split(doc.maybeAt("tab_default_style"),
-                               nullEff<TextStyle>(),
-                               { effApply(::Comp, TextStyle.fromDocument(it)) }),
-                         // Tab Default Style
+                               effValue(defaultTabDefaultStyle),
+                               { TextStyle.fromDocument(it) }),
+                         // Tab Selected Style
                          split(doc.maybeAt("tab_selected_style"),
-                               nullEff<TextStyle>(),
-                               { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                               effValue(defaultTabSelectedStyle),
+                               { TextStyle.fromDocument(it) }),
                          // Underline Selected?
                          split(doc.maybeBoolean("underline_selected"),
-                               nullEff<Boolean>(),
-                               { effValue(Prim(it)) }),
+                               effValue(defaultUnderlineSelected),
+                               { effValue(it) }),
                          // Underline Thickness
                          split(doc.maybeInt("underline_thickness"),
-                               nullEff<Int>(),
-                               { effValue(Prim(it)) }),
+                               effValue(defaultUnderlineThickness),
+                               { effValue(it) }),
                          // Margins
                          split(doc.maybeAt("tab_margins"),
-                               nullEff<Spacing>(),
-                               { effApply(::Comp, Spacing.fromDocument(it)) }),
+                               effValue(defaultTabMargins),
+                               { Spacing.fromDocument(it) }),
                          // Tab Padding Vertical
                          split(doc.maybeInt("tab_padding_vertical"),
-                               nullEff<Int>(),
-                               { effValue(Prim(it)) }),
+                               effValue(defaultTabPaddingVertical),
+                               { effValue(it) }),
                          // Tab Height
-                         split(doc.maybeEnum<Height>("tab_height"),
-                               nullEff<Height>(),
-                               { effValue(Prim(it)) }),
-                         // Background Color
-                         split(doc.maybeAt("background_color"),
-                               nullEff<ColorId>(),
-                               { effApply(::Prim, ColorId.fromDocument(it)) }),
+                         split(doc.maybeAt("tab_height"),
+                               effValue<ValueError,Height>(defaultTabHeight),
+                               { Height.fromDocument(it) }),
+                         // Background Color Theme
+                         split(doc.maybeAt("background_color_theme"),
+                               effValue(defaultBackgroundColorTheme),
+                               { ColorTheme.fromDocument(it) }),
                          // Tab Corners
-                         split(doc.maybeEnum<Corners>("tab_corners"),
-                               nullEff<Corners>(),
-                               { effValue(Prim(it)) })
+                         split(doc.maybeAt("tab_corners"),
+                               effValue<ValueError,Corners>(defaultTabCorners),
+                               { Corners.fromDocument(it) })
                       )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : TabWidgetFormat =
+                TabWidgetFormat(defaultWidgetFormat,
+                                defaultTabDefaultStyle,
+                                defaultTabSelectedStyle,
+                                defaultUnderlineSelected,
+                                defaultUnderlineThickness,
+                                defaultTabMargins,
+                                defaultTabPaddingVertical,
+                                defaultTabHeight,
+                                defaultBackgroundColorTheme,
+                                defaultTabCorners)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun widgetFormat() : WidgetFormat = this.widgetFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
