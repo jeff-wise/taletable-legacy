@@ -2,17 +2,22 @@
 package com.kispoko.tome.model.game.engine
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.function.Function
 import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import com.kispoko.tome.model.game.engine.program.Program
 import com.kispoko.tome.model.game.engine.value.*
+import com.kispoko.tome.rts.game.engine.ValueSetDoesNotExist
 import effect.effApply
 import effect.effError
 import effect.effValue
+import effect.note
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
@@ -24,10 +29,11 @@ import java.util.*
  * Engine
  */
 data class Engine(override val id : UUID,
-                  val valueSets : Coll<ValueSet>,
-                  val mechanics : Coll<Mechanic>,
-                  val functions : Coll<Function>,
-                  val programs : Coll<Program>) : Model, EngineData
+                  private val valueSets : Coll<ValueSet>,
+                  private val mechanics : Coll<Mechanic>,
+                  private val functions : Coll<Function>,
+                  private val programs : Coll<Program>,
+                  val gameId : GameId) : Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -45,7 +51,7 @@ data class Engine(override val id : UUID,
 
     companion object
     {
-        fun fromDocument(doc: SpecDoc) : ValueParser<Engine> = when (doc)
+        fun fromDocument(doc: SpecDoc, gameId : GameId) : ValueParser<Engine> = when (doc)
         {
             is DocDict ->
             {
@@ -67,7 +73,9 @@ data class Engine(override val id : UUID,
                          // Programs
                          doc.list("programs") apply {
                              effApply(::Coll, it.map { Program.fromDocument(it) })
-                         })
+                         },
+                         effValue(gameId)
+                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -80,40 +88,59 @@ data class Engine(override val id : UUID,
     // ENGINE DATA
     // -----------------------------------------------------------------------------------------
 
-    override fun valueSet(valueSetId : ValueSetId) : ValueSet? = this.valueSetById[valueSetId]
+    // Engine Data > Values
+    // -----------------------------------------------------------------------------------------
+
+    fun valueSet(valueSetId : ValueSetId) : AppEff<ValueSet> =
+            note(this.valueSetById[valueSetId],
+                 AppEngineError(ValueSetDoesNotExist(this.gameId, valueSetId)))
 
 
-    override fun textValue(valueReference : ValueReference) : ValueText? =
-        this.valueSet(valueReference.valueSetId.value)
-            ?.textValue(valueReference.valueId.value, this)
+    fun textValue(valueReference : ValueReference) : AppEff<ValueText> =
+        this.valueSet(valueReference.valueSetId())
+                .apply { it.textValue(valueReference.valueId(), this) }
+
+
+    fun numberValue(valueReference : ValueReference) : AppEff<ValueNumber> =
+            this.valueSet(valueReference.valueSetId())
+                    .apply { it.numberValue(valueReference.valueId(), this) }
+
+
 
 }
-
-
-/**
- * Engine Data
- */
-interface EngineData
-{
-
-    fun valueSet(valueSetId : ValueSetId) : ValueSet?
-
-    fun textValue(valueReference : ValueReference) : Value?
-
-}
-
 
 
 /**
  * Engine Value Type
  */
-enum class EngineValueType
+sealed class EngineValueType
 {
-    NUMBER,
-    TEXT,
-    BOOLEAN,
-    DICE_ROLL,
-    LIST_TEXT;
+
+    object NUMBER : EngineValueType()
+    object TEXT : EngineValueType()
+    object BOOLEAN : EngineValueType()
+    object DICE_ROLL : EngineValueType()
+    object LIST_TEXT : EngineValueType()
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<EngineValueType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "number"    -> effValue<ValueError,EngineValueType>(EngineValueType.NUMBER)
+                "text"      -> effValue<ValueError,EngineValueType>(EngineValueType.TEXT)
+                "boolean"   -> effValue<ValueError,EngineValueType>(EngineValueType.BOOLEAN)
+                "dice_roll" -> effValue<ValueError,EngineValueType>(EngineValueType.DICE_ROLL)
+                "list_text" -> effValue<ValueError,EngineValueType>(EngineValueType.LIST_TEXT)
+                else        -> effError<ValueError,EngineValueType>(
+                                    UnexpectedValue("EngineValueType", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
 }
 
 

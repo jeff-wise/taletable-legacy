@@ -4,12 +4,20 @@ package com.kispoko.tome.rts.sheet
 
 import android.content.Context
 import android.view.View
+import com.kispoko.tome.activity.sheet.PagePagerAdapter
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
+import com.kispoko.tome.app.AppSheetError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
+import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.model.theme.Theme
@@ -25,6 +33,7 @@ import kotlinx.coroutines.experimental.run
 import lulo.document.SpecDoc
 import lulo.spec.Spec
 import java.io.InputStream
+import java.io.Serializable
 import lulo.File as LuloFile
 
 
@@ -46,6 +55,27 @@ object SheetManager
     private val sheet = "sheet"
 
     private val sheetById : MutableMap<SheetId,SheetRecord> = hashMapOf()
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET
+    // -----------------------------------------------------------------------------------------
+
+    fun sheetRecord(sheetId : SheetId) : SheetEff<SheetRecord> =
+            note(this.sheetById[sheetId], SheetDoesNotExist(sheetId))
+
+
+    fun sheet(sheetId : SheetId) : SheetEff<Sheet> =
+            note(this.sheetById[sheetId]?.sheet, SheetDoesNotExist(sheetId))
+
+
+    fun state(sheetId : SheetId) : SheetEff<SheetState> =
+            note(this.sheetById[sheetId]?.state, SheetDoesNotExist(sheetId))
+
+
+    fun sheetState(sheetId : SheetId) : AppEff<SheetState> =
+            note(this.sheetById[sheetId]?.state,
+                    AppSheetError(SheetDoesNotExist(sheetId)))
 
 
     // -----------------------------------------------------------------------------------------
@@ -108,7 +138,7 @@ object SheetManager
             is Val ->
             {
                 val sheet = sheetLoader.value
-                val sheetRecord = SheetRecord(sheet, SheetState(sheet))
+                val sheetRecord = SheetRecord.withDefaultView(sheet, SheetState(sheet))
                 this.sheetById.put(sheet.sheetId.value, sheetRecord)
                 LoadResultValue(sheetRecord)
             }
@@ -179,18 +209,36 @@ object SheetManager
 
 
     // -----------------------------------------------------------------------------------------
-    // STATE
-    // -----------------------------------------------------------------------------------------
-
-    fun state(sheetId : SheetId) : SheetState? = this.sheetById[sheetId]?.sheetState
-
-
-    // -----------------------------------------------------------------------------------------
     // RENDER
     // -----------------------------------------------------------------------------------------
 
-    fun render()
+    fun render(sheetId : SheetId, pagePagerAdapter : PagePagerAdapter)
     {
+        val sheetRecordEff = this.sheetRecord(sheetId)
+
+        when (sheetRecordEff)
+        {
+            is Val ->
+            {
+                val sheetRecord = sheetRecordEff.value
+                val selectedSectionName = sheetRecord.viewState.selectedSection
+                val section = sheetRecord.sheet.sectionWithName(selectedSectionName)
+                if (section != null)
+                {
+                    val gameContext = sheetRecord.gameContext()
+                    when (gameContext)
+                    {
+                        is Val -> pagePagerAdapter.setPages(section.pages(), gameContext.value)
+                        is Err -> ApplicationLog.error(gameContext.error)
+                    }
+                }
+                else
+                {
+                    ApplicationLog.error(SectionDoesNotExist(sheetId, selectedSectionName))
+                }
+            }
+            is Err -> ApplicationLog.error(sheetRecordEff.error)
+        }
     }
 
 
@@ -237,6 +285,85 @@ object SheetManager
                } } }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // STATE
+    // -----------------------------------------------------------------------------------------
+
+    object State
+    {
+
+        // -----------------------------------------------------------------------------------------
+        // REFERENCES
+        // -----------------------------------------------------------------------------------------
+
+        /**
+         * Resolve a boolean reference.
+         */
+        fun boolean(sheetContext : SheetContext,
+                    reference : BooleanReference) : AppEff<Boolean> =
+            when (reference)
+            {
+                is BooleanReferenceLiteral  -> effValue(reference.value)
+                is BooleanReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
+                        .apply( { it.booleanVariable(reference.variableReference)})
+                        .apply( { it.value() })
+
+            }
+
+
+        /**
+         * Resolve a dice roll reference.
+         */
+        fun diceRoll(sheetContext : SheetContext,
+                     reference : DiceRollReference) : AppEff<DiceRoll> =
+            when (reference)
+            {
+                is DiceRollReferenceLiteral  -> effValue(reference.value)
+                is DiceRollReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
+                        .apply( { it.diceRollVariable(reference.variableReference)})
+                        .apply( { effValue<AppError,DiceRoll>(it.value()) })
+
+            }
+
+
+        /**
+         * Resolve a number reference.
+         */
+        fun number(sheetContext : SheetContext,
+                   numberReference : NumberReference) : AppEff<Double> =
+            when (numberReference)
+            {
+                is NumberReferenceLiteral  -> effValue(numberReference.value)
+                is NumberReferenceValue    ->
+                        GameManager.engine(sheetContext.gameId)
+                            .apply({ it.numberValue(numberReference.valueReference) })
+                            .apply({ effValue<AppError,Double>(it.value()) })
+                is NumberReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
+                        .apply( { it.numberVariable(numberReference.variableReference)})
+                        .apply( { it.value(sheetContext) })
+
+            }
+
+
+        /**
+         * Resolve a text reference.
+         */
+        fun text(sheetContext : SheetContext,
+                 reference : TextReference) : AppEff<String> =
+            when (reference)
+            {
+                is TextReferenceLiteral  -> effValue(reference.value)
+                is TextReferenceValue    ->
+                        GameManager.engine(sheetContext.gameId)
+                            .apply({ it.textValue(reference.valueReference) })
+                            .apply({ effValue<AppError,String>(it.value()) })
+                is TextReferenceVariable -> SheetManager.sheetState(sheetContext.sheetId)
+                        .apply( { it.textVariable(reference.variableReference)})
+                        .apply( { it.value(sheetContext) })
+            }
+    }
+
 }
 
 
@@ -244,28 +371,78 @@ object SheetManager
 // COMPONENTS
 // ---------------------------------------------------------------------------------------------
 
-data class SheetRecord(val sheet : Sheet, val sheetState: SheetState)
+data class SheetViewState(val selectedSection : SectionName)
+
+
+data class SheetRecord(val sheet : Sheet,
+                       val state : SheetState,
+                       val viewState : SheetViewState)
 {
 
-    init {
-        sheet.onActive(sheetState)
+
+    companion object
+    {
+        fun withDefaultView(sheet : Sheet, state : SheetState) : SheetRecord
+        {
+            val sections = sheet.sections()
+
+            val sectionName = if (sections.isNotEmpty()) sections[0].name()
+                                                         else SectionName("NA")
+
+            val viewState = SheetViewState(sectionName)
+            return SheetRecord(sheet, state, viewState)
+        }
     }
 
 
-    fun context(context : Context) : SheetContext?
+    fun onActive(context : Context)
+    {
+        val sheetContext = this.context(context)
+
+        when (sheetContext)
+        {
+            is Val -> this.sheet.onActive(sheetContext.value)
+            is Err -> ApplicationLog.error(sheetContext.error)
+        }
+    }
+
+
+    fun context(context : Context) : SheetEff<SheetContext>
     {
         val sheetId    = sheet.sheetId.value
         val campaignId = sheet.campaignId.value
-        val gameId     = CampaignManager.campaignWithId(campaignId)?.gameId?.value
 
-        if (gameId != null)
-            return SheetContext(sheetId, campaignId, gameId, context)
-        else
-            return null
+        val campaign : SheetEff<Campaign> = note(CampaignManager.campaignWithId(campaignId),
+                                                 CampaignDoesNotExist(sheetId, campaignId))
+        val gameId = campaign.apply { effValue<SheetError,GameId>(it.gameId.value) }
+
+        return effApply(::SheetContext, effValue(sheetId),
+                                        effValue(campaignId),
+                                        gameId,
+                                        effValue(context))
     }
 
 
+    fun gameContext() : SheetEff<SheetGameContext>
+    {
+        val sheetId    = sheet.sheetId.value
+        val campaignId = sheet.campaignId.value
+
+        val campaign : SheetEff<Campaign> = note(CampaignManager.campaignWithId(campaignId),
+                                                 CampaignDoesNotExist(sheetId, campaignId))
+        val gameId = campaign.apply { effValue<SheetError,GameId>(it.gameId.value) }
+
+        return effApply(::SheetGameContext, effValue(sheetId),
+                                            effValue(campaignId),
+                                            gameId)
+    }
+
 }
+
+
+data class SheetGameContext(val sheetId : SheetId,
+                            val campaignId : CampaignId,
+                            val gameId : GameId) : Serializable
 
 
 data class SheetContext(val sheetId : SheetId,
@@ -283,4 +460,13 @@ interface SheetComponent
 
 
 typealias SheetEff<A> = Eff<SheetError,Identity,A>
+
+
+fun <A> fromSheetEff(sheetEff : SheetEff<A>) : AppEff<A> = when (sheetEff)
+{
+    is Val -> effValue(sheetEff.value)
+    is Err -> effError(AppSheetError(sheetEff.error))
+}
+
+// fun <A> sheetEffValue(value : A) : SheetEff<A> = Val(value, Identity())
 

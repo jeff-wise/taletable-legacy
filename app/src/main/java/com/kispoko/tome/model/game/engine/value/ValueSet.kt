@@ -2,12 +2,17 @@
 package com.kispoko.tome.model.game.engine.value
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.game.engine.EngineData
+import com.kispoko.tome.model.game.GameId
+import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.EngineValueType
-import com.kispoko.tome.rts.game.GameData
+import com.kispoko.tome.rts.game.*
+import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
+import com.kispoko.tome.rts.game.engine.ValueSetDoesNotContainValue
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -23,11 +28,15 @@ import java.util.*
  */
 @Suppress("UNCHECKED_CAST")
 sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
-                      open val label : Func<ValueSetLabel>,
-                      open val labelSingular: Func<ValueSetLabelSingular>,
-                      open val description : Func<ValueSetDescription>,
-                      open val valueType : Func<EngineValueType>) : Model
+                      open val label : Prim<ValueSetLabel>,
+                      open val labelSingular: Prim<ValueSetLabelSingular>,
+                      open val description : Maybe<Prim<ValueSetDescription>>,
+                      open val valueType : Maybe<Prim<EngineValueType>>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueSet>
     {
@@ -49,6 +58,11 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
 
@@ -56,7 +70,59 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
     // API
     // -----------------------------------------------------------------------------------------
 
-    abstract fun textValue(valueId : ValueId, engineData : EngineData) : ValueText?
+    // Getters
+    // -----------------------------------------------------------------------------------------
+
+    fun valueSetId() : ValueSetId = this.valueSetId.value
+
+    fun label() : ValueSetLabel = this.label.value
+
+    fun labelSingular() : ValueSetLabelSingular = this.labelSingular.value
+
+    fun description() : String? = getMaybePrim(this.description)?.value
+
+    fun valueType() : EngineValueType? = getMaybePrim(this.valueType)
+
+
+    // Lookup
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun value(valueId : ValueId, engine : Engine) : AppEff<Value>
+
+    abstract fun numberValue(valueId : ValueId, engine : Engine) : AppEff<ValueNumber>
+
+    abstract fun textValue(valueId : ValueId, engine : Engine) : AppEff<ValueText>
+
+
+    // -----------------------------------------------------------------------------------------
+    // INTERNAL
+    // -----------------------------------------------------------------------------------------
+
+    protected fun maybeNumberValue(gameId : GameId,
+                                   valueId : ValueId,
+                                   value : Value) : AppEff<ValueNumber> = when (value)
+    {
+        is ValueNumber -> effValue(value)
+        else           -> effError(AppEngineError(
+                                ValueIsOfUnexpectedType(gameId,
+                                                        this.valueSetId(),
+                                                        valueId,
+                                                        ValueType.NUMBER,
+                                                        value.type())))
+    }
+
+    protected fun maybeTextValue(gameId : GameId,
+                                 valueId : ValueId,
+                                 value : Value) : AppEff<ValueText> = when (value)
+    {
+        is ValueText -> effValue(value)
+        else         -> effError(AppEngineError(
+                                ValueIsOfUnexpectedType(gameId,
+                                                        this.valueSetId(),
+                                                        valueId,
+                                                        ValueType.TEXT,
+                                                        value.type())))
+    }
 
 }
 
@@ -66,12 +132,12 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
  */
 data class ValueSetBase(override val id : UUID,
                         override val valueSetId : Prim<ValueSetId>,
-                        override val label : Func<ValueSetLabel>,
-                        override val labelSingular: Func<ValueSetLabelSingular>,
-                        override val description: Func<ValueSetDescription>,
-                        override val valueType : Func<EngineValueType>,
-                        val values : Coll<Value>)
-                        : ValueSet(valueSetId, label, labelSingular, description, valueType)
+                        override val label : Prim<ValueSetLabel>,
+                        override val labelSingular: Prim<ValueSetLabelSingular>,
+                        override val description: Maybe<Prim<ValueSetDescription>>,
+                        override val valueType : Maybe<Prim<EngineValueType>>,
+                        val values : Conj<Value>)
+                         : ValueSet(valueSetId, label, labelSingular, description, valueType)
 {
 
     // -----------------------------------------------------------------------------------------
@@ -79,13 +145,28 @@ data class ValueSetBase(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     private val valuesById : MutableMap<ValueId,Value> =
-                                        values.list.associateBy { it.valueId.value }
+                                        values.set.associateBy { it.valueId.value }
                                                 as MutableMap<ValueId,Value>
 
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+
+    constructor(valueSetId : ValueSetId,
+                label : ValueSetLabel,
+                labelSingular : ValueSetLabelSingular,
+                description : Maybe<ValueSetDescription>,
+                valueType : Maybe<EngineValueType>,
+                values : MutableSet<Value>)
+        : this(UUID.randomUUID(),
+               Prim(valueSetId),
+               Prim(label),
+               Prim(labelSingular),
+               maybeLiftPrim(description),
+               maybeLiftPrim(valueType),
+               Conj(values))
+
 
     companion object : Factory<ValueSetBase>
     {
@@ -94,109 +175,23 @@ data class ValueSetBase(override val id : UUID,
             is DocDict ->
             {
                 effApply(::ValueSetBase,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Value Set Id
-                         doc.at("value_set_id") ap {
-                             effApply(::Prim, ValueSetId.fromDocument(it))
-                         },
+                         doc.at("value_set_id") ap { ValueSetId.fromDocument(it) },
                          // Label
-                         split(doc.maybeAt("label"),
-                               nullEff<ValueSetLabel>(),
-                               { effApply(::Prim, ValueSetLabel.fromDocument(it)) }),
+                         doc.at("label") ap { ValueSetLabel.fromDocument(it) },
                          // Label Singular
-                         split(doc.maybeAt("label_singular"),
-                               nullEff<ValueSetLabelSingular>(),
-                               { effApply(::Prim, ValueSetLabelSingular.fromDocument(it)) }),
+                         doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
                          // Description
                          split(doc.maybeAt("description"),
-                               nullEff<ValueSetDescription>(),
-                               { effApply(::Prim, ValueSetDescription.fromDocument(it)) }),
+                               effValue<ValueError,Maybe<ValueSetDescription>>(Nothing()),
+                               { effApply(::Just, ValueSetDescription.fromDocument(it)) }),
                          // Value Type
-                         split(doc.maybeEnum<EngineValueType>("value_type"),
-                               nullEff<EngineValueType>(),
-                               { effValue(Prim(it)) }),
+                         split(doc.maybeAt("value_type"),
+                               effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
+                               { effApply(::Just, EngineValueType.fromDocument(it)) }),
                          // Values,
                          doc.list("values") ap { docList ->
-                             effApply(::Coll,
-                                 docList.map { Value.fromDocument(it) })
-                         })
-            }
-            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
-        }
-    }
-
-    override fun onLoad() { }
-
-
-    // -----------------------------------------------------------------------------------------
-    // API
-    // -----------------------------------------------------------------------------------------
-
-    override fun textValue(valueId : ValueId, engineData : EngineData) : ValueText?
-    {
-        val value = valuesById[valueId]
-        when (value)
-        {
-            is ValueText -> return value
-            else         -> return null
-        }
-    }
-
-
-}
-
-
-/**
- * Compound Value Set
- */
-data class ValueSetCompound(override val id : UUID,
-                            override val valueSetId : Prim<ValueSetId>,
-                            override val label : Func<ValueSetLabel>,
-                            override val labelSingular: Func<ValueSetLabelSingular>,
-                            override val description: Func<ValueSetDescription>,
-                            override val valueType : Func<EngineValueType>,
-                            val valueSetIds : Prim<List<ValueSetId>>)
-                            : ValueSet(valueSetId, label, labelSingular, description, valueType)
-{
-
-    // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------
-
-    companion object : Factory<ValueSetCompound>
-    {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<ValueSetCompound> = when (doc)
-        {
-            is DocDict ->
-            {
-                effApply(::ValueSetCompound,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
-                         // Value Set Id
-                         doc.at("value_set_id") ap {
-                             effApply(::Prim, ValueSetId.fromDocument(it))
-                         },
-                         // Label
-                         split(doc.maybeAt("label"),
-                               nullEff<ValueSetLabel>(),
-                               { effApply(::Prim, ValueSetLabel.fromDocument(it)) }),
-                         // Label Singular
-                         split(doc.maybeAt("label_singular"),
-                               nullEff<ValueSetLabelSingular>(),
-                               { effApply(::Prim, ValueSetLabelSingular.fromDocument(it)) }),
-                         // Description
-                         split(doc.maybeAt("description"),
-                               nullEff<ValueSetDescription>(),
-                               { effApply(::Prim, ValueSetDescription.fromDocument(it)) }),
-                         // Value Type
-                         split(doc.maybeEnum<EngineValueType>("value_type"),
-                               nullEff<EngineValueType>(),
-                               { effValue(Prim(it)) }),
-                         // Value Set Ids
-                         doc.list("value_set_ids") ap { docList ->
-                             effApply(::Prim,
-                                 docList.map { ValueSetId.fromDocument(it) })
+                             docList.mapSetMut { Value.fromDocument(it) }
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -215,13 +210,140 @@ data class ValueSetCompound(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
+    override fun value(valueId: ValueId, engine: Engine) : AppEff<Value> =
+            note(this.valuesById[valueId],
+                 AppEngineError(ValueSetDoesNotContainValue(engine.gameId,
+                                                            this.valueSetId(),
+                                                            valueId)))
+
+
+    override fun textValue(valueId : ValueId, engine : Engine) : AppEff<ValueText> =
+        this.value(valueId, engine)
+            .apply { this.maybeTextValue(engine.gameId, valueId, it) }
+
+
+    override fun numberValue(valueId : ValueId, engine : Engine) : AppEff<ValueNumber> =
+        this.value(valueId, engine)
+            .apply { this.maybeNumberValue(engine.gameId, valueId, it) }
+
+
+}
+
+
+/**
+ * Compound Value Set
+ */
+data class ValueSetCompound(override val id : UUID,
+                            override val valueSetId : Prim<ValueSetId>,
+                            override val label : Prim<ValueSetLabel>,
+                            override val labelSingular: Prim<ValueSetLabelSingular>,
+                            override val description: Maybe<Prim<ValueSetDescription>>,
+                            override val valueType : Maybe<Prim<EngineValueType>>,
+                            val valueSetIds : Prim<Set<ValueSetId>>)
+                            : ValueSet(valueSetId, label, labelSingular, description, valueType)
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(valueSetId : ValueSetId,
+                label : ValueSetLabel,
+                labelSingular : ValueSetLabelSingular,
+                description : Maybe<ValueSetDescription>,
+                valueType : Maybe<EngineValueType>,
+                valueSetIds : Set<ValueSetId>)
+        : this(UUID.randomUUID(),
+               Prim(valueSetId),
+               Prim(label),
+               Prim(labelSingular),
+               maybeLiftPrim(description),
+               maybeLiftPrim(valueType),
+               Prim(valueSetIds))
+
+
+    companion object : Factory<ValueSetCompound>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<ValueSetCompound> = when (doc)
+        {
+            is DocDict ->
+            {
+                effApply(::ValueSetCompound,
+                         // Value Set Id
+                         doc.at("value_set_id") ap { ValueSetId.fromDocument(it) },
+                         // Label
+                         doc.at("label") ap { ValueSetLabel.fromDocument(it) },
+                         // Label Singular
+                         doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
+                         // Description
+                         split(doc.maybeAt("description"),
+                               effValue<ValueError,Maybe<ValueSetDescription>>(Nothing()),
+                               { effApply(::Just, ValueSetDescription.fromDocument(it)) }),
+                         // Value Type
+                         split(doc.maybeAt("value_type"),
+                               effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
+                               { effApply(::Just, EngineValueType.fromDocument(it)) }),
+                         // Value Set Ids
+                         doc.list("value_set_ids") ap { docList ->
+                             docList.mapSet { ValueSetId.fromDocument(it) }
+                         })
+            }
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun valueSetIds() : Set<ValueSetId> = this.valueSetIds.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(valueId: ValueId, engine: Engine) : AppEff<Value>
+    {
+        // TODO write utility function for this for Effect pkg
+        for (valueSetId in this.valueSetIds()) {
+            val valueSet = engine.valueSet(valueSetId)
+            when (valueSet) {
+                is Val -> {
+                    val value = valueSet.value.value(valueId, engine)
+                    when (value) {
+                        is Val -> return value
+                    }
+                }
+            }
+        }
+
+        return effError(
+                   AppEngineError(
+                       ValueSetDoesNotContainValue(engine.gameId, this.valueSetId(), valueId)))
+    }
+
+
+    override fun numberValue(valueId : ValueId, engine : Engine) : AppEff<ValueNumber> =
+        this.value(valueId, engine)
+            .apply { maybeNumberValue(engine.gameId, valueId, it) }
+
     /**
      * A text value in one of the value sets in the compound value set that has the given id.
      */
-    override fun textValue(valueId : ValueId, engineData : EngineData) : ValueText? =
-        this.valueSetIds.value
-            .map { engineData.valueSet(it)?.textValue(valueId, engineData) }
-            .firstOrNull { it != null }
+    override fun textValue(valueId : ValueId, engine : Engine) : AppEff<ValueText> =
+        this.value(valueId, engine)
+            .apply { maybeTextValue(engine.gameId, valueId, it) }
+
+
 
 }
 

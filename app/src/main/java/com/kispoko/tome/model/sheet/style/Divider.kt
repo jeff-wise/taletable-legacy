@@ -8,13 +8,14 @@ import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Divider Margin
  */
-data class DividerMargin(val value : Float)
+data class DividerMargin(val value : Float) : Serializable
 {
 
     companion object : Factory<DividerMargin>
@@ -33,7 +34,7 @@ data class DividerMargin(val value : Float)
 /**
  * Divider Thickness
  */
-data class DividerThickness(val value : Int)
+data class DividerThickness(val value : Int) : Serializable
 {
 
     companion object : Factory<DividerThickness>

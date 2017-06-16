@@ -17,13 +17,9 @@ public class Font
     private static Typeface serifFontBold;
     private static Typeface serifFontItalic;
     private static Typeface serifFontBoldItalic;
-    private static Typeface serifFontNumeric;
 
     private static Typeface sansSerifFontRegular;
     private static Typeface sansSerifFontBold;
-
-    private static Typeface cursiveRegular;
-    private static Typeface cursiveBold;
 
 
     public static Typeface serifFontRegular(Context context)
@@ -62,15 +58,6 @@ public class Font
     }
 
 
-    public static Typeface serifFontNumeric(Context context)
-    {
-        if (serifFontNumeric == null)
-            serifFontNumeric = Typeface.createFromAsset(context.getAssets(),
-                                                            "fonts/Lora-Regular.ttf");
-        return serifFontNumeric;
-    }
-
-
     public static Typeface sansSerifFontBold(Context context)
     {
         if (sansSerifFontBold == null)
@@ -85,25 +72,6 @@ public class Font
             sansSerifFontRegular = Typeface.createFromAsset(context.getAssets(),
                                                             "fonts/Lato-Regular.ttf");
         return sansSerifFontRegular;
-    }
-
-
-
-    public static Typeface cursiveRegular(Context context)
-    {
-        if (cursiveRegular == null)
-            cursiveRegular = Typeface.createFromAsset(context.getAssets(),
-                                                            "fonts/DancingScript-Regular.ttf");
-        return cursiveRegular;
-    }
-
-
-    public static Typeface cursiveBold(Context context)
-    {
-        if (cursiveBold == null)
-            cursiveBold = Typeface.createFromAsset(context.getAssets(),
-                                                   "fonts/DancingScript-Bold.ttf");
-        return cursiveBold;
     }
 
 }

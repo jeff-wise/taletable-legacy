@@ -12,6 +12,7 @@ import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -58,24 +59,38 @@ data class TableWidgetRow(override val id : UUID,
  * Table Widget Row Format
  */
 data class TableWidgetRowFormat(override val id : UUID,
-                                val cellHeight : Func<Height>) : Model
+                                val cellHeight : Prim<Height>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(cellHeight : Height)
+        : this(UUID.randomUUID(), Prim(cellHeight))
+
 
     companion object : Factory<TableWidgetRowFormat>
     {
+
+        private val defaultCellHeight = Height.MediumSmall()
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetRowFormat> = when (doc)
         {
             is DocDict -> effApply(::TableWidgetRowFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Cell Height
-                                   split(doc.maybeEnum<Height>("cell_height"),
-                                         nullEff<Height>(),
-                                         { effValue(Prim(it))  })
+                                   split(doc.maybeAt("cell_height"),
+                                         effValue<ValueError,Height>(defaultCellHeight),
+                                         { Height.fromDocument(it) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

@@ -3,8 +3,14 @@ package com.kispoko.tome.rts.sheet
 
 
 import android.util.Log
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.Sheet
+import effect.effApply
+import effect.effError
+import effect.effValue
+import effect.note
 import org.apache.commons.collections4.trie.PatriciaTrie
 
 
@@ -28,11 +34,15 @@ interface State
 class SheetState(val sheet : Sheet) : State
 {
 
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
     // Variable Indexes
     // -----------------------------------------------------------------------------------------
 
     private val variableById : MutableMap<VariableId,Variable> = mutableMapOf()
-    private val variablesByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
+    private val variablesByTag: MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
 
     private val listenersById : MutableMap<VariableId,MutableSet<Variable>> = mutableMapOf()
     private val listenersByTag : MutableMap<VariableTag,MutableSet<Variable>> = mutableMapOf()
@@ -44,6 +54,7 @@ class SheetState(val sheet : Sheet) : State
     private val activeVariableLabelTrie : PatriciaTrie<Variable> = PatriciaTrie()
 
 
+    // -----------------------------------------------------------------------------------------
     // VARIABLES
     // -----------------------------------------------------------------------------------------
 
@@ -56,7 +67,7 @@ class SheetState(val sheet : Sheet) : State
     {
         Log.d("***SHEET_STATE", "add variable " + variable.variableId.value)
         val variableId = variable.variableId.value
-        val variableLabel = variable.label.value
+        val variableLabel = variable.label()
 
         // (1) Index variable by name
         // -------------------------------------------------------------------------------------
@@ -92,19 +103,19 @@ class SheetState(val sheet : Sheet) : State
         {
             when (variableRef)
             {
-                is VariableReferenceId ->
+                is VariableId ->
                 {
-                    if (listenersById.containsKey(variableRef.id))
-                        listenersById[variableRef.id]!!.add(variable)
+                    if (listenersById.containsKey(variableRef))
+                        listenersById[variableRef]!!.add(variable)
                     else
-                        listenersById.put(variableRef.id, mutableSetOf(variable))
+                        listenersById.put(variableRef, mutableSetOf(variable))
                 }
-                is VariableReferenceTag ->
+                is VariableTag ->
                 {
-                    if (listenersByTag.containsKey(variableRef.tag))
-                        listenersByTag[variableRef.tag]!!.add(variable)
+                    if (listenersByTag.containsKey(variableRef))
+                        listenersByTag[variableRef]!!.add(variable)
                     else
-                        listenersByTag.put(variableRef.tag, mutableSetOf(variable))
+                        listenersByTag.put(variableRef, mutableSetOf(variable))
                 }
             }
         }
@@ -154,16 +165,104 @@ class SheetState(val sheet : Sheet) : State
     }
 
 
-    fun textVariableWithId(variableId : VariableId) : TextVariable?
-    {
-        Log.d("***SHEET_STATE", "lookup text var " + variableId)
-        val variable = this.variableById[variableId]
+    // -----------------------------------------------------------------------------------------
+    // LOOKUP
+    // -----------------------------------------------------------------------------------------
 
-        when (variable)
+    // Variable
+    // -----------------------------------------------------------------------------------------
+
+    fun variableWithId(variableId : VariableId) : AppEff<Variable> =
+            note(this.variableById[variableId],
+                 AppStateError(VariableWithIdDoesNotExist(sheet.sheetId(), variableId)))
+
+
+    fun variablesWithTag(variableTag : VariableTag) : AppEff<Set<Variable>> =
+            note(this.variablesByTag[variableTag],
+                 AppStateError(VariableWithTagDoesNotExist(sheet.sheetId(), variableTag)))
+
+
+    fun variables(variableReference : VariableReference) : AppEff<Set<Variable>> =
+        when (variableReference)
         {
-            is TextVariable -> return variable
-            else            -> return null
+            is VariableId  -> effApply(::setOf, this.variableWithId(variableReference))
+            is VariableTag -> this.variablesWithTag(variableReference)
         }
+
+
+    fun variable(variableReference : VariableReference) : AppEff<Variable>
+    {
+        fun firstVariable(variableSet : Set<Variable>) : AppEff<Variable> =
+                note(variableSet.firstOrNull(),
+                        AppStateError(VariableDoesNotExist(sheet.sheetId(), variableReference)))
+
+        return this.variables(variableReference).apply(::firstVariable)
+    }
+
+
+    // Variable > Boolean
+    // -----------------------------------------------------------------------------------------
+
+    fun booleanVariable(variableReference : VariableReference) : AppEff<BooleanVariable> =
+        this.variable(variableReference)
+            .apply({it.booleanVariable(sheet.sheetId())})
+
+
+    // Variable > Dice Roll
+    // -----------------------------------------------------------------------------------------
+
+    fun diceRollVariable(variableReference : VariableReference) : AppEff<DiceRollVariable> =
+        this.variable(variableReference)
+            .apply({it.diceRollVariable(sheet.sheetId())})
+
+
+    // Variable > Number
+    // -----------------------------------------------------------------------------------------
+
+    fun numberVariable(variableReference : VariableReference) : AppEff<NumberVariable> =
+        this.variable(variableReference)
+            .apply({it.numberVariable(sheet.sheetId())})
+
+
+    fun numberVariableWithId(variableId : VariableId) : AppEff<NumberVariable>
+    {
+        fun numVariableEff(variable : Variable) : AppEff<NumberVariable> = when (variable)
+        {
+            is NumberVariable -> effValue(variable)
+            else              -> effError(AppStateError(
+                                    VariableIsOfUnexpectedType(sheet.sheetId(),
+                                                               variableId,
+                                                               VariableType.TEXT,
+                                                               variable.type())))
+        }
+
+        return variableWithId(variableId)
+                  .apply(::numVariableEff)
+    }
+
+
+    // Variable > Text
+    // -----------------------------------------------------------------------------------------
+
+    fun textVariable(variableReference : VariableReference) : AppEff<TextVariable> =
+            this.variable(variableReference)
+                .apply({it.textVariable(sheet.sheetId())})
+
+
+    fun textVariableWithId(variableId : VariableId) : AppEff<TextVariable>
+    {
+        fun textVariableEff(variable : Variable) : AppEff<TextVariable> = when (variable)
+        {
+            is TextVariable -> effValue(variable)
+            else            -> effError(AppStateError(
+                                    VariableIsOfUnexpectedType(sheet.sheetId(),
+                                                               variableId,
+                                                               VariableType.TEXT,
+                                                               variable.type())))
+        }
+
+        return variableWithId(variableId)
+                  .apply(::textVariableEff)
     }
 
 

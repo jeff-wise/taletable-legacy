@@ -69,7 +69,7 @@ data class ValueParseError(val docType : String, val error : ValueError) : LoadE
 {
     override fun debugMessage(): String =
             """
-            Load Error: Could not parse $docType from Lulo document
+            Load Error: Document did not match specification '$docType'
                 $error
             """
 

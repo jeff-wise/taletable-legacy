@@ -12,9 +12,9 @@ import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
-import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -24,7 +24,7 @@ import java.util.*
  */
 data class Theme(override val id : UUID,
                  val themeId : Prim<ThemeId>,
-                 val palette : Conj<ThemeColor>) : Model
+                 val palette : Conj<ThemeColor>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -83,63 +83,24 @@ data class Theme(override val id : UUID,
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun color(colorId : ColorId) : Int? = this.colorById[colorId]
+    fun color(colorId : ColorId) : Int? = when (colorId)
+    {
+        is ColorId.Black       -> Color.BLACK
+        is ColorId.White       -> Color.WHITE
+        is ColorId.Transparent -> Color.TRANSPARENT
+        is ColorId.Theme       -> this.colorById[colorId]
+    }
 
 }
 
 
 
-sealed class ThemeId
+sealed class ThemeId : Serializable
 {
 
 
-    class Light : ThemeId()
-    {
-
-        companion object
-        {
-
-            fun fromDocument(doc : SpecDoc) : ValueParser<ThemeId.Light> = when (doc)
-            {
-                is DocText ->
-                {
-                    when (doc.text) {
-                        "light" -> effValue<ValueError,ThemeId.Light>(ThemeId.Light())
-                        else    -> effError<ValueError,ThemeId.Light>(
-                                        UnexpectedValue("ThemeId.Light", doc.text, doc.path))
-                    }
-                }
-                else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-            }
-
-        }
-
-    }
-
-
-    class Dark : ThemeId()
-    {
-
-        companion object
-        {
-
-            fun fromDocument(doc : SpecDoc) : ValueParser<ThemeId.Dark> = when (doc)
-            {
-                is DocText ->
-                {
-                    when (doc.text) {
-                        "dark" -> effValue<ValueError,ThemeId.Dark>(ThemeId.Dark())
-                        else    -> effError<ValueError,ThemeId.Dark>(
-                                        UnexpectedValue("ThemeId.Dark", doc.text, doc.path))
-                    }
-                }
-                else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-            }
-
-        }
-
-    }
-
+    object Light : ThemeId()
+    object Dark : ThemeId()
 
 
     /**
@@ -151,7 +112,8 @@ sealed class ThemeId
         {
             override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeId.Custom> = when (doc)
             {
-                is DocText -> effValue(Custom(doc.text))
+                is DocText ->
+                    effValue(Custom(doc.text))
                 else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
             }
         }
@@ -160,7 +122,20 @@ sealed class ThemeId
 
     companion object
     {
-        fun fromDocument(doc : SpecDoc) : ValueParser<ThemeId> = this.fromDocument(doc)
+        fun fromDocument(doc : SpecDoc) : ValueParser<ThemeId> = when (doc)
+        {
+            is DocText ->
+            {
+                when (doc.text)
+                {
+                    "light" -> effValue<ValueError,ThemeId>(ThemeId.Light)
+                    "dark"  -> effValue<ValueError,ThemeId>(ThemeId.Dark)
+                    else    -> effValue<ValueError,ThemeId>(ThemeId.Custom(doc.text))
+                }
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+
     }
 
 }
@@ -169,7 +144,7 @@ sealed class ThemeId
 /**
  * Theme Color Id
  */
-data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId)
+data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId) : Serializable
 {
 
     companion object : Factory<ThemeColorId>
@@ -191,7 +166,7 @@ data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId)
 /**
  * Theme Color
  */
-data class ThemeColor(val colorId : ColorId, val color : Int)
+data class ThemeColor(val colorId : ColorId, val color : Int) : Serializable
 {
 
     companion object : Factory<ThemeColor>
@@ -215,7 +190,7 @@ data class ThemeColor(val colorId : ColorId, val color : Int)
  *
  * A pallette of colors for some object.
  */
-data class ColorTheme(val themeColorIds: Set<ThemeColorId>)
+data class ColorTheme(val themeColorIds: Set<ThemeColorId>) : Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -239,11 +214,11 @@ data class ColorTheme(val themeColorIds: Set<ThemeColorId>)
         // BUILT-IN THEMES
         // -----------------------------------------------------------------------------------------
 
-        val transparent = ColorTheme(setOf(ThemeColorId(ThemeId.Light(), ColorId.Transparent()),
-                                           ThemeColorId(ThemeId.Dark(), ColorId.Transparent())))
+        val transparent = ColorTheme(setOf(ThemeColorId(ThemeId.Light, ColorId.Transparent),
+                                           ThemeColorId(ThemeId.Dark, ColorId.Transparent)))
 
-        val black = ColorTheme(setOf(ThemeColorId(ThemeId.Light(), ColorId.Dark()),
-                                     ThemeColorId(ThemeId.Dark(), ColorId.Dark())))
+        val black = ColorTheme(setOf(ThemeColorId(ThemeId.Light, ColorId.Black),
+                                     ThemeColorId(ThemeId.Dark, ColorId.Black)))
     }
 
 

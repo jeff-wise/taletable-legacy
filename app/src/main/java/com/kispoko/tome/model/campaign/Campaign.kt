@@ -12,6 +12,7 @@ import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -21,7 +22,7 @@ import java.util.*
  */
 data class Campaign(override val id : UUID,
                     val campaignId: Prim<CampaignId>,
-                    val gameId : Prim<GameId>) : Model
+                    val gameId : Prim<GameId>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -65,7 +66,7 @@ data class Campaign(override val id : UUID,
 /**
  * Campaign Id
  */
-data class CampaignId(val name : String)
+data class CampaignId(val name : String) : Serializable
 {
 
     companion object : Factory<CampaignId>

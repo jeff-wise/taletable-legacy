@@ -22,9 +22,17 @@ import java.util.*
  * Program Invocation
  */
 data class Invocation(override val id : UUID,
-                      val programId: Func<ProgramId>,
+                      val programId: Prim<ProgramId>,
                       val parameters : Prim<List<DataReference>>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(programId : ProgramId, parameters: List<DataReference>)
+        : this(UUID.randomUUID(), Prim(programId), Prim(parameters))
+
 
     companion object : Factory<Invocation>
     {
@@ -33,15 +41,11 @@ data class Invocation(override val id : UUID,
             is DocDict ->
             {
                 effApply(::Invocation,
-                        // Model Id
-                        effValue(UUID.randomUUID()),
                         // Program Name
-                        doc.at("program_name") ap {
-                            effApply(::Prim, ProgramId.fromDocument(it))
-                        },
+                        doc.at("program_name") ap { ProgramId.fromDocument(it) },
                         // Parameters
                         doc.list("parameters") ap { docList ->
-                            effApply(::Prim, docList.map { DataReference.fromDocument(it) })
+                            docList.map { DataReference.fromDocument(it) }
                         })
             }
             else -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -49,12 +53,14 @@ data class Invocation(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
 
 
+    // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
 

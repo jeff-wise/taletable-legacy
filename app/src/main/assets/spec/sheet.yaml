@@ -2,8 +2,9 @@
 ---
 
 version: '1.0'
-name: Sheet
-authors:
+metadata:
+  name: Sheet
+  authors:
   - name: 'Jeff Wise'
 description:
   overview_md: >
@@ -48,7 +49,7 @@ types:
   description: >
     The unique sheet identifier.
   group: Sheet
-  type: simple
+  type: primitive
   base_type: string
 - name: settings
   label: Settings
@@ -72,7 +73,7 @@ types:
   description: >
     The name of a custom theme.
   group: Theme
-  type: simple
+  type: primitive
   base_type: string
 - name: section
   label: Section
@@ -97,7 +98,7 @@ types:
   description: >
     The name of a section.
   group: Section
-  type: simple
+  type: primitive
   base_type: string
 - name: page
   label: Page
@@ -127,7 +128,7 @@ types:
   description: >
     The unique identifier of a theme color.
   group: Theme
-  type: simple
+  type: primitive
   base_type: string
 - name: page_format
   label: Page Format
@@ -285,13 +286,13 @@ types:
   description: >
     The unique identifier of a widget.
   group: Widget
-  type: simple
+  type: primitive
   base_type: string
 - name: widget_action
   label: Action Widget
   description: >
     Action Widget
-  group: Widget
+  group: 'Widget: Action'
   type: product
   fields:
   - name: id
@@ -333,7 +334,7 @@ types:
   label: Action Widget Format
   description: >
     Action Widget formatting options.
-  group: Widget
+  group: 'Widget: Action'
   type: product
   fields:
   - name: widget_format
@@ -360,7 +361,7 @@ types:
   label: Boolean Widget
   description: >
     Boolean Widget
-  group: Widget
+  group: 'Widget: Boolean'
   type: product
   fields:
   - name: id
@@ -392,7 +393,7 @@ types:
   label: Boolean Widget Format
   description: >
     Boolean Widget formatting options.
-  group: Widget
+  group: 'Widget: Boolean'
   type: product
   fields:
   - name: widget_format
@@ -409,7 +410,7 @@ types:
   label: Button Widget
   description: >
     Button Widget
-  group: Widget
+  group: 'Widget: Button'
   type: product
   fields:
   - name: id
@@ -451,7 +452,7 @@ types:
   label: Button Widget Format
   description: >
     Button Widget formatting options.
-  group: Widget
+  group: 'Widget: Button'
   type: product
   fields:
   - name: widget_format
@@ -493,7 +494,7 @@ types:
   label: Expander Widget
   description: >
     Expander Widget
-  group: Widget
+  group: 'Widget: Expander'
   type: product
   fields:
   - name: id
@@ -516,7 +517,7 @@ types:
   label: Expander Widget Format
   description: >
     Expander Widget formatting options.
-  group: Widget
+  group: 'Widget: Expander'
   type: product
   fields:
   - name: widget_format
@@ -543,7 +544,7 @@ types:
   label: Image Widget
   description: >
     Image Widget
-  group: Widget
+  group: 'Widget: Image'
   type: product
   fields:
   - name: id
@@ -552,10 +553,10 @@ types:
     description: >
       The widget identifier.
 - name: widget_list
-  label: List Widget
+  label: List Wiget
   description: >
     List Widget
-  group: Widget
+  group: 'Widget: List'
   type: product
   fields:
   - name: id
@@ -583,7 +584,7 @@ types:
   label: List Widget Format
   description: >
     List Widget formatting options.
-  group: Widget
+  group: 'Widget: List'
   type: product
   fields:
   - name: widget_format
@@ -605,7 +606,7 @@ types:
   label: Log Widget
   description: >
     Log Widget
-  group: Widget
+  group: 'Widget: Log'
   type: product
   fields:
   - name: id
@@ -628,7 +629,7 @@ types:
   label: Log Entry
   description: >
     Log Entry
-  group: Widget
+  group: 'Widget: Log'
   type: product
   fields:
   - name: title
@@ -660,7 +661,7 @@ types:
   label: Log Widget Format
   description: >
     Log Widget formatting options.
-  group: Widget
+  group: 'Widget: Log'
   type: product
   fields:
   - name: widget_format
@@ -672,7 +673,7 @@ types:
   label: Mechanic Widget
   description: >
     Mechanic Widget
-  group: Widget
+  group: 'Widget: Mechanic'
   type: product
   fields:
   - name: id
@@ -689,7 +690,7 @@ types:
   label: Number Widget
   description: >
     Number Widget
-  group: Widget
+  group: 'Widget: Number'
   type: product
   fields:
   - name: id
@@ -737,7 +738,7 @@ types:
   label: Number Widget Format
   description: >
     Number Widget formatting options.
-  group: Widget
+  group: 'Widget: Number'
   type: product
   fields:
   - name: widget_format
@@ -844,7 +845,7 @@ types:
   label: Option Widget
   description: >
     Option Widget
-  group: Widget
+  group: 'Widget: Option'
   type: product
   fields:
   - name: id
@@ -881,7 +882,7 @@ types:
   label: Option Widget Format
   description: >
     Option Widget formatting options.
-  group: Widget
+  group: 'Widget: Option'
   type: product
   fields:
   - name: widget_format
@@ -913,7 +914,7 @@ types:
   label: Quote Widget
   description: >
     Quote Widget
-  group: Widget
+  group: 'Widget: Quote'
   type: product
   fields:
   - name: id
@@ -945,7 +946,7 @@ types:
   label: Quote Widget Format
   description: >
     Quote Widget formatting options.
-  group: Widget
+  group: 'Widget: Quote'
   type: product
   fields:
   - name: widget_format
@@ -972,7 +973,7 @@ types:
   label: Table Widget
   description: >
     Table Widget
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: id
@@ -1001,7 +1002,7 @@ types:
   label: Table Widget Format
   description: >
     Table Widget formatting options.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: widget_format
@@ -1018,7 +1019,7 @@ types:
   label: Table Widget Column
   description: >
     A table column.
-  group: Widget
+  group: 'Widget: Table'
   type: sum
   cases:
   - type: table_widget_boolean_column
@@ -1028,7 +1029,7 @@ types:
   label: Boolean Column
   description: >
     Table column with boolean values.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: name
@@ -1070,7 +1071,7 @@ types:
   label: Boolean Column Format
   description: >
     Boolean table column format.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: alignment
@@ -1117,7 +1118,7 @@ types:
   label: Number Column
   description: >
     Table column with number values.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: name
@@ -1129,7 +1130,7 @@ types:
   label: Text Column
   description: >
     Table column with text values.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: name
@@ -1166,7 +1167,7 @@ types:
   label: Text Column Format
   description: >
     Text column format.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: alignment
@@ -1193,7 +1194,7 @@ types:
   label: Text Widget Row
   description: >
     Table widget row.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: format
@@ -1211,7 +1212,7 @@ types:
   label: Text Widget Row Format
   description: >
     Table widget row format.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: cell_height
@@ -1223,7 +1224,7 @@ types:
   label: Table Widget Cell
   description: >
     A table cell.
-  group: Widget
+  group: 'Widget: Table'
   type: sum
   cases:
   - type: table_widget_boolean_cell
@@ -1233,7 +1234,7 @@ types:
   label: Text Widget Boolean Cell
   description: >
     Table widget boolean cell.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: value
@@ -1250,7 +1251,7 @@ types:
   label: Text Widget Boolean Cell Format
   description: >
     Table widget boolean cell format.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: alignment
@@ -1292,7 +1293,7 @@ types:
   label: Text Widget Number Cell
   description: >
     Table widget number cell.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: value
@@ -1309,7 +1310,7 @@ types:
   label: Text Widget Number Cell Format
   description: >
     Table widget number cell format.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: alignment
@@ -1336,7 +1337,7 @@ types:
   label: Text Widget Text Cell
   description: >
     Table widget text cell.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: value
@@ -1353,7 +1354,7 @@ types:
   label: Text Widget Text Cell Format
   description: >
     Table widget text cell format.
-  group: Widget
+  group: 'Widget: Table'
   type: product
   fields:
   - name: alignment
@@ -1375,7 +1376,7 @@ types:
   label: Tab Widget
   description: >
     Tab Widget
-  group: Widget
+  group: 'Widget: Tab'
   type: product
   fields:
   - name: id
@@ -1403,7 +1404,7 @@ types:
   label: Tab Widget Tab
   description: >
     Tab Widget Tab.
-  group: Widget
+  group: 'Widget: Tab'
   type: product
   fields:
   - name: name
@@ -1421,7 +1422,7 @@ types:
   label: Tab Widget Format
   description: >
     Tab Widget formatting options.
-  group: Widget
+  group: 'Widget: Tab'
   type: product
   fields:
   - name: widget_format
@@ -1438,7 +1439,7 @@ types:
   label: Text Widget
   description: >
     Text Widget
-  group: Widget
+  group: 'Widget: Text'
   type: product
   fields:
   - name: id
@@ -1451,7 +1452,7 @@ types:
     presence: optional
     description: >
       The text widget formatting options.
-  - name: value
+  - name: value_variable
     type: variable_text
     presence: required
     description: >
@@ -1471,7 +1472,7 @@ types:
   label: Text Widget Format
   description: >
     Text Widget formatting options.
-  group: Widget
+  group: 'Widget: Text'
   type: product
   fields:
   - name: widget_format
@@ -1655,7 +1656,7 @@ types:
   description: >
     The types of corners.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - corners_type 
@@ -1664,7 +1665,7 @@ types:
   description: >
     The alignment options.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - alignment_set
@@ -1673,7 +1674,7 @@ types:
   description: >
     The vertical alignment options.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - vertical_alignment_set
@@ -1682,7 +1683,7 @@ types:
   description: >
     Font.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - font_set
@@ -1691,7 +1692,7 @@ types:
   description: >
     The widget height options.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - widget_height_set
@@ -1700,7 +1701,7 @@ types:
   description: >
     The widget position options.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - widget_position_set
@@ -1709,7 +1710,7 @@ types:
   description: >
     The button icon options.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - button_icon_name_set
@@ -1718,7 +1719,7 @@ types:
   description: >
     The type of button view.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - button_view_type_set
@@ -1727,7 +1728,7 @@ types:
   description: >
     The type of option widget view.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - option_widget_view_type_set
@@ -1736,7 +1737,7 @@ types:
   description: >
     The type of quote widget view.
   group: Style
-  type: simple
+  type: primitive
   base_type: string
   constraints:
   - quote_widget_view_type_set

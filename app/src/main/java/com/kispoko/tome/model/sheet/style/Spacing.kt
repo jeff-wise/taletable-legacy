@@ -3,7 +3,6 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import effect.effApply
@@ -15,6 +14,7 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -23,10 +23,10 @@ import java.util.*
  * Spacing
  */
 data class Spacing(override val id : UUID,
-                   val left : Func<Int>,
-                   val top : Func<Int>,
-                   val right : Func<Int>,
-                   val bottom : Func<Int>) : Model
+                   val left : Prim<Int>,
+                   val top : Prim<Int>,
+                   val right : Prim<Int>,
+                   val bottom : Prim<Int>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -60,6 +60,19 @@ data class Spacing(override val id : UUID,
 
         val default : Spacing = Spacing(0, 0, 0, 0)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun left() : Int = this.left.value
+
+    fun top() : Int = this.top.value
+
+    fun right() : Int = this.right.value
+
+    fun bottom() : Int = this.bottom.value
 
 
     // -----------------------------------------------------------------------------------------

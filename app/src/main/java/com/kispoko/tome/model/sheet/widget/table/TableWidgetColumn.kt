@@ -11,6 +11,7 @@ import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
 import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -303,35 +304,56 @@ data class ColumnDefinesNamespace(val value : Boolean)
  * Table Widget Column Format
  */
 data class ColumnFormat(override val id : UUID,
-                        val textStyle : Func<TextStyle>,
-                        val alignment : Func<Alignment>,
-                        val width : Func<Int>,
-                        val backgroundColor : Func<ColorId>) : Model
+                        val textStyle : Comp<TextStyle>,
+                        val alignment : Prim<Alignment>,
+                        val width : Prim<Int>,
+                        val backgroundColorTheme : Prim<ColorTheme>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(textStyle : TextStyle,
+                alignment : Alignment,
+                width : Int,
+                backgroundColorTheme : ColorTheme)
+        : this(UUID.randomUUID(),
+               Comp(textStyle),
+               Prim(alignment),
+               Prim(width),
+               Prim(backgroundColorTheme))
+
+
     companion object : Factory<ColumnFormat>
     {
+
+        private val defaultTextStyle            = TextStyle.default
+        private val defaultAlignment            = Alignment.Center()
+        private val defaultWidth                = 1
+        private val defaultBackgroundColorTheme = ColorTheme.transparent
+
+
         override fun fromDocument(doc : SpecDoc)
                       : ValueParser<ColumnFormat> = when (doc)
         {
             is DocDict -> effApply(::ColumnFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Text Style
                                    split(doc.maybeAt("text_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultTextStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Alignment
-                                   split(doc.maybeEnum<Alignment>("alignment"),
-                                         nullEff<Alignment>(),
-                                         { effValue(Prim(it)) }),
+                                   split(doc.maybeAt("alignment"),
+                                         effValue<ValueError,Alignment>(defaultAlignment),
+                                         { Alignment.fromDocument(it) }),
                                    // Width
                                    split(doc.maybeInt("width"),
-                                         nullEff<Int>(),
-                                         { effValue(Prim(it)) }),
+                                         effValue(defaultWidth),
+                                         { effValue(it) }),
                                    // Background Color
                                    split(doc.maybeAt("background_color"),
-                                         nullEff<ColorId>(),
-                                         { effApply(::Prim, ColorId.fromDocument(it)) })
+                                         effValue(defaultBackgroundColorTheme),
+                                         { ColorTheme.fromDocument(it) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }

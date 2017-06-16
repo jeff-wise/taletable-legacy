@@ -2,11 +2,14 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
 import android.view.View
+import android.widget.LinearLayout
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
 import com.kispoko.tome.model.game.engine.value.ValueSetId
 import com.kispoko.tome.model.game.engine.variable.BooleanVariable
@@ -94,13 +97,35 @@ sealed class Widget : Model, SheetComponent, Serializable
 
     protected fun addVariableToState(sheetId : SheetId, variable : Variable)
     {
-        val sheetState = SheetManager.state(sheetId)
+        val stateEff = SheetManager.state(sheetId)
 
-        if (sheetState != null)
-            sheetState.addVariable(variable)
-        else
-            ApplicationLog.error(
-                    SheetDoesNotExist(sheetId, Thread.currentThread().stackTrace.toString()))
+        when (stateEff)
+        {
+            is Val -> stateEff.value.addVariable(variable)
+            is Err -> ApplicationLog.error(stateEff.error)
+        }
+    }
+
+}
+
+
+object WidgetView
+{
+
+    fun layout(widgetFormat : WidgetFormat, context : Context) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation      = LinearLayout.VERTICAL
+        layout.width            = 0
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        layout.weight           = widgetFormat.width().toFloat()
+
+//        layout.margin.left      = R.dimen.widget_margin_horz;
+//        layout.margin.right     = R.dimen.widget_margin_horz;
+
+        return layout.linearLayout(context)
     }
 
 }
@@ -109,7 +134,7 @@ sealed class Widget : Model, SheetComponent, Serializable
 /**
  * Widget Name
  */
-data class WidgetId(val value : String)
+data class WidgetId(val value : String) : Serializable
 {
 
     companion object : Factory<WidgetId>
@@ -126,7 +151,7 @@ data class WidgetId(val value : String)
 /**
  * Widget Label
  */
-data class WidgetLabel(val value : String?)
+data class WidgetLabel(val value : String?) : Serializable
 {
 
     companion object : Factory<WidgetLabel>
@@ -769,12 +794,14 @@ data class MechanicWidget(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
+    // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
@@ -791,12 +818,40 @@ data class MechanicWidget(override val id : UUID,
 data class NumberWidget(override val id : UUID,
                         val widgetId : Prim<WidgetId>,
                         val format : Comp<NumberWidgetFormat>,
-                        val value : Func<NumberVariable>,
-                        val valuePrefix : Func<String>,
-                        val valuePostfix : Func<String>,
-                        val description : Func<String>,
+                        val valueVariable : Comp<NumberVariable>,
+                        val description : Maybe<Prim<NumberWidgetDescription>>,
+                        val valuePrefix : Maybe<Prim<NumberWidgetValuePrefix>>,
+                        val valuePostfix : Maybe<Prim<NumberWidgetValuePostfix>>,
                         val variables : Coll<Variable>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var viewId : Int? = null
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(widgetId : WidgetId,
+                format : NumberWidgetFormat,
+                valueVariable : NumberVariable,
+                description : Maybe<NumberWidgetDescription>,
+                valuePrefix : Maybe<NumberWidgetValuePrefix>,
+                valuePostfix : Maybe<NumberWidgetValuePostfix>,
+                variables : MutableList<Variable>)
+        : this(UUID.randomUUID(),
+               Prim(widgetId),
+               Comp(format),
+               Comp(valueVariable),
+               maybeLiftPrim(description),
+               maybeLiftPrim(valuePrefix),
+               maybeLiftPrim(valuePostfix),
+               Coll(variables))
+
 
     companion object : Factory<NumberWidget>
     {
@@ -805,36 +860,29 @@ data class NumberWidget(override val id : UUID,
             is DocDict ->
             {
                 effApply(::NumberWidget,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Widget Id
-                         doc.at("id") ap {
-                             effApply(::Prim, WidgetId.fromDocument(it))
-                         },
+                         doc.at("id") ap { WidgetId.fromDocument(it) },
                          // Format
                          split(doc.maybeAt("format"),
-                               effValue(Comp(NumberWidgetFormat.default())),
-                               { effApply(::Comp, NumberWidgetFormat.fromDocument(it))}),
+                               effValue(NumberWidgetFormat.default()),
+                               { NumberWidgetFormat.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap {
-                             effApply(::Comp, NumberVariable.fromDocument(it))
-                         },
-                         // Value Prefix
-                         split(doc.maybeText("value_prefix"),
-                               nullEff<String>(),
-                               { effValue(Prim(it)) }),
-                         // Value Prefix
-                         split(doc.maybeText("value_postfix"),
-                               nullEff<String>(),
-                               { effValue(Prim(it)) }),
+                         doc.at("value") ap { NumberVariable.fromDocument(it) },
                          // Description
-                         split(doc.maybeText("description"),
-                               nullEff<String>(),
-                               { effValue(Prim(it)) }),
+                         split(doc.maybeAt("description"),
+                               effValue<ValueError,Maybe<NumberWidgetDescription>>(Nothing()),
+                               { effApply(::Just, NumberWidgetDescription.fromDocument(it)) }),
+                         // Value Prefix
+                         split(doc.maybeAt("value_prefix"),
+                               effValue<ValueError,Maybe<NumberWidgetValuePrefix>>(Nothing()),
+                               { effApply(::Just, NumberWidgetValuePrefix.fromDocument(it)) }),
+                         // Value Postfix
+                        split(doc.maybeAt("value_postfix"),
+                                effValue<ValueError,Maybe<NumberWidgetValuePostfix>>(Nothing()),
+                                { effApply(::Just, NumberWidgetValuePostfix.fromDocument(it)) }),
                          // Variables
                          doc.list("variables") ap { docList ->
-                             effApply(::Coll,
-                                 docList.map { Variable.fromDocument(it) })
+                             docList.map { Variable.fromDocument(it) }
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -849,6 +897,16 @@ data class NumberWidget(override val id : UUID,
     fun widgetId() : WidgetId = this.widgetId.value
 
     fun format() : NumberWidgetFormat = this.format.value
+
+    fun valueVariable() : NumberVariable = this.valueVariable.value
+
+    fun description() : String? = getMaybePrim(this.description)?.value
+
+    fun valuePrefix() : String? = getMaybePrim(this.valuePrefix)?.value
+
+    fun valuePostfix() : String? = getMaybePrim(this.valuePostfix)?.value
+
+    fun variables() : List<Variable> = this.variables.list
 
 
     // -----------------------------------------------------------------------------------------
@@ -875,6 +933,25 @@ data class NumberWidget(override val id : UUID,
 
     override fun onSheetComponentActive(sheetContext: SheetContext) {
         TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The string representation of the widget's current value. This method returns 0 when the
+     * value is null for some reason.
+     */
+    fun valueString(sheetContext : SheetContext) : String
+    {
+        val numberEff = this.valueVariable().value(sheetContext)
+        when (numberEff)
+        {
+            is Val -> return numberEff.value.toString()
+            is Err -> return "0"
+        }
     }
 
 }
@@ -1268,6 +1345,13 @@ data class TextWidget(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var viewId : Int = 0
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -1321,7 +1405,7 @@ data class TextWidget(override val id : UUID,
 
     fun format() : TextWidgetFormat = this.format.value
 
-    // fun description() : Maybe<TextWidgetDescription> = this.description
+    fun description() : TextWidgetDescription? = getMaybePrim(this.description)
 
     fun valueVariable() : TextVariable = this.valueVariable.value
 
@@ -1335,8 +1419,13 @@ data class TextWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetContext: SheetContext): View {
-        TODO("not implemented")
+    override fun view(sheetContext: SheetContext): View
+    {
+        val view = TextWidgetView.view(this, this.format(), sheetContext)
+
+        this.viewId = view.id
+
+        return view
     }
 
 
@@ -1358,79 +1447,3 @@ data class TextWidget(override val id : UUID,
 
 
 
-//
-//public abstract class Widget extends Model
-//                             implements ToYaml, Serializable
-//{
-//
-//    // INTERFACE
-//    // ------------------------------------------------------------------------------------------
-//
-//    abstract public View view(boolean rowhasLabel, Context context);
-//
-//    abstract public WidgetData data();
-//
-//    abstract public void initialize(GroupParent groupParent, Context context);
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//
-//    // > Views
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Widget layout.
-//     *
-//     * @return A LinearLayout that represents the outer-most container of a component view.
-//     */
-//    public LinearLayout layout(boolean rowHasLabel, final Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.VERTICAL;
-//        layout.width            = 0;
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.weight       = this.data().format().width().floatValue();
-//
-////        layout.margin.left      = R.dimen.widget_margin_horz;
-////        layout.margin.right     = R.dimen.widget_margin_horz;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    // STATIC METHODS
-//    // ------------------------------------------------------------------------------------------
-//
-//    public static Widget fromYaml(YamlParser yaml)
-//                  throws YamlParseException
-//    {
-//        WidgetType widgetType = WidgetType.fromYaml(yaml.atKey("type"));
-//
-//        switch (widgetType) {
-//            case TEXT:
-//                return TextWidget.fromYaml(yaml);
-//            case NUMBER:
-//                return NumberWidget.fromYaml(yaml);
-//            case BOOLEAN:
-//                return BooleanWidget.fromYaml(yaml);
-//            case IMAGE:
-//                return ImageWidget.fromYaml(yaml);
-//            case TABLE:
-//                return TableWidget.fromYaml(yaml);
-//            case ACTION:
-//                return ActionWidget.fromYaml(yaml);
-//            default:
-//                ApplicationFailure.union(
-//                        UnionException.unknownVariant(
-//                                new UnknownVariantError(WidgetType.class.getName())));
-//        }
-//
-//        return null;
-//    }
-//
-//
-//}

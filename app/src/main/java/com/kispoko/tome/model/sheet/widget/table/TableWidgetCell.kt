@@ -14,6 +14,7 @@ import com.kispoko.tome.model.sheet.widget.table.cell.BooleanCellFormat
 import com.kispoko.tome.model.sheet.widget.table.cell.NumberCellFormat
 import com.kispoko.tome.model.sheet.widget.table.cell.TextCellFormat
 import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -161,30 +162,47 @@ sealed class TableWidgetTextCell(override val id : UUID,
  * Table Widget Cell Format
  */
 data class CellFormat(override val id : UUID,
-                      val textStyle : Func<TextStyle>,
-                      val alignment : Func<Alignment>,
-                      val backgroundColor : Func<ColorId>) : Model
+                      val textStyle : Comp<TextStyle>,
+                      val alignment : Prim<Alignment>,
+                      val backgroundColorTheme : Prim<ColorTheme>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(textStyle: TextStyle,
+                alignment : Alignment,
+                backgroundColorTheme : ColorTheme)
+        : this(UUID.randomUUID(),
+               Comp(textStyle),
+               Prim(alignment),
+               Prim(backgroundColorTheme))
+
+
     companion object : Factory<CellFormat>
     {
-        override fun fromDocument(doc : SpecDoc)
-                      : ValueParser<CellFormat> = when (doc)
+
+        private val defaultTextStyle            = TextStyle.default
+        private val defaultAlignment            = Alignment.Center()
+        private val defaultBackgroundColorTheme = ColorTheme.transparent
+
+
+        override fun fromDocument(doc : SpecDoc) : ValueParser<CellFormat> = when (doc)
         {
             is DocDict -> effApply(::CellFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Text Style
                                    split(doc.maybeAt("text_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
+                                         effValue(defaultTextStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Alignment
-                                   split(doc.maybeEnum<Alignment>("alignment"),
-                                         nullEff<Alignment>(),
-                                         { effValue(Prim(it)) }),
+                                   split(doc.maybeAt("alignment"),
+                                         effValue<ValueError,Alignment>(defaultAlignment),
+                                         { Alignment.fromDocument(it) }),
                                    // Background Color
                                    split(doc.maybeAt("background_color"),
-                                         nullEff<ColorId>(),
-                                         { effApply(::Prim, ColorId.fromDocument(it)) })
+                                         effValue(defaultBackgroundColorTheme),
+                                         { ColorTheme.fromDocument(it) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }

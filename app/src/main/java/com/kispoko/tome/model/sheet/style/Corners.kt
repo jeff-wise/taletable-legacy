@@ -13,27 +13,28 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Corners
  */
-sealed class Corners
+sealed class Corners : Serializable
 {
 
-    class None : Corners()
-    class Small : Corners()
-    class Medium : Corners()
-    class Large : Corners()
+    object None : Corners()
+    object Small : Corners()
+    object Medium : Corners()
+    object Large : Corners()
 
 
     fun resourceId() : Int = when(this)
     {
-        is None -> R.drawable.bg_corners_none
-        is Small -> R.drawable.bg_corners_small
-        is Medium -> R.drawable.bg_corners_medium
-        is Large -> R.drawable.bg_corners_large
+        is None -> R.drawable.bg_sheet_corners_none
+        is Small -> R.drawable.bg_sheet_corners_small
+        is Medium -> R.drawable.bg_sheet_corners_medium
+        is Large -> R.drawable.bg_sheet_corners_large
     }
 
 
@@ -43,10 +44,10 @@ sealed class Corners
         {
             is DocText -> when (doc.text)
             {
-                "none"   -> effValue<ValueError,Corners>(Corners.None())
-                "small"  -> effValue<ValueError,Corners>(Corners.Small())
-                "medium" -> effValue<ValueError,Corners>(Corners.Medium())
-                "large"  -> effValue<ValueError,Corners>(Corners.Large())
+                "none"   -> effValue<ValueError,Corners>(Corners.None)
+                "small"  -> effValue<ValueError,Corners>(Corners.Small)
+                "medium" -> effValue<ValueError,Corners>(Corners.Medium)
+                "large"  -> effValue<ValueError,Corners>(Corners.Large)
                 else     -> effError<ValueError,Corners>(
                                     UnexpectedValue("Corners", doc.text, doc.path))
             }

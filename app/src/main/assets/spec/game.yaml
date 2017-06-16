@@ -2,8 +2,9 @@
 ---
 
 version: '0.7'
-name: Tome Game Specification
-authors:
+metadata:
+  name: Game
+  authors:
   - name: 'Jeff Wise'
 description:
   overview_md: >
@@ -42,7 +43,7 @@ types:
   description: >
     The unique game identifier.
   group: Game
-  type: simple
+  type: primitive
   base_type: string
 - name: game_description
   label: Game Description
@@ -67,7 +68,7 @@ types:
   description: >
     A brief description of a game.
   group: Game
-  type: simple
+  type: primitive
   base_type: string
 - name: author
   label: Author
@@ -96,21 +97,21 @@ types:
   description: >
     The author's full name.
   group: Author
-  type: simple
+  type: primitive
   base_type: string
 - name: author_organization
   label: Author Organization
   description: >
     The author's organization.
   group: Author
-  type: simple
+  type: primitive
   base_type: string
 - name: user_name
   label: User Name
   description: >
     A user name.
   group: User
-  type: simple
+  type: primitive
   base_type: string
 - name: engine  
   label: Engine
@@ -666,7 +667,7 @@ types:
   description: >
     The unique identifier of a variable.
   group: Variable
-  type: simple
+  type: primitive
   base_type: string
 - name: variable_text
   label: Text Variable
@@ -715,7 +716,7 @@ types:
   description: >
     The unique identifier of a variable.
   group: Variable
-  type: simple
+  type: primitive
   base_type: string
 - name: variable_text_value
   label: Text Variable Value
@@ -738,7 +739,7 @@ types:
   description: >
     A literal text value.
   group: Variable
-  type: simple
+  type: primitive
   base_type: string
 - name: summation
   label: Summation

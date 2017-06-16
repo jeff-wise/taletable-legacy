@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.kispoko.tome.model.game.engine.mechanic.MechanicException;
 import com.kispoko.tome.model.game.engine.summation.SummationException;
-import com.kispoko.tome.model.game.engine.value.ValueException;
 import com.kispoko.tome.model.game.engine.variable.NullVariableException;
 import com.kispoko.tome.model.game.engine.variable.VariableException;
 import com.kispoko.tome.exception.TemplateFileException;
@@ -109,12 +108,6 @@ public class ApplicationFailure
 
 
     public static void union(UnionException exception)
-    {
-        Log.d("***APP", exception.errorMessage(), exception);
-    }
-
-
-    public static void value(ValueException exception)
     {
         Log.d("***APP", exception.errorMessage(), exception);
     }

@@ -20,6 +20,10 @@ import lulo.value.ValueParser
 sealed class DiceRollReference
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<DiceRollReference>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<DiceRollReference> =
@@ -33,6 +37,7 @@ sealed class DiceRollReference
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
@@ -46,6 +51,10 @@ sealed class DiceRollReference
  */
 data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<DiceRollReference>
     {
@@ -63,6 +72,10 @@ data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference()
 data class DiceRollReferenceVariable(
                 val variableReference : VariableReference) : DiceRollReference()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<DiceRollReference>
     {

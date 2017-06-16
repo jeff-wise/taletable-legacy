@@ -24,6 +24,7 @@ import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -34,7 +35,8 @@ import java.util.*
 data class GroupRow(override val id : UUID,
                     val format : Comp<GroupRowFormat>,
                     val index : Prim<Int>,
-                    val widgets : Coll<Widget>) : Model, SheetComponent, Comparable<GroupRow>
+                    val widgets : Coll<Widget>)
+                      : Model, SheetComponent, Comparable<GroupRow>, Serializable
 {
 
     companion object
@@ -187,7 +189,7 @@ data class GroupRowFormat(override val id : UUID,
                           val margins : Comp<Spacing>,
                           val padding : Comp<Spacing>,
                           val showDivider : Prim<Boolean>,
-                          val dividerColorTheme : Prim<ColorTheme>) : Model
+                          val dividerColorTheme : Prim<ColorTheme>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -205,7 +207,7 @@ data class GroupRowFormat(override val id : UUID,
                Prim(backgroundColorTheme),
                Comp(margins),
                Comp(padding),
-               Prim(false),
+               Prim(showDivider),
                Prim(dividerColorTheme))
 
 
@@ -230,11 +232,11 @@ data class GroupRowFormat(override val id : UUID,
                                { effApply(::Prim, ColorTheme.fromDocument(it))}),
                          // Margins
                          split(doc.maybeAt("margins"),
-                               effValue(Comp(Spacing.default())),
+                               effValue(Comp(Spacing.default)),
                                { effApply(::Comp, Spacing.fromDocument(it))}),
                          // Padding
                          split(doc.maybeAt("padding"),
-                               effValue(Comp(Spacing.default())),
+                               effValue(Comp(Spacing.default)),
                                { effApply(::Comp, Spacing.fromDocument(it))}),
                         // Show Divider?
                         split(doc.maybeBoolean("show_divider"),
@@ -253,8 +255,8 @@ data class GroupRowFormat(override val id : UUID,
         fun default() : GroupRowFormat =
                 GroupRowFormat(Alignment.Center(),
                                ColorTheme.transparent,
-                               Spacing.default(),
-                               Spacing.default(),
+                               Spacing.default,
+                               Spacing.default,
                                false,
                                ColorTheme.black)
 

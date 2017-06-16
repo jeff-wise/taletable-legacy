@@ -22,6 +22,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -32,7 +33,8 @@ import java.util.*
 data class Group(override val id : UUID,
                  val format : Comp<GroupFormat>,
                  val index : Prim<Int>,
-                 val rows : CollS<GroupRow>) : Model, SheetComponent, Comparable<Group>
+                 val rows : CollS<GroupRow>)
+                  : Model, SheetComponent, Comparable<Group>, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -187,7 +189,7 @@ data class GroupFormat(override val id : UUID,
                        val showDivider : Prim<Boolean>,
                        val dividerColorTheme: Prim<ColorTheme>,
                        val dividerMargins : Prim<DividerMargin>,
-                       val dividerThickness : Prim<DividerThickness>) : Model
+                       val dividerThickness : Prim<DividerThickness>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -207,7 +209,7 @@ data class GroupFormat(override val id : UUID,
                Comp(margins),
                Comp(padding),
                Prim(corners),
-               Prim(false),
+               Prim(showDivider),
                Prim(dividerColorTheme),
                Prim(dividerMargins),
                Prim(dividerThickness))
@@ -229,15 +231,15 @@ data class GroupFormat(override val id : UUID,
                                { effApply(::Prim, ColorTheme.fromDocument(it))}),
                          // Margins
                          split(doc.maybeAt("margins"),
-                               effValue(Comp(Spacing.default())),
+                               effValue(Comp(Spacing.default)),
                                { effApply(::Comp, Spacing.fromDocument(it))}),
                          // Padding
                          split(doc.maybeAt("padding"),
-                               effValue(Comp(Spacing.default())),
+                               effValue(Comp(Spacing.default)),
                                { effApply(::Comp, Spacing.fromDocument(it))}),
                          // Corners
                          split(doc.maybeAt("corners"),
-                               effValue<ValueError,Prim<Corners>>(Prim(Corners.None())),
+                               effValue<ValueError,Prim<Corners>>(Prim(Corners.None)),
                                { effApply(::Prim, Corners.fromDocument(it))}),
                          // Show Divider?
                          split(doc.maybeBoolean("show_divider"),
@@ -263,9 +265,9 @@ data class GroupFormat(override val id : UUID,
 
         fun default() : GroupFormat =
                 GroupFormat(ColorTheme.transparent,
-                            Spacing.default(),
-                            Spacing.default(),
-                            Corners.None(),
+                            Spacing.default,
+                            Spacing.default,
+                            Corners.None,
                             false,
                             ColorTheme.black,
                             DividerMargin.default(),
@@ -289,9 +291,9 @@ data class GroupFormat(override val id : UUID,
 
     fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
 
-    fun dividerMargins() : Float? = this.dividerMargins.value?.value
+    fun dividerMargins() : Float? = this.dividerMargins.value.value
 
-    fun dividerThickness() : Int? = this.dividerThickness.value?.value
+    fun dividerThickness() : Int? = this.dividerThickness.value.value
 
 
     // -----------------------------------------------------------------------------------------

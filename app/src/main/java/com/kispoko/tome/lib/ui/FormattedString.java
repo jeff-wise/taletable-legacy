@@ -6,14 +6,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ReplacementSpan;
-import android.text.style.StyleSpan;
 
 import com.kispoko.tome.R;
 import com.kispoko.tome.model.sheet.style.TextFont;
@@ -21,6 +19,7 @@ import com.kispoko.tome.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -124,21 +123,21 @@ public class FormattedString
 
         if (font != null)
         {
-            switch (font)
-            {
-                case BOLD:
-                    StyleSpan valueBoldSpan = new StyleSpan(Typeface.BOLD);
-                    spanBuilder.setSpan(valueBoldSpan, spanStart, spanStart + spanLength, 0);
-                    break;
-                case ITALIC:
-                    StyleSpan valueItalicSpan = new StyleSpan(Typeface.ITALIC);
-                    spanBuilder.setSpan(valueItalicSpan, spanStart, spanStart + spanLength, 0);
-                    break;
-                case BOLD_ITALIC:
-                    StyleSpan valueBoldItalicSpan = new StyleSpan(Typeface.BOLD_ITALIC);
-                    spanBuilder.setSpan(valueBoldItalicSpan, spanStart, spanStart + spanLength, 0);
-                    break;
-            }
+//            switch (font)
+//            {
+//                case BOLD:
+//                    StyleSpan valueBoldSpan = new StyleSpan(BOLD);
+//                    spanBuilder.setSpan(valueBoldSpan, spanStart, spanStart + spanLength, 0);
+//                    break;
+//                case ITALIC:
+//                    StyleSpan valueItalicSpan = new StyleSpan(ITALIC);
+//                    spanBuilder.setSpan(valueItalicSpan, spanStart, spanStart + spanLength, 0);
+//                    break;
+//                case BOLD_ITALIC:
+//                    StyleSpan valueBoldItalicSpan = new StyleSpan(BOLD_ITALIC);
+//                    spanBuilder.setSpan(valueBoldItalicSpan, spanStart, spanStart + spanLength, 0);
+//                    break;
+//            }
         }
 
         // > Color
@@ -230,15 +229,15 @@ public class FormattedString
         }
 
 
-//        public Span(String text, Integer color, Float size, TextFont textFont)
-//        {
-//            this.text           = text;
-//            this.placeholder    = null;
-//
-//            this.textColor      = color;
-//            this.textSize       = size;
-//            this.textFont       = textFont;
-//        }
+        public Span(String text, Integer color, Float size, TextFont textFont)
+        {
+            this.text           = text;
+            this.placeholder    = null;
+
+            this.textColor      = color;
+            this.textSize       = size;
+            this.textFont       = textFont;
+        }
 
 
         // API

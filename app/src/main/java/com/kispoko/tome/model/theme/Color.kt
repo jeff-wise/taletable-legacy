@@ -9,20 +9,21 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Color Id
  */
-sealed class ColorId
+sealed class ColorId : Serializable
 {
 
-    class Transparent : ColorId()
+    object Transparent : ColorId()
 
-    class White : ColorId()
+    object White : ColorId()
 
-    class Black : ColorId()
+    object Black : ColorId()
 
     data class Theme(val id : String) : ColorId()
 
@@ -35,9 +36,9 @@ sealed class ColorId
             {
                 when (doc.text)
                 {
-                    "transparent" -> effValue<ValueError,ColorId>(ColorId.Transparent())
-                    "white"       -> effValue<ValueError,ColorId>(ColorId.White())
-                    "black"       -> effValue<ValueError,ColorId>(ColorId.Black())
+                    "transparent" -> effValue<ValueError,ColorId>(ColorId.Transparent)
+                    "white"       -> effValue<ValueError,ColorId>(ColorId.White)
+                    "black"       -> effValue<ValueError,ColorId>(ColorId.Black)
                     else          -> effValue<ValueError,ColorId>(ColorId.Theme(doc.text))
                 }
             }

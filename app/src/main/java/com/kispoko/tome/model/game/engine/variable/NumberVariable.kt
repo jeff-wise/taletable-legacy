@@ -2,10 +2,20 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.summation.Summation
+import com.kispoko.tome.model.game.engine.value.ValueNumber
 import com.kispoko.tome.model.game.engine.value.ValueReference
+import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.game.fromEngineEff
+import com.kispoko.tome.rts.game.fromGameEff
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.rts.sheet.SheetState
+import com.kispoko.tome.rts.sheet.fromSheetEff
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -14,14 +24,19 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Number Variable
  */
-sealed class NumberVariableValue
+sealed class NumberVariableValue : Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberVariableValue>
     {
@@ -39,10 +54,18 @@ sealed class NumberVariableValue
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     open fun dependencies() : Set<VariableReference> = setOf()
+
+
+    // -----------------------------------------------------------------------------------------
+    // Value
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun value(sheetContext : SheetContext) : AppEff<Double>
 
 }
 
@@ -53,6 +76,10 @@ sealed class NumberVariableValue
 data class NumberVariableLiteralValue(val value : Double) : NumberVariableValue()
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<NumberVariableValue>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> = when (doc)
@@ -62,27 +89,56 @@ data class NumberVariableLiteralValue(val value : Double) : NumberVariableValue(
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext) : AppEff<Double> = effValue(this.value)
+
 }
 
 
 /**
  * Variable Value
  */
-data class NumberVariableVariableValue(
-                        val variableReference : VariableReference) : NumberVariableValue()
+data class NumberVariableVariableValue(val variableId : VariableId) : NumberVariableValue()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberVariableValue>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
-                effApply(::NumberVariableVariableValue, VariableReference.fromDocument(doc))
+                effApply(::NumberVariableVariableValue, VariableId.fromDocument(doc))
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = setOf(variableReference)
+    override fun dependencies() : Set<VariableReference> = setOf(variableId)
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext) : AppEff<Double>
+    {
+        fun numberVariable(state : SheetState) : AppEff<NumberVariable> =
+            state.numberVariableWithId(variableId)
+
+        fun variableValue(numberVariable : NumberVariable) : AppEff<Double> =
+            numberVariable.variableValue().value(sheetContext)
+
+        return fromSheetEff(SheetManager.state(sheetContext.sheetId))
+                .apply(::numberVariable)
+                .apply(::variableValue)
+    }
 
 }
 
@@ -100,10 +156,20 @@ data class NumberVariableProgramValue(val invocation : Invocation) : NumberVaria
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies() : Set<VariableReference> = invocation.dependencies()
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext: SheetContext): AppEff<Double> {
+        TODO("not implemented")
+    }
 
 }
 
@@ -114,10 +180,32 @@ data class NumberVariableProgramValue(val invocation : Invocation) : NumberVaria
 data class NumberVariableValueValue(val valueReference : ValueReference) : NumberVariableValue()
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<NumberVariableValue>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariableValue> =
                 effApply(::NumberVariableValueValue, ValueReference.fromDocument(doc))
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext: SheetContext): AppEff<Double>
+    {
+        fun numberValue(engine : Engine) : AppEff<ValueNumber> =
+            engine.numberValue(valueReference)
+
+        fun doubleValue(numberValue : ValueNumber) : AppEff<Double> =
+            effValue(numberValue.value())
+
+        return GameManager.engine(sheetContext.gameId)
+                          .apply(::numberValue)
+                          .apply(::doubleValue)
     }
 
 }
@@ -136,10 +224,19 @@ data class NumberVariableSummationValue(val summation : Summation) : NumberVaria
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies() : Set<VariableReference> = summation.dependencies()
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun value(sheetContext : SheetContext): AppEff<Double>
+            = summation.value(sheetContext)
 
 }
 

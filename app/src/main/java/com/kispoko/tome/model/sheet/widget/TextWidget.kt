@@ -2,16 +2,30 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
+import android.view.Gravity
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.kispoko.tome.R
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.FormattedString
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.util.SerialBitmap
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -26,7 +40,7 @@ data class TextWidgetFormat(override val id : UUID,
                             val outsideLabel : Maybe<Prim<TextWidgetLabel>>,
                             val outsideLabelFormat : Comp<TextFormat>,
                             val valueFormat : Comp<TextFormat>,
-                            val descriptionStyle : Comp<TextStyle>) : Model
+                            val descriptionStyle : Comp<TextStyle>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -119,6 +133,18 @@ data class TextWidgetFormat(override val id : UUID,
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
 
+    fun insideLabel() : String? = getMaybePrim(this.insideLabel)?.value
+
+    fun insideLabelFormat() : TextFormat = this.insideLabelFormat.value
+
+    fun outsideLabel() : String? = getMaybePrim(this.outsideLabel)?.value
+
+    fun outsideLabelFormat() : TextFormat = this.outsideLabelFormat.value
+
+    fun valueFormat() : TextFormat = this.valueFormat.value
+
+    fun descriptionStyle() : TextStyle = this.descriptionStyle.value
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -132,7 +158,7 @@ data class TextWidgetFormat(override val id : UUID,
 /**
  * Text Widget Description
  */
-data class TextWidgetDescription(val value : String)
+data class TextWidgetDescription(val value : String) : Serializable
 {
 
     companion object : Factory<TextWidgetDescription>
@@ -149,7 +175,7 @@ data class TextWidgetDescription(val value : String)
 /**
  * Text Widget Description
  */
-data class TextWidgetLabel(val value : String)
+data class TextWidgetLabel(val value : String) : Serializable
 {
 
     companion object : Factory<TextWidgetLabel>
@@ -161,6 +187,332 @@ data class TextWidgetLabel(val value : String)
         }
     }
 }
+
+
+
+object TextWidgetView
+{
+
+    fun view(textWidget : TextWidget,
+             format : TextWidgetFormat,
+             sheetContext : SheetContext) : View
+    {
+        val layout = WidgetView.layout(format.widgetFormat(), sheetContext.context)
+
+        layout.addView(this.mainView(textWidget, format, sheetContext))
+
+        return layout
+    }
+
+
+
+    /**
+     * The outermost view that holds the outside labels and the value view.
+     *
+     *                      top label
+     *             --------------------------
+     *             |                         |
+     *  left label |        Value View       | right label
+     *             |                         |
+     *             ---------------------------
+     *                    bottom label
+     *
+     */
+    private fun mainView(textWidget : TextWidget,
+                         format : TextWidgetFormat,
+                         sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = this.mainLayout(format, sheetContext.context)
+
+        // > Outside Top/Left Label View
+        if (format.outsideLabel() != null) {
+            if (format.outsideLabelFormat().position().isTop() ||
+                format.outsideLabelFormat().position().isLeft()) {
+                layout.addView(this.outsideLabelView(format, sheetContext))
+            }
+        }
+
+        // > Value
+        layout.addView(this.valueMainView(textWidget, format, sheetContext))
+
+        // > Outside Bottom/Right Label View
+        if (format.outsideLabel() != null) {
+            if (format.outsideLabelFormat().position().isBottom() ||
+                format.outsideLabelFormat().position().isRight()) {
+                layout.addView(this.outsideLabelView(format, sheetContext))
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun mainLayout(format : TextWidgetFormat, context : Context) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation          = format.outsideLabelFormat()
+                                            .position().linearLayoutOrientation()
+
+        layout.gravity              = format.widgetFormat().alignment().gravityConstant()
+
+        layout.marginSpacing        = format.widgetFormat().margins()
+
+        return layout.linearLayout(context)
+    }
+
+
+    /**
+     * The view that holds the value as well as the inside labels around the value.
+     */
+    private fun valueMainView(textWidget : TextWidget,
+                              format : TextWidgetFormat,
+                              sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = this.valueMainViewLayout(format, sheetContext)
+
+        // > Inside Top/Left Label View
+        if (format.insideLabel() != null && textWidget.description() == null) {
+            if (format.insideLabelFormat().position().isTop() ||
+                format.insideLabelFormat().position().isLeft()) {
+                layout.addView(this.insideLabelView(format, sheetContext))
+            }
+        }
+
+        layout.addView(valueTextView(textWidget, format, sheetContext))
+
+        // > Inside Bottom/Right Label View
+        if (format.insideLabel() != null && textWidget.description() == null) {
+            if (format.insideLabelFormat().position().isBottom() ||
+                format.insideLabelFormat().position().isRight()) {
+                layout.addView(this.insideLabelView(format, sheetContext))
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun valueMainViewLayout(format : TextWidgetFormat,
+                                    sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation          = format.insideLabelFormat()
+                                            .position().linearLayoutOrientation()
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.backgroundColor      = SheetManager.color(
+                                                sheetContext.sheetId,
+                                                format.widgetFormat().backgroundColorTheme())
+
+        layout.gravity              = format.valueFormat().alignment().gravityConstant() or
+                                        Gravity.CENTER_VERTICAL
+
+        layout.backgroundResource   = format.valueFormat().height()
+                                            .resourceId(format.widgetFormat().corners())
+
+        if (format.valueFormat().height().isWrap())
+        {
+            layout.padding.topDp    = format.valueFormat().padding().top().toFloat()
+            layout.padding.bottomDp = format.valueFormat().padding().bottom().toFloat()
+        }
+
+//        if (format.widgetFormat.background() == BackgroundColor.EMPTY)
+//            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        if (this.data().format().underlineThickness() > 0)
+//        {
+//            layout.backgroundColor    = this.data().format().underlineColor().resourceId();
+//            layout.backgroundResource = R.drawable.bg_widget_bottom_border;
+//        }
+
+//        else if (this.data().format().background() != BackgroundColor.EMPTY &&
+//                 this.data().format().background() != BackgroundColor.NONE)
+//        {
+
+        return layout.linearLayout(sheetContext.context)
+    }
+
+
+    private fun valueTextView(textWidget : TextWidget,
+                              format : TextWidgetFormat,
+                              sheetContext : SheetContext) : TextView
+    {
+        val value = TextViewBuilder()
+
+        value.id            = Util.generateViewId()
+
+        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        value.layoutGravity = format.valueFormat().alignment().gravityConstant() or
+                                Gravity.CENTER_VERTICAL
+        value.gravity       = format.valueFormat().alignment().gravityConstant()
+
+        if (textWidget.description() != null)
+        {
+            format.descriptionStyle().styleTextViewBuilder(value, sheetContext)
+
+            val spans = mutableListOf<FormattedString.Span>()
+
+            val labelSpan =
+                FormattedString.Span(
+                        format.insideLabel(),
+                        SheetManager.color(sheetContext.sheetId,
+                                           format.insideLabelFormat().style().colorTheme()),
+                        format.insideLabelFormat().style().sizeSp(),
+                        format.insideLabelFormat().style().font())
+
+            val valueSpan =
+                FormattedString.Span(textWidget.valueVariable().value(sheetContext),
+                                     sheetContext.context.getString(R.string.placeholder_value),
+                                     SheetManager.color(sheetContext.sheetId,
+                                                        format.valueFormat().style().colorTheme()),
+                                     format.valueFormat().style().sizeSp(),
+                                     format.valueFormat().style().font())
+
+
+            if (format.insideLabel() != null)
+                spans.add(labelSpan)
+
+            spans.add(valueSpan)
+
+//            value.textSpan  = FormattedString.spannableStringBuilder(textWidget.description(),
+//                                                                     spans)
+        }
+        else
+        {
+            value.text      = textWidget.valueVariable().value(sheetContext)
+
+            format.valueFormat().style().styleTextViewBuilder(value, sheetContext)
+        }
+
+        return value.textView(sheetContext.context)
+    }
+
+
+    private fun outsideLabelView(format : TextWidgetFormat,
+                                 sheetContext : SheetContext) : TextView
+    {
+        val label = TextViewBuilder()
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        label.layoutGravity     = format.outsideLabelFormat().alignment().gravityConstant()
+
+        label.text              = format.outsideLabel()
+
+        format.outsideLabelFormat().style().styleTextViewBuilder(label, sheetContext)
+
+        label.marginSpacing     = format.outsideLabelFormat().margins()
+
+        return label.textView(sheetContext.context)
+    }
+
+
+    private fun insideLabelView(format : TextWidgetFormat,
+                                sheetContext : SheetContext) : TextView
+    {
+        val label               = TextViewBuilder()
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text              = format.insideLabel()
+
+        format.insideLabelFormat().style().styleTextViewBuilder(label, sheetContext)
+
+        label.marginSpacing     = format.insideLabelFormat().margins()
+
+        return label.textView(sheetContext.context)
+    }
+
+
+}
+
+
+
+
+
+//
+//    // > Clicks
+//    // -----------------------------------------------------------------------------------------
+//
+//    /**
+//     * On a short click, open the value editor.
+//     */
+//    private void onTextWidgetShortClick(Context context)
+//    {
+//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
+//
+//        switch (this.valueVariable().kind())
+//        {
+//
+//            // OPEN the Quick Text Edit Dialog
+//            case LITERAL:
+//                // If the string is short, edit in DIALOG
+//                if (this.value().length() < 145)
+//                {
+//                    TextEditorDialogFragment textDialog =
+//                            TextEditorDialogFragment.forTextWidget(this);
+//                    textDialog.show(sheetActivity.getSupportFragmentManager(), "");
+//                }
+//                // ...otherwise, edit in ACTIVITY
+//                else
+//                {
+//                    Intent intent = new Intent(context, TextEditorActivity.class);
+//                    intent.putExtra("text_widget", this);
+//                    context.startActivity(intent);
+//                }
+//                break;
+//
+//            // OPEN the Choose Value Set Dialog
+//            case VALUE:
+//
+//                Dictionary dictionary         = SheetManagerOld.dictionary();
+//
+//                if (this.valueVariable() == null || dictionary == null)
+//                    break;
+//
+//                String         valueSetId   = this.valueVariable().valueSetId();
+//                DataReference valueReference = this.valueVariable().valueReference();
+//
+//                ValueSetUnion valueSetUnion = dictionary.lookup(valueSetId);
+//                ValueUnion valueUnion    = dictionary.valueUnion(valueReference);
+//
+//                if (valueSetUnion == null) {
+//                    ApplicationFailure.sheet(
+//                            SheetException.undefinedValueSet(
+//                                    new UndefinedValueSetError("Text Widget", valueSetId)));
+//                    break;
+//                }
+//
+//                if (valueUnion == null) {
+//                    ApplicationFailure.value(
+//                            ValueException.undefinedValue(
+//                                    new UndefinedValueError(valueSetId,
+//                                                            valueReference.valueId())));
+//                    break;
+//                }
+//
+//                ChooseValueDialogFragment chooseDialog =
+//                        ChooseValueDialogFragment.newInstance(valueSetUnion, valueUnion);
+//                chooseDialog.show(sheetActivity.getSupportFragmentManager(), "");
+//                break;
+//
+//            case PROGRAM:
+//                break;
+//        }
+//    }
+//
+//
+
 
 
 //
@@ -256,319 +608,7 @@ data class TextWidgetLabel(val value : String)
 //    }
 //
 //
-//    // > Views
-//    // ------------------------------------------------------------------------------------------
-//
-//    private View widgetView(boolean rowHasLabel, Context context)
-//    {
-//        LinearLayout layout = this.layout(rowHasLabel, context);
-//
-//        layout.addView(mainView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    /**
-//     * The outer-most view that holds the outside labels and the value view.
-//     * @param context The context.
-//     * @return The main view Linear Layout.
-//     */
-//    private LinearLayout mainView(Context context)
-//    {
-//        LinearLayout layout = mainLayout(context);
-//
-//        // > Outside Top/Left Label View
-//        if (this.format().outsideLabel() != null) {
-//            if (this.format().outsideLabelPosition() == Position.TOP ||
-//                this.format().outsideLabelPosition() == Position.LEFT) {
-//                layout.addView(this.outsideLabelView(context));
-//            }
-//        }
-//
-//        // > Value
-//        layout.addView(this.valueMainView(context));
-//
-//        // > Outside Bottom/Right Label View
-//        if (this.format().outsideLabel() != null) {
-//            if (this.format().outsideLabelPosition() == Position.BOTTOM ||
-//                this.format().outsideLabelPosition() == Position.RIGHT) {
-//                layout.addView(this.outsideLabelView(context));
-//            }
-//        }
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout mainLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
-//
-//        layout.orientation          = this.format().outsideLabelPosition()
-//                                          .linearLayoutOrientation();
-//
-//        layout.gravity              = this.data().format().alignment().gravityConstant();
-//
-//        layout.marginSpacing        = this.data().format().margins();
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    /**
-//     * The view that holds the value as well as the inside labels around the value.
-//     * @param context The context.
-//     * @return The value main view Linear Layout.
-//     */
-//    private LinearLayout valueMainView(Context context)
-//    {
-//        LinearLayout layout = valueMainViewLayout(context);
-//
-//        // > Inside Top/Left Label View
-//        if (this.format().insideLabel() != null && this.description() == null) {
-//            if (this.format().insideLabelPosition() == Position.TOP ||
-//                this.format().insideLabelPosition() == Position.LEFT) {
-//                layout.addView(this.insideLabelView(context));
-//            }
-//        }
-//
-//        layout.addView(valueTextView(context));
-//
-//        // > Inside Bottom/Right Label View
-//        if (this.format().insideLabel() != null && this.description() == null) {
-//            if (this.format().insideLabelPosition() == Position.BOTTOM ||
-//                this.format().insideLabelPosition() == Position.RIGHT) {
-//                layout.addView(this.insideLabelView(context));
-//            }
-//        }
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout valueMainViewLayout(final Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = this.format().insideLabelPosition().linearLayoutOrientation();
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
-//
-//        if (this.data().format().background() == BackgroundColor.EMPTY)
-//            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//
-//
-//        if (this.data().format().underlineThickness() > 0)
-//        {
-//            layout.backgroundColor    = this.data().format().underlineColor().resourceId();
-//            layout.backgroundResource = R.drawable.bg_widget_bottom_border;
-//        }
-//        else if (this.data().format().background() != BackgroundColor.EMPTY &&
-//                 this.data().format().background() != BackgroundColor.NONE)
-//        {
-//            layout.backgroundColor      = this.data().format().background().colorId();
-//
-//            if (this.format().valueHeight() != Height.WRAP)
-//            {
-//                layout.backgroundResource   = this.format().valueHeight()
-//                                                  .resourceId(this.data().format().corners());
-//            }
-//            else
-//            {
-//                layout.backgroundResource = this.data().format().corners().widgetResourceId();
-//            }
-//        }
-//
-//        if (this.format().valueHeight() == Height.WRAP)
-//        {
-//            layout.padding.topDp    = this.format().valuePaddingVertical().floatValue();
-//            layout.padding.bottomDp = this.format().valuePaddingVertical().floatValue();
-//        }
-//
-//        layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
-//                | Gravity.CENTER_VERTICAL;
-//
-//        layout.onClick              = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                onTextWidgetShortClick(context);
-//            }
-//        };
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private TextView valueTextView(Context context)
-//    {
-//        TextViewBuilder value = new TextViewBuilder();
-//
-//        this.valueViewId   = Util.generateViewId();
-//
-//        value.id            = this.valueViewId;
-//
-//        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        value.layoutGravity = this.format().valueStyle().alignment().gravityConstant()
-//                                | Gravity.CENTER_VERTICAL;
-//        value.gravity       = this.format().valueStyle().alignment().gravityConstant();
-//
-//        if (this.description() != null)
-//        {
-//            value.font          = Font.serifFontRegular(context);
-//
-//            value.color     = this.format().descriptionStyle().color().resourceId();
-//            value.size      = this.format().descriptionStyle().size().resourceId();
-//
-//
-//            List<FormattedString.Span> spans = new ArrayList<>();
-//
-//            FormattedString.Span labelSpan =
-//                new FormattedString.Span(this.format().insideLabel(),
-//                                         this.format().insideLabelStyle().color().color(context),
-//                                         this.format().descriptionStyle().size().size(),
-//                                         this.format().insideLabelStyle().font());
-//
-//            FormattedString.Span valueSpan =
-//                    new FormattedString.Span(this.value(),
-//                                             context.getString(R.string.placeholder_value),
-//                                             this.format().valueStyle().color().color(context),
-//                                             this.format().descriptionStyle().size().size(),
-//                                             this.format().valueStyle().font());
-//
-//            if (this.format().insideLabel() != null)
-//                spans.add(labelSpan);
-//
-//            spans.add(valueSpan);
-//
-//            value.textSpan  = FormattedString.spannableStringBuilder(this.description(),
-//                                                                     spans);
-//        }
-//        else
-//        {
-//            value.text      = this.value();
-//            value.color     = this.format().valueStyle().color().resourceId();
-//            value.size      = this.format().valueStyle().size().resourceId();
-//            value.font      = this.format().valueStyle().typeface(context);
-//        }
-//
-//        return value.textView(context);
-//    }
-//
-//
-//    private TextView outsideLabelView(Context context)
-//    {
-//        TextViewBuilder label = new TextViewBuilder();
-//
-//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        label.layoutGravity     = this.format().outsideLabelStyle().alignment().gravityConstant();
-//
-//        label.text              = this.format().outsideLabel();
-//
-//        this.format().outsideLabelStyle().styleTextViewBuilder(label, context);
-//
-//        label.marginSpacing     = this.format().outsideLabelMargins();
-//
-//        return label.textView(context);
-//    }
-//
-//
-//    private TextView insideLabelView(Context context)
-//    {
-//        TextViewBuilder label   = new TextViewBuilder();
-//
-//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        label.text              = this.format().insideLabel();
-//
-//        this.format().insideLabelStyle().styleTextViewBuilder(label, context);
-//
-//        label.marginSpacing     = this.format().insideLabelMargins();
-//
-//        return label.textView(context);
-//    }
-//
-//
-//    // > Clicks
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * On a short click, open the value editor.
-//     */
-//    private void onTextWidgetShortClick(Context context)
-//    {
-//        SheetActivityOld sheetActivity = (SheetActivityOld) context;
-//
-//        switch (this.valueVariable().kind())
-//        {
-//
-//            // OPEN the Quick Text Edit Dialog
-//            case LITERAL:
-//                // If the string is short, edit in DIALOG
-//                if (this.value().length() < 145)
-//                {
-//                    TextEditorDialogFragment textDialog =
-//                            TextEditorDialogFragment.forTextWidget(this);
-//                    textDialog.show(sheetActivity.getSupportFragmentManager(), "");
-//                }
-//                // ...otherwise, edit in ACTIVITY
-//                else
-//                {
-//                    Intent intent = new Intent(context, TextEditorActivity.class);
-//                    intent.putExtra("text_widget", this);
-//                    context.startActivity(intent);
-//                }
-//                break;
-//
-//            // OPEN the Choose Value Set Dialog
-//            case VALUE:
-//
-//                Dictionary dictionary         = SheetManagerOld.dictionary();
-//
-//                if (this.valueVariable() == null || dictionary == null)
-//                    break;
-//
-//                String         valueSetId   = this.valueVariable().valueSetId();
-//                DataReference valueReference = this.valueVariable().valueReference();
-//
-//                ValueSetUnion valueSetUnion = dictionary.lookup(valueSetId);
-//                ValueUnion valueUnion    = dictionary.valueUnion(valueReference);
-//
-//                if (valueSetUnion == null) {
-//                    ApplicationFailure.sheet(
-//                            SheetException.undefinedValueSet(
-//                                    new UndefinedValueSetError("Text Widget", valueSetId)));
-//                    break;
-//                }
-//
-//                if (valueUnion == null) {
-//                    ApplicationFailure.value(
-//                            ValueException.undefinedValue(
-//                                    new UndefinedValueError(valueSetId,
-//                                                            valueReference.valueId())));
-//                    break;
-//                }
-//
-//                ChooseValueDialogFragment chooseDialog =
-//                        ChooseValueDialogFragment.newInstance(valueSetUnion, valueUnion);
-//                chooseDialog.show(sheetActivity.getSupportFragmentManager(), "");
-//                break;
-//
-//            case PROGRAM:
-//                break;
-//        }
-//    }
-//
-//
+
 //    // UPDATE EVENT
 //    // -----------------------------------------------------------------------------------------
 //

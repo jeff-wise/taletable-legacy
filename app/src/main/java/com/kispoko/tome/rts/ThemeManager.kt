@@ -2,7 +2,9 @@
 package com.kispoko.tome.rts
 
 
+import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.Theme
+import com.kispoko.tome.model.theme.ThemeColor
 import com.kispoko.tome.model.theme.ThemeId
 
 
@@ -40,8 +42,10 @@ object ThemeManager
     // BUILT-IN THEMES
     // -----------------------------------------------------------------------------------------
 
-    val lightTheme = Theme(ThemeId.Light(), mutableSetOf())
+    val lightTheme =
+            Theme(ThemeId.Light,
+                 mutableSetOf())
 
-    val darkTheme = Theme(ThemeId.Dark(), mutableSetOf())
+    val darkTheme = Theme(ThemeId.Dark, mutableSetOf())
 
 }

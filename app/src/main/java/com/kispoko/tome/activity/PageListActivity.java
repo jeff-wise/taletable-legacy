@@ -127,8 +127,8 @@ public class PageListActivity extends AppCompatActivity
         addValueSetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(PageListActivity.this, PageActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(PageListActivity.this, PageActivity.class);
+//                startActivity(intent);
             }
         });
 

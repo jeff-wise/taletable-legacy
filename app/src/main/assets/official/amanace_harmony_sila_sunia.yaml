@@ -1,4 +1,4 @@
-id: test
+id: sila_sunia
 campaign_id: harmony
 sections:
 - name: Profile
@@ -10,11 +10,22 @@ sections:
         - type: widget_text
           widget_text: 
             id: name
-            value:
+            value_variable:
               id: name
               value:
                 type: text_literal
-                text_literal: 'Character Name'
+                text_literal: 'Casmey Dalseya'
+              tags:
+            variables:
+      - widgets:
+        - type: widget_number
+          widget_number:
+            id: name
+            value_variable:
+              id: name
+              value:
+                type: text_literal
+                text_literal: 'Casmey Dalseya'
               tags:
             variables:
 - name: Encounter

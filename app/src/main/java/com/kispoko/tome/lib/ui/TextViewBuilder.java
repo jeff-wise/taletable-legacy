@@ -60,7 +60,7 @@ public class TextViewBuilder implements ViewBuilder
     public SpannableStringBuilder   textSpan;
 
     public Padding                  padding;
-    public Spacing paddingSpacing;
+    public Spacing                  paddingSpacing;
 
     public Margins                  margin;
     public Spacing                  marginSpacing;
@@ -297,7 +297,7 @@ public class TextViewBuilder implements ViewBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.color != null)
-            textView.setTextColor(ContextCompat.getColor(context, this.color));
+            textView.setTextColor(this.color);
 
         // > Font
         // --------------------------------------------------------------------------------------

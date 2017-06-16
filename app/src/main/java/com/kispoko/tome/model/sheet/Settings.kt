@@ -41,7 +41,7 @@ data class Settings(override val id : UUID,
         }
 
 
-        fun default() : Settings = Settings(UUID.randomUUID(), Prim(ThemeId.Dark()))
+        fun default() : Settings = Settings(UUID.randomUUID(), Prim(ThemeId.Dark))
 
     }
 

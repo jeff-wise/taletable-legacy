@@ -2,25 +2,27 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.rts.game.GameManager
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetManager
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import java.io.Serializable
 
 
 
 /**
  * Text Variable Value
  */
-sealed class TextVariableValue
+sealed class TextVariableValue : Serializable
 {
 
     companion object : Factory<TextVariableValue>
@@ -37,16 +39,18 @@ sealed class TextVariableValue
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // Dependencies
     // -----------------------------------------------------------------------------------------
 
     open fun dependencies() : Set<VariableReference> = setOf()
 
 
+    // -----------------------------------------------------------------------------------------
     // Value
     // -----------------------------------------------------------------------------------------
 
-    abstract fun value(sheetContext : SheetContext) : String?
+    abstract fun value(sheetContext : SheetContext) : AppEff<String>
 
 }
 
@@ -71,7 +75,7 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue()
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : String = this.value
+    override fun value(sheetContext : SheetContext) : AppEff<String> = effValue(this.value)
 
 }
 
@@ -90,14 +94,20 @@ data class TextVariableValueReference(val reference : ValueReference) : TextVari
     // Value
     // -----------------------------------------------------------------------------------------
 
-    override fun value(sheetContext : SheetContext) : String? =
-        GameManager.textValue(sheetContext.gameId, this.reference)?.value?.value
+    override fun value(sheetContext : SheetContext) : AppEff<String> =
+        GameManager.engine(sheetContext.gameId)
+                   .apply { it.textValue(this.reference) }
+                   .apply { effValue<AppError,String>(it.value()) }
 
 }
 
 
 data class TextVariableProgramValue(val invocation : Invocation) : TextVariableValue()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TextVariableValue>
     {
@@ -106,16 +116,15 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
     }
 
 
-    // Dependencies
+    // -----------------------------------------------------------------------------------------
+    // VALUE
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
 
 
-    // Value
-    // -----------------------------------------------------------------------------------------
+    override fun value(sheetContext : SheetContext) : AppEff<String> = TODO("Not Implemented")
 
-    override fun value(sheetContext : SheetContext) : String? = ""
 }
 
 

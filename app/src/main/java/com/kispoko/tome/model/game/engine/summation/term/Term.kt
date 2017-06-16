@@ -2,16 +2,17 @@
 package com.kispoko.tome.model.game.engine.summation.term
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.reference.BooleanReference
 import com.kispoko.tome.model.game.engine.reference.DiceRollReference
 import com.kispoko.tome.model.game.engine.reference.NumberReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import effect.Err
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -25,7 +26,7 @@ import java.util.*
 /**
  * Summation Term
  */
-sealed class SummationTerm : Model
+sealed class SummationTerm
 {
 
     companion object : Factory<SummationTerm>
@@ -49,86 +50,79 @@ sealed class SummationTerm : Model
     }
 
 
-    // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    // DEPENDENCIES
+    // TERM
     // -----------------------------------------------------------------------------------------
 
     abstract fun dependencies(): Set<VariableReference>
 
+    abstract fun value(sheetContext : SheetContext) : AppEff<Double>
+
 }
 
 
-data class SummationNumberTerm(override val id : UUID,
-                               val numberReference : Prim<NumberReference>) : SummationTerm()
+data class SummationNumberTerm(val numberReference : NumberReference) : SummationTerm()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<SummationTerm>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
         {
             is DocDict -> effApply(::SummationNumberTerm,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Value
-                                   doc.at("reference") ap {
-                                       effApply(::Prim, NumberReference.fromDocument(it))
-                                   })
+                                   doc.at("reference") ap { NumberReference.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
-    // MODEL
+    // -----------------------------------------------------------------------------------------
+    // TERM
     // -----------------------------------------------------------------------------------------
 
-    override fun onLoad() { }
+    override fun dependencies(): Set<VariableReference> = this.numberReference.dependencies()
 
 
-    // DEPENDENCIES
-    // -----------------------------------------------------------------------------------------
-
-    override fun dependencies(): Set<VariableReference> =
-            this.numberReference.value.dependencies()
+    override fun value(sheetContext : SheetContext) : AppEff<Double> =
+        SheetManager.State.number(sheetContext, numberReference)
 
 }
 
 
-data class SummationDiceRollTerm(override val id : UUID,
-                                 val diceRollReference: Prim<DiceRollReference>) : SummationTerm()
+data class SummationDiceRollTerm(val diceRollReference: DiceRollReference) : SummationTerm()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<SummationTerm>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
         {
             is DocDict -> effApply(::SummationDiceRollTerm,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Value
-                                   doc.at("reference") ap {
-                                       effApply(::Prim, DiceRollReference.fromDocument(it))
-                                   })
+                                   doc.at("reference") ap { DiceRollReference.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
-    // MODEL
     // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
-
-
-    // DEPENDENCIES
+    // TERM
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> =
-            this.diceRollReference.value.dependencies()
+            this.diceRollReference.dependencies()
+
+
+    override fun value(sheetContext : SheetContext) : AppEff<Double> =
+            SheetManager.State.diceRoll(sheetContext, diceRollReference)
+                    .apply { effValue<AppError,Double>(it.roll().toDouble()) }
 
 }
 
@@ -137,40 +131,59 @@ data class SummationConditionalTerm(
                             override val id : UUID,
                             val conditionalValueReference: Prim<BooleanReference>,
                             val trueValueReference : Prim<NumberReference>,
-                            val falseValueReference: Prim<NumberReference>) : SummationTerm()
+                            val falseValueReference: Prim<NumberReference>)
+                             : SummationTerm(), Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(conditionalValueReference: BooleanReference,
+                trueValueReference: NumberReference,
+                falseValueReference: NumberReference)
+        : this(UUID.randomUUID(),
+               Prim(conditionalValueReference),
+               Prim(trueValueReference),
+               Prim(falseValueReference))
+
 
     companion object : Factory<SummationTerm>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<SummationTerm> = when (doc)
         {
             is DocDict -> effApply(::SummationConditionalTerm,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Conditional
-                                   doc.at("conditional") ap {
-                                        effApply(::Prim, BooleanReference.fromDocument(it))
-                                   },
+                                   doc.at("conditional") ap { BooleanReference.fromDocument(it) },
                                    // When True
-                                   doc.at("when_true") ap {
-                                       effApply(::Prim, NumberReference.fromDocument(it))
-                                   },
+                                   doc.at("when_true") ap { NumberReference.fromDocument(it) },
                                    // When False
-                                   doc.at("when_false") ap {
-                                       effApply(::Prim, NumberReference.fromDocument(it))
-                                   })
+                                   doc.at("when_false") ap { NumberReference.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun conditionalValueReference() : BooleanReference = this.conditionalValueReference.value
+
+    fun trueValueReference() : NumberReference = this.trueValueReference.value
+
+    fun falseValueReference() : NumberReference = this.falseValueReference.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
-    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+    // TERM
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> =
@@ -178,227 +191,18 @@ data class SummationConditionalTerm(
             .plus(trueValueReference.value.dependencies())
             .plus(falseValueReference.value.dependencies())
 
-}
+
+    override fun value(sheetContext : SheetContext): AppEff<Double> =
+        SheetManager.State.boolean(sheetContext, conditionalValueReference())
+            .apply { condition ->
+                if (condition)
+                    SheetManager.State.number(sheetContext, trueValueReference())
+                else
+                    SheetManager.State.number(sheetContext, falseValueReference())
+            }
 
 
-
-//
-//public abstract class Term extends Model
-//{
-//
-//    // INTERFACE
-//    // ------------------------------------------------------------------------------------------
-//
-//    public abstract Integer value() throws SummationException;
-//
-//    public abstract List<VariableReference> variableDependencies();
-//
-//    public abstract com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary() throws VariableException;
-//}
-
-//
-//
-//
-//    public IntegerTermValue.Type termValueType()
-//    {
-//        return this.termValue().type();
-//    }
-//
-//
-//    // > Term
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the term value. The returned value is just the value of the referenced variable.
-//     * @return The term value. Throws SummationException if the variable is invalid.
-//     */
-//    public Integer value()
-//           throws SummationException
-//    {
-//        try {
-//            return termValue().value();
-//        }
-//        catch (VariableException exception) {
-//            throw SummationException.variable(new SummationVariableError(exception));
-//        }
-//    }
-//
-//
-//    /**
-//     * Get the variables that this term depends upon to calculate its value.
-//     * @return A list of variable names.
-//     */
-//    public List<VariableReference> variableDependencies()
-//    {
-//        List<VariableReference> variableReferences = new ArrayList<>();
-//
-//        VariableReference variableReference = this.termValue().variableDependency();
-//
-//        if (variableReference != null)
-//            variableReferences.add(variableReference);
-//
-//        return variableReferences;
-//    }
-//
-//
-//    // > Summary
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * A summary of the terms variables.
-//     * @return The list of 2-tuples (value, description) of each of the term's variables.
-//     */
-//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
-//    {
-//        // > Convert the component integers to strings
-//        List<Tuple2<String, Integer>> components = this.termValue().components();
-//        List<Tuple2<String,String>> componentsWithStringValue = new ArrayList<>();
-//
-//        for (Tuple2<String,Integer> component : components)
-//        {
-//            Tuple2<String,String> comp = new Tuple2<>(component.getItem1(),
-//                                                      component.getItem2().toString());
-//            componentsWithStringValue.add(comp);
-//        }
-//
-//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.name(), componentsWithStringValue);
-//    }
-//
-//
-//
-//    // > Term
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the term value. The returned value is just the value of the referenced variable.
-//     *
-//     * @return The term value. Throws SummationException if the variable is invalid.
-//     */
-//    public Integer value()
-//            throws SummationException
-//    {
-//        try
-//        {
-//            Integer value = this.termValue().value();
-//
-//            if (value == null)
-//                throw SummationException.nullTerm(new NullTermError(this.termValue().name()));
-//
-//            return value;
-//        }
-//        catch (VariableException exception)
-//        {
-//            throw SummationException.variable(
-//                    new SummationVariableError(exception));
-//        }
-//    }
-//
-//
-//    /**
-//     * Get the variables that this term depends upon to calculate its value.
-//     *
-//     * @return A list of variable names.
-//     */
-//    public List<VariableReference> variableDependencies()
-//    {
-//        List<VariableReference> variableReferences = new ArrayList<>();
-//
-//        if (this.termValue().type() == DiceRollTermValue.Type.VARIABLE) {
-//            VariableReference variableReference = this.termValue().variableReference();
-//            if (variableReference != null)
-//                variableReferences.add(variableReference);
-//        }
-//
-//        return variableReferences;
-//    }
-//
-//
-//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
-//           throws VariableException
-//    {
-//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.termValue().name(), this.termValue().components());
-//    }
-//
-//
-//    public String valueId()
-//    {
-//        if (this.termValue() != null)
-//            return this.termValue().name();
-//
-//        return "";
-//    }
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The Dice Roll Term Value.
-//     * @return The Dice Roll Term Value.
-//     */
-//    public DiceRollTermValue termValue()
-//    {
-//        return this.termValue.getValue();
-//    }
-//
-//
-//    public DiceRollTermValue.Type termValueType()
-//    {
-//        if (this.termValue() != null)
-//            return this.termValue().type();
-//        return null;
-//    }
-//
-//
-//    /**
-//     * Get the Dice Roll value.
-//     * @return The Dice Roll.
-//     */
-//    public DiceRoll diceRoll()
-//           throws SummationException
-//    {
-//        try
-//        {
-//            return this.termValue().diceRoll();
-//        }
-//        catch (VariableException exception)
-//        {
-//            throw SummationException.variable(new SummationVariableError(exception));
-//        }
-//    }
-//
-//
-//    // > Term
-//    // ------------------------------------------------------------------------------------------
-//
-//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
-//    {
-//        List<Tuple2<String,Integer>> components = new ArrayList<>();
-//
-//        try {
-//            if (conditionalTermValue().value())
-//                components = whenTrueTermValue().components();
-//            else
-//                components = whenFalseTermValue().components();
-//        }
-//        catch (VariableException exception) {
-//            ApplicationFailure.variable(exception);
-//        }
-//
-//        // > Convert the component integers to strings
-//        List<Tuple2<String,String>> componentsWithStringValue = new ArrayList<>();
-//
-//        for (Tuple2<String,Integer> component : components)
-//        {
-//            Tuple2<String,String> comp = new Tuple2<>(component.getItem1(),
-//                                                      component.getItem2().toString());
-//            componentsWithStringValue.add(comp);
-//        }
-//
-//
-//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.name(), componentsWithStringValue);
-//    }
-//
+    //
 //
 //    // > Value
 //    // ------------------------------------------------------------------------------------------
@@ -429,29 +233,79 @@ data class SummationConditionalTerm(
 //
 //    }
 //
+
+}
+
+
+//    // > Summary
+//    // ------------------------------------------------------------------------------------------
 //
 //    /**
-//     * Get the variables that this term depends upon to calculate its value.
-//     * @return A list of variable names.
+//     * A summary of the terms variables.
+//     * @return The list of 2-tuples (value, description) of each of the term's variables.
 //     */
-//    public List<VariableReference> variableDependencies()
+//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
 //    {
-//        List<VariableReference> variableReferences = new ArrayList<>();
+//        // > Convert the component integers to strings
+//        List<Tuple2<String, Integer>> components = this.termValue().components();
+//        List<Tuple2<String,String>> componentsWithStringValue = new ArrayList<>();
 //
-//        VariableReference conditionalVariableRef = this.conditionalTermValue().variableDependency();
-//        VariableReference whenTrueVariableRef    = this.whenTrueTermValue().variableDependency();
-//        VariableReference whenFalseVariableRef   = this.whenFalseTermValue().variableDependency();
+//        for (Tuple2<String,Integer> component : components)
+//        {
+//            Tuple2<String,String> comp = new Tuple2<>(component.getItem1(),
+//                                                      component.getItem2().toString());
+//            componentsWithStringValue.add(comp);
+//        }
 //
-//        if (conditionalVariableRef != null)
-//            variableReferences.add(conditionalVariableRef);
-//
-//        if (whenFalseVariableRef != null)
-//            variableReferences.add(whenFalseVariableRef);
-//
-//        if (whenTrueVariableRef != null)
-//            variableReferences.add(whenTrueVariableRef);
-//
-//        return variableReferences;
+//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.name(), componentsWithStringValue);
 //    }
 //
+
+//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
+//           throws VariableException
+//    {
+//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.termValue().name(), this.termValue().components());
+//    }
+//
+//
+//    public String valueId()
+//    {
+//        if (this.termValue() != null)
+//            return this.termValue().name();
+//
+//        return "";
+//    }
+//
+//
+
+//    // > Term
+//    // ------------------------------------------------------------------------------------------
+//
+//    public com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary summary()
+//    {
+//        List<Tuple2<String,Integer>> components = new ArrayList<>();
+//
+//        try {
+//            if (conditionalTermValue().value())
+//                components = whenTrueTermValue().components();
+//            else
+//                components = whenFalseTermValue().components();
+//        }
+//        catch (VariableException exception) {
+//            ApplicationFailure.variable(exception);
+//        }
+//
+//        // > Convert the component integers to strings
+//        List<Tuple2<String,String>> componentsWithStringValue = new ArrayList<>();
+//
+//        for (Tuple2<String,Integer> component : components)
+//        {
+//            Tuple2<String,String> comp = new Tuple2<>(component.getItem1(),
+//                                                      component.getItem2().toString());
+//            componentsWithStringValue.add(comp);
+//        }
+//
+//
+//        return new com.kispoko.tome.rts.game.engine.definition.summation.term.TermSummary(this.name(), componentsWithStringValue);
+//    }
 

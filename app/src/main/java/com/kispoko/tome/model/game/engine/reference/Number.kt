@@ -3,20 +3,14 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
-import java.util.*
 
 
 
@@ -25,6 +19,10 @@ import java.util.*
  */
 sealed class NumberReference
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberReference>
     {
@@ -40,6 +38,7 @@ sealed class NumberReference
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
@@ -52,6 +51,10 @@ sealed class NumberReference
  */
 data class NumberReferenceLiteral(val value : Double) : NumberReference()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberReference>
     {
@@ -71,6 +74,10 @@ data class NumberReferenceLiteral(val value : Double) : NumberReference()
  */
 data class NumberReferenceValue(val valueReference : ValueReference) : NumberReference()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberReference>
     {

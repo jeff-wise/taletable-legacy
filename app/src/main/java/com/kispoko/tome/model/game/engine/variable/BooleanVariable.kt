@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.model.game.engine.program.Invocation
 import effect.effApply
@@ -12,14 +13,19 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Boolean Variable
  */
-sealed class BooleanVariableValue
+sealed class BooleanVariableValue : Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<BooleanVariableValue>
     {
@@ -34,10 +40,13 @@ sealed class BooleanVariableValue
     }
 
 
-    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+    // VALUE
     // -----------------------------------------------------------------------------------------
 
     open fun dependencies() : Set<VariableReference> = setOf()
+
+    abstract fun value() : AppEff<Boolean>
 
 }
 
@@ -45,18 +54,28 @@ sealed class BooleanVariableValue
 /**
  * Literal Value
  */
-data class BooleanVariableLiteralValue(val value : String) : BooleanVariableValue()
+data class BooleanVariableLiteralValue(val value : Boolean) : BooleanVariableValue()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<BooleanVariableValue>
     {
         override fun fromDocument(doc : SpecDoc)
                       : ValueParser<BooleanVariableValue> = when (doc)
         {
-            is DocText -> effValue(BooleanVariableLiteralValue(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+            is DocBoolean -> effValue(BooleanVariableLiteralValue(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun value() : AppEff<Boolean> = effValue(this.value)
 
 }
 
@@ -67,6 +86,10 @@ data class BooleanVariableLiteralValue(val value : String) : BooleanVariableValu
 data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVariableValue()
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<BooleanVariableValue>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanVariableValue> =
@@ -74,10 +97,15 @@ data class BooleanVariableProgramValue(val invocation : Invocation) : BooleanVar
     }
 
 
-    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+    // VALUE
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
+
+    override fun value(): AppEff<Boolean> {
+        TODO("not implemented")
+    }
 
 }
 

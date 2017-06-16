@@ -2,20 +2,26 @@
 package com.kispoko.tome.model.game.engine.summation
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
+import com.kispoko.tome.lib.functor.Conj
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.summation.term.SummationTerm
 import com.kispoko.tome.model.game.engine.variable.VariableReference
+import com.kispoko.tome.rts.sheet.SheetContext
 import effect.effApply
 import effect.effError
 import effect.effValue
+import effect.sequenceI
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.lang.Double.sum
 import java.util.*
 
 
@@ -24,8 +30,16 @@ import java.util.*
  * Summation
  */
 data class Summation(override val id : UUID,
-                     val terms : Coll<SummationTerm>) : Model
+                     val terms : Conj<SummationTerm>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(terms : MutableSet<SummationTerm>)
+        : this(UUID.randomUUID(), Conj(terms))
+
 
     companion object : Factory<Summation>
     {
@@ -33,31 +47,70 @@ data class Summation(override val id : UUID,
                       : ValueParser<Summation> = when (doc)
         {
             is DocDict -> effApply(::Summation,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Terms
                                    doc.list("terms") ap { docList ->
-                                       effApply(::Coll,
-                                           docList.map { SummationTerm.fromDocument(it) })
+                                       docList.mapSetMut { SummationTerm.fromDocument(it) }
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun terms() : Set<SummationTerm> = this.terms.set
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     fun dependencies() : Set<VariableReference> =
-        this.terms.list.fold(setOf(), {
+        this.terms.set.fold(setOf(), {
             accSet, term -> accSet.plus(term.dependencies())
         })
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value(sheetContext : SheetContext) : AppEff<Double> =
+            this.terms().map({it.value(sheetContext)}).sequenceI()
+                .apply { effValue<AppError,Double>(it.sum()) }
+
+    //
+//    /**
+//     * Evaluate the sum of this summation.
+//     */
+//    private Integer sum()
+//    {
+//        Integer sum = 0;
+//
+//        for (TermUnion termUnion : this.terms.getValue())
+//        {
+//            try {
+//                sum += termUnion.term().value();
+//            }
+//            catch (SummationException exception) {
+//                ApplicationFailure.summation(exception);
+//            }
+//        }
+//
+//        this.sum = sum;
+//
+//        return this.sum;
+//    }
+
 
 }
 
@@ -221,26 +274,4 @@ data class Summation(override val id : UUID,
 //        this.diceRoll = diceRoll;
 //    }
 //
-//
-//    /**
-//     * Evaluate the sum of this summation.
-//     */
-//    private Integer sum()
-//    {
-//        Integer sum = 0;
-//
-//        for (TermUnion termUnion : this.terms.getValue())
-//        {
-//            try {
-//                sum += termUnion.term().value();
-//            }
-//            catch (SummationException exception) {
-//                ApplicationFailure.summation(exception);
-//            }
-//        }
-//
-//        this.sum = sum;
-//
-//        return this.sum;
-//    }
 

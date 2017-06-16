@@ -355,7 +355,7 @@ public class TextFieldDialogFragment extends DialogFragment
         layout.gravity              = Gravity.CENTER_VERTICAL;
 
         layout.backgroundColor      = R.color.dark_blue_7;
-        layout.backgroundResource   = R.drawable.bg_widget_wrap_corners_small;
+        layout.backgroundResource   = R.drawable.bg_sheet_corners_small;
 
         layout.padding.topDp        = 6f;
         layout.padding.bottomDp     = 6f;

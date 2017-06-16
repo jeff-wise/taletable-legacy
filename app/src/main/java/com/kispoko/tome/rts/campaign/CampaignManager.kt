@@ -16,8 +16,8 @@ import effect.effError
 import effect.effValue
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.run
-import lulo.Spec
 import lulo.document.SpecDoc
+import lulo.spec.Spec
 import java.io.InputStream
 
 
@@ -86,10 +86,9 @@ object CampaignManager
     // OFFICIAL
     // -----------------------------------------------------------------------------------------
 
-
     suspend fun loadOfficialCampaign(officialCampaign: OfficialCampaign,
-                             officialIndex : OfficialIndex,
-                             context : Context) : LoadResult<Campaign> = run(CommonPool,
+                                     officialIndex : OfficialIndex,
+                                     context : Context) : LoadResult<Campaign> = run(CommonPool,
     {
 
         loadOfficialGame(officialCampaign, officialIndex, context)
@@ -124,7 +123,7 @@ object CampaignManager
                              campaignSpec : Spec,
                              gameSpec : Spec) : Loader<SpecDoc>
         {
-            val docParse = campaignSpec.documentParse(templateString,
+            val docParse = campaignSpec.parseDocument(templateString,
                                                       listOf(gameSpec))
             when (docParse)
             {
@@ -179,4 +178,5 @@ object CampaignManager
 
 
     fun campaignWithId(campaignId : CampaignId) : Campaign? = this.campaignById[campaignId]
+
 }

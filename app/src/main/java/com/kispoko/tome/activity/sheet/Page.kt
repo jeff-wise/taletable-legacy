@@ -14,6 +14,8 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import com.kispoko.tome.lib.ui.ScrollViewBuilder
 import com.kispoko.tome.model.sheet.page.Page
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetGameContext
 
 
 
@@ -22,16 +24,24 @@ import com.kispoko.tome.model.sheet.page.Page
  *
  * An adapter that manages displaying the pages of a sheet under a tab view.
  */
-class PagePagerAdapter(fragmentManager : FragmentManager,
-                       val pages : List<Page>) : FragmentStatePagerAdapter(fragmentManager)
+class PagePagerAdapter(fragmentManager : FragmentManager)
+                        : FragmentStatePagerAdapter(fragmentManager)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    private var pages            : List<Page> = listOf()
+    private var sheetGameContext : SheetGameContext? = null
+
+
+    // -----------------------------------------------------------------------------------------
     // PAGER ADAPTER
     // -----------------------------------------------------------------------------------------
 
-    override fun getItem(position: Int) : Fragment
-    {
-    }
+    override fun getItem(position: Int) : Fragment =
+        PageFragment.newInstance(this.pages[position], this.sheetGameContext)
 
 
     override fun getCount() : Int = this.pages.size
@@ -49,6 +59,19 @@ class PagePagerAdapter(fragmentManager : FragmentManager,
             return PagerAdapter.POSITION_NONE
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun setPages(pages : List<Page>, sheetGameContext: SheetGameContext)
+    {
+        this.pages = pages
+        this.sheetGameContext = sheetGameContext
+
+        this.notifyDataSetChanged()
+    }
+
 }
 
 
@@ -56,7 +79,8 @@ class PagePagerAdapter(fragmentManager : FragmentManager,
 class PageFragment : Fragment()
 {
 
-    var page : Page? = null
+    var page             : Page? = null
+    var sheetGameContext : SheetGameContext? = null
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -64,12 +88,13 @@ class PageFragment : Fragment()
 
     companion object
     {
-        fun newInstance(page : Page) : PageFragment
+        fun newInstance(page : Page, sheetGameContext : SheetGameContext?) : PageFragment
         {
             val pageFragment = PageFragment()
 
             val args = Bundle()
             args.putSerializable("page", page)
+            args.putSerializable("sheet_game_context", sheetGameContext)
 
             pageFragment.arguments = args
 
@@ -88,7 +113,9 @@ class PageFragment : Fragment()
 
         if (arguments != null)
         {
-            this.page = arguments.getSerializable("page") as Page
+            this.page             = arguments.getSerializable("page") as Page
+            this.sheetGameContext = arguments.getSerializable("sheet_game_context")
+                                        as SheetGameContext
         }
     }
 
@@ -98,7 +125,20 @@ class PageFragment : Fragment()
                               savedInstanceState: Bundle?): View?
     {
         val fragmentView = this.view()
-        fragmentView.addView(this.page?.view())
+
+
+        val currentSheetGameContext = this.sheetGameContext
+
+        if (currentSheetGameContext != null)
+        {
+            val sheetContext = SheetContext(currentSheetGameContext.sheetId,
+                                            currentSheetGameContext.campaignId,
+                                            currentSheetGameContext.gameId,
+                                            context)
+
+            fragmentView.addView(this.page?.view(sheetContext))
+        }
+
         return fragmentView
     }
 

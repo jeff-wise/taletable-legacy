@@ -2,15 +2,32 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
+import android.view.Gravity
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.kispoko.tome.R
+import com.kispoko.tome.R.string.label
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.FormattedString
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.style.Position
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.File.separator
 import java.util.*
 
 
@@ -20,15 +37,15 @@ import java.util.*
  */
 data class NumberWidgetFormat(override val id : UUID,
                               val widgetFormat : Comp<WidgetFormat>,
-                              val insideLabel : Prim<WidgetLabel>,
+                              val insideLabel : Maybe<Prim<NumberWidgetLabel>>,
                               val insideLabelFormat : Comp<TextFormat>,
-                              val outsideLabel : Prim<WidgetLabel>,
+                              val outsideLabel : Maybe<Prim<NumberWidgetLabel>>,
                               val outsideLabelFormat : Comp<TextFormat>,
                               val valueFormat : Comp<TextFormat>,
                               val descriptionStyle : Comp<TextStyle>,
                               val valuePrefixStyle : Comp<TextStyle>,
                               val valuePostfixStyle : Comp<TextStyle>,
-                              val valueSeparator : Prim<ValueSeparator>,
+                              val valueSeparator : Maybe<Prim<ValueSeparator>>,
                               val valueSeparatorFormat : Comp<TextFormat>) : Model
 {
 
@@ -37,93 +54,96 @@ data class NumberWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
-                insideLabel : WidgetLabel,
-                insideLabelFormat: TextFormat,
-                outsideLabel : WidgetLabel,
-                outsideLabelFormat: TextFormat,
-                valueFormat: TextFormat,
-                descriptionStyle: TextStyle,
-                valuePrefixStyle: TextStyle,
-                valuePostfixStyle: TextStyle,
-                valueSeparator: ValueSeparator,
-                valueSeparatorFormat: TextFormat)
+                insideLabel : Maybe<NumberWidgetLabel>,
+                insideLabelFormat : TextFormat,
+                outsideLabel : Maybe<NumberWidgetLabel>,
+                outsideLabelFormat : TextFormat,
+                valueFormat : TextFormat,
+                descriptionStyle : TextStyle,
+                valuePrefixStyle : TextStyle,
+                valuePostfixStyle : TextStyle,
+                valueSeparator : Maybe<ValueSeparator>,
+                valueSeparatorFormat : TextFormat)
         : this(UUID.randomUUID(),
                Comp(widgetFormat),
-               Prim(insideLabel),
+               maybeLiftPrim(insideLabel),
                Comp(insideLabelFormat),
-               Prim(outsideLabel),
+               maybeLiftPrim(outsideLabel),
                Comp(outsideLabelFormat),
                Comp(valueFormat),
                Comp(descriptionStyle),
                Comp(valuePrefixStyle),
                Comp(valuePostfixStyle),
-               Prim(valueSeparator),
+               maybeLiftPrim(valueSeparator),
                Comp(valueSeparatorFormat))
 
 
     companion object : Factory<NumberWidgetFormat>
     {
 
-        private val defaultInsideLabel          = WidgetLabel(null)
+        private val defaultInsideLabel          = Nothing<NumberWidgetLabel>()
         private val defaultInsideLabelFormat    = TextFormat.default
-        private val defaultOutsideLabel         = WidgetLabel(null)
+        private val defaultOutsideLabel         = Nothing<NumberWidgetLabel>()
         private val defaultOutsideLabelFormat   = TextFormat.default
         private val defaultValueFormat          = TextFormat.default
         private val defaultDescriptionStyle     = TextStyle.default
         private val defaultValuePrefixStyle     = TextStyle.default
         private val defaultValuePostfixStyle    = TextStyle.default
-        private val defaultValueSeparator       = ValueSeparator(null)
+        private val defaultValueSeparator       = Nothing<ValueSeparator>()
         private val defaultValueSeparatorFormat = TextFormat.default
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply(::NumberWidgetFormat,
-                                   // Widget Format
-                                   split(doc.maybeAt("widget_format"),
-                                         effValue(WidgetFormat.default()),
-                                         { WidgetFormat.fromDocument(it) }),
-                                   // Inside Label
-                                   split(doc.maybeAt("inside_label"),
-                                         effValue(defaultInsideLabel),
-                                         { WidgetLabel.fromDocument(it) }),
-                                   // Inside Label Format
-                                   split(doc.maybeAt("inside_label_format"),
-                                         effValue(defaultInsideLabelFormat),
-                                         { TextFormat.fromDocument(it) }),
-                                   // Outside Label
-                                   split(doc.maybeAt("outside_label"),
-                                         effValue(defaultOutsideLabel),
-                                         { WidgetLabel.fromDocument(it) }),
-                                   // Outside Label Format
-                                   split(doc.maybeAt("outside_label_format"),
-                                         effValue(defaultOutsideLabelFormat),
-                                         { TextFormat.fromDocument(it) }),
-                                   // Value Format
-                                   split(doc.maybeAt("value_format"),
-                                         effValue(defaultValueFormat),
-                                         { TextFormat.fromDocument(it) }),
-                                   // Description Style
-                                   split(doc.maybeAt("description_style"),
-                                         effValue(defaultDescriptionStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Value Prefix Style
-                                   split(doc.maybeAt("value_prefix_format"),
-                                         effValue(defaultValuePrefixStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Value Postfix Style
-                                   split(doc.maybeAt("value_postfix_format"),
-                                         effValue(defaultValuePostfixStyle),
-                                         { TextStyle.fromDocument(it) }),
-                                   // Value Separator
-                                   split(doc.maybeAt("value_separator"),
-                                         effValue(defaultValueSeparator),
-                                         { ValueSeparator.fromDocument(it) }),
-                                   // Value Separtaor Format
-                                   split(doc.maybeAt("outside_label_format"),
-                                         effValue(defaultValueSeparatorFormat),
-                                         { TextFormat.fromDocument(it) })
-                                   )
+            is DocDict ->
+            {
+                effApply(::NumberWidgetFormat,
+                         // Widget Format
+                         split(doc.maybeAt("widget_format"),
+                               effValue(WidgetFormat.default()),
+                               { WidgetFormat.fromDocument(it) }),
+                         // Inside Label
+                         split(doc.maybeAt("inside_label"),
+                               effValue<ValueError,Maybe<NumberWidgetLabel>>(defaultInsideLabel),
+                               { effApply(::Just, NumberWidgetLabel.fromDocument(it)) }),
+                         // Inside Label Format
+                         split(doc.maybeAt("inside_label_format"),
+                               effValue(defaultInsideLabelFormat),
+                               { TextFormat.fromDocument(it) }),
+                         // Outside Label
+                         split(doc.maybeAt("outside_label"),
+                               effValue<ValueError,Maybe<NumberWidgetLabel>>(defaultOutsideLabel),
+                               { effApply(::Just, NumberWidgetLabel.fromDocument(it)) }),
+                         // Outside Label Format
+                         split(doc.maybeAt("outside_label_format"),
+                               effValue(defaultOutsideLabelFormat),
+                               { TextFormat.fromDocument(it) }),
+                         // Value Format
+                         split(doc.maybeAt("value_format"),
+                               effValue(defaultValueFormat),
+                               { TextFormat.fromDocument(it) }),
+                         // Description Style
+                         split(doc.maybeAt("description_style"),
+                               effValue(defaultDescriptionStyle),
+                               { TextStyle.fromDocument(it) }),
+                         // Value Prefix Style
+                         split(doc.maybeAt("value_prefix_format"),
+                               effValue(defaultValuePrefixStyle),
+                               { TextStyle.fromDocument(it) }),
+                         // Value Postfix Style
+                         split(doc.maybeAt("value_postfix_format"),
+                               effValue(defaultValuePostfixStyle),
+                               { TextStyle.fromDocument(it) }),
+                         // Value Separator
+                         split(doc.maybeAt("outside_label"),
+                               effValue<ValueError,Maybe<ValueSeparator>>(defaultValueSeparator),
+                               { effApply(::Just, ValueSeparator.fromDocument(it)) }),
+                         // Value Separtaor Format
+                         split(doc.maybeAt("outside_label_format"),
+                               effValue(defaultValueSeparatorFormat),
+                               { TextFormat.fromDocument(it) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
@@ -149,6 +169,26 @@ data class NumberWidgetFormat(override val id : UUID,
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
 
+    fun insideLabel() : String? = getMaybePrim(this.insideLabel)?.value
+
+    fun insideLabelFormat() : TextFormat = this.insideLabelFormat.value
+
+    fun outsideLabel() : String? = getMaybePrim(this.outsideLabel)?.value
+
+    fun outsideLabelFormat() : TextFormat = this.outsideLabelFormat.value
+
+    fun valueFormat() : TextFormat = this.valueFormat.value
+
+    fun descriptionStyle() : TextStyle = this.descriptionStyle.value
+
+    fun valuePrefixStyle() : TextStyle = this.valuePrefixStyle.value
+
+    fun valuePostfixStyle() : TextStyle = this.valuePostfixStyle.value
+
+    fun valueSeparator() : String? = getMaybePrim(this.valueSeparator)?.sep
+
+    fun valueSeparatorFormat() : TextFormat? = this.valueSeparatorFormat.value
+
 
     // -----------------------------------------------------------------------------------------
     // MODEL
@@ -160,9 +200,26 @@ data class NumberWidgetFormat(override val id : UUID,
 
 
 /**
+ * Label
+ */
+data class NumberWidgetLabel(val value : String)
+{
+
+    companion object : Factory<NumberWidgetLabel>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidgetLabel> = when (doc)
+        {
+            is DocText -> effValue(NumberWidgetLabel(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
+
+/**
  * Value Separator
  */
-data class ValueSeparator(val sep : String?)
+data class ValueSeparator(val sep : String)
 {
 
     companion object : Factory<ValueSeparator>
@@ -174,6 +231,428 @@ data class ValueSeparator(val sep : String?)
         }
     }
 }
+
+
+/**
+ * Description
+ */
+data class NumberWidgetDescription(val value : String)
+{
+
+    companion object : Factory<NumberWidgetDescription>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidgetDescription> = when (doc)
+        {
+            is DocText -> effValue(NumberWidgetDescription(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
+
+/**
+ * Value Prefix
+ */
+data class NumberWidgetValuePrefix(val value : String)
+{
+
+    companion object : Factory<NumberWidgetValuePrefix>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidgetValuePrefix> = when (doc)
+        {
+            is DocText -> effValue(NumberWidgetValuePrefix(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
+
+/**
+ * Value Postfix
+ */
+data class NumberWidgetValuePostfix(val value : String)
+{
+
+    companion object : Factory<NumberWidgetValuePostfix>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<NumberWidgetValuePostfix> = when (doc)
+        {
+            is DocText -> effValue(NumberWidgetValuePostfix(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
+
+
+object NumberWidgetView
+{
+
+
+    fun widgetView(numberWidget : NumberWidget,
+                   format : NumberWidgetFormat,
+                   sheetContext : SheetContext) : View
+    {
+        val layout = WidgetView.layout(format.widgetFormat(), sheetContext.context)
+
+        layout.addView(this.mainView(numberWidget, format, sheetContext))
+
+        return layout
+    }
+
+
+    /**
+     * The outermost view that holds the outside labels and the value view.
+     *
+     *                      top label
+     *             --------------------------
+     *             |                         |
+     *  left label |        Value View       | right label
+     *             |                         |
+     *             ---------------------------
+     *                    bottom label
+     *
+     */
+    private fun mainView(numberWidget : NumberWidget,
+                         format : NumberWidgetFormat,
+                         sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = this.mainLayout(format, sheetContext.context)
+
+        // > Outside Top/Left Label View
+        if (format.outsideLabel() != null) {
+            if (format.outsideLabelFormat().position().isTop() ||
+                format.outsideLabelFormat().position().isLeft()) {
+                layout.addView(this.outsideLabelView(format, sheetContext))
+            }
+        }
+
+        // > Value
+        layout.addView(this.valueMainView(numberWidget, format, sheetContext))
+
+        // > Outside Bottom/Right Label View
+        if (format.outsideLabel() != null) {
+            if (format.outsideLabelFormat().position().isBottom() ||
+                format.outsideLabelFormat().position().isRight()) {
+                layout.addView(this.outsideLabelView(format, sheetContext))
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun mainLayout(format : NumberWidgetFormat, context : Context) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.orientation          = format.outsideLabelFormat().position()
+                                            .linearLayoutOrientation()
+
+        layout.gravity              = format.widgetFormat().alignment().gravityConstant() or
+                                        Gravity.CENTER_VERTICAL
+
+        layout.marginSpacing        = format.widgetFormat().margins()
+
+        return layout.linearLayout(context)
+    }
+
+
+    /**
+     * The view that holds the value as well as the inside labels around the value.
+     */
+    private fun valueMainView(numberWidget : NumberWidget,
+                              format : NumberWidgetFormat,
+                              sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = this.valueMainViewLayout(format, sheetContext)
+
+        // > Inside Top/Left Label View
+        if (format.insideLabel() != null && numberWidget.description() == null) {
+            if (format.insideLabelFormat().position().isTop() ||
+                format.insideLabelFormat().position().isLeft()) {
+                layout.addView(this.insideLabelView(format, sheetContext))
+            }
+        }
+
+        layout.addView(this.valueView(numberWidget, format, sheetContext))
+
+        // > Inside Bottom/Right Label View
+        if (format.insideLabel() != null && numberWidget.description() == null) {
+            if (format.insideLabelFormat().position().isBottom() ||
+                format.insideLabelFormat().position().isRight()) {
+                layout.addView(this.insideLabelView(format, sheetContext))
+            }
+        }
+
+        return layout
+    }
+
+
+    private fun valueMainViewLayout(format : NumberWidgetFormat,
+                                    sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation          = format.insideLabelFormat().position()
+                                            .linearLayoutOrientation()
+
+        // > Width
+        //   If no padding is specified, the value (and its background) stretches to fill the
+        //   space. Otherwise it only stretches as far as the padding allows
+        // -------------------------------------------------------------------------------------
+//        if (this.format().valuePaddingHorizontal() != null ||
+//            this.data().format().background() == BackgroundColor.EMPTY) {
+
+        //layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+
+//        if (this.data().format().underlineThickness() > 0)
+//        {
+//            layout.backgroundColor    = this.data().format().underlineColor().resourceId();
+//            layout.backgroundResource = R.drawable.bg_widget_bottom_border;
+//        }
+//        else if (this.data().format().background() != BackgroundColor.EMPTY &&
+//                 this.data().format().background() != BackgroundColor.NONE)
+//        {
+
+        layout.backgroundColor      = SheetManager.color(
+                                                sheetContext.sheetId,
+                                                format.widgetFormat().backgroundColorTheme())
+
+        layout.backgroundResource   = format.valueFormat().height()
+                                            .resourceId(format.widgetFormat().corners())
+
+        if (format.valueFormat().height().isWrap())
+        {
+            layout.padding.topDp    = format.valueFormat().padding().top().toFloat()
+            layout.padding.bottomDp = format.valueFormat().padding().bottom().toFloat()
+        }
+
+//        if (format.widgetFormat.background() == BackgroundColor.EMPTY)
+//            layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+//        if (this.data().format().underlineThickness() > 0)
+//        {
+//            layout.backgroundColor    = this.data().format().underlineColor().resourceId();
+//            layout.backgroundResource = R.drawable.bg_widget_bottom_border;
+//        }
+
+//        else if (this.data().format().background() != BackgroundColor.EMPTY &&
+//                 this.data().format().background() != BackgroundColor.NONE)
+//        {
+
+        return layout.linearLayout(sheetContext.context)
+    }
+
+
+
+    private fun valueView(numberWidget : NumberWidget,
+                          format : NumberWidgetFormat,
+                          sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = this.valueViewLayout(sheetContext.context)
+
+        // > Value
+        layout.addView(this.valueTextView(numberWidget, format, sheetContext))
+
+        // > Base Value
+//        if (this.baseValueVariableName() != null)
+//            layout.addView(baseValueView(context));
+
+        return layout
+    }
+
+
+    private fun valueViewLayout(context : Context) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation      = LinearLayout.HORIZONTAL
+
+        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun valueTextView(numberWidget : NumberWidget,
+                              format : NumberWidgetFormat,
+                              sheetContext : SheetContext) : TextView
+    {
+        val value = TextViewBuilder()
+
+        numberWidget.viewId = Util.generateViewId()
+        value.id            = numberWidget.viewId
+
+        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        value.layoutGravity = format.valueFormat().alignment().gravityConstant() or
+                                Gravity.CENTER_VERTICAL
+        value.gravity       = format.valueFormat().alignment().gravityConstant()
+
+        if (numberWidget.description() != null)
+        {
+            value.layoutGravity = format.descriptionStyle().alignment().gravityConstant() or
+                                    Gravity.CENTER_VERTICAL
+            value.gravity       = format.descriptionStyle().alignment().gravityConstant()
+
+            format.descriptionStyle().styleTextViewBuilder(value, sheetContext)
+
+            val spans = mutableListOf<FormattedString.Span>()
+
+            val labelSpan =
+                FormattedString.Span(
+                        format.insideLabel(),
+                        SheetManager.color(sheetContext.sheetId,
+                                           format.insideLabelFormat().style().colorTheme()),
+                        format.insideLabelFormat().style().sizeSp(),
+                        format.insideLabelFormat().style().font())
+
+            val valueSpan =
+                FormattedString.Span(numberWidget.valueString(sheetContext),
+                                     sheetContext.context.getString(R.string.placeholder_value),
+                                     SheetManager.color(sheetContext.sheetId,
+                                                        format.valueFormat().style().colorTheme()),
+                                     format.valueFormat().style().sizeSp(),
+                                     format.valueFormat().style().font())
+
+
+            if (format.insideLabel() != null)
+                spans.add(labelSpan)
+
+            spans.add(valueSpan)
+
+            value.textSpan  = FormattedString.spannableStringBuilder(numberWidget.description(),
+                                                                     spans)
+        }
+        else
+        {
+            value.text      = numberWidget.valueString(sheetContext)
+            format.valueFormat().style().styleTextViewBuilder(value, sheetContext)
+        }
+
+        return value.textView(sheetContext.context)
+    }
+
+
+    private fun baseValueView(format : NumberWidgetFormat, sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = this.baseValueViewLayout(sheetContext.context)
+
+        // > Separator
+        layout.addView(baseValueSeparatorView(format, sheetContext))
+
+        // > Value
+        layout.addView(baseValueTextView(sheetContext.context))
+
+        return layout;
+    }
+
+
+    private fun baseValueViewLayout(context : Context) : LinearLayout
+    {
+        val layout = LinearLayoutBuilder()
+
+        layout.orientation          = LinearLayout.HORIZONTAL
+
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        // layout.layoutGravity        = format.baseValueVerticalAlignment().gravityConstant()
+        layout.gravity              = Gravity.CENTER_VERTICAL
+
+        return layout.linearLayout(context)
+    }
+
+
+    private fun baseValueSeparatorView(format : NumberWidgetFormat,
+                                       sheetContext : SheetContext) : TextView
+    {
+        val separator = TextViewBuilder()
+
+        separator.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        separator.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        separator.text          = format.valueSeparator()
+
+        format.valueSeparatorFormat()?.style()?.styleTextViewBuilder(separator, sheetContext)
+
+        separator.marginSpacing = format.valueSeparatorFormat()?.margins()
+
+        return separator.textView(sheetContext.context)
+    }
+
+
+    private fun baseValueTextView(context : Context) : TextView
+    {
+        val value = TextViewBuilder()
+
+        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        // value.text          = this.baseValue().toString()
+
+        // this.format().baseValueStyle().styleTextViewBuilder(value, context)
+
+        // value.marginSpacing = format.baseValueMargins()
+
+        return value.textView(context)
+    }
+
+
+    private fun outsideLabelView(format : NumberWidgetFormat,
+                                 sheetContext : SheetContext) : TextView
+    {
+        val label = TextViewBuilder()
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.layoutGravity     = format.outsideLabelFormat().alignment().gravityConstant() or
+                                    Gravity.CENTER_VERTICAL
+
+        label.text              = format.outsideLabel()
+
+        format.outsideLabelFormat().style().styleTextViewBuilder(label, sheetContext)
+
+        label.marginSpacing     = format.outsideLabelFormat().margins()
+
+        return label.textView(sheetContext.context)
+    }
+
+
+    private fun insideLabelView(format : NumberWidgetFormat,
+                                sheetContext : SheetContext) : TextView
+    {
+        val label   = TextViewBuilder()
+
+        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT
+        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        label.text              = format.insideLabel()
+
+        label.layoutGravity     = format.insideLabelFormat().alignment().gravityConstant() or
+                                      Gravity.CENTER_VERTICAL;
+
+        format.insideLabelFormat().style().styleTextViewBuilder(label, sheetContext)
+
+        label.marginSpacing     = format.insideLabelFormat().margins()
+
+        return label.textView(sheetContext.context)
+    }
+
+
+}
+
 
 
 //
@@ -212,421 +691,7 @@ data class ValueSeparator(val sep : String?)
 //            return 0;
 //        }
 //    }
-//
-//
-//    // ** Description
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * The number description.
-//     * @return The description.
-//     */
-//    public String description()
-//    {
-//        return this.description.getValue();
-//    }
-//
-//
-//    // ** Variables
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the text widget's helper variables.
-//     * @return The list of variables.
-//     */
-//    public List<VariableUnion> variables()
-//    {
-//        return this.variables.getValue();
-//    }
-//
-//
-//    // INTERNAL
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Initialize
-//    // -----------------------------------------------------------------------------------------
-//
-//    private void initializeNumberWidget()
-//    {
-//        // [1] Apply default format values
-//        // -------------------------------------------------------------------------------------
-//
-//        // ** Alignment
-//        if (this.data().format().alignmentIsDefault())
-//            this.data().format().setAlignment(Alignment.CENTER);
-//
-//        // ** Background
-//        if (this.data().format().backgroundIsDefault())
-//            this.data().format().setBackground(BackgroundColor.NONE);
-//
-//        // ** Corners
-//        if (this.data().format().cornersIsDefault())
-//            this.data().format().setCorners(Corners.SMALL);
-//
-//        // ** Underline Thickness
-//        if (this.data().format().underlineThicknessIsDefault())
-//            this.data().format().setUnderlineThickness(0);
-//
-//    }
-//
-//    // -----------------------------------------------------------------------------------------
-//
-//    private View widgetView(boolean rowHasLabel, Context context)
-//    {
-//        LinearLayout layout = this.layout(rowHasLabel, context);
-//
-//        this.widgetViewId   = Util.generateViewId();
-//        layout.setId(this.widgetViewId);
-//
-//        layout.addView(mainView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    /**
-//     * The outer-most view that holds the outside labels and the value view.
-//     * @param context The context.
-//     * @return The main view Linear Layout.
-//     */
-//    private LinearLayout mainView(Context context)
-//    {
-//        LinearLayout layout = mainLayout(context);
-//
-//        // > Outside Top/Left Label View
-//        if (this.format().outsideLabel() != null) {
-//            if (this.format().outsideLabelPosition() == Position.TOP ||
-//                this.format().outsideLabelPosition() == Position.LEFT) {
-//                layout.addView(this.outsideLabelView(context));
-//            }
-//        }
-//
-//        // > Value
-//        layout.addView(this.valueMainView(context));
-//
-//        // > Outside Bottom/Right Label View
-//        if (this.format().outsideLabel() != null) {
-//            if (this.format().outsideLabelPosition() == Position.BOTTOM ||
-//                this.format().outsideLabelPosition() == Position.RIGHT) {
-//                layout.addView(this.outsideLabelView(context));
-//            }
-//        }
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout mainLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.MATCH_PARENT;
-//
-//        layout.orientation          = this.format().outsideLabelPosition()
-//                                          .linearLayoutOrientation();
-//
-//        layout.gravity              = this.data().format().alignment().gravityConstant()
-//                                        | Gravity.CENTER_VERTICAL;
-//
-//        layout.marginSpacing        = this.data().format().margins();
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    /**
-//     * The view that holds the value as well as the inside labels around the value.
-//     * @param context The context.
-//     * @return The value main view Linear Layout.
-//     */
-//    private LinearLayout valueMainView(Context context)
-//    {
-//        LinearLayout layout = valueMainViewLayout(context);
-//
-//        // > Inside Top/Left Label View
-//        if (this.format().insideLabel() != null && this.description() == null) {
-//            if (this.format().insideLabelPosition() == Position.TOP ||
-//                this.format().insideLabelPosition() == Position.LEFT) {
-//                layout.addView(this.insideLabelView(context));
-//            }
-//        }
-//
-//        layout.addView(valueView(context));
-//
-//        // > Inside Bottom/Right Label View
-//        if (this.format().insideLabel() != null && this.description() == null) {
-//            if (this.format().insideLabelPosition() == Position.BOTTOM ||
-//                this.format().insideLabelPosition() == Position.RIGHT) {
-//                layout.addView(this.insideLabelView(context));
-//            }
-//        }
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout valueMainViewLayout(final Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = this.format().insideLabelPosition().linearLayoutOrientation();
-//
-//        // > Width
-//        //   If no padding is specified, the value (and its background) stretches to fill the
-//        //   space. Otherwise it only stretches as far as the padding allows
-//        // -------------------------------------------------------------------------------------
-//        if (this.format().valuePaddingHorizontal() != null ||
-//            this.data().format().background() == BackgroundColor.EMPTY) {
-//            layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        }
-//        else {
-//            layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        }
-//
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//
-//        if (this.data().format().underlineThickness() > 0)
-//        {
-//            layout.backgroundColor    = this.data().format().underlineColor().resourceId();
-//            layout.backgroundResource = R.drawable.bg_widget_bottom_border;
-//        }
-//        else if (this.data().format().background() != BackgroundColor.EMPTY &&
-//                 this.data().format().background() != BackgroundColor.NONE)
-//        {
-//            layout.backgroundColor      = this.data().format().background().colorId();
-//
-//            if (this.format().valueHeight() != Height.WRAP)
-//            {
-//                layout.backgroundResource   = this.format().valueHeight()
-//                                                  .resourceId(this.data().format().corners());
-//            }
-//            else
-//            {
-//                layout.backgroundResource = this.data().format().corners().widgetResourceId();
-//            }
-//        }
-//
-//
-//        if (this.format().valueHeight() == Height.WRAP)
-//        {
-//            layout.padding.topDp    = this.format().valuePaddingVertical().floatValue();
-//            layout.padding.bottomDp = this.format().valuePaddingVertical().floatValue();
-//        }
-//
-//
-//        layout.gravity              = this.format().valueStyle().alignment().gravityConstant()
-//                                        | Gravity.CENTER_VERTICAL;
-//
-//        // > Padding
-//        // -------------------------------------------------------------------------------------
-//        if (this.format().valuePaddingHorizontal() != null)
-//        {
-//            layout.padding.leftDp   = this.format().valuePaddingHorizontal().floatValue();
-//            layout.padding.rightDp  = this.format().valuePaddingHorizontal().floatValue();
-//        }
-//
-//        layout.onClick              = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                onNumberWidgetShortClick(context);
-//            }
-//        };
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private LinearLayout valueView(Context context)
-//    {
-//        LinearLayout layout = valueViewLayout(context);
-//
-//        // > Value
-//        layout.addView(valueTextView(context));
-//
-//        // > Base Value
-//        if (this.baseValueVariableName() != null)
-//            layout.addView(baseValueView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout valueViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation      = LinearLayout.HORIZONTAL;
-//
-//        layout.width            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private TextView valueTextView(Context context)
-//    {
-//        TextViewBuilder value = new TextViewBuilder();
-//
-//        this.valueViewId   = Util.generateViewId();
-//
-//        value.id            = this.valueViewId;
-//
-//        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        value.layoutGravity = this.format().valueStyle().alignment().gravityConstant()
-//                                | Gravity.CENTER_VERTICAL;
-//        value.gravity       = this.format().valueStyle().alignment().gravityConstant();
-//
-//        if (this.description() != null)
-//        {
-//            value.layoutGravity = this.format().descriptionStyle().alignment().gravityConstant()
-//                                    | Gravity.CENTER_VERTICAL;
-//            value.gravity       = this.format().descriptionStyle().alignment().gravityConstant();
-//
-//            this.format().descriptionStyle().styleTextViewBuilder(value, context);
-//
-//            List<FormattedString.Span> spans = new ArrayList<>();
-//
-//            FormattedString.Span labelSpan =
-//                new FormattedString.Span(this.format().insideLabel(),
-//                                         this.format().insideLabelStyle().color().color(context),
-//                                         this.format().descriptionStyle().size().size(),
-//                                         this.format().insideLabelStyle().font());
-//
-//            FormattedString.Span valueSpan =
-//                    new FormattedString.Span(this.valueString(),
-//                                             context.getString(R.string.placeholder_value),
-//                                             this.format().valueStyle().color().color(context),
-//                                             this.format().descriptionStyle().size().size(),
-//                                             this.format().valueStyle().font());
-//
-//            if (this.format().insideLabel() != null)
-//                spans.add(labelSpan);
-//
-//            spans.add(valueSpan);
-//
-//            value.textSpan  = FormattedString.spannableStringBuilder(this.description(),
-//                                                                     spans);
-//        }
-//        else
-//        {
-//            value.text      = this.valueString();
-//            value.color     = this.format().valueStyle().color().resourceId();
-//            value.size      = this.format().valueStyle().size().resourceId();
-//            value.font      = this.format().valueStyle().typeface(context);
-//        }
-//
-//        return value.textView(context);
-//    }
-//
-//
-//    private LinearLayout baseValueView(Context context)
-//    {
-//        LinearLayout layout = this.baseValueViewLayout(context);
-//
-//        // > Separator
-//        layout.addView(baseValueSeparatorView(context));
-//
-//        // > Value
-//        layout.addView(baseValueTextView(context));
-//
-//        return layout;
-//    }
-//
-//
-//    private LinearLayout baseValueViewLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation          = LinearLayout.HORIZONTAL;
-//
-//        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        layout.layoutGravity        = this.format().baseValueVerticalAlignment().gravityConstant();
-//        layout.gravity              = Gravity.CENTER_VERTICAL;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private TextView baseValueSeparatorView(Context context)
-//    {
-//        TextViewBuilder separator = new TextViewBuilder();
-//
-//        separator.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        separator.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        separator.text          = this.format().baseValueSeparator();
-//
-//        this.format().baseValueSeparatorStyle().styleTextViewBuilder(separator, context);
-//
-//        separator.marginSpacing = this.format().baseValueSeparatorMargins();
-//
-//        return separator.textView(context);
-//    }
-//
-//
-//    private TextView baseValueTextView(Context context)
-//    {
-//        TextViewBuilder value = new TextViewBuilder();
-//
-//        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        value.text          = this.baseValue().toString();
-//
-//        this.format().baseValueStyle().styleTextViewBuilder(value, context);
-//
-//        value.marginSpacing = this.format().baseValueMargins();
-//
-//        return value.textView(context);
-//    }
-//
-//
-//    private TextView outsideLabelView(Context context)
-//    {
-//        TextViewBuilder label = new TextViewBuilder();
-//
-//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        label.layoutGravity     = this.format().outsideLabelStyle().alignment().gravityConstant()
-//                                    | Gravity.CENTER_VERTICAL;
-//
-//        label.text              = this.format().outsideLabel();
-//
-//        this.format().outsideLabelStyle().styleTextViewBuilder(label, context);
-//
-//        label.marginSpacing     = this.format().outsideLabelMargins();
-//
-//        return label.textView(context);
-//    }
-//
-//
-//    private TextView insideLabelView(Context context)
-//    {
-//        TextViewBuilder label   = new TextViewBuilder();
-//
-//        label.width             = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        label.height            = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        label.text              = this.format().insideLabel();
-//
-//        label.layoutGravity     = this.format().insideLabelStyle().alignment().gravityConstant()
-//                                        | Gravity.CENTER_VERTICAL;
-//
-//        this.format().insideLabelStyle().styleTextViewBuilder(label, context);
-//
-//        label.marginSpacing     = this.format().insideLabelMargins();
-//
-//        return label.textView(context);
-//    }
-//
+
 //
 //    // > Clicks
 //    // -----------------------------------------------------------------------------------------

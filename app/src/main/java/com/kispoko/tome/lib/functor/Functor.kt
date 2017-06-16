@@ -5,13 +5,14 @@ package com.kispoko.tome.lib.functor
 import com.kispoko.tome.lib.model.Model
 import effect.*
 import lulo.value.ValueError
+import java.io.Serializable
 
 
 
 /**
  * Functor
  */
-sealed class Func<out A>(open val value : A?)
+sealed class Func<out A>(open val value : A?) : Serializable
 {
     fun isNull() : Boolean = this.value == null
 }
@@ -20,25 +21,25 @@ sealed class Func<out A>(open val value : A?)
 /**
  * Primitive Functor
  */
-data class Prim<A : Any>(override var value : A) : Func<A>(value)
+data class Prim<A : Any>(override var value : A) : Func<A>(value), Serializable
 
 
 /**
  * Collection Functor
  */
-data class Comp<A : Model> (override var value : A) : Func<A>(value)
+data class Comp<A : Model> (override var value : A) : Func<A>(value), Serializable
 
 
 /**
  * Collection Functor
  */
-data class Coll<A : Model>(val list : MutableList<A>) : Func<MutableList<A>>(list)
+data class Coll<A>(val list : MutableList<A>) : Func<MutableList<A>>(list), Serializable
 
 
 /**
  * Collection Functor
  */
-data class CollS<A> (val list : MutableList<A>) where A : Model, A : Comparable<A>
+data class CollS<A> (val list : MutableList<A>) : Serializable where A : Model, A : Comparable<A>
 {
     init
     {
@@ -51,13 +52,13 @@ data class CollS<A> (val list : MutableList<A>) where A : Model, A : Comparable<
 /**
  * Mutable Collection Functor
  */
-data class CollM<A : Model>(val list : MutableList<A>) : Func<MutableList<A>>(list)
+data class CollM<A : Model>(val list : MutableList<A>) : Func<MutableList<A>>(list), Serializable
 
 
 /**
  * Set Functor
  */
-data class Conj<A>(val set : MutableSet<A>) : Func<MutableSet<A>>(set)
+data class Conj<A>(val set : MutableSet<A>) : Func<MutableSet<A>>(set), Serializable
 
 
 /**
@@ -67,7 +68,7 @@ data class Conj<A>(val set : MutableSet<A>) : Func<MutableSet<A>>(set)
 
 
 
-class Null<out A : Any> : Func<A>(null)
+class Null<out A : Any> : Func<A>(null), Serializable
 {
 
     override fun equals(other: Any?) : Boolean
@@ -94,4 +95,11 @@ fun <A : Any> maybeLiftPrim(mValue : Maybe<A>) : Maybe<Prim<A>> = when(mValue)
 {
     is Just -> maybeApply(::Prim, mValue)
     else    -> Nothing()
+}
+
+
+fun <A : Any> getMaybePrim(mPrim : Maybe<Prim<A>>) : A? = when (mPrim)
+{
+    is Just -> mPrim.value.value
+    else    -> null
 }

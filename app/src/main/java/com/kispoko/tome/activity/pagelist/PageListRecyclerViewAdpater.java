@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kispoko.tome.R;
-import com.kispoko.tome.activity.PageActivity;
 import com.kispoko.tome.model.sheet.page.Page;
 
 import java.util.List;
@@ -127,13 +126,13 @@ public class PageListRecyclerViewAdpater
                 @Override
                 public void onClick(View view)
                 {
-                    Intent intent = new Intent(context, PageActivity.class);
-
-                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("page", page);
-                    intent.putExtras(bundle);
-
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, PageActivity.class);
+//
+//                    Bundle bundle = new Bundle();
+////                    bundle.putSerializable("page", page);
+//                    intent.putExtras(bundle);
+//
+//                    context.startActivity(intent);
                 }
             });
         }

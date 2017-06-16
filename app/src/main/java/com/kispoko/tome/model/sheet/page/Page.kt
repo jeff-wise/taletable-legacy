@@ -13,7 +13,6 @@ import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.State
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -117,7 +116,7 @@ data class Page(override val id : UUID,
 /**
  * Page Name
  */
-data class PageName(val name : String)
+data class PageName(val name : String) : Serializable
 {
 
     companion object : Factory<PageName>
@@ -135,7 +134,7 @@ data class PageName(val name : String)
  * Page Format
  */
 data class PageFormat(override val id : UUID,
-                      val backgroundColor : Prim<ColorTheme>) : Model
+                      val backgroundColor : Prim<ColorTheme>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------

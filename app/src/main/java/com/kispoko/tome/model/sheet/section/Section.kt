@@ -4,19 +4,17 @@ package com.kispoko.tome.model.sheet.section
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.page.Page
-import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.State
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -25,40 +23,58 @@ import java.util.*
  * Section
  */
 data class Section(override val id : UUID,
-                   val name : Func<SectionName>,
-                   val pages : Coll<Page>) : Model, SheetComponent
+                   val name : Prim<SectionName>,
+                   val pages : Coll<Page>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(name : SectionName,
+                pages : MutableList<Page>)
+        : this(UUID.randomUUID(), Prim(name), Coll(pages))
+
+
     companion object : Factory<Section>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Section> = when (doc)
         {
             is DocDict -> effApply(::Section,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Campaign Name
-                                   doc.at("name") ap {
-                                       effApply(::Prim, SectionName.fromDocument(it))
-                                   },
+                                   doc.at("name") ap { SectionName.fromDocument(it) },
                                    // Page List
                                    doc.list("pages") ap { docList ->
-                                       effApply(::Coll, docList.mapIndexed {
-                                           doc, index -> Page.fromDocument(doc, index) })
+                                       docList.mapIndexed { doc, index ->
+                                           Page.fromDocument(doc, index)
+                                       }
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun name() : SectionName = this.name.value
+
+    fun pages() : List<Page> = this.pages.list
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 
+    // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext : SheetContext)
+    fun onActive(sheetContext : SheetContext)
     {
         this.pages.list.forEach { it.onSheetComponentActive(sheetContext) }
     }
@@ -69,7 +85,7 @@ data class Section(override val id : UUID,
 /**
  * Section Name
  */
-data class SectionName(val name : String)
+data class SectionName(val name : String) : Serializable
 {
 
     companion object : Factory<SectionName>

@@ -2,16 +2,23 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import android.content.Context
+import android.graphics.Typeface
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.Font
+import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -26,7 +33,7 @@ data class TextFormat(override val id : UUID,
                       val padding : Comp<Spacing>,
                       val margins : Comp<Spacing>,
                       val alignment: Prim<Alignment>,
-                      val verticalAlignment: Prim<VerticalAlignment>) : Model
+                      val verticalAlignment: Prim<VerticalAlignment>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -53,11 +60,11 @@ data class TextFormat(override val id : UUID,
     companion object : Factory<TextFormat>
     {
 
-        private val defaultStyle             = TextStyle.default()
+        private val defaultStyle             = TextStyle.default
         private val defaultPosition          = Position.Top()
         private val defaultHeight            = Height.Wrap()
-        private val defaultPadding           = Spacing.default()
-        private val defaultMargins           = Spacing.default()
+        private val defaultPadding           = Spacing.default
+        private val defaultMargins           = Spacing.default
         private val defaultAlignment         = Alignment.Center()
         private val defaultVerticalAlignment = VerticalAlignment.Middle()
 
@@ -116,6 +123,20 @@ data class TextFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun style() : TextStyle = this.style.value
+
+    fun position() : Position = this.position.value
+
+    fun height() : Height = this.height.value
+
+    fun padding() : Spacing = this.padding.value
+
+    fun margins() : Spacing = this.margins.value
+
+    fun alignment() : Alignment = this.alignment.value
+
+    fun verticalAlignment() : VerticalAlignment = this.verticalAlignment.value
+
 
     // -----------------------------------------------------------------------------------------
     // MODEL
@@ -135,7 +156,7 @@ data class TextStyle(override val id : UUID,
                      val font : Prim<TextFont>,
                      val isUnderlined : Prim<IsUnderlined>,
                      val alignment: Prim<Alignment>,
-                     val backgroundColorTheme : Prim<ColorTheme>) : Model
+                     val backgroundColorTheme : Prim<ColorTheme>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -159,6 +180,15 @@ data class TextStyle(override val id : UUID,
 
     companion object : Factory<TextStyle>
     {
+
+        private val defaultColorTheme           = ColorTheme.black
+        private val defaultTextSize             = TextSize(16.0f)
+        private val defaultFont                 = TextFont.Regular()
+        private val defaultIsUnderlined         = IsUnderlined(false)
+        private val defaultAlignment            = Alignment.Center()
+        private val defaultBackgroundColorTheme = ColorTheme.transparent
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextStyle> = when (doc)
         {
             is DocDict ->
@@ -166,27 +196,27 @@ data class TextStyle(override val id : UUID,
                 effApply(::TextStyle,
                          // Color Theme
                          split(doc.maybeAt("color_theme"),
-                               effValue(ColorTheme.black),
+                               effValue(defaultColorTheme),
                                { ColorTheme.fromDocument(it) }),
                          // Size
                          split(doc.maybeAt("size"),
-                               effValue(TextSize(5.0)),
+                               effValue(defaultTextSize),
                                { TextSize.fromDocument(it) }),
                          // Font
                          split(doc.maybeAt("font"),
-                                effValue<ValueError,TextFont>(TextFont.Regular()),
+                                effValue<ValueError,TextFont>(defaultFont),
                                 { TextFont.fromDocument(it) }),
                          // Is Underlined?
                          split(doc.maybeAt("is_underlined"),
-                               effValue(IsUnderlined(false)),
+                               effValue(defaultIsUnderlined),
                                { IsUnderlined.fromDocument(it) }),
                          // Alignment
                          split(doc.maybeAt("alignment"),
-                               effValue<ValueError,Alignment>(Alignment.Center()),
+                               effValue<ValueError,Alignment>(defaultAlignment),
                                { Alignment.fromDocument(it) }),
                          // Color
                          split(doc.maybeAt("background_color_theme"),
-                               effValue(ColorTheme.transparent),
+                               effValue(defaultBackgroundColorTheme),
                                { ColorTheme.fromDocument(it) })
                          )
             }
@@ -195,14 +225,31 @@ data class TextStyle(override val id : UUID,
 
 
         val default : TextStyle =
-                TextStyle(ColorTheme.black,
-                          TextSize(5.0),
-                          TextFont.Regular(),
-                          IsUnderlined(false),
-                          Alignment.Center(),
-                          ColorTheme.transparent)
+                TextStyle(defaultColorTheme,
+                          defaultTextSize,
+                          defaultFont,
+                          defaultIsUnderlined,
+                          defaultAlignment,
+                          defaultBackgroundColorTheme)
 
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun colorTheme() : ColorTheme = this.colorTheme.value
+
+    fun sizeSp() : Float = this.size.value.sp
+
+    fun font() : TextFont = this.font.value
+
+    fun isUnderlined() : Boolean = this.isUnderlined.value.value
+
+    fun alignment() : Alignment = this.alignment.value
+
+    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -211,20 +258,39 @@ data class TextStyle(override val id : UUID,
 
     override fun onLoad() { }
 
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * Set the TextViewBuilder style options according the values in the TextStyle.
+     */
+    fun styleTextViewBuilder(textViewBuilder : TextViewBuilder, sheetContext : SheetContext)
+    {
+        textViewBuilder.color   = SheetManager.color(sheetContext.sheetId, this.colorTheme())
+        textViewBuilder.sizeSp  = this.sizeSp()
+        textViewBuilder.font    = this.font().typeface(sheetContext.context)
+    }
+
+
+
+
 }
+
 
 
 /**
  * Text Size
  */
-data class TextSize(val dp : Double)
+data class TextSize(val sp : Float) : Serializable
 {
 
     companion object : Factory<TextSize>
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<TextSize> = when (doc)
         {
-            is DocNumber -> effValue(TextSize(doc.number))
+            is DocNumber -> effValue(TextSize(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
@@ -234,7 +300,7 @@ data class TextSize(val dp : Double)
 /**
  * Is Underlined
  */
-data class IsUnderlined(val value : Boolean)
+data class IsUnderlined(val value : Boolean) : Serializable
 {
 
     companion object : Factory<IsUnderlined>
@@ -251,7 +317,7 @@ data class IsUnderlined(val value : Boolean)
 /**
  * Text Font
  */
-sealed class TextFont
+sealed class TextFont : Serializable
 {
 
     class Regular : TextFont()
@@ -275,6 +341,15 @@ sealed class TextFont
             }
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+    }
+
+
+    fun typeface(context : Context) : Typeface = when (this)
+    {
+        is Regular    -> Font.serifFontRegular(context)
+        is Bold       -> Font.serifFontBold(context)
+        is Italic     -> Font.serifFontItalic(context)
+        is BoldItalic -> Font.serifFontBoldItalic(context)
     }
 
 }
@@ -391,446 +466,6 @@ sealed class TextFont
 //
 //    }
 
-//
-//public class TextStyle extends Model
-//                       implements ToYaml, Serializable
-//{
-//
-//    // PROPERTIES
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // -----------------------------------------------------------------------------------------
-//
-//    private UUID                                id;
-//
-//
-//    // > Functors
-//    // -----------------------------------------------------------------------------------------
-//
-//    private PrimitiveFunctor<TextColor>         color;
-//    private PrimitiveFunctor<TextSize>          size;
-//    private PrimitiveFunctor<TextFont>          font;
-//    private primitivefunctor<boolean>           isunderlined;
-//    private primitivefunctor<alignment>         alignment;
-//    private primitivefunctor<backgroundcolor>   backgroundcolor;
-//
-//
-//    // constructors
-//    // -----------------------------------------------------------------------------------------
-//
-//    public textstyle()
-//    {
-//        this.id                 = null;
-//
-//        this.color              = new primitivefunctor<>(null, textcolor.class);
-//        this.size               = new primitivefunctor<>(null, textsize.class);
-//        this.font               = new primitivefunctor<>(null, textfont.class);
-//        this.isunderlined       = new primitivefunctor<>(null, boolean.class);
-//        this.alignment          = new primitivefunctor<>(null, alignment.class);
-//        this.backgroundcolor    = new primitivefunctor<>(null, backgroundcolor.class);
-//    }
-//
-//
-//    public textstyle(uuid id,
-//                     textcolor color,
-//                     textsize size,
-//                     textfont font,
-//                     boolean isunderlined,
-//                     alignment alignment,
-//                     backgroundcolor backgroundcolor)
-//    {
-//        this.id                 = id;
-//
-//        this.color              = new primitivefunctor<>(color, textcolor.class);
-//        this.size               = new primitivefunctor<>(size, textsize.class);
-//        this.font               = new primitivefunctor<>(font, textfont.class);
-//        this.isunderlined       = new primitivefunctor<>(isunderlined, boolean.class);
-//        this.alignment          = new primitivefunctor<>(alignment, alignment.class);
-//        this.backgroundcolor    = new primitivefunctor<>(backgroundcolor, backgroundcolor.class);
-//
-//        this.setcolor(color);
-//        this.setsize(size);
-//        this.setfont(font);
-//        this.setisunderlined(isunderlined);
-//        this.setalignment(alignment);
-//        this.setbackgroundcolor(backgroundcolor);
-//    }
-//
-//
-//    public textstyle(uuid id,
-//                     textcolor color,
-//                     textsize size)
-//    {
-//        this.id                 = id;
-//
-//        this.color              = new primitivefunctor<>(color, textcolor.class);
-//        this.size               = new primitivefunctor<>(size, textsize.class);
-//        this.font               = new primitivefunctor<>(null, textfont.class);
-//        this.isunderlined       = new primitivefunctor<>(null, boolean.class);
-//        this.alignment          = new primitivefunctor<>(null, alignment.class);
-//        this.backgroundcolor    = new primitivefunctor<>(null, backgroundcolor.class);
-//
-//        this.setcolor(color);
-//        this.setsize(size);
-//        this.setfont(null);
-//        this.setisunderlined(null);
-//        this.setalignment(null);
-//        this.setbackgroundcolor(null);
-//    }
-//
-//
-//    public textstyle(uuid id,
-//                     textcolor color,
-//                     textsize size,
-//                     alignment alignment)
-//    {
-//        this.id                 = id;
-//
-//        this.color              = new primitivefunctor<>(color, textcolor.class);
-//        this.size               = new primitivefunctor<>(size, textsize.class);
-//        this.font               = new primitivefunctor<>(null, textfont.class);
-//        this.isunderlined       = new primitivefunctor<>(null, boolean.class);
-//        this.alignment          = new primitivefunctor<>(alignment, alignment.class);
-//        this.backgroundcolor    = new primitivefunctor<>(null, backgroundcolor.class);
-//
-//        this.setcolor(color);
-//        this.setsize(size);
-//        this.setfont(null);
-//        this.setisunderlined(null);
-//        this.setalignment(alignment);
-//        this.setbackgroundcolor(null);
-//    }
-//
-//
-//    public textstyle(uuid id,
-//                     textcolor color,
-//                     textsize size,
-//                     textfont font)
-//    {
-//        this.id                 = id;
-//
-//        this.color              = new primitivefunctor<>(color, textcolor.class);
-//        this.size               = new primitivefunctor<>(size, textsize.class);
-//        this.font               = new primitivefunctor<>(font, textfont.class);
-//        this.isunderlined       = new primitivefunctor<>(null, boolean.class);
-//        this.alignment          = new primitivefunctor<>(null, alignment.class);
-//        this.backgroundcolor    = new primitivefunctor<>(null, backgroundcolor.class);
-//
-//        this.setcolor(color);
-//        this.setsize(size);
-//        this.setfont(font);
-//        this.setisunderlined(null);
-//        this.setalignment(null);
-//        this.setbackgroundcolor(null);
-//    }
-//
-//
-//    public textstyle(uuid id,
-//                     textcolor color,
-//                     textsize size,
-//                     textfont font,
-//                     alignment alignment)
-//    {
-//        this.id                 = id;
-//
-//        this.color              = new primitivefunctor<>(color, textcolor.class);
-//        this.size               = new primitivefunctor<>(size, textsize.class);
-//        this.font               = new primitivefunctor<>(font, textfont.class);
-//        this.isunderlined       = new primitivefunctor<>(null, boolean.class);
-//        this.alignment          = new primitivefunctor<>(alignment, alignment.class);
-//        this.backgroundcolor    = new primitivefunctor<>(null, backgroundcolor.class);
-//
-//        this.setcolor(color);
-//        this.setsize(size);
-//        this.setfont(font);
-//        this.setisunderlined(null);
-//        this.setalignment(alignment);
-//        this.setbackgroundcolor(null);
-//    }
-//
-//
-//    /**
-//     * create a widget text style from its yaml representation. if the yaml is null, return a
-//     * default text style.
-//     * @param yaml the yaml parser.
-//     * @return the parsed text style.
-//     * @throws yamlparseexception
-//     */
-//    public static textstyle fromyaml(yamlparser yaml)
-//                  throws yamlparseexception
-//    {
-//        return textstyle.fromyaml(yaml, false);
-//    }
-//
-//
-//    /**
-//     * create a text style from its yaml representation. if the yaml is null, and usedefault is
-//     * null, returns null.
-//     * @param yaml the yaml parser.
-//     * @param usedefault if true, return a default when the yaml is null.
-//     * @return the parsed text style.
-//     * @throws yamlparseexception
-//     */
-//    public static textstyle fromyaml(yamlparser yaml, boolean usedefault)
-//                  throws yamlparseexception
-//    {
-//        if (yaml.isnull() && usedefault)
-//            return textstyle.asdefault();
-//        else if (yaml.isnull())
-//            return null;
-//
-//        uuid            id           = uuid.randomuuid();
-//
-//        textcolor       color        = textcolor.fromyaml(yaml.atmaybekey("color"));
-//        textsize        size         = textsize.fromyaml(yaml.atmaybekey("size"));
-//        textfont        font         = textfont.fromyaml(yaml.atmaybekey("font"));
-//        boolean         isunderlined = yaml.atmaybekey("is_underlined").getboolean();
-//        alignment       alignment    = alignment.fromyaml(yaml.atmaybekey("alignment"));
-//        backgroundcolor bgcolor      = backgroundcolor.fromyaml(
-//                                                yaml.atmaybekey("background_color"));
-//
-//        return new textstyle(id, color, size, font, isunderlined, alignment, bgcolor);
-//    }
-//
-//
-//    public static textstyle asdefault()
-//    {
-//        textstyle style = new textstyle();
-//
-//        style.setid(uuid.randomuuid());
-//        style.setcolor(null);
-//        style.setsize(null);
-//        style.setfont(null);
-//        style.setisunderlined(null);
-//        style.setalignment(null);
-//        style.setbackgroundcolor(null);
-//
-//        return style;
-//    }
-//
-//
-//    // api
-//    // -----------------------------------------------------------------------------------------
-//
-//    // > model
-//    // --------------------------------------------------------------------------------------
-//
-//    // ** id
-//    // --------------------------------------------------------------------------------------
-//
-//    public uuid getid()
-//    {
-//        return this.id;
-//    }
-//
-//
-//    public void setid(uuid id)
-//    {
-//        this.id = id;
-//    }
-//
-//
-//    // ** on load
-//    // --------------------------------------------------------------------------------------
-//
-//    /**
-//     * called when the text widget format is completely loaded.
-//     */
-//    public void onload() { }
-//
-//
-//    // > to yaml
-//    // -----------------------------------------------------------------------------------------
-//
-//    public yamlbuilder toyaml()
-//    {
-//        return yamlbuilder.map()
-//                .putyaml("color", this.color())
-//                .putyaml("size", this.size())
-//                .putyaml("font", this.font())
-//                .putboolean("is_underlined", this.isunderlined())
-//                .putyaml("alignment", this.alignment())
-//                .putyaml("background_color", this.backgroundcolor());
-//    }
-//
-//
-//    // > state
-//    // -----------------------------------------------------------------------------------------
-//
-//    // ** color
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * the text color.
-//     * @return the text color.
-//     */
-//    public textcolor color()
-//    {
-//        return this.color.getvalue();
-//    }
-//
-//
-//    public void setcolor(textcolor color)
-//    {
-//        if (color != null)
-//            this.color.setvalue(color);
-//        else
-//            this.color.setvalue(textcolor.theme_medium);
-//    }
-//
-//
-//    // ** size
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * the text size.
-//     * @return the size.
-//     */
-//    public textsize size()
-//    {
-//        return this.size.getvalue();
-//    }
-//
-//
-//    /**
-//     * set the text size. if null, defaults to medium.
-//     * @param size the text size.
-//     */
-//    public void setsize(textsize size)
-//    {
-//        if (size != null)
-//            this.size.setvalue(size);
-//        else
-//            this.size.setvalue(textsize.medium);
-//    }
-//
-//
-//    // ** is underlined
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * true if the text should be underlined.
-//     * @return is underlined?
-//     */
-//    public boolean isunderlined()
-//    {
-//        return this.isunderlined.getvalue();
-//    }
-//
-//
-//    /**
-//     * set the text to be underlined or not underlined. defaults to non underlined if null.
-//     * @param isunderlined is underlined?
-//     */
-//    public void setisunderlined(boolean isunderlined)
-//    {
-//        if (isunderlined != null)
-//            this.isunderlined.setvalue(isunderlined);
-//        else
-//            this.isunderlined.setvalue(false);
-//    }
-//
-//
-//    // ** font
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * the font.
-//     * @return the font.
-//     */
-//    public textfont font()
-//    {
-//        return this.font.getvalue();
-//    }
-//
-//
-//    /**
-//     * set the text font
-//     * @param font the font.
-//     */
-//    public void setfont(textfont font)
-//    {
-//        if (font != null)
-//            this.font.setvalue(font);
-//        else
-//            this.font.setvalue(textfont.regular);
-//    }
-//
-//
-//    // ** alignment
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * the alignment.
-//     * @return the alignment.
-//     */
-//    public alignment alignment()
-//    {
-//        return this.alignment.getvalue();
-//    }
-//
-//
-//    /**
-//     * set the alignment. if null, defaults to left.
-//     * @param alignment the alignment.
-//     */
-//    public void setalignment(alignment alignment)
-//    {
-//        if (alignment != null)
-//            this.alignment.setvalue(alignment);
-//        else
-//            this.alignment.setvalue(alignment.left);
-//    }
-//
-//
-//    // ** background color
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * the background color.
-//     * @return the background color.
-//     */
-//    public backgroundcolor backgroundcolor()
-//    {
-//        return this.backgroundcolor.getvalue();
-//    }
-//
-//
-//    /**
-//     * set the background color. if null, defaults to medium.
-//     * @param backgroundcolor the background color.
-//     */
-//    public void setbackgroundcolor(backgroundcolor backgroundcolor)
-//    {
-//        if (backgroundcolor != null)
-//            this.backgroundcolor.setvalue(backgroundcolor);
-//        else
-//            this.backgroundcolor.setvalue(backgroundcolor.medium);
-//    }
-//
-//
-//    // > typeface
-//    // -----------------------------------------------------------------------------------------
-//
-//    public typeface typeface(context context)
-//    {
-//        switch (this.font())
-//        {
-//            case regular:
-//                return font.seriffontregular(context);
-//            case bold:
-//                return font.seriffontbold(context);
-//            case italic:
-//                return font.seriffontitalic(context);
-//            case bold_italic:
-//                return font.seriffontbolditalic(context);
-//            default:
-//                return font.seriffontregular(context);
-//        }
-//    }
-//
-//
 //    // > style text view
 //    // -----------------------------------------------------------------------------------------
 //
@@ -850,24 +485,4 @@ sealed class TextFont
 //        textview.settypeface(this.typeface(context));
 //    }
 //
-//
-//    // > style text view builder
-//    // -----------------------------------------------------------------------------------------
-//
-//    /**
-//     * set the text view builder style options to match this style.
-//     * @param viewbuilder the text view builder.
-//     */
-//    public void styletextviewbuilder(textviewbuilder viewbuilder, context context)
-//    {
-//        // ** color
-//        viewbuilder.color   = this.color().resourceid();
-//
-//        // ** size
-//        viewbuilder.size    = this.size().resourceid();
-//
-//        // ** fton
-//        viewbuilder.font    = this.typeface(context);
-//    }
-//
-//}
+

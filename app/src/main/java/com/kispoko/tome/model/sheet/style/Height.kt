@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import com.kispoko.tome.R
 import effect.effError
 import effect.effValue
 import lulo.document.DocText
@@ -12,13 +13,14 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Height
  */
-sealed class Height
+sealed class Height : Serializable
 {
 
     class Wrap        : Height()
@@ -51,7 +53,53 @@ sealed class Height
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    fun isWrap() : Boolean = when (this)
+    {
+        is Wrap -> true
+        else    -> false
+
+    }
+
+
+    fun resourceId(corners : Corners) = when (this)
+    {
+        is Wrap ->
+        {
+            when (corners)
+            {
+                is Corners.None   -> R.drawable.bg_sheet_corners_none
+                is Corners.Small  -> R.drawable.bg_sheet_corners_small
+                is Corners.Medium -> R.drawable.bg_sheet_corners_medium
+                is Corners.Large  -> R.drawable.bg_sheet_corners_large
+            }
+        }
+        is VerySmall ->
+        {
+            when (corners)
+            {
+                is Corners.None   -> R.drawable.bg_widget_very_small_none
+                is Corners.Small  -> R.drawable.bg_widget_very_small_small
+                is Corners.Medium -> R.drawable.bg_widget_very_small_medium
+                is Corners.Large  -> R.drawable.bg_widget_very_small_large
+            }
+        }
+        is Small ->
+        {
+            when (corners)
+            {
+                is Corners.None   -> R.drawable.bg_widget_small_none
+                is Corners.Small  -> R.drawable.bg_widget_small_small
+                is Corners.Medium -> R.drawable.bg_widget_small_medium
+                is Corners.Large  -> R.drawable.bg_widget_small_large
+            }
+        }
+        else -> R.drawable.bg_widget_very_small_small
+    }
 }
+
+
 
 //
 //

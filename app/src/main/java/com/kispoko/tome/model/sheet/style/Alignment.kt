@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import android.view.Gravity
 import effect.effError
 import effect.effValue
 import lulo.document.DocText
@@ -12,13 +13,14 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Alignment
  */
-sealed class Alignment
+sealed class Alignment : Serializable
 {
 
     class Left : Alignment()
@@ -43,13 +45,22 @@ sealed class Alignment
     }
 
 
+    fun gravityConstant() : Int = when (this)
+    {
+        is Left   -> Gravity.START
+        is Center -> Gravity.CENTER_HORIZONTAL
+        is Right  -> Gravity.END
+        else      -> Gravity.CENTER_HORIZONTAL
+    }
+
+
 }
 
 
 /**
  * Vertical Alignment
  */
-sealed class VerticalAlignment
+sealed class VerticalAlignment : Serializable
 {
 
     class Top : VerticalAlignment()
@@ -73,6 +84,14 @@ sealed class VerticalAlignment
         }
     }
 
+
+    fun gravityConstant() : Int = when (this)
+    {
+        is Top    -> Gravity.TOP
+        is Middle -> Gravity.CENTER_VERTICAL
+        is Bottom -> Gravity.BOTTOM
+        else      -> Gravity.CENTER_VERTICAL
+    }
 
 }
 
@@ -162,19 +181,4 @@ sealed class VerticalAlignment
 //
 //    // GRAVITY CONSTANT
 //    // ------------------------------------------------------------------------------------------
-//
-//    public int gravityConstant()
-//    {
-//        switch (this)
-//        {
-//            case TOP:
-//                return Gravity.TOP;
-//            case MIDDLE:
-//                return Gravity.CENTER_VERTICAL;
-//            case BOTTOM:
-//                return Gravity.BOTTOM;
-//            default:
-//                return Gravity.CENTER_VERTICAL;
-//        }
-//    }
 

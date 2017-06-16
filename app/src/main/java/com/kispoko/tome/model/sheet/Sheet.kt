@@ -7,13 +7,13 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.sheet.section.Section
+import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.State
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -25,7 +25,7 @@ data class Sheet(override val id : UUID,
                  val sheetId : Prim<SheetId>,
                  val campaignId: Prim<CampaignId>,
                  val sections : Coll<Section>,
-                 val settings : Comp<Settings>) : Model
+                 val settings : Comp<Settings>) : Model, Serializable
 {
 
     companion object : Factory<Sheet>
@@ -68,6 +68,10 @@ data class Sheet(override val id : UUID,
 
     fun sections() : List<Section> = this.sections.list
 
+    fun sectionWithName(sectionName : SectionName) : Section? =
+        this.sections().filter { it.name().equals(sectionName) }
+                       .firstOrNull()
+
     fun settings() : Settings = this.settings.value
 
 
@@ -83,7 +87,7 @@ data class Sheet(override val id : UUID,
 
     fun onActive(sheetContext : SheetContext)
     {
-        sections.list.forEach { it.onSheetComponentActive(sheetContext) }
+        sections.list.forEach { it.onActive(sheetContext) }
     }
 
 }
@@ -92,7 +96,7 @@ data class Sheet(override val id : UUID,
 /**
  * Sheet Id
  */
-data class SheetId(val name : String)
+data class SheetId(val name : String) : Serializable
 {
 
     companion object : Factory<SheetId>
@@ -105,110 +109,3 @@ data class SheetId(val name : String)
     }
 }
 
-
-
-
-//
-//
-//    // ** Page Pager Adapter
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Render the sheet.
-//     * @param pagePagerAdapter The Page Pager Adapter to be passed to the Roleplay instance so it
-//     *                         can update the adapter view when the pages change.
-//     *
-//     */
-//    public void render(PagePagerAdapter pagePagerAdapter)
-//    {
-////         this.profileSection().render(pagePagerAdapter);
-//    }
-//
-//
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void initializeSheet()
-//    {
-//        indexWidgets();
-//    }
-//
-//
-//    /**
-//     * Index the widgets by their id, so that can later be retrieved.
-//     */
-//    private void indexWidgets()
-//    {
-//        widgetById = new HashMap<>();
-//
-//        for (Section section : this.sections())
-//        {
-//            for (Page page : section.pages()) {
-//                for (Group group : page.groups()) {
-//                    for (GroupRow groupRow : group.rows()) {
-//                        for (WidgetUnion widgetUnion : groupRow.widgets()) {
-//                            widgetById.put(widgetUnion.widget().getId(), widgetUnion);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//
-//    private Summary sheetSummary()
-//    {
-//        // > Sheet Name
-//        String sheetName = "";
-//        VariableUnion nameVariable = State.variableWithName("name");
-//        if (nameVariable != null && nameVariable.type() == VariableType.TEXT)
-//        {
-//            try {
-//                sheetName = nameVariable.textVariable().value();
-//            }
-//            catch (NullVariableException exception) {
-//                ApplicationFailure.nullVariable(exception);
-//                sheetName = "N/A";
-//            }
-//        }
-//
-//        // > Campaign Name
-//        String campaignName = "";
-//        Campaign campaign = CampaignIndex.campaignWithName(this.campaignName());
-//        if (campaign != null)
-//            campaignName = campaign.label();
-//
-//        // > Feature 1
-//        Tuple2<String,String> feature1 = null;
-//        if (summaryVariables().size() > 0) {
-//            feature1 = State.variableTuple(summaryVariables().get(0));
-//        }
-//
-//        // > Feature 2
-//        Tuple2<String,String> feature2 = null;
-//        if (summaryVariables().size() > 1) {
-//            feature2 = State.variableTuple(summaryVariables().get(1));
-//        }
-//
-//        // > Feature 3
-//        Tuple2<String,String> feature3 = null;
-//        if (summaryVariables().size() > 2) {
-//            feature3 = State.variableTuple(summaryVariables().get(2));
-//        }
-//
-//
-//        return new Summary(
-//                        UUID.randomUUID(),
-//                        sheetName,
-//                        this.lastUsed.getValue(),
-//                        campaignName,
-//                        feature1,
-//                        feature2,
-//                        feature3);
-//    }
-//
-//
-//    private void initializeSummary()
-//    {
-//
-//    }

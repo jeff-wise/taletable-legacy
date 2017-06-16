@@ -2,6 +2,7 @@
 package com.kispoko.tome.model.sheet.style
 
 
+import android.widget.LinearLayout
 import effect.effError
 import effect.effValue
 import lulo.document.DocText
@@ -12,13 +13,14 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 
 
 
 /**
  * Position
  */
-sealed class Position
+sealed class Position : Serializable
 {
 
     class Left : Position()
@@ -42,6 +44,43 @@ sealed class Position
             }
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
+    }
+
+
+    fun isLeft() : Boolean = when (this)
+    {
+        is Left -> true
+        else    -> false
+    }
+
+
+    fun isTop() : Boolean = when (this)
+    {
+        is Top -> true
+        else   -> false
+    }
+
+
+    fun isRight() : Boolean = when (this)
+    {
+        is Right -> true
+        else     -> false
+    }
+
+
+    fun isBottom() : Boolean = when (this)
+    {
+        is Bottom -> true
+        else      -> false
+    }
+
+
+    fun linearLayoutOrientation() : Int = when (this)
+    {
+        is Top    -> LinearLayout.VERTICAL
+        is Right  -> LinearLayout.HORIZONTAL
+        is Bottom -> LinearLayout.VERTICAL
+        is Left   -> LinearLayout.HORIZONTAL
     }
 
 }

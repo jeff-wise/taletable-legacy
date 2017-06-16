@@ -9,12 +9,10 @@ import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextStyle
-import effect.Err
-import effect.effApply
-import effect.effError
-import effect.effValue
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -94,35 +92,55 @@ data class ActionResult(val value : String)
  */
 data class ActionWidgetFormat(override val id : UUID,
                               val widgetFormat : Comp<WidgetFormat>,
-                              val descriptionStyle : Func<TextStyle>,
-                              val actionStyle : Func<TextStyle>,
-                              val height : Func<Height>) : Model
+                              val descriptionStyle : Comp<TextStyle>,
+                              val actionStyle : Comp<TextStyle>,
+                              val height : Prim<Height>) : Model
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(widgetFormat :WidgetFormat,
+                descriptionStyle : TextStyle,
+                actionStyle : TextStyle,
+                height : Height)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Comp(descriptionStyle),
+               Comp(actionStyle),
+               Prim(height))
+
+
     companion object : Factory<ActionWidgetFormat>
     {
+
+        private val defaultWidgetFormat     = WidgetFormat.default()
+        private val defaultDescriptionStyle = TextStyle.default
+        private val defaultActionStyle      = TextStyle.default
+        private val defaultHeight           = Height.Wrap()
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<ActionWidgetFormat> = when (doc)
         {
             is DocDict -> effApply(::ActionWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Widget Format
-                                   doc.at("widget_format") ap {
-                                       effApply(::Comp, WidgetFormat.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("format"),
+                                         effValue(defaultWidgetFormat),
+                                         { WidgetFormat.fromDocument(it) }),
                                    // Description Style
-                                   doc.at("description_style") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("description_style"),
+                                         effValue(defaultDescriptionStyle),
+                                         { TextStyle.fromDocument(it) }),
                                    // Action Style
-                                   doc.at("action_style") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   },
-                                   effApply(::Prim, doc.enum<Height>("height")))
+                                   split(doc.maybeAt("action_style"),
+                                         effValue(defaultActionStyle),
+                                         { TextStyle.fromDocument(it) }),
+                                   // Height
+                                   split(doc.maybeAt("height"),
+                                         effValue<ValueError,Height>(defaultHeight),
+                                         { Height.fromDocument(it) })
+                                   )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }

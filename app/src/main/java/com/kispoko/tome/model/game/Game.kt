@@ -14,7 +14,9 @@ import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -25,31 +27,58 @@ import java.util.*
 data class Game(override val id : UUID,
                 val gameId : Prim<GameId>,
                 val description : Comp<GameDescription>,
-                val engine : Comp<Engine>) : Model
+                val engine : Comp<Engine>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(gameId : GameId,
+                description : GameDescription,
+                engine : Engine)
+        : this(UUID.randomUUID(),
+               Prim(gameId),
+               Comp(description),
+               Comp(engine))
+
 
     companion object : Factory<Game>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Game> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Game> = when (doc)
         {
-            is DocDict -> effApply(::Game,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Summary
-                                   doc.at("id") apply {
-                                       effApply(::Prim, GameId.fromDocument(it))
-                                   },
-                                   // Description
-                                   doc.at("description") apply {
-                                       effApply(::Comp, GameDescription.fromDocument(it))
-                                   },
-                                   // Engine
-                                   doc.at("engine") apply {
-                                       effApply(::Comp, Engine.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                val gameIdParser = doc.at("id") ap { GameId.fromDocument(it) }
+                gameIdParser ap { gameId ->
+                    effApply(::Game,
+                             // Game Id
+                             effValue(gameId),
+                             // Description
+                             doc.at("description") apply { GameDescription.fromDocument(it) },
+                             // Engine
+                             doc.at("engine") apply { Engine.fromDocument(it, gameId) })
+                }
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun gameId() : GameId = this.gameId.value
+
+    fun description() : GameDescription = this.description.value
+
+    fun engine() : Engine = this.engine.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
@@ -59,8 +88,12 @@ data class Game(override val id : UUID,
 /**
  * Game Name
  */
-data class GameId(val value : String)
+data class GameId(val value : String) : Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<GameId>
     {
@@ -79,8 +112,12 @@ data class GameId(val value : String)
  */
 data class GameDescription(override val id : UUID,
                            val summary : Func<GameSummary>,
-                           val authors : Coll<Author>) : Model
+                           val authors : Coll<Author>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<GameDescription>
     {
@@ -101,6 +138,11 @@ data class GameDescription(override val id : UUID,
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
 }
@@ -109,8 +151,12 @@ data class GameDescription(override val id : UUID,
 /**
  * Game Summary
  */
-data class GameSummary(val value : String)
+data class GameSummary(val value : String) : Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<GameSummary>
     {

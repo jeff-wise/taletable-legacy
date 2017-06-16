@@ -3,11 +3,10 @@ package com.kispoko.tome.model.game.engine.dice
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
+import com.kispoko.tome.lib.functor.Conj
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -22,9 +21,18 @@ import java.util.*
  * Dice Roll
  */
 data class DiceRoll(override val id : UUID,
-                    val quantities : Coll<DiceQuantity>,
-                    val modifiers : Coll<RollModifier>) : Model
+                    val quantities : Conj<DiceQuantity>,
+                    val modifiers : Conj<RollModifier>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(quantities : MutableSet<DiceQuantity>,
+                modifiers : MutableSet<RollModifier>)
+        : this(UUID.randomUUID(), Conj(quantities), Conj(modifiers))
+
 
     companion object : Factory<DiceRoll>
     {
@@ -32,23 +40,44 @@ data class DiceRoll(override val id : UUID,
                       : ValueParser<DiceRoll> = when (doc)
         {
             is DocDict -> effApply(::DiceRoll,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Quantity
                                    doc.list("quantity") ap { docList ->
-                                       effApply(::Coll,
-                                               docList.map { DiceQuantity.fromDocument(it) })
+                                       docList.mapSetMut { DiceQuantity.fromDocument(it) }
                                    },
                                    // Modifier
                                    doc.list("modifier") ap { docList ->
-                                       effApply(::Coll,
-                                               docList.map { RollModifier.fromDocument(it) })
+                                       docList.mapSetMut { RollModifier.fromDocument(it) }
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun quantities() : Set<DiceQuantity> = this.quantities.set
+
+    fun modifiers() : Set<RollModifier> = this.modifiers.set
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    fun roll() : Int = this.quantities().map({ it.roll() }).sum() +
+                       this.modifierValues().sum()
+
+
+    fun modifierValues() : List<Int> = this.modifiers().map { it.value() }
 
 }
 
@@ -57,9 +86,16 @@ data class DiceRoll(override val id : UUID,
  * Dice Quantity
  */
 data class DiceQuantity(override val id : UUID,
-                        val sides : Func<DiceSides>,
-                        val quantity : Func<Int>) : Model
+                        val sides : Prim<DiceSides>,
+                        val quantity : Prim<Int>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(sides : DiceSides, quantity : Int)
+        : this(UUID.randomUUID(), Prim(sides), Prim(quantity))
 
     companion object : Factory<DiceQuantity>
     {
@@ -67,19 +103,43 @@ data class DiceQuantity(override val id : UUID,
                       : ValueParser<DiceQuantity> = when (doc)
         {
             is DocDict -> effApply(::DiceQuantity,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Sides
-                                   doc.at("sides") ap {
-                                       effApply(::Prim, DiceSides.fromDocument(it))
-                                   },
+                                   doc.at("sides") ap { DiceSides.fromDocument(it) },
                                    // Quantity
-                                   effApply(::Prim, doc.int("quantity")))
+                                   doc.int("quantity"))
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun sidesInt() : Int = this.sides.value.value
+
+    fun quantity() : Int = this.quantity.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // -----------------------------------------------------------------------------------------
+    // ROLL
+    // -----------------------------------------------------------------------------------------
+
+    fun roll() : Int = this.rollValues().sum()
+
+
+    fun rollValues() : List<Int>
+    {
+        val random = Random()
+        return  (1..quantity()).map { random.nextInt(sidesInt()) + 1 }
+    }
 
 }
 
@@ -90,12 +150,16 @@ data class DiceQuantity(override val id : UUID,
 data class DiceSides(val value : Int)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<DiceSides>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<DiceSides> = when (doc)
         {
-            is DocInteger -> effValue(DiceSides(doc.integer.toInt()))
-            else          -> effError(UnexpectedType(DocType.INTEGER, docType(doc), doc.path))
+            is DocNumber -> effValue(DiceSides(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
 }
@@ -105,9 +169,17 @@ data class DiceSides(val value : Int)
  * Dice Modifier
  */
 data class RollModifier(override val id : UUID,
-                        val value : Func<Int>,
-                        val name : Func<String>) : Model
+                        val value : Prim<Int>,
+                        val name : Prim<String>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(value : Int, name : String)
+        : this(UUID.randomUUID(), Prim(value), Prim(name))
+
 
     companion object : Factory<RollModifier>
     {
@@ -115,15 +187,27 @@ data class RollModifier(override val id : UUID,
                       : ValueParser<RollModifier> = when (doc)
         {
             is DocDict -> effApply(::RollModifier,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Value
-                                   effApply(::Prim, doc.int("value")),
+                                   doc.int("value"),
                                    // Name
-                                   effApply(::Prim, doc.text("name")))
+                                    doc.text("name"))
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun value() : Int = this.value.value
+
+    fun name() : String = this.name.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

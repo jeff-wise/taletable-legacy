@@ -7,13 +7,13 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.*
-import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -23,7 +23,7 @@ import java.util.*
  */
 data class Tab(override val id : UUID,
                val name : Func<TabName>,
-               val groups : Coll<Group>) : Model
+               val groups : Coll<Group>) : Model, Serializable
 {
 
     companion object : Factory<Tab>
@@ -57,7 +57,7 @@ data class Tab(override val id : UUID,
 /**
  * Tab Name
  */
-data class TabName(val value : String)
+data class TabName(val value : String) : Serializable
 {
 
     companion object : Factory<TabName>
@@ -84,7 +84,7 @@ data class TabWidgetFormat(override val id : UUID,
                            val tabPaddingVertical : Prim<Int>,
                            val tabHeight : Prim<Height>,
                            val backgroundColorTheme : Prim<ColorTheme>,
-                           val tabCorners : Prim<Corners>) : Model
+                           val tabCorners : Prim<Corners>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ data class TabWidgetFormat(override val id : UUID,
         private val defaultTabPaddingVertical   = 5
         private val defaultTabHeight            = Height.MediumSmall()
         private val defaultBackgroundColorTheme = ColorTheme.transparent
-        private val defaultTabCorners           = Corners.None()
+        private val defaultTabCorners           = Corners.None
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TabWidgetFormat> = when (doc)

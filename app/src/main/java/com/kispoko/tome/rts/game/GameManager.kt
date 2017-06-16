@@ -3,22 +3,23 @@ package com.kispoko.tome.rts.game
 
 
 import android.content.Context
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppEngineError
+import com.kispoko.tome.app.AppGameError
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.*
 import com.kispoko.tome.model.game.Game
 import com.kispoko.tome.model.game.GameId
-import com.kispoko.tome.model.game.engine.EngineData
+import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.value.*
 import com.kispoko.tome.official.OfficialGame
-import effect.Err
-import effect.Val
-import effect.effError
-import effect.effValue
+import com.kispoko.tome.rts.game.engine.EngineError
+import effect.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.run
 import lulo.File as LuloFile
-import lulo.Spec
 import lulo.document.SpecDoc
+import lulo.spec.Spec
 import java.io.InputStream
 
 
@@ -26,7 +27,7 @@ import java.io.InputStream
 /**
  * Game Manager
  */
-object GameManager : GameData
+object GameManager
 {
 
     // -----------------------------------------------------------------------------------------
@@ -87,15 +88,6 @@ object GameManager : GameData
     // OFFICIAL
     // -----------------------------------------------------------------------------------------
 
-
-//    suspend fun loadOfficialGameAsync(officialGame: OfficialGame,
-//                                      context : Context) : LoadResult<Game> =
-//        run(CommonPool,
-//        {
-//            loadOfficialGame(officialGame, context)
-//        })
-
-
     suspend fun loadOfficialGame(officialGame : OfficialGame,
                                  context : Context) : LoadResult<Game> = run(CommonPool,
     {
@@ -128,7 +120,7 @@ object GameManager : GameData
 
         fun templateDocument(templateString : String, gameSpec : Spec) : Loader<SpecDoc>
         {
-            val docParse = gameSpec.documentParse(templateString, listOf())
+            val docParse = gameSpec.parseDocument(templateString, listOf())
             when (docParse)
             {
                 is Val -> return effValue(docParse.value)
@@ -158,39 +150,19 @@ object GameManager : GameData
 
 
     // -----------------------------------------------------------------------------------------
-    // GAME DATA
-    // -----------------------------------------------------------------------------------------
-
-    override fun textValue(gameId : GameId, valueReference: ValueReference) : ValueText?
-    {
-        val engineData = this.engineData(gameId)
-
-        if (engineData != null)
-            return this.valueSet(gameId, valueReference.valueSetId.value)
-                       ?.textValue(valueReference.valueId.value, engineData)
-
-        return null
-    }
-
-
-    /**
-     * A value set in the game with the given id.
-     */
-    override fun valueSet(gameId: GameId, valueSetId: ValueSetId): ValueSet? =
-        gameById[gameId]?.engine?.value?.valueSet(valueSetId)
-
-
-
-    // -----------------------------------------------------------------------------------------
     // API
     // -----------------------------------------------------------------------------------------
 
-    fun engineData(gameId : GameId) : EngineData? = this.gameById[gameId]?.engine?.value
+
+    fun engine(gameId : GameId) : AppEff<Engine> =
+            note(this.gameById[gameId]?.engine(),
+                 AppGameError(GameDoesNotExist(gameId)))
 
 
     fun hasGameWithId(gameId : GameId) : Boolean = this.gameById.containsKey(gameId)
 
 }
+
 
 // ---------------------------------------------------------------------------------------------
 // INTERFACES
@@ -210,3 +182,22 @@ interface GameData
 
 }
 
+
+typealias EngineEff<A> = Eff<EngineError, Identity, A>
+
+
+fun <A> fromEngineEff(engineEff : EngineEff<A>) : AppEff<A> = when (engineEff)
+{
+    is Val -> effValue(engineEff.value)
+    is Err -> effError(AppEngineError(engineEff.error))
+}
+
+
+typealias GameEff<A> = Eff<GameError, Identity, A>
+
+
+fun <A> fromGameEff(gameEff : GameEff<A>) : AppEff<A> = when (gameEff)
+{
+    is Val -> effValue(gameEff.value)
+    is Err -> effError(AppGameError(gameEff.error))
+}

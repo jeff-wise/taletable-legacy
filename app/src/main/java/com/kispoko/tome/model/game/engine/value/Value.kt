@@ -3,11 +3,10 @@ package com.kispoko.tome.model.game.engine.value
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Coll
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.game.engine.variable.VariableLabel
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -21,8 +20,12 @@ import java.util.*
  */
 @Suppress("UNCHECKED_CAST")
 sealed class Value(open val valueId : Prim<ValueId>,
-                   open val description : Func<ValueDescription>) : Model
+                   open val description : Maybe<Prim<ValueDescription>>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Value>
     {
@@ -44,6 +47,27 @@ sealed class Value(open val valueId : Prim<ValueId>,
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTER
+    // -----------------------------------------------------------------------------------------
+
+    fun valueId() : ValueId = this.valueId.value
+
+    fun description() : ValueDescription? = getMaybePrim(this.description)
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun type() : ValueType
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
 }
@@ -54,37 +78,69 @@ sealed class Value(open val valueId : Prim<ValueId>,
  */
 data class ValueNumber(override val id : UUID,
                        override val valueId : Prim<ValueId>,
-                       override val description: Func<ValueDescription>,
-                       val value : Func<Double>,
-                       val variables : Coll<Variable>)
+                       override val description: Maybe<Prim<ValueDescription>>,
+                       val value : Prim<Double>,
+                       val variables : Conj<Variable>)
                         : Value(valueId, description)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(valueId : ValueId,
+                description : Maybe<ValueDescription>,
+                value : Double,
+                variables : MutableSet<Variable>)
+        : this(UUID.randomUUID(),
+               Prim(valueId),
+               maybeLiftPrim(description),
+               Prim(value),
+               Conj(variables))
+
 
     companion object : Factory<ValueNumber>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<ValueNumber> = when (doc)
         {
-            is DocDict -> effApply(::ValueNumber,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Value Id
-                                   doc.at("value_id") ap {
-                                       effApply(::Prim, ValueId.fromDocument(it))
-                                   },
-                                   // Description
-                                   doc.at("description") ap {
-                                       effApply(::Prim, ValueDescription.fromDocument(it))
-                                   },
-                                   // Value
-                                   effApply(::Prim, doc.double("value")),
-                                   // Variables
-                                   doc.list("variables") ap { docList ->
-                                       effApply(::Coll,
-                                           docList.map { Variable.fromDocument(it) })
-                                   })
+            is DocDict ->
+            {
+                effApply(::ValueNumber,
+                         // Value Id
+                         doc.at("value_id") ap { ValueId.fromDocument(it) },
+                         // Description
+                         split(doc.maybeAt("description"),
+                               effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
+                               { effApply(::Just, ValueDescription.fromDocument(it)) }),
+                         // Value
+                         doc.double("value"),
+                         // Variables
+                         doc.list("variables") ap { docList ->
+                             docList.mapSetMut { Variable.fromDocument(it) }
+                         })
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun value() : Double = this.value.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : ValueType = ValueType.NUMBER
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
@@ -96,40 +152,76 @@ data class ValueNumber(override val id : UUID,
  */
 data class ValueText(override val id : UUID,
                      override val valueId : Prim<ValueId>,
-                     override val description: Func<ValueDescription>,
-                     val value : Func<String>,
-                     val variables : Coll<Variable>)
+                     override val description : Maybe<Prim<ValueDescription>>,
+                     val value : Prim<String>,
+                     val variables : Conj<Variable>)
                       : Value(valueId, description)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(valueId : ValueId,
+                description : Maybe<ValueDescription>,
+                value : String,
+                variables : MutableSet<Variable>)
+        : this(UUID.randomUUID(),
+               Prim(valueId),
+               maybeLiftPrim(description),
+               Prim(value),
+               Conj(variables))
+
 
     companion object : Factory<ValueText>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<ValueText> = when (doc)
         {
             is DocDict -> effApply(::ValueText,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Value Id
-                                   doc.at("value_id") ap {
-                                       effApply(::Prim, ValueId.fromDocument(it))
-                                   },
+                                   doc.at("value_id") ap { ValueId.fromDocument(it) },
                                    // Description
-                                   doc.at("description") ap {
-                                       effApply(::Prim, ValueDescription.fromDocument(it))
-                                   },
+                                   split(doc.maybeAt("description"),
+                                         effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
+                                         { effApply(::Just, ValueDescription.fromDocument(it)) }),
                                    // Value
-                                   effApply(::Prim, doc.text("value")),
+                                   doc.text("value"),
                                    // Variables
                                    doc.list("variables") ap { docList ->
-                                       effApply(::Coll,
-                                           docList.map { Variable.fromDocument(it) })
+                                       docList.mapSetMut { Variable.fromDocument(it) }
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value() : String = this.value.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : ValueType = ValueType.TEXT
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
 
+}
+
+
+enum class ValueType
+{
+    NUMBER,
+    TEXT
 }
 
 
@@ -141,26 +233,43 @@ data class ValueReference(override val id : UUID,
                           val valueId: Prim<ValueId>) : Model
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(valueSetId : ValueSetId, valueId : ValueId)
+        : this(UUID.randomUUID(), Prim(valueSetId), Prim(valueId))
+
+
     companion object : Factory<ValueReference>
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<ValueReference> = when (doc)
         {
             is DocDict -> effApply(::ValueReference,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // ValueSet Name
-                                   doc.at("value_set_name") ap {
-                                       effApply(::Prim, ValueSetId.fromDocument(it))
-                                   },
+                                   doc.at("value_set_name") ap { ValueSetId.fromDocument(it) },
                                    // Value Name
-                                   doc.at("value_name") ap {
-                                       effApply(::Prim, ValueId.fromDocument(it))
-                                   })
+                                   doc.at("value_name") ap { ValueId.fromDocument(it) })
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun valueSetId() : ValueSetId = this.valueSetId.value
+
+    fun valueId() : ValueId = this.valueId.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
 }
 
 

@@ -2,14 +2,20 @@
 package com.kispoko.tome.model.game.engine.variable
 
 
+import com.kispoko.tome.app.AppEff
+import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.model.game.engine.dice.DiceRoll
+import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.VariableIsOfUnexpectedType
 import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import java.io.Serializable
 import java.util.*
 
 
@@ -19,18 +25,20 @@ import java.util.*
  */
 @Suppress("UNCHECKED_CAST")
 sealed class Variable(open val variableId : Prim<VariableId>,
-                      open val label : Func<VariableLabel>,
-                      open val description : Func<VariableDescription>,
-                      open val tags : Prim<List<VariableTag>>) : Model
+                      open val label : Maybe<Prim<VariableLabel>>,
+                      open val description : Maybe<Prim<VariableDescription>>,
+                      open val tags : Prim<List<VariableTag>>) : Model, Serializable
 {
 
+    // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
     var onUpdateListener : () -> Unit = fun() : Unit {}
 
 
-    // FACTORY
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Variable>
@@ -54,10 +62,71 @@ sealed class Variable(open val variableId : Prim<VariableId>,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun variableId() : VariableId = this.variableId.value
+
+    fun label() : VariableLabel? = getMaybePrim(this.label)
+
+    fun description() : VariableDescription? = getMaybePrim(this.description)
+
+    fun tags() : List<VariableTag> = this.tags.value
+
+
+    // -----------------------------------------------------------------------------------------
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
     abstract fun dependencies() : Set<VariableReference>
+
+    abstract fun type() : VariableType
+
+
+    fun booleanVariable(sheetId : SheetId) : AppEff<BooleanVariable> = when (this)
+    {
+        is BooleanVariable -> effValue(this)
+        else               -> effError(AppStateError(
+                                    VariableIsOfUnexpectedType(sheetId,
+                                                               this.variableId(),
+                                                               VariableType.BOOLEAN,
+                                                               this.type())))
+    }
+
+
+    fun diceRollVariable(sheetId : SheetId) : AppEff<DiceRollVariable> = when (this)
+    {
+        is DiceRollVariable -> effValue(this)
+        else                -> effError(AppStateError(
+                                    VariableIsOfUnexpectedType(sheetId,
+                                                               this.variableId(),
+                                                               VariableType.DICE_ROLL,
+                                                               this.type())))
+    }
+
+
+    fun numberVariable(sheetId : SheetId) : AppEff<NumberVariable> = when (this)
+    {
+        is NumberVariable -> effValue(this)
+        else              -> effError(AppStateError(
+                                    VariableIsOfUnexpectedType(sheetId,
+                                                               this.variableId(),
+                                                               VariableType.NUMBER,
+                                                               this.type())))
+    }
+
+
+    fun textVariable(sheetId : SheetId) : AppEff<TextVariable> = when (this)
+    {
+        is TextVariable -> effValue(this)
+        else            -> effError(AppStateError(
+                                    VariableIsOfUnexpectedType(sheetId,
+                                                               this.variableId(),
+                                                               VariableType.TEXT,
+                                                               this.type())))
+    }
+
 
 
     /**
@@ -77,56 +146,88 @@ sealed class Variable(open val variableId : Prim<VariableId>,
  */
 data class BooleanVariable(override val id : UUID,
                            override val variableId : Prim<VariableId>,
-                           override val label : Func<VariableLabel>,
-                           override val description : Func<VariableDescription>,
+                           override val label : Maybe<Prim<VariableLabel>>,
+                           override val description : Maybe<Prim<VariableDescription>>,
                            override val tags : Prim<List<VariableTag>>,
-                           val value : Prim<BooleanVariableValue>)
+                           val variableValue : Prim<BooleanVariableValue>)
                             : Variable(variableId, label, description, tags)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(variableId : VariableId,
+                label : Maybe<VariableLabel>,
+                description : Maybe<VariableDescription>,
+                tags : List<VariableTag>,
+                value : BooleanVariableValue)
+        : this(UUID.randomUUID(),
+               Prim(variableId),
+               maybeLiftPrim(label),
+               maybeLiftPrim(description),
+               Prim(tags),
+               Prim(value))
+
 
     companion object : Factory<BooleanVariable>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanVariable> = when (doc)
         {
-            is DocDict -> effApply(::BooleanVariable,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Variable Id
-                                   doc.at("id") ap {
-                                       effApply(::Prim, VariableId.fromDocument(it))
-                                   },
-                                   // Label
-                                   doc.at("label") ap {
-                                       effApply(::Prim, VariableLabel.fromDocument(it))
-                                   },
-                                   // Description
-                                   doc.at("description") ap {
-                                       effApply(::Prim, VariableDescription.fromDocument(it))
-                                   },
-                                   // Tags
-                                   doc.list("tags") ap { docList ->
-                                       effApply(::Prim,
-                                                docList.map { VariableTag.fromDocument(it) })
-                                   },
-                                   // Value
-                                   doc.at("value") ap {
-                                       effApply(::Prim, BooleanVariableValue.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                effApply(::BooleanVariable,
+                         // Variable Id
+                         doc.at("id") ap { VariableId.fromDocument(it) },
+                         // Label
+                         split(doc.maybeAt("label"),
+                               effValue<ValueError,Maybe<VariableLabel>>(Nothing()),
+                               { effApply(::Just, VariableLabel.fromDocument(it)) }),
+                         // Description
+                         split(doc.maybeAt("description"),
+                               effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
+                               { effApply(::Just, VariableDescription.fromDocument(it)) }),
+                         // Tags
+                         doc.list("tags") ap { docList ->
+                             docList.map { VariableTag.fromDocument(it) }
+                         },
+                         // Value
+                         doc.at("value") ap { BooleanVariableValue.fromDocument(it) }
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun variableValue() : BooleanVariableValue = this.variableValue.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
 
 
+    // -----------------------------------------------------------------------------------------
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = this.value.value.dependencies()
+    override fun type(): VariableType = VariableType.BOOLEAN
+
+    override fun dependencies() : Set<VariableReference> = this.variableValue().dependencies()
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value() : AppEff<Boolean> = this.variableValue().value()
 
 }
 
@@ -136,56 +237,88 @@ data class BooleanVariable(override val id : UUID,
  */
 data class DiceRollVariable(override val id : UUID,
                             override val variableId : Prim<VariableId>,
-                            override val label : Func<VariableLabel>,
-                            override val description : Func<VariableDescription>,
+                            override val label : Maybe<Prim<VariableLabel>>,
+                            override val description : Maybe<Prim<VariableDescription>>,
                             override val tags : Prim<List<VariableTag>>,
-                            val value : Prim<DiceVariableValue>)
+                            val variableValue: Prim<DiceRollVariableValue>)
                             : Variable(variableId, label, description, tags)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(variableId : VariableId,
+                label : Maybe<VariableLabel>,
+                description : Maybe<VariableDescription>,
+                tags : List<VariableTag>,
+                value : DiceRollVariableValue)
+        : this(UUID.randomUUID(),
+               Prim(variableId),
+               maybeLiftPrim(label),
+               maybeLiftPrim(description),
+               Prim(tags),
+               Prim(value))
+
 
     companion object : Factory<DiceRollVariable>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollVariable> = when (doc)
         {
-            is DocDict -> effApply(::DiceRollVariable,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Variable Id
-                                   doc.at("id") ap {
-                                       effApply(::Prim, VariableId.fromDocument(it))
-                                   },
-                                   // Label
-                                   doc.at("label") ap {
-                                       effApply(::Prim, VariableLabel.fromDocument(it))
-                                   },
-                                   // Description
-                                   doc.at("description") ap {
-                                       effApply(::Prim, VariableDescription.fromDocument(it))
-                                   },
-                                   // Tags
-                                   doc.list("tags") ap { docList ->
-                                       effApply(::Prim,
-                                                docList.map { VariableTag.fromDocument(it) })
-                                   },
-                                   // Value
-                                   doc.at("value") ap {
-                                        effApply(::Prim, DiceVariableValue.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                effApply(::DiceRollVariable,
+                         // Variable Id
+                         doc.at("id") ap { VariableId.fromDocument(it) },
+                         // Label
+                         split(doc.maybeAt("label"),
+                               effValue<ValueError,Maybe<VariableLabel>>(Nothing()),
+                               { effApply(::Just, VariableLabel.fromDocument(it)) }),
+                         // Description
+                         split(doc.maybeAt("description"),
+                               effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
+                               { effApply(::Just, VariableDescription.fromDocument(it)) }),
+                         // Tags
+                         doc.list("tags") ap { docList ->
+                             docList.map { VariableTag.fromDocument(it) }
+                         },
+                         // Value
+                         doc.at("value") ap { DiceRollVariableValue.fromDocument(it) }
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun variableValue() : DiceRollVariableValue = this.variableValue.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
 
 
+    // -----------------------------------------------------------------------------------------
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = this.value.value.dependencies()
+    override fun dependencies() : Set<VariableReference> = this.variableValue.value.dependencies()
+
+    override fun type(): VariableType = VariableType.DICE_ROLL
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value() : DiceRoll = this.variableValue().value()
 
 }
 
@@ -195,56 +328,89 @@ data class DiceRollVariable(override val id : UUID,
  */
 data class NumberVariable(override val id : UUID,
                           override val variableId : Prim<VariableId>,
-                          override val label : Func<VariableLabel>,
-                          override val description : Func<VariableDescription>,
+                          override val label : Maybe<Prim<VariableLabel>>,
+                          override val description : Maybe<Prim<VariableDescription>>,
                           override val tags : Prim<List<VariableTag>>,
                           val value : Prim<NumberVariableValue>)
                           : Variable(variableId, label, description, tags)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(variableId : VariableId,
+                label : Maybe<VariableLabel>,
+                description : Maybe<VariableDescription>,
+                tags : List<VariableTag>,
+                value : NumberVariableValue)
+        : this(UUID.randomUUID(),
+               Prim(variableId),
+               maybeLiftPrim(label),
+               maybeLiftPrim(description),
+               Prim(tags),
+               Prim(value))
+
+
     companion object : Factory<NumberVariable>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberVariable> = when (doc)
         {
-            is DocDict -> effApply(::NumberVariable,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Variable Id
-                                   doc.at("id") ap {
-                                       effApply(::Prim, VariableId.fromDocument(it))
-                                   },
-                                   // Label
-                                   doc.at("label") ap {
-                                       effApply(::Prim, VariableLabel.fromDocument(it))
-                                   },
-                                   // Description
-                                   doc.at("description") ap {
-                                       effApply(::Prim, VariableDescription.fromDocument(it))
-                                   },
-                                   // Tags
-                                   doc.list("tags") ap { docList ->
-                                       effApply(::Prim,
-                                                docList.map { VariableTag.fromDocument(it) })
-                                   },
-                                   // Value
-                                   doc.at("value") ap {
-                                       effApply(::Prim, NumberVariableValue.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                effApply(::NumberVariable,
+                         // Variable Id
+                         doc.at("id") ap { VariableId.fromDocument(it) },
+                         // Label
+                         split(doc.maybeAt("label"),
+                               effValue<ValueError,Maybe<VariableLabel>>(Nothing()),
+                               { effApply(::Just, VariableLabel.fromDocument(it)) }),
+                         // Description
+                         split(doc.maybeAt("label"),
+                               effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
+                               { effApply(::Just, VariableDescription.fromDocument(it)) }),
+                         // Tags
+                         doc.list("tags") ap { docList ->
+                             docList.map { VariableTag.fromDocument(it) }
+                         },
+                         // Value
+                         doc.at("value") ap { NumberVariableValue.fromDocument(it) }
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun variableValue() : NumberVariableValue = this.value.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
 
 
+    // -----------------------------------------------------------------------------------------
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies() : Set<VariableReference> = this.value.value.dependencies()
+
+    override fun type(): VariableType = VariableType.NUMBER
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value(sheetContext : SheetContext) : AppEff<Double> =
+            this.variableValue().value(sheetContext)
 
 }
 
@@ -254,13 +420,32 @@ data class NumberVariable(override val id : UUID,
  */
 data class TextVariable(override val id : UUID,
                         override val variableId : Prim<VariableId>,
-                        override val label : Func<VariableLabel>,
-                        override val description : Func<VariableDescription>,
+                        override val label : Maybe<Prim<VariableLabel>>,
+                        override val description : Maybe<Prim<VariableDescription>>,
                         override val tags : Prim<List<VariableTag>>,
-                        val value : Prim<TextVariableValue>,
-                        val definesNamespace : Func<DefinesNamespace>)
+                        val variableValue : Prim<TextVariableValue>,
+                        val definesNamespace : Prim<DefinesNamespace>)
                         : Variable(variableId, label, description, tags)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(variableId : VariableId,
+                label : Maybe<VariableLabel>,
+                description : Maybe<VariableDescription>,
+                tags : List<VariableTag>,
+                variableValue : TextVariableValue,
+                definesNamespace : DefinesNamespace)
+        : this(UUID.randomUUID(),
+               Prim(variableId),
+               maybeLiftPrim(label),
+               maybeLiftPrim(description),
+               Prim(tags),
+               Prim(variableValue),
+               Prim(definesNamespace))
+
 
     companion object : Factory<TextVariable>
     {
@@ -269,33 +454,26 @@ data class TextVariable(override val id : UUID,
             is DocDict ->
             {
                 effApply(::TextVariable,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Variable Id
-                         doc.at("id") ap {
-                             effApply(::Prim, VariableId.fromDocument(it))
-                         },
+                         doc.at("id") ap { VariableId.fromDocument(it) },
                          // Label
-                         split(doc.maybeAt("label"),
-                               nullEff<VariableLabel>(),
-                               { effApply(::Prim, VariableLabel.fromDocument(it)) }),
+                        split(doc.maybeAt("label"),
+                              effValue<ValueError,Maybe<VariableLabel>>(Nothing()),
+                              { effApply(::Just, VariableLabel.fromDocument(it)) }),
                          // Description
-                         split(doc.maybeAt("description"),
-                               nullEff<VariableDescription>(),
-                               { effApply(::Prim, VariableDescription.fromDocument(it)) }),
+                        split(doc.maybeAt("label"),
+                              effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
+                              { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
                          doc.list("tags") ap { docList ->
-                             effApply(::Prim,
-                                      docList.map { VariableTag.fromDocument(it) })
+                             docList.map { VariableTag.fromDocument(it) }
                          },
                          // Value
-                         doc.at("value") ap {
-                             effApply(::Prim, TextVariableValue.fromDocument(it))
-                         },
+                         doc.at("value") ap { TextVariableValue.fromDocument(it) },
                          // Defines Namespace
                          split(doc.maybeAt("defines_namespace"),
-                               nullEff<DefinesNamespace>(),
-                               { effApply(::Prim, DefinesNamespace.fromDocument(it)) })
+                               effValue(DefinesNamespace(false)),
+                               { DefinesNamespace.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -303,23 +481,103 @@ data class TextVariable(override val id : UUID,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun variableValue() : TextVariableValue = this.variableValue.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
 
 
+    // -----------------------------------------------------------------------------------------
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = this.value.value.dependencies()
+    override fun dependencies() : Set<VariableReference> = this.variableValue().dependencies()
+
+    override fun type(): VariableType = VariableType.TEXT
 
 
+    // -----------------------------------------------------------------------------------------
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value(sheetContext : SheetContext) : String? = this.value.value.value(sheetContext)
+    fun value(sheetContext : SheetContext) : AppEff<String> =
+            this.variableValue().value(sheetContext)
 
+}
+
+
+enum class VariableType
+{
+    BOOLEAN,
+    DICE_ROLL,
+    NUMBER,
+    TEXT
+}
+
+
+
+/**
+ * Variable NameSpace
+ */
+data class VariableNameSpace(val value : String) : Serializable
+{
+
+    companion object : Factory<VariableNameSpace>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableNameSpace> = when (doc)
+        {
+            is DocText -> effValue(VariableNameSpace(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+}
+
+
+/**
+ * Variable Name
+ */
+data class VariableName(val value : String) : Serializable
+{
+
+    companion object : Factory<VariableName>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableName> = when (doc)
+        {
+            is DocText -> effValue(VariableName(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
+
+
+/**
+ * Variable Reference
+ */
+@Suppress("UNCHECKED_CAST")
+sealed class VariableReference : Serializable
+{
+
+    companion object : Factory<VariableReference>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableReference> =
+            when (doc.case)
+            {
+                "name" -> VariableName.fromDocument(doc) as ValueParser<VariableReference>
+                "tag"  -> VariableTag.fromDocument(doc) as ValueParser<VariableReference>
+                else   -> effError<ValueError,VariableReference>(
+                                    UnknownCase(doc.case, doc.path))
+            }
+    }
 }
 
 
@@ -327,7 +585,7 @@ data class TextVariable(override val id : UUID,
  * Variable Id
  */
 data class VariableId(val namespace : Func<VariableNameSpace>,
-                      val name : Prim<VariableName>)
+                      val name : Prim<VariableName>) : VariableReference(), Serializable
 {
 
 
@@ -365,57 +623,13 @@ data class VariableId(val namespace : Func<VariableNameSpace>,
         return s
     }
 
-//
-//    override fun equals(other: Any?): Boolean {
-//        return super.equals(other)
-//    }
-//
-//    override fun hashCode(): Int {
-//        return super.hashCode()
-//    }
-
-}
-
-
-/**
- * Variable NameSpace
- */
-data class VariableNameSpace(val value : String)
-{
-
-    companion object : Factory<VariableNameSpace>
-    {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableNameSpace> = when (doc)
-        {
-            is DocText -> effValue(VariableNameSpace(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
-
-}
-
-
-/**
- * Variable Name
- */
-data class VariableName(val value : String)
-{
-
-    companion object : Factory<VariableName>
-    {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableName> = when (doc)
-        {
-            is DocText -> effValue(VariableName(doc.text))
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
-        }
-    }
 }
 
 
 /**
  * Variable Tag
  */
-data class VariableTag(val value : String)
+data class VariableTag(val value : String) : VariableReference(), Serializable
 {
 
     companion object : Factory<VariableTag>
@@ -432,7 +646,7 @@ data class VariableTag(val value : String)
 /**
  * Variable Label
  */
-data class VariableLabel(val value : String)
+data class VariableLabel(val value : String) : Serializable
 {
 
     companion object : Factory<VariableLabel>
@@ -449,7 +663,7 @@ data class VariableLabel(val value : String)
 /**
  * Variable Description
  */
-data class VariableDescription(val value : String)
+data class VariableDescription(val value : String) : Serializable
 {
 
     companion object : Factory<VariableDescription>
@@ -466,7 +680,7 @@ data class VariableDescription(val value : String)
 /**
  * Defines Namespace
  */
-data class DefinesNamespace(val value : Boolean)
+data class DefinesNamespace(val value : Boolean) : Serializable
 {
 
     companion object : Factory<DefinesNamespace>
@@ -479,50 +693,6 @@ data class DefinesNamespace(val value : Boolean)
     }
 }
 
-
-/**
- * Variable Reference
- */
-sealed class VariableReference
-{
-
-    companion object : Factory<VariableReference>
-    {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableReference> =
-            when (doc.case)
-            {
-                "name" -> VariableReferenceId.fromDocument(doc)
-                "tag"  -> VariableReferenceTag.fromDocument(doc)
-                else   -> effError<ValueError,VariableReference>(
-                                    UnknownCase(doc.case, doc.path))
-            }
-    }
-}
-
-
-data class VariableReferenceId(val id : VariableId) : VariableReference()
-{
-
-    companion object : Factory<VariableReference>
-    {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableReference> =
-            effApply(::VariableReferenceId, VariableId.fromDocument(doc))
-    }
-
-}
-
-
-data class VariableReferenceTag(val tag : VariableTag) : VariableReference()
-{
-
-    companion object : Factory<VariableReference>
-    {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableReference> =
-            effApply(::VariableReferenceTag, VariableTag.fromDocument(doc))
-
-    }
-
-}
 
 
 //

@@ -16,6 +16,7 @@ import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -29,7 +30,7 @@ data class WidgetFormat(override val id : UUID,
                         val backgroundColorTheme : Prim<ColorTheme>,
                         val corners : Prim<Corners>,
                         val margins : Comp<Spacing>,
-                        val padding : Comp<Spacing>) : Model
+                        val padding : Comp<Spacing>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -89,9 +90,9 @@ data class WidgetFormat(override val id : UUID,
                 WidgetFormat(WidgetWidth.default,
                              Alignment.Center(),
                              ColorTheme.transparent,
-                             Corners.None(),
-                             Spacing.default(),
-                             Spacing.default())
+                             Corners.None,
+                             Spacing.default,
+                             Spacing.default)
     }
 
 
@@ -99,6 +100,17 @@ data class WidgetFormat(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
+    fun width() : Int = this.width.value.value
+
+    fun alignment() : Alignment = this.alignment.value
+
+    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+
+    fun corners() : Corners = this.corners.value
+
+    fun margins() : Spacing = this.margins.value
+
+    fun padding() : Spacing = this.padding.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -113,7 +125,7 @@ data class WidgetFormat(override val id : UUID,
 /**
  * Widget Width
  */
-data class WidgetWidth(val value : Int)
+data class WidgetWidth(val value : Int) : Serializable
 {
 
     companion object : Factory<WidgetWidth>

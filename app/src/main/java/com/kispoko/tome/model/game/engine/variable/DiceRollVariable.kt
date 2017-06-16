@@ -3,35 +3,34 @@ package com.kispoko.tome.model.game.engine.variable
 
 
 import com.kispoko.tome.lib.Factory
-import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import effect.effApply
 import effect.effError
-import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import java.util.*
-
 
 
 /**
  * Dice Variable Value
  */
-sealed class DiceVariableValue
+sealed class DiceRollVariableValue
 {
 
-    companion object : Factory<DiceVariableValue>
+    // -----------------------------------------------------------------------------------------
+    // COSNTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<DiceRollVariableValue>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<DiceVariableValue> = when (doc)
+        override fun fromDocument(doc: SpecDoc): ValueParser<DiceRollVariableValue> = when (doc)
         {
             is DocDict -> when (doc.case())
             {
-                "literal" -> DiceVariableLiteralValue.fromDocument(doc)
-                else      -> effError<ValueError,DiceVariableValue>(
+                "literal" -> DiceRollVariableLiteralValue.fromDocument(doc)
+                else      -> effError<ValueError, DiceRollVariableValue>(
                                     UnknownCase(doc.case(), doc.path))
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -39,10 +38,13 @@ sealed class DiceVariableValue
     }
 
 
-    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+    // VALUE
     // -----------------------------------------------------------------------------------------
 
     open fun dependencies() : Set<VariableReference> = setOf()
+
+    abstract fun value() : DiceRoll
 
 }
 
@@ -50,14 +52,25 @@ sealed class DiceVariableValue
 /**
  * Literal Value
  */
-data class DiceVariableLiteralValue(val value : DiceRoll) : DiceVariableValue()
+data class DiceRollVariableLiteralValue(val value : DiceRoll) : DiceRollVariableValue()
 {
 
-    companion object : Factory<DiceVariableValue>
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<DiceRollVariableValue>
     {
-        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceVariableValue> =
-                effApply(::DiceVariableLiteralValue, DiceRoll.fromDocument(doc))
+        override fun fromDocument(doc : SpecDoc) : ValueParser<DiceRollVariableValue> =
+                effApply(::DiceRollVariableLiteralValue, DiceRoll.fromDocument(doc))
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    override fun value() : DiceRoll = this.value
 
 }
 

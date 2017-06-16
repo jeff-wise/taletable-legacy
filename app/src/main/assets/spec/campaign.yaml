@@ -2,8 +2,9 @@
 ---
 
 version: '0.7'
-name: Tome Campaign Specification
-authors:
+metadata:
+  name: Campaign
+  authors:
   - name: 'Jeff Wise'
 description:
   overview_md: >
@@ -32,6 +33,5 @@ types:
   description: >
     The id of a campaign.
   group: Campaign
-  type: simple
+  type: primitive
   base_type: string
-

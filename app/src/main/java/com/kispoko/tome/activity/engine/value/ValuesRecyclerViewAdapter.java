@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.kispoko.tome.R;
 
-import lulo.ValueType;
 
 
 /**

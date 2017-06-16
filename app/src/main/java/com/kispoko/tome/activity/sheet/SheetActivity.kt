@@ -3,12 +3,14 @@ package com.kispoko.tome.activity.sheet
 
 
 import android.os.Bundle
+import android.support.design.widget.TabLayout
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 
 import com.kispoko.tome.R
-import com.kispoko.tome.activity.sheet.page.PagePagerAdapter
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.load.LoadResultError
 import com.kispoko.tome.load.LoadResultValue
 import com.kispoko.tome.model.game.engine.variable.VariableId
@@ -17,6 +19,8 @@ import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.configureToolbar
+import effect.Err
+import effect.Val
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
@@ -28,7 +32,14 @@ import kotlinx.coroutines.experimental.launch
 class SheetActivity : AppCompatActivity()
 {
 
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
 
+    var pagePagerAdapter: PagePagerAdapter? = null
+
+
+    // -----------------------------------------------------------------------------------------
     // ACTIVITY API
     // -----------------------------------------------------------------------------------------
 
@@ -70,22 +81,15 @@ class SheetActivity : AppCompatActivity()
 
     fun initializeViews()
     {
-        val sheetPagePagerAdapter = PagePagerAdapter(supportFragmentManager, mutableListOf())
-        this.pagePagerAdapter = pagePagerAdapter;
+        val sheetPagePagerAdapter = PagePagerAdapter(supportFragmentManager)
+        this.pagePagerAdapter = sheetPagePagerAdapter
 
-//        ViewPager viewPager = (ViewPager) findViewById(R.id.page_pager);
-//        viewPager.setAdapter(pagePagerAdapter);
-//        SheetActivityOld.viewPager = viewPager;
-//
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-//        tabLayout.setupWithViewPager(viewPager);
-//
-//        TextView titleView = (TextView) findViewById(R.id.toolbar_title);
-//        titleView.setText(this.characterName);
-//    }
-//
+        val viewPager = this.findViewById(R.id.page_pager) as ViewPager
+        viewPager.adapter = sheetPagePagerAdapter
+
+        val tabLayout = this.findViewById(R.id.tab_layout) as TabLayout
+        tabLayout.setupWithViewPager(viewPager)
     }
-
 
 
     // SHEET
@@ -107,21 +111,35 @@ class SheetActivity : AppCompatActivity()
                     is LoadResultValue ->
                     {
                         val sheetRecord = sheetRecordLoad.sheetRecord
-                        val nameVariable = sheetRecord.sheetState
+
+                        sheetRecord.onActive(sheetActivity)
+
+                        val nameVariable = sheetRecord.state
                                                       .textVariableWithId(VariableId("name"))
                         val sheetContext = sheetRecord.context(sheetActivity)
 
-                        if (nameVariable != null && sheetContext != null)
+                        when (sheetContext)
                         {
-                            // TODO use maybe here
-                            val nameString = nameVariable.value(sheetContext)
-                            if (nameString != null)
-                                sheetActivity.configureToolbar(nameString)
-                            else
-                                Log.d("***SHEET_ACTIVITY", "name was null")
+                            is Val ->
+                            {
+                                if (nameVariable != null)
+                                {
+                                    // TODO use maybe here
+                                    val nameString = nameVariable.value(sheetContext.value)
+                                    if (nameString != null)
+                                        sheetActivity.configureToolbar(nameString)
+                                    else
+                                        Log.d("***SHEET_ACTIVITY", "name was null")
+                                }
+                                else
+                                {
+                                    Log.d("***SHEET_ACTIVITY", "name variable was null")
+                                }
+                            }
+                            is Err -> ApplicationLog.error(sheetContext.error)
                         }
 
-                        SheetManager.render()
+                        SheetManager.render(sheetRecord.sheet.sheetId(), pagePagerAdapter!!)
                     }
                     is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetRecordLoad.userMessage)
                 }
@@ -130,13 +148,6 @@ class SheetActivity : AppCompatActivity()
 
         }
     }
-
-
-    private fun renderSheet(sheet : Sheet)
-    {
-
-    }
-
 
 }
 

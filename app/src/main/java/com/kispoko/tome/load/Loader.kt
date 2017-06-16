@@ -9,9 +9,9 @@ import effect.Identity
 import effect.effError
 import effect.effValue
 import lulo.File as LuloFile
-import lulo.Spec
 import lulo.SpecError
 import lulo.SpecValue
+import lulo.spec.Spec
 import java.io.IOException
 import java.io.InputStream
 

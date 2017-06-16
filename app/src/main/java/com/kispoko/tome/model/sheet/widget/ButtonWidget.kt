@@ -11,12 +11,11 @@ import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Position
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorId
-import effect.Err
-import effect.effApply
-import effect.effError
-import effect.effValue
+import com.kispoko.tome.model.theme.ColorTheme
+import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -83,49 +82,82 @@ enum class ButtonIcon
  */
 data class ButtonWidgetFormat(override val id : UUID,
                               val widgetFormat : Comp<WidgetFormat>,
-                              val height : Func<Height>,
-                              val labelStyle : Func<TextStyle>,
-                              val descriptionStyle : Func<TextStyle>,
-                              val descriptionPosition : Func<Position>,
-                              val buttonColor : Func<ColorId>,
-                              val iconColor : Func<ColorId>) : Model
+                              val height : Prim<Height>,
+                              val labelStyle : Comp<TextStyle>,
+                              val descriptionStyle : Comp<TextStyle>,
+                              val descriptionPosition : Prim<Position>,
+                              val buttonColor : Prim<ColorTheme>,
+                              val iconColor : Prim<ColorTheme>) : Model
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(widgetFormat : WidgetFormat,
+                height : Height,
+                labelStyle : TextStyle,
+                descriptionStyle : TextStyle,
+                descriptionPosition : Position,
+                buttonColorTheme : ColorTheme,
+                iconColorTheme : ColorTheme)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Prim(height),
+               Comp(labelStyle),
+               Comp(descriptionStyle),
+               Prim(descriptionPosition),
+               Prim(buttonColorTheme),
+               Prim(iconColorTheme))
+
+
     companion object : Factory<ButtonWidgetFormat>
     {
+
+        private val defaultWidgetFormat        = WidgetFormat.default()
+        private val defaultHeight              = Height.Wrap()
+        private val defaultLabelStyle          = TextStyle.default
+        private val defaultDescriptionStyle    = TextStyle.default
+        private val defaultDescriptionPosition = Position.Top()
+        private val defaultButtonColorTheme    = ColorTheme.black
+        private val defaultIconColorTheme      = ColorTheme.black
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<ButtonWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply(::ButtonWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Widget Format
-                                   doc.at("widget_format") ap {
-                                       effApply(::Comp, WidgetFormat.fromDocument(it))
-                                   },
-                                   // Height
-                                   effApply(::Prim, doc.enum<Height>("height")),
-                                   // Label Style
-                                   doc.at("label_style") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   },
-                                   // Description Style
-                                   doc.at("description_style") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   },
-                                   // Description Position
-                                   effApply(::Prim, doc.enum<Position>("position")),
-                                   // Button Color
-                                   doc.at("button_color") ap {
-                                       effApply(::Prim, ColorId.fromDocument(it))
-                                   },
-                                   // Icon Color
-                                   doc.at("icon_color") ap {
-                                       effApply(::Prim, ColorId.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                effApply(::ButtonWidgetFormat,
+                         // Widget Format
+                         split(doc.maybeAt("format"),
+                               effValue(defaultWidgetFormat),
+                               { WidgetFormat.fromDocument(it) }),
+                         // Height
+                         split(doc.maybeAt("height"),
+                               effValue<ValueError,Height>(defaultHeight),
+                               { Height.fromDocument(it) }),
+                         // Label Style
+                         split(doc.maybeAt("label_style"),
+                               effValue(defaultLabelStyle),
+                               { TextStyle.fromDocument(it) }),
+                         // Description Style
+                         split(doc.maybeAt("description_style"),
+                               effValue(defaultDescriptionStyle),
+                               { TextStyle.fromDocument(it) }),
+                         // Description Position
+                         split(doc.maybeAt("position"),
+                               effValue<ValueError,Position>(defaultDescriptionPosition),
+                               { Position.fromDocument(it) }),
+                         // Button Color
+                         split(doc.maybeAt("button_color"),
+                               effValue(defaultButtonColorTheme),
+                               { ColorTheme.fromDocument(it) }),
+                         // Icon Color
+                         split(doc.maybeAt("icon_color"),
+                               effValue(defaultIconColorTheme),
+                               { ColorTheme.fromDocument(it) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
