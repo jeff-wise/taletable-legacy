@@ -8,15 +8,12 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.kispoko.tome.R
-import com.kispoko.tome.R.string.label
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.ui.FormattedString
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
-import com.kispoko.tome.model.sheet.style.Height
-import com.kispoko.tome.model.sheet.style.Position
 import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.rts.sheet.SheetContext
@@ -27,7 +24,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
-import java.io.File.separator
+import java.io.Serializable
 import java.util.*
 
 
@@ -46,7 +43,8 @@ data class NumberWidgetFormat(override val id : UUID,
                               val valuePrefixStyle : Comp<TextStyle>,
                               val valuePostfixStyle : Comp<TextStyle>,
                               val valueSeparator : Maybe<Prim<ValueSeparator>>,
-                              val valueSeparatorFormat : Comp<TextFormat>) : Model
+                              val valueSeparatorFormat : Comp<TextFormat>)
+                               : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -289,9 +287,9 @@ object NumberWidgetView
 {
 
 
-    fun widgetView(numberWidget : NumberWidget,
-                   format : NumberWidgetFormat,
-                   sheetContext : SheetContext) : View
+    fun view(numberWidget : NumberWidget,
+             format : NumberWidgetFormat,
+             sheetContext : SheetContext) : View
     {
         val layout = WidgetView.layout(format.widgetFormat(), sheetContext.context)
 
@@ -408,7 +406,7 @@ object NumberWidgetView
 //            this.data().format().background() == BackgroundColor.EMPTY) {
 
         //layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.width                = LinearLayout.LayoutParams.WRAP_CONTENT
 
         layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
 

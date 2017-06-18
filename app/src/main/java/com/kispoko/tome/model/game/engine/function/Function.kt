@@ -27,6 +27,10 @@ data class Function(override val id : UUID,
                     val variables : Coll<Tuple>) : Model
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<Function>
     {
         override fun fromDocument(doc: SpecDoc): ValueParser<Function>  = when (doc)
@@ -50,13 +54,15 @@ data class Function(override val id : UUID,
                                { effApply(::Prim, FunctionDescription.fromDocument(it)) }),
                          // Parameter Types
                          doc.list("parameter_types") ap { docList ->
-                             effApply(::Prim, docList.enumList<EngineValueType>())
+                             effApply(::Prim, docList.map { EngineValueType.fromDocument(it) } )
                          },
                          // Result Type
-                         effApply(::Prim, doc.enum<EngineValueType>("result_type")),
+                         doc.at("result_type") apply {
+                             effApply(::Prim, EngineValueType.fromDocument(it))
+                         },
                          // Tuples
                          doc.list("tuples") ap { docList ->
-                             effApply(::Coll, docList.map { Tuple.fromDocument(it) })
+                             effApply(::Coll, docList.mapMut { Tuple.fromDocument(it) })
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))

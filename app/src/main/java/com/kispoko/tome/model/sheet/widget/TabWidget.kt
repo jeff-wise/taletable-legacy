@@ -124,7 +124,7 @@ data class TabWidgetFormat(override val id : UUID,
         private val defaultUnderlineThickness   = 2
         private val defaultTabMargins           = Spacing.default
         private val defaultTabPaddingVertical   = 5
-        private val defaultTabHeight            = Height.MediumSmall()
+        private val defaultTabHeight            = Height.MediumSmall
         private val defaultBackgroundColorTheme = ColorTheme.transparent
         private val defaultTabCorners           = Corners.None
 

@@ -2,16 +2,22 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.widget.table.CellFormat
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.table.*
+import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.util.Util
 import effect.*
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SpecDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -21,34 +27,150 @@ import java.util.*
  * Number Cell Format
  */
 data class NumberCellFormat(override val id : UUID,
-                            val cellFormat : Func<CellFormat>,
-                            val valuePrefix : Func<String>) : Model
+                            val cellFormat : Comp<CellFormat>,
+                            val valuePrefix : Maybe<Prim<NumberCellValuePrefix>>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberCellFormat>
     {
+
+        private val defaultCellFormat  = CellFormat.default
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<NumberCellFormat> = when (doc)
         {
-            is DocDict -> effApply(::NumberCellFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Cell Format
-                                   split(doc.maybeAt("cell_format"),
-                                         nullEff<CellFormat>(),
-                                         { effApply(::Comp, CellFormat.fromDocument(it)) }),
-                                   // Value Prefix
-                                   split(doc.maybeText("value_prefix"),
-                                         nullEff<String>(),
-                                         { effValue(Prim(it)) })
-                                   )
+            is DocDict ->
+            {
+                effApply(::NumberCellFormat,
+                         // Model Id
+                         effValue(UUID.randomUUID()),
+                         // Cell Format
+                         split(doc.maybeAt("cell_format"),
+                               effValue(Comp.default(defaultCellFormat)),
+                               { effApply(::Comp, CellFormat.fromDocument(it)) }),
+                         // Value Prefix
+                         split(doc.maybeAt("value_prefix"),
+                               effValue<ValueError,Maybe<Prim<NumberCellValuePrefix>>>(Nothing()),
+                               { effApply({x -> Just(Prim(x)) },
+                                          NumberCellValuePrefix.fromDocument(it)) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : NumberCellFormat =
+                NumberCellFormat(UUID.randomUUID(),
+                                 Comp.default(defaultCellFormat),
+                                 Nothing())
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun cellFormat() : CellFormat = this.cellFormat.value
+
+    fun valuePrefixString() : String? = getMaybePrim(this.valuePrefix)?.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // RESOLVERS
+    // -----------------------------------------------------------------------------------------
+
+    fun resolveTextStyle(columnFormat : NumberColumnFormat) : TextStyle
+    {
+        if (this.cellFormat().textStyle.isDefault())
+            return this.cellFormat().textStyle()
+
+        return columnFormat.columnFormat().textStyle()
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 }
 
+
+/**
+ * Value Prefix
+ */
+data class NumberCellValuePrefix(val value : String)
+{
+
+    companion object : Factory<NumberCellValuePrefix>
+    {
+        override fun fromDocument(doc: SpecDoc): ValueParser<NumberCellValuePrefix> = when (doc)
+        {
+            is DocText -> effValue(NumberCellValuePrefix(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+}
+
+
+object NumberCellView
+{
+
+
+    fun view(cell : TableWidgetNumberCell,
+             rowFormat : TableWidgetRowFormat,
+             column : TableWidgetNumberColumn,
+             cellFormat : NumberCellFormat,
+             sheetContext : SheetContext) : View
+    {
+        val layout = TableWidgetCellView.layout(rowFormat,
+                                                column.format().columnFormat(),
+                                                cellFormat.cellFormat(),
+                                                sheetContext)
+
+        layout.addView(this.valueTextView(cell, column.format(), cellFormat, sheetContext))
+
+        return layout
+    }
+
+
+    private fun valueTextView(cell : TableWidgetNumberCell,
+                              columnFormat : NumberColumnFormat,
+                              cellFormat : NumberCellFormat,
+                              sheetContext : SheetContext) : TextView
+    {
+        val value = TextViewBuilder()
+
+        // > VIEW ID
+        val viewId = Util.generateViewId()
+        cell.viewId = Just(viewId)
+        value.id    = viewId
+
+        // > LAYOUT
+        value.width      = LinearLayout.LayoutParams.WRAP_CONTENT;
+        value.height     = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        // > STYLE
+        val valueStyle = cellFormat.resolveTextStyle(columnFormat)
+        valueStyle.styleTextViewBuilder(value, sheetContext)
+
+        // > VALUE
+        val maybeValue = cell.valueString(sheetContext)
+        when (maybeValue)
+        {
+            is Just    -> value.text = maybeValue.value
+        }
+
+        return value.textView(sheetContext.context)
+    }
+
+
+}
 
 
 //
@@ -113,53 +235,7 @@ data class NumberCellFormat(override val id : UUID,
 //    }
 //
 //
-//    // > View
-//    // -----------------------------------------------------------------------------------------
-//
-//    public LinearLayout view(NumberColumn column, TableRowFormat format, final Context context)
-//    {
-//        this.column = column;
-//
-//        TextStyle valueStyle = this.format().resolveStyle(column.style());
-//        LinearLayout layout = this.layout(column, valueStyle.size(), format.cellHeight(), context);
-//
-//        layout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                onNumberCellShortClick(context);
-//            }
-//        });
-//
-//        layout.addView(valueTextView(column, context));
-//
-//        return layout;
-//    }
-//
-//
-//    private TextView valueTextView(NumberColumn column, final Context context)
-//    {
-//        TextViewBuilder value = new TextViewBuilder();
-//
-//        this.valueViewId = Util.generateViewId();
-//
-//        value.id         = this.valueViewId;
-//        value.width      = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        value.height     = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        TextStyle valueStyle = this.format().resolveStyle(column.style());
-//        valueStyle.styleTextViewBuilder(value, context);
-//
-//        // > Value
-//        String valueString = this.valueString();
-//        if (valueString != null)
-//            value.text = valueString;
-//        else
-//            value.text = Integer.toString(column.defaultValue());
-//
-//        return value.textView(context);
-//    }
-//
-//
+
 //    // > Clicks
 //    // -----------------------------------------------------------------------------------------
 //

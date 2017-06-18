@@ -7,6 +7,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TableRow;
 
+import com.kispoko.tome.model.sheet.style.Spacing;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,31 +26,29 @@ public class TableRowBuilder implements ViewBuilder
     // > Layout State
     // ------------------------------------------------------------------------------------------
 
-    public Integer                 id;
+    public Integer                  id;
 
-    public Integer                 height;
-    public Integer                 width;
+    public Integer                  height;
+    public Integer                  width;
 
-    public Integer                 visibility;
+    public Integer                  visibility;
 
-    public LayoutType              layoutType;
+    public LayoutType               layoutType;
 
-    public Integer                 gravity;
-    public Integer                 layoutGravity;
+    public Integer                  gravity;
+    public Integer                  layoutGravity;
 
-    public Integer                 backgroundColor;
-    public Integer                 backgroundResource;
+    public Integer                  backgroundColor;
+    public Integer                  backgroundResource;
 
-    public Margins                 margin;
-    public Padding                 padding;
+    public Margins                  margin;
+    public Spacing                  marginSpacing;
+    public Padding                  padding;
+    public Spacing                  paddingSpacing;
 
-    public View.OnClickListener    onClick;
+    public View.OnClickListener     onClick;
 
-
-    // > Internal
-    // ------------------------------------------------------------------------------------------
-
-    public List<ViewBuilder>       children;
+    public List<View>               rows;
 
 
     // CONSTRUCTORS
@@ -72,26 +72,18 @@ public class TableRowBuilder implements ViewBuilder
         this.backgroundResource = null;
 
         this.margin             = new Margins();
+        this.marginSpacing      = null;
         this.padding            = new Padding();
+        this.paddingSpacing     = null;
 
         this.onClick            = null;
 
-        this.children           = new ArrayList<>();
+        this.rows               = new ArrayList<>();
     }
 
 
     // API
     // ------------------------------------------------------------------------------------------
-
-    // > Attributes
-    // ------------------------------------------------------------------------------------------
-
-    public TableRowBuilder child(ViewBuilder childViewBuilder)
-    {
-        this.children.add(childViewBuilder);
-        return this;
-    }
-
 
     // > View Builder
     // ------------------------------------------------------------------------------------------
@@ -125,6 +117,17 @@ public class TableRowBuilder implements ViewBuilder
                             this.padding.top(context),
                             this.padding.right(context),
                             this.padding.bottom(context));
+
+        // > Padding Spacing
+        // --------------------------------------------------------------------------------------
+
+        if (this.paddingSpacing != null)
+        {
+            tableRow.setPadding(this.paddingSpacing.leftPx(),
+                                this.paddingSpacing.topPx(),
+                                this.paddingSpacing.rightPx(),
+                                this.paddingSpacing.bottomPx());
+        }
 
         // > Gravity
         // --------------------------------------------------------------------------------------
@@ -186,30 +189,20 @@ public class TableRowBuilder implements ViewBuilder
         // > Margins
         // --------------------------------------------------------------------------------------
 
-        layoutParamsBuilder.setMargins(this.margin);
+        if (this.marginSpacing != null)
+            layoutParamsBuilder.setMargins(this.marginSpacing);
+        else
+            layoutParamsBuilder.setMargins(this.margin);
 
-        switch (this.layoutType)
-        {
-            case LINEAR:
-                tableRow.setLayoutParams(layoutParamsBuilder.linearLayoutParams());
-                break;
-            case RELATIVE:
-                tableRow.setLayoutParams(layoutParamsBuilder.relativeLayoutParams());
-                break;
-            case TABLE:
-                tableRow.setLayoutParams(layoutParamsBuilder.tableLayoutParams());
-                break;
-            case TABLE_ROW:
-                tableRow.setLayoutParams(layoutParamsBuilder.tableRowLayoutParams());
-                break;
-        }
+
+        tableRow.setLayoutParams(layoutParamsBuilder.layoutParams());
 
 
         // [3] Children
         // --------------------------------------------------------------------------------------
-        for (ViewBuilder childViewBuilder : this.children)
+        for (View rowView : this.rows)
         {
-            tableRow.addView(childViewBuilder.view(context));
+            tableRow.addView(rowView);
         }
 
 

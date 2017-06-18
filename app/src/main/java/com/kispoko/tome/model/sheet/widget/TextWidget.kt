@@ -345,7 +345,8 @@ object TextWidgetView
     {
         val value = TextViewBuilder()
 
-        value.id            = Util.generateViewId()
+        textWidget.viewId   = Util.generateViewId()
+        value.id            = textWidget.viewId
 
         value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
         value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
@@ -369,7 +370,7 @@ object TextWidgetView
                         format.insideLabelFormat().style().font())
 
             val valueSpan =
-                FormattedString.Span(textWidget.valueVariable().value(sheetContext),
+                FormattedString.Span(textWidget.valueString(sheetContext),
                                      sheetContext.context.getString(R.string.placeholder_value),
                                      SheetManager.color(sheetContext.sheetId,
                                                         format.valueFormat().style().colorTheme()),
@@ -387,7 +388,7 @@ object TextWidgetView
         }
         else
         {
-            value.text      = textWidget.valueVariable().value(sheetContext)
+            value.text      = textWidget.valueString(sheetContext)
 
             format.valueFormat().style().styleTextViewBuilder(value, sheetContext)
         }

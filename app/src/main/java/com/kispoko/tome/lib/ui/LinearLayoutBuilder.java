@@ -103,6 +103,7 @@ public class LinearLayoutBuilder implements ViewBuilder
         this.elevation          = null;
 
         this.margin             = new Margins();
+        this.marginSpacing      = null;
         this.padding            = new Padding();
         this.paddingSpacing     = null;
 
@@ -179,13 +180,13 @@ public class LinearLayoutBuilder implements ViewBuilder
         // > Padding Spacing
         // --------------------------------------------------------------------------------------
 
-//        if (this.paddingSpacing != null)
-//        {
-//            linearLayout.setPadding(this.paddingSpacing.leftPx(),
-//                                    this.paddingSpacing.topPx(),
-//                                    this.paddingSpacing.rightPx(),
-//                                    this.paddingSpacing.bottomPx());
-//        }
+        if (this.paddingSpacing != null)
+        {
+            linearLayout.setPadding(this.paddingSpacing.leftPx(),
+                                    this.paddingSpacing.topPx(),
+                                    this.paddingSpacing.rightPx(),
+                                    this.paddingSpacing.bottomPx());
+        }
 
         // > Gravity
         // --------------------------------------------------------------------------------------
@@ -281,10 +282,10 @@ public class LinearLayoutBuilder implements ViewBuilder
         // > Margins
         // --------------------------------------------------------------------------------------
 
-//        if (this.marginSpacing != null)
-//            layoutParamsBuilder.setMargins(this.marginSpacing);
-//        else
-//            layoutParamsBuilder.setMargins(this.margin);
+        if (this.marginSpacing != null)
+            layoutParamsBuilder.setMargins(this.marginSpacing);
+        else
+            layoutParamsBuilder.setMargins(this.margin);
 
 
         // > Rules (Relative Layout Only)

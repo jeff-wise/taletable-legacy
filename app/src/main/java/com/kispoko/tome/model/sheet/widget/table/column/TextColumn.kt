@@ -4,9 +4,6 @@ package com.kispoko.tome.model.sheet.widget.table.column
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.nullEff
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
@@ -24,27 +21,53 @@ import java.util.*
  * Text Column Format
  */
 data class TextColumnFormat(override val id : UUID,
-                            val columnFormat : Func<ColumnFormat>) : Model
+                            val columnFormat : Comp<ColumnFormat>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(columnFormat : ColumnFormat)
+        : this(UUID.randomUUID(), Comp(columnFormat))
+
 
     companion object : Factory<TextColumnFormat>
     {
+
+        private val defaultColumnFormat = ColumnFormat.default
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextColumnFormat> = when (doc)
         {
             is DocDict ->
             {
                 effApply(::TextColumnFormat,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Column Format
                          split(doc.maybeAt("column_format"),
-                               nullEff<ColumnFormat>(),
-                               { effApply(::Comp, ColumnFormat.fromDocument(it)) })
+                               effValue(defaultColumnFormat),
+                               { ColumnFormat.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : TextColumnFormat = TextColumnFormat(defaultColumnFormat)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun columnFormat() : ColumnFormat = this.columnFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

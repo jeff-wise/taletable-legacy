@@ -2,11 +2,7 @@
 package com.kispoko.tome.rts
 
 
-import com.kispoko.tome.model.theme.ColorId
-import com.kispoko.tome.model.theme.Theme
-import com.kispoko.tome.model.theme.ThemeColor
-import com.kispoko.tome.model.theme.ThemeId
-
+import com.kispoko.tome.model.theme.*
 
 
 /**
@@ -42,10 +38,51 @@ object ThemeManager
     // BUILT-IN THEMES
     // -----------------------------------------------------------------------------------------
 
-    val lightTheme =
-            Theme(ThemeId.Light,
-                 mutableSetOf())
+    // Light
+    // -----------------------------------------------------------------------------------------
 
-    val darkTheme = Theme(ThemeId.Dark, mutableSetOf())
+    private val lightUIColors =
+            UIColors(ColorId.Theme("light_grey"),
+                     ColorId.Theme("light_grey"),
+                     ColorId.Theme("dark_grey"),
+                     ColorId.Theme("dark_grey"),
+                     ColorId.Theme("dark_grey"),
+                     ColorId.Theme("dark_grey"),
+                     ColorId.Theme("dark_grey"),
+                     ColorId.Theme("light_grey"),
+                     ColorId.Theme("dark_grey"),
+                     ColorId.Theme("dark_grey"))
+
+
+    private val lightPalette : MutableSet<ThemeColor> =
+            mutableSetOf(ThemeColor(ColorId.Theme("dark_grey"), "#555555"),
+                    ThemeColor(ColorId.Theme("light_grey"), "#CCCCCC"))
+
+
+    val lightTheme = Theme(ThemeId.Light, lightPalette, lightUIColors)
+
+
+    // Dark
+    // -----------------------------------------------------------------------------------------
+
+    private val darkUIColors =
+            UIColors(ColorId.Theme("dark_grey"),
+                     ColorId.Theme("dark_grey"),
+                     ColorId.Theme("light_grey"),
+                     ColorId.Theme("light_grey"),
+                     ColorId.Theme("light_grey"),
+                     ColorId.Theme("light_grey"),
+                     ColorId.Theme("light_grey"),
+                     ColorId.Theme("dark_grey"),
+                     ColorId.Theme("light_grey"),
+                     ColorId.Theme("light_grey"))
+
+
+    private val darkPalette : MutableSet<ThemeColor> =
+            mutableSetOf(ThemeColor(ColorId.Theme("dark_grey"), "#282828"),
+                         ThemeColor(ColorId.Theme("light_grey"), "#EEEEEE"))
+
+
+    val darkTheme = Theme(ThemeId.Dark, darkPalette, darkUIColors)
 
 }

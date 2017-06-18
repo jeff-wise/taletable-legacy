@@ -60,19 +60,19 @@ data class Engine(override val id : UUID,
                          effValue(UUID.randomUUID()),
                          // Value Sets
                          doc.list("value_sets") apply {
-                             effApply(::Coll, it.map { ValueSet.fromDocument(it) })
+                             effApply(::Coll, it.mapMut { ValueSet.fromDocument(it) })
                          },
                          // Mechanics
                          doc.list("mechanics") apply {
-                             effApply(::Coll, it.map { Mechanic.fromDocument(it) })
+                             effApply(::Coll, it.mapMut { Mechanic.fromDocument(it) })
                          },
                          // Functions
                          doc.list("functions") apply {
-                             effApply(::Coll, it.map { Function.fromDocument(it) })
+                             effApply(::Coll, it.mapMut { Function.fromDocument(it) })
                          },
                          // Programs
                          doc.list("programs") apply {
-                             effApply(::Coll, it.map { Program.fromDocument(it) })
+                             effApply(::Coll, it.mapMut { Program.fromDocument(it) })
                          },
                          effValue(gameId)
                          )

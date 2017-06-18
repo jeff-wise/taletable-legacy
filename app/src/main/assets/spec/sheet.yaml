@@ -58,16 +58,18 @@ types:
   group: Settings
   type: product
   fields:
-  - name: sheet_theme_type
-    type: sheet_theme_type
+  - name: theme_id
+    type: theme_id
     presence: optional
     description: >
       The type of theme for the sheet.
-  - name: custom_theme_name
-    type: string
-    presence: optional
-    description: >
-      The name of the custom theme.
+- name: theme_id
+  label: theme_id
+  description: >
+    The unique theme identifier.
+  group: Theme
+  type: primitive
+  base_type: string
 - name: custom_theme_name
   label: Custom Theme Name
   description: >
@@ -700,10 +702,10 @@ types:
       The widget identifier.
   - name: format
     type: number_widget_format
-    presence: required
+    presence: optional
     description: >
       The number widget formatting options.
-  - name: value
+  - name: value_variable
     type: variable_number
     presence: required
     description: >

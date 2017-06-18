@@ -60,6 +60,8 @@ data class Section(override val id : UUID,
 
     fun name() : SectionName = this.name.value
 
+    fun nameString() : String = this.name.value.name
+
     fun pages() : List<Page> = this.pages.list
 
 

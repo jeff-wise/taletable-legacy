@@ -7,10 +7,10 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.TableWidgetFormat
 import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
-import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
@@ -24,10 +24,14 @@ import java.util.*
  * Table Widget Column
  */
 @Suppress("UNCHECKED_CAST")
-sealed class TableWidgetColumn(open val name : Func<ColumnName>,
-                               open val defaultValueLabel : Func<DefaultValueLabel>,
-                               open val isColumnNamespaced: Func<IsColumnNamespaced>) : Model
+sealed class TableWidgetColumn(open val name : Prim<ColumnName>,
+                               open val defaultValueLabel : Prim<DefaultValueLabel>,
+                               open val isColumnNamespaced: Prim<Boolean>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TableWidgetColumn>
     {
@@ -51,6 +55,26 @@ sealed class TableWidgetColumn(open val name : Func<ColumnName>,
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun nameString() : String = this.name.value.value
+
+    fun defaultValueLabelString() : String = this.defaultValueLabel.value.value
+
+    fun isColumnNamespaced() : Boolean = this.isColumnNamespaced.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // COLUMN
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun type() : TableWidgetColumnType
+
+    abstract fun columnFormat() : ColumnFormat
+
 }
 
 
@@ -59,15 +83,19 @@ sealed class TableWidgetColumn(open val name : Func<ColumnName>,
  */
 data class TableWidgetBooleanColumn(
                     override val id : UUID,
-                    override val name : Func<ColumnName>,
-                    override val defaultValueLabel : Func<DefaultValueLabel>,
-                    override val isColumnNamespaced: Func<IsColumnNamespaced>,
-                    val defaultValue : Func<Boolean>,
-                    val format : Func<BooleanColumnFormat>,
-                    val trueText : Func<String>,
-                    val falseText : Func<String>)
+                    override val name : Prim<ColumnName>,
+                    override val defaultValueLabel : Prim<DefaultValueLabel>,
+                    override val isColumnNamespaced: Prim<Boolean>,
+                    val defaultValue : Prim<Boolean>,
+                    val format : Comp<BooleanColumnFormat>,
+                    val trueText : Prim<String>,
+                    val falseText : Prim<String>)
                     : TableWidgetColumn(name, defaultValueLabel, isColumnNamespaced)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TableWidgetBooleanColumn>
     {
@@ -84,35 +112,57 @@ data class TableWidgetBooleanColumn(
                              effApply(::Prim, ColumnName.fromDocument(it))
                          },
                          // Default Value Label
-                         split(doc.maybeAt("default_value_label"),
-                               nullEff<DefaultValueLabel>(),
-                               { effApply(::Prim, DefaultValueLabel.fromDocument(it)) }),
+                         doc.at("default_value_label") ap {
+                             effApply(::Prim, DefaultValueLabel.fromDocument(it))
+                         },
                          // Is Column Namespaced
-                         split(doc.maybeAt("is_namespaced"),
-                               nullEff<IsColumnNamespaced>(),
-                               { effApply(::Prim, IsColumnNamespaced.fromDocument(it)) }),
+                         split(doc.maybeBoolean("is_namespaced"),
+                               effValue(Prim(false)),
+                               {  effValue(Prim(it)) }),
                          // Default Value
                          split(doc.maybeBoolean("default_value"),
-                               nullEff<Boolean>(),
+                               effValue((Prim(true))),
                                { effValue(Prim(it)) }),
                          // Format
                          split(doc.maybeAt("format"),
-                               nullEff<BooleanColumnFormat>(),
+                               effValue(Comp(BooleanColumnFormat.default)),
                                { effApply(::Comp, BooleanColumnFormat.fromDocument(it)) }),
                          // True Text
-                         split(doc.maybeText("true_text"),
-                               nullEff<String>(),
-                               { effValue(Prim(it)) }),
-                         // Default Value
-                         split(doc.maybeText("false_text"),
-                               nullEff<String>(),
-                               { effValue(Prim(it)) })
-                        )
+                         doc.text("true_text") ap { effValue<ValueError,Prim<String>>(Prim(it)) },
+                         // False Text
+                         doc.text("false_text") ap { effValue<ValueError,Prim<String>>(Prim(it)) }
+                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun defaultValue() : Boolean = this.defaultValue.value
+
+    fun format() : BooleanColumnFormat = this.format.value
+
+    fun trueText() : String = this.trueText.value
+
+    fun falseText() : String = this.falseText.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // COLUMN
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : TableWidgetColumnType = TableWidgetColumnType.BOOLEAN
+
+    override fun columnFormat(): ColumnFormat = this.format().columnFormat()
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
 
@@ -124,13 +174,17 @@ data class TableWidgetBooleanColumn(
  */
 data class TableWidgetNumberColumn(
                         override val id : UUID,
-                        override val name : Func<ColumnName>,
-                        override val defaultValueLabel : Func<DefaultValueLabel>,
-                        override val isColumnNamespaced: Func<IsColumnNamespaced>,
-                        val defaultValue : Func<Double>,
-                        val format : Func<NumberColumnFormat>)
+                        override val name : Prim<ColumnName>,
+                        override val defaultValueLabel : Prim<DefaultValueLabel>,
+                        override val isColumnNamespaced: Prim<Boolean>,
+                        val defaultValue : Prim<Double>,
+                        val format : Comp<NumberColumnFormat>)
                         : TableWidgetColumn(name, defaultValueLabel, isColumnNamespaced)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TableWidgetNumberColumn>
     {
@@ -147,26 +201,50 @@ data class TableWidgetNumberColumn(
                              effApply(::Prim, ColumnName.fromDocument(it))
                          },
                          // Default Value Label
-                         split(doc.maybeAt("default_value_label"),
-                               nullEff<DefaultValueLabel>(),
-                               { effApply(::Prim, DefaultValueLabel.fromDocument(it)) }),
+                         doc.at("default_value_label") ap {
+                             effApply(::Prim, DefaultValueLabel.fromDocument(it))
+                         },
                          // Is Column Namespaced
-                         split(doc.maybeAt("is_namespaced"),
-                               nullEff<IsColumnNamespaced>(),
-                               { effApply(::Prim, IsColumnNamespaced.fromDocument(it)) }),
+                         split(doc.maybeBoolean("is_namespaced"),
+                               effValue(Prim(false)),
+                               { effValue(Prim(it)) }),
                          // Default Value
                          split(doc.maybeDouble("default_value"),
-                               nullEff<Double>(),
+                               effValue(Prim(0.0)),
                                { effValue(Prim(it)) }),
                          // Format
                          split(doc.maybeAt("format"),
-                               nullEff<NumberColumnFormat>(),
+                               effValue(Comp(NumberColumnFormat.default)),
                                { effApply(::Comp, NumberColumnFormat.fromDocument(it)) })
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun defaultValue() : Double = this.defaultValue.value
+
+    fun format() : NumberColumnFormat = this.format.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // COLUMN
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : TableWidgetColumnType = TableWidgetColumnType.NUMBER
+
+
+    override fun columnFormat(): ColumnFormat = this.format().columnFormat()
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
 
@@ -178,14 +256,18 @@ data class TableWidgetNumberColumn(
  */
 data class TableWidgetTextColumn(
                         override val id : UUID,
-                        override val name : Func<ColumnName>,
-                        override val defaultValueLabel : Func<DefaultValueLabel>,
-                        override val isColumnNamespaced: Func<IsColumnNamespaced>,
-                        val defaultValue : Func<String>,
-                        val format : Func<TextColumnFormat>,
-                        val definesNamespace : Func<ColumnDefinesNamespace>)
+                        override val name : Prim<ColumnName>,
+                        override val defaultValueLabel : Prim<DefaultValueLabel>,
+                        override val isColumnNamespaced: Prim<Boolean>,
+                        val defaultValue : Prim<String>,
+                        val format : Comp<TextColumnFormat>,
+                        val definesNamespace : Prim<Boolean>)
                         : TableWidgetColumn(name, defaultValueLabel, isColumnNamespaced)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TableWidgetTextColumn>
     {
@@ -202,33 +284,67 @@ data class TableWidgetTextColumn(
                              effApply(::Prim, ColumnName.fromDocument(it))
                          },
                          // Default Value Label
-                         split(doc.maybeAt("default_value_label"),
-                               nullEff<DefaultValueLabel>(),
-                               { effApply(::Prim, DefaultValueLabel.fromDocument(it)) }),
+                         doc.at("default_value_label") ap {
+                             effApply(::Prim, DefaultValueLabel.fromDocument(it))
+                         },
                          // Is Column Namespaced
-                         split(doc.maybeAt("is_namespaced"),
-                               nullEff<IsColumnNamespaced>(),
-                               { effApply(::Prim, IsColumnNamespaced.fromDocument(it)) }),
+                         split(doc.maybeBoolean("is_namespaced"),
+                               effValue(Prim(false)),
+                               { effValue(Prim(it)) }),
                          // Default Value
                          split(doc.maybeText("default_value"),
-                               nullEff<String>(),
+                               effValue(Prim("")),
                                { effValue(Prim(it)) }),
                          // Format
                          split(doc.maybeAt("format"),
-                               nullEff<TextColumnFormat>(),
+                               effValue(Comp(TextColumnFormat.default)),
                                { effApply(::Comp, TextColumnFormat.fromDocument(it)) }),
                          // Defines Namespace?
-                         split(doc.maybeAt("defines_namespace"),
-                               nullEff<ColumnDefinesNamespace>(),
-                               { effApply(::Prim, ColumnDefinesNamespace.fromDocument(it)) })
+                         split(doc.maybeBoolean("defines_namespace"),
+                               effValue(Prim(false)),
+                               { effValue(Prim(it)) })
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun defaultValue() : String = this.defaultValue.value
+
+    fun format() : TextColumnFormat = this.format.value
+
+    fun definesNamespace() : Boolean = this.definesNamespace.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // COLUMN
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : TableWidgetColumnType = TableWidgetColumnType.TEXT
+
+
+    override fun columnFormat(): ColumnFormat = this.format().columnFormat()
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() {}
 
+}
+
+
+enum class TableWidgetColumnType
+{
+    BOOLEAN,
+    NUMBER,
+    TEXT
 }
 
 
@@ -267,46 +383,12 @@ data class DefaultValueLabel(val value : String)
 
 
 /**
- * Is Column Namespaced?
- */
-data class IsColumnNamespaced(val value : Boolean)
-{
-
-    companion object : Factory<IsColumnNamespaced>
-    {
-        override fun fromDocument(doc: SpecDoc): ValueParser<IsColumnNamespaced> = when (doc)
-        {
-            is DocBoolean -> effValue(IsColumnNamespaced(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
-        }
-    }
-}
-
-
-/**
- * Column Defines Namespace?
- */
-data class ColumnDefinesNamespace(val value : Boolean)
-{
-
-    companion object : Factory<ColumnDefinesNamespace>
-    {
-        override fun fromDocument(doc: SpecDoc): ValueParser<ColumnDefinesNamespace> = when (doc)
-        {
-            is DocBoolean -> effValue(ColumnDefinesNamespace(doc.boolean))
-            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
-        }
-    }
-}
-
-
-/**
  * Table Widget Column Format
  */
 data class ColumnFormat(override val id : UUID,
                         val textStyle : Comp<TextStyle>,
                         val alignment : Prim<Alignment>,
-                        val width : Prim<Int>,
+                        val width : Prim<Float>,
                         val backgroundColorTheme : Prim<ColorTheme>) : Model
 {
 
@@ -316,7 +398,7 @@ data class ColumnFormat(override val id : UUID,
 
     constructor(textStyle : TextStyle,
                 alignment : Alignment,
-                width : Int,
+                width : Float,
                 backgroundColorTheme : ColorTheme)
         : this(UUID.randomUUID(),
                Comp(textStyle),
@@ -330,7 +412,7 @@ data class ColumnFormat(override val id : UUID,
 
         private val defaultTextStyle            = TextStyle.default
         private val defaultAlignment            = Alignment.Center()
-        private val defaultWidth                = 1
+        private val defaultWidth                = 1.0f
         private val defaultBackgroundColorTheme = ColorTheme.transparent
 
 
@@ -347,9 +429,9 @@ data class ColumnFormat(override val id : UUID,
                                          effValue<ValueError,Alignment>(defaultAlignment),
                                          { Alignment.fromDocument(it) }),
                                    // Width
-                                   split(doc.maybeInt("width"),
+                                   split(doc.maybeDouble("width"),
                                          effValue(defaultWidth),
-                                         { effValue(it) }),
+                                         { effValue(it.toFloat()) }),
                                    // Background Color
                                    split(doc.maybeAt("background_color"),
                                          effValue(defaultBackgroundColorTheme),
@@ -357,7 +439,33 @@ data class ColumnFormat(override val id : UUID,
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : ColumnFormat =
+                ColumnFormat(defaultTextStyle,
+                             defaultAlignment,
+                             defaultWidth,
+                             defaultBackgroundColorTheme)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun textStyle() : TextStyle = this.textStyle.value
+
+    fun alignment() : Alignment = this.alignment.value
+
+    fun width() : Float = this.width.value
+
+    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 

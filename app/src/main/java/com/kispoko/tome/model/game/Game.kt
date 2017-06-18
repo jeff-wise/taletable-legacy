@@ -132,7 +132,7 @@ data class GameDescription(override val id : UUID,
                                    },
                                    // Authors
                                    doc.list("authors") apply {
-                                       effApply(::Coll, it.map { Author.fromDocument(it) })
+                                       effApply(::Coll, it.mapMut { Author.fromDocument(it) })
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }

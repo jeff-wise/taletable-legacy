@@ -27,7 +27,7 @@ import java.util.*
 sealed class Variable(open val variableId : Prim<VariableId>,
                       open val label : Maybe<Prim<VariableLabel>>,
                       open val description : Maybe<Prim<VariableDescription>>,
-                      open val tags : Prim<List<VariableTag>>) : Model, Serializable
+                      open val tags : Prim<MutableList<VariableTag>>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@ data class BooleanVariable(override val id : UUID,
                            override val variableId : Prim<VariableId>,
                            override val label : Maybe<Prim<VariableLabel>>,
                            override val description : Maybe<Prim<VariableDescription>>,
-                           override val tags : Prim<List<VariableTag>>,
+                           override val tags : Prim<MutableList<VariableTag>>,
                            val variableValue : Prim<BooleanVariableValue>)
                             : Variable(variableId, label, description, tags)
 {
@@ -160,7 +160,7 @@ data class BooleanVariable(override val id : UUID,
     constructor(variableId : VariableId,
                 label : Maybe<VariableLabel>,
                 description : Maybe<VariableDescription>,
-                tags : List<VariableTag>,
+                tags : MutableList<VariableTag>,
                 value : BooleanVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
@@ -188,9 +188,9 @@ data class BooleanVariable(override val id : UUID,
                                effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
                                { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
-                         doc.list("tags") ap { docList ->
-                             docList.map { VariableTag.fromDocument(it) }
-                         },
+                         split(doc.maybeList("tags"),
+                               effValue<ValueError,MutableList<VariableTag>>(mutableListOf()),
+                               { it.mapMut { VariableTag.fromDocument(it)} }),
                          // Value
                          doc.at("value") ap { BooleanVariableValue.fromDocument(it) }
                          )
@@ -239,7 +239,7 @@ data class DiceRollVariable(override val id : UUID,
                             override val variableId : Prim<VariableId>,
                             override val label : Maybe<Prim<VariableLabel>>,
                             override val description : Maybe<Prim<VariableDescription>>,
-                            override val tags : Prim<List<VariableTag>>,
+                            override val tags : Prim<MutableList<VariableTag>>,
                             val variableValue: Prim<DiceRollVariableValue>)
                             : Variable(variableId, label, description, tags)
 {
@@ -251,7 +251,7 @@ data class DiceRollVariable(override val id : UUID,
     constructor(variableId : VariableId,
                 label : Maybe<VariableLabel>,
                 description : Maybe<VariableDescription>,
-                tags : List<VariableTag>,
+                tags : MutableList<VariableTag>,
                 value : DiceRollVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
@@ -279,9 +279,9 @@ data class DiceRollVariable(override val id : UUID,
                                effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
                                { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
-                         doc.list("tags") ap { docList ->
-                             docList.map { VariableTag.fromDocument(it) }
-                         },
+                         split(doc.maybeList("tags"),
+                               effValue<ValueError,MutableList<VariableTag>>(mutableListOf()),
+                               { it.mapMut { VariableTag.fromDocument(it)} }),
                          // Value
                          doc.at("value") ap { DiceRollVariableValue.fromDocument(it) }
                          )
@@ -330,7 +330,7 @@ data class NumberVariable(override val id : UUID,
                           override val variableId : Prim<VariableId>,
                           override val label : Maybe<Prim<VariableLabel>>,
                           override val description : Maybe<Prim<VariableDescription>>,
-                          override val tags : Prim<List<VariableTag>>,
+                          override val tags : Prim<MutableList<VariableTag>>,
                           val value : Prim<NumberVariableValue>)
                           : Variable(variableId, label, description, tags)
 {
@@ -342,7 +342,7 @@ data class NumberVariable(override val id : UUID,
     constructor(variableId : VariableId,
                 label : Maybe<VariableLabel>,
                 description : Maybe<VariableDescription>,
-                tags : List<VariableTag>,
+                tags : MutableList<VariableTag>,
                 value : NumberVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
@@ -370,9 +370,9 @@ data class NumberVariable(override val id : UUID,
                                effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
                                { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
-                         doc.list("tags") ap { docList ->
-                             docList.map { VariableTag.fromDocument(it) }
-                         },
+                         split(doc.maybeList("tags"),
+                               effValue<ValueError,MutableList<VariableTag>>(mutableListOf()),
+                               { it.mapMut { VariableTag.fromDocument(it)} }),
                          // Value
                          doc.at("value") ap { NumberVariableValue.fromDocument(it) }
                          )
@@ -422,7 +422,7 @@ data class TextVariable(override val id : UUID,
                         override val variableId : Prim<VariableId>,
                         override val label : Maybe<Prim<VariableLabel>>,
                         override val description : Maybe<Prim<VariableDescription>>,
-                        override val tags : Prim<List<VariableTag>>,
+                        override val tags : Prim<MutableList<VariableTag>>,
                         val variableValue : Prim<TextVariableValue>,
                         val definesNamespace : Prim<DefinesNamespace>)
                         : Variable(variableId, label, description, tags)
@@ -435,7 +435,7 @@ data class TextVariable(override val id : UUID,
     constructor(variableId : VariableId,
                 label : Maybe<VariableLabel>,
                 description : Maybe<VariableDescription>,
-                tags : List<VariableTag>,
+                tags : MutableList<VariableTag>,
                 variableValue : TextVariableValue,
                 definesNamespace : DefinesNamespace)
         : this(UUID.randomUUID(),
@@ -465,9 +465,9 @@ data class TextVariable(override val id : UUID,
                               effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
                               { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
-                         doc.list("tags") ap { docList ->
-                             docList.map { VariableTag.fromDocument(it) }
-                         },
+                         split(doc.maybeList("tags"),
+                               effValue<ValueError,MutableList<VariableTag>>(mutableListOf()),
+                               { it.mapMut { VariableTag.fromDocument(it)} }),
                          // Value
                          doc.at("value") ap { TextVariableValue.fromDocument(it) },
                          // Defines Namespace

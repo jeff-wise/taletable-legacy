@@ -102,7 +102,7 @@ data class Group(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    override fun view(sheetContext : SheetContext) : View
+    fun view(sheetContext : SheetContext) : View
     {
         val layout = this.viewLayout(sheetContext)
 

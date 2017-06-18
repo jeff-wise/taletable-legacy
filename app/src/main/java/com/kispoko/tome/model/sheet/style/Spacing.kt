@@ -5,9 +5,9 @@ package com.kispoko.tome.model.sheet.style
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.util.Util
 import effect.effApply
 import effect.effError
-import effect.effValue
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
@@ -23,10 +23,10 @@ import java.util.*
  * Spacing
  */
 data class Spacing(override val id : UUID,
-                   val left : Prim<Int>,
-                   val top : Prim<Int>,
-                   val right : Prim<Int>,
-                   val bottom : Prim<Int>) : Model, Serializable
+                   val left : Prim<Float>,
+                   val top : Prim<Float>,
+                   val right : Prim<Float>,
+                   val bottom : Prim<Float>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -34,26 +34,35 @@ data class Spacing(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     constructor(left : Int, top : Int, right : Int, bottom : Int)
-            : this(UUID.randomUUID(), Prim(left), Prim(top), Prim(right), Prim(bottom))
+            : this(UUID.randomUUID(),
+                   Prim(left.toFloat()),
+                   Prim(top.toFloat()),
+                   Prim(right.toFloat()),
+                   Prim(bottom.toFloat()))
+
+
+    constructor(left : Double, top : Double, right : Double, bottom : Double)
+            : this(UUID.randomUUID(),
+                   Prim(left.toFloat()),
+                   Prim(top.toFloat()),
+                   Prim(right.toFloat()),
+                   Prim(bottom.toFloat()))
 
 
     companion object : Factory<Spacing>
     {
 
-
         override fun fromDocument(doc : SpecDoc) : ValueParser<Spacing> = when (doc)
         {
             is DocDict -> effApply(::Spacing,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Left
-                                   effApply(::Prim, doc.int("left")),
+                                   doc.double("left"),
                                    // Top
-                                   effApply(::Prim, doc.int("top")),
+                                   doc.double("top"),
                                    // Right
-                                   effApply(::Prim, doc.int("right")),
+                                   doc.double("right"),
                                    // Bottom
-                                   effApply(::Prim, doc.int("bottom")))
+                                   doc.double("bottom"))
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
@@ -66,13 +75,28 @@ data class Spacing(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun left() : Int = this.left.value
+    // DP (Standard)
+    // -----------------------------------------------------------------------------------------
 
-    fun top() : Int = this.top.value
+    fun left() : Float = this.left.value
 
-    fun right() : Int = this.right.value
+    fun top() : Float = this.top.value
 
-    fun bottom() : Int = this.bottom.value
+    fun right() : Float = this.right.value
+
+    fun bottom() : Float = this.bottom.value
+
+    // Pixels
+    // -----------------------------------------------------------------------------------------
+
+    fun leftPx() : Int = Util.dpToPixel(this.left())
+
+    fun topPx() : Int = Util.dpToPixel(this.top())
+
+    fun rightPx() : Int = Util.dpToPixel(this.right())
+
+    fun bottomPx() : Int = Util.dpToPixel(this.bottom())
+
 
 
     // -----------------------------------------------------------------------------------------

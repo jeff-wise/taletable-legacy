@@ -9,6 +9,7 @@ import com.kispoko.tome.model.theme.ThemeId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -33,10 +34,11 @@ data class Settings(override val id : UUID,
             is DocDict -> effApply(::Settings,
                                    // Model Id
                                    effValue(UUID.randomUUID()),
-                                   // Theme Type
-                                   doc.at("theme") ap {
-                                       effApply(::Prim, ThemeId.fromDocument(it))
-                                   })
+                                   // Theme Id
+                                   split(doc.maybeAt("theme_id"),
+                                         effValue<ValueError,Prim<ThemeId>>(Prim(ThemeId.Dark)),
+                                         { effApply(::Prim, ThemeId.fromDocument(it)) })
+                                   )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 

@@ -2,11 +2,30 @@
 package com.kispoko.tome.model.sheet.widget
 
 
+import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TableLayout
+import android.widget.TableRow
+import android.widget.TextView
+import com.kispoko.tome.R
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.LayoutType
+import com.kispoko.tome.lib.ui.TableLayoutBuilder
+import com.kispoko.tome.lib.ui.TableRowBuilder
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.DividerType
 import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.widget.table.*
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -47,7 +66,7 @@ data class TableWidgetFormat(override val id : UUID,
         private val defaultWidgetFormat      = WidgetFormat.default()
         private val defaultShowDivider       = false
         private val defaultDividerColorTheme = ColorTheme.black
-        private val defaultCellHeight        = Height.MediumSmall()
+        private val defaultCellHeight        = Height.MediumSmall
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetFormat> = when (doc)
@@ -88,6 +107,12 @@ data class TableWidgetFormat(override val id : UUID,
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
 
+    fun showDivider() : Boolean = this.showDivider.value
+
+    fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
+
+    fun cellHeight() : Height = this.cellHeight.value
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -98,47 +123,184 @@ data class TableWidgetFormat(override val id : UUID,
 }
 
 
+object TableWidgetView
+{
+
+
+    fun view(tableWidget : TableWidget,
+             format : TableWidgetFormat,
+             sheetContext : SheetContext) : View
+    {
+        val layout = WidgetView.layout(format.widgetFormat(), sheetContext.context)
+
+        val tableLayout = this.tableLayout(format, sheetContext)
+
+        layout.addView(tableLayout)
+
+        tableLayout.addView(this.headerRowView(tableWidget.columns(),
+                                               tableWidget.format(),
+                                               sheetContext))
+
+        for (row in tableWidget.rows())
+        {
+            tableLayout.addView(row.view(tableWidget.columns(),
+                                         tableWidget.format(),
+                                         sheetContext))
+        }
+
+        return layout
+    }
+
+
+    private fun tableLayout(format : TableWidgetFormat,
+                            sheetContext: SheetContext) : TableLayout
+    {
+        val layout = TableLayoutBuilder()
+
+        layout.layoutType           = LayoutType.LINEAR
+        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.shrinkAllColumns     = true
+
+        layout.backgroundColor      = SheetManager.color(
+                                            sheetContext.sheetId,
+                                            format.widgetFormat().backgroundColorTheme())
+
+        // Divider
+        // -------------------------------------------------------------------------------------
+
+        if (format.showDivider())
+        {
+            val dividerDrawable = ContextCompat.getDrawable(sheetContext.context,
+                                                            R.drawable.table_row_divider)
+
+            val dividerColor = SheetManager.color(sheetContext.sheetId,
+                                                  format.dividerColorTheme())
+
+            if (dividerColor != null)
+            {
+                dividerDrawable.colorFilter =
+                        PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
+                layout.divider = dividerDrawable
+            }
+        }
+
+
+        return layout.tableLayout(sheetContext.context)
+    }
+
+
+    private fun headerRowView(columns : List<TableWidgetColumn>,
+                              format : TableWidgetFormat,
+                              sheetContext : SheetContext) : TableRow
+    {
+        val tableRow = TableRowBuilder()
+
+        tableRow.layoutType     = LayoutType.TABLE
+        tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT
+        tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT
+
+        tableRow.paddingSpacing = format.widgetFormat().padding()
+
+        columns.forEach { column ->
+
+            val cellView = this.headerCellView(TableWidgetRowFormat.default,
+                                               column,
+                                               CellFormat.default,
+                                               sheetContext)
+            tableRow.rows.add(cellView)
+        }
+
+        return tableRow.tableRow(sheetContext.context)
+    }
+
+
+    private fun headerCellView(rowFormat : TableWidgetRowFormat,
+                               column : TableWidgetColumn,
+                               cellFormat : CellFormat,
+                               sheetContext : SheetContext) : LinearLayout
+    {
+        val layout = TableWidgetCellView.layout(rowFormat,
+                                                column.columnFormat(),
+                                                cellFormat,
+                                                sheetContext)
+
+        val textView = TextViewBuilder()
+
+        textView.layoutType     = LayoutType.TABLE_ROW
+        textView.width          = TableRow.LayoutParams.WRAP_CONTENT
+        textView.height         = TableRow.LayoutParams.WRAP_CONTENT
+
+        textView.text           = column.nameString()
+
+        layout.addView(textView.textView(sheetContext.context))
+
+        return layout
+    }
+
+
+
+//    private LinearLayout widgetLayout(Context context)
+//    {
+//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
+//
+//        layout.orientation         = LinearLayout.VERTICAL;
+//        layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
+//        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
+//
+//        return layout.linearLayout(context);
+//    }
+//
+
+//
+//    private android.widget.TableRow headerTableRow(Context context)
+//    {
+//
+//        TableRowBuilder headerRow = new TableRowBuilder();
+//
+//        headerRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
+//        headerRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
+//        headerRow.padding.left   = R.dimen.widget_table_row_padding_horz;
+//        headerRow.padding.right  = R.dimen.widget_table_row_padding_horz;
+//
+//        android.widget.TableRow headerRowView = headerRow.tableRow(context);
+//
+//
+//        for (int i = 0; i < this.width(); i++)
+//        {
+//            CellUnion headerCell = this.headerRow.cellAtIndex(i);
+//
+//            Column column = this.columnAtIndex(i).column();
+//            TextColumnFormat format = new TextColumnFormat(UUID.randomUUID(),
+//                                                           null,
+//                                                           column.alignment(),
+//                                                           column.width(),
+//                                                           null);
+//            TextColumn textColumn = new TextColumn(null, null, null, null, format,
+//                                                   false, false);
+//            ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
+//
+//            LinearLayout headerCellView =
+//                    (LinearLayout) headerCell.view(columnUnion, this.headerRow.format(), context);
+//
+//            headerRowView.addView(headerCellView);
+//        }
+//
+//        return headerRowView;
+//    }
+
+
+
+}
+
+
 //
 //
 //
 //    // > Views
 //    // ------------------------------------------------------------------------------------------
 //
-//    /**
-//     * Create the tableWidget view.
-//     * @return
-//     */
-//    @Override
-//    public View view(boolean rowHasLabel, Context context)
-//    {
-//        // [1] Declarations
-//        // --------------------------------------------------------------------------------------
-//
-//        LinearLayout widgetLayout  = this.widgetLayout(context);
-//        TableLayout  tableLayout = this.tileTableLayout(context);
-//
-//        // [2] Structure
-//        // --------------------------------------------------------------------------------------
-//
-//        widgetLayout.addView(tableLayout);
-//
-//        // > Header
-//        // --------------------------------------------------------------------------------------
-//
-//        tableLayout.addView(this.headerTableRow(context));
-//
-//        // > Rows
-//        // --------------------------------------------------------------------------------------
-//
-//        for (TableRow row : this.rows.getValue())
-//        {
-//            android.widget.TableRow tableRow = this.tableRow(row, context);
-//            tableLayout.addView(tableRow);
-//        }
-//
-//        return widgetLayout;
-//    }
-//
+
 //
 //    // INTERNAL
 //    // -----------------------------------------------------------------------------------------
@@ -194,115 +356,4 @@ data class TableWidgetFormat(override val id : UUID,
 //        }
 //    }
 //
-//
-//    private android.widget.TableRow tableRow(TableRow row, Context context)
-//    {
-//        TableRowBuilder tableRow = new TableRowBuilder();
-//
-//        tableRow.layoutType     = LayoutType.TABLE;
-//        tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT;
-//        tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT;
-//
-//        tableRow.padding.left   = R.dimen.widget_table_row_padding_horz;
-//        tableRow.padding.right  = R.dimen.widget_table_row_padding_horz;
-//
-//        android.widget.TableRow tableRowView = tableRow.tableRow(context);
-//
-//        for (int i = 0; i < row.width(); i++)
-//        {
-//            CellUnion cell = row.cellAtIndex(i);
-//            View cellView = cell.view(this.columnAtIndex(i), row.format(), context);
-//            tableRowView.addView(cellView);
-//        }
-//
-//        return tableRowView;
-//    }
-//
-//
-//    private LinearLayout widgetLayout(Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.orientation         = LinearLayout.VERTICAL;
-//        layout.width               = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height              = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        return layout.linearLayout(context);
-//    }
-//
-//
-//    private TableLayout tileTableLayout(Context context)
-//    {
-//        TableLayoutBuilder layout = new TableLayoutBuilder();
-//
-//        layout.layoutType           = LayoutType.LINEAR;
-//        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT;
-//        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        layout.shrinkAllColumns     = true;
-//
-//        layout.backgroundColor      = this.data().format().background().colorId();
-//
-//        // > Set Divider
-//        // -------------------------------------------------------------------------------------
-//
-//        if (this.format().dividerType() != DividerType.NONE)
-//        {
-//            Drawable dividerDrawable = ContextCompat.getDrawable(context,
-//                                                                 R.drawable.table_row_divider);
-//
-//            BackgroundColor backgroundColor = this.data().format().background();
-//            if (this.data().format().background() == BackgroundColor.NONE)
-//                backgroundColor = this.groupParent.background();
-//
-//            int colorResourceId = this.format().dividerType()
-//                                      .colorIdWithBackground(backgroundColor);
-//            int      color      = ContextCompat.getColor(context, colorResourceId);
-//
-//            dividerDrawable.setColorFilter(
-//                                new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-//
-//            layout.divider = dividerDrawable;
-//        }
-//
-//
-//        return layout.tableLayout(context);
-//    }
-//
-//
-//    private android.widget.TableRow headerTableRow(Context context)
-//    {
-//
-//        TableRowBuilder headerRow = new TableRowBuilder();
-//
-//        headerRow.width          = android.widget.TableRow.LayoutParams.MATCH_PARENT;
-//        headerRow.height         = android.widget.TableRow.LayoutParams.WRAP_CONTENT;
-//        headerRow.padding.left   = R.dimen.widget_table_row_padding_horz;
-//        headerRow.padding.right  = R.dimen.widget_table_row_padding_horz;
-//
-//        android.widget.TableRow headerRowView = headerRow.tableRow(context);
-//
-//
-//        for (int i = 0; i < this.width(); i++)
-//        {
-//            CellUnion headerCell = this.headerRow.cellAtIndex(i);
-//
-//            Column column = this.columnAtIndex(i).column();
-//            TextColumnFormat format = new TextColumnFormat(UUID.randomUUID(),
-//                                                           null,
-//                                                           column.alignment(),
-//                                                           column.width(),
-//                                                           null);
-//            TextColumn textColumn = new TextColumn(null, null, null, null, format,
-//                                                   false, false);
-//            ColumnUnion columnUnion = ColumnUnion.asText(null, textColumn);
-//
-//            LinearLayout headerCellView =
-//                    (LinearLayout) headerCell.view(columnUnion, this.headerRow.format(), context);
-//
-//            headerRowView.addView(headerCellView);
-//        }
-//
-//        return headerRowView;
-//    }
-
 

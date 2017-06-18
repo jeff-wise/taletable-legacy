@@ -3,7 +3,7 @@ package com.kispoko.tome.rts.sheet
 
 
 import android.content.Context
-import android.view.View
+import android.graphics.Color
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
@@ -18,10 +18,7 @@ import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.section.SectionName
-import com.kispoko.tome.model.theme.ColorId
-import com.kispoko.tome.model.theme.ColorTheme
-import com.kispoko.tome.model.theme.Theme
-import com.kispoko.tome.model.theme.ThemeId
+import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.official.OfficialSheet
 import com.kispoko.tome.rts.ThemeManager
@@ -61,12 +58,12 @@ object SheetManager
     // SHEET
     // -----------------------------------------------------------------------------------------
 
-    fun sheetRecord(sheetId : SheetId) : SheetEff<SheetRecord> =
-            note(this.sheetById[sheetId], SheetDoesNotExist(sheetId))
+    fun sheetRecord(sheetId : SheetId) : AppEff<SheetRecord> =
+            note(this.sheetById[sheetId], AppSheetError(SheetDoesNotExist(sheetId)))
 
 
-    fun sheet(sheetId : SheetId) : SheetEff<Sheet> =
-            note(this.sheetById[sheetId]?.sheet, SheetDoesNotExist(sheetId))
+    fun sheet(sheetId : SheetId) : AppEff<Sheet> =
+            note(this.sheetById[sheetId]?.sheet, AppSheetError(SheetDoesNotExist(sheetId)))
 
 
     fun state(sheetId : SheetId) : SheetEff<SheetState> =
@@ -76,6 +73,23 @@ object SheetManager
     fun sheetState(sheetId : SheetId) : AppEff<SheetState> =
             note(this.sheetById[sheetId]?.state,
                     AppSheetError(SheetDoesNotExist(sheetId)))
+
+
+    fun setNewSheet(sheet : Sheet, sheetUI : SheetUI)
+    {
+        // Create & Index Sheet Record
+        val sheetRecord = SheetRecord.withDefaultView(sheet, SheetState(sheet))
+        this.sheetById.put(sheet.sheetId(), sheetRecord)
+
+        // Initialize Sheet
+        sheetRecord.onActive(sheetUI.context())
+
+        // Theme UI
+        sheetUI.applyTheme(sheet.sheetId(), ThemeManager.darkTheme.uiColors())
+
+        // Render
+        this.render(sheet.sheetId(), sheetUI.pagePagerAdatper())
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -127,7 +141,7 @@ object SheetManager
 
     suspend fun loadOfficialSheet(officialSheet: OfficialSheet,
                           officialIndex : OfficialIndex,
-                          context : Context) : LoadResult<SheetRecord> = run(CommonPool,
+                          context : Context) : LoadResult<Sheet> = run(CommonPool,
     {
 
         loadOfficialCampaign(officialSheet, officialIndex, context)
@@ -138,15 +152,15 @@ object SheetManager
             is Val ->
             {
                 val sheet = sheetLoader.value
-                val sheetRecord = SheetRecord.withDefaultView(sheet, SheetState(sheet))
-                this.sheetById.put(sheet.sheetId.value, sheetRecord)
-                LoadResultValue(sheetRecord)
+//                val sheetRecord = SheetRecord.withDefaultView(sheet, SheetState(sheet))
+//                this.sheetById.put(sheet.sheetId.value, sheetRecord)
+                LoadResultValue(sheet)
             }
             is Err ->
             {
                 val loadError = sheetLoader.error
                 ApplicationLog.error(loadError)
-                LoadResultError<SheetRecord>(loadError.userMessage())
+                LoadResultError<Sheet>(loadError.userMessage())
             }
         }
     })
@@ -246,9 +260,9 @@ object SheetManager
     // THEME
     // -----------------------------------------------------------------------------------------
 
-    fun color(sheetId : SheetId, colorTheme : ColorTheme) : Int?
+    fun color(sheetId : SheetId, colorTheme : ColorTheme) : Int
     {
-        val color = this.colorEff(sheetId, colorTheme)
+        val color = this.themeColor(sheetId, colorTheme)
 
         when (color)
         {
@@ -256,34 +270,56 @@ object SheetManager
             is Err -> ApplicationLog.error(color.error)
         }
 
-        return null
+        return Color.BLACK
+    }
+
+
+    fun color(sheetId : SheetId, colorId : ColorId) : Int
+    {
+        val color = sheetThemeId(sheetId)
+                      .apply(SheetManager::theme)
+                      .applyWith(SheetManager::color, effValue(colorId))
+
+        when (color)
+        {
+            is Val -> return color.value
+            is Err -> ApplicationLog.error(color.error)
+        }
+
+        return Color.BLACK
     }
 
 
     /**
      * The color value for an object in a sheet based on some color theme.
      */
-    fun colorEff(sheetId : SheetId, colorTheme : ColorTheme) : SheetEff<Int>
-    {
-        fun sheetThemeId() : SheetEff<ThemeId> =
+    fun themeColor(sheetId : SheetId, colorTheme : ColorTheme) : AppEff<Int> =
+        sheetThemeId(sheetId)                 ap { themeId ->
+        colorId(sheetId, themeId, colorTheme) ap { colorId ->
+        theme(themeId)                        ap { theme   ->
+        color(theme, colorId)
+        } } }
+
+
+    private fun sheetThemeId(sheetId : SheetId) : AppEff<ThemeId> =
             note(this.sheetById[sheetId]?.sheet?.settings()?.themeId(),
-                 SheetDoesNotExist(sheetId))
+                 AppSheetError(SheetDoesNotExist(sheetId)))
 
-        fun colorId(themeId : ThemeId) : SheetEff<ColorId> =
-            note(colorTheme.themeColorId(themeId), ThemeNotSupported(sheetId, themeId))
+    private fun colorId(sheetId : SheetId,
+                        themeId : ThemeId,
+                        colorTheme : ColorTheme) : AppEff<ColorId> =
+            note(colorTheme.themeColorId(themeId),
+                 AppSheetError(ThemeNotSupported(sheetId, themeId)))
 
-        fun theme(themeId : ThemeId) : SheetEff<Theme> =
-            note(ThemeManager.theme(themeId), ThemeDoesNotExist(themeId))
+    private fun theme(themeId : ThemeId) : AppEff<Theme> =
+            note(ThemeManager.theme(themeId), AppSheetError(ThemeDoesNotExist(themeId)))
 
-        fun color(colorId : ColorId, theme : Theme) : SheetEff<Int> =
-            note(theme.color(colorId), ThemeDoesNotHaveColor(theme.themeId(), colorId))
 
-        return sheetThemeId()        ap { themeId ->
-               colorId(themeId)      ap { colorId ->
-               theme(themeId)        ap { theme   ->
-               color(colorId, theme)
-               } } }
-    }
+    private fun color(theme : Theme, colorId : ColorId) : AppEff<Int> =
+            note(theme.color(colorId),
+                 AppSheetError(ThemeDoesNotHaveColor(theme.themeId(), colorId)))
+
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -407,14 +443,16 @@ data class SheetRecord(val sheet : Sheet,
     }
 
 
-    fun context(context : Context) : SheetEff<SheetContext>
+    fun context(context : Context) : AppEff<SheetContext>
     {
         val sheetId    = sheet.sheetId.value
         val campaignId = sheet.campaignId.value
 
-        val campaign : SheetEff<Campaign> = note(CampaignManager.campaignWithId(campaignId),
-                                                 CampaignDoesNotExist(sheetId, campaignId))
-        val gameId = campaign.apply { effValue<SheetError,GameId>(it.gameId.value) }
+        val campaign : AppEff<Campaign> =
+                note(CampaignManager.campaignWithId(campaignId),
+                     AppSheetError(CampaignDoesNotExist(sheetId, campaignId)))
+
+        val gameId = campaign.apply { effValue<AppError,GameId>(it.gameId.value) }
 
         return effApply(::SheetContext, effValue(sheetId),
                                         effValue(campaignId),
@@ -455,7 +493,7 @@ interface SheetComponent
 {
     fun onSheetComponentActive(sheetContext : SheetContext)
 
-    fun view(sheetContext : SheetContext) : View
+//     fun view(sheetContext : SheetContext) : View
 }
 
 
@@ -469,4 +507,16 @@ fun <A> fromSheetEff(sheetEff : SheetEff<A>) : AppEff<A> = when (sheetEff)
 }
 
 // fun <A> sheetEffValue(value : A) : SheetEff<A> = Val(value, Identity())
+
+
+interface SheetUI
+{
+
+    fun pagePagerAdatper() : PagePagerAdapter
+
+    fun applyTheme(sheetId : SheetId, uiColors : UIColors)
+
+    fun context() : Context
+
+}
 

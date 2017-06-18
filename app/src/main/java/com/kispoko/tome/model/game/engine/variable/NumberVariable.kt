@@ -43,13 +43,13 @@ sealed class NumberVariableValue : Serializable
         override fun fromDocument(doc: SpecDoc): ValueParser<NumberVariableValue> =
             when (doc.case)
             {
-                "literal"   -> NumberVariableLiteralValue.fromDocument(doc)
-                "variable"  -> NumberVariableVariableValue.fromDocument(doc)
-                "program"   -> NumberVariableProgramValue.fromDocument(doc)
-                "value"     -> NumberVariableValueValue.fromDocument(doc)
-                "summation" -> NumberVariableSummationValue.fromDocument(doc)
-                else        -> effError<ValueError,NumberVariableValue>(
-                                    UnknownCase(doc.case, doc.path))
+                "number_literal"     -> NumberVariableLiteralValue.fromDocument(doc)
+                "variable_id"        -> NumberVariableVariableValue.fromDocument(doc)
+                "program_invocation" -> NumberVariableProgramValue.fromDocument(doc)
+                "value_reference"    -> NumberVariableValueValue.fromDocument(doc)
+                "summation"          -> NumberVariableSummationValue.fromDocument(doc)
+                else                 -> effError<ValueError,NumberVariableValue>(
+                                            UnknownCase(doc.case, doc.path))
             }
     }
 

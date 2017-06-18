@@ -22,12 +22,44 @@ sealed class Func<out A>(open val value : A?) : Serializable
  * Primitive Functor
  */
 data class Prim<A : Any>(override var value : A) : Func<A>(value), Serializable
+{
+
+    private var isDefault : Boolean = false
+
+    companion object
+    {
+        fun <A : Any> default(defaultValue : A) : Prim<A>
+        {
+            val prim = Prim(defaultValue)
+            prim.isDefault = true
+            return prim
+        }
+    }
+
+    fun isDefault() : Boolean = this.isDefault
+}
 
 
 /**
  * Collection Functor
  */
 data class Comp<A : Model> (override var value : A) : Func<A>(value), Serializable
+{
+
+    private var isDefault : Boolean = false
+
+    companion object
+    {
+        fun <A : Model> default(defaultValue : A) : Comp<A>
+        {
+            val comp = Comp(defaultValue)
+            comp.isDefault = true
+            return comp
+        }
+    }
+
+    fun isDefault() : Boolean = this.isDefault
+}
 
 
 /**
@@ -98,8 +130,22 @@ fun <A : Any> maybeLiftPrim(mValue : Maybe<A>) : Maybe<Prim<A>> = when(mValue)
 }
 
 
+fun <A : Model> maybeLiftComp(mValue : Maybe<A>) : Maybe<Comp<A>> = when(mValue)
+{
+    is Just -> maybeApply(::Comp, mValue)
+    else    -> Nothing()
+}
+
+
 fun <A : Any> getMaybePrim(mPrim : Maybe<Prim<A>>) : A? = when (mPrim)
 {
     is Just -> mPrim.value.value
     else    -> null
+}
+
+
+fun <A : Model> getMaybeComp(mComp : Maybe<Comp<A>>) : Maybe<A> = when (mComp)
+{
+    is Just -> Just(mComp.value.value)
+    else    -> Nothing()
 }

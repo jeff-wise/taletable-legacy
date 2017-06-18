@@ -65,7 +65,7 @@ data class Mechanic(override val id : UUID,
                          // Variables
                          doc.list("variables") ap { docList ->
                              effApply(::Coll,
-                                     docList.map { Variable.fromDocument(it) })
+                                     docList.mapMut { Variable.fromDocument(it) })
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))

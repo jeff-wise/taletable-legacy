@@ -14,20 +14,67 @@ sections:
               id: name
               value:
                 type: text_literal
-                text_literal: 'Casmey Dalseya'
-              tags:
-            variables:
+                text_literal: 'Elna Rhydesia'
+      - widgets:
+        - type: widget_text
+          widget_text:
+            id: summary
+            value_variable:
+              id: summary
+              value:
+                type: text_literal
+                text_literal: 'Sister of the Singing Sword'
+    - rows:
       - widgets:
         - type: widget_number
           widget_number:
-            id: name
+            id: strength
             value_variable:
-              id: name
+              id: strength
               value:
-                type: text_literal
-                text_literal: 'Casmey Dalseya'
-              tags:
-            variables:
+                type: number_literal
+                number_literal: 11
+        - type: widget_number
+          widget_number:
+            id: dexterity
+            value_variable:
+              id: dexterity
+              value:
+                type: number_literal
+                number_literal: 15
+        - type: widget_number
+          widget_number:
+            id: constitution
+            value_variable:
+              id: constitution
+              value:
+                type: number_literal
+                number_literal: 16
+      - widgets:
+        - type: widget_number
+          widget_number:
+            id: intelligence
+            value_variable:
+              id: intelligence
+              value:
+                type: number_literal
+                number_literal: 12
+        - type: widget_number
+          widget_number:
+            id: wisdom
+            value_variable:
+              id: wisdom
+              value:
+                type: number_literal
+                number_literal: 10
+        - type: widget_number
+          widget_number:
+            id: charisma
+            value_variable:
+              id: charisma
+              value:
+                type: number_literal
+                number_literal: 11
 - name: Encounter
   pages:
 - name: Campaign

@@ -492,22 +492,22 @@ types:
   type: sum
   cases: 
   - name: boolean
-    type: boolean_variable 
+    type: variable_boolean 
     description: >
       A variable with a true/false value.
-  - name: dice
-    type: dice_variable 
+  - name: dice_roll
+    type: variable_dice_roll 
     description: >
       A variable with a dice roll value.
   - name: number
-    type: number_variable 
+    type: variable_number 
     description: >
       A variable with a numerical value.
   - name: text
     type: variable_text 
     description: >
       A variable with a text value.
-- name: boolean_variable
+- name: variable_boolean
   label: Boolean Variable
   description: >
     A boolean variable represents a piece of data that is either True of False. More generally, 
@@ -564,8 +564,8 @@ types:
     type: program_invocation
     description: >
       A true/false value created from a program.
-- name: dice_variable
-  label: Dice Variable
+- name: variable_dice_roll
+  label: Dice Roll Variable
   description: >
     A Dice Variable represents a Dice Roll value.
   group: Variable
@@ -605,15 +605,15 @@ types:
     presence: optional
     description: >
       Tags that can be used to place the variable in a group.
-- name: number_variable
+- name: variable_number
   label: Number Variable
   description: >
     A Number Variable holds numerical data. 
   group: Variable
   type: product
   fields:
-  - name: name
-    type: string
+  - name: id
+    type: variable_id
     presence: required
   - name: label
     type: string
@@ -642,26 +642,28 @@ types:
   group: Variable
   type: sum
   cases:
-  - name: literal
-    type: boolean
+  - type: number_literal
     description: >
       A literal number.
-  - name: variable_reference
-    type: string
+  - type: string
     description: >
       The value of another number variable.
-  - name: invocation
-    type: program_invocation
+  - type: program_invocation
     description: >
       The value of another number variable.
-  - name: value_reference
-    type: value_reference
+  - type: value_reference
     description: >
       A value from the Dictionary.
-  - name: summation
-    type: summation
+  - type: summation
     description: >
       The value of a summation.
+- name: number_literal
+  label: Number Literal
+  description: >
+    A literal number value.
+  group: 'Variable: Number'
+  type: primitive
+  base_type: number
 - name: variable_id
   label: Variable Identifier
   description: >
@@ -782,17 +784,17 @@ types:
   type: product
   fields:
   - name: conditional_term_value
-    type: boolean_variable
+    type: variable_boolean
     presence: required
     description: >
       A boolean variable that is used to determine which branch to follow.
   - name: true_term_value
-    type: number_variable
+    type: variable_number
     presence: required
     description: >
       The number variable to be the result when the conditional term is true.
   - name: false_term_value
-    type: number_variable
+    type: variable_number
     presence: required
     description: >
       The number variable to be the result when the conditional term is false.
@@ -804,7 +806,7 @@ types:
   type: product
   fields:
   - name: term_value
-    type: number_variable
+    type: variable_number
     presence: required
     description: >
       The number variable that is the term value.
@@ -819,7 +821,7 @@ types:
   type: product
   fields:
   - name: term_value
-    type: dice_variable
+    type: variable_dice_roll
     presence: required
     description: >
       The dice roll value that is the term value.

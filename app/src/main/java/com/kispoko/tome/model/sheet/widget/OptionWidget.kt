@@ -88,7 +88,7 @@ data class OptionWidgetFormat(override val id : UUID,
         val defaultDescriptionStyle = TextStyle.default
         val defaultValueStyle       = TextStyle.default
         val defaultValueItemStyle   = TextStyle.default
-        val defaultHeight           = Height.Wrap()
+        val defaultHeight           = Height.Wrap
 
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<OptionWidgetFormat> = when (doc)

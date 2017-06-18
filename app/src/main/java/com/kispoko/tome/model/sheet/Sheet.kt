@@ -28,31 +28,41 @@ data class Sheet(override val id : UUID,
                  val settings : Comp<Settings>) : Model, Serializable
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+    constructor(sheetId : SheetId,
+                campaignId : CampaignId,
+                sections : MutableList<Section>,
+                settings : Settings)
+        : this(UUID.randomUUID(),
+               Prim(sheetId),
+               Prim(campaignId),
+               Coll(sections),
+               Comp(settings))
+
+
     companion object : Factory<Sheet>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<Sheet> = when (doc)
         {
-            is DocDict -> effApply(::Sheet,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Sheet Id
-                                   doc.at("id") ap {
-                                       effApply(::Prim, SheetId.fromDocument(it))
-                                   },
-                                   // Campaign Id
-                                   doc.at("campaign_id") ap {
-                                       effApply(::Prim, CampaignId.fromDocument(it))
-                                   },
-                                   // Section List
-                                   doc.list("sections") ap { docList ->
-                                       effApply(::Coll,
-                                                docList.map { Section.fromDocument(it) })
-                                   },
-                                   // Sheet Settings
-                                   split(doc.maybeAt("description"),
-                                         effValue(Comp(Settings.default())),
-                                         { effApply(::Comp, Settings.fromDocument(it)) })
-                                   )
+            is DocDict ->
+            {
+                effApply(::Sheet,
+                         // Sheet Id
+                         doc.at("id") ap { SheetId.fromDocument(it) },
+                         // Campaign Id
+                         doc.at("campaign_id") ap { CampaignId.fromDocument(it) },
+                         // Section List
+                         doc.list("sections") ap { docList ->
+                             docList.mapMut { Section.fromDocument(it) }
+                         },
+                         // Sheet Settings
+                         split(doc.maybeAt("description"),
+                               effValue(Settings.default()),
+                               { Settings.fromDocument(it) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }

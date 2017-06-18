@@ -39,23 +39,33 @@ data class GroupRow(override val id : UUID,
                       : Model, SheetComponent, Comparable<GroupRow>, Serializable
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(format : GroupRowFormat,
+                index : Int,
+                widgets : MutableList<Widget>)
+        : this(UUID.randomUUID(),
+               Comp(format),
+               Prim(index),
+               Coll(widgets))
+
+
     companion object
     {
         fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<GroupRow> = when (doc)
         {
             is DocDict -> effApply(::GroupRow,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Format
                                    split(doc.maybeAt("format"),
-                                         effValue(Comp(GroupRowFormat.default())),
-                                         { effApply(::Comp, GroupRowFormat.fromDocument(it))}),
+                                         effValue(GroupRowFormat.default()),
+                                         { GroupRowFormat.fromDocument(it) }),
                                    // Index
-                                   effValue(Prim(index)),
+                                   effValue(index),
                                    // Widgets
                                    doc.list("widgets") ap { docList ->
-                                       effApply(::Coll,
-                                                docList.map { Widget.fromDocument(it) })
+                                       docList.mapMut { Widget.fromDocument(it) }
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -101,7 +111,7 @@ data class GroupRow(override val id : UUID,
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    override fun view(sheetContext : SheetContext) : View
+    fun view(sheetContext : SheetContext) : View
     {
         val layout = this.viewLayout(sheetContext.context)
 

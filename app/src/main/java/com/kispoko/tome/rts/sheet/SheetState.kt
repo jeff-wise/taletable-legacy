@@ -65,6 +65,7 @@ class SheetState(val sheet : Sheet) : State
     */
     override fun addVariable(variable : Variable)
     {
+        // TODO add log event for if variable with name already exist
         Log.d("***SHEET_STATE", "add variable " + variable.variableId.value)
         val variableId = variable.variableId.value
         val variableLabel = variable.label()

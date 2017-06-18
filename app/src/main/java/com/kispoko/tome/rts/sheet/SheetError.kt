@@ -6,6 +6,8 @@ import com.kispoko.tome.app.ApplicationError
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.section.SectionName
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetCellType
+import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumnType
 import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ThemeId
 
@@ -119,3 +121,19 @@ class PageFragmentIsMissingContext() : SheetError()
     override fun logMessage(): String = userMessage()
 }
 
+
+/**
+ * The theme does not have a color with the given id.
+ */
+class CellTypeDoesNotMatchColumnType(val cellType : TableWidgetCellType,
+                                     val columnType : TableWidgetColumnType) : SheetError()
+{
+    override fun debugMessage(): String =
+            """
+            Sheet Error: Cell Type Does Not Match Its Column Type
+                Cell Type: $cellType
+                Column Type: $columnType
+            """
+
+    override fun logMessage(): String = userMessage()
+}

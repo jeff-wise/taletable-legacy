@@ -2,10 +2,22 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
+import android.content.Context
+import android.view.View
+import android.widget.TableLayout
+import android.widget.TableRow
+import com.kispoko.tome.R.string.cell
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.LayoutType
+import com.kispoko.tome.lib.ui.TableRowBuilder
 import com.kispoko.tome.model.sheet.style.Height
+import com.kispoko.tome.model.sheet.widget.TableWidgetFormat
+import com.kispoko.tome.rts.sheet.CellTypeDoesNotMatchColumnType
+import com.kispoko.tome.rts.sheet.SheetComponent
+import com.kispoko.tome.rts.sheet.SheetContext
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
@@ -22,37 +34,134 @@ import java.util.*
  * Table Widget Row
  */
 data class TableWidgetRow(override val id : UUID,
-                          val format : Func<TableWidgetRowFormat>,
-                          val cells : Coll<TableWidgetCell>) : Model
+                          val format : Comp<TableWidgetRowFormat>,
+                          val cells : Coll<TableWidgetCell>) : SheetComponent, Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(format : TableWidgetRowFormat, cells : MutableList<TableWidgetCell>)
+        : this(UUID.randomUUID(), Comp(format), Coll(cells))
+
 
     companion object : Factory<TableWidgetRow>
     {
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetRow> = when (doc)
         {
             is DocDict ->
             {
                 effApply(::TableWidgetRow,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               nullEff<TableWidgetRowFormat>(),
-                               { effApply(::Comp, TableWidgetRowFormat.fromDocument(it)) }),
-                         // Format
+                               effValue(TableWidgetRowFormat.default),
+                               { TableWidgetRowFormat.fromDocument(it) }),
+                         // Cells
                          doc.list("cells") ap { docList ->
-                             effApply(::Coll,
-                                      docList.map { TableWidgetCell.Companion.fromDocument(it) })
+                             docList.mapMut { TableWidgetCell.Companion.fromDocument(it) }
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : TableWidgetRowFormat = this.format.value
+
+    fun cells() : List<TableWidgetCell> = this.cells.list
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() {}
 
-}
 
+    // -----------------------------------------------------------------------------------------
+    // SHEET COMPONENT
+    // -----------------------------------------------------------------------------------------
+
+    override fun onSheetComponentActive(sheetContext: SheetContext) {
+        TODO("not implemented")
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun view(columns : List<TableWidgetColumn>,
+             format : TableWidgetFormat,
+             sheetContext : SheetContext) : View
+    {
+        val tableRow = TableRowBuilder()
+
+        tableRow.layoutType     = LayoutType.TABLE
+        tableRow.width          = TableLayout.LayoutParams.MATCH_PARENT
+        tableRow.height         = TableLayout.LayoutParams.WRAP_CONTENT
+
+        tableRow.paddingSpacing = format.widgetFormat().padding()
+
+
+        this.cells().forEachIndexed { i, tableWidgetCell ->
+            when (tableWidgetCell)
+            {
+                is TableWidgetBooleanCell ->
+                {
+                    val column = columns[i]
+                    when (column)
+                    {
+                        is TableWidgetBooleanColumn ->
+                            tableRow.rows.add(tableWidgetCell.view(this.format(),
+                                                                   column,
+                                                                   sheetContext))
+                        else -> ApplicationLog.error(
+                                    CellTypeDoesNotMatchColumnType(TableWidgetCellType.BOOLEAN,
+                                                                   column.type()))
+                    }
+                }
+                is TableWidgetNumberCell ->
+                {
+                    val column = columns[i]
+                    when (column)
+                    {
+                        is TableWidgetNumberColumn ->
+                            tableRow.rows.add(tableWidgetCell.view(this.format(),
+                                                                   column,
+                                                                   sheetContext))
+                        else -> ApplicationLog.error(
+                                    CellTypeDoesNotMatchColumnType(TableWidgetCellType.NUMBER,
+                                                                   column.type()))
+                    }
+                }
+                is TableWidgetTextCell ->
+                {
+                    val column = columns[i]
+                    when (column)
+                    {
+                        is TableWidgetTextColumn ->
+                            tableRow.rows.add(tableWidgetCell.view(this.format(),
+                                                                   column,
+                                                                   sheetContext))
+                        else -> ApplicationLog.error(
+                                    CellTypeDoesNotMatchColumnType(TableWidgetCellType.TEXT,
+                                                                   column.type()))
+                    }
+                }
+            }
+        }
+
+        return tableRow.tableRow(sheetContext.context)
+    }
+
+}
 
 
 /**
@@ -73,7 +182,7 @@ data class TableWidgetRowFormat(override val id : UUID,
     companion object : Factory<TableWidgetRowFormat>
     {
 
-        private val defaultCellHeight = Height.MediumSmall()
+        private val defaultCellHeight = Height.MediumSmall
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TableWidgetRowFormat> = when (doc)
         {
@@ -85,7 +194,18 @@ data class TableWidgetRowFormat(override val id : UUID,
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : TableWidgetRowFormat = TableWidgetRowFormat(defaultCellHeight)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun cellHeight() : Height = this.cellHeight.value
 
 
     // -----------------------------------------------------------------------------------------

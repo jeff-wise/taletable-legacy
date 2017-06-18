@@ -2,19 +2,27 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
+import android.view.Gravity
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TableRow
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.LayoutType
+import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.variable.BooleanVariable
 import com.kispoko.tome.model.game.engine.variable.NumberVariable
 import com.kispoko.tome.model.game.engine.variable.TextVariable
 import com.kispoko.tome.model.sheet.style.Alignment
+import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.sheet.widget.table.cell.BooleanCellFormat
-import com.kispoko.tome.model.sheet.widget.table.cell.NumberCellFormat
-import com.kispoko.tome.model.sheet.widget.table.cell.TextCellFormat
-import com.kispoko.tome.model.theme.ColorId
+import com.kispoko.tome.model.sheet.widget.table.cell.*
+import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.theme.ColorTheme
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
@@ -31,6 +39,10 @@ import java.util.*
 @Suppress("UNCHECKED_CAST")
 sealed class TableWidgetCell : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TableWidgetCell>
     {
@@ -54,6 +66,13 @@ sealed class TableWidgetCell : Model
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // CELL
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun type() : TableWidgetCellType
+
 }
 
 
@@ -61,9 +80,18 @@ sealed class TableWidgetCell : Model
  * Table Widget Boolean Cell
  */
 data class TableWidgetBooleanCell(override val id : UUID,
-                                  val format : Func<BooleanCellFormat>,
-                                  val value : Func<BooleanVariable>) : Model
+                                  val format : Comp<BooleanCellFormat>,
+                                  val valueVariable : Comp<BooleanVariable>)
+                                  : TableWidgetCell(), Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(format : BooleanCellFormat, valueVariable : BooleanVariable)
+        : this(UUID.randomUUID(), Comp(format), Comp(valueVariable))
+
 
     companion object : Factory<TableWidgetBooleanCell>
     {
@@ -72,22 +100,68 @@ data class TableWidgetBooleanCell(override val id : UUID,
             is DocDict ->
             {
                 effApply(::TableWidgetBooleanCell,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               nullEff<BooleanCellFormat>(),
-                               { effApply(::Comp, BooleanCellFormat.fromDocument(it)) }),
+                               effValue(BooleanCellFormat.default),
+                               { BooleanCellFormat.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap {
-                             effApply(::Comp, BooleanVariable.fromDocument(it))
-                         })
+                         doc.at("value") ap { BooleanVariable.fromDocument(it) }
+                        )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : BooleanCellFormat = this.format.value
+
+    fun valueVariable() : BooleanVariable = this.valueVariable.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CELL
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : TableWidgetCellType = TableWidgetCellType.BOOLEAN
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun value() : Boolean
+    {
+        val booleanEff = this.valueVariable().value()
+
+        when (booleanEff)
+        {
+            is Val -> return booleanEff.value
+            is Err -> ApplicationLog.error(booleanEff.error)
+        }
+
+        return true
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun view(rowFormat : TableWidgetRowFormat,
+             column : TableWidgetBooleanColumn,
+             sheetContext : SheetContext) : View
+        = BooleanCellView.view(this, rowFormat, column, this.format(), sheetContext)
 
 }
 
@@ -95,10 +169,26 @@ data class TableWidgetBooleanCell(override val id : UUID,
 /**
  * Table Widget Number Cell
  */
-sealed class TableWidgetNumberCell(override val id : UUID,
-                                   val format : Func<NumberCellFormat>,
-                                   val value : Func<NumberVariable>) : Model
+data class TableWidgetNumberCell(override val id : UUID,
+                                 val format : Comp<NumberCellFormat>,
+                                 val valueVariable : Comp<NumberVariable>)
+                                  : TableWidgetCell(), Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var viewId : Maybe<Int> = Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(format : NumberCellFormat, valueVariable : NumberVariable)
+        : this(UUID.randomUUID(), Comp(format), Comp(valueVariable))
+
 
     companion object : Factory<TableWidgetNumberCell>
     {
@@ -107,20 +197,66 @@ sealed class TableWidgetNumberCell(override val id : UUID,
             is DocDict ->
             {
                 effApply(::TableWidgetNumberCell,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               nullEff<NumberCellFormat>(),
-                               { effApply(::Comp, NumberCellFormat.fromDocument(it)) }),
+                               effValue(NumberCellFormat.default),
+                               { NumberCellFormat.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap {
-                             effApply(::Comp, NumberVariable.fromDocument(it))
-                         })
+                         doc.at("value") ap { NumberVariable.fromDocument(it) }
+                        )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : NumberCellFormat = this.format.value
+
+    fun valueVariable() : NumberVariable = this.valueVariable.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // CELL
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : TableWidgetCellType = TableWidgetCellType.NUMBER
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun valueString(sheetContext : SheetContext) : Maybe<String>
+    {
+        val numberEff = this.valueVariable().value(sheetContext)
+
+        when (numberEff)
+        {
+            is Val -> return Just(numberEff.value.toString())
+            is Err -> return Nothing()
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun view(rowFormat : TableWidgetRowFormat,
+             column : TableWidgetNumberColumn,
+             sheetContext : SheetContext) : View
+            = NumberCellView.view(this, rowFormat, column, this.format(), sheetContext)
 
 }
 
@@ -128,10 +264,26 @@ sealed class TableWidgetNumberCell(override val id : UUID,
 /**
  * Table Widget Text Cell
  */
-sealed class TableWidgetTextCell(override val id : UUID,
-                                 val format : Func<TextCellFormat>,
-                                 val value : Func<TextVariable>) : Model
+data class TableWidgetTextCell(override val id : UUID,
+                               val format : Comp<TextCellFormat>,
+                               val valueVariable : Comp<TextVariable>)
+                                : TableWidgetCell(), Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // PROPERTIES
+    // -----------------------------------------------------------------------------------------
+
+    var viewId : Maybe<Int> = Nothing()
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(format : TextCellFormat, valueVariable : TextVariable)
+            : this(UUID.randomUUID(), Comp(format), Comp(valueVariable))
+
 
     companion object : Factory<TableWidgetTextCell>
     {
@@ -140,21 +292,75 @@ sealed class TableWidgetTextCell(override val id : UUID,
             is DocDict ->
             {
                 effApply(::TableWidgetTextCell,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Format
                          split(doc.maybeAt("format"),
-                               nullEff<TextCellFormat>(),
-                                { effApply(::Comp, TextCellFormat.fromDocument(it)) }),
+                               effValue(TextCellFormat.default),
+                                { TextCellFormat.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap {
-                             effApply(::Comp, TextVariable.fromDocument(it))
-                         })
+                         doc.at("value") ap { TextVariable.fromDocument(it) }
+                        )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun format() : TextCellFormat = this.format.value
+
+    fun valueVariable() : TextVariable = this.valueVariable.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // CELL
+    // -----------------------------------------------------------------------------------------
+
+    override fun type() : TableWidgetCellType = TableWidgetCellType.TEXT
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() { }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VALUE
+    // -----------------------------------------------------------------------------------------
+
+    fun valueString(sheetContext : SheetContext) : Maybe<String>
+    {
+        val numberEff = this.valueVariable().value(sheetContext)
+
+        when (numberEff)
+        {
+            is Val -> return Just(numberEff.value)
+            is Err -> return Nothing()
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // VIEW
+    // -----------------------------------------------------------------------------------------
+
+    fun view(rowFormat : TableWidgetRowFormat,
+             column : TableWidgetTextColumn,
+             sheetContext : SheetContext) : View
+            = TextCellView.view(this, rowFormat, column, this.format(), sheetContext)
+
+}
+
+
+enum class TableWidgetCellType
+{
+    BOOLEAN,
+    NUMBER,
+    TEXT
 }
 
 
@@ -206,70 +412,74 @@ data class CellFormat(override val id : UUID,
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : CellFormat =
+                CellFormat(defaultTextStyle,
+                           defaultAlignment,
+                           defaultBackgroundColorTheme)
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun textStyle() : TextStyle = this.textStyle.value
+
+    fun alignment() : Alignment = this.alignment.value
+
+    fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 }
 
 
-//
-//
-//    protected LinearLayout layout(Column column,
-//                                  TextSize textSize,
-//                                  Height cellHeight,
-//                                  Context context)
-//    {
-//        LinearLayoutBuilder layout = new LinearLayoutBuilder();
-//
-//        layout.layoutType       = LayoutType.TABLE_ROW;
-//        layout.orientation      = LinearLayout.HORIZONTAL;
-//        layout.width            = 0;
-//        layout.height           = TableRow.LayoutParams.WRAP_CONTENT;
-//        layout.weight           = column.width().floatValue();
-//
-//        // > Alignment
-//        Alignment cellAlignment = this.alignment();
-//
-//        if (column.alignment() != null)
-//            cellAlignment = column.alignment();
-//
-//        layout.gravity          = cellAlignment.gravityConstant() | Gravity.CENTER_VERTICAL;
-//
-//
-//        if (cellHeight == null)
-//        {
-//            switch (textSize)
-//            {
-//                case VERY_SMALL:
-//                    cellHeight = Height.VERY_SMALL;
-//                    break;
-//                case SMALL:
-//                    cellHeight = Height.SMALL;
-//                    break;
-//                case MEDIUM_SMALL:
-//                    cellHeight = Height.MEDIUM_SMALL;
-//                    break;
-//                case MEDIUM:
-//                    cellHeight = Height.MEDIUM;
-//                    break;
-//                case MEDIUM_LARGE:
-//                    cellHeight = Height.MEDIUM_LARGE;
-//                    break;
-//                case LARGE:
-//                    cellHeight = Height.LARGE;
-//                    break;
-//                default:
-//                    cellHeight = Height.MEDIUM_SMALL;
-//            }
-//
-//        }
-//
-//        layout.backgroundColor      = this.background().colorId();
-//        layout.backgroundResource   = cellHeight.cellBackgroundResourceId();
-//
-//
-//        return layout.linearLayout(context);
-//    }
+object TableWidgetCellView
+{
+
+    fun layout(tableRowFormat : TableWidgetRowFormat,
+               columnFormat : ColumnFormat,
+               cellFormat : CellFormat,
+               sheetContext : SheetContext) : LinearLayout
+    {
+        val layout                  = LinearLayoutBuilder()
+
+        layout.layoutType           = LayoutType.TABLE_ROW
+        layout.orientation          = LinearLayout.HORIZONTAL
+        layout.width                = 0
+        layout.height               = TableRow.LayoutParams.WRAP_CONTENT
+        layout.weight               = columnFormat.width()
 
 
+        // > Gravity
+        if (cellFormat.alignment.isDefault()) {
+            layout.gravity          = columnFormat.alignment().gravityConstant() or
+                                        Gravity.CENTER_VERTICAL
+        } else {
+            layout.gravity          = cellFormat.alignment().gravityConstant() or
+                                        Gravity.CENTER_VERTICAL
+        }
+
+        if (cellFormat.backgroundColorTheme.isDefault()) {
+            layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+                                        columnFormat.backgroundColorTheme())
+        } else {
+            layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
+                                        cellFormat.backgroundColorTheme())
+        }
+
+        layout.backgroundResource   = tableRowFormat.cellHeight().resourceId(Corners.None)
+
+        return layout.linearLayout(sheetContext.context)
+    }
+
+
+}

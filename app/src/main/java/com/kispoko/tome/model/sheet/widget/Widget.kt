@@ -12,17 +12,13 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
 import com.kispoko.tome.model.game.engine.value.ValueSetId
-import com.kispoko.tome.model.game.engine.variable.BooleanVariable
-import com.kispoko.tome.model.game.engine.variable.NumberVariable
-import com.kispoko.tome.model.game.engine.variable.TextVariable
-import com.kispoko.tome.model.game.engine.variable.Variable
+import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetColumn
 import com.kispoko.tome.model.sheet.widget.table.TableWidgetRow
 import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetContext
-import com.kispoko.tome.rts.sheet.SheetDoesNotExist
 import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import effect.Nothing
@@ -89,6 +85,8 @@ sealed class Widget : Model, SheetComponent, Serializable
     // -----------------------------------------------------------------------------------------
 
     abstract fun widgetFormat() : WidgetFormat
+
+    abstract fun view(sheetContext : SheetContext) : View
 
 
     // -----------------------------------------------------------------------------------------
@@ -239,7 +237,7 @@ data class ActionWidget(override val id : UUID,
 
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
-    override fun view(sheetContext: SheetContext): View {
+    override fun view(sheetContext : SheetContext) : View {
         TODO("not implemented")
     }
 
@@ -616,7 +614,7 @@ data class ListWidget(override val id : UUID,
                          // Groups
                          doc.list("values") ap { docList ->
                              effApply(::Coll,
-                                 docList.map { Variable.fromDocument(it) })
+                                 docList.mapMut { Variable.fromDocument(it) })
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -695,7 +693,7 @@ data class LogWidget(override val id : UUID,
                          // Entries
                          doc.list("entries") ap { docList ->
                              effApply(::Coll,
-                                 docList.map { LogEntry.fromDocument(it) })
+                                 docList.mapMut { LogEntry.fromDocument(it) })
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -822,7 +820,7 @@ data class NumberWidget(override val id : UUID,
                         val description : Maybe<Prim<NumberWidgetDescription>>,
                         val valuePrefix : Maybe<Prim<NumberWidgetValuePrefix>>,
                         val valuePostfix : Maybe<Prim<NumberWidgetValuePostfix>>,
-                        val variables : Coll<Variable>) : Widget()
+                        val variables : Conj<Variable>) : Widget()
 {
 
     // -----------------------------------------------------------------------------------------
@@ -842,7 +840,7 @@ data class NumberWidget(override val id : UUID,
                 description : Maybe<NumberWidgetDescription>,
                 valuePrefix : Maybe<NumberWidgetValuePrefix>,
                 valuePostfix : Maybe<NumberWidgetValuePostfix>,
-                variables : MutableList<Variable>)
+                variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
@@ -850,7 +848,7 @@ data class NumberWidget(override val id : UUID,
                maybeLiftPrim(description),
                maybeLiftPrim(valuePrefix),
                maybeLiftPrim(valuePostfix),
-               Coll(variables))
+               Conj(variables))
 
 
     companion object : Factory<NumberWidget>
@@ -867,7 +865,7 @@ data class NumberWidget(override val id : UUID,
                                effValue(NumberWidgetFormat.default()),
                                { NumberWidgetFormat.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap { NumberVariable.fromDocument(it) },
+                         doc.at("value_variable") ap { NumberVariable.fromDocument(it) },
                          // Description
                          split(doc.maybeAt("description"),
                                effValue<ValueError,Maybe<NumberWidgetDescription>>(Nothing()),
@@ -881,9 +879,10 @@ data class NumberWidget(override val id : UUID,
                                 effValue<ValueError,Maybe<NumberWidgetValuePostfix>>(Nothing()),
                                 { effApply(::Just, NumberWidgetValuePostfix.fromDocument(it)) }),
                          // Variables
-                         doc.list("variables") ap { docList ->
-                             docList.map { Variable.fromDocument(it) }
-                         })
+                         split(doc.maybeList("tags"),
+                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
+                               { it.mapSetMut { Variable.fromDocument(it)} })
+                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -906,7 +905,7 @@ data class NumberWidget(override val id : UUID,
 
     fun valuePostfix() : String? = getMaybePrim(this.valuePostfix)?.value
 
-    fun variables() : List<Variable> = this.variables.list
+    fun variables() : Set<Variable> = this.variables.set
 
 
     // -----------------------------------------------------------------------------------------
@@ -915,9 +914,8 @@ data class NumberWidget(override val id : UUID,
 
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
-    override fun view(sheetContext: SheetContext): View {
-        TODO("not implemented")
-    }
+    override fun view(sheetContext : SheetContext): View =
+            NumberWidgetView.view(this, this.format(), sheetContext)
 
 
     // -----------------------------------------------------------------------------------------
@@ -931,9 +929,8 @@ data class NumberWidget(override val id : UUID,
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
-    override fun onSheetComponentActive(sheetContext: SheetContext) {
-        TODO("not implemented")
-    }
+    override fun onSheetComponentActive(sheetContext : SheetContext) =
+        this.addVariableToState(sheetContext.sheetId, this.valueVariable())
 
 
     // -----------------------------------------------------------------------------------------
@@ -949,7 +946,13 @@ data class NumberWidget(override val id : UUID,
         val numberEff = this.valueVariable().value(sheetContext)
         when (numberEff)
         {
-            is Val -> return numberEff.value.toString()
+            is Val ->
+            {
+                val number = numberEff.value
+                if ((number == Math.floor(number)))
+                    return number.toInt().toString()
+                return number.toString()
+            }
             is Err -> return "0"
         }
     }
@@ -1210,17 +1213,16 @@ data class TableWidget(override val id : UUID,
 
     fun format() : TableWidgetFormat = this.format.value
 
+    fun columns() : List<TableWidgetColumn> = this.columns.list
+
+    fun rows() : List<TableWidgetRow> = this.rows.list
+
 
     // -----------------------------------------------------------------------------------------
     // WIDGET
     // -----------------------------------------------------------------------------------------
 
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
-
-
-    override fun view(sheetContext: SheetContext): View {
-        TODO("not implemented")
-    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -1237,6 +1239,11 @@ data class TableWidget(override val id : UUID,
     override fun onSheetComponentActive(sheetContext: SheetContext) {
         TODO("not implemented")
     }
+
+
+    override fun view(sheetContext : SheetContext) : View =
+            TableWidgetView.view(this, this.format(), sheetContext)
+
 
 }
 
@@ -1348,7 +1355,7 @@ data class TextWidget(override val id : UUID,
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var viewId : Int = 0
+    var viewId : Int? = null
 
 
     // -----------------------------------------------------------------------------------------
@@ -1388,9 +1395,10 @@ data class TextWidget(override val id : UUID,
                          // Value
                          doc.at("value_variable") ap { TextVariable.fromDocument(it) },
                          // Variables
-                         doc.list("variables") ap { docList ->
-                             docList.mapSetMut { Variable.fromDocument(it) }
-                         })
+                         split(doc.maybeList("tags"),
+                               effValue<ValueError,MutableSet<Variable>>(mutableSetOf()),
+                               { it.mapSetMut { Variable.fromDocument(it)} })
+                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -1419,14 +1427,8 @@ data class TextWidget(override val id : UUID,
     override fun widgetFormat() : WidgetFormat = this.format().widgetFormat()
 
 
-    override fun view(sheetContext: SheetContext): View
-    {
-        val view = TextWidgetView.view(this, this.format(), sheetContext)
-
-        this.viewId = view.id
-
-        return view
-    }
+    override fun view(sheetContext : SheetContext) : View =
+        TextWidgetView.view(this, this.format(), sheetContext)
 
 
     // -----------------------------------------------------------------------------------------
@@ -1442,6 +1444,25 @@ data class TextWidget(override val id : UUID,
 
     override fun onSheetComponentActive(sheetContext : SheetContext) =
         this.addVariableToState(sheetContext.sheetId, this.valueVariable())
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
+
+    /**
+     * The string representation of the widget's current value. This method returns 0 when the
+     * value is null for some reason.
+     */
+    fun valueString(sheetContext : SheetContext) : String
+    {
+        val stringEff = this.valueVariable().value(sheetContext)
+        when (stringEff)
+        {
+            is Val -> return stringEff.value
+            is Err -> return ""
+        }
+    }
 
 }
 

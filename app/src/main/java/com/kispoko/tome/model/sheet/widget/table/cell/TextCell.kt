@@ -2,13 +2,19 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
-import com.kispoko.tome.lib.functor.nullEff
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.widget.table.CellFormat
+import com.kispoko.tome.lib.ui.TextViewBuilder
+import com.kispoko.tome.model.sheet.style.TextStyle
+import com.kispoko.tome.model.sheet.widget.table.*
+import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
+import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
@@ -24,11 +30,18 @@ import java.util.*
  * Text Cell Format
  */
 data class TextCellFormat(override val id : UUID,
-                          val cellFormat : Func<CellFormat>) : Model
+                          val cellFormat : Comp<CellFormat>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TextCellFormat>
     {
+
+        private val defaultCellFormat = CellFormat.default
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextCellFormat> = when (doc)
         {
             is DocDict -> effApply(::TextCellFormat,
@@ -36,14 +49,98 @@ data class TextCellFormat(override val id : UUID,
                                    effValue(UUID.randomUUID()),
                                    // Cell Format
                                    split(doc.maybeAt("cell_format"),
-                                         nullEff<CellFormat>(),
+                                         effValue(Comp.default(defaultCellFormat)),
                                          { effApply(::Comp, CellFormat.fromDocument(it)) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : TextCellFormat =
+                TextCellFormat(UUID.randomUUID(), Comp.default(defaultCellFormat))
+
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun cellFormat() : CellFormat = this.cellFormat.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // RESOLVERS
+    // -----------------------------------------------------------------------------------------
+
+    fun resolveTextStyle(columnFormat : TextColumnFormat) : TextStyle
+    {
+        if (this.cellFormat().textStyle.isDefault())
+            return this.cellFormat().textStyle()
+
+        return columnFormat.columnFormat().textStyle()
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+}
+
+
+object TextCellView
+{
+
+    fun view(cell : TableWidgetTextCell,
+             rowFormat : TableWidgetRowFormat,
+             column : TableWidgetTextColumn,
+             cellFormat : TextCellFormat,
+             sheetContext : SheetContext) : View
+    {
+        val layout = TableWidgetCellView.layout(rowFormat,
+                                                column.format().columnFormat(),
+                                                cellFormat.cellFormat(),
+                                                sheetContext)
+
+        layout.addView(this.valueTextView(cell, cellFormat, column, sheetContext))
+
+        return layout
+    }
+
+
+    private fun valueTextView(cell : TableWidgetTextCell,
+                              cellFormat : TextCellFormat,
+                              column : TableWidgetTextColumn,
+                              sheetContext : SheetContext) : TextView
+    {
+        val value           = TextViewBuilder()
+
+        // > VIEW ID
+        val viewId          = Util.generateViewId()
+        cell.viewId         = Just(viewId)
+        value.id            = viewId
+
+        // > LAYOUT
+        value.width         = LinearLayout.LayoutParams.WRAP_CONTENT
+        value.height        = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        val valueStyle      = cellFormat.resolveTextStyle(column.format())
+        valueStyle.styleTextViewBuilder(value, sheetContext)
+
+        // > VALUE
+        val cellValue = cell.valueString(sheetContext)
+        when (cellValue)
+        {
+            is Just -> value.text = cellValue.value
+        }
+        //value.text = column.defaultValue();
+
+        return value.textView(sheetContext.context)
+    }
+
 
 }
 
@@ -187,57 +284,7 @@ data class TextCellFormat(override val id : UUID,
 //    }
 //
 //
-//    // > View
-//    // ------------------------------------------------------------------------------------------
-//
-//    public LinearLayout view(TextColumn column, TableRowFormat rowFormat, final Context context)
-//    {
-//        this.column = column;
-//
-//        TextStyle valuestyle = this.format().resolveStyle(column.style());
-//
-//        LinearLayout layout = this.layout(column, valuestyle.size(),
-//                                          rowFormat.cellHeight(), context);
-//
-//        layout.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View view)
-//            {
-//                onTextCellShortClick(context);
-//            }
-//        });
-//
-//        // > Text
-//        layout.addView(valueTextView(column, context));
-//
-//        return layout;
-//    }
-//
-//
-//    private TextView valueTextView(TextColumn column, Context context)
-//    {
-//        TextViewBuilder value = new TextViewBuilder();
-//        this.valueViewId = Util.generateViewId();
-//
-//
-//        value.id         = this.valueViewId;
-//        value.width      = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        value.height     = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        TextStyle valuestyle = this.format().resolveStyle(column.style());
-//        valuestyle.styleTextViewBuilder(value, context);
-//
-//        // > Value
-//        if (this.value() != null)
-//            value.text = this.value();
-//        else
-//            value.text = column.defaultValue();
-//
-//        return value.textView(context);
-//    }
-//
-//
+
 //    // > Dialog
 //    // ------------------------------------------------------------------------------------------
 //

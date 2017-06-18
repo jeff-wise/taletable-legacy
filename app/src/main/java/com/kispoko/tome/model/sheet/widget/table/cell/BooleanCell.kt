@@ -2,17 +2,30 @@
 package com.kispoko.tome.model.sheet.widget.table.cell
 
 
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TableRow
+import android.widget.TextView
+import com.kispoko.tome.R
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.ui.ImageViewBuilder
+import com.kispoko.tome.lib.ui.LayoutType
+import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.sheet.widget.table.CellFormat
+import com.kispoko.tome.model.sheet.widget.table.*
+import com.kispoko.tome.model.sheet.widget.table.column.BooleanColumnFormat
+import com.kispoko.tome.rts.sheet.SheetContext
+import com.kispoko.tome.rts.sheet.SheetManager
 import effect.*
 import lulo.document.DocDict
 import lulo.document.DocType
 import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.util.*
 
@@ -22,168 +35,299 @@ import java.util.*
  * Boolean Cell Format
  */
 data class BooleanCellFormat(override val id : UUID,
-                             val cellFormat : Func<CellFormat>,
-                             val trueStyle : Func<TextStyle>,
-                             val falseStyle : Func<TextStyle>,
-                             val showTrueIcon : Func<Boolean>,
-                             val showFalseIcon : Func<Boolean>) : Model
+                             val cellFormat : Comp<CellFormat>,
+                             val trueStyle : Maybe<Comp<TextStyle>>,
+                             val falseStyle : Maybe<Comp<TextStyle>>,
+                             val trueText : Prim<String>,
+                             val falseText : Prim<String>,
+                             val showTrueIcon : Prim<Boolean>,
+                             val showFalseIcon : Prim<Boolean>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<BooleanCellFormat>
     {
+
+        private val defaultCellFormat    = CellFormat.default
+        private val defaultTrueText      = "True"
+        private val defaultFalseText     = "False"
+        private val defaultShowTrueIcon  = false
+        private val defaultShowFalseIcon = false
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanCellFormat> = when (doc)
         {
-            is DocDict -> effApply(::BooleanCellFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Column Format
-                                   split(doc.maybeAt("cell_format"),
-                                         nullEff<CellFormat>(),
-                                         { effApply(::Comp, CellFormat.fromDocument(it)) }),
-                                   // True Style
-                                   split(doc.maybeAt("true_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it)) }),
-                                   // False Style
-                                   split(doc.maybeAt("false_style"),
-                                         nullEff<TextStyle>(),
-                                         { effApply(::Comp, TextStyle.fromDocument(it))  }),
-                                   // Show True Icon?
-                                   split(doc.maybeBoolean("show_true_icon"),
-                                         nullEff<Boolean>(),
-                                         { effValue(Prim(it))  }),
-                                   // Show True Icon?
-                                   split(doc.maybeBoolean("show_false_icon"),
-                                         nullEff<Boolean>(),
-                                         { effValue(Prim(it))  })
-                                   )
+            is DocDict ->
+            {
+                effApply(::BooleanCellFormat,
+                         // Model Id
+                         effValue(UUID.randomUUID()),
+                         // Cell Format
+                         split(doc.maybeAt("cell_format"),
+                               effValue(Comp.default(defaultCellFormat)),
+                               { effApply(::Comp, CellFormat.fromDocument(it)) }),
+                         // True Style
+                         split(doc.maybeAt("true_style"),
+                               effValue(Nothing()),
+                               { TextStyle.fromDocument(it) ap {
+                                   effValue<ValueError,Maybe<Comp<TextStyle>>>(Just(Comp(it)))} }),
+                         // False Style
+                         split(doc.maybeAt("false_style"),
+                               effValue(Nothing()),
+                               { TextStyle.fromDocument(it) ap {
+                                    effValue<ValueError,Maybe<Comp<TextStyle>>>(Just(Comp(it)))} }),
+                         // True Text
+                         split(doc.maybeText("true_text"),
+                               effValue(Prim.default(defaultTrueText)),
+                               { effValue(Prim(it)) }),
+                         // False Text
+                         split(doc.maybeText("false_text"),
+                               effValue(Prim.default(defaultFalseText)),
+                               { effValue(Prim(it)) }),
+                         // Show True Icon?
+                         split(doc.maybeBoolean("show_true_icon"),
+                               effValue(Prim.default(defaultShowTrueIcon)),
+                               { effValue(Prim(it)) }),
+                         // Show False Icon?
+                         split(doc.maybeBoolean("show_false_icon"),
+                               effValue(Prim.default(defaultShowFalseIcon)),
+                               { effValue(Prim(it)) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
+
+
+        val default : BooleanCellFormat =
+                BooleanCellFormat(UUID.randomUUID(),
+                                  Comp.default(defaultCellFormat),
+                                  Nothing<Comp<TextStyle>>(),
+                                  Nothing<Comp<TextStyle>>(),
+                                  Prim.default(defaultTrueText),
+                                  Prim.default(defaultFalseText),
+                                  Prim.default(defaultShowTrueIcon),
+                                  Prim.default(defaultShowFalseIcon))
+
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun cellFormat() : CellFormat = this.cellFormat.value
+
+    fun trueStyle() : Maybe<TextStyle> = getMaybeComp(this.trueStyle)
+
+    fun falseStyle() : Maybe<TextStyle> = getMaybeComp(this.falseStyle)
+
+    fun trueText() : String = this.trueText.value
+
+    fun falseText() : String = this.falseText.value
+
+    fun showTrueIcon() : Boolean = this.showTrueIcon.value
+
+    fun showFalseIcon() : Boolean = this.showFalseIcon.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // RESOLVERS
+    // -----------------------------------------------------------------------------------------
+
+    fun resolveTextStyle(columnFormat : BooleanColumnFormat) : TextStyle
+    {
+        if (this.cellFormat().textStyle.isDefault())
+            return this.cellFormat().textStyle()
+
+        return columnFormat.columnFormat().textStyle()
+    }
+
+
+    fun resolveTrueStyle(columnFormat : BooleanColumnFormat) : TextStyle?
+    {
+        when (this.trueStyle) {
+            is Just -> return this.trueStyle.value.value
+        }
+
+        when (columnFormat.trueStyle) {
+            is Just -> return columnFormat.trueStyle.value.value
+        }
+
+        return null
+    }
+
+
+    fun resolveFalseStyle(columnFormat : BooleanColumnFormat) : TextStyle?
+    {
+        when (this.falseStyle) {
+            is Just -> return this.falseStyle.value.value
+        }
+
+        when (columnFormat.falseStyle) {
+            is Just -> return columnFormat.falseStyle.value.value
+        }
+
+        return null
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
 
 }
 
 
+object BooleanCellView
+{
+
+    fun view(cell : TableWidgetBooleanCell,
+             rowFormat : TableWidgetRowFormat,
+             column : TableWidgetBooleanColumn,
+             cellFormat : BooleanCellFormat,
+             sheetContext : SheetContext) : View
+    {
+
+        val layout = TableWidgetCellView.layout(rowFormat,
+                                                column.format().columnFormat(),
+                                                cellFormat.cellFormat(),
+                                                sheetContext)
+
+//        if (cellFormat.showTrueIcon() || columnFormat.showTrueIcon())
+//        {
+//            layout.addView(this.valueIconView(context))
+//        }
+
+        // > Text View
+        // -------------------------------------------------------------------------------------
+
+        val valueView = this.valueTextView(cell, column, cellFormat, sheetContext)
+        layout.addView(valueView)
+
+//        valueView.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick(View v)
+//            {
+//                if (value())
+//                {
+//                    valueVariable().setValue(false);
+//                    valueView.setText(falseText);
 //
+//                    // No false style, but need to undo true style
+//                    if (falseStyle == null && trueStyle != null && defaultStyle != null) {
+//                        defaultStyle.styleTextView(valueView, context);
+//                    }
+//                    // Set false style
+//                    else if (falseStyle != null) {
+//                        falseStyle.styleTextView(valueView, context);
+//                    }
 //
+//                }
+//                else
+//                {
+//                    valueVariable().setValue(true);
+//                    valueView.setText(trueText);
 //
-//    // > Internal
-//    // ------------------------------------------------------------------------------------------
-//
-//    private Integer                         valueViewId;
-//
-//    private String                          trueText;
-//    private String                          falseText;
-//
-//    // ** Column State
-//
-//    private TextStyle                       defaultStyle;
-//    private TextStyle                       trueStyle;
-//    private TextStyle                       falseStyle;
-//
-//    private UUID                            parentTableWidgetId;
-//    private UUID                            unionId;
-//
-//
-//    // CONSTRUCTORS
-//    // ------------------------------------------------------------------------------------------
-//
-//    public BooleanCell()
-//    {
-//        this.id             = null;
-//
-//        this.valueVariable  = ModelFunctor.empty(BooleanVariable.class);
-//        this.format         = ModelFunctor.empty(BooleanCellFormat.class);
-//    }
-//
-//
-//    public BooleanCell(UUID id,
-//                       BooleanVariable valueVariable,
-//                       BooleanCellFormat format)
-//    {
-//        // ** Id
-//        this.id             = id;
-//
-//        // ** Value
-//        this.valueVariable  = ModelFunctor.full(valueVariable, BooleanVariable.class);
-//
-//        // ** Format
-//        this.format         = ModelFunctor.full(format, BooleanCellFormat.class);
-//
-//        initializeBooleanCell();
-//    }
-//
-//
-//    public static BooleanCell fromYaml(YamlParser yaml)
-//                  throws YamlParseException
-//    {
-//        UUID              id     = UUID.randomUUID();
-//
-//        BooleanVariable   value  = BooleanVariable.fromYaml(yaml.atMaybeKey("value"));
-//        BooleanCellFormat format = BooleanCellFormat.fromYaml(yaml.atMaybeKey("format"));
-//
-//        return new BooleanCell(id, value, format);
-//    }
-//
-//
-//
-//    // API
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Model
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Id
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the model identifier.
-//     * @return The model UUID.
-//     */
-//    public UUID getId()
-//    {
-//        return this.id;
-//    }
-//
-//
-//    /**
-//     * Set the model identifier.
-//     * @param id The new model UUID.
-//     */
-//    public void setId(UUID id)
-//    {
-//        this.id = id;
-//    }
-//
-//
-//    // ** On Load
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * This method is called when the Boolean Cell is completely loaded for the first time.
-//     */
-//    public void onLoad()
-//    {
-//        initializeBooleanCell();
-//    }
-//
-//
-//    // > To Yaml
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The Boolean Cell's yaml representation.
-//     * @return The Yaml Builder.
-//     */
-//    public YamlBuilder toYaml()
-//    {
-//        return YamlBuilder.map()
-//                .putYaml("value", this.valueVariable())
-//                .putYaml("format", this.format());
-//    }
-//
+//                    // No true style, but need to undo false style
+//                    if (trueStyle == null && falseStyle != null && defaultStyle != null) {
+//                        defaultStyle.styleTextView(valueView, context);
+//                    }
+//                    // Set true style
+//                    else if (trueStyle != null) {
+//                        trueStyle.styleTextView(valueView, context);
+//                    }
+//                }
+//            }
+//        });
+
+
+        return layout
+    }
+
+
+
+    private fun valueIconView(cell : TableWidgetBooleanCell,
+                              columnFormat : BooleanColumnFormat,
+                              cellFormat : BooleanCellFormat,
+                              sheetContext : SheetContext) : ImageView
+    {
+        val icon = ImageViewBuilder()
+
+        // > LAYOUT
+        icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT
+        icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT
+
+        // > IMAGE
+        if (cell.value())
+            icon.image      = R.drawable.ic_boolean_cell_true
+        else
+            icon.image      = R.drawable.ic_boolean_cell_false
+
+        // > MARGINS
+        icon.margin.rightDp = 4f
+
+        // > COLOR
+        val trueStyle   = cellFormat.resolveTrueStyle(columnFormat)
+        val falseStyle  = cellFormat.resolveFalseStyle(columnFormat)
+        val normalStyle = cellFormat.resolveTextStyle(columnFormat)
+        if (cell.value() && trueStyle != null)
+        {
+            icon.color      = SheetManager.color(sheetContext.sheetId, trueStyle.colorTheme())
+        }
+        else if (!cell.value() && falseStyle != null)
+        {
+            icon.color      = SheetManager.color(sheetContext.sheetId, falseStyle.colorTheme())
+        }
+        else
+        {
+            icon.color      = SheetManager.color(sheetContext.sheetId, normalStyle.colorTheme())
+        }
+
+        return icon.imageView(sheetContext.context)
+    }
+
+
+    private fun valueTextView(cell : TableWidgetBooleanCell,
+                              column : TableWidgetBooleanColumn,
+                              cellFormat : BooleanCellFormat,
+                              sheetContext : SheetContext) : TextView
+    {
+        val value = TextViewBuilder()
+
+        value.layoutType        = LayoutType.TABLE_ROW
+        value.width             = TableRow.LayoutParams.WRAP_CONTENT
+        value.height            = TableRow.LayoutParams.WRAP_CONTENT
+
+        // > VALUE
+        if (cell.value())
+            value.text          = column.trueText()
+        else
+            value.text          = column.falseText()
+
+        // > STYLE
+        val defaultStyle  = cellFormat.resolveTextStyle(column.format())
+        val trueStyle     = cellFormat.resolveTrueStyle(column.format())
+        val falseStyle    = cellFormat.resolveFalseStyle(column.format())
+
+        if (cell.value() && trueStyle != null)
+            trueStyle.styleTextViewBuilder(value, sheetContext)
+        else if (!cell.value() && falseStyle != null)
+            falseStyle.styleTextViewBuilder(value, sheetContext)
+        else
+            defaultStyle.styleTextViewBuilder(value, sheetContext)
+
+        return value.textView(sheetContext.context)
+    }
+
+
+}
+
 //
 //    // > Initialize
 //    // ------------------------------------------------------------------------------------------
@@ -234,246 +378,7 @@ data class BooleanCellFormat(override val id : UUID,
 //        this.trueText           = column.trueText();
 //        this.falseText          = column.falseText();
 //    }
-//
-//
-//    // > Cell
-//    // ------------------------------------------------------------------------------------------
-//
-//    @Override
-//    public Alignment alignment()
-//    {
-//        return this.format().alignment();
-//    }
-//
-//
-//    @Override
-//    public BackgroundColor background()
-//    {
-//        return this.format().background();
-//    }
-//
-//
-//    @Override
-//    public UUID parentTableWidgetId()
-//    {
-//        return this.parentTableWidgetId;
-//    }
-//
-//
-//    @Override
-//    public void setUnionId(UUID unionId)
-//    {
-//        this.unionId = unionId;
-//    }
-//
-//
-//    @Override
-//    public UUID unionId()
-//    {
-//        return this.unionId;
-//    }
-//
-//
-//    /**
-//     * The cell's variables that may be in a namespace.
-//     * @return The variable list.
-//     */
-//    public List<Variable> namespacedVariables()
-//    {
-//        List<Variable> variables = new ArrayList<>();
-//
-//        if (this.valueVariable().isNamespaced())
-//            variables.add(this.valueVariable());
-//
-//        return variables;
-//    }
-//
-//
-//    @Override
-//    public void openEditor(AppCompatActivity activity) { }
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Value
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the boolean variable that contains the value of the boolean cell.
-//     * @return The Number Variable value.
-//     */
-//    public BooleanVariable valueVariable()
-//    {
-//        return this.valueVariable.getValue();
-//    }
-//
-//
-//    public Boolean value()
-//    {
-//        if (!this.valueVariable.isNull())
-//            return this.valueVariable().value();
-//        return null;
-//    }
-//
-//
-//    // ** Format
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The cell's formatting options.
-//     * @return The format.
-//     */
-//    public BooleanCellFormat format()
-//    {
-//        return this.format.getValue();
-//    }
-//
-//
-//    // > View
-//    // ------------------------------------------------------------------------------------------
-//
-//    public View view(BooleanColumn column, TableRowFormat rowFormat, final Context context)
-//    {
-//        this.setColumnState(column);
-//
-//        final LinearLayout valueView = valueView(column, rowFormat, context);
-//
-//        return valueView;
-//    }
-//
-//
-//    private LinearLayout valueView(BooleanColumn column,
-//                                   TableRowFormat rowFormat,
-//                                   final Context context)
-//    {
-//        TextStyle textStyle = this.format().resolveStyle(column.format().style());
-//
-//        LinearLayout layout = this.layout(column, textStyle.size(),
-//                                          rowFormat.cellHeight(), context);
-//
-//        if ((this.value() && this.format().showTrueIcon()) ||
-//            (!this.value() && this.format().showFalseIcon()))
-//        {
-//            layout.addView(valueIconView(context));
-//        }
-//
-//        // > Text View
-//        // -------------------------------------------------------------------------------------
-//
-//        final TextView valueView = valueTextView(column, context);
-//        layout.addView(valueView);
-//
-//        valueView.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                if (value())
-//                {
-//                    valueVariable().setValue(false);
-//                    valueView.setText(falseText);
-//
-//                    // No false style, but need to undo true style
-//                    if (falseStyle == null && trueStyle != null && defaultStyle != null) {
-//                        defaultStyle.styleTextView(valueView, context);
-//                    }
-//                    // Set false style
-//                    else if (falseStyle != null) {
-//                        falseStyle.styleTextView(valueView, context);
-//                    }
-//
-//                }
-//                else
-//                {
-//                    valueVariable().setValue(true);
-//                    valueView.setText(trueText);
-//
-//                    // No true style, but need to undo false style
-//                    if (trueStyle == null && falseStyle != null && defaultStyle != null) {
-//                        defaultStyle.styleTextView(valueView, context);
-//                    }
-//                    // Set true style
-//                    else if (trueStyle != null) {
-//                        trueStyle.styleTextView(valueView, context);
-//                    }
-//                }
-//            }
-//        });
-//
-//
-//        return layout;
-//    }
-//
-//
-//    private ImageView valueIconView(Context context)
-//    {
-//        ImageViewBuilder icon = new ImageViewBuilder();
-//
-//        icon.width          = LinearLayout.LayoutParams.WRAP_CONTENT;
-//        icon.height         = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//        if (this.value())
-//            icon.image      = R.drawable.ic_boolean_cell_true;
-//        else
-//            icon.image      = R.drawable.ic_boolean_cell_false;
-//
-//        icon.margin.right   = R.dimen.four_dp;
-//
-//        if (this.value() && this.format().trueStyle() != null) {
-//            icon.color      = this.format().trueStyle().color().resourceId();
-//        }
-//        else if (!this.value() && this.format().falseStyle() != null) {
-//            icon.color      = this.format().falseStyle().color().resourceId();
-//        }
-//        else {
-//            icon.color      = this.format().style().color().resourceId();
-//        }
-//
-//        return icon.imageView(context);
-//    }
-//
-//
-//    /**
-//     * The cell's value text view.
-//     * @param context The context.
-//     * @return The value Text View.
-//     */
-//    private TextView valueTextView(BooleanColumn column, final Context context)
-//    {
-//        TextViewBuilder value = new TextViewBuilder();
-//
-//        value.layoutType        = LayoutType.TABLE_ROW;
-//        value.width             = TableRow.LayoutParams.WRAP_CONTENT;
-//        value.height            = TableRow.LayoutParams.WRAP_CONTENT;
-//
-//        // > Value
-//        if (this.value())
-//            value.text          = trueText;
-//        else
-//            value.text          = falseText;
-//
-//        // > Styles
-//        // -------------------------------------------------------------------------------------
-//
-//        TextStyle defaultStyle  = this.format().resolveStyle(column.format().style());
-//        TextStyle trueStyle     = this.format().resolveTrueStyle(column.format().trueStyle());
-//        TextStyle falseStyle    = this.format().resolveFalseStyle(column.format().falseStyle());
-//
-//        if (this.value() && trueStyle != null) {
-//            trueStyle.styleTextViewBuilder(value, context);
-//        }
-//        else if (!this.value() && falseStyle != null) {
-//            falseStyle.styleTextViewBuilder(value, context);
-//        }
-//        else {
-//            defaultStyle.styleTextViewBuilder(value, context);
-//        }
-//
-//        return value.textView(context);
-//    }
-//
-//
+
 //    // INTERNAL
 //    // ------------------------------------------------------------------------------------------
 //

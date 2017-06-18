@@ -23,14 +23,14 @@ import java.io.Serializable
 sealed class Height : Serializable
 {
 
-    class Wrap        : Height()
-    class VerySmall   : Height()
-    class Small       : Height()
-    class MediumSmall : Height()
-    class Medium      : Height()
-    class MediumLarge : Height()
-    class Large       : Height()
-    class VeryLarge   : Height()
+    object Wrap        : Height()
+    object VerySmall   : Height()
+    object Small       : Height()
+    object MediumSmall : Height()
+    object Medium      : Height()
+    object MediumLarge : Height()
+    object Large       : Height()
+    object VeryLarge   : Height()
 
 
     companion object
@@ -39,14 +39,14 @@ sealed class Height : Serializable
         {
             is DocText -> when (doc.text)
             {
-                "wrap"         -> effValue<ValueError,Height>(Height.Wrap())
-                "very_small"   -> effValue<ValueError,Height>(Height.VerySmall())
-                "small"        -> effValue<ValueError,Height>(Height.Small())
-                "medium_small" -> effValue<ValueError,Height>(Height.MediumSmall())
-                "medium"       -> effValue<ValueError,Height>(Height.Medium())
-                "medium_large" -> effValue<ValueError,Height>(Height.MediumLarge())
-                "large"        -> effValue<ValueError,Height>(Height.Large())
-                "very_large"   -> effValue<ValueError,Height>(Height.VeryLarge())
+                "wrap"         -> effValue<ValueError,Height>(Height.Wrap)
+                "very_small"   -> effValue<ValueError,Height>(Height.VerySmall)
+                "small"        -> effValue<ValueError,Height>(Height.Small)
+                "medium_small" -> effValue<ValueError,Height>(Height.MediumSmall)
+                "medium"       -> effValue<ValueError,Height>(Height.Medium)
+                "medium_large" -> effValue<ValueError,Height>(Height.MediumLarge)
+                "large"        -> effValue<ValueError,Height>(Height.Large)
+                "very_large"   -> effValue<ValueError,Height>(Height.VeryLarge)
                 else           -> effError<ValueError,Height>(
                                         UnexpectedValue("Height", doc.text, doc.path))
             }

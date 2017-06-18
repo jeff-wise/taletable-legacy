@@ -2,20 +2,31 @@
 package com.kispoko.tome.activity.sheet
 
 
+import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
+import android.view.WindowManager
+import android.widget.ImageButton
+import android.widget.TextView
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.load.LoadResultError
 import com.kispoko.tome.load.LoadResultValue
 import com.kispoko.tome.model.game.engine.variable.VariableId
-import com.kispoko.tome.model.sheet.Sheet
 import com.kispoko.tome.model.sheet.SheetId
+import com.kispoko.tome.model.theme.UIColors
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.configureToolbar
@@ -29,14 +40,15 @@ import kotlinx.coroutines.experimental.launch
 /**
  * Sheet Activity
  */
-class SheetActivity : AppCompatActivity()
+class SheetActivity : AppCompatActivity(), SheetUI
 {
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
     // -----------------------------------------------------------------------------------------
 
-    var pagePagerAdapter: PagePagerAdapter? = null
+    var pagePagerAdapter : PagePagerAdapter? = null
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -79,7 +91,7 @@ class SheetActivity : AppCompatActivity()
     // UI
     // -----------------------------------------------------------------------------------------
 
-    fun initializeViews()
+    private fun initializeViews()
     {
         val sheetPagePagerAdapter = PagePagerAdapter(supportFragmentManager)
         this.pagePagerAdapter = sheetPagePagerAdapter
@@ -92,6 +104,113 @@ class SheetActivity : AppCompatActivity()
     }
 
 
+    private fun configureBottomNavigation(sheetId : SheetId, uiColors : UIColors)
+    {
+        val bottomNavigation = this.findViewById(R.id.bottom_navigation) as AHBottomNavigation
+
+        val sheetEff = SheetManager.sheet(sheetId)
+
+        when (sheetEff)
+        {
+            is Val ->
+            {
+                val sheet = sheetEff.value
+
+                val section1 = sheet.sections()[0]
+                val item1 = AHBottomNavigationItem(section1.nameString(),
+                                                   R.drawable.ic_bottom_nav_profile)
+                val section2 = sheet.sections()[1]
+                val item2 = AHBottomNavigationItem(section2.nameString(),
+                                                   R.drawable.ic_bottom_nav_campaign)
+                val section3 = sheet.sections()[2]
+                val item3 = AHBottomNavigationItem(section3.nameString(),
+                                                   R.drawable.ic_bottom_nav_encounter)
+
+                bottomNavigation.addItem(item1)
+                bottomNavigation.addItem(item2)
+                bottomNavigation.addItem(item3)
+
+                bottomNavigation.defaultBackgroundColor =
+                                SheetManager.color(sheetId, uiColors.bottomBarBackgroundColorId())
+                bottomNavigation.accentColor =
+                                SheetManager.color(sheetId, uiColors.bottomBarActiveColorId())
+                bottomNavigation.inactiveColor =
+                                SheetManager.color(sheetId, uiColors.bottomBarInactiveColorId())
+            }
+            is Err -> ApplicationLog.error(sheetEff.error)
+        }
+
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SHEET UI
+    // -----------------------------------------------------------------------------------------
+
+    override fun pagePagerAdatper() : PagePagerAdapter = this.pagePagerAdapter!!
+
+
+    override fun applyTheme(sheetId : SheetId, uiColors : UIColors)
+    {
+        // STATUS BAR
+        // -------------------------------------------------------------------------------------
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            val window = this.window
+
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
+            window.statusBarColor = SheetManager.color(sheetId, uiColors.toolbarColorId())
+        }
+
+        // TOOLBAR
+        // -------------------------------------------------------------------------------------
+        val toolbar = findViewById(R.id.toolbar) as Toolbar
+
+        // Toolbar > Background
+        toolbar.setBackgroundColor(SheetManager.color(sheetId, uiColors.toolbarColorId()))
+
+        // Toolbar > Icons
+        var iconColor = SheetManager.color(sheetId, uiColors.toolbarIconsColorId())
+
+        val menuLeftButton = this.findViewById(R.id.menuLeft) as ImageButton
+        menuLeftButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        val menuRightButton = this.findViewById(R.id.menuRight) as ImageButton
+        menuRightButton.colorFilter = PorterDuffColorFilter(iconColor, PorterDuff.Mode.SRC_IN)
+
+        // TITLE
+        // -------------------------------------------------------------------------------------
+        val titleView = this.findViewById(R.id.toolbar_title) as TextView
+        titleView.setTextColor(SheetManager.color(sheetId, uiColors.titleColorId()))
+
+        // TAB LAYOUT
+        // -------------------------------------------------------------------------------------
+        val tabLayout = this.findViewById(R.id.tab_layout) as CustomTabLayout
+
+        // Tab Layout > Background
+        tabLayout.setBackgroundColor(SheetManager.color(sheetId, uiColors.tabBarColorId()))
+
+        // Tab Layout > Text
+        tabLayout.setTabTextColors(SheetManager.color(sheetId, uiColors.tabTextNormalColorId()),
+                                   SheetManager.color(sheetId, uiColors.tabTextSelectedColorId()))
+
+        // Tab Layout > Underline
+        tabLayout.setSelectedTabIndicatorColor(
+                SheetManager.color(sheetId, uiColors.tabUnderlineColorId()))
+
+        // BOTTOM NAVIGATION VIEW
+        // -------------------------------------------------------------------------------------
+        val bottomNavView = this.findViewById(R.id.bottom_navigation)
+
+        this.configureBottomNavigation(sheetId, uiColors)
+    }
+
+
+    override fun context() : Context = this
+
+
     // SHEET
     // -----------------------------------------------------------------------------------------
 
@@ -101,47 +220,34 @@ class SheetActivity : AppCompatActivity()
         if (officialSheet != null)
         {
             val sheetActivity : AppCompatActivity = this
+            val sheetUI : SheetUI = this
             launch(UI) {
-                val sheetRecordLoad = SheetManager.loadOfficialSheet(officialSheet,
-                                                                 officialIndex,
-                                                                 sheetActivity)
+                val sheetLoad = SheetManager.loadOfficialSheet(officialSheet,
+                                                                     officialIndex,
+                                                                     sheetActivity)
 
-                when (sheetRecordLoad)
+                when (sheetLoad)
                 {
                     is LoadResultValue ->
                     {
-                        val sheetRecord = sheetRecordLoad.sheetRecord
+                        val sheet = sheetLoad.sheetRecord
 
-                        sheetRecord.onActive(sheetActivity)
+                        SheetManager.setNewSheet(sheet, sheetUI)
 
-                        val nameVariable = sheetRecord.state
-                                                      .textVariableWithId(VariableId("name"))
-                        val sheetContext = sheetRecord.context(sheetActivity)
+                        val characterName =
+                                SheetManager.sheetRecord(sheet.sheetId()) apply { sheetRecord ->
+                                    val sheetContext = sheetRecord.context(sheetActivity)
+                                    sheetRecord.state.textVariableWithId(VariableId("name"))
+                                            .applyWith({ textVar, ctx -> textVar.value(ctx)}, sheetContext)
+                                }
 
-                        when (sheetContext)
+                        when (characterName)
                         {
-                            is Val ->
-                            {
-                                if (nameVariable != null)
-                                {
-                                    // TODO use maybe here
-                                    val nameString = nameVariable.value(sheetContext.value)
-                                    if (nameString != null)
-                                        sheetActivity.configureToolbar(nameString)
-                                    else
-                                        Log.d("***SHEET_ACTIVITY", "name was null")
-                                }
-                                else
-                                {
-                                    Log.d("***SHEET_ACTIVITY", "name variable was null")
-                                }
-                            }
-                            is Err -> ApplicationLog.error(sheetContext.error)
+                            is Val -> sheetActivity.configureToolbar(characterName.value)
+                            is Err -> ApplicationLog.error(characterName.error)
                         }
-
-                        SheetManager.render(sheetRecord.sheet.sheetId(), pagePagerAdapter!!)
                     }
-                    is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetRecordLoad.userMessage)
+                    is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetLoad.userMessage)
                 }
 
             }

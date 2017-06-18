@@ -51,13 +51,15 @@ data class Program(override val id : UUID,
                                { effApply(::Prim, ProgramDescription.fromDocument(it)) }),
                          // Parameter Types
                          doc.list("parameter_types") ap { docList ->
-                             effApply(::Prim, docList.enumList<EngineValueType>())
+                             effApply(::Prim, docList.map { EngineValueType.fromDocument(it) } )
                          },
                          // Result Type
-                         effApply(::Prim, doc.enum<EngineValueType>("result_type")),
+                         doc.at("result_type") apply {
+                             effApply(::Prim, EngineValueType.fromDocument(it))
+                         },
                          // Statements
                          doc.list("statements") ap { docList ->
-                             effApply(::Coll, docList.map { Statement.fromDocument(it) })
+                             effApply(::Coll, docList.mapMut { Statement.fromDocument(it) })
                          },
                          doc.at("result_statement") ap {
                              effApply(::Comp, Statement.fromDocument(it) )
