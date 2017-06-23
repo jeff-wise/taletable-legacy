@@ -5,13 +5,21 @@ package com.kispoko.tome.model.game.engine.mechanic
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLBlob
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.variable.Variable
-import com.kispoko.tome.model.game.engine.variable.VariableName
+import com.kispoko.tome.model.game.engine.variable.VariableId
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import org.apache.commons.lang3.SerializationUtils
+import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 
@@ -19,60 +27,96 @@ import java.util.*
  * Mechanic
  */
 data class Mechanic(override val id : UUID,
-                    val name : Func<MechanicName>,
-                    val label : Func<MechanicLabel>,
-                    val description : Func<MechanicDescription>,
-                    val summary : Func<MechanicSummary>,
-                    val category : Func<MechanicCategory>,
-                    val requirements : Func<List<VariableName>>,
+                    val mechanicName : Prim<MechanicName>,
+                    val label : Prim<MechanicLabel>,
+                    val description : Prim<MechanicDescription>,
+                    val summary : Prim<MechanicSummary>,
+                    val category : Maybe<Prim<MechanicCategory>>,
+                    val requirements : Prim<MechanicRequirements>,
                     val variables : Coll<Variable>) : Model
 {
 
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.mechanicName.name                  = "mechanic_name"
+        this.label.name                         = "label"
+        this.description.name                   = "description"
+        this.summary.name                       = "summary"
+
+        when (this.category) {
+            is Just -> this.category.value.name = "category"
+        }
+
+        this.requirements.name                  = "requirements"
+        this.variables.name                     = "variables"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(mechanicName : MechanicName,
+                label : MechanicLabel,
+                description : MechanicDescription,
+                summary : MechanicSummary,
+                category : Maybe<MechanicCategory>,
+                requirements : MechanicRequirements,
+                variables : MutableList<Variable>)
+        : this(UUID.randomUUID(),
+               Prim(mechanicName),
+               Prim(label),
+               Prim(description),
+               Prim(summary),
+               maybeLiftPrim(category),
+               Prim(requirements),
+               Coll(variables))
+
+
     companion object : Factory<Mechanic>
     {
-        override fun fromDocument(doc: SpecDoc): ValueParser<Mechanic>  = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<Mechanic>  = when (doc)
         {
             is DocDict ->
             {
                 effApply(::Mechanic,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Name
-                         doc.at("name") ap {
-                             effApply(::Prim, MechanicName.fromDocument(it))
-                         },
+                         doc.at("name") ap { MechanicName.fromDocument(it) },
                          // Label
-                         split(doc.maybeAt("label"),
-                               nullEff<MechanicLabel>(),
-                               { effApply(::Prim, MechanicLabel.fromDocument(it))}),
+                         doc.at("label") ap { MechanicLabel.fromDocument(it) },
                          // Description
-                         split(doc.maybeAt("description"),
-                               nullEff<MechanicDescription>(),
-                               { effApply(::Prim, MechanicDescription.fromDocument(it)) }),
+                         doc.at("description") ap { MechanicDescription.fromDocument(it) },
                          // Summary
-                         split(doc.maybeAt("summary"),
-                               nullEff<MechanicSummary>(),
-                               { effApply(::Prim, MechanicSummary.fromDocument(it)) }),
+                         doc.at("summary") ap { MechanicSummary.fromDocument(it) },
                          // Category
                          split(doc.maybeAt("category"),
-                               nullEff<MechanicCategory>(),
-                               { effApply(::Prim, MechanicCategory.fromDocument(it)) }),
+                               effValue<ValueError,Maybe<MechanicCategory>>(Nothing()),
+                               { effApply(::Just, MechanicCategory.fromDocument(it)) }),
                          // Requirements
-                         doc.list("requirements") ap { docList ->
-                             effApply(::Prim,
-                                docList.map { VariableName.fromDocument(it) })
-                         },
+                         doc.at("requirements") ap { MechanicRequirements.fromDocument(it) },
                          // Variables
                          doc.list("variables") ap { docList ->
-                             effApply(::Coll,
-                                     docList.mapMut { Variable.fromDocument(it) })
+                             docList.mapMut { Variable.fromDocument(it) }
                          })
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+    override val name : String = "mechanic"
+
+    override val modelObject = this
 
 }
 
@@ -80,8 +124,12 @@ data class Mechanic(override val id : UUID,
 /**
  * Mechanic Name
  */
-data class MechanicName(val value : String)
+data class MechanicName(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<MechanicName>
     {
@@ -91,14 +139,26 @@ data class MechanicName(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Mechanic Label
  */
-data class MechanicLabel(val value : String)
+data class MechanicLabel(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<MechanicLabel>
     {
@@ -108,14 +168,25 @@ data class MechanicLabel(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
 }
 
 
 /**
  * Mechanic Description
  */
-data class MechanicDescription(val value : String)
+data class MechanicDescription(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<MechanicDescription>
     {
@@ -125,14 +196,25 @@ data class MechanicDescription(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
 }
 
 
 /**
  * Mechanic Summary
  */
-data class MechanicSummary(val value : String)
+data class MechanicSummary(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<MechanicSummary>
     {
@@ -142,14 +224,25 @@ data class MechanicSummary(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
 }
 
 
 /**
  * Mechanic Category
  */
-data class MechanicCategory(val value : String)
+data class MechanicCategory(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<MechanicCategory>
     {
@@ -159,7 +252,44 @@ data class MechanicCategory(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
 }
+
+
+/**
+ * Mechanic Requirements
+ */
+data class MechanicRequirements(val variables : ArrayList<VariableId>)
+                : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<MechanicRequirements>
+    {
+        override fun fromDocument(doc : SpecDoc): ValueParser<MechanicRequirements> = when (doc)
+        {
+            is DocList -> effApply(::MechanicRequirements,
+                                   doc.mapArrayList { VariableId.fromDocument(it) })
+            else       -> effError(UnexpectedType(DocType.LIST, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({SerializationUtils.serialize(this.variables)})
+
+}
+
 
 
 //

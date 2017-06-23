@@ -21,7 +21,6 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
-import java.lang.Double.sum
 import java.util.*
 
 
@@ -32,6 +31,16 @@ import java.util.*
 data class Summation(override val id : UUID,
                      val terms : Conj<SummationTerm>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.terms.name = "terms"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -68,6 +77,10 @@ data class Summation(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name = "summation"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------

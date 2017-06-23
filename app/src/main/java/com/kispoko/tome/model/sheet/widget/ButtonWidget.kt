@@ -4,19 +4,22 @@ package com.kispoko.tome.model.sheet.widget
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.Position
 import com.kispoko.tome.model.sheet.style.TextStyle
-import com.kispoko.tome.model.theme.ColorId
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -24,18 +27,49 @@ import java.util.*
 /**
  * Button View Type
  */
-enum class ButtonViewType
+sealed class ButtonViewType : SQLSerializable, Serializable
 {
-    CIRCLE_ICON,
-    TEXT
+
+    object CIRCLE_ICON : ButtonViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"circle_icon"})
+    }
+
+
+    object TEXT : ButtonViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"text"})
+    }
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<ButtonViewType> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "circle_icon" -> effValue<ValueError,ButtonViewType>(ButtonViewType.CIRCLE_ICON)
+                "text"        -> effValue<ValueError,ButtonViewType>(ButtonViewType.TEXT)
+                else          -> effError<ValueError,ButtonViewType>(
+                                    UnexpectedValue("ButtonViewType", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
 }
+
 
 
 /**
  * Button Label
  */
-data class ButtonLabel(val value : String)
+data class ButtonLabel(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ButtonLabel>
     {
@@ -46,14 +80,26 @@ data class ButtonLabel(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Button Description
  */
-data class ButtonDescription(val value : String)
+data class ButtonDescription(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ButtonDescription>
     {
@@ -64,16 +110,50 @@ data class ButtonDescription(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Button Icons
  */
-enum class ButtonIcon
+sealed class ButtonIcon : SQLSerializable, Serializable
 {
-    HEART_PLUS,
-    HEART_MINUS
+
+    object HeartPlus : ButtonIcon()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"heart_plus"})
+    }
+
+
+    object HeartMinus : ButtonIcon()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"heart_minus"})
+    }
+
+
+    companion object
+    {
+        fun fromDocument(doc : SpecDoc) : ValueParser<ButtonIcon> = when (doc)
+        {
+            is DocText -> when (doc.text)
+            {
+                "heart_plus"  -> effValue<ValueError,ButtonIcon>(ButtonIcon.HeartPlus)
+                "heart_minus" -> effValue<ValueError,ButtonIcon>(ButtonIcon.HeartMinus)
+                else          -> effError<ValueError,ButtonIcon>(
+                                    UnexpectedValue("ButtonIcon", doc.text, doc.path))
+            }
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
 }
 
 
@@ -89,6 +169,22 @@ data class ButtonWidgetFormat(override val id : UUID,
                               val buttonColor : Prim<ColorTheme>,
                               val iconColor : Prim<ColorTheme>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name          = "widget_format"
+        this.height.name                = "height"
+        this.labelStyle.name            = "label_style"
+        this.descriptionStyle.name      = "description_style"
+        this.descriptionPosition.name   = "description_position"
+        this.buttonColor.name           = "button_color"
+        this.iconColor.name             = "button_color"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -118,7 +214,7 @@ data class ButtonWidgetFormat(override val id : UUID,
         private val defaultHeight              = Height.Wrap
         private val defaultLabelStyle          = TextStyle.default
         private val defaultDescriptionStyle    = TextStyle.default
-        private val defaultDescriptionPosition = Position.Top()
+        private val defaultDescriptionPosition = Position.Top
         private val defaultButtonColorTheme    = ColorTheme.black
         private val defaultIconColorTheme      = ColorTheme.black
 
@@ -175,6 +271,10 @@ data class ButtonWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "button_widget_format"
+
+    override val modelObject = this
 
 }
 

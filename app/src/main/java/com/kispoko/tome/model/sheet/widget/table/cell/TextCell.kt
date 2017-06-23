@@ -11,7 +11,6 @@ import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
-import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.sheet.widget.table.column.TextColumnFormat
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.util.Util
@@ -22,6 +21,7 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -30,8 +30,18 @@ import java.util.*
  * Text Cell Format
  */
 data class TextCellFormat(override val id : UUID,
-                          val cellFormat : Comp<CellFormat>) : Model
+                          val cellFormat : Comp<CellFormat>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.cellFormat.name        = "cell_format"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -87,6 +97,10 @@ data class TextCellFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name = "text_cell_format"
+
+    override val modelObject = this
 
 }
 

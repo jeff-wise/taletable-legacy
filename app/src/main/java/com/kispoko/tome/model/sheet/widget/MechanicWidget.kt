@@ -1,10 +1,10 @@
 
 package com.kispoko.tome.model.sheet.widget
 
+
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.game.engine.mechanic.Mechanic
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -22,8 +22,18 @@ import java.util.*
  * Mechanic Widget Format
  */
 data class MechanicWidgetFormat(override val id : UUID,
-                             val widgetFormat : Comp<WidgetFormat>) : Model
+                                val widgetFormat : Comp<WidgetFormat>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name      = "widget_format"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -57,6 +67,10 @@ data class MechanicWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "mechanic_widget_format"
+
+    override val modelObject = this
 
 }
 

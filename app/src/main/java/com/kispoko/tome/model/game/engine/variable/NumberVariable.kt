@@ -4,14 +4,19 @@ package com.kispoko.tome.model.game.engine.variable
 
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLReal
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.summation.Summation
 import com.kispoko.tome.model.game.engine.value.ValueNumber
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.rts.game.GameManager
-import com.kispoko.tome.rts.game.fromEngineEff
-import com.kispoko.tome.rts.game.fromGameEff
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
 import com.kispoko.tome.rts.sheet.SheetState
@@ -73,7 +78,8 @@ sealed class NumberVariableValue : Serializable
 /**
  * Literal Value
  */
-data class NumberVariableLiteralValue(val value : Double) : NumberVariableValue()
+data class NumberVariableLiteralValue(val value : Double)
+            : NumberVariableValue(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -96,13 +102,21 @@ data class NumberVariableLiteralValue(val value : Double) : NumberVariableValue(
 
     override fun value(sheetContext : SheetContext) : AppEff<Double> = effValue(this.value)
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLReal({ this.value })
+
 }
 
 
 /**
  * Variable Value
  */
-data class NumberVariableVariableValue(val variableId : VariableId) : NumberVariableValue()
+data class NumberVariableVariableValue(val variableId : VariableId)
+            : NumberVariableValue(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -140,14 +154,27 @@ data class NumberVariableVariableValue(val variableId : VariableId) : NumberVari
                 .apply(::variableValue)
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = this.variableId.asSQLValue()
+
+
 }
 
 
 /**
  * Program Value
  */
-data class NumberVariableProgramValue(val invocation : Invocation) : NumberVariableValue()
+data class NumberVariableProgramValue(val invocation : Invocation)
+            : NumberVariableValue(), Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberVariableValue>
     {
@@ -171,13 +198,27 @@ data class NumberVariableProgramValue(val invocation : Invocation) : NumberVaria
         TODO("not implemented")
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() = this.invocation.onLoad()
+
+    override val id = this.invocation.id
+
+    override val name = this.invocation.name
+
+    override val modelObject : Model = this.invocation
+
 }
 
 
 /**
  * Program Value
  */
-data class NumberVariableValueValue(val valueReference : ValueReference) : NumberVariableValue()
+data class NumberVariableValueValue(val valueReference : ValueReference)
+            : NumberVariableValue(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -208,13 +249,21 @@ data class NumberVariableValueValue(val valueReference : ValueReference) : Numbe
                           .apply(::doubleValue)
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = this.valueReference.asSQLValue()
+
 }
 
 
 /**
  * Summation Value
  */
-data class NumberVariableSummationValue(val summation : Summation) : NumberVariableValue()
+data class NumberVariableSummationValue(val summation : Summation)
+            : NumberVariableValue(), Model
 {
 
     companion object : Factory<NumberVariableValue>
@@ -238,200 +287,33 @@ data class NumberVariableSummationValue(val summation : Summation) : NumberVaria
     override fun value(sheetContext : SheetContext): AppEff<Double>
             = summation.value(sheetContext)
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() = this.summation.onLoad()
+
+    override val id = this.summation.id
+
+    override val name = this.summation.name
+
+    override val modelObject : Model = this.summation
+
 }
 
 
-//
-//
-//    @Override
-//    public List<VariableReference> dependencies()
-//    {
-//        List<VariableReference> variableDependencies = new ArrayList<>();
-//
-//        switch (this.kind.getValue())
-//        {
-//            case LITERAL:
-//                break;
-//            case VARIABLE:
-//                break;
-//            case PROGRAM:
-//                variableDependencies = this.invocation().variableDependencies();
-//                break;
-//            case VALUE:
-//                break;
-//            case SUMMATION:
-//                variableDependencies = this.summation().variableDependencies();
-//                break;
-//            default:
-//                ApplicationFailure.union(
-//                        UnionException.unknownVariant(
-//                                new UnknownVariantError(Kind.class.getName())));
-//        }
-//
-//        return variableDependencies;
-//    }
-//
-//
-//    /**
-//     * The variable's tags.
-//     * @return The tag list.
-//     */
-//    @Override
-//    public List<String> tags()
-//    {
-//        return Arrays.asList(this.tags.getValue());
-//    }
-//
-//
-//    /**
-//     * Get the value string representation. If the value contains any dice rolls, then it appears
-//     * as a formula, otherwise it is just an integer string.
-//     * @return The value string.
-//     * @throws NullVariableException
-//     */
-//    public String valueString()
-//           throws NullVariableException
-//    {
-//        switch (this.kind())
-//        {
-//            case LITERAL:
-//                return this.value().toString();
-//            case VARIABLE:
-//                return this.value().toString();
-//            case PROGRAM:
-//                return this.value().toString();
-//            case VALUE:
-//                return this.value().toString();
-//            case SUMMATION:
-//                return this.summation().valueString();
-//            default:
-//                ApplicationFailure.union(
-//                        UnionException.unknownVariant(
-//                                new UnknownVariantError(Kind.class.getName())));
-//        }
-//
-//        return "";
-//    }
-//
-//
-//    @Override
-//    public void initialize()
-//    {
-//        // [1] Add to state
-//        // --------------------------------------------------------------------------------------
-//        this.addToState();
-//
-//        // [2] Save original name and label values in case namespaces changes multiple times
-//        // --------------------------------------------------------------------------------------
-//        this.originalName  = name();
-//        this.originalLabel = label();
-//    }
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//    // ** Kind
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Get the kind of number variable.
-//     * @return The number variable kind.
-//     */
-//    public Kind kind()
-//    {
-//        return this.kind.getValue();
-//    }
-//
-//
-//    // ** Cases
-//    // ------------------------------------------------------------------------------------------
-//
-//
-//
-//    // ** Value
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Set the number variable integer. value
-//     * @param newValue The integer value.
-//     */
-//    public void setValue(Integer newValue)
-//    {
-//        switch (this.kind.getValue())
-//        {
-//            case LITERAL:
-//                this.literalValue.setValue(newValue);
-//                this.onUpdate();
-//                break;
-//            case VARIABLE:
-//                break;
-//            case PROGRAM:
-//                // Do Nothing?
-//                //this.reactiveValue.setLiteralValue(newValue);
-//                break;
-//            case VALUE:
-//                break;
-//            case SUMMATION:
-//                // Do Nothing?
-//                break;
-//        }
-//    }
-//
-//
-//    /**
-//     * Get the number variable's integer value.
-//     * @return The integer value.
-//     */
-//    public Integer value()
-//           throws NullVariableException
-//    {
-//        switch (this.kind.getValue())
-//        {
-//            case LITERAL:
-//                return this.literalValue.getValue();
-//            case VARIABLE:
-//                return referencedVariableValue();
-//            case PROGRAM:
-//                return this.reactiveValue.value();
-//            case VALUE:
-//                Dictionary dictionary = SheetManagerOld.currentSheet().engine().dictionary();
-//                NumberValue numberValue = dictionary.numberValue(this.valueReference());
-//                return numberValue.value();
-//            case SUMMATION:
-//                return this.summation().value();
-//        }
-//
-//        throw new NullVariableException();
-//    }
-//
-//
-//    private Integer referencedVariableValue()
-//            throws NullVariableException
-//    {
-//        if (!State.hasVariable(this.variableReference())) {
-//            ApplicationFailure.variable(
-//                    VariableException.undefinedVariable(
-//                            new UndefinedVariableError(this.variableReference())));
-//            throw new NullVariableException();
-//        }
-//
-//        VariableUnion variableUnion = State.variableWithName(this.variableReference());
-//
-//        // Variable is wrong type, log error, and return as null variable exception
-//        if (variableUnion.type() != VariableType.NUMBER) {
-//            ApplicationFailure.variable(
-//                    VariableException.unexpectedVariableType(
-//                            new UnexpectedVariableTypeError(this.variableReference(),
-//                                                            VariableType.NUMBER,
-//                                                            variableUnion.type())));
-//            throw new NullVariableException();
-//        }
-//
-//        return variableUnion.numberVariable().value();
-//    }
-//
-//
+fun liftNumberVariableValue(varValue : NumberVariableValue) : Func<NumberVariableValue>
+    = when (varValue)
+    {
+        is NumberVariableLiteralValue   -> Prim(varValue, "literal")
+        is NumberVariableProgramValue   -> Comp(varValue, "program")
+        is NumberVariableVariableValue  -> Prim(varValue, "variable")
+        is NumberVariableValueValue     -> Prim(varValue, "value")
+        is NumberVariableSummationValue -> Comp(varValue, "summation")
+    }
+
+
 //    // INTERNAL
 //    // ------------------------------------------------------------------------------------------
 //

@@ -7,10 +7,10 @@ import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.Engine
 import com.kispoko.tome.model.game.engine.EngineValueType
-import com.kispoko.tome.rts.game.*
 import com.kispoko.tome.rts.game.engine.ValueIsOfUnexpectedType
 import com.kispoko.tome.rts.game.engine.ValueSetDoesNotContainValue
 import effect.*
@@ -19,7 +19,10 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import org.apache.commons.lang3.SerializationUtils
+import java.io.Serializable
 import java.util.*
+import kotlin.collections.HashSet
 
 
 
@@ -30,7 +33,7 @@ import java.util.*
 sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
                       open val label : Prim<ValueSetLabel>,
                       open val labelSingular: Prim<ValueSetLabelSingular>,
-                      open val description : Maybe<Prim<ValueSetDescription>>,
+                      open val description : Prim<ValueSetDescription>,
                       open val valueType : Maybe<Prim<EngineValueType>>) : Model
 {
 
@@ -79,7 +82,7 @@ sealed class ValueSet(open val valueSetId : Prim<ValueSetId>,
 
     fun labelSingular() : ValueSetLabelSingular = this.labelSingular.value
 
-    fun description() : String? = getMaybePrim(this.description)?.value
+    fun description() : String = this.description.value.value
 
     fun valueType() : EngineValueType? = getMaybePrim(this.valueType)
 
@@ -134,11 +137,30 @@ data class ValueSetBase(override val id : UUID,
                         override val valueSetId : Prim<ValueSetId>,
                         override val label : Prim<ValueSetLabel>,
                         override val labelSingular: Prim<ValueSetLabelSingular>,
-                        override val description: Maybe<Prim<ValueSetDescription>>,
+                        override val description: Prim<ValueSetDescription>,
                         override val valueType : Maybe<Prim<EngineValueType>>,
                         val values : Conj<Value>)
                          : ValueSet(valueSetId, label, labelSingular, description, valueType)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.valueSetId.name                        = "value_set_id"
+        this.label.name                             = "label"
+        this.labelSingular.name                     = "label_singular"
+        this.description.name                       = "description"
+
+        when (this.valueType) {
+            is Just -> this.valueType.value.name    = "value_type"
+        }
+
+        this.values.name                            = "values"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
@@ -156,14 +178,14 @@ data class ValueSetBase(override val id : UUID,
     constructor(valueSetId : ValueSetId,
                 label : ValueSetLabel,
                 labelSingular : ValueSetLabelSingular,
-                description : Maybe<ValueSetDescription>,
+                description : ValueSetDescription,
                 valueType : Maybe<EngineValueType>,
                 values : MutableSet<Value>)
         : this(UUID.randomUUID(),
                Prim(valueSetId),
                Prim(label),
                Prim(labelSingular),
-               maybeLiftPrim(description),
+               Prim(description),
                maybeLiftPrim(valueType),
                Conj(values))
 
@@ -182,9 +204,7 @@ data class ValueSetBase(override val id : UUID,
                          // Label Singular
                          doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
                          // Description
-                         split(doc.maybeAt("description"),
-                               effValue<ValueError,Maybe<ValueSetDescription>>(Nothing()),
-                               { effApply(::Just, ValueSetDescription.fromDocument(it)) }),
+                         doc.at("description") ap { ValueSetDescription.fromDocument(it) },
                          // Value Type
                          split(doc.maybeAt("value_type"),
                                effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
@@ -204,6 +224,10 @@ data class ValueSetBase(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "value_set_base"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -237,11 +261,30 @@ data class ValueSetCompound(override val id : UUID,
                             override val valueSetId : Prim<ValueSetId>,
                             override val label : Prim<ValueSetLabel>,
                             override val labelSingular: Prim<ValueSetLabelSingular>,
-                            override val description: Maybe<Prim<ValueSetDescription>>,
+                            override val description: Prim<ValueSetDescription>,
                             override val valueType : Maybe<Prim<EngineValueType>>,
-                            val valueSetIds : Prim<Set<ValueSetId>>)
+                            val valueSetIds : Prim<ValueSetIdSet>)
                             : ValueSet(valueSetId, label, labelSingular, description, valueType)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.valueSetId.name                        = "value_set_id"
+        this.label.name                             = "label"
+        this.labelSingular.name                     = "label_singular"
+        this.description.name                       = "description"
+
+        when (this.valueType) {
+            is Just -> this.valueType.value.name    = "value_type"
+        }
+
+        this.valueSetIds.name                        = "value_set_ids"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -250,16 +293,16 @@ data class ValueSetCompound(override val id : UUID,
     constructor(valueSetId : ValueSetId,
                 label : ValueSetLabel,
                 labelSingular : ValueSetLabelSingular,
-                description : Maybe<ValueSetDescription>,
+                description : ValueSetDescription,
                 valueType : Maybe<EngineValueType>,
                 valueSetIds : Set<ValueSetId>)
         : this(UUID.randomUUID(),
                Prim(valueSetId),
                Prim(label),
                Prim(labelSingular),
-               maybeLiftPrim(description),
+               Prim(description),
                maybeLiftPrim(valueType),
-               Prim(valueSetIds))
+               Prim(ValueSetIdSet(valueSetIds.toHashSet())))
 
 
     companion object : Factory<ValueSetCompound>
@@ -276,9 +319,7 @@ data class ValueSetCompound(override val id : UUID,
                          // Label Singular
                          doc.at("label_singular") ap { ValueSetLabelSingular.fromDocument(it) },
                          // Description
-                         split(doc.maybeAt("description"),
-                               effValue<ValueError,Maybe<ValueSetDescription>>(Nothing()),
-                               { effApply(::Just, ValueSetDescription.fromDocument(it)) }),
+                         doc.at("description") ap { ValueSetDescription.fromDocument(it) },
                          // Value Type
                          split(doc.maybeAt("value_type"),
                                effValue<ValueError,Maybe<EngineValueType>>(Nothing()),
@@ -297,7 +338,7 @@ data class ValueSetCompound(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun valueSetIds() : Set<ValueSetId> = this.valueSetIds.value
+    fun valueSetIds() : Set<ValueSetId> = this.valueSetIds.value.idSet()
 
 
     // -----------------------------------------------------------------------------------------
@@ -305,6 +346,10 @@ data class ValueSetCompound(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "value_set_compound"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -349,10 +394,50 @@ data class ValueSetCompound(override val id : UUID,
 
 
 /**
+ * ValueSet Id Set
+ */
+data class ValueSetIdSet(val idSet : HashSet<ValueSetId>) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ValueSetIdSet>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<ValueSetIdSet> = when (doc)
+        {
+            is DocList -> effApply(::ValueSetIdSet, doc.mapHashSet { ValueSetId.fromDocument(it) })
+            else       -> effError(lulo.value.UnexpectedType(DocType.LIST, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun idSet() : Set<ValueSetId> = this.idSet
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({SerializationUtils.serialize(idSet)})
+
+}
+
+
+/**
  * ValueSet Id
  */
-data class ValueSetId(val value : String)
+data class ValueSetId(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueSetId>
     {
@@ -362,14 +447,26 @@ data class ValueSetId(val value : String)
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * ValueSet Label
  */
-data class ValueSetLabel(val value : String)
+data class ValueSetLabel(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueSetLabel>
     {
@@ -379,14 +476,26 @@ data class ValueSetLabel(val value : String)
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * ValueSet Label Singular
  */
-data class ValueSetLabelSingular(val value : String)
+data class ValueSetLabelSingular(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueSetLabelSingular>
     {
@@ -396,14 +505,25 @@ data class ValueSetLabelSingular(val value : String)
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * ValueSet Description
  */
-data class ValueSetDescription(val value : String)
+data class ValueSetDescription(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueSetDescription>
     {
@@ -413,6 +533,13 @@ data class ValueSetDescription(val value : String)
             else       -> effError(lulo.value.UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 

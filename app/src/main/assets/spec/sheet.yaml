@@ -139,11 +139,11 @@ types:
   group: Page
   type: product
   fields:
-  - name: background_color
-    type: color_id
+  - name: background_color_theme
+    type: color_theme
     presence: optional
     description: >
-      The page background color.
+      The page background color theme.
 - name: group
   label: Group
   description: >
@@ -985,7 +985,7 @@ types:
       The widget identifier.
   - name: format
     type: table_widget_format
-    presence: required
+    presence: optional
     description: >
       The table widget formatting options.
   - name: columns
@@ -1049,7 +1049,7 @@ types:
     presence: optional
     description: >
       The column default value.
-  - name: default_label
+  - name: default_value_label
     type: string
     presence: optional
     description: >
@@ -1128,7 +1128,59 @@ types:
     presence: required
     description: >
       The column name.
-- name: widget_text_column
+  - name: format
+    type: table_widget_number_column_format
+    presence: optional
+    description: >
+      The column format.
+  - name: default_value
+    type: string
+    presence: optional
+    description: >
+      The column default value.
+  - name: default_value_label
+    type: string
+    presence: optional
+    description: >
+      The column default label.
+  - name: defines_namespaced
+    type: boolean
+    presence: optional
+    description: >
+      Do cells in this column define a namespace for the other cells in the row?
+  - name: is_namespaced
+    type: boolean
+    presence: optional
+    description: >
+      Are cell in this column namespaced?
+- name: table_widget_number_column_format
+  label: Number Column Format
+  description: >
+    Number column format.
+  group: 'Widget: Table'
+  type: product
+  fields:
+  - name: alignment
+    type: alignment
+    presence: optional
+    description: >
+      The column alignment.
+  - name: width
+    type: integer
+    presence: optional
+    description: >
+      The column width.
+  - name: background
+    type: color_id
+    presence: optional
+    description: >
+      The column background color.
+  - name: text_style
+    type: text_style
+    presence: optional
+    description: >
+      The column text style.
+- name: table_widget_text_column
   label: Text Column
   description: >
     Table column with text values.
@@ -1150,7 +1202,7 @@ types:
     presence: optional
     description: >
       The column default value.
-  - name: default_label
+  - name: default_value_label
     type: string
     presence: optional
     description: >
@@ -1206,7 +1258,7 @@ types:
       The row format.
   - name: cells
     type: list
-    of: cell
+    of: table_widget_cell
     presence: required
     description: >
       The row cells.
@@ -1239,7 +1291,7 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: value
+  - name: value_variable
     type: variable_boolean
     presence: required
     description: >
@@ -1298,7 +1350,7 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: value
+  - name: value_variable
     type: variable_number
     presence: required
     description: >
@@ -1342,7 +1394,7 @@ types:
   group: 'Widget: Table'
   type: product
   fields:
-  - name: value
+  - name: value_variable
     type: variable_text
     presence: required
     description: >

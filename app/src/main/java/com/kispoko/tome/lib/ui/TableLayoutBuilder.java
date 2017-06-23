@@ -128,7 +128,7 @@ public class TableLayoutBuilder
         // --------------------------------------------------------------------------------------
 
         if (this.backgroundColor != null)
-            tableLayout.setBackgroundColor(ContextCompat.getColor(context, this.backgroundColor));
+            tableLayout.setBackgroundColor(this.backgroundColor);
 
         // > Background Resource
         // --------------------------------------------------------------------------------------

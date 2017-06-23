@@ -8,6 +8,10 @@ import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Conj
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLBlob
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.effApply
 import effect.effError
 import effect.effValue
@@ -15,6 +19,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
 
@@ -48,7 +53,7 @@ data class Theme(override val id : UUID,
                                    // Model Id
                                    effValue(UUID.randomUUID()),
                                    // Theme Id
-                                   doc.at("name") ap {
+                                   doc.at("id") ap {
                                        effApply(::Prim, ThemeId.fromDocument(it))
                                    },
                                    // Theme Colors
@@ -89,6 +94,10 @@ data class Theme(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name = "theme"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // API
@@ -106,40 +115,59 @@ data class Theme(override val id : UUID,
 
 
 data class UIColors(override val id: UUID,
-                    val toolbarColorId : Prim<ColorId>,
-                    val tabBarColorId : Prim<ColorId>,
+                    val toolbarBackgroundColorId : Prim<ColorId>,
+                    val toolbarIconsColorId : Prim<ColorId>,
+                    val toolbarTitleColorId : Prim<ColorId>,
+                    val tabBarBackgroundColorId : Prim<ColorId>,
                     val tabTextNormalColorId : Prim<ColorId>,
                     val tabTextSelectedColorId : Prim<ColorId>,
                     val tabUnderlineColorId : Prim<ColorId>,
-                    val titleColorId : Prim<ColorId>,
-                    val toolbarIconsColorId : Prim<ColorId>,
                     val bottomBarBackgroundColorId : Prim<ColorId>,
                     val bottomBarActiveColorId : Prim<ColorId>,
                     val bottomBarInactiveColorId : Prim<ColorId>) : Model
 {
 
     // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.toolbarBackgroundColorId.name      = "toolbar_background"
+        this.toolbarIconsColorId.name           = "toolbar_icons"
+        this.toolbarTitleColorId.name           = "toolbar_icons"
+        this.tabBarBackgroundColorId.name       = "tab_bar_background"
+        this.tabTextNormalColorId.name          = "tab_text_normal"
+        this.tabTextSelectedColorId.name        = "tab_text_selected"
+        this.tabUnderlineColorId.name           = "tab_underline"
+        this.bottomBarBackgroundColorId.name    = "bottom_bar_background"
+        this.bottomBarActiveColorId.name        = "bottom_bar_active"
+        this.bottomBarInactiveColorId.name      = "bottom_bar_inactive"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(toolbarColorId : ColorId,
-                tabBarColorId : ColorId,
+    constructor(toolbarBackgroundColorId : ColorId,
+                toolbarIconsColorId : ColorId,
+                toolbarTitleColorId : ColorId,
+                tabBarBackgroundColorId : ColorId,
                 tabTextNormalColorId : ColorId,
                 tabTextSelectedColorId : ColorId,
                 tabUnderlineColorId: ColorId,
-                titleColorId : ColorId,
-                toolbarIconsColorId : ColorId,
                 bottomBarBackgroundColorId : ColorId,
                 bottomBarActiveColorId : ColorId,
                 bottomBarInactiveColorId : ColorId)
         : this(UUID.randomUUID(),
-               Prim(toolbarColorId),
-               Prim(tabBarColorId),
+               Prim(toolbarBackgroundColorId),
+               Prim(toolbarIconsColorId),
+               Prim(toolbarTitleColorId),
+               Prim(tabBarBackgroundColorId),
                Prim(tabTextNormalColorId),
                Prim(tabTextSelectedColorId),
                Prim(tabUnderlineColorId),
-               Prim(titleColorId),
-               Prim(toolbarIconsColorId),
                Prim(bottomBarBackgroundColorId),
                Prim(bottomBarActiveColorId),
                Prim(bottomBarInactiveColorId))
@@ -151,19 +179,19 @@ data class UIColors(override val id: UUID,
         {
             is DocDict -> effApply(::UIColors,
                                    // Toolbar Color
-                                   doc.at("toolbar") ap { ColorId.fromDocument(it) },
+                                   doc.at("toolbar_background") ap { ColorId.fromDocument(it) },
+                                   // Toolbar Icons
+                                   doc.at("toolbar_icons") ap { ColorId.fromDocument(it) },
+                                   // Title
+                                   doc.at("title") ap { ColorId.fromDocument(it) },
                                    // Tab Bar
-                                   doc.at("tab_bar") ap { ColorId.fromDocument(it) },
+                                   doc.at("tab_bar_background") ap { ColorId.fromDocument(it) },
                                    // Tab Text Normal
                                    doc.at("tab_text_normal") ap { ColorId.fromDocument(it) },
                                    // Tab Text Selected
                                    doc.at("tab_text_selected") ap { ColorId.fromDocument(it) },
                                    // Tab Underline
                                    doc.at("tab_underline") ap { ColorId.fromDocument(it) },
-                                   // Title
-                                   doc.at("title") ap { ColorId.fromDocument(it) },
-                                   // Icon
-                                   doc.at("icon") ap { ColorId.fromDocument(it) },
                                    // Bottom Bar
                                    doc.at("bottom_bar_background") ap { ColorId.fromDocument(it) },
                                    // Bottom Bar Active
@@ -180,9 +208,9 @@ data class UIColors(override val id: UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun toolbarColorId() : ColorId = this.toolbarColorId.value
+    fun toolbarBackgroundColorId() : ColorId = this.toolbarBackgroundColorId.value
 
-    fun tabBarColorId() : ColorId = this.tabBarColorId.value
+    fun tabBarBackgroundColorId() : ColorId = this.tabBarBackgroundColorId.value
 
     fun tabTextNormalColorId() : ColorId = this.tabTextNormalColorId.value
 
@@ -190,7 +218,7 @@ data class UIColors(override val id: UUID,
 
     fun tabUnderlineColorId() : ColorId = this.tabUnderlineColorId.value
 
-    fun titleColorId() : ColorId = this.titleColorId.value
+    fun toolbarTitleColorId() : ColorId = this.toolbarTitleColorId.value
 
     fun toolbarIconsColorId() : ColorId = this.toolbarIconsColorId.value
 
@@ -207,16 +235,27 @@ data class UIColors(override val id: UUID,
 
     override fun onLoad() { }
 
+    override val name = "ui_colors"
+
+    override val modelObject = this
+
 }
 
 
 
-sealed class ThemeId : Serializable
+sealed class ThemeId : SQLSerializable, Serializable
 {
 
-
     object Light : ThemeId()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"light"})
+    }
+
+
     object Dark : ThemeId()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"dark"})
+    }
 
 
     /**
@@ -233,6 +272,9 @@ sealed class ThemeId : Serializable
                 else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
             }
         }
+
+        override fun asSQLValue() : SQLValue = SQLText({this.name})
+
     }
 
 
@@ -265,13 +307,13 @@ data class ThemeColorId(val themeId : ThemeId, val colorId : ColorId) : Serializ
 
     companion object : Factory<ThemeColorId>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeColorId> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<ThemeColorId> = when (doc)
         {
             is DocDict -> effApply(::ThemeColorId,
                                    // ThemeId
-                                   ThemeId.fromDocument(doc),
+                                   doc.at("theme_id") ap { ThemeId.fromDocument(it) },
                                    // ThemeId
-                                   ColorId.fromDocument(doc)
+                                   doc.at("color_id") ap { ColorId.fromDocument(it) }
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
@@ -295,11 +337,11 @@ data class ThemeColor(val colorId : ColorId, val color : Int) : Serializable
 
     companion object : Factory<ThemeColor>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ThemeColor> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<ThemeColor> = when (doc)
         {
             is DocDict -> effApply(::ThemeColor,
                                    // Color Id
-                                   ColorId.fromDocument(doc),
+                                   doc.at("color_id") ap { ColorId.fromDocument(it) },
                                    // Color
                                    effApply({Color.parseColor(it) }, doc.text("color"))
                                    )
@@ -314,21 +356,22 @@ data class ThemeColor(val colorId : ColorId, val color : Int) : Serializable
  *
  * A pallette of colors for some object.
  */
-data class ColorTheme(val themeColorIds: Set<ThemeColorId>) : Serializable
+data class ColorTheme(val themeColorIds : Set<ThemeColorId>) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+
     companion object : Factory<ColorTheme>
     {
 
-        override fun fromDocument(doc: SpecDoc) : ValueParser<ColorTheme> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<ColorTheme> = when (doc)
         {
             is DocDict -> effApply(::ColorTheme,
                                    // ThemeId
-                                   doc.list("theme_colors") ap {
+                                   doc.list("theme_color_ids") ap {
                                         it.mapSet { ThemeColorId.fromDocument(it) }
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -359,6 +402,13 @@ data class ColorTheme(val themeColorIds: Set<ThemeColorId>) : Serializable
     // -----------------------------------------------------------------------------------------
 
     fun themeColorId(themeId : ThemeId) : ColorId? = this.colorIdByThemeId[themeId]
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({SerializationUtils.serialize(this)})
 
 }
 

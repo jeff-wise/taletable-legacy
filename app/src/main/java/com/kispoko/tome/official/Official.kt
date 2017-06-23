@@ -26,8 +26,8 @@ data class OfficialSheet(val sheetId : SheetId,
     val filePath =
         ApplicationAssets.officialDirectoryPath +
             "/" + gameId.value +
-            "_" + campaignId.name +
-            "_" + sheetId.name + ".yaml"
+            "_" + campaignId.value +
+            "_" + sheetId.value + ".yaml"
 
 
     companion object
@@ -64,7 +64,7 @@ data class OfficialCampaign(val campaignId : CampaignId,
     val filePath =
         ApplicationAssets.officialDirectoryPath +
             "/" + gameId.value +
-            "_" + campaignId.name + ".yaml"
+            "_" + campaignId.value + ".yaml"
 
 
     companion object
@@ -120,9 +120,57 @@ data class OfficialGame(val gameId : GameId)
 }
 
 
+
+
+sealed class OfficialTheme
+{
+
+
+    abstract val filePath : String
+
+
+    object Light: OfficialTheme()
+    {
+        override val filePath = ApplicationAssets.officialThemeDirectoryPath + "/light.yaml"
+
+        override fun toString() : String = "Light Theme"
+
+    }
+
+    object Dark: OfficialTheme()
+    {
+        override val filePath = ApplicationAssets.officialThemeDirectoryPath + "/dark.yaml"
+
+        override fun toString() : String = "Dark Theme"
+
+    }
+
+
+    companion object
+    {
+
+        fun fromYaml(yamlValue : YamlValue) : YamlParser<OfficialTheme> = when (yamlValue)
+        {
+            is YamlText ->
+            {
+                when (yamlValue.text)
+                {
+                    "light" -> result<OfficialTheme>(OfficialTheme.Light)
+                    "dark"  -> result<OfficialTheme>(OfficialTheme.Dark)
+                    else    -> error(UnexpectedStringValue(yamlValue.text))
+                }
+            }
+            else -> error(UnexpectedTypeFound(YamlType.TEXT, yamlType(yamlValue)))
+        }
+
+    }
+}
+
+
 class OfficialIndex(val sheets: List<OfficialSheet>,
                     val campaigns : List<OfficialCampaign>,
-                    val games : List<OfficialGame>)
+                    val games : List<OfficialGame>,
+                    val themes : List<OfficialTheme>)
 {
 
     val sheetById : Map<SheetId,OfficialSheet> = sheets.associateBy { it.sheetId }
@@ -164,7 +212,7 @@ class OfficialIndex(val sheets: List<OfficialSheet>,
         {
             is YamlDict ->
             {
-                parserApply3(::OfficialIndex,
+                parserApply4(::OfficialIndex,
                              // Sheets
                              yamlValue.array("sheets") ap { yamlList ->
                                  yamlList.map { OfficialSheet.fromYaml(it) }},
@@ -173,7 +221,10 @@ class OfficialIndex(val sheets: List<OfficialSheet>,
                                  yamlList.map { OfficialCampaign.fromYaml(it) }},
                              // Games
                              yamlValue.array("games") ap { yamlList ->
-                                 yamlList.map { OfficialGame.fromYaml(it) }}
+                                 yamlList.map { OfficialGame.fromYaml(it) }},
+                             // Themes
+                             yamlValue.array("themes") ap { yamlList ->
+                                 yamlList.map { OfficialTheme.fromYaml(it) }}
                             )
             }
             else -> error(UnexpectedTypeFound(YamlType.DICT, yamlType(yamlValue)))

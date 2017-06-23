@@ -7,6 +7,7 @@ import com.kispoko.tome.app.AppStateError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.rts.sheet.SheetContext
@@ -15,6 +16,7 @@ import effect.*
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import org.apache.commons.lang3.SerializationUtils
 import java.io.Serializable
 import java.util.*
 
@@ -27,7 +29,7 @@ import java.util.*
 sealed class Variable(open val variableId : Prim<VariableId>,
                       open val label : Maybe<Prim<VariableLabel>>,
                       open val description : Maybe<Prim<VariableDescription>>,
-                      open val tags : Prim<MutableList<VariableTag>>) : Model, Serializable
+                      open val tags : Prim<VariableTagSet>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -72,16 +74,7 @@ sealed class Variable(open val variableId : Prim<VariableId>,
 
     fun description() : VariableDescription? = getMaybePrim(this.description)
 
-    fun tags() : List<VariableTag> = this.tags.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // VARIABLE
-    // -----------------------------------------------------------------------------------------
-
-    abstract fun dependencies() : Set<VariableReference>
-
-    abstract fun type() : VariableType
+    fun tags() : Set<VariableTag> = this.tags.value.variables
 
 
     fun booleanVariable(sheetId : SheetId) : AppEff<BooleanVariable> = when (this)
@@ -128,6 +121,14 @@ sealed class Variable(open val variableId : Prim<VariableId>,
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // VARIABLE
+    // -----------------------------------------------------------------------------------------
+
+    abstract fun dependencies() : Set<VariableReference>
+
+    abstract fun type() : VariableType
+
 
     /**
      * This method is called when one of the variable's dependencies has been updated, and this
@@ -148,10 +149,30 @@ data class BooleanVariable(override val id : UUID,
                            override val variableId : Prim<VariableId>,
                            override val label : Maybe<Prim<VariableLabel>>,
                            override val description : Maybe<Prim<VariableDescription>>,
-                           override val tags : Prim<MutableList<VariableTag>>,
-                           val variableValue : Prim<BooleanVariableValue>)
+                           override val tags : Prim<VariableTagSet>,
+                           val variableValue : Func<BooleanVariableValue>)
                             : Variable(variableId, label, description, tags)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.variableId.name    = "variable_id"
+
+        when (this.label) {
+            is Just -> this.label.value.name = "label"
+        }
+
+        when (this.description) {
+            is Just -> this.description.value.name = "description"
+        }
+
+        this.tags.name          = "tags"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -160,14 +181,14 @@ data class BooleanVariable(override val id : UUID,
     constructor(variableId : VariableId,
                 label : Maybe<VariableLabel>,
                 description : Maybe<VariableDescription>,
-                tags : MutableList<VariableTag>,
+                tags : VariableTagSet,
                 value : BooleanVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
                maybeLiftPrim(label),
                maybeLiftPrim(description),
                Prim(tags),
-               Prim(value))
+               liftBooleanVariableValue(value))
 
 
     companion object : Factory<BooleanVariable>
@@ -188,9 +209,9 @@ data class BooleanVariable(override val id : UUID,
                                effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
                                { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
-                         split(doc.maybeList("tags"),
-                               effValue<ValueError,MutableList<VariableTag>>(mutableListOf()),
-                               { it.mapMut { VariableTag.fromDocument(it)} }),
+                         split(doc.maybeAt("tags"),
+                               effValue(VariableTagSet.empty()),
+                               { VariableTagSet.fromDocument(it) }),
                          // Value
                          doc.at("value") ap { BooleanVariableValue.fromDocument(it) }
                          )
@@ -210,6 +231,10 @@ data class BooleanVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
+
+    override val name : String = "variable_boolean"
+
+    override val modelObject : Model = this
 
     override fun onLoad() {}
 
@@ -239,10 +264,30 @@ data class DiceRollVariable(override val id : UUID,
                             override val variableId : Prim<VariableId>,
                             override val label : Maybe<Prim<VariableLabel>>,
                             override val description : Maybe<Prim<VariableDescription>>,
-                            override val tags : Prim<MutableList<VariableTag>>,
-                            val variableValue: Prim<DiceRollVariableValue>)
+                            override val tags : Prim<VariableTagSet>,
+                            val variableValue: Func<DiceRollVariableValue>)
                             : Variable(variableId, label, description, tags)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.variableId.name    = "variable_id"
+
+        when (this.label) {
+            is Just -> this.label.value.name = "label"
+        }
+
+        when (this.description) {
+            is Just -> this.description.value.name = "description"
+        }
+
+        this.tags.name          = "tags"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -251,14 +296,14 @@ data class DiceRollVariable(override val id : UUID,
     constructor(variableId : VariableId,
                 label : Maybe<VariableLabel>,
                 description : Maybe<VariableDescription>,
-                tags : MutableList<VariableTag>,
+                tags : VariableTagSet,
                 value : DiceRollVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
                maybeLiftPrim(label),
                maybeLiftPrim(description),
                Prim(tags),
-               Prim(value))
+               liftDiceRollVariableValue(value))
 
 
     companion object : Factory<DiceRollVariable>
@@ -279,9 +324,9 @@ data class DiceRollVariable(override val id : UUID,
                                effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
                                { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
-                         split(doc.maybeList("tags"),
-                               effValue<ValueError,MutableList<VariableTag>>(mutableListOf()),
-                               { it.mapMut { VariableTag.fromDocument(it)} }),
+                         split(doc.maybeAt("tags"),
+                               effValue(VariableTagSet.empty()),
+                               { VariableTagSet.fromDocument(it) }),
                          // Value
                          doc.at("value") ap { DiceRollVariableValue.fromDocument(it) }
                          )
@@ -303,6 +348,10 @@ data class DiceRollVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
+
+    override val name : String = "variable_dice_roll"
+
+    override val modelObject : Model = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -330,10 +379,30 @@ data class NumberVariable(override val id : UUID,
                           override val variableId : Prim<VariableId>,
                           override val label : Maybe<Prim<VariableLabel>>,
                           override val description : Maybe<Prim<VariableDescription>>,
-                          override val tags : Prim<MutableList<VariableTag>>,
-                          val value : Prim<NumberVariableValue>)
+                          override val tags : Prim<VariableTagSet>,
+                          val variableValue : Func<NumberVariableValue>)
                           : Variable(variableId, label, description, tags)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.variableId.name    = "variable_id"
+
+        when (this.label) {
+            is Just -> this.label.value.name = "label"
+        }
+
+        when (this.description) {
+            is Just -> this.description.value.name = "description"
+        }
+
+        this.tags.name          = "tags"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -342,14 +411,14 @@ data class NumberVariable(override val id : UUID,
     constructor(variableId : VariableId,
                 label : Maybe<VariableLabel>,
                 description : Maybe<VariableDescription>,
-                tags : MutableList<VariableTag>,
+                tags : VariableTagSet,
                 value : NumberVariableValue)
         : this(UUID.randomUUID(),
                Prim(variableId),
                maybeLiftPrim(label),
                maybeLiftPrim(description),
                Prim(tags),
-               Prim(value))
+               liftNumberVariableValue(value))
 
 
     companion object : Factory<NumberVariable>
@@ -370,9 +439,9 @@ data class NumberVariable(override val id : UUID,
                                effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
                                { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
-                         split(doc.maybeList("tags"),
-                               effValue<ValueError,MutableList<VariableTag>>(mutableListOf()),
-                               { it.mapMut { VariableTag.fromDocument(it)} }),
+                         split(doc.maybeAt("tags"),
+                               effValue(VariableTagSet.empty()),
+                               { VariableTagSet.fromDocument(it) }),
                          // Value
                          doc.at("value") ap { NumberVariableValue.fromDocument(it) }
                          )
@@ -386,7 +455,7 @@ data class NumberVariable(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun variableValue() : NumberVariableValue = this.value.value
+    fun variableValue() : NumberVariableValue = this.variableValue.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -395,12 +464,17 @@ data class NumberVariable(override val id : UUID,
 
     override fun onLoad() {}
 
+    override val name = "variable_number"
+
+    override val modelObject : Model = this
+
 
     // -----------------------------------------------------------------------------------------
     // VARIABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun dependencies() : Set<VariableReference> = this.value.value.dependencies()
+    override fun dependencies() : Set<VariableReference> =
+            this.variableValue.value.dependencies()
 
     override fun type(): VariableType = VariableType.NUMBER
 
@@ -422,11 +496,33 @@ data class TextVariable(override val id : UUID,
                         override val variableId : Prim<VariableId>,
                         override val label : Maybe<Prim<VariableLabel>>,
                         override val description : Maybe<Prim<VariableDescription>>,
-                        override val tags : Prim<MutableList<VariableTag>>,
-                        val variableValue : Prim<TextVariableValue>,
+                        override val tags : Prim<VariableTagSet>,
+                        val variableValue : Func<TextVariableValue>,
                         val definesNamespace : Prim<DefinesNamespace>)
                         : Variable(variableId, label, description, tags)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.variableId.name                        = "variable_id"
+
+        when (this.label) {
+            is Just -> this.label.value.name        = "label"
+        }
+
+        when (this.description) {
+            is Just -> this.description.value.name  = "description"
+        }
+
+        this.tags.name                              = "tags"
+
+        this.definesNamespace.name                  = "defines_namespace"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -435,7 +531,7 @@ data class TextVariable(override val id : UUID,
     constructor(variableId : VariableId,
                 label : Maybe<VariableLabel>,
                 description : Maybe<VariableDescription>,
-                tags : MutableList<VariableTag>,
+                tags : VariableTagSet,
                 variableValue : TextVariableValue,
                 definesNamespace : DefinesNamespace)
         : this(UUID.randomUUID(),
@@ -443,7 +539,7 @@ data class TextVariable(override val id : UUID,
                maybeLiftPrim(label),
                maybeLiftPrim(description),
                Prim(tags),
-               Prim(variableValue),
+               liftTextVariableValue(variableValue),
                Prim(definesNamespace))
 
 
@@ -465,9 +561,9 @@ data class TextVariable(override val id : UUID,
                               effValue<ValueError,Maybe<VariableDescription>>(Nothing()),
                               { effApply(::Just, VariableDescription.fromDocument(it)) }),
                          // Tags
-                         split(doc.maybeList("tags"),
-                               effValue<ValueError,MutableList<VariableTag>>(mutableListOf()),
-                               { it.mapMut { VariableTag.fromDocument(it)} }),
+                         split(doc.maybeAt("tags"),
+                               effValue(VariableTagSet.empty()),
+                               { VariableTagSet.fromDocument(it) }),
                          // Value
                          doc.at("value") ap { TextVariableValue.fromDocument(it) },
                          // Defines Namespace
@@ -493,6 +589,10 @@ data class TextVariable(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
+
+    override val name = "variable_text"
+
+    override val modelObject : Model = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -527,8 +627,12 @@ enum class VariableType
 /**
  * Variable NameSpace
  */
-data class VariableNameSpace(val value : String) : Serializable
+data class VariableNameSpace(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<VariableNameSpace>
     {
@@ -539,23 +643,41 @@ data class VariableNameSpace(val value : String) : Serializable
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Variable Name
  */
-data class VariableName(val value : String) : Serializable
+data class VariableName(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<VariableName>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableName> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<VariableName> = when (doc)
         {
             is DocText -> effValue(VariableName(doc.text))
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
@@ -564,7 +686,7 @@ data class VariableName(val value : String) : Serializable
  * Variable Reference
  */
 @Suppress("UNCHECKED_CAST")
-sealed class VariableReference : Serializable
+sealed class VariableReference : SQLSerializable, Serializable
 {
 
     companion object : Factory<VariableReference>
@@ -584,37 +706,65 @@ sealed class VariableReference : Serializable
 /**
  * Variable Id
  */
-data class VariableId(val namespace : Func<VariableNameSpace>,
+data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
                       val name : Prim<VariableName>) : VariableReference(), Serializable
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     constructor(name : String)
-        : this(Null(), Prim(VariableName(name)))
+        : this(Nothing(), Prim(VariableName(name)))
+
+
+    constructor(namespace : Maybe<VariableNameSpace>, name : VariableName)
+            : this(maybeLiftPrim(namespace), Prim(name))
 
 
     companion object : Factory<VariableId>
     {
-        override fun fromDocument(doc: SpecDoc) : ValueParser<VariableId> = when (doc)
+        override fun fromDocument(doc : SpecDoc) : ValueParser<VariableId> = when (doc)
         {
+            is DocDict ->
+            {
+                effApply(::VariableId,
+                         // Namespace
+                         split(doc.maybeAt("namespace"),
+                               effValue<ValueError,Maybe<VariableNameSpace>>(Nothing()),
+                               { effApply(::Just, VariableNameSpace.fromDocument(it)) }),
+                         // Name
+                         doc.at("name") ap { VariableName.fromDocument(it) }
+                         )
+            }
             is DocText -> effApply(::VariableId,
-                                   // Namespace
-                                   nullEff<VariableNameSpace>(),
-                                   // Name
-                                   effValue(Prim(VariableName(doc.text)))
-                                   )
-            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+                                   effValue(Nothing()),
+                                   VariableName.fromDocument(doc))
+            else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun nameString() : String = this.name.value.value
+
+    fun namespaceString() : String? = getMaybePrim(this.namespace)?.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // TO STRING
+    // -----------------------------------------------------------------------------------------
 
     override fun toString(): String
     {
         var s = ""
 
-        if (namespace.value != null)
+        if (namespaceString() != null)
         {
-            s += namespace.value.toString()
+            s += namespaceString()
             s += "::"
         }
 
@@ -622,6 +772,14 @@ data class VariableId(val namespace : Func<VariableNameSpace>,
 
         return s
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue =
+            SQLText({this.namespaceString() + " " + this.nameString()})
 
 }
 
@@ -632,6 +790,10 @@ data class VariableId(val namespace : Func<VariableNameSpace>,
 data class VariableTag(val value : String) : VariableReference(), Serializable
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<VariableTag>
     {
         override fun fromDocument(doc: SpecDoc) : ValueParser<VariableTag> = when (doc)
@@ -640,14 +802,26 @@ data class VariableTag(val value : String) : VariableReference(), Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Variable Label
  */
-data class VariableLabel(val value : String) : Serializable
+data class VariableLabel(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<VariableLabel>
     {
@@ -657,14 +831,26 @@ data class VariableLabel(val value : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Variable Description
  */
-data class VariableDescription(val value : String) : Serializable
+data class VariableDescription(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<VariableDescription>
     {
@@ -674,14 +860,26 @@ data class VariableDescription(val value : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Defines Namespace
  */
-data class DefinesNamespace(val value : Boolean) : Serializable
+data class DefinesNamespace(val value : Boolean) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<DefinesNamespace>
     {
@@ -691,89 +889,49 @@ data class DefinesNamespace(val value : Boolean) : Serializable
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
+
 }
 
 
+/**
+ * Variable Tag Set
+ */
+data class VariableTagSet(val variables : MutableSet<VariableTag>) : SQLSerializable, Serializable
+{
 
-//
-//    // > Variables
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * Lookup the referenced variables.
-//     * @return The Variable List.
-//     */
-//    public Set<VariableUnion> variables()
-//    {
-//        switch (this.type())
-//        {
-//            case NAME:
-//                Set<VariableUnion> variables = new HashSet<>();
-//                VariableUnion variableUnion = State.variableWithName(this.name());
-//                if (variableUnion != null)
-//                    variables.add(variableUnion);
-//                return variables;
-//            case TAG:
-//                return State.variablesWithTag(this.tag());
-//            default:
-//                ApplicationFailure.union(
-//                        UnionException.unknownVariant(
-//                                new UnknownVariantError(VariableReferenceType.class.getName())));
-//                return new HashSet<>();
-//        }
-//    }
-//
-//
-//    /**
-//     * Special function when we assume that there are no references by tag being used, or there
-//     * will only every be one variable with that tag.
-//     * @return The referenced variable.
-//     */
-//    public VariableUnion variable()
-//    {
-//        switch (this.type())
-//        {
-//            case NAME:
-//                return State.variableWithName(this.name());
-//            case TAG:
-//                Set<VariableUnion> variables = State.variablesWithTag(this.tag());
-//
-//                if (variables.size() == 0)
-//                    return null;
-//
-//                List<VariableUnion> variableList = new ArrayList<>(variables);
-//                return variableList.get(0);
-//        }
-//
-//        return null;
-//    }
-//
-//
-//    // INTERNAL
-//    // ------------------------------------------------------------------------------------------
-//
-//    // > Initialize
-//    // ------------------------------------------------------------------------------------------
-//
-//    private void initializeFunctors()
-//    {
-//        // Type
-//        this.type.setName("type");
-//        this.type.setLabelId(R.string.activity_variable_reference_field_type_label);
-//        this.type.setDescriptionId(R.string.activity_variable_reference_field_type_description);
-//
-//        // Name
-//        this.name.setName("type_name");
-//        this.name.setLabelId(R.string.activity_variable_reference_field_name_label);
-//        this.name.setDescriptionId(R.string.activity_variable_reference_field_name_label);
-//        this.name.caseOf("type", "name");
-//
-//        // Tag
-//        this.tag.setName("type_tag");
-//        this.tag.setLabelId(R.string.activity_variable_reference_field_tag_label);
-//        this.tag.setDescriptionId(R.string.activity_variable_reference_field_tag_description);
-//        this.tag.caseOf("type", "tag");
-//    }
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<VariableTagSet>
+    {
+
+        override fun fromDocument(doc : SpecDoc) : ValueParser<VariableTagSet> = when (doc)
+        {
+            is DocList -> effApply(::VariableTagSet,
+                                   doc.mapSetMut { VariableTag.fromDocument(it) })
+            else       -> effError(UnexpectedType(DocType.LIST, docType(doc), doc.path))
+        }
+
+
+        fun empty() : VariableTagSet = VariableTagSet(mutableSetOf())
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this)})
+
+}
 
 
 //

@@ -8,13 +8,15 @@ import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.Engine
 import effect.effApply
 import effect.effError
 import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
-import lulo.value.ValueError
 import lulo.value.ValueParser
 import java.io.Serializable
 import java.util.*
@@ -29,6 +31,18 @@ data class Game(override val id : UUID,
                 val description : Comp<GameDescription>,
                 val engine : Comp<Engine>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.gameId.name        = "game_id"
+        this.description.name   = "description"
+        this.engine.name        = "engine"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -82,13 +96,17 @@ data class Game(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "game"
+
+    override val modelObject = this
+
 }
 
 
 /**
  * Game Name
  */
-data class GameId(val value : String) : Serializable
+data class GameId(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -104,6 +122,13 @@ data class GameId(val value : String) : Serializable
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
@@ -111,9 +136,20 @@ data class GameId(val value : String) : Serializable
  * Game Description
  */
 data class GameDescription(override val id : UUID,
-                           val summary : Func<GameSummary>,
+                           val summary : Prim<GameSummary>,
                            val authors : Coll<Author>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.summary.name       = "summary"
+        this.authors.name       = "authors"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -145,13 +181,17 @@ data class GameDescription(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "game_description"
+
+    override val modelObject = this
+
 }
 
 
 /**
  * Game Summary
  */
-data class GameSummary(val value : String) : Serializable
+data class GameSummary(val value : String) : SQLSerializable, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -166,5 +206,12 @@ data class GameSummary(val value : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
 
 }

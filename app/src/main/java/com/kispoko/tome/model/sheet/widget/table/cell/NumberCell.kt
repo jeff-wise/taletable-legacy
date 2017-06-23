@@ -8,6 +8,8 @@ import android.widget.TextView
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.*
@@ -19,6 +21,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -28,8 +31,23 @@ import java.util.*
  */
 data class NumberCellFormat(override val id : UUID,
                             val cellFormat : Comp<CellFormat>,
-                            val valuePrefix : Maybe<Prim<NumberCellValuePrefix>>) : Model
+                            val valuePrefix : Maybe<Prim<NumberCellValuePrefix>>)
+                            : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.cellFormat.name                        = "cell_format"
+
+        when (this.valuePrefix) {
+            is Just -> this.valuePrefix.value.name  = "value_prefix"
+        }
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -98,14 +116,22 @@ data class NumberCellFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name = "number_cell_format"
+
+    override val modelObject = this
+
 }
 
 
 /**
  * Value Prefix
  */
-data class NumberCellValuePrefix(val value : String)
+data class NumberCellValuePrefix(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberCellValuePrefix>
     {
@@ -115,6 +141,14 @@ data class NumberCellValuePrefix(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLText({ this.value })
+
 }
 
 

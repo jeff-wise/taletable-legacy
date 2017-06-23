@@ -3,6 +3,9 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.R
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.effError
 import effect.effValue
 import lulo.document.DocText
@@ -20,17 +23,55 @@ import java.io.Serializable
 /**
  * Height
  */
-sealed class Height : Serializable
+sealed class Height : SQLSerializable, Serializable
 {
 
-    object Wrap        : Height()
+    object Wrap : Height()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"wrap"})
+    }
+
+
     object VerySmall   : Height()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"very_small"})
+    }
+
+
     object Small       : Height()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"small"})
+    }
+
+
     object MediumSmall : Height()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"medium_small"})
+    }
+
+
     object Medium      : Height()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"medium"})
+    }
+
+
     object MediumLarge : Height()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"medium_large"})
+    }
+
+
     object Large       : Height()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"large"})
+    }
+
+
     object VeryLarge   : Height()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"very_large"})
+    }
 
 
     companion object

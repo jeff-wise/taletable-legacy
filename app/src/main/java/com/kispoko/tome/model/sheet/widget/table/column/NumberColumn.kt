@@ -5,6 +5,9 @@ package com.kispoko.tome.model.sheet.widget.table.column
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.widget.table.ColumnFormat
 import effect.*
 import effect.Nothing
@@ -12,6 +15,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -21,8 +25,22 @@ import java.util.*
  */
 data class NumberColumnFormat(override val id : UUID,
                               val columnFormat : Comp<ColumnFormat>,
-                              val valuePrefix : Maybe<Prim<ValuePrefix>>) : Model
+                              val valuePrefix : Maybe<Prim<ValuePrefix>>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.columnFormat.name                      = "column_format"
+
+        when (this.valuePrefix) {
+            is Just -> this.valuePrefix.value.name  = "value_prefix"
+        }
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -78,14 +96,22 @@ data class NumberColumnFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name = "number_column_format"
+
+    override val modelObject = this
+
 }
 
 
 /**
  * Value Prefix
  */
-data class ValuePrefix(val value : String)
+data class ValuePrefix(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValuePrefix>
     {
@@ -95,4 +121,11 @@ data class ValuePrefix(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLText({ this.value })
 }

@@ -9,6 +9,9 @@ import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.game.engine.mechanic.MechanicCategory
 import com.kispoko.tome.model.game.engine.value.ValueSetId
@@ -132,8 +135,12 @@ object WidgetView
 /**
  * Widget Name
  */
-data class WidgetId(val value : String) : Serializable
+data class WidgetId(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<WidgetId>
     {
@@ -143,14 +150,26 @@ data class WidgetId(val value : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Widget Label
  */
-data class WidgetLabel(val value : String?) : Serializable
+data class WidgetLabel(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<WidgetLabel>
     {
@@ -160,6 +179,14 @@ data class WidgetLabel(val value : String?) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
@@ -167,14 +194,34 @@ data class WidgetLabel(val value : String?) : Serializable
  * Action Widget
  */
 data class ActionWidget(override val id : UUID,
-                        val name : Prim<WidgetId>,
+                        val widgetId : Prim<WidgetId>,
                         val format : Comp<ActionWidgetFormat>,
                         val modifier : Comp<NumberVariable>,
-                        val description : Func<ActionDescription>,
-                        val descriptionHighlight : Func<ActionDescriptionHighlight>,
-                        val actionName : Func<ActionName>,
-                        val actionResult : Func<ActionResult>) : Widget()
+                        val description : Prim<ActionDescription>,
+                        val descriptionHighlight : Prim<ActionDescriptionHighlight>,
+                        val actionName : Prim<ActionName>,
+                        val actionResult : Prim<ActionResult>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name              = "widget_id"
+        this.format.name                = "format"
+        this.modifier.name              = "modifier"
+        this.description.name           = "description"
+        this.descriptionHighlight.name  = "description_highlight"
+        this.actionName.name            = "action_name"
+        this.actionResult.name          = "action_result"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Widget>
     {
@@ -224,7 +271,7 @@ data class ActionWidget(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun name() : WidgetId = this.name.value
+    fun widgetId() : WidgetId = this.widgetId.value
 
     fun format() : ActionWidgetFormat = this.format.value
 
@@ -248,6 +295,10 @@ data class ActionWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_action"
+
+    override val modelObject = this
+
 
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
@@ -266,6 +317,18 @@ data class BooleanWidget(override val id : UUID,
                          val format : Comp<BooleanWidgetFormat>,
                          val valueVariable : Comp<BooleanVariable>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name      = "widget_id"
+        this.format.name        = "format"
+        this.valueVariable.name = "value_variable"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -326,6 +389,10 @@ data class BooleanWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_boolean"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -344,11 +411,26 @@ data class BooleanWidget(override val id : UUID,
 data class ButtonWidget(override val id : UUID,
                         val widgetId : Prim<WidgetId>,
                         val format : Comp<ButtonWidgetFormat>,
-                        val viewType : Func<ButtonViewType>,
-                        val label : Func<ButtonLabel>,
-                        val description : Func<ButtonDescription>,
-                        val icon : Func<ButtonIcon>) : Widget()
+                        val viewType : Prim<ButtonViewType>,
+                        val label : Prim<ButtonLabel>,
+                        val description : Prim<ButtonDescription>,
+                        val icon : Prim<ButtonIcon>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name      = "widget_id"
+        this.format.name        = "format"
+        this.viewType.name      = "view_type"
+        this.label.name         = "label"
+        this.description.name   = "description"
+        this.icon.name          = "icion"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -372,7 +454,9 @@ data class ButtonWidget(override val id : UUID,
                              effApply(::Comp, ButtonWidgetFormat.fromDocument(it))
                          },
                          // View Type
-                         effApply(::Prim, doc.enum<ButtonViewType>("view_type")),
+                         doc.at("view_type") ap {
+                             effApply(::Prim, ButtonViewType.fromDocument(it))
+                         },
                          // Label
                          doc.at("label") ap {
                              effApply(::Prim, ButtonLabel.fromDocument(it))
@@ -382,9 +466,10 @@ data class ButtonWidget(override val id : UUID,
                              effApply(::Prim, ButtonDescription.fromDocument(it))
                          },
                          // Icon
-                         effApply(::Prim, doc.enum<ButtonIcon>("icon")))
+                         doc.at("icon") ap {
+                             effApply(::Prim, ButtonIcon.fromDocument(it))
+                         })
             }
-
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -415,6 +500,10 @@ data class ButtonWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_button"
+
+    override val modelObject = this
+
 
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
@@ -432,9 +521,22 @@ data class ButtonWidget(override val id : UUID,
 data class ExpanderWidget(override val id : UUID,
                           val widgetId : Prim<WidgetId>,
                           val format : Comp<ExpanderWidgetFormat>,
-                          val label : Func<ExpanderLabel>,
+                          val label : Prim<ExpanderLabel>,
                           val groups: Coll<Group>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name      = "widget_id"
+        this.format.name        = "format"
+        this.label.name         = "label"
+        this.groups.name        = "groups"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -496,6 +598,10 @@ data class ExpanderWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_expander"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -515,6 +621,21 @@ data class ImageWidget(override val id : UUID,
                        val widgetId : Prim<WidgetId>,
                        val format : Comp<ImageWidgetFormat>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name  = "widget_id"
+        this.format.name    = "format"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Widget>
     {
@@ -558,11 +679,16 @@ data class ImageWidget(override val id : UUID,
         TODO("not implemented")
     }
 
+
     // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "widget_image"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -585,6 +711,19 @@ data class ListWidget(override val id : UUID,
                       val valueSetId: Func<ValueSetId>,
                       val values : Coll<Variable>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name      = "widget_id"
+        this.format.name        = "format"
+        this.valueSetId.name    = "value_set_id"
+        this.values.name        = "values"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -648,6 +787,10 @@ data class ListWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_list"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -668,6 +811,18 @@ data class LogWidget(override val id : UUID,
                      val format : Comp<LogWidgetFormat>,
                      val entries : Coll<LogEntry>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name      = "widget_id"
+        this.format.name        = "format"
+        this.entries.name       = "entries"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -725,7 +880,12 @@ data class LogWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_log"
 
+    override val modelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
@@ -744,6 +904,22 @@ data class MechanicWidget(override val id : UUID,
                           val format : Comp<MechanicWidgetFormat>,
                           val category : Func<MechanicCategory>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name      = "widget_id"
+        this.format.name        = "format"
+        this.category.name      = "category"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<MechanicWidget>
     {
@@ -798,6 +974,10 @@ data class MechanicWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_mechanic"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -822,6 +1002,32 @@ data class NumberWidget(override val id : UUID,
                         val valuePostfix : Maybe<Prim<NumberWidgetValuePostfix>>,
                         val variables : Conj<Variable>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name                          = "widget_id"
+        this.format.name                            = "format"
+        this.valueVariable.name                     = "value_variable"
+
+        when (this.description) {
+            is Just -> this.description.value.name = "description"
+        }
+
+        when (this.valuePrefix) {
+            is Just -> this.valuePrefix.value.name = "value_prefix"
+        }
+
+        when (this.valuePostfix) {
+            is Just -> this.valuePostfix.value.name = "value_postfix"
+        }
+
+        this.variables.name                         = "variables"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
@@ -924,6 +1130,10 @@ data class NumberWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_number"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -972,6 +1182,24 @@ data class OptionWidget(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name                          = "widget_id"
+        this.format.name                            = "format"
+        this.viewType.name                          = "view_type"
+
+        when (this.description) {
+            is Just -> this.description.value.name  = "description"
+        }
+
+        this.valueSet.name                          = "value_set"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -1004,7 +1232,7 @@ data class OptionWidget(override val id : UUID,
                                { OptionWidgetFormat.fromDocument(it) }),
                          // View Type
                          split(doc.maybeAt("view_type"),
-                               effValue<ValueError,OptionViewType>(OptionViewType.NoArrows()),
+                               effValue<ValueError,OptionViewType>(OptionViewType.NoArrows),
                                { OptionViewType.fromDocument(it) }),
                          // Description
                          split(doc.maybeAt("description"),
@@ -1045,6 +1273,10 @@ data class OptionWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_option"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -1067,6 +1299,24 @@ data class QuoteWidget(override val id : UUID,
                        val quote : Prim<Quote>,
                        val source : Maybe<Prim<QuoteSource>>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name                      = "widget_id"
+        this.format.name                        = "format"
+        this.viewType.name                      = "view_type"
+        this.quote.name                         = "quote"
+
+        when (this.source) {
+            is Just -> this.source.value.name   = "source"
+        }
+
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -1100,7 +1350,7 @@ data class QuoteWidget(override val id : UUID,
                                { QuoteWidgetFormat.fromDocument(it) }),
                          // View Type
                          split(doc.maybeAt("view_type"),
-                               effValue<ValueError,QuoteViewType>(QuoteViewType.NoIcon()),
+                               effValue<ValueError,QuoteViewType>(QuoteViewType.NoIcon),
                                { QuoteViewType.fromDocument(it) }),
                          // Quote
                          doc.at("quote") ap { Quote.fromDocument(it) },
@@ -1142,6 +1392,10 @@ data class QuoteWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_quote"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -1165,6 +1419,19 @@ data class TableWidget(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name      = "widget_id"
+        this.format.name        = "format"
+        this.columns.name       = "columns"
+        this.rows.name          = "rows"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -1177,6 +1444,7 @@ data class TableWidget(override val id : UUID,
                Comp(format),
                Coll(columns),
                Coll(rows))
+
 
     companion object : Factory<TableWidget>
     {
@@ -1231,13 +1499,19 @@ data class TableWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_table"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
     // -----------------------------------------------------------------------------------------
 
     override fun onSheetComponentActive(sheetContext: SheetContext) {
-        TODO("not implemented")
+        // TODO("not implemented")
+
+        // this.addVariableToState(sheetContext.sheetId, this.valueVariable())
     }
 
 
@@ -1255,8 +1529,21 @@ data class TabWidget(override val id : UUID,
                      val widgetId : Prim<WidgetId>,
                      val format : Comp<TabWidgetFormat>,
                      val tabs : Coll<Tab>,
-                     val defaultSelected : Prim<Int>) : Widget()
+                     val defaultSelected : Prim<DefaultSelected>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name          = "widget_id"
+        this.format.name            = "format"
+        this.tabs.name              = "tabs"
+        this.defaultSelected.name   = "default_selected"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -1265,7 +1552,7 @@ data class TabWidget(override val id : UUID,
     constructor(widgetId : WidgetId,
                 format : TabWidgetFormat,
                 tabs : MutableList<Tab>,
-                defaultSelected : Int)
+                defaultSelected : DefaultSelected)
         : this(UUID.randomUUID(),
                Prim(widgetId),
                Comp(format),
@@ -1291,9 +1578,9 @@ data class TabWidget(override val id : UUID,
                              docList.mapMut { Tab.fromDocument(it) }
                          },
                          // Default Selected
-                         split(doc.maybeInt("default_selected"),
-                               effValue(1),
-                               { effValue(it) })
+                         split(doc.maybeAt("default_selected"),
+                               effValue(DefaultSelected(1)),
+                               { DefaultSelected.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -1328,6 +1615,10 @@ data class TabWidget(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "widget_tab"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // SHEET COMPONENT
@@ -1350,6 +1641,23 @@ data class TextWidget(override val id : UUID,
                       val valueVariable : Comp<TextVariable>,
                       val variables : Conj<Variable>) : Widget()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetId.name                          = "widget_id"
+        this.format.name                            = "format"
+
+        when (this.description) {
+            is Just -> this.description.value.name  = "description"
+        }
+
+        this.variables.name                         = "variables"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // PROPERTIES
@@ -1436,6 +1744,10 @@ data class TextWidget(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "widget_text"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------

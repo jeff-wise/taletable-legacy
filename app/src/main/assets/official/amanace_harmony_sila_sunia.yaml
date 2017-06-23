@@ -1,9 +1,16 @@
 id: sila_sunia
 campaign_id: harmony
+settings:
+  theme_id: dark
 sections:
 - name: Profile
   pages:
   - name: Overview
+    format:
+      background_color_theme:
+        theme_color_ids:
+        - theme_id: dark
+          color_id: dark_grey
     groups:
     - rows:
       - widgets: 
@@ -75,6 +82,88 @@ sections:
               value:
                 type: number_literal
                 number_literal: 11
+    - rows:
+      - widgets:
+        - type: widget_table
+          widget_table:
+            id: armor_and_shields
+            columns:
+            - type: table_widget_text_column
+              table_widget_text_column:
+                name: Name
+                default_value_label: Name
+            - type: table_widget_number_column
+              table_widget_number_column:
+                name: Quantity
+                default_value_label: Quantity
+            - type: table_widget_boolean_column
+              table_widget_boolean_column:
+                name: Is Equipped?
+                default_value_label: Is Equipped
+            rows:
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  value_variable:
+                    id: chainmail
+                    value:
+                      type: text_literal
+                      text_literal: 'Chainmail'
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  value_variable:
+                    id: chainmail_quantity
+                    value:
+                      type: number_literal
+                      number_literal: 1
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  value_variable:
+                    id: chainmail_is_equipped
+                    value:
+                      type: boolean_literal
+                      boolean_literal: true
+    - rows:
+      - widgets:
+        - type: widget_table
+          widget_table:
+            id: weapons
+            columns:
+            - type: table_widget_text_column
+              table_widget_text_column:
+                name: Name
+                default_value_label: Name
+            - type: table_widget_number_column
+              table_widget_number_column:
+                name: Quantity
+                default_value_label: Quantity
+            - type: table_widget_boolean_column
+              table_widget_boolean_column:
+                name: Is Equipped?
+                default_value_label: Is Equipped
+            rows:
+            - cells:
+              - type: table_widget_text_cell
+                table_widget_text_cell:
+                  value_variable:
+                    id: chainmail
+                    value:
+                      type: text_literal
+                      text_literal: 'Shortsword'
+              - type: table_widget_number_cell
+                table_widget_number_cell:
+                  value_variable:
+                    id: sword_quantity
+                    value:
+                      type: number_literal
+                      number_literal: 1
+              - type: table_widget_boolean_cell
+                table_widget_boolean_cell:
+                  value_variable:
+                    id: sword_is_equipped
+                    value:
+                      type: boolean_literal
+                      boolean_literal: true
 - name: Encounter
   pages:
 - name: Campaign

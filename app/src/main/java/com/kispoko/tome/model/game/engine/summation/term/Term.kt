@@ -5,11 +5,11 @@ package com.kispoko.tome.model.game.engine.summation.term
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.functor.Sum
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.game.engine.reference.BooleanReference
-import com.kispoko.tome.model.game.engine.reference.DiceRollReference
-import com.kispoko.tome.model.game.engine.reference.NumberReference
+import com.kispoko.tome.model.game.engine.reference.*
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -28,6 +28,10 @@ import java.util.*
  */
 sealed class SummationTerm
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<SummationTerm>
     {
@@ -129,9 +133,9 @@ data class SummationDiceRollTerm(val diceRollReference: DiceRollReference) : Sum
 
 data class SummationConditionalTerm(
                             override val id : UUID,
-                            val conditionalValueReference: Prim<BooleanReference>,
-                            val trueValueReference : Prim<NumberReference>,
-                            val falseValueReference: Prim<NumberReference>)
+                            val conditionalValueReference : Sum<BooleanReference>,
+                            val trueValueReference : Sum<NumberReference>,
+                            val falseValueReference: Sum<NumberReference>)
                              : SummationTerm(), Model
 {
 
@@ -143,9 +147,9 @@ data class SummationConditionalTerm(
                 trueValueReference: NumberReference,
                 falseValueReference: NumberReference)
         : this(UUID.randomUUID(),
-               Prim(conditionalValueReference),
-               Prim(trueValueReference),
-               Prim(falseValueReference))
+               Sum(conditionalValueReference),
+               Sum(trueValueReference),
+               Sum(falseValueReference))
 
 
     companion object : Factory<SummationTerm>
@@ -180,6 +184,10 @@ data class SummationConditionalTerm(
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name = "summation_conditional_term"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------

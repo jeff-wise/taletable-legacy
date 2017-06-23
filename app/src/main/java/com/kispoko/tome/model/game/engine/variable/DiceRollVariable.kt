@@ -3,6 +3,11 @@ package com.kispoko.tome.model.game.engine.variable
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import effect.effApply
 import effect.effError
@@ -11,12 +16,14 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
+
 
 
 /**
  * Dice Variable Value
  */
-sealed class DiceRollVariableValue
+sealed class DiceRollVariableValue : Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -52,7 +59,8 @@ sealed class DiceRollVariableValue
 /**
  * Literal Value
  */
-data class DiceRollVariableLiteralValue(val value : DiceRoll) : DiceRollVariableValue()
+data class DiceRollVariableLiteralValue(val diceRoll : DiceRoll)
+            : DiceRollVariableValue(), Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -70,9 +78,30 @@ data class DiceRollVariableLiteralValue(val value : DiceRoll) : DiceRollVariable
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    override fun value() : DiceRoll = this.value
+    override fun value() : DiceRoll = this.diceRoll
+
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() = this.diceRoll.onLoad()
+
+    override val id = this.diceRoll.id
+
+    override val name = this.diceRoll.name
+
+    override val modelObject : Model = this.diceRoll
 
 }
+
+
+fun liftDiceRollVariableValue(varValue : DiceRollVariableValue) : Func<DiceRollVariableValue>
+    = when (varValue)
+    {
+        is DiceRollVariableLiteralValue -> Comp(varValue, "literal")
+    }
+
 
 //
 //

@@ -6,6 +6,9 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.page.Page
 import com.kispoko.tome.rts.sheet.SheetContext
 import effect.effApply
@@ -23,9 +26,20 @@ import java.util.*
  * Section
  */
 data class Section(override val id : UUID,
-                   val name : Prim<SectionName>,
+                   val sectionName : Prim<SectionName>,
                    val pages : Coll<Page>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.sectionName.name   = "section_name"
+        this.pages.name         = "pages"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -58,9 +72,9 @@ data class Section(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun name() : SectionName = this.name.value
+    fun name() : SectionName = this.sectionName.value
 
-    fun nameString() : String = this.name.value.name
+    fun nameString() : String = this.sectionName.value.value
 
     fun pages() : List<Page> = this.pages.list
 
@@ -70,6 +84,10 @@ data class Section(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "section"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -87,8 +105,12 @@ data class Section(override val id : UUID,
 /**
  * Section Name
  */
-data class SectionName(val name : String) : Serializable
+data class SectionName(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<SectionName>
     {
@@ -98,6 +120,14 @@ data class SectionName(val name : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 

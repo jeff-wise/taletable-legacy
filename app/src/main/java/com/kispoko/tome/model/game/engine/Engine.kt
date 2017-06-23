@@ -7,6 +7,7 @@ import com.kispoko.tome.app.AppEngineError
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Coll
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.model.game.GameId
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.function.Function
@@ -21,6 +22,8 @@ import effect.note
 import lulo.document.*
 import lulo.value.*
 import lulo.value.UnexpectedType
+import org.apache.commons.lang3.SerializationUtils
+import java.io.Serializable
 import java.util.*
 
 
@@ -43,6 +46,18 @@ data class Engine(override val id : UUID,
     private val valueSetById : MutableMap<ValueSetId,ValueSet> =
                                             valueSets.list.associateBy { it.valueSetId.value }
                                                 as MutableMap<ValueSetId, ValueSet>
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.valueSets.name     = "value_sets"
+        this.mechanics.name     = "mechanics"
+        this.functions.name     = "functions"
+        this.programs.name      = "programs"
+    }
 
 
     // -----------------------------------------------------------------------------------------
@@ -81,7 +96,16 @@ data class Engine(override val id : UUID,
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+    override val name : String = "engine"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -97,13 +121,13 @@ data class Engine(override val id : UUID,
 
 
     fun textValue(valueReference : ValueReference) : AppEff<ValueText> =
-        this.valueSet(valueReference.valueSetId())
-                .apply { it.textValue(valueReference.valueId(), this) }
+        this.valueSet(valueReference.valueSetId)
+                .apply { it.textValue(valueReference.valueId, this) }
 
 
     fun numberValue(valueReference : ValueReference) : AppEff<ValueNumber> =
-            this.valueSet(valueReference.valueSetId())
-                    .apply { it.numberValue(valueReference.valueId(), this) }
+            this.valueSet(valueReference.valueSetId)
+                    .apply { it.numberValue(valueReference.valueId, this) }
 
 
 
@@ -113,14 +137,37 @@ data class Engine(override val id : UUID,
 /**
  * Engine Value Type
  */
-sealed class EngineValueType
+sealed class EngineValueType : SQLSerializable, Serializable
 {
 
     object NUMBER : EngineValueType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"number"})
+    }
+
+
     object TEXT : EngineValueType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"text"})
+    }
+
+
     object BOOLEAN : EngineValueType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"boolean"})
+    }
+
+
     object DICE_ROLL : EngineValueType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"dice_roll"})
+    }
+
+
     object LIST_TEXT : EngineValueType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"list_text"})
+    }
 
 
     companion object
@@ -148,7 +195,7 @@ sealed class EngineValueType
  * Engine Value
  */
 @Suppress("UNCHECKED_CAST")
-sealed class EngineValue
+sealed class EngineValue : Serializable
 {
 
     companion object : Factory<EngineValue>
@@ -182,8 +229,12 @@ sealed class EngineValue
 /**
  * Engine Number Value
  */
-data class EngineNumberValue(val value : Double) : EngineValue()
+data class EngineNumberValue(val value : Double) : EngineValue(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<EngineNumberValue>
     {
@@ -194,13 +245,24 @@ data class EngineNumberValue(val value : Double) : EngineValue()
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLReal({this.value})
+
 }
 
 /**
  * Engine Text Value
  */
-data class EngineTextValue(val value : String) : EngineValue()
+data class EngineTextValue(val value : String) : EngineValue(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<EngineTextValue>
     {
@@ -211,13 +273,25 @@ data class EngineTextValue(val value : String) : EngineValue()
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
+
 
 /**
  * Engine Boolean Value
  */
-data class EngineBooleanValue(val value : Boolean) : EngineValue()
+data class EngineBooleanValue(val value : Boolean) : EngineValue(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<EngineBooleanValue>
     {
@@ -228,13 +302,25 @@ data class EngineBooleanValue(val value : Boolean) : EngineValue()
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
+
 }
+
 
 /**
  * Engine Dice Roll Value
  */
-data class EngineDiceRollValue(val value : DiceRoll) : EngineValue()
+data class EngineDiceRollValue(val value : DiceRoll) : EngineValue(), Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<EngineDiceRollValue>
     {
@@ -247,13 +333,30 @@ data class EngineDiceRollValue(val value : DiceRoll) : EngineValue()
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() = this.value.onLoad()
+
+    override val id = this.value.id
+
+    override val name = this.value.name
+
+    override val modelObject = this.value
+
 }
 
 /**
  * Engine Text List Value
  */
-data class EngineTextListValue(val value : List<String>) : EngineValue()
+data class EngineTextListValue(val value : List<String>) : EngineValue(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<EngineTextListValue>
     {
@@ -265,6 +368,13 @@ data class EngineTextListValue(val value : List<String>) : EngineValue()
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLBlob({ SerializationUtils.serialize(this) })
 
 }
 

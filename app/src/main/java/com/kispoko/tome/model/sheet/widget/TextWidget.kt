@@ -11,6 +11,9 @@ import com.kispoko.tome.R
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.FormattedString
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
@@ -18,7 +21,6 @@ import com.kispoko.tome.model.sheet.style.TextFormat
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
-import com.kispoko.tome.util.SerialBitmap
 import com.kispoko.tome.util.Util
 import effect.*
 import lulo.document.*
@@ -42,6 +44,32 @@ data class TextWidgetFormat(override val id : UUID,
                             val valueFormat : Comp<TextFormat>,
                             val descriptionStyle : Comp<TextStyle>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name                      = "widget_format"
+
+        when (this.insideLabel) {
+            is Just -> this.insideLabel.value.name  = "inside_label"
+        }
+
+        this.insideLabelFormat.name                 = "inside_label_format"
+
+        when (this.outsideLabel) {
+            is Just -> this.outsideLabel.value.name = "outside_label"
+        }
+
+        this.outsideLabelFormat.name                = "outside_label_format"
+
+        this.valueFormat.name                       = "value_format"
+
+        this.descriptionStyle.name                  = "description_style"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -147,10 +175,14 @@ data class TextWidgetFormat(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
-    // CONSTRUCTORS
+    // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "text_widget_format"
+
+    override val modelObject = this
 
 }
 
@@ -158,8 +190,12 @@ data class TextWidgetFormat(override val id : UUID,
 /**
  * Text Widget Description
  */
-data class TextWidgetDescription(val value : String) : Serializable
+data class TextWidgetDescription(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TextWidgetDescription>
     {
@@ -169,14 +205,26 @@ data class TextWidgetDescription(val value : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Text Widget Description
  */
-data class TextWidgetLabel(val value : String) : Serializable
+data class TextWidgetLabel(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TextWidgetLabel>
     {
@@ -186,6 +234,14 @@ data class TextWidgetLabel(val value : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
@@ -318,8 +374,8 @@ object TextWidgetView
 
         if (format.valueFormat().height().isWrap())
         {
-            layout.padding.topDp    = format.valueFormat().padding().top().toFloat()
-            layout.padding.bottomDp = format.valueFormat().padding().bottom().toFloat()
+            layout.padding.topDp    = format.valueFormat().padding().topDp()
+            layout.padding.bottomDp = format.valueFormat().padding().bottomDp()
         }
 
 //        if (format.widgetFormat.background() == BackgroundColor.EMPTY)

@@ -3,6 +3,10 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.orm.sql.SQLInt
+import com.kispoko.tome.lib.orm.sql.SQLReal
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.effError
 import effect.effValue
 import lulo.document.*
@@ -15,7 +19,7 @@ import java.io.Serializable
 /**
  * Divider Margin
  */
-data class DividerMargin(val value : Float) : Serializable
+data class DividerMargin(val value : Float) : SQLSerializable, Serializable
 {
 
     companion object : Factory<DividerMargin>
@@ -28,13 +32,17 @@ data class DividerMargin(val value : Float) : Serializable
 
         fun default() : DividerMargin = DividerMargin(0f)
     }
+
+
+    override fun asSQLValue() : SQLValue = SQLReal({this.value.toDouble()})
+
 }
 
 
 /**
  * Divider Thickness
  */
-data class DividerThickness(val value : Int) : Serializable
+data class DividerThickness(val value : Int) : SQLSerializable, Serializable
 {
 
     companion object : Factory<DividerThickness>
@@ -47,6 +55,10 @@ data class DividerThickness(val value : Int) : Serializable
 
         fun default() : DividerThickness = DividerThickness(0)
     }
+
+
+    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+
 }
 
 

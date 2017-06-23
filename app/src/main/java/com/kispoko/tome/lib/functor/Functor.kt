@@ -3,17 +3,23 @@ package com.kispoko.tome.lib.functor
 
 
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.orm.Schema
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.*
-import lulo.value.ValueError
 import java.io.Serializable
+import kotlin.reflect.KClass
 
 
 
 /**
  * Functor
  */
-sealed class Func<out A>(open val value : A?) : Serializable
+sealed class Func<out A>(open val value : A,
+                         open var name : String? = null) : Serializable
 {
+
     fun isNull() : Boolean = this.value == null
 }
 
@@ -21,14 +27,17 @@ sealed class Func<out A>(open val value : A?) : Serializable
 /**
  * Primitive Functor
  */
-data class Prim<A : Any>(override var value : A) : Func<A>(value), Serializable
+data class Prim<A : SQLSerializable>(override var value : A, override var name : String?)
+            : Func<A>(value), Serializable, SQLSerializable
 {
 
     private var isDefault : Boolean = false
 
+    constructor(value : A) : this(value, null)
+
     companion object
     {
-        fun <A : Any> default(defaultValue : A) : Prim<A>
+        fun <A : SQLSerializable> default(defaultValue : A) : Prim<A>
         {
             val prim = Prim(defaultValue)
             prim.isDefault = true
@@ -37,16 +46,32 @@ data class Prim<A : Any>(override var value : A) : Func<A>(value), Serializable
     }
 
     fun isDefault() : Boolean = this.isDefault
+
+    override fun asSQLValue() : SQLValue = this.value.asSQLValue()
+
+}
+
+
+data class Sum<A : SumModel>(override var value : A, override var name : String?)
+            : Func<A>(value, name)
+{
+
+    constructor(value : A) : this(value, null)
+
 }
 
 
 /**
- * Collection Functor
+ * Product Functor
  */
-data class Comp<A : Model> (override var value : A) : Func<A>(value), Serializable
+data class Comp<A : Model> (override var value : A,
+                            override var name : String?)
+        : Func<A>(value), Serializable
 {
 
     private var isDefault : Boolean = false
+
+    constructor(value : A) : this(value, null)
 
     companion object
     {
@@ -59,6 +84,12 @@ data class Comp<A : Model> (override var value : A) : Func<A>(value), Serializab
     }
 
     fun isDefault() : Boolean = this.isDefault
+
+    fun save()
+    {
+        val sqlString = Schema.modelTableDefinitionSQLString(this.value)
+    }
+
 }
 
 
@@ -71,7 +102,8 @@ data class Coll<A>(val list : MutableList<A>) : Func<MutableList<A>>(list), Seri
 /**
  * Collection Functor
  */
-data class CollS<A> (val list : MutableList<A>) : Serializable where A : Model, A : Comparable<A>
+data class CollS<A> (val list : MutableList<A>, val valueClass : KClass<A>? = null)
+    : Func<MutableList<A>>(list), Serializable where A : Model, A : Comparable<A>
 {
     init
     {
@@ -93,39 +125,17 @@ data class CollM<A : Model>(val list : MutableList<A>) : Func<MutableList<A>>(li
 data class Conj<A>(val set : MutableSet<A>) : Func<MutableSet<A>>(set), Serializable
 
 
-/**
- * Mutable Set Functor
- */
-//data class ConjM<A>(val set : MutableSet<A>) : Func<Set<A>>(set)
 
-
-
-class Null<out A : Any> : Func<A>(null), Serializable
+fun <A : SQLSerializable> maybeLiftPrim(mValue : Maybe<A>) : Maybe<Prim<A>> = when(mValue)
 {
-
-    override fun equals(other: Any?) : Boolean
-    {
-        if (other is Null<*>)
-            return true
-
-        return super.equals(other)
-    }
-
-    override fun hashCode() : Int
-    {
-        return 99999999
-    }
-
+    is Just -> maybeApply(::Prim, mValue)
+    else    -> Nothing()
 }
 
 
-fun <A : Any> nullEff() : Eff<ValueError, Identity,Func<A>> = effValue(Null())
-
-
-
-fun <A : Any> maybeLiftPrim(mValue : Maybe<A>) : Maybe<Prim<A>> = when(mValue)
+fun <A : SumModel> maybeLiftSum(mValue : Maybe<A>) : Maybe<Sum<A>> = when(mValue)
 {
-    is Just -> maybeApply(::Prim, mValue)
+    is Just -> maybeApply(::Sum, mValue)
     else    -> Nothing()
 }
 
@@ -137,7 +147,7 @@ fun <A : Model> maybeLiftComp(mValue : Maybe<A>) : Maybe<Comp<A>> = when(mValue)
 }
 
 
-fun <A : Any> getMaybePrim(mPrim : Maybe<Prim<A>>) : A? = when (mPrim)
+fun <A : SQLSerializable> getMaybePrim(mPrim : Maybe<Prim<A>>) : A? = when (mPrim)
 {
     is Just -> mPrim.value.value
     else    -> null
@@ -147,5 +157,12 @@ fun <A : Any> getMaybePrim(mPrim : Maybe<Prim<A>>) : A? = when (mPrim)
 fun <A : Model> getMaybeComp(mComp : Maybe<Comp<A>>) : Maybe<A> = when (mComp)
 {
     is Just -> Just(mComp.value.value)
+    else    -> Nothing()
+}
+
+
+fun <A : SumModel> getMaybeSum(mSum : Maybe<Sum<A>>) : Maybe<A> = when (mSum)
+{
+    is Just -> Just(mSum.value.value)
     else    -> Nothing()
 }

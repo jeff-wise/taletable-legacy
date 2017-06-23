@@ -21,6 +21,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.lib.orm.Schema
 import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.load.LoadResultError
 import com.kispoko.tome.load.LoadResultValue
@@ -28,6 +29,7 @@ import com.kispoko.tome.model.game.engine.variable.VariableId
 import com.kispoko.tome.model.sheet.SheetId
 import com.kispoko.tome.model.theme.UIColors
 import com.kispoko.tome.official.OfficialIndex
+import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.rts.sheet.*
 import com.kispoko.tome.util.configureToolbar
 import effect.Err
@@ -161,7 +163,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-            window.statusBarColor = SheetManager.color(sheetId, uiColors.toolbarColorId())
+            window.statusBarColor = SheetManager.color(sheetId, uiColors.toolbarBackgroundColorId())
         }
 
         // TOOLBAR
@@ -169,7 +171,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
         val toolbar = findViewById(R.id.toolbar) as Toolbar
 
         // Toolbar > Background
-        toolbar.setBackgroundColor(SheetManager.color(sheetId, uiColors.toolbarColorId()))
+        toolbar.setBackgroundColor(SheetManager.color(sheetId, uiColors.toolbarBackgroundColorId()))
 
         // Toolbar > Icons
         var iconColor = SheetManager.color(sheetId, uiColors.toolbarIconsColorId())
@@ -183,14 +185,14 @@ class SheetActivity : AppCompatActivity(), SheetUI
         // TITLE
         // -------------------------------------------------------------------------------------
         val titleView = this.findViewById(R.id.toolbar_title) as TextView
-        titleView.setTextColor(SheetManager.color(sheetId, uiColors.titleColorId()))
+        titleView.setTextColor(SheetManager.color(sheetId, uiColors.toolbarTitleColorId()))
 
         // TAB LAYOUT
         // -------------------------------------------------------------------------------------
         val tabLayout = this.findViewById(R.id.tab_layout) as CustomTabLayout
 
         // Tab Layout > Background
-        tabLayout.setBackgroundColor(SheetManager.color(sheetId, uiColors.tabBarColorId()))
+        tabLayout.setBackgroundColor(SheetManager.color(sheetId, uiColors.tabBarBackgroundColorId()))
 
         // Tab Layout > Text
         tabLayout.setTabTextColors(SheetManager.color(sheetId, uiColors.tabTextNormalColorId()),
@@ -202,15 +204,15 @@ class SheetActivity : AppCompatActivity(), SheetUI
 
         // BOTTOM NAVIGATION VIEW
         // -------------------------------------------------------------------------------------
-        val bottomNavView = this.findViewById(R.id.bottom_navigation)
-
         this.configureBottomNavigation(sheetId, uiColors)
+
     }
 
 
     override fun context() : Context = this
 
 
+    // -----------------------------------------------------------------------------------------
     // SHEET
     // -----------------------------------------------------------------------------------------
 
@@ -222,6 +224,9 @@ class SheetActivity : AppCompatActivity(), SheetUI
             val sheetActivity : AppCompatActivity = this
             val sheetUI : SheetUI = this
             launch(UI) {
+
+                ThemeManager.loadOfficialThemes(officialIndex.themes, sheetActivity)
+
                 val sheetLoad = SheetManager.loadOfficialSheet(officialSheet,
                                                                      officialIndex,
                                                                      sheetActivity)
@@ -246,6 +251,8 @@ class SheetActivity : AppCompatActivity(), SheetUI
                             is Val -> sheetActivity.configureToolbar(characterName.value)
                             is Err -> ApplicationLog.error(characterName.error)
                         }
+
+                        Schema.reconcileSchema()
                     }
                     is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetLoad.userMessage)
                 }

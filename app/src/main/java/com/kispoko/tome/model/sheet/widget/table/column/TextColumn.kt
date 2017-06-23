@@ -13,6 +13,7 @@ import lulo.document.SpecDoc
 import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -21,8 +22,18 @@ import java.util.*
  * Text Column Format
  */
 data class TextColumnFormat(override val id : UUID,
-                            val columnFormat : Comp<ColumnFormat>) : Model
+                            val columnFormat : Comp<ColumnFormat>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.columnFormat.name      = "column_format"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -70,6 +81,10 @@ data class TextColumnFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name = "text_column_format"
+
+    override val modelObject = this
 
 }
 

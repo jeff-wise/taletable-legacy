@@ -128,7 +128,7 @@ object CampaignManager
             when (docParse)
             {
                 is Val -> return effValue(docParse.value)
-                is Err -> return effError(DocumentParseError(officialCampaign.campaignId.name,
+                is Err -> return effError(DocumentParseError(officialCampaign.campaignId.value,
                                                              campaign,
                                                              docParse.error))
             }
@@ -140,7 +140,8 @@ object CampaignManager
             when (sheetParse)
             {
                 is Val -> return effValue(sheetParse.value)
-                is Err -> return effError(ValueParseError(campaign, sheetParse.error))
+                is Err -> return effError(ValueParseError(officialCampaign.campaignId.value,
+                                                          sheetParse.error))
             }
         }
 

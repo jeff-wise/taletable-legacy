@@ -1,0 +1,19 @@
+id: light
+palette:
+- color_id: light_grey
+  color: '#EEEEEE'
+- color_id: medium_grey
+  color: '#555555'
+- color_id: dark_grey
+  color: '#282828'
+ui_colors:
+  toolbar_background: light_grey
+  toolbar_icons: dark_grey
+  title: dark_grey
+  tab_bar_background: light_grey
+  tab_text_normal: medium_grey
+  tab_text_selected: light_grey
+  tab_underline: light_grey
+  bottom_bar_background: light_grey
+  bottom_bar_active: light_grey
+  bottom_bar_inactive: light_grey

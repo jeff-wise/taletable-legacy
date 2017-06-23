@@ -8,6 +8,9 @@ import android.widget.LinearLayout
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLInt
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.DividerMargin
@@ -32,36 +35,56 @@ import java.util.*
  */
 data class Group(override val id : UUID,
                  val format : Comp<GroupFormat>,
-                 val index : Prim<Int>,
+                 val index : Prim<GroupIndex>,
                  val rows : CollS<GroupRow>)
                   : Model, SheetComponent, Comparable<Group>, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.format.name    = "format"
+        this.index.name     = "index"
+        this.rows.name      = "rows"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+
+    constructor(format : GroupFormat,
+                index : GroupIndex,
+                rows : MutableList<GroupRow>)
+        : this(UUID.randomUUID(),
+               Comp(format),
+               Prim(index),
+               CollS(rows))
+
 
     companion object
     {
         fun fromDocument(doc : SpecDoc, index : Int) : ValueParser<Group> = when (doc)
         {
             is DocDict -> effApply(::Group,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Format
                                    split(doc.maybeAt("format"),
-                                         effValue(Comp(GroupFormat.default())),
-                                         { effApply(::Comp, GroupFormat.fromDocument(it))}),
+                                         effValue(GroupFormat.default),
+                                         { GroupFormat.fromDocument(it)}),
                                    // Index
-                                   effValue(Prim(index)),
+                                   effValue(GroupIndex(index)),
                                    // Groups
                                    doc.list("rows") ap { docList ->
-                                       effApply(::CollS, docList.mapIndexed {
-                                           doc, index -> GroupRow.fromDocument(doc, index) })
+                                       docList.mapIndexed {
+                                           doc, index -> GroupRow.fromDocument(doc, index) }
                                    })
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
+
 
 
     // -----------------------------------------------------------------------------------------
@@ -70,7 +93,7 @@ data class Group(override val id : UUID,
 
     fun format() : GroupFormat = this.format.value
 
-    fun index() : Int = this.index.value
+    fun indexInt() : Int = this.index.value.value
 
     fun rows() : MutableList<GroupRow> = this.rows.list
 
@@ -80,6 +103,10 @@ data class Group(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "group"
+
+    override val modelObject = this
 
 
     // SHEET COMPONENT
@@ -95,85 +122,34 @@ data class Group(override val id : UUID,
     // COMPARABLE
     // -----------------------------------------------------------------------------------------
 
-    override fun compareTo(other : Group) = compareValuesBy(this, other, { it.index() })
+    override fun compareTo(other : Group) = compareValuesBy(this, other, { it.indexInt() })
 
 
     // -----------------------------------------------------------------------------------------
     // VIEW
     // -----------------------------------------------------------------------------------------
 
-    fun view(sheetContext : SheetContext) : View
+    fun view(sheetContext : SheetContext) = groupView(this, sheetContext)
+
+}
+
+
+/**
+ * Group Index
+ */
+data class GroupIndex(val value : Int) : SQLSerializable, Serializable
+{
+
+    companion object : Factory<GroupIndex>
     {
-        val layout = this.viewLayout(sheetContext)
-
-        // > Rows
-        layout.addView(this.rowsView(sheetContext))
-
-        // > Divider
-        if (this.format.value.showDivider())
-            layout.addView(this.dividerView(sheetContext))
-
-        return layout
+        override fun fromDocument(doc: SpecDoc) : ValueParser<GroupIndex> = when (doc)
+        {
+            is DocNumber -> effValue(GroupIndex(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
     }
 
-
-    private fun viewLayout(sheetContext : SheetContext) : LinearLayout
-    {
-        val layout = LinearLayoutBuilder()
-
-        layout.orientation          = LinearLayout.VERTICAL;
-        layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.marginSpacing        = this.format().margins()
-
-        layout.backgroundColor      = SheetManager.color(sheetContext.sheetId,
-                                                         this.format().backgroundColorTheme())
-        layout.backgroundResource   = this.format().corners().resourceId()
-
-        return layout.linearLayout(sheetContext.context)
-    }
-
-
-    private fun rowsView(sheetContext : SheetContext) : View
-    {
-        val layout = this.rowsViewLayout(sheetContext.context)
-
-        this.rows.list.forEach { layout.addView(it.view(sheetContext)) }
-
-        return layout
-    }
-
-
-    private fun rowsViewLayout(context : Context) : LinearLayout
-    {
-        val layout = LinearLayoutBuilder()
-
-        layout.orientation      = LinearLayout.VERTICAL
-        layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
-        layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
-
-        layout.paddingSpacing   = this.format().padding()
-
-        return layout.linearLayout(context)
-    }
-
-
-    private fun dividerView(sheetContext : SheetContext) : LinearLayout
-    {
-        val divider = LinearLayoutBuilder()
-
-        divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
-        divider.heightDp            = this.format().dividerThickness()
-
-        divider.backgroundColor     = SheetManager.color(sheetContext.sheetId,
-                                                         this.format().dividerColorTheme())
-
-        divider.margin.leftDp       = this.format().dividerMargins()
-        divider.margin.rightDp      = this.format().dividerMargins()
-
-        return divider.linearLayout(sheetContext.context)
-    }
+    override fun asSQLValue() : SQLValue = SQLInt({this.value})
 
 }
 
@@ -186,11 +162,28 @@ data class GroupFormat(override val id : UUID,
                        val margins : Comp<Spacing>,
                        val padding : Comp<Spacing>,
                        val corners : Prim<Corners>,
-                       val showDivider : Prim<Boolean>,
+                       val showDivider : Prim<ShowGroupDivider>,
                        val dividerColorTheme: Prim<ColorTheme>,
                        val dividerMargins : Prim<DividerMargin>,
                        val dividerThickness : Prim<DividerThickness>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.backgroundColorTheme.name = "background_color_theme"
+        this.margins.name = "margins"
+        this.padding.name = "padding"
+        this.corners.name = "corners"
+        this.showDivider.name = "show_divider"
+        this.dividerColorTheme.name = "divider_color_theme"
+        this.dividerMargins.name = "divider_margins"
+        this.dividerThickness.name = "divider_thickness"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -200,7 +193,7 @@ data class GroupFormat(override val id : UUID,
                 margins : Spacing,
                 padding : Spacing,
                 corners : Corners,
-                showDivider : Boolean,
+                showDivider : ShowGroupDivider,
                 dividerColorTheme : ColorTheme,
                 dividerMargins : DividerMargin,
                 dividerThickness: DividerThickness)
@@ -218,60 +211,69 @@ data class GroupFormat(override val id : UUID,
     companion object : Factory<GroupFormat>
     {
 
+        private val defaultBackgroundColorTheme = ColorTheme.transparent
+        private val defaultMargins              = Spacing.default
+        private val defaultPadding              = Spacing.default
+        private val defaultCorners              = Corners.None
+        private val defaultShowDivider          = ShowGroupDivider(false)
+        private val defaultDividerColorTheme    = ColorTheme.black
+        private val defaultDividerMargins       = DividerMargin.default()
+        private val defaultDividerThickness     = DividerThickness.default()
+
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<GroupFormat> = when (doc)
         {
             is DocDict ->
             {
                 effApply(::GroupFormat,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Background Color
                          split(doc.maybeAt("background_color_theme"),
-                               effValue(Prim(ColorTheme.transparent)),
-                               { effApply(::Prim, ColorTheme.fromDocument(it))}),
+                               effValue(defaultBackgroundColorTheme),
+                               { ColorTheme.fromDocument(it)} ),
                          // Margins
                          split(doc.maybeAt("margins"),
-                               effValue(Comp(Spacing.default)),
-                               { effApply(::Comp, Spacing.fromDocument(it))}),
+                               effValue(defaultMargins),
+                               { Spacing.fromDocument(it) }),
                          // Padding
                          split(doc.maybeAt("padding"),
-                               effValue(Comp(Spacing.default)),
-                               { effApply(::Comp, Spacing.fromDocument(it))}),
+                               effValue(defaultPadding),
+                               { Spacing.fromDocument(it) }),
                          // Corners
                          split(doc.maybeAt("corners"),
-                               effValue<ValueError,Prim<Corners>>(Prim(Corners.None)),
-                               { effApply(::Prim, Corners.fromDocument(it))}),
+                               effValue<ValueError,Corners>(defaultCorners),
+                               { Corners.fromDocument(it) }),
                          // Show Divider?
-                         split(doc.maybeBoolean("show_divider"),
-                               effValue(Prim(false)),
-                               { effValue(Prim(it)) }),
+                         split(doc.maybeAt("show_divider"),
+                               effValue(defaultShowDivider),
+                               { ShowGroupDivider.fromDocument(it) }),
                          // Divider Color Theme
                          split(doc.maybeAt("divider_color_them"),
-                               effValue(Prim(ColorTheme.black)),
-                               { effApply(::Prim, ColorTheme.fromDocument(it))}),
+                               effValue(defaultDividerColorTheme),
+                               { ColorTheme.fromDocument(it) }),
                          // Divider Margins
                          split(doc.maybeAt("divider_margins"),
-                               effValue(Prim(DividerMargin.default())),
-                               { effApply(::Prim, DividerMargin.fromDocument(it))}),
+                               effValue(defaultDividerMargins),
+                               { DividerMargin.fromDocument(it) }),
                          // Divider Thickness
                          split(doc.maybeAt("divider_thickness"),
-                               effValue(Prim(DividerThickness.default())),
-                               { effApply(::Prim, DividerThickness.fromDocument(it))})
+                               effValue(defaultDividerThickness),
+                               { DividerThickness.fromDocument(it) })
                          )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() : GroupFormat =
-                GroupFormat(ColorTheme.transparent,
-                            Spacing.default,
-                            Spacing.default,
-                            Corners.None,
-                            false,
-                            ColorTheme.black,
-                            DividerMargin.default(),
-                            DividerThickness.default())
+        val default : GroupFormat =
+                GroupFormat(defaultBackgroundColorTheme,
+                            defaultMargins,
+                            defaultPadding,
+                            defaultCorners,
+                            defaultShowDivider,
+                            defaultDividerColorTheme,
+                            defaultDividerMargins,
+                            defaultDividerThickness)
+
     }
 
 
@@ -287,7 +289,7 @@ data class GroupFormat(override val id : UUID,
 
     fun corners() : Corners = this.corners.value
 
-    fun showDivider() : Boolean = this.showDivider.value
+    fun showDividerBool() : Boolean = this.showDivider.value.value
 
     fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
 
@@ -302,5 +304,109 @@ data class GroupFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "group_format"
+
+    override val modelObject = this
+
 }
+
+
+/**
+ * Show Divider
+ */
+data class ShowGroupDivider(val value : Boolean) : SQLSerializable, Serializable
+{
+
+    companion object : Factory<ShowGroupDivider>
+    {
+        override fun fromDocument(doc: SpecDoc) : ValueParser<ShowGroupDivider> = when (doc)
+        {
+            is DocBoolean -> effValue(ShowGroupDivider(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+        }
+    }
+
+    override fun asSQLValue() : SQLValue = SQLInt({ if (value) 1 else 0})
+
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// GROUP VIEWS
+// ---------------------------------------------------------------------------------------------
+
+
+fun groupView(group : Group, sheetContext : SheetContext) : View
+{
+    val layout = viewLayout(group.format(), sheetContext)
+
+    // > Rows
+    layout.addView(rowsView(group, sheetContext))
+
+    // > Divider
+    if (group.format().showDividerBool())
+        layout.addView(dividerView(group.format(), sheetContext))
+
+    return layout
+}
+
+
+private fun viewLayout(format : GroupFormat, sheetContext : SheetContext) : LinearLayout
+{
+    val layout = LinearLayoutBuilder()
+
+    layout.orientation          = LinearLayout.VERTICAL;
+    layout.width                = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height               = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.marginSpacing        = format.margins()
+
+    layout.backgroundColor      = SheetManager.color(sheetContext.sheetId,
+                                                     format.backgroundColorTheme())
+    layout.backgroundResource   = format.corners().resourceId()
+
+    return layout.linearLayout(sheetContext.context)
+}
+
+
+private fun rowsView(group : Group, sheetContext : SheetContext) : View
+{
+    val layout = rowsViewLayout(group.format(), sheetContext.context)
+
+    group.rows().forEach { layout.addView(it.view(sheetContext)) }
+
+    return layout
+}
+
+
+private fun rowsViewLayout(format : GroupFormat, context : Context) : LinearLayout
+{
+    val layout = LinearLayoutBuilder()
+
+    layout.orientation      = LinearLayout.VERTICAL
+    layout.width            = LinearLayout.LayoutParams.MATCH_PARENT
+    layout.height           = LinearLayout.LayoutParams.WRAP_CONTENT
+
+    layout.paddingSpacing   = format.padding()
+
+    return layout.linearLayout(context)
+}
+
+
+private fun dividerView(format : GroupFormat, sheetContext : SheetContext) : LinearLayout
+{
+    val divider = LinearLayoutBuilder()
+
+    divider.width               = LinearLayout.LayoutParams.MATCH_PARENT
+    divider.heightDp            = format.dividerThickness()
+
+    divider.backgroundColor     = SheetManager.color(sheetContext.sheetId,
+                                                     format.dividerColorTheme())
+
+    divider.margin.leftDp       = format.dividerMargins()
+    divider.margin.rightDp      = format.dividerMargins()
+
+    return divider.linearLayout(sheetContext.context)
+}
+
 

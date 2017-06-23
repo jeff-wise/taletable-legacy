@@ -2,11 +2,8 @@
 package com.kispoko.tome.model.sheet.widget.table
 
 
-import android.content.Context
 import android.view.View
 import android.widget.TableLayout
-import android.widget.TableRow
-import com.kispoko.tome.R.string.cell
 import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
@@ -26,6 +23,7 @@ import lulo.document.docType
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -35,8 +33,21 @@ import java.util.*
  */
 data class TableWidgetRow(override val id : UUID,
                           val format : Comp<TableWidgetRowFormat>,
-                          val cells : Coll<TableWidgetCell>) : SheetComponent, Model
+                          val cells : Coll<TableWidgetCell>)
+                           : SheetComponent, Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.format.name    = "format"
+        this.cells.name     = "cells"
+
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -82,6 +93,10 @@ data class TableWidgetRow(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() {}
+
+    override val name : String = "table_widget_row"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -168,8 +183,18 @@ data class TableWidgetRow(override val id : UUID,
  * Table Widget Row Format
  */
 data class TableWidgetRowFormat(override val id : UUID,
-                                val cellHeight : Prim<Height>) : Model
+                                val cellHeight : Prim<Height>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.cellHeight.name        = "cell_height"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -213,6 +238,10 @@ data class TableWidgetRowFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "table_widget_row_format"
+
+    override val modelObject = this
 
 }
 

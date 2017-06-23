@@ -3,6 +3,9 @@ package com.kispoko.tome.model.sheet.style
 
 
 import com.kispoko.tome.R
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.effError
 import effect.effValue
 import lulo.document.DocText
@@ -20,21 +23,39 @@ import java.io.Serializable
 /**
  * Corners
  */
-sealed class Corners : Serializable
+sealed class Corners : SQLSerializable, Serializable
 {
 
     object None : Corners()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"none"})
+    }
+
+
     object Small : Corners()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"small"})
+    }
+
+
     object Medium : Corners()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"medium"})
+    }
+
+
     object Large : Corners()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"large"})
+    }
 
 
     fun resourceId() : Int = when(this)
     {
-        is None -> R.drawable.bg_sheet_corners_none
-        is Small -> R.drawable.bg_sheet_corners_small
+        is None   -> R.drawable.bg_sheet_corners_none
+        is Small  -> R.drawable.bg_sheet_corners_small
         is Medium -> R.drawable.bg_sheet_corners_medium
-        is Large -> R.drawable.bg_sheet_corners_large
+        is Large  -> R.drawable.bg_sheet_corners_large
     }
 
 

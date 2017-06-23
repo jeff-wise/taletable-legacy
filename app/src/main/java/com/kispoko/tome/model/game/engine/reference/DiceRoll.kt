@@ -3,6 +3,12 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.dice.DiceRoll
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.effApply
@@ -17,7 +23,7 @@ import lulo.value.ValueParser
 /**
  * Boolean Reference
  */
-sealed class DiceRollReference
+sealed class DiceRollReference : SumModel
 {
 
     // -----------------------------------------------------------------------------------------
@@ -49,7 +55,7 @@ sealed class DiceRollReference
 /**
  * Literal Dice Roll Reference
  */
-data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference()
+data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference(), Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -63,14 +69,36 @@ data class DiceRollReferenceLiteral(val value : DiceRoll) : DiceRollReference()
 
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override val id = this.value.id
+
+    override val name = this.value.name
+
+    override fun onLoad() = this.value.onLoad()
+
+    override val modelObject = this.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() : Func<DiceRollReference> = Comp(this, "literal")
+
+    override val sumModelObject = this
+
 }
 
 
 /**
  * Variable Dice Roll Reference
  */
-data class DiceRollReferenceVariable(
-                val variableReference : VariableReference) : DiceRollReference()
+data class DiceRollReferenceVariable(val variableReference : VariableReference)
+            : DiceRollReference(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -85,10 +113,27 @@ data class DiceRollReferenceVariable(
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() : Func<DiceRollReference> = Prim(this, "variable")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> = setOf(variableReference)
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.variableReference.asSQLValue()
 
 }
 

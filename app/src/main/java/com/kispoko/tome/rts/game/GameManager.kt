@@ -136,7 +136,8 @@ object GameManager
             when (gameParse)
             {
                 is Val -> return effValue(gameParse.value)
-                is Err -> return effError(ValueParseError(game, gameParse.error))
+                is Err -> return effError(ValueParseError(officialGame.gameId.value,
+                                                          gameParse.error))
             }
         }
 

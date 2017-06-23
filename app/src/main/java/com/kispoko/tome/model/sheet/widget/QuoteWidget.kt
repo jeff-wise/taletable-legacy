@@ -5,7 +5,9 @@ package com.kispoko.tome.model.sheet.widget
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
-import com.kispoko.tome.model.sheet.style.Corners
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.theme.ColorTheme
 import effect.*
@@ -14,6 +16,7 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -21,12 +24,25 @@ import java.util.*
 /**
  * Quote View Type
  */
-sealed class QuoteViewType
+sealed class QuoteViewType : SQLSerializable, Serializable
 {
 
-    class Source : QuoteViewType()
-    class IconOverSource : QuoteViewType()
-    class NoIcon : QuoteViewType()
+    object Source : QuoteViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"source"})
+    }
+
+
+    object IconOverSource : QuoteViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"icon_over_source"})
+    }
+
+
+    object NoIcon : QuoteViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"no_icon"})
+    }
 
 
     companion object
@@ -35,10 +51,10 @@ sealed class QuoteViewType
         {
             is DocText -> when (doc.text)
             {
-                "source"           -> effValue<ValueError,QuoteViewType>(QuoteViewType.Source())
+                "source"           -> effValue<ValueError,QuoteViewType>(QuoteViewType.Source)
                 "icon_over_source" -> effValue<ValueError,QuoteViewType>(
-                                            QuoteViewType.IconOverSource())
-                "no_icon"          -> effValue<ValueError,QuoteViewType>(QuoteViewType.NoIcon())
+                                            QuoteViewType.IconOverSource)
+                "no_icon"          -> effValue<ValueError,QuoteViewType>(QuoteViewType.NoIcon)
                 else               -> effError<ValueError,QuoteViewType>(
                                             UnexpectedValue("QuoteViewType", doc.text, doc.path))
             }
@@ -52,8 +68,12 @@ sealed class QuoteViewType
 /**
  * Quote
  */
-data class Quote(val value : String)
+data class Quote(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Quote>
     {
@@ -63,14 +83,26 @@ data class Quote(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue(): SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Quote Source
  */
-data class QuoteSource(val value : String)
+data class QuoteSource(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<QuoteSource>
     {
@@ -80,6 +112,14 @@ data class QuoteSource(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue(): SQLValue = SQLText({this.value})
+
 }
 
 
@@ -92,6 +132,19 @@ data class QuoteWidgetFormat(override val id : UUID,
                              val sourceStyle : Comp<TextStyle>,
                              val iconColorTheme : Prim<ColorTheme>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name      = "widget_format"
+        this.quoteStyle.name        = "quote_style"
+        this.sourceStyle.name       = "source_style"
+        this.iconColorTheme.name    = "icon_color_theme"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -162,6 +215,10 @@ data class QuoteWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "quote_widget_format"
+
+    override val modelObject = this
 
 }
 

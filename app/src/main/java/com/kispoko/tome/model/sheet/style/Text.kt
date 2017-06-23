@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.ui.Font
 import com.kispoko.tome.lib.ui.TextViewBuilder
 import com.kispoko.tome.model.theme.ColorTheme
@@ -37,6 +38,22 @@ data class TextFormat(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.style.name             = "style"
+        this.position.name          = "position"
+        this.height.name            = "height"
+        this.padding.name           = "padding"
+        this.margins.name           = "margins"
+        this.alignment.name         = "alignment"
+        this.verticalAlignment.name = "vertical_alignment"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -61,11 +78,11 @@ data class TextFormat(override val id : UUID,
     {
 
         private val defaultStyle             = TextStyle.default
-        private val defaultPosition          = Position.Top()
+        private val defaultPosition          = Position.Top
         private val defaultHeight            = Height.Wrap
         private val defaultPadding           = Spacing.default
         private val defaultMargins           = Spacing.default
-        private val defaultAlignment         = Alignment.Center()
+        private val defaultAlignment         = Alignment.Center
         private val defaultVerticalAlignment = VerticalAlignment.Middle()
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<TextFormat> = when (doc)
@@ -144,6 +161,10 @@ data class TextFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name = "text_format"
+
+    override val modelObject = this
+
 }
 
 
@@ -185,7 +206,7 @@ data class TextStyle(override val id : UUID,
         private val defaultTextSize             = TextSize(16.0f)
         private val defaultFont                 = TextFont.Regular()
         private val defaultIsUnderlined         = IsUnderlined(false)
-        private val defaultAlignment            = Alignment.Center()
+        private val defaultAlignment            = Alignment.Center
         private val defaultBackgroundColorTheme = ColorTheme.transparent
 
 
@@ -258,6 +279,10 @@ data class TextStyle(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name = "text_style"
+
+    override val modelObject = this
+
 
     // -----------------------------------------------------------------------------------------
     // API
@@ -283,8 +308,12 @@ data class TextStyle(override val id : UUID,
 /**
  * Text Size
  */
-data class TextSize(val sp : Float) : Serializable
+data class TextSize(val sp : Float) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TextSize>
     {
@@ -294,14 +323,26 @@ data class TextSize(val sp : Float) : Serializable
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLReal({ this.sp.toDouble() })
+
 }
 
 
 /**
  * Is Underlined
  */
-data class IsUnderlined(val value : Boolean) : Serializable
+data class IsUnderlined(val value : Boolean) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<IsUnderlined>
     {
@@ -311,19 +352,45 @@ data class IsUnderlined(val value : Boolean) : Serializable
             else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLInt({ if (this.value) 1 else 0 })
+
 }
 
 
 /**
  * Text Font
  */
-sealed class TextFont : Serializable
+sealed class TextFont : SQLSerializable, Serializable
 {
 
     class Regular : TextFont()
+    {
+        override fun asSQLValue() = SQLText({ "regular "})
+    }
+
+
     class Bold : TextFont()
+    {
+        override fun asSQLValue() = SQLText({ "bold "})
+    }
+
+
     class Italic : TextFont()
+    {
+        override fun asSQLValue() = SQLText({ "italic "})
+    }
+
+
     class BoldItalic : TextFont()
+    {
+        override fun asSQLValue() = SQLText({ "bold_italic "})
+    }
 
 
     companion object

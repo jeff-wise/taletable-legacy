@@ -3,6 +3,9 @@ package com.kispoko.tome.model.sheet.style
 
 
 import android.view.Gravity
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.effError
 import effect.effValue
 import lulo.document.DocText
@@ -20,12 +23,25 @@ import java.io.Serializable
 /**
  * Alignment
  */
-sealed class Alignment : Serializable
+sealed class Alignment : SQLSerializable, Serializable
 {
 
-    class Left : Alignment()
-    class Center : Alignment()
-    class Right : Alignment()
+    object Left : Alignment()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"left"})
+    }
+
+
+    object Center : Alignment()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"center"})
+    }
+
+
+    object Right : Alignment()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"right"})
+    }
 
 
     companion object
@@ -34,9 +50,9 @@ sealed class Alignment : Serializable
         {
             is DocText -> when (doc.text)
             {
-                "left"   -> effValue<ValueError,Alignment>(Alignment.Left())
-                "center" -> effValue<ValueError,Alignment>(Alignment.Center())
-                "right"  -> effValue<ValueError,Alignment>(Alignment.Right())
+                "left"   -> effValue<ValueError,Alignment>(Alignment.Left)
+                "center" -> effValue<ValueError,Alignment>(Alignment.Center)
+                "right"  -> effValue<ValueError,Alignment>(Alignment.Right)
                 else     -> effError<ValueError,Alignment>(
                                     UnexpectedValue("Alignment", doc.text, doc.path))
             }
@@ -60,12 +76,25 @@ sealed class Alignment : Serializable
 /**
  * Vertical Alignment
  */
-sealed class VerticalAlignment : Serializable
+sealed class VerticalAlignment : SQLSerializable, Serializable
 {
 
     class Top : VerticalAlignment()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"top"})
+    }
+
+
     class Middle : VerticalAlignment()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"middle"})
+    }
+
+
     class Bottom : VerticalAlignment()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"bottom"})
+    }
 
 
     companion object

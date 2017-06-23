@@ -3,6 +3,10 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.orm.sql.SQLReal
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.effApply
@@ -17,7 +21,7 @@ import lulo.value.UnexpectedType
 /**
  * Number Reference
  */
-sealed class NumberReference
+sealed class NumberReference : SumModel
 {
 
     // -----------------------------------------------------------------------------------------
@@ -49,7 +53,7 @@ sealed class NumberReference
 /**
  * Literal Number Reference
  */
-data class NumberReferenceLiteral(val value : Double) : NumberReference()
+data class NumberReferenceLiteral(val value : Double) : NumberReference(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -65,6 +69,22 @@ data class NumberReferenceLiteral(val value : Double) : NumberReference()
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "literal")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLReal({ this.value })
+
 }
 
 
@@ -72,7 +92,8 @@ data class NumberReferenceLiteral(val value : Double) : NumberReference()
 /**
  * Value Number Reference
  */
-data class NumberReferenceValue(val valueReference : ValueReference) : NumberReference()
+data class NumberReferenceValue(val valueReference : ValueReference)
+            : NumberReference(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -85,15 +106,35 @@ data class NumberReferenceValue(val valueReference : ValueReference) : NumberRef
                 effApply(::NumberReferenceValue, ValueReference.fromDocument(doc))
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "value")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.valueReference.asSQLValue()
+
 }
 
 
 /**
  * Variable Number Reference
  */
-data class NumberReferenceVariable(
-                val variableReference : VariableReference) : NumberReference()
+data class NumberReferenceVariable(val variableReference : VariableReference)
+            : NumberReference(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberReference>
     {
@@ -102,12 +143,39 @@ data class NumberReferenceVariable(
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Prim(this, "variable")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> = setOf(variableReference)
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.variableReference.asSQLValue()
+
 }
+
+//
+//fun liftNumberReference(reference : NumberReference) : Func<NumberReference>
+//    = when (reference)
+//    {
+//        is NumberReferenceLiteral  -> Prim(reference, "literal")
+//        is NumberReferenceValue    -> Prim(reference, "value")
+//        is NumberReferenceVariable -> Prim(reference, "variable")
+//    }
+
 
 
 //

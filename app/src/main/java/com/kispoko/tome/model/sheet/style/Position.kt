@@ -3,6 +3,9 @@ package com.kispoko.tome.model.sheet.style
 
 
 import android.widget.LinearLayout
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.effError
 import effect.effValue
 import lulo.document.DocText
@@ -20,13 +23,31 @@ import java.io.Serializable
 /**
  * Position
  */
-sealed class Position : Serializable
+sealed class Position : SQLSerializable, Serializable
 {
 
-    class Left : Position()
-    class Top : Position()
-    class Right : Position()
-    class Bottom : Position()
+    object Left : Position()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"left"})
+    }
+
+
+    object Top : Position()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"top"})
+    }
+
+
+    object Right : Position()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"right"})
+    }
+
+
+    object Bottom : Position()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"bottom"})
+    }
 
 
     companion object
@@ -35,10 +56,10 @@ sealed class Position : Serializable
         {
             is DocText -> when (doc.text)
             {
-                "left"   -> effValue<ValueError,Position>(Position.Left())
-                "top"    -> effValue<ValueError,Position>(Position.Top())
-                "right"  -> effValue<ValueError,Position>(Position.Right())
-                "bottom" -> effValue<ValueError,Position>(Position.Bottom())
+                "left"   -> effValue<ValueError,Position>(Position.Left)
+                "top"    -> effValue<ValueError,Position>(Position.Top)
+                "right"  -> effValue<ValueError,Position>(Position.Right)
+                "bottom" -> effValue<ValueError,Position>(Position.Bottom)
                 else     -> effError<ValueError,Position>(
                                     UnexpectedValue("Corners", doc.text, doc.path))
             }

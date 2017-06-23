@@ -19,7 +19,6 @@ import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.TextStyle
 import com.kispoko.tome.model.sheet.widget.table.cell.*
-import com.kispoko.tome.model.sheet.widget.table.column.NumberColumnFormat
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetContext
 import com.kispoko.tome.rts.sheet.SheetManager
@@ -29,6 +28,7 @@ import lulo.value.UnexpectedType
 import lulo.value.UnknownCase
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -37,7 +37,7 @@ import java.util.*
  * Table Widget Cell
  */
 @Suppress("UNCHECKED_CAST")
-sealed class TableWidgetCell : Model
+sealed class TableWidgetCell : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -52,14 +52,14 @@ sealed class TableWidgetCell : Model
             {
                 when (doc.case())
                 {
-                    "boolean" -> TableWidgetBooleanCell.fromDocument(doc)
-                                    as ValueParser<TableWidgetCell>
-                    "number"  -> TableWidgetNumberCell.fromDocument(doc)
-                                    as ValueParser<TableWidgetCell>
-                    "text"    -> TableWidgetTextCell.fromDocument(doc)
-                                    as ValueParser<TableWidgetCell>
-                    else      -> effError<ValueError, TableWidgetCell>(
-                                            UnknownCase(doc.case(), doc.path))
+                    "table_widget_boolean_cell" -> TableWidgetBooleanCell.fromDocument(doc)
+                                                    as ValueParser<TableWidgetCell>
+                    "table_widget_number_cell"  -> TableWidgetNumberCell.fromDocument(doc)
+                                                    as ValueParser<TableWidgetCell>
+                    "table_widget_text_cell"    -> TableWidgetTextCell.fromDocument(doc)
+                                                    as ValueParser<TableWidgetCell>
+                    else                        -> effError<ValueError, TableWidgetCell>(
+                                                    UnknownCase(doc.case(), doc.path))
                 }
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -86,6 +86,17 @@ data class TableWidgetBooleanCell(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.format.name        = "format"
+        this.valueVariable.name = "value_variable"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -105,7 +116,7 @@ data class TableWidgetBooleanCell(override val id : UUID,
                                effValue(BooleanCellFormat.default),
                                { BooleanCellFormat.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap { BooleanVariable.fromDocument(it) }
+                         doc.at("value_variable") ap { BooleanVariable.fromDocument(it) }
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -127,6 +138,10 @@ data class TableWidgetBooleanCell(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "table_widget_boolean_cell"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -183,6 +198,17 @@ data class TableWidgetNumberCell(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.format.name            = "format"
+        this.valueVariable.name     = "value_variable"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -202,7 +228,7 @@ data class TableWidgetNumberCell(override val id : UUID,
                                effValue(NumberCellFormat.default),
                                { NumberCellFormat.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap { NumberVariable.fromDocument(it) }
+                         doc.at("value_variable") ap { NumberVariable.fromDocument(it) }
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -231,6 +257,10 @@ data class TableWidgetNumberCell(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "table_widget_number_cell"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -278,6 +308,17 @@ data class TableWidgetTextCell(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.format.name        = "format"
+        this.valueVariable.name = "value_variable"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -297,7 +338,7 @@ data class TableWidgetTextCell(override val id : UUID,
                                effValue(TextCellFormat.default),
                                 { TextCellFormat.fromDocument(it) }),
                          // Value
-                         doc.at("value") ap { TextVariable.fromDocument(it) }
+                         doc.at("value_variable") ap { TextVariable.fromDocument(it) }
                         )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
@@ -326,6 +367,10 @@ data class TableWidgetTextCell(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "table_widget_number_cell"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -370,8 +415,20 @@ enum class TableWidgetCellType
 data class CellFormat(override val id : UUID,
                       val textStyle : Comp<TextStyle>,
                       val alignment : Prim<Alignment>,
-                      val backgroundColorTheme : Prim<ColorTheme>) : Model
+                      val backgroundColorTheme : Prim<ColorTheme>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.textStyle.name             = "text_style"
+        this.alignment.name             = "alignment"
+        this.backgroundColorTheme.name  = "background_color_theme"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -390,7 +447,7 @@ data class CellFormat(override val id : UUID,
     {
 
         private val defaultTextStyle            = TextStyle.default
-        private val defaultAlignment            = Alignment.Center()
+        private val defaultAlignment            = Alignment.Center
         private val defaultBackgroundColorTheme = ColorTheme.transparent
 
 
@@ -438,6 +495,10 @@ data class CellFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "table_widget_cell_format"
+
+    override val modelObject = this
 
 }
 

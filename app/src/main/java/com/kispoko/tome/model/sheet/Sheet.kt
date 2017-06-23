@@ -5,6 +5,9 @@ package com.kispoko.tome.model.sheet
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.campaign.CampaignId
 import com.kispoko.tome.model.sheet.section.Section
 import com.kispoko.tome.model.sheet.section.SectionName
@@ -29,8 +32,22 @@ data class Sheet(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.sheetId.name       = "sheet_id"
+        this.campaignId.name    = "campaign_id"
+        this.sections.name      = "sections"
+        this.settings.name      = "settings"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
+
     constructor(sheetId : SheetId,
                 campaignId : CampaignId,
                 sections : MutableList<Section>,
@@ -58,7 +75,7 @@ data class Sheet(override val id : UUID,
                              docList.mapMut { Section.fromDocument(it) }
                          },
                          // Sheet Settings
-                         split(doc.maybeAt("description"),
+                         split(doc.maybeAt("settings"),
                                effValue(Settings.default()),
                                { Settings.fromDocument(it) })
                          )
@@ -91,6 +108,10 @@ data class Sheet(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "sheet"
+
+    override val modelObject = this
+
 
     // ON ACTIVE
     // -----------------------------------------------------------------------------------------
@@ -106,7 +127,7 @@ data class Sheet(override val id : UUID,
 /**
  * Sheet Id
  */
-data class SheetId(val name : String) : Serializable
+data class SheetId(val value : String) : SQLSerializable, Serializable
 {
 
     companion object : Factory<SheetId>
@@ -117,5 +138,8 @@ data class SheetId(val name : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 

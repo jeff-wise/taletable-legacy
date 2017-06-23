@@ -6,6 +6,9 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLInt
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.Alignment
 import com.kispoko.tome.model.sheet.style.Corners
 import com.kispoko.tome.model.sheet.style.Spacing
@@ -32,6 +35,21 @@ data class WidgetFormat(override val id : UUID,
                         val margins : Comp<Spacing>,
                         val padding : Comp<Spacing>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.width.name                 = "width"
+        this.alignment.name             = "alignment"
+        this.backgroundColorTheme.name  = "background_color_theme"
+        this.corners.name               = "corners"
+        this.margins.name               = "margins"
+        this.padding.name               = "padding"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -88,7 +106,7 @@ data class WidgetFormat(override val id : UUID,
 
         fun default() : WidgetFormat =
                 WidgetFormat(WidgetWidth.default,
-                             Alignment.Center(),
+                             Alignment.Center,
                              ColorTheme.transparent,
                              Corners.None,
                              Spacing.default,
@@ -119,14 +137,22 @@ data class WidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name = "widget_format"
+
+    override val modelObject = this
+
 }
 
 
 /**
  * Widget Width
  */
-data class WidgetWidth(val value : Int) : Serializable
+data class WidgetWidth(val value : Int) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<WidgetWidth>
     {
@@ -138,5 +164,13 @@ data class WidgetWidth(val value : Int) : Serializable
 
         val default = WidgetWidth(1)
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLInt({ this.value })
+
 }
 

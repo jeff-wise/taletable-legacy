@@ -11,6 +11,9 @@ import com.kispoko.tome.R
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.FormattedString
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.lib.ui.TextViewBuilder
@@ -46,6 +49,42 @@ data class NumberWidgetFormat(override val id : UUID,
                               val valueSeparatorFormat : Comp<TextFormat>)
                                : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name                          = "widget_format"
+
+        when (this.insideLabel) {
+            is Just -> this.insideLabel.value.name      = "inside_label"
+        }
+
+        this.insideLabelFormat.name                     = "inside_label_format"
+
+        when (this.outsideLabel) {
+            is Just -> this.outsideLabel.value.name     = "outside_label"
+        }
+
+        this.outsideLabelFormat.name                    = "outside_label_format"
+
+        this.valueFormat.name                           = "value_format"
+
+        this.descriptionStyle.name                      = "description_style"
+
+        this.valuePrefixStyle.name                      = "value_prefix_style"
+
+        this.valuePostfixStyle.name                     = "value_postfix_style"
+
+        when (this.valueSeparator) {
+            is Just -> this.valueSeparator.value.name   = "value_separator"
+        }
+
+        this.valueSeparatorFormat.name                  = "value_separator_format"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -183,7 +222,7 @@ data class NumberWidgetFormat(override val id : UUID,
 
     fun valuePostfixStyle() : TextStyle = this.valuePostfixStyle.value
 
-    fun valueSeparator() : String? = getMaybePrim(this.valueSeparator)?.sep
+    fun valueSeparator() : String? = getMaybePrim(this.valueSeparator)?.value
 
     fun valueSeparatorFormat() : TextFormat? = this.valueSeparatorFormat.value
 
@@ -194,14 +233,22 @@ data class NumberWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "number_widget_format"
+
+    override val modelObject = this
+
 }
 
 
 /**
  * Label
  */
-data class NumberWidgetLabel(val value : String)
+data class NumberWidgetLabel(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberWidgetLabel>
     {
@@ -211,14 +258,26 @@ data class NumberWidgetLabel(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Value Separator
  */
-data class ValueSeparator(val sep : String)
+data class ValueSeparator(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueSeparator>
     {
@@ -228,14 +287,25 @@ data class ValueSeparator(val sep : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Description
  */
-data class NumberWidgetDescription(val value : String)
+data class NumberWidgetDescription(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberWidgetDescription>
     {
@@ -245,14 +315,26 @@ data class NumberWidgetDescription(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Value Prefix
  */
-data class NumberWidgetValuePrefix(val value : String)
+data class NumberWidgetValuePrefix(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberWidgetValuePrefix>
     {
@@ -262,14 +344,26 @@ data class NumberWidgetValuePrefix(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Value Postfix
  */
-data class NumberWidgetValuePostfix(val value : String)
+data class NumberWidgetValuePostfix(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<NumberWidgetValuePostfix>
     {
@@ -279,6 +373,14 @@ data class NumberWidgetValuePostfix(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
@@ -429,8 +531,8 @@ object NumberWidgetView
 
         if (format.valueFormat().height().isWrap())
         {
-            layout.padding.topDp    = format.valueFormat().padding().top().toFloat()
-            layout.padding.bottomDp = format.valueFormat().padding().bottom().toFloat()
+            layout.padding.topDp    = format.valueFormat().padding().topDp()
+            layout.padding.bottomDp = format.valueFormat().padding().bottomDp()
         }
 
 //        if (format.widgetFormat.background() == BackgroundColor.EMPTY)

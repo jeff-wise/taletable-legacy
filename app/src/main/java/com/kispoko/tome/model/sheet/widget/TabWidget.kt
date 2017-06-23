@@ -5,6 +5,10 @@ package com.kispoko.tome.model.sheet.widget
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLInt
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.group.Group
 import com.kispoko.tome.model.sheet.style.*
 import com.kispoko.tome.model.theme.ColorTheme
@@ -22,9 +26,24 @@ import java.util.*
  * Tab
  */
 data class Tab(override val id : UUID,
-               val name : Func<TabName>,
+               val tabName : Func<TabName>,
                val groups : Coll<Group>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.tabName.name       = "tab_name"
+        this.groups.name        = "groups"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Tab>
     {
@@ -49,7 +68,16 @@ data class Tab(override val id : UUID,
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+    override val name : String = "tab"
+
+    override val modelObject = this
 
 }
 
@@ -57,8 +85,12 @@ data class Tab(override val id : UUID,
 /**
  * Tab Name
  */
-data class TabName(val value : String) : Serializable
+data class TabName(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TabName>
     {
@@ -68,6 +100,43 @@ data class TabName(val value : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Default Selected
+ */
+data class DefaultSelected(val value : Int) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<DefaultSelected>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<DefaultSelected> = when (doc)
+        {
+            is DocNumber -> effValue(DefaultSelected(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+
 }
 
 
@@ -78,14 +147,33 @@ data class TabWidgetFormat(override val id : UUID,
                            val widgetFormat : Comp<WidgetFormat>,
                            val tabDefaultStyle : Comp<TextStyle>,
                            val tabSelectedStyle : Comp<TextStyle>,
-                           val underlineSelected : Prim<Boolean>,
-                           val underlineThickness : Prim<Int>,
+                           val underlineSelected : Prim<TabUnderlineSelected>,
+                           val underlineThickness : Prim<TabUnderlineThickness>,
                            val tabMargins : Comp<Spacing>,
-                           val tabPaddingVertical : Prim<Int>,
+                           val tabPaddingVertical : Prim<TabVerticalPadding>,
                            val tabHeight : Prim<Height>,
                            val backgroundColorTheme : Prim<ColorTheme>,
                            val tabCorners : Prim<Corners>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name              = "widget_format"
+        this.tabDefaultStyle.name           = "tab_default_style"
+        this.tabSelectedStyle.name          = "tab_selected_style"
+        this.underlineSelected.name         = "underline_selected"
+        this.underlineThickness.name        = "underline_thickness"
+        this.tabMargins.name                = "tab_margins"
+        this.tabPaddingVertical.name        = "tab_padding_vertical"
+        this.tabHeight.name                 = "tab_height"
+        this.backgroundColorTheme.name      = "background_color_theme"
+        this.tabCorners.name                = "tab_corners"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -94,10 +182,10 @@ data class TabWidgetFormat(override val id : UUID,
     constructor(widgetFormat : WidgetFormat,
                 tabDefaultStyle : TextStyle,
                 tabSelectedstyle : TextStyle,
-                underlineSelected : Boolean,
-                underlineThickness : Int,
+                underlineSelected : TabUnderlineSelected,
+                underlineThickness : TabUnderlineThickness,
                 tabMargins : Spacing,
-                tabPaddingVertical: Int,
+                tabPaddingVertical: TabVerticalPadding,
                 tabHeight : Height,
                 backgroundColorTheme : ColorTheme,
                 tabCorners : Corners)
@@ -120,10 +208,10 @@ data class TabWidgetFormat(override val id : UUID,
         private val defaultWidgetFormat         = WidgetFormat.default()
         private val defaultTabDefaultStyle      = TextStyle.default
         private val defaultTabSelectedStyle     = TextStyle.default
-        private val defaultUnderlineSelected    = true
-        private val defaultUnderlineThickness   = 2
+        private val defaultUnderlineSelected    = TabUnderlineSelected(true)
+        private val defaultUnderlineThickness   = TabUnderlineThickness(2)
         private val defaultTabMargins           = Spacing.default
-        private val defaultTabPaddingVertical   = 5
+        private val defaultTabPaddingVertical   = TabVerticalPadding(5)
         private val defaultTabHeight            = Height.MediumSmall
         private val defaultBackgroundColorTheme = ColorTheme.transparent
         private val defaultTabCorners           = Corners.None
@@ -147,21 +235,21 @@ data class TabWidgetFormat(override val id : UUID,
                                effValue(defaultTabSelectedStyle),
                                { TextStyle.fromDocument(it) }),
                          // Underline Selected?
-                         split(doc.maybeBoolean("underline_selected"),
+                         split(doc.maybeAt("underline_selected"),
                                effValue(defaultUnderlineSelected),
-                               { effValue(it) }),
+                               { TabUnderlineSelected.fromDocument(it) }),
                          // Underline Thickness
-                         split(doc.maybeInt("underline_thickness"),
+                         split(doc.maybeAt("underline_thickness"),
                                effValue(defaultUnderlineThickness),
-                               { effValue(it) }),
+                               { TabUnderlineThickness.fromDocument(it) }),
                          // Margins
                          split(doc.maybeAt("tab_margins"),
                                effValue(defaultTabMargins),
                                { Spacing.fromDocument(it) }),
                          // Tab Padding Vertical
-                         split(doc.maybeInt("tab_padding_vertical"),
+                         split(doc.maybeAt("tab_padding_vertical"),
                                effValue(defaultTabPaddingVertical),
-                               { effValue(it) }),
+                               { TabVerticalPadding.fromDocument(it) }),
                          // Tab Height
                          split(doc.maybeAt("tab_height"),
                                effValue<ValueError,Height>(defaultTabHeight),
@@ -208,7 +296,100 @@ data class TabWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "tab_widget_format"
+
+    override val modelObject = this
+
 }
+
+
+
+/**
+ * Tab Underline Selected?
+ */
+data class TabUnderlineSelected(val value : Boolean) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TabUnderlineSelected>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TabUnderlineSelected> = when (doc)
+        {
+            is DocBoolean -> effValue(TabUnderlineSelected(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
+
+}
+
+
+/**
+ * Tab Underline Thickness
+ */
+data class TabUnderlineThickness(val value : Int) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TabUnderlineThickness>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TabUnderlineThickness> = when (doc)
+        {
+            is DocNumber -> effValue(TabUnderlineThickness(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+
+}
+
+
+/**
+ * Tab Vertical Padding
+ */
+data class TabVerticalPadding(val value : Int) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TabVerticalPadding>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TabVerticalPadding> = when (doc)
+        {
+            is DocNumber -> effValue(TabVerticalPadding(doc.number.toInt()))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({this.value})
+
+}
+
 
 
 

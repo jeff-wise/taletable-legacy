@@ -515,8 +515,8 @@ types:
   group: Variable
   type: product
   fields:
-  - name: name
-    type: string
+  - name: id
+    type: variable_id
     presence: required
     description: >
       The name of the Boolean Variable. The name must be unique and may only contain letters, 
@@ -556,14 +556,19 @@ types:
   group: Variable
   type: sum
   cases:
-  - name: literal
-    type: boolean
+  - type: boolean_literal
     description: >
       A literal true/false value.
-  - name: invocation
-    type: program_invocation
+  - type: program_invocation
     description: >
       A true/false value created from a program.
+- name: boolean_literal
+  label: Literal Boolean Value
+  description: >
+    Boolean literal value
+  group: Variable
+  type: primitive
+  base_type: boolean
 - name: variable_dice_roll
   label: Dice Roll Variable
   description: >
@@ -631,7 +636,8 @@ types:
     description: >
       If true this variable may be assigned a namespace depending on its context.
   - name: tags
-    type: string_list
+    type: list
+    of: variable_tag
     presence: optional
     description: >
       Tags that can be used to place the variable in a group.
@@ -645,7 +651,7 @@ types:
   - type: number_literal
     description: >
       A literal number.
-  - type: string
+  - type: variable_id
     description: >
       The value of another number variable.
   - type: program_invocation

@@ -3,6 +3,10 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Sum
+import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.effError
 import effect.effValue
@@ -16,8 +20,12 @@ import lulo.value.UnexpectedType
  * Value Reference
  */
 @Suppress("UNCHECKED_CAST")
-sealed class DataReference
+sealed class DataReference : SumModel
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<DataReference>
     {
@@ -42,6 +50,7 @@ sealed class DataReference
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
@@ -55,6 +64,10 @@ sealed class DataReference
  */
 data class DataReferenceBoolean(val reference : BooleanReference) : DataReference()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<DataReferenceBoolean>
     {
@@ -70,10 +83,21 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Sum(this.reference, "boolean")
+
+    override val sumModelObject = this.reference
+
+
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> = this.reference.dependencies()
+
 }
 
 
@@ -82,6 +106,10 @@ data class DataReferenceBoolean(val reference : BooleanReference) : DataReferenc
  */
 data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataReference()
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<DataReferenceDiceRoll>
     {
@@ -97,6 +125,16 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Sum(this.reference, "dice_roll")
+
+    override val sumModelObject = this.reference
+
+
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
@@ -111,6 +149,10 @@ data class DataReferenceDiceRoll(val reference : DiceRollReference) : DataRefere
 data class DataReferenceNumber(val reference : NumberReference) : DataReference()
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
     companion object : Factory<DataReferenceNumber>
     {
         override fun fromDocument(doc : SpecDoc)
@@ -124,6 +166,45 @@ data class DataReferenceNumber(val reference : NumberReference) : DataReference(
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // DEPENDENCIES
+    // -----------------------------------------------------------------------------------------
+
     override fun dependencies(): Set<VariableReference> = this.reference.dependencies()
 
+
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() = Sum(this.reference, "number")
+
+    override val sumModelObject = this.reference
+
 }
+
+//
+//fun liftDataReference(dataReference : DataReference) : Func<DataReference>
+//    = when (dataReference)
+//    {
+//        is DataReferenceBoolean ->
+//        {
+//            val booleanRefernece = dataReference.reference
+//            when (booleanRefernece)
+//            {
+//                is BooleanReferenceLiteral  -> Prim(dataReference, "boolean_literal")
+//                is BooleanReferenceVariable -> Prim(dataReference, "boolean_variable")
+//            }
+//        }
+//        is DataReferenceDiceRoll ->
+//        {
+//            val diceRollReference = dataReference.reference
+//            when (booleanRefernece)
+//            {
+//                is BooleanReferenceLiteral  -> Prim(dataReference, "boolean_literal")
+//                is BooleanReferenceVariable -> Prim(dataReference, "boolean_variable")
+//            }
+//        }
+//
+//
+//    }

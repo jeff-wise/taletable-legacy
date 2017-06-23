@@ -3,16 +3,22 @@ package com.kispoko.tome.model.game
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.database.SQL
 import com.kispoko.tome.lib.functor.Func
-import com.kispoko.tome.lib.functor.Null
 import com.kispoko.tome.lib.functor.Prim
-import com.kispoko.tome.lib.functor.nullEff
+import com.kispoko.tome.lib.functor.maybeLiftPrim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
+import com.kispoko.tome.model.sheet.widget.TextWidgetLabel
 import com.kispoko.tome.model.user.UserName
 import effect.*
 import lulo.document.*
 import lulo.value.UnexpectedType
+import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -21,10 +27,41 @@ import java.util.*
  * Author
  */
 data class Author(override val id : UUID,
-                  val name : Func<AuthorName>,
-                  val organization : Func<AuthorOrganization>,
-                  val userName : Func<UserName>) : Model
+                  val authorName : Prim<AuthorName>,
+                  val organization : Maybe<Prim<AuthorOrganization>>,
+                  val userName : Maybe<Prim<UserName>>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.authorName.name                        = "author_name"
+
+        when (this.organization) {
+            is Just -> this.organization.value.name = "organization"
+        }
+
+        when (this.userName) {
+            is Just -> this.userName.value.name     = "user_name"
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(name : AuthorName,
+                organization : Maybe<AuthorOrganization>,
+                userName : Maybe<UserName>)
+        : this(UUID.randomUUID(),
+               Prim(name),
+               maybeLiftPrim(organization),
+               maybeLiftPrim(userName))
+
 
     companion object : Factory<Author>
     {
@@ -33,29 +70,32 @@ data class Author(override val id : UUID,
             is DocDict ->
             {
                 effApply(::Author,
-                         // Model Id
-                         effValue(UUID.randomUUID()),
                          // Name
-                         doc.at("name") apply {
-                             effApply(::Prim, AuthorName.fromDocument(it))
-                         },
+                         doc.at("name") apply { AuthorName.fromDocument(it) },
                          // Organization
-                         split(doc.maybeAt("organization"),
-                               nullEff<AuthorOrganization>(),
-                               fun(d : SpecDoc) : ValueParser<Func<AuthorOrganization>> =
-                                   effApply(::Prim, AuthorOrganization.fromDocument(d))),
+                         split(doc.maybeAt("outside_label"),
+                                effValue<ValueError,Maybe<AuthorOrganization>>(Nothing()),
+                                { effApply(::Just, AuthorOrganization.fromDocument(it)) }),
                          // User Name
-                         split(doc.maybeAt("user_name"),
-                               nullEff<UserName>(),
-                               fun(d : SpecDoc) : ValueParser<Func<UserName>> =
-                                   effApply(::Prim, UserName.fromDocument(d)))
-                         )
+                        split(doc.maybeAt("user_name"),
+                                effValue<ValueError,Maybe<UserName>>(Nothing()),
+                                { effApply(::Just, UserName.fromDocument(it)) })
+                        )
             }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+    override val name : String = "author"
+
+    override val modelObject = this
 
 }
 
@@ -63,8 +103,12 @@ data class Author(override val id : UUID,
 /**
  * Author Name
  */
-data class AuthorName(val value : String)
+data class AuthorName(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<AuthorName>
     {
@@ -75,14 +119,25 @@ data class AuthorName(val value : String)
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Author Organization
  */
-data class AuthorOrganization(val value : String)
+data class AuthorOrganization(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<AuthorOrganization>
     {
@@ -92,5 +147,12 @@ data class AuthorOrganization(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 
 }

@@ -5,8 +5,11 @@ package com.kispoko.tome.model.game.engine.value
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLReal
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.variable.Variable
-import com.kispoko.tome.model.game.engine.variable.VariableLabel
 import effect.*
 import lulo.document.*
 import lulo.value.*
@@ -79,10 +82,26 @@ sealed class Value(open val valueId : Prim<ValueId>,
 data class ValueNumber(override val id : UUID,
                        override val valueId : Prim<ValueId>,
                        override val description: Maybe<Prim<ValueDescription>>,
-                       val value : Prim<Double>,
+                       val value : Prim<NumberValue>,
                        val variables : Conj<Variable>)
                         : Value(valueId, description)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.valueId.name                           = "value_id"
+
+        when (this.description) {
+            is Just -> this.description.value.name  = "description"
+        }
+
+        this.value.name                             = "value"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -90,7 +109,7 @@ data class ValueNumber(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : Maybe<ValueDescription>,
-                value : Double,
+                value : NumberValue,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(valueId),
@@ -113,7 +132,7 @@ data class ValueNumber(override val id : UUID,
                                effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
                                { effApply(::Just, ValueDescription.fromDocument(it)) }),
                          // Value
-                         doc.double("value"),
+                         doc.at("value") ap { NumberValue.fromDocument(it) },
                          // Variables
                          doc.list("variables") ap { docList ->
                              docList.mapSetMut { Variable.fromDocument(it) }
@@ -128,7 +147,7 @@ data class ValueNumber(override val id : UUID,
     // GETTERS
     // -----------------------------------------------------------------------------------------
 
-    fun value() : Double = this.value.value
+    fun value() : Double = this.value.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -144,6 +163,10 @@ data class ValueNumber(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name = "value_text"
+
+    override val modelObject = this
+
 }
 
 
@@ -153,10 +176,28 @@ data class ValueNumber(override val id : UUID,
 data class ValueText(override val id : UUID,
                      override val valueId : Prim<ValueId>,
                      override val description : Maybe<Prim<ValueDescription>>,
-                     val value : Prim<String>,
+                     val value : Prim<TextValue>,
                      val variables : Conj<Variable>)
                       : Value(valueId, description)
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INITIALIZATION
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.valueId.name                           = "value_id"
+
+        when (this.description) {
+            is Just -> this.description.value.name  = "description"
+        }
+
+        this.value.name                             = "value"
+
+        this.variables.name                         = "variables"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -164,7 +205,7 @@ data class ValueText(override val id : UUID,
 
     constructor(valueId : ValueId,
                 description : Maybe<ValueDescription>,
-                value : String,
+                value : TextValue,
                 variables : MutableSet<Variable>)
         : this(UUID.randomUUID(),
                Prim(valueId),
@@ -185,7 +226,7 @@ data class ValueText(override val id : UUID,
                                          effValue<ValueError,Maybe<ValueDescription>>(Nothing()),
                                          { effApply(::Just, ValueDescription.fromDocument(it)) }),
                                    // Value
-                                   doc.text("value"),
+                                   doc.at("value") ap { TextValue.fromDocument(it) },
                                    // Variables
                                    doc.list("variables") ap { docList ->
                                        docList.mapSetMut { Variable.fromDocument(it) }
@@ -199,7 +240,7 @@ data class ValueText(override val id : UUID,
     // VALUE
     // -----------------------------------------------------------------------------------------
 
-    fun value() : String = this.value.value
+    fun value() : String = this.value.value.value
 
 
     // -----------------------------------------------------------------------------------------
@@ -215,6 +256,10 @@ data class ValueText(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name = "value_text"
+
+    override val modelObject = this
+
 }
 
 
@@ -228,18 +273,13 @@ enum class ValueType
 /**
  * Value Reference
  */
-data class ValueReference(override val id : UUID,
-                          val valueSetId: Prim<ValueSetId>,
-                          val valueId: Prim<ValueId>) : Model
+data class ValueReference(val valueSetId : ValueSetId, val valueId : ValueId)
+            : SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
-
-    constructor(valueSetId : ValueSetId, valueId : ValueId)
-        : this(UUID.randomUUID(), Prim(valueSetId), Prim(valueId))
-
 
     companion object : Factory<ValueReference>
     {
@@ -256,19 +296,11 @@ data class ValueReference(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
-    // GETTERS
+    // SQL SERIALIZABLE
     // -----------------------------------------------------------------------------------------
 
-    fun valueSetId() : ValueSetId = this.valueSetId.value
-
-    fun valueId() : ValueId = this.valueId.value
-
-
-    // -----------------------------------------------------------------------------------------
-    // MODEL
-    // -----------------------------------------------------------------------------------------
-
-    override fun onLoad() { }
+    override fun asSQLValue() : SQLValue =
+            SQLText({this.valueSetId.toString() + " " + this.valueId.toString()})
 
 }
 
@@ -276,8 +308,12 @@ data class ValueReference(override val id : UUID,
 /**
  * Value Id
  */
-data class ValueId(val value : String)
+data class ValueId(val value : String) : SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueId>
     {
@@ -287,14 +323,26 @@ data class ValueId(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
 /**
  * Value Description
  */
-data class ValueDescription(val value : String)
+data class ValueDescription(val value : String) : SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ValueDescription>
     {
@@ -304,7 +352,71 @@ data class ValueDescription(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
+
+
+/**
+ * Number Value
+ */
+data class NumberValue(val value : Double) : SQLSerializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<NumberValue>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<NumberValue> = when (doc)
+        {
+            is DocNumber -> effValue(NumberValue(doc.number))
+            else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLReal({this.value})
+
+}
+
+
+/**
+ * Text Value
+ */
+data class TextValue(val value : String) : SQLSerializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TextValue>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TextValue> = when (doc)
+        {
+            is DocText -> effValue(TextValue(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
 
 //
 // Number Value

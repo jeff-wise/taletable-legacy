@@ -5,6 +5,9 @@ package com.kispoko.tome.model.campaign
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.GameId
 import effect.effApply
 import effect.effError
@@ -21,9 +24,20 @@ import java.util.*
  * Campaign
  */
 data class Campaign(override val id : UUID,
-                    val campaignId: Prim<CampaignId>,
+                    val campaignId : Prim<CampaignId>,
                     val gameId : Prim<GameId>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.campaignId.name    = "campaign_id"
+        this.gameId.name        = "game_id"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -50,10 +64,21 @@ data class Campaign(override val id : UUID,
 
 
     // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun campaignId() : CampaignId = this.campaignId.value
+
+
+    // -----------------------------------------------------------------------------------------
     // MODEL
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "campaign"
+
+    override val modelObject = this
 
 
     // -----------------------------------------------------------------------------------------
@@ -66,7 +91,7 @@ data class Campaign(override val id : UUID,
 /**
  * Campaign Id
  */
-data class CampaignId(val name : String) : Serializable
+data class CampaignId(val value : String) : SQLSerializable, Serializable
 {
 
     companion object : Factory<CampaignId>
@@ -77,6 +102,9 @@ data class CampaignId(val name : String) : Serializable
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 

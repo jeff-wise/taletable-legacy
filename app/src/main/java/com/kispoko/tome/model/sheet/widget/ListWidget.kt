@@ -30,6 +30,18 @@ data class ListWidgetFormat(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name      = "widget_format"
+        this.listStyle.name         = "list_style"
+        this.annotationStyle.name   = "annotation_style"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
@@ -69,6 +81,10 @@ data class ListWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name = "list_widget_format"
+
+    override val modelObject = this
 
 }
 

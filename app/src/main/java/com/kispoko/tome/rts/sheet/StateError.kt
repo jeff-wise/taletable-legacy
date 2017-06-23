@@ -8,7 +8,6 @@ import com.kispoko.tome.model.game.engine.variable.VariableReference
 import com.kispoko.tome.model.game.engine.variable.VariableTag
 import com.kispoko.tome.model.game.engine.variable.VariableType
 import com.kispoko.tome.model.sheet.SheetId
-import com.kispoko.tome.rts.game.engine.EngineError
 
 
 

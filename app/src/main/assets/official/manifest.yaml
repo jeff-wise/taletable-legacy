@@ -7,3 +7,6 @@ campaigns:
   game_id: amanace
 games:
 - game_id: amanace
+themes:
+- light
+- dark

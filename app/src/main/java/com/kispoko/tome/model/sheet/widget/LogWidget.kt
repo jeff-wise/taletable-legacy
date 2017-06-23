@@ -7,14 +7,15 @@ import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.theme.ColorId
 import effect.*
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SpecDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -23,31 +24,184 @@ import java.util.*
  * Log Entry
  */
 data class LogEntry(override val id : UUID,
-                    val title : Func<String>,
-                    val author : Func<String>,
-                    val summary : Func<String>,
-                    val text : Func<String>) : Model
+                    val title : Prim<EntryTitle>,
+                    val author : Prim<EntryAuthor>,
+                    val summary : Prim<EntrySummary>,
+                    val text : Prim<EntryText>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.title.name     = "title"
+        this.author.name    = "author"
+        this.summary.name   = "summary"
+        this.text.name      = "text"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    constructor(title : EntryTitle,
+                author : EntryAuthor,
+                summary : EntrySummary,
+                text : EntryText)
+        : this(UUID.randomUUID(),
+               Prim(title),
+               Prim(author),
+               Prim(summary),
+               Prim(text))
+
+
     companion object : Factory<LogEntry>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<LogEntry> = when (doc)
         {
             is DocDict -> effApply(::LogEntry,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
                                    // Title
-                                   effApply(::Prim, doc.text("title")),
+                                   doc.at("title") ap { EntryTitle.fromDocument(it) },
                                    // Author
-                                   effApply(::Prim, doc.text("author")),
+                                   doc.at("author") ap { EntryAuthor.fromDocument(it) },
                                    // Summary
-                                   effApply(::Prim, doc.text("summary")),
+                                   doc.at("summary") ap { EntrySummary.fromDocument(it) },
                                    // text
-                                   effApply(::Prim, doc.text("text")))
+                                   doc.at("text") ap { EntryText.fromDocument(it) }
+                                   )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
     override fun onLoad() { }
+
+    override val name : String = "log_entry"
+
+    override val modelObject = this
+
+}
+
+
+/**
+ * Entry Title
+ */
+data class EntryTitle(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<EntryTitle>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<EntryTitle> = when (doc)
+        {
+            is DocText -> effValue(EntryTitle(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Entry Author
+ */
+data class EntryAuthor(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<EntryAuthor>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<EntryAuthor> = when (doc)
+        {
+            is DocText -> effValue(EntryAuthor(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Entry Summary
+ */
+data class EntrySummary(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<EntrySummary>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<EntrySummary> = when (doc)
+        {
+            is DocText -> effValue(EntrySummary(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * Entry Text
+ */
+data class EntryText(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<EntryText>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<EntryText> = when (doc)
+        {
+            is DocText -> effValue(EntryText(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
 
 }
 
@@ -59,6 +213,17 @@ data class LogWidgetFormat(override val id : UUID,
                            val widgetFormat : Comp<WidgetFormat>,
                            val dividerColor : Func<ColorId>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name      = "widget_format"
+        this.dividerColor.name      = "divider_color"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -96,6 +261,10 @@ data class LogWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "log_widget_format"
+
+    override val modelObject = this
 
 }
 

@@ -23,11 +23,23 @@ data class Settings(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.themeId.name       = "theme_id"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     companion object : Factory<Settings>
     {
+
+        private val defaultThemeId = ThemeId.Dark
 
         override fun fromDocument(doc : SpecDoc) : ValueParser<Settings> = when (doc)
         {
@@ -36,14 +48,14 @@ data class Settings(override val id : UUID,
                                    effValue(UUID.randomUUID()),
                                    // Theme Id
                                    split(doc.maybeAt("theme_id"),
-                                         effValue<ValueError,Prim<ThemeId>>(Prim(ThemeId.Dark)),
+                                         effValue<ValueError,Prim<ThemeId>>(Prim(defaultThemeId)),
                                          { effApply(::Prim, ThemeId.fromDocument(it)) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        fun default() : Settings = Settings(UUID.randomUUID(), Prim(ThemeId.Dark))
+        fun default() : Settings = Settings(UUID.randomUUID(), Prim(defaultThemeId))
 
     }
 
@@ -60,6 +72,10 @@ data class Settings(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name = "sheet_settings"
+
+    override val modelObject = this
 
 }
 

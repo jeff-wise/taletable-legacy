@@ -5,6 +5,13 @@ package com.kispoko.tome.model.game.engine.variable
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppError
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Comp
+import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.game.engine.program.Invocation
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.rts.game.GameManager
@@ -31,7 +38,7 @@ sealed class TextVariableValue : Serializable
             when (doc.case)
             {
                 "text_literal"       -> TextVariableLiteralValue.fromDocument(doc)
-                "value_reference"    -> TextVariableValueReference.fromDocument(doc)
+                "value_reference"    -> TextVariableValueValue.fromDocument(doc)
                 "program_invocation" -> TextVariableProgramValue.fromDocument(doc)
                 else                 -> effError<ValueError,TextVariableValue>(
                                             UnknownCase(doc.case, doc.path))
@@ -58,8 +65,12 @@ sealed class TextVariableValue : Serializable
 /**
  * Literal Value
  */
-data class TextVariableLiteralValue(val value : String) : TextVariableValue()
+data class TextVariableLiteralValue(val value : String) : TextVariableValue(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TextVariableValue>
     {
@@ -72,37 +83,58 @@ data class TextVariableLiteralValue(val value : String) : TextVariableValue()
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // Value
     // -----------------------------------------------------------------------------------------
 
     override fun value(sheetContext : SheetContext) : AppEff<String> = effValue(this.value)
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({ this.value })
+
 }
 
 
-data class TextVariableValueReference(val reference : ValueReference) : TextVariableValue()
+data class TextVariableValueValue(val valueReference : ValueReference)
+            : TextVariableValue(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TextVariableValue>
     {
         override fun fromDocument(doc : SpecDoc)
                       : ValueParser<TextVariableValue> =
-                effApply(::TextVariableValueReference, ValueReference.fromDocument(doc))
+                effApply(::TextVariableValueValue, ValueReference.fromDocument(doc))
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // Value
     // -----------------------------------------------------------------------------------------
 
     override fun value(sheetContext : SheetContext) : AppEff<String> =
         GameManager.engine(sheetContext.gameId)
-                   .apply { it.textValue(this.reference) }
+                   .apply { it.textValue(this.valueReference) }
                    .apply { effValue<AppError,String>(it.value()) }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = this.valueReference.asSQLValue()
 
 }
 
 
-data class TextVariableProgramValue(val invocation : Invocation) : TextVariableValue()
+data class TextVariableProgramValue(val invocation : Invocation) : TextVariableValue(), Model
 {
 
     // -----------------------------------------------------------------------------------------
@@ -122,10 +154,33 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 
     override fun dependencies() : Set<VariableReference> = this.invocation.dependencies()
 
-
     override fun value(sheetContext : SheetContext) : AppEff<String> = TODO("Not Implemented")
 
+
+    // -----------------------------------------------------------------------------------------
+    // MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun onLoad() = this.invocation.onLoad()
+
+    override val id = this.invocation.id
+
+    override val name = this.invocation.name
+
+    override val modelObject : Model = this.invocation
+
+
 }
+
+
+fun liftTextVariableValue(varValue : TextVariableValue) : Func<TextVariableValue>
+    = when (varValue)
+    {
+        is TextVariableLiteralValue -> Prim(varValue, "literal")
+        is TextVariableValueValue   -> Prim(varValue, "value")
+        is TextVariableProgramValue -> Comp(varValue, "program")
+    }
+
 
 
 //    @Override
@@ -135,110 +190,6 @@ data class TextVariableProgramValue(val invocation : Invocation) : TextVariableV
 //            this.isNamespaced.setValue(isNamespaced);
 //        else
 //            this.isNamespaced.setValue(false);
-//    }
-//
-//
-//    @Override
-//    public List<VariableReference> dependencies()
-//    {
-//        List<VariableReference> variableDependencies = new ArrayList<>();
-//
-//        if (this.kind.getValue() == Kind.PROGRAM) {
-//            variableDependencies = this.invocation().variableDependencies();
-//        }
-//
-//        return variableDependencies;
-//    }
-//
-//
-
-//    @Override
-//    public void initialize()
-//    {
-//        // [1] Add to state
-//        // --------------------------------------------------------------------------------------
-//        this.addToState();
-//
-//        // [2] Save original name and label values in case namespaces changes multiple times
-//        // --------------------------------------------------------------------------------------
-//        this.originalName  = name();
-//        this.originalLabel = label();
-//    }
-//
-//
-//    // > State
-//    // ------------------------------------------------------------------------------------------
-//
-//
-//    // ** Kind
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The text variable kind.
-//     * @return The kind.
-//     */
-//    public Kind kind()
-//    {
-//        return this.kind.getValue();
-//    }
-//
-//
-//    // ** Variants
-//    // ------------------------------------------------------------------------------------------
-//
-//    // **** Literal
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The string literal case.
-//     * @return The string literal.
-//     */
-//    public String stringLiteral()
-//    {
-//        return this.stringLiteral.getValue();
-//    }
-//
-//
-//    /**
-//     * Set the value for the string literal case.
-//     * @param newValue The string value.
-//     */
-//    public void setLiteralValue(String newValue)
-//    {
-//        if (this.kind() == Kind.LITERAL)
-//        {
-//            this.stringLiteral.setValue(newValue);
-//            this.onUpdate();
-//        }
-//        else
-//        {
-//            ApplicationFailure.union(
-//                    UnionException.invalidCase(
-//                            new InvalidCaseError("literal", this.kind.toString())));
-//        }
-//    }
-//
-//
-//    // **** Invocation
-//    // ------------------------------------------------------------------------------------------
-//
-//    /**
-//     * The program invocation case.
-//     * @return The invocation.
-//     */
-//    private Invocation invocation()
-//    {
-//        return this.invocation.getValue();
-//    }
-//
-//
-//    /**
-//     * The value reference case.
-//     * @return The value reference.
-//     */
-//    public DataReference valueReference()
-//    {
-//        return this.valueReference.getValue();
 //    }
 //
 //

@@ -5,10 +5,7 @@ package com.kispoko.tome.rts.sheet
 import android.content.Context
 import android.graphics.Color
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
-import com.kispoko.tome.app.AppEff
-import com.kispoko.tome.app.AppError
-import com.kispoko.tome.app.AppSheetError
-import com.kispoko.tome.app.ApplicationLog
+import com.kispoko.tome.app.*
 import com.kispoko.tome.load.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
@@ -21,9 +18,11 @@ import com.kispoko.tome.model.sheet.section.SectionName
 import com.kispoko.tome.model.theme.*
 import com.kispoko.tome.official.OfficialIndex
 import com.kispoko.tome.official.OfficialSheet
-import com.kispoko.tome.rts.ThemeManager
+import com.kispoko.tome.rts.theme.ThemeManager
 import com.kispoko.tome.rts.campaign.CampaignManager
 import com.kispoko.tome.rts.game.GameManager
+import com.kispoko.tome.rts.theme.ThemeDoesNotHaveColor
+import com.kispoko.tome.rts.theme.ThemeNotSupported
 import effect.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.run
@@ -85,7 +84,12 @@ object SheetManager
         sheetRecord.onActive(sheetUI.context())
 
         // Theme UI
-        sheetUI.applyTheme(sheet.sheetId(), ThemeManager.darkTheme.uiColors())
+        val theme = ThemeManager.theme(sheet.settings().themeId())
+        when (theme)
+        {
+            is Val -> sheetUI.applyTheme(sheet.sheetId(), theme.value.uiColors())
+            is Err -> ApplicationLog.error(theme.error)
+        }
 
         // Render
         this.render(sheet.sheetId(), sheetUI.pagePagerAdatper())
@@ -175,15 +179,16 @@ object SheetManager
         fun templateDocument(templateString : String,
                              sheetSpec : Spec,
                              campaignSpec : Spec,
-                             gameSpec : Spec) : Loader<SpecDoc>
+                             gameSpec : Spec,
+                             themeSpec : Spec) : Loader<SpecDoc>
         {
             val docParse = sheetSpec.parseDocument(templateString,
-                                                   listOf(campaignSpec, gameSpec))
+                                                   listOf(campaignSpec, gameSpec, themeSpec))
             when (docParse)
             {
                 is Val -> return effValue(docParse.value)
                 is Err -> return effError(DocumentParseError(
-                                        officialSheet.sheetId.name, sheet, docParse.error))
+                                        officialSheet.sheetId.value, sheet, docParse.error))
             }
         }
 
@@ -193,7 +198,8 @@ object SheetManager
             when (sheetParse)
             {
                 is Val -> return effValue(sheetParse.value)
-                is Err -> return effError(ValueParseError(sheet, sheetParse.error))
+                is Err -> return effError(ValueParseError(officialSheet.sheetId.value,
+                                                          sheetParse.error))
             }
         }
 
@@ -203,7 +209,8 @@ object SheetManager
                 .applyWith(::templateDocument,
                            SheetManager.specificationLoader(context),
                            CampaignManager.specificationLoader(context),
-                           GameManager.specificationLoader(context))
+                           GameManager.specificationLoader(context),
+                           ThemeManager.specificationLoader(context))
                 .apply(::sheetFromDocument)
     }
 
@@ -277,7 +284,7 @@ object SheetManager
     fun color(sheetId : SheetId, colorId : ColorId) : Int
     {
         val color = sheetThemeId(sheetId)
-                      .apply(SheetManager::theme)
+                      .apply(ThemeManager::theme)
                       .applyWith(SheetManager::color, effValue(colorId))
 
         when (color)
@@ -296,7 +303,7 @@ object SheetManager
     fun themeColor(sheetId : SheetId, colorTheme : ColorTheme) : AppEff<Int> =
         sheetThemeId(sheetId)                 ap { themeId ->
         colorId(sheetId, themeId, colorTheme) ap { colorId ->
-        theme(themeId)                        ap { theme   ->
+        ThemeManager.theme(themeId)           ap { theme   ->
         color(theme, colorId)
         } } }
 
@@ -309,15 +316,12 @@ object SheetManager
                         themeId : ThemeId,
                         colorTheme : ColorTheme) : AppEff<ColorId> =
             note(colorTheme.themeColorId(themeId),
-                 AppSheetError(ThemeNotSupported(sheetId, themeId)))
-
-    private fun theme(themeId : ThemeId) : AppEff<Theme> =
-            note(ThemeManager.theme(themeId), AppSheetError(ThemeDoesNotExist(themeId)))
+                 AppThemeError(ThemeNotSupported(sheetId, themeId)))
 
 
     private fun color(theme : Theme, colorId : ColorId) : AppEff<Int> =
             note(theme.color(colorId),
-                 AppSheetError(ThemeDoesNotHaveColor(theme.themeId(), colorId)))
+                 AppThemeError(ThemeDoesNotHaveColor(theme.themeId(), colorId)))
 
 
 

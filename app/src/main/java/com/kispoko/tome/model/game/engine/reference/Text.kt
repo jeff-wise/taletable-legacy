@@ -3,6 +3,10 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.model.game.engine.value.ValueReference
 import com.kispoko.tome.model.game.engine.variable.VariableReference
 import effect.effApply
@@ -51,7 +55,7 @@ sealed class TextReference
 /**
  * Literal Text Reference
  */
-data class TextReferenceLiteral(val value : String) : TextReference()
+data class TextReferenceLiteral(val value : String) : TextReference(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -67,6 +71,13 @@ data class TextReferenceLiteral(val value : String) : TextReference()
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLText({ this.value })
+
 }
 
 
@@ -74,7 +85,8 @@ data class TextReferenceLiteral(val value : String) : TextReference()
 /**
  * Value Text Reference
  */
-data class TextReferenceValue(val valueReference : ValueReference) : TextReference()
+data class TextReferenceValue(val valueReference : ValueReference)
+            : TextReference(), SQLSerializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -87,15 +99,26 @@ data class TextReferenceValue(val valueReference : ValueReference) : TextReferen
                 effApply(::TextReferenceValue, ValueReference.fromDocument(doc))
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.valueReference.asSQLValue()
+
 }
 
 
 /**
  * Variable Text Reference
  */
-data class TextReferenceVariable(
-                val variableReference : VariableReference) : TextReference()
+data class TextReferenceVariable(val variableReference : VariableReference)
+            : TextReference(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<TextReference>
     {
@@ -104,10 +127,28 @@ data class TextReferenceVariable(
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> = setOf(variableReference)
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.variableReference.asSQLValue()
+
 }
+
+
+fun liftBooleanReference(reference : TextReference) : Func<TextReference>
+    = when (reference)
+    {
+        is TextReferenceLiteral  -> Prim(reference, "literal")
+        is TextReferenceVariable -> Prim(reference, "variable")
+        is TextReferenceValue    -> Prim(reference, "value")
+    }
+
 

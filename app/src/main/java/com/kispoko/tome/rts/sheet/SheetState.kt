@@ -5,6 +5,8 @@ package com.kispoko.tome.rts.sheet
 import android.util.Log
 import com.kispoko.tome.app.AppEff
 import com.kispoko.tome.app.AppStateError
+import com.kispoko.tome.app.AppStateEvent
+import com.kispoko.tome.app.ApplicationLog
 import com.kispoko.tome.model.game.engine.variable.*
 import com.kispoko.tome.model.sheet.Sheet
 import effect.effApply
@@ -66,7 +68,6 @@ class SheetState(val sheet : Sheet) : State
     override fun addVariable(variable : Variable)
     {
         // TODO add log event for if variable with name already exist
-        Log.d("***SHEET_STATE", "add variable " + variable.variableId.value)
         val variableId = variable.variableId.value
         val variableLabel = variable.label()
 
@@ -86,7 +87,7 @@ class SheetState(val sheet : Sheet) : State
         // (3) Index the variable by tag
         // -------------------------------------------------------------------------------------
 
-        for (tag in variable.tags.value)
+        for (tag in variable.tags())
         {
             if (variablesByTag.containsKey(tag))
                 variablesByTag[tag]!!.add(variable)
@@ -126,6 +127,8 @@ class SheetState(val sheet : Sheet) : State
 
         this.updateListeners(variable)
 
+
+        ApplicationLog.event(AppStateEvent(VariableAdded(variableId)))
     }
 
 
@@ -151,7 +154,7 @@ class SheetState(val sheet : Sheet) : State
         // (2) Update listeners of variable tag
         // -------------------------------------------------------------------------------------
 
-        for (tag in variable.tags.value)
+        for (tag in variable.tags())
         {
             if (listenersByTag.containsKey(tag))
             {

@@ -5,6 +5,9 @@ package com.kispoko.tome.model.sheet.widget
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.Height
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.*
@@ -13,6 +16,7 @@ import lulo.value.UnexpectedType
 import lulo.value.UnexpectedValue
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -20,13 +24,31 @@ import java.util.*
 /**
  * Option View Type
  */
-sealed class OptionViewType
+sealed class OptionViewType : SQLSerializable,  Serializable
 {
 
-    class NoArrows : OptionViewType()
-    class VerticalArrows : OptionViewType()
-    class HorizontalArrows : OptionViewType()
-    class ExpandedSlashes : OptionViewType()
+    object NoArrows : OptionViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"no_arrows"})
+    }
+
+
+    object VerticalArrows : OptionViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"vertical_arrows"})
+    }
+
+
+    object HorizontalArrows : OptionViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"horizontal_arrows"})
+    }
+
+
+    object ExpandedSlashes : OptionViewType()
+    {
+        override fun asSQLValue() : SQLValue = SQLText({"expanded_slashes"})
+    }
 
 
     companion object
@@ -36,13 +58,13 @@ sealed class OptionViewType
             is DocText -> when (doc.text)
             {
                 "no_arrows"         -> effValue<ValueError,OptionViewType>(
-                                            OptionViewType.NoArrows())
+                                            OptionViewType.NoArrows)
                 "arrows_vertical"   -> effValue<ValueError,OptionViewType>(
-                                            OptionViewType.VerticalArrows())
+                                            OptionViewType.VerticalArrows)
                 "arrows_horizontal" -> effValue<ValueError,OptionViewType>(
-                                            OptionViewType.HorizontalArrows())
+                                            OptionViewType.HorizontalArrows)
                 "expanded_slashes"  -> effValue<ValueError,OptionViewType>(
-                                            OptionViewType.ExpandedSlashes())
+                                            OptionViewType.ExpandedSlashes)
                 else                -> effError<ValueError,OptionViewType>(
                                             UnexpectedValue("OptionViewType", doc.text, doc.path))
             }
@@ -63,6 +85,20 @@ data class OptionWidgetFormat(override val id : UUID,
                               val valueItemStyle : Comp<TextStyle>,
                               val height : Prim<Height>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name      = "widget_format"
+        this.descriptionStyle.name  = "description_style"
+        this.valueStyle.name        = "value_style"
+        this.valueItemStyle.name    = "value_item_style"
+        this.height.name            = "height"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -128,10 +164,8 @@ data class OptionWidgetFormat(override val id : UUID,
 
     }
 
-
-
     // -----------------------------------------------------------------------------------------
-    // MODEL
+    // GETTERS
     // -----------------------------------------------------------------------------------------
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
@@ -143,14 +177,22 @@ data class OptionWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "option_widget_format"
+
+    override val modelObject = this
+
 }
 
 
 /**
  * Option Description
  */
-data class OptionDescription(val value : String)
+data class OptionDescription(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<OptionDescription>
     {
@@ -160,6 +202,14 @@ data class OptionDescription(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 

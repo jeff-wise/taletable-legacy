@@ -65,19 +65,7 @@ data class SpecParseError(val error : String) : LoadError()
 }
 
 
-data class ValueParseError(val docType : String, val error : ValueError) : LoadError()
-{
-    override fun debugMessage(): String =
-            """
-            Load Error: Document did not match specification '$docType'
-                $error
-            """
-
-    override fun logMessage(): String = userMessage()
-}
-
-
-data class DocumentParseError(val documentName: String,
+data class DocumentParseError(val documentName : String,
                               val specName : String,
                               val errors : List<DocParseError> ) : LoadError()
 {
@@ -91,6 +79,7 @@ data class DocumentParseError(val documentName: String,
 
         return """
                Load Error: Error parsing document '$documentName' with spec '$specName'
+                   (Document did not match specification)
                    All errors:
                    $errorsString
                """
@@ -98,6 +87,19 @@ data class DocumentParseError(val documentName: String,
 
     override fun logMessage(): String = userMessage()
 }
+
+
+data class ValueParseError(val docName : String, val error : ValueError) : LoadError()
+{
+    override fun debugMessage(): String = """
+            |Load Error: Error mapping document to object
+            |    Document Name: $docName
+            |    $error
+            """.trimMargin()
+
+    override fun logMessage(): String = userMessage()
+}
+
 
 
 class ContextIsNull : LoadError()

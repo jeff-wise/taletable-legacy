@@ -48,7 +48,7 @@ class PagePagerAdapter(fragmentManager : FragmentManager)
 
 
     override fun getPageTitle(position : Int) : CharSequence =
-            this.pages[position].name.value.name
+            this.pages[position].nameString()
 
 
     override fun getItemPosition(obj : Any?) : Int

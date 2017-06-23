@@ -6,6 +6,9 @@ import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.sheet.style.TextStyle
 import effect.Err
@@ -15,6 +18,7 @@ import effect.effValue
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -22,8 +26,12 @@ import java.util.*
 /**
  * Expander Widget Label
  */
-data class ExpanderLabel(val value : String)
+data class ExpanderLabel(val value : String) : SQLSerializable, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<ExpanderLabel>
     {
@@ -34,6 +42,14 @@ data class ExpanderLabel(val value : String)
             else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
         }
     }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLText({this.value})
+
 }
 
 
@@ -47,6 +63,19 @@ data class ExpanderWidgetFormat(override val id : UUID,
                                 val nameStyleOpen : Func<TextStyle>,
                                 val headerPadding : Func<Spacing>) : Model
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name      = "widget_format"
+        this.nameStyleClosed.name   = "name_style_closed"
+        this.nameStyleOpen.name     = "name_style_open"
+        this.headerPadding.name     = "header_padding"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -92,6 +121,10 @@ data class ExpanderWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "expander_widget_format"
+
+    override val modelObject = this
 
 }
 

@@ -16,6 +16,10 @@ import com.kispoko.tome.R
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLInt
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LayoutType
 import com.kispoko.tome.lib.ui.TableLayoutBuilder
 import com.kispoko.tome.lib.ui.TableRowBuilder
@@ -31,6 +35,7 @@ import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueError
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -40,17 +45,30 @@ import java.util.*
  */
 data class TableWidgetFormat(override val id : UUID,
                              val widgetFormat : Comp<WidgetFormat>,
-                             val showDivider : Prim<Boolean>,
+                             val showDivider : Prim<ShowTableDividers>,
                              val dividerColorTheme : Prim<ColorTheme>,
-                             val cellHeight : Prim<Height>) : Model
+                             val cellHeight : Prim<Height>) : Model, Serializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.widgetFormat.name      = "widget_format"
+        this.showDivider.name       = "show_divider"
+        this.dividerColorTheme.name = "divider_color_theme"
+        this.cellHeight.name        = "cell_height"
+    }
+
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
     constructor(widgetFormat : WidgetFormat,
-                showDivider : Boolean,
+                showDivider : ShowTableDividers,
                 dividerColorTheme : ColorTheme,
                 cellHeight : Height)
         : this(UUID.randomUUID(),
@@ -64,7 +82,7 @@ data class TableWidgetFormat(override val id : UUID,
     {
 
         private val defaultWidgetFormat      = WidgetFormat.default()
-        private val defaultShowDivider       = false
+        private val defaultShowDivider       = ShowTableDividers(false)
         private val defaultDividerColorTheme = ColorTheme.black
         private val defaultCellHeight        = Height.MediumSmall
 
@@ -77,9 +95,9 @@ data class TableWidgetFormat(override val id : UUID,
                                          effValue(defaultWidgetFormat),
                                          { WidgetFormat.fromDocument(it) }),
                                    // Show Divider
-                                   split(doc.maybeBoolean("show_divider"),
+                                   split(doc.maybeAt("show_divider"),
                                          effValue(defaultShowDivider),
-                                         { effValue(it) }),
+                                         { ShowTableDividers.fromDocument(it) }),
                                    // Divider Color
                                    split(doc.maybeAt("divider_color"),
                                          effValue(defaultDividerColorTheme),
@@ -107,7 +125,7 @@ data class TableWidgetFormat(override val id : UUID,
 
     fun widgetFormat() : WidgetFormat = this.widgetFormat.value
 
-    fun showDivider() : Boolean = this.showDivider.value
+    fun showDivider() : Boolean = this.showDivider.value.value
 
     fun dividerColorTheme() : ColorTheme = this.dividerColorTheme.value
 
@@ -120,7 +138,41 @@ data class TableWidgetFormat(override val id : UUID,
 
     override fun onLoad() { }
 
+    override val name : String = "table_widget_format"
+
+    override val modelObject = this
+
 }
+
+
+/**
+ * Show Table Dividers
+ */
+data class ShowTableDividers(val value : Boolean) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<ShowTableDividers>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<ShowTableDividers> = when (doc)
+        {
+            is DocBoolean -> effValue(ShowTableDividers(doc.boolean))
+            else          -> effError(UnexpectedType(DocType.BOOLEAN, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() : SQLValue = SQLInt({ if (this.value) 1 else 0 })
+
+}
+
 
 
 object TableWidgetView
@@ -177,12 +229,9 @@ object TableWidgetView
             val dividerColor = SheetManager.color(sheetContext.sheetId,
                                                   format.dividerColorTheme())
 
-            if (dividerColor != null)
-            {
-                dividerDrawable.colorFilter =
-                        PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
-                layout.divider = dividerDrawable
-            }
+            dividerDrawable.colorFilter =
+                    PorterDuffColorFilter(dividerColor, PorterDuff.Mode.SRC_IN)
+            layout.divider = dividerDrawable
         }
 
 

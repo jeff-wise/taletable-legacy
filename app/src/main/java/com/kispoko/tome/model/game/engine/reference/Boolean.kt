@@ -3,6 +3,11 @@ package com.kispoko.tome.model.game.engine.reference
 
 
 import com.kispoko.tome.lib.Factory
+import com.kispoko.tome.lib.functor.Func
+import com.kispoko.tome.lib.functor.Prim
+import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.orm.sql.SQLInt
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.model.game.engine.variable.*
 import effect.effApply
 import effect.effError
@@ -18,7 +23,7 @@ import lulo.value.ValueParser
 /**
  * Boolean Reference
  */
-sealed class BooleanReference
+sealed class BooleanReference : SumModel
 {
 
     companion object : Factory<BooleanReference>
@@ -34,6 +39,7 @@ sealed class BooleanReference
     }
 
 
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
@@ -45,8 +51,12 @@ sealed class BooleanReference
 /**
  * Literal Boolean Reference
  */
-data class BooleanReferenceLiteral(val value : Boolean) : BooleanReference()
+data class BooleanReferenceLiteral(val value : Boolean) : BooleanReference(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<BooleanReference>
     {
@@ -58,14 +68,34 @@ data class BooleanReferenceLiteral(val value : Boolean) : BooleanReference()
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() : Func<BooleanReference> = Prim(this, "literal")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = SQLInt({ if (this.value) 1 else 0 })
+
 }
 
 
 /**
  * Variable Boolean Reference
  */
-data class BooleanReferenceVariable(val variableReference : VariableReference) : BooleanReference()
+data class BooleanReferenceVariable(val variableReference : VariableReference)
+            : BooleanReference(), SQLSerializable
 {
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object : Factory<BooleanReference>
     {
@@ -74,12 +104,39 @@ data class BooleanReferenceVariable(val variableReference : VariableReference) :
     }
 
 
+    // -----------------------------------------------------------------------------------------
+    // SUM MODEL
+    // -----------------------------------------------------------------------------------------
+
+    override fun functor() : Func<BooleanReference> = Prim(this, "variable")
+
+    override val sumModelObject = this
+
+
+    // -----------------------------------------------------------------------------------------
     // DEPENDENCIES
     // -----------------------------------------------------------------------------------------
 
     override fun dependencies(): Set<VariableReference> = setOf(variableReference)
 
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue() = this.variableReference.asSQLValue()
+
 }
+
+//
+//
+//fun liftBooleanReference(reference : BooleanReference) : Func<BooleanReference>
+//    = when (reference)
+//    {
+//        is BooleanReferenceLiteral  -> Prim(reference, "literal")
+//        is BooleanReferenceVariable -> Prim(reference, "variable")
+//    }
+//
 
 
 

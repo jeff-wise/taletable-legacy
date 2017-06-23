@@ -4,20 +4,19 @@ package com.kispoko.tome.model.sheet.widget
 
 import com.kispoko.tome.lib.Factory
 import com.kispoko.tome.lib.functor.Comp
-import com.kispoko.tome.lib.functor.Func
 import com.kispoko.tome.lib.functor.Prim
 import com.kispoko.tome.lib.model.Model
+import com.kispoko.tome.lib.orm.sql.SQLSerializable
+import com.kispoko.tome.lib.orm.sql.SQLText
+import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.model.sheet.style.TextStyle
-import effect.Err
 import effect.effApply
 import effect.effError
 import effect.effValue
-import lulo.document.DocDict
-import lulo.document.DocType
-import lulo.document.SpecDoc
-import lulo.document.docType
+import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
+import java.io.Serializable
 import java.util.*
 
 
@@ -27,34 +26,43 @@ import java.util.*
  */
 data class BooleanWidgetFormat(override val id : UUID,
                                val widgetFormat : Comp<WidgetFormat>,
-                               val textStyle : Func<TextStyle>,
-                               val trueText : Func<String>,
-                               val falseText : Func<String>) : Model
+                               val textStyle : Comp<TextStyle>,
+                               val trueText : Prim<TrueText>,
+                               val falseText : Prim<FalseText>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
+    constructor(widgetFormat : WidgetFormat,
+                textStyle : TextStyle,
+                trueText : TrueText,
+                falseText : FalseText)
+        : this(UUID.randomUUID(),
+               Comp(widgetFormat),
+               Comp(textStyle),
+               Prim(trueText),
+               Prim(falseText))
+
+
     companion object : Factory<BooleanWidgetFormat>
     {
         override fun fromDocument(doc : SpecDoc) : ValueParser<BooleanWidgetFormat> = when (doc)
         {
-            is DocDict -> effApply(::BooleanWidgetFormat,
-                                   // Model Id
-                                   effValue(UUID.randomUUID()),
-                                   // Widget Format
-                                   doc.at("widget_format") ap {
-                                       effApply(::Comp, WidgetFormat.fromDocument(it))
-                                   },
-                                   // Text Style
-                                   doc.at("text_style") ap {
-                                       effApply(::Comp, TextStyle.fromDocument(it))
-                                   },
-                                   // True Text
-                                   effApply(::Prim, doc.text("true_text")),
-                                   // False Text
-                                   effApply(::Prim, doc.text("false_text")))
+            is DocDict ->
+            {
+                effApply(::BooleanWidgetFormat,
+                         // Widget Format
+                         doc.at("widget_format") ap { WidgetFormat.fromDocument(it) },
+                         // Text Style
+                         doc.at("text_style") ap { TextStyle.fromDocument(it) },
+                         // True Text
+                         doc.at("true_text") ap { TrueText.fromDocument(it) },
+                         // False Text
+                         doc.at("false_text") ap { FalseText.fromDocument(it) }
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -72,6 +80,68 @@ data class BooleanWidgetFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     override fun onLoad() { }
+
+    override val name : String = "boolean_widget_format"
+
+    override val modelObject = this
+
+}
+
+
+/**
+ * True Text
+ */
+data class TrueText(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<TrueText>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<TrueText> = when (doc)
+        {
+            is DocText -> effValue(TrueText(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue(): SQLValue = SQLText({this.value})
+
+}
+
+
+/**
+ * False Text
+ */
+data class FalseText(val value : String) : SQLSerializable, Serializable
+{
+
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
+
+    companion object : Factory<FalseText>
+    {
+        override fun fromDocument(doc : SpecDoc) : ValueParser<FalseText> = when (doc)
+        {
+            is DocText -> effValue(FalseText(doc.text))
+            else       -> effError(UnexpectedType(DocType.TEXT, docType(doc), doc.path))
+        }
+    }
+
+
+    // -----------------------------------------------------------------------------------------
+    // SQL SERIALIZABLE
+    // -----------------------------------------------------------------------------------------
+
+    override fun asSQLValue(): SQLValue = SQLText({this.value})
 
 }
 
