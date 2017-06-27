@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Color
 import com.kispoko.tome.activity.sheet.PagePagerAdapter
 import com.kispoko.tome.app.*
+import com.kispoko.tome.lib.functor.Comp
 import com.kispoko.tome.load.*
 import com.kispoko.tome.model.campaign.Campaign
 import com.kispoko.tome.model.campaign.CampaignId
@@ -62,7 +63,7 @@ object SheetManager
 
 
     fun sheet(sheetId : SheetId) : AppEff<Sheet> =
-            note(this.sheetById[sheetId]?.sheet, AppSheetError(SheetDoesNotExist(sheetId)))
+            note(this.sheetById[sheetId]?.sheet(), AppSheetError(SheetDoesNotExist(sheetId)))
 
 
     fun state(sheetId : SheetId) : SheetEff<SheetState> =
@@ -156,8 +157,8 @@ object SheetManager
             is Val ->
             {
                 val sheet = sheetLoader.value
-//                val sheetRecord = SheetRecord.withDefaultView(sheet, SheetState(sheet))
-//                this.sheetById.put(sheet.sheetId.value, sheetRecord)
+//                val value = SheetRecord.withDefaultView(sheet, SheetState(sheet))
+//                this.sheetById.put(sheet.sheetId.value, value)
                 LoadResultValue(sheet)
             }
             is Err ->
@@ -243,7 +244,7 @@ object SheetManager
             {
                 val sheetRecord = sheetRecordEff.value
                 val selectedSectionName = sheetRecord.viewState.selectedSection
-                val section = sheetRecord.sheet.sectionWithName(selectedSectionName)
+                val section = sheetRecord.sheet().sectionWithName(selectedSectionName)
                 if (section != null)
                 {
                     val gameContext = sheetRecord.gameContext()
@@ -309,7 +310,7 @@ object SheetManager
 
 
     private fun sheetThemeId(sheetId : SheetId) : AppEff<ThemeId> =
-            note(this.sheetById[sheetId]?.sheet?.settings()?.themeId(),
+            note(this.sheetById[sheetId]?.sheet()?.settings()?.themeId(),
                  AppSheetError(SheetDoesNotExist(sheetId)))
 
     private fun colorId(sheetId : SheetId,
@@ -414,11 +415,14 @@ object SheetManager
 data class SheetViewState(val selectedSection : SectionName)
 
 
-data class SheetRecord(val sheet : Sheet,
+data class SheetRecord(val sheet : Comp<Sheet>,
                        val state : SheetState,
                        val viewState : SheetViewState)
 {
 
+    // -----------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------
 
     companion object
     {
@@ -430,10 +434,21 @@ data class SheetRecord(val sheet : Sheet,
                                                          else SectionName("NA")
 
             val viewState = SheetViewState(sectionName)
-            return SheetRecord(sheet, state, viewState)
+            return SheetRecord(Comp(sheet), state, viewState)
         }
     }
 
+
+    // -----------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------
+
+    fun sheet() : Sheet = this.sheet.value
+
+
+    // -----------------------------------------------------------------------------------------
+    // API
+    // -----------------------------------------------------------------------------------------
 
     fun onActive(context : Context)
     {
@@ -441,7 +456,7 @@ data class SheetRecord(val sheet : Sheet,
 
         when (sheetContext)
         {
-            is Val -> this.sheet.onActive(sheetContext.value)
+            is Val -> this.sheet().onActive(sheetContext.value)
             is Err -> ApplicationLog.error(sheetContext.error)
         }
     }
@@ -449,8 +464,8 @@ data class SheetRecord(val sheet : Sheet,
 
     fun context(context : Context) : AppEff<SheetContext>
     {
-        val sheetId    = sheet.sheetId.value
-        val campaignId = sheet.campaignId.value
+        val sheetId    = sheet().sheetId.value
+        val campaignId = sheet().campaignId.value
 
         val campaign : AppEff<Campaign> =
                 note(CampaignManager.campaignWithId(campaignId),
@@ -467,8 +482,8 @@ data class SheetRecord(val sheet : Sheet,
 
     fun gameContext() : SheetEff<SheetGameContext>
     {
-        val sheetId    = sheet.sheetId.value
-        val campaignId = sheet.campaignId.value
+        val sheetId    = sheet().sheetId.value
+        val campaignId = sheet().campaignId.value
 
         val campaign : SheetEff<Campaign> = note(CampaignManager.campaignWithId(campaignId),
                                                  CampaignDoesNotExist(sheetId, campaignId))

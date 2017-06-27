@@ -181,6 +181,21 @@ data class TextStyle(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.colorTheme.name            = "color_theme"
+        this.size.name                  = "size"
+        this.font.name                  = "font"
+        this.isUnderlined.name          = "is_underlined"
+        this.alignment.name             = "alignment"
+        this.backgroundColorTheme.name  = "background_color_theme"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 

@@ -21,7 +21,6 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 
 import com.kispoko.tome.R
 import com.kispoko.tome.app.ApplicationLog
-import com.kispoko.tome.lib.orm.Schema
 import com.kispoko.tome.lib.ui.CustomTabLayout
 import com.kispoko.tome.load.LoadResultError
 import com.kispoko.tome.load.LoadResultValue
@@ -50,7 +49,6 @@ class SheetActivity : AppCompatActivity(), SheetUI
     // -----------------------------------------------------------------------------------------
 
     var pagePagerAdapter : PagePagerAdapter? = null
-
 
 
     // -----------------------------------------------------------------------------------------
@@ -235,7 +233,7 @@ class SheetActivity : AppCompatActivity(), SheetUI
                 {
                     is LoadResultValue ->
                     {
-                        val sheet = sheetLoad.sheetRecord
+                        val sheet = sheetLoad.value
 
                         SheetManager.setNewSheet(sheet, sheetUI)
 
@@ -252,7 +250,11 @@ class SheetActivity : AppCompatActivity(), SheetUI
                             is Err -> ApplicationLog.error(characterName.error)
                         }
 
-                        Schema.reconcileSchema()
+                        SheetManager.sheetRecord(sheet.sheetId()) apDo {
+                            launch(UI) {
+                                it.sheet.saveAsync(true, true)
+                            }
+                        }
                     }
                     is LoadResultError -> Log.d("***SHEET_ACTIVITY", sheetLoad.userMessage)
                 }

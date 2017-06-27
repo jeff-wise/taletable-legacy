@@ -60,7 +60,7 @@ fun assetInputStream(context : Context, assetFilePath : String) : Loader<InputSt
 
 sealed class LoadResult<A>
 
-data class LoadResultValue<A>(val sheetRecord : A) : LoadResult<A>()
+data class LoadResultValue<A>(val value : A) : LoadResult<A>()
 
 data class LoadResultError<A>(val userMessage : String) : LoadResult<A>()
 

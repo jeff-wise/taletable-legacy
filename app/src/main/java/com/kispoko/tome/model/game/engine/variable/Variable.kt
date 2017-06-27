@@ -737,9 +737,7 @@ data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
                          doc.at("name") ap { VariableName.fromDocument(it) }
                          )
             }
-            is DocText -> effApply(::VariableId,
-                                   effValue(Nothing()),
-                                   VariableName.fromDocument(doc))
+            is DocText -> effApply(::VariableId, effValue(doc.text))
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
     }
@@ -780,6 +778,9 @@ data class VariableId(val namespace : Maybe<Prim<VariableNameSpace>>,
 
     override fun asSQLValue() : SQLValue =
             SQLText({this.namespaceString() + " " + this.nameString()})
+
+
+
 
 }
 

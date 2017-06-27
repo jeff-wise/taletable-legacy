@@ -4,10 +4,13 @@ package com.kispoko.tome.lib.functor
 
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.model.SumModel
+import com.kispoko.tome.lib.orm.ORM
 import com.kispoko.tome.lib.orm.Schema
 import com.kispoko.tome.lib.orm.sql.SQLSerializable
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import effect.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.run
 import java.io.Serializable
 import kotlin.reflect.KClass
 
@@ -85,9 +88,15 @@ data class Comp<A : Model> (override var value : A,
 
     fun isDefault() : Boolean = this.isDefault
 
-    fun save()
+
+    suspend fun saveAsync(recursive : Boolean, isTransaction : Boolean = false) = run(CommonPool, {
+        this.save(recursive, isTransaction)
+    })
+
+
+    fun save(recursive : Boolean, isTransaction : Boolean = false)
     {
-        val sqlString = Schema.modelTableDefinitionSQLString(this.value)
+        ORM.saveModel(this.value, null, recursive, isTransaction)
     }
 
 }
@@ -97,6 +106,17 @@ data class Comp<A : Model> (override var value : A,
  * Collection Functor
  */
 data class Coll<A>(val list : MutableList<A>) : Func<MutableList<A>>(list), Serializable
+        where A : Model
+{
+
+    fun save(recursive : Boolean, isTransaction : Boolean = false)
+    {
+        this.list.forEach {
+            ORM.saveModel(it, null, recursive, isTransaction)
+        }
+
+    }
+}
 
 
 /**
@@ -105,9 +125,19 @@ data class Coll<A>(val list : MutableList<A>) : Func<MutableList<A>>(list), Seri
 data class CollS<A> (val list : MutableList<A>, val valueClass : KClass<A>? = null)
     : Func<MutableList<A>>(list), Serializable where A : Model, A : Comparable<A>
 {
+
     init
     {
         this.list.sorted()
+    }
+
+
+    fun save(recursive : Boolean, isTransaction : Boolean = false)
+    {
+        this.list.forEach {
+            ORM.saveModel(it, null, recursive, isTransaction)
+        }
+
     }
 }
 

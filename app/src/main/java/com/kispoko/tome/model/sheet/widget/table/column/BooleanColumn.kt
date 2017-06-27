@@ -37,6 +37,28 @@ data class BooleanColumnFormat(override val id : UUID,
 {
 
     // -----------------------------------------------------------------------------------------
+    // INIT
+    // -----------------------------------------------------------------------------------------
+
+    init
+    {
+        this.columnFormat.name                      = "column_format"
+
+        when (this.trueStyle) {
+            is Just -> this.trueStyle.value.name    = "true_style"
+        }
+
+        when (this.falseStyle) {
+            is Just -> this.falseStyle.value.name   = "false_style"
+        }
+        this.trueText.name                          = "true_text"
+        this.falseText.name                         = "false_text"
+        this.showTrueIcon.name                      = "show_true_icon"
+        this.showFalseIcon.name                     = "show_false_icon"
+    }
+
+
+    // -----------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 

@@ -2,91 +2,57 @@
 package com.kispoko.tome.lib.orm
 
 
+import android.util.Log
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQL
 import com.kispoko.tome.lib.orm.sql.SQL_TEXT_TYPE_STRING
-import com.kispoko.tome.model.sheet.group.Group
-import com.kispoko.tome.model.sheet.page.Page
-import kotlin.reflect.KClass
 
 
 
 object Schema
 {
 
-    val modelClasses : List<KClass<out Model>> = listOf(Group::class, Page::class)
+
+    data class Table(val name : String, val columnNames : MutableSet<String>)
+
+    val tables : MutableMap<String,Table> = mutableMapOf()
 
 
-    /**
-     * The model's SQL table name.
-     */
-    private fun <A : Model> modelTableName(model : A) : String = SQL.validIdentifier(model.name)
-
-
-
-    fun reconcileSchema()
+    fun defineTable(model : Model, collectionData : CollectionData? = null)
     {
-        for (modelClass in modelClasses)
-        {
-            val modelInstance      = modelClass.java.newInstance()
-            val tableName          = this.modelTableName(modelInstance)
-            val oneToManyRelations = this.modelOneToManyRelations(modelInstance)
+        if (tables.containsKey(model.name))
+            return
 
-            val tableDefString = this.tableQueryString(modelInstance, oneToManyRelations)
+        val startTime = System.nanoTime()
 
-            ORMLog.event(GeneratedTableDefinition(tableDefString))
+        val tableDefinition = this.tableDefinitionSQLString(model, collectionData)
+        DatabaseManager.database().execSQL(tableDefinition.definitionSQLString)
 
-//            fun <A : Model> tableQueryString(model : A,
-//                                             oneToManyRelations : List<OneToManyRelation>) : String
+        this.tables.put(model.name, Table(model.name, tableDefinition.columnNames.toMutableSet()))
+
+        val endTime = System.nanoTime()
+
+        ORMLog.event(DefineTable(model.name, (endTime-startTime)))
+
+
+        Model.functors(model).forEach { func ->
+            when (func)
+            {
+                is Comp<*>  -> Schema.defineTable(func.value)
+                is Coll<*>  -> func.list.forEach { modelItem ->
+                    val funcName = func.name
+                    if (funcName != null)
+                        Schema.defineTable(modelItem, CollectionData(model.name, funcName))
+                }
+                is CollS<*> -> func.list.forEach { modelItem ->
+                    val funcName = func.name
+                    if (funcName != null)
+                        Schema.defineTable(modelItem, CollectionData(model.name, funcName))
+                }
+            }
         }
 
-    }
-
-
-    fun <A : Model> modelTableDefinitionSQLString(model : A) : String
-    {
-        val sqlString = this.tableQueryString(model, this.modelOneToManyRelations(model))
-
-        ORMLog.event(GeneratedTableDefinition(sqlString))
-
-        return sqlString
-    }
-
-
-
-    fun <A : Model> modelOneToManyRelations(model : A) : List<OneToManyRelation>
-    {
-
-        fun functorRelation(coll : CollS<*>) : OneToManyRelation?
-        {
-            val collName = coll.name
-            if (collName == null)
-            {
-                ORMLog.event(FunctorIsMissingNameField(model::class.qualifiedName ?: "unknown"))
-                return null
-            }
-
-            if (coll.valueClass == null)
-            {
-                ORMLog.event(FunctorIsMissingValueClassField(
-                                    model::class.qualifiedName ?: "unknown"))
-                return null
-            }
-
-            return OneToManyRelation(this.modelTableName(model),
-                                     this.modelTableName(coll.valueClass.java.newInstance()),
-                                     collName)
-        }
-
-
-        fun collFunctors() : List<CollS<*>> =
-                ORM.functors(model).filter { it is CollS<*> } as List<CollS<*>>
-
-
-        return collFunctors()
-                .map { functorRelation(it) }
-                .filterNotNull()
     }
 
 
@@ -95,15 +61,20 @@ object Schema
     // QUERIES
     // -----------------------------------------------------------------------------------------
 
-    fun <A : Model> tableQueryString(model : A,
-                                     oneToManyRelations : List<OneToManyRelation>) : String
+
+    data class TableDefinition(val columnNames : Set<String>, val definitionSQLString : String)
+
+
+    fun <A : Model> tableDefinitionSQLString(model : A, collectionData : CollectionData?)
+                    : TableDefinition
     {
+        val columnNames : MutableSet<String> = mutableSetOf()
         val queryBuilder = StringBuilder()
 
         // (1) Create Table
         // --------------------------------------------------------------------------------------
         queryBuilder.append("CREATE TABLE IF NOT EXISTS ")
-        queryBuilder.append(this.modelTableName(model))
+        queryBuilder.append(ORM.modelTableName(model))
         queryBuilder.append(" ( ")
 
         // (2) Id Column
@@ -117,7 +88,7 @@ object Schema
         // (3) Primitive & Foreign Key Columns
         // --------------------------------------------------------------------------------------
 
-        val functors = ORM.functors(model)
+        val functors = Model.functors(model)
 
         for (functor in functors)
         {
@@ -126,21 +97,32 @@ object Schema
                 is Prim ->
                 {
                     val columnName = functor.name
-                    val columnType = functor.asSQLValue().type().name
+                    if (columnName != null)
+                    {
+                        val validColumnName = SQL.validIdentifier(columnName)
+                        columnNames.add(validColumnName)
+                        val columnType = functor.asSQLValue().type().name
 
-                    queryBuilder.append(", ")
-                    queryBuilder.append(columnName)
-                    queryBuilder.append(" ")
-                    queryBuilder.append(columnType)
+                        queryBuilder.append(", ")
+                        queryBuilder.append(validColumnName)
+                        queryBuilder.append(" ")
+                        queryBuilder.append(columnType)
+                    }
+
                 }
                 is Comp ->
                 {
                     val columnName = functor.name
+                    if (columnName != null)
+                    {
+                        val validColumnName = SQL.validIdentifier(columnName)
+                        columnNames.add(validColumnName)
 
-                    queryBuilder.append(", ")
-                    queryBuilder.append(columnName)
-                    queryBuilder.append(" ")
-                    queryBuilder.append(SQL_TEXT_TYPE_STRING)
+                        queryBuilder.append(", ")
+                        queryBuilder.append(validColumnName)
+                        queryBuilder.append(" ")
+                        queryBuilder.append(SQL_TEXT_TYPE_STRING)
+                    }
                 }
             }
 
@@ -149,9 +131,10 @@ object Schema
         // (4) One To Many ID Columns
         // --------------------------------------------------------------------------------------
 
-        for ((manyTableName, _, oneFieldName) in oneToManyRelations)
+        if (collectionData != null)
         {
-            val columnName = "parent_" + oneFieldName + "_" + manyTableName + "_id"
+            val columnName = ORM.collectionColumnName(collectionData.tableName,
+                                                      collectionData.fieldName)
 
             queryBuilder.append(", ")
             queryBuilder.append(columnName)
@@ -159,14 +142,13 @@ object Schema
             queryBuilder.append(SQL_TEXT_TYPE_STRING)
         }
 
+        // (5) End
+        // --------------------------------------------------------------------------------------
 
-        return queryBuilder.toString()
+        queryBuilder.append(" )")
+
+        return TableDefinition(columnNames, queryBuilder.toString())
     }
 
 }
 
-
-
-data class OneToManyRelation(val manyTableName : String,
-                             val oneTableName : String,
-                             val oneFieldName : String)

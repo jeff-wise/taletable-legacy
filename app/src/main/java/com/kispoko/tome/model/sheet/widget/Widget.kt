@@ -1655,6 +1655,8 @@ data class TextWidget(override val id : UUID,
             is Just -> this.description.value.name  = "description"
         }
 
+        this.valueVariable.name                     = "value_variable"
+
         this.variables.name                         = "variables"
     }
 

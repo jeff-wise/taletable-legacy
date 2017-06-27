@@ -75,5 +75,17 @@ public class Util
         return rounded.toString();
     }
 
+
+    public static String timeDifferenceString(Long timeDiffNS)
+    {
+        Double timeDifferenceMS = Long.valueOf(timeDiffNS).doubleValue() / 1000000;
+
+        BigDecimal bd = new BigDecimal(timeDifferenceMS);
+        bd = bd.round(new MathContext(3));
+        Double rounded = bd.doubleValue();
+
+        return rounded.toString();
+    }
+
 }
 
