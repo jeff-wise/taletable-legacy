@@ -212,8 +212,8 @@ data class GroupFormat(override val id : UUID,
     {
 
         private val defaultBackgroundColorTheme = ColorTheme.transparent
-        private val defaultMargins              = Spacing.default
-        private val defaultPadding              = Spacing.default
+        private val defaultMargins              = Spacing.default()
+        private val defaultPadding              = Spacing.default()
         private val defaultCorners              = Corners.None
         private val defaultShowDivider          = ShowGroupDivider(false)
         private val defaultDividerColorTheme    = ColorTheme.black

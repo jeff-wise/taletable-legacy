@@ -45,15 +45,15 @@ data class FunctorIsMissingValueClassField(val parentModelName : String) : ORMEv
 }
 
 
-data class GeneratedTableDefinition(val tableDefString : String) : ORMEvent()
-{
-    override fun eventMessage() : String = "Generated Table Definition: " + tableDefString
-
-    override fun prettyEventMessage() : String = """
-            Generated Table Definition:
-                $tableDefString
-            """
-}
+//data class GeneratedTableDefinition(val tableDefString : String) : ORMEvent()
+//{
+//    override fun eventMessage() : String = "Generated Table Definition: " + tableDefString
+//
+//    override fun prettyEventMessage() : String = """
+//            Generated Table Definition:
+//                $tableDefString
+//            """
+//}
 
 
 data class ModelSaved(val model : Model, val duration : Long) : ORMEvent()
@@ -85,14 +85,18 @@ data class RowInsert(val tableName : String, val rowId : UUID, val duration : Lo
 }
 
 
-data class DefineTable(val tableName : String, val duration : Long) : ORMEvent()
+data class DefineTable(val tableName : String,
+                       val tableSQL : String,
+                       val duration : Long) : ORMEvent()
 {
-    override fun eventMessage() : String = "Defined table '$tableName' in $duration ms."
+    override fun eventMessage() : String = "Defined table '$tableName' with sql '$tableSQL'" +
+                                            " in $duration ms."
 
 
     override fun prettyEventMessage() : String = """
             Define table:
                 Table Name: $tableName
+                SQL: $tableSQL
                 Time (ms): ${Util.timeDifferenceString(duration)}
             """
 }

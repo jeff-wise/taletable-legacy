@@ -9,16 +9,15 @@ import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.*
 import com.kispoko.tome.lib.orm.sql.query.UpsertQuery
-import com.kispoko.tome.util.Util
 import effect.Eff
 import effect.Identity
 import java.util.*
 
 
+
 typealias ORMEff<A> = Eff<ORMError,Identity,A>
 
 
-data class CollectionData(val tableName : String, val fieldName : String)
 
 
 
@@ -27,7 +26,7 @@ object ORM
 
 
     fun saveModel(model : Model,
-                  collectionData : CollectionData?,
+                  oneToManyRelations : Set<OneToManyRelation>,
                   isRecursive : Boolean,
                   isTransaction : Boolean)
     {
@@ -42,23 +41,23 @@ object ORM
             }
 
             // (1) Save the model's row.
-            // -------------------------------------------------------------------------------------
+            // ---------------------------------------------------------------------------------
 
             Schema.defineTable(model)
 
             // (1) Save the model's row.
-            // -------------------------------------------------------------------------------------
+            // ---------------------------------------------------------------------------------
 
-            insertModelRow(model, collectionData)
+            insertModelRow(model, oneToManyRelations)
 
             // (2) [IF RECURSIVE] Save the model's child model rows.
-            // -------------------------------------------------------------------------------------
+            // ---------------------------------------------------------------------------------
 
             if (isRecursive)
                 insertModelChildRows(model, isRecursive)
 
             // (3) Finish.
-            // -------------------------------------------------------------------------------------
+            // ---------------------------------------------------------------------------------
 
             if (isTransaction)
                 DatabaseManager.database().setTransactionSuccessful()
@@ -77,11 +76,9 @@ object ORM
     }
 
 
-    private fun insertModelRow(model : Model, collectionData : CollectionData?)
+    private fun insertModelRow(model : Model, oneToManyRelations : Set<OneToManyRelation>)
     {
         val row = ContentValues()
-
-        val startTime = System.nanoTime()
 
         // (1) Collect Row Data
         // -------------------------------------------------------------------------------------
@@ -99,9 +96,10 @@ object ORM
             insertProductRowValue(it, row)
         }
 
-        val endTime = System.nanoTime()
-
-        Log.d("***ORM", "insert model row '${model.name}' in " + Util.timeDifferenceString(startTime, endTime))
+        // (4) Save Foreign Keys (One-to-Many)
+        oneToManyRelations.forEach {
+            insertCollValue(it, row)
+        }
 
         // (2) Insert Row Data
         // -------------------------------------------------------------------------------------
@@ -123,17 +121,10 @@ object ORM
         }
 
         // Save Collections (One-to-Many)
-        Model.functors(model).forEach {
-            when (it) {
-                is Coll<*>  -> it.save(recursive)
-                is CollS<*> -> it.save(recursive)
-            }
+        oneToManyRelations(model).forEach {
+            it.first.save(recursive, it.second)
         }
-//            parentRelations.add(new OneToManyRelation(ORM.name(model),
-//                                                      collectionFunctor.name(),
-//                                                      model.getId()));
-//            collectionFunctor.save(parentRelations);
-//        }
+
     }
 
 
@@ -148,7 +139,7 @@ object ORM
         {
             is SQLInt  -> row.put(columnName, sqlValue.value())
             is SQLReal -> row.put(columnName, sqlValue.value())
-            is SQLReal -> row.put(columnName, sqlValue.value())
+            is SQLText -> row.put(columnName, sqlValue.value())
             is SQLBlob -> row.put(columnName, sqlValue.value())
             is SQLNull -> row.putNull(columnName)
         }
@@ -159,6 +150,14 @@ object ORM
     {
         val columnName = SQL.validIdentifier(oneToOneRelation.name)
         row.put(columnName, oneToOneRelation.childRowId.toString())
+    }
+
+
+    private fun insertCollValue(oneToManyRelation : OneToManyRelation, row : ContentValues)
+    {
+        val columnName = ORM.collectionColumnName(oneToManyRelation)
+
+        row.put(columnName, oneToManyRelation.oneRowId.toString())
     }
 
 
@@ -178,7 +177,7 @@ object ORM
 
     data class OneToManyRelation(val oneTableName : String,
                                  val oneFieldName : String,
-                                 val manyTableName : String)
+                                 val oneRowId : UUID)
 
 
     fun modelValueRelations(model : Model) : List<ValueRelation> =
@@ -221,29 +220,34 @@ object ORM
         }
 
 
-    fun modelOneToManyRelations(model : Model) : List<OneToManyRelation>
+    fun oneToManyRelations(model : Model) : List<Pair<CollFunc, OneToManyRelation>>
     {
-        fun functorRelations(func : Func<*>) : List<OneToManyRelation>
+        fun funcRelations(func : Func<*>) : Pair<CollFunc, OneToManyRelation>?
         {
             val collName = func.name
             if (collName == null) {
-                ORMLog.event(FunctorIsMissingNameField(model::class.qualifiedName ?: "unknown"))
-                return listOf()
+                ORMLog.event(FunctorIsMissingNameField(model.name))
+                return null
             }
 
-            val collTableNames = mutableSetOf<String>()
             when (func)
             {
-                is Coll<*>  -> func.list.mapTo(collTableNames) { it.name }
-                is CollS<*> -> func.list.mapTo(collTableNames) { it.name }
+                is Coll<*>  ->
+                {
+                    val rel = OneToManyRelation(ORM.modelTableName(model), collName, model.id)
+                    return Pair(func, rel)
+                }
+                is CollS<*> ->
+                {
+                    val rel = OneToManyRelation(ORM.modelTableName(model), collName, model.id)
+                    return Pair(func, rel)
+                }
             }
 
-            return collTableNames.map {
-                OneToManyRelation(ORM.modelTableName(model), it, collName)
-            }
+            return null
         }
 
-        return Model.functors(model).flatMap { functorRelations(it) }
+        return Model.functors(model).mapNotNull { funcRelations(it) }
     }
 
 
@@ -255,6 +259,11 @@ object ORM
 
     fun collectionColumnName(tableName : String, fieldName : String) : String =
         "parent_" + fieldName + "_" + tableName + "_id"
+
+
+    fun collectionColumnName(oneToManyRelation : OneToManyRelation) : String =
+            "parent_" + oneToManyRelation.oneFieldName + "_" +
+                        oneToManyRelation.oneTableName + "_id"
 
 
 }
@@ -280,11 +289,6 @@ object ORMLog
             is FunctorIsMissingValueClassField ->
             {
                 if (logLevel >= ORMLogLevel.VERBOSE)
-                    Log.d("***ORM EVENT", event.prettyEventMessage())
-            }
-            is GeneratedTableDefinition ->
-            {
-                if (logLevel >= ORMLogLevel.DEBUG)
                     Log.d("***ORM EVENT", event.prettyEventMessage())
             }
             is ModelSaved ->

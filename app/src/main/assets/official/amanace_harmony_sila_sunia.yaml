@@ -10,9 +10,16 @@ sections:
       background_color_theme:
         theme_color_ids:
         - theme_id: dark
-          color_id: dark_grey
+          color_id: dark_grey_9
+      padding:
+        bottom: 300
     groups:
-    - rows:
+    - format:
+        background_color_theme:
+          theme_color_ids:
+          - theme_id: dark
+            color_id: dark_grey_6
+      rows:
       - widgets: 
         - type: widget_text
           widget_text: 
@@ -21,7 +28,17 @@ sections:
               id: name
               value:
                 type: text_literal
-                text_literal: 'Elna Rhydesia'
+                text_literal: 'Casmey Dalseya'
+            format:
+              value_format:
+                padding:
+                  top: 10
+                  bottom: 10
+                style:
+                  color_theme:
+                    theme_color_ids:
+                    - theme_id: dark
+                      color_id: light_grey_3
       - widgets:
         - type: widget_text
           widget_text:

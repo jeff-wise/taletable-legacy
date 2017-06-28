@@ -1,17 +1,39 @@
 id: dark
 palette:
-- color_id: light_grey
-  color: '#EEEEEE'
+- color_id: light_grey_1
+  color: '#FAFAFA'
+- color_id: light_grey_2
+  color: '#F7F7F7'
+- color_id: light_grey_3
+  color: '#F4F4F4'
+- color_id: light_grey_4
+  color: '#EFEFEF'
+- color_id: light_grey_5
+  color: '#EAEAEA'
+- color_id: light_grey_6
+  color: '#E7E7E7'
 - color_id: dark_grey
   color: '#282828'
+- color_id: dark_grey_5
+  color: '#2D3133'
+- color_id: dark_grey_6
+  color: '#2B2E30'
+- color_id: dark_grey_7
+  color: '#292C2E'
+- color_id: dark_grey_8
+  color: '#272A2C'
+- color_id: dark_grey_9
+  color: '#25282A'
+- color_id: dark_grey_10
+  color: '#222526'
 ui_colors:
-  toolbar_background: dark_grey
-  toolbar_icons: light_grey
-  title: light_grey
-  tab_bar_background: dark_grey
-  tab_text_normal: dark_grey
-  tab_text_selected: light_grey
-  tab_underline: light_grey
-  bottom_bar_background: dark_grey
-  bottom_bar_active: light_grey
-  bottom_bar_inactive: light_grey
+  toolbar_background: dark_grey_5
+  toolbar_icons: light_grey_1
+  title: light_grey_1
+  tab_bar_background: dark_grey_5
+  tab_text_normal: light_grey_3
+  tab_text_selected: light_grey_1
+  tab_underline: light_grey_1
+  bottom_bar_background: dark_grey_5
+  bottom_bar_active: light_grey_1
+  bottom_bar_inactive: light_grey_6

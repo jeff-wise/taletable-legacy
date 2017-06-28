@@ -96,23 +96,30 @@ data class Comp<A : Model> (override var value : A,
 
     fun save(recursive : Boolean, isTransaction : Boolean = false)
     {
-        ORM.saveModel(this.value, null, recursive, isTransaction)
+        ORM.saveModel(this.value, setOf(), recursive, isTransaction)
     }
 
+}
+
+
+
+interface CollFunc
+{
+    fun save(recursive : Boolean, oneToManyRelation : ORM.OneToManyRelation)
 }
 
 
 /**
  * Collection Functor
  */
-data class Coll<A>(val list : MutableList<A>) : Func<MutableList<A>>(list), Serializable
+data class Coll<A>(val list : MutableList<A>) : Func<MutableList<A>>(list), Serializable, CollFunc
         where A : Model
 {
 
-    fun save(recursive : Boolean, isTransaction : Boolean = false)
+    override fun save(recursive : Boolean, oneToManyRelation : ORM.OneToManyRelation)
     {
         this.list.forEach {
-            ORM.saveModel(it, null, recursive, isTransaction)
+            ORM.saveModel(it, setOf(oneToManyRelation), recursive, false)
         }
 
     }
@@ -123,7 +130,7 @@ data class Coll<A>(val list : MutableList<A>) : Func<MutableList<A>>(list), Seri
  * Collection Functor
  */
 data class CollS<A> (val list : MutableList<A>, val valueClass : KClass<A>? = null)
-    : Func<MutableList<A>>(list), Serializable where A : Model, A : Comparable<A>
+    : Func<MutableList<A>>(list), Serializable, CollFunc where A : Model, A : Comparable<A>
 {
 
     init
@@ -132,12 +139,11 @@ data class CollS<A> (val list : MutableList<A>, val valueClass : KClass<A>? = nu
     }
 
 
-    fun save(recursive : Boolean, isTransaction : Boolean = false)
+    override fun save(recursive : Boolean, oneToManyRelation : ORM.OneToManyRelation)
     {
         this.list.forEach {
-            ORM.saveModel(it, null, recursive, isTransaction)
+            ORM.saveModel(it, setOf(oneToManyRelation), recursive, false)
         }
-
     }
 }
 

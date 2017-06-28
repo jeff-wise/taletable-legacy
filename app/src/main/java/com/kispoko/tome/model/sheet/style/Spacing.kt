@@ -12,6 +12,7 @@ import com.kispoko.tome.util.Util
 import effect.effApply
 import effect.effError
 import effect.effValue
+import effect.split
 import lulo.document.*
 import lulo.value.UnexpectedType
 import lulo.value.ValueParser
@@ -65,22 +66,30 @@ data class Spacing(override val id : UUID,
         {
             is DocDict -> effApply(::Spacing,
                                    // Left
-                                   doc.at("left") ap { LeftSpacing.fromDocument(it) },
+                                   split(doc.maybeAt("left"),
+                                         effValue(LeftSpacing.default()),
+                                         { LeftSpacing.fromDocument(it) }),
                                    // Top
-                                   doc.at("top") ap { TopSpacing.fromDocument(it) },
+                                   split(doc.maybeAt("top"),
+                                         effValue(TopSpacing.default()),
+                                         { TopSpacing.fromDocument(it) }),
                                    // Right
-                                   doc.at("right") ap { RightSpacing.fromDocument(it) },
+                                   split(doc.maybeAt("right"),
+                                         effValue(RightSpacing.default()),
+                                         { RightSpacing.fromDocument(it) }),
                                    // Bottom
-                                   doc.at("bottom") ap { BottomSpacing.fromDocument(it) }
+                                   split(doc.maybeAt("bottom"),
+                                         effValue(BottomSpacing.default()),
+                                         { BottomSpacing.fromDocument(it) })
                                    )
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        val default : Spacing = Spacing(LeftSpacing(0.0f),
-                                        TopSpacing(0.0f),
-                                        RightSpacing(0.0f),
-                                        BottomSpacing(0.0f))
+        fun default() : Spacing = Spacing(LeftSpacing(0.0f),
+                                          TopSpacing(0.0f),
+                                          RightSpacing(0.0f),
+                                          BottomSpacing(0.0f))
 
     }
 
@@ -138,11 +147,15 @@ data class LeftSpacing(val value : Float) : SQLSerializable, Serializable
 
     companion object : Factory<LeftSpacing>
     {
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<LeftSpacing> = when (doc)
         {
             is DocNumber -> effValue(LeftSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
+
+        fun default() : LeftSpacing = LeftSpacing(0.0f)
+
     }
 
     // -----------------------------------------------------------------------------------------
@@ -166,11 +179,14 @@ data class TopSpacing(val value : Float) : SQLSerializable, Serializable
 
     companion object : Factory<TopSpacing>
     {
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<TopSpacing> = when (doc)
         {
             is DocNumber -> effValue(TopSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
+
+        fun default() : TopSpacing = TopSpacing(0.0f)
     }
 
     // -----------------------------------------------------------------------------------------
@@ -194,11 +210,15 @@ data class RightSpacing(val value : Float) : SQLSerializable, Serializable
 
     companion object : Factory<RightSpacing>
     {
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<RightSpacing> = when (doc)
         {
             is DocNumber -> effValue(RightSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
+
+        fun default() : RightSpacing = RightSpacing(0.0f)
+
     }
 
     // -----------------------------------------------------------------------------------------
@@ -222,11 +242,15 @@ data class BottomSpacing(val value : Float) : SQLSerializable, Serializable
 
     companion object : Factory<BottomSpacing>
     {
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<BottomSpacing> = when (doc)
         {
             is DocNumber -> effValue(BottomSpacing(doc.number.toFloat()))
             else         -> effError(UnexpectedType(DocType.NUMBER, docType(doc), doc.path))
         }
+
+        fun default() : BottomSpacing = BottomSpacing(0.0f)
+
     }
 
     // -----------------------------------------------------------------------------------------

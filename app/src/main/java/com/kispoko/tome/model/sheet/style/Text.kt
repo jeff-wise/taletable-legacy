@@ -80,8 +80,8 @@ data class TextFormat(override val id : UUID,
         private val defaultStyle             = TextStyle.default
         private val defaultPosition          = Position.Top
         private val defaultHeight            = Height.Wrap
-        private val defaultPadding           = Spacing.default
-        private val defaultMargins           = Spacing.default
+        private val defaultPadding           = Spacing.default()
+        private val defaultMargins           = Spacing.default()
         private val defaultAlignment         = Alignment.Center
         private val defaultVerticalAlignment = VerticalAlignment.Middle()
 

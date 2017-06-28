@@ -2,7 +2,6 @@
 package com.kispoko.tome.lib.orm
 
 
-import android.util.Log
 import com.kispoko.tome.lib.functor.*
 import com.kispoko.tome.lib.model.Model
 import com.kispoko.tome.lib.orm.sql.SQL
@@ -19,6 +18,10 @@ object Schema
     val tables : MutableMap<String,Table> = mutableMapOf()
 
 
+    data class CollectionData(val tableName : String,
+                              val fieldName : String)
+
+
     fun defineTable(model : Model, collectionData : CollectionData? = null)
     {
         if (tables.containsKey(model.name))
@@ -33,7 +36,9 @@ object Schema
 
         val endTime = System.nanoTime()
 
-        ORMLog.event(DefineTable(model.name, (endTime-startTime)))
+        ORMLog.event(DefineTable(model.name,
+                                 tableDefinition.definitionSQLString,
+                                 (endTime-startTime)))
 
 
         Model.functors(model).forEach { func ->
@@ -43,12 +48,14 @@ object Schema
                 is Coll<*>  -> func.list.forEach { modelItem ->
                     val funcName = func.name
                     if (funcName != null)
-                        Schema.defineTable(modelItem, CollectionData(model.name, funcName))
+                        Schema.defineTable(modelItem,
+                                CollectionData(ORM.modelTableName(model), funcName))
                 }
                 is CollS<*> -> func.list.forEach { modelItem ->
                     val funcName = func.name
                     if (funcName != null)
-                        Schema.defineTable(modelItem, CollectionData(model.name, funcName))
+                        Schema.defineTable(modelItem,
+                                CollectionData(ORM.modelTableName(model), funcName))
                 }
             }
         }

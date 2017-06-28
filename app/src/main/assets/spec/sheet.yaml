@@ -125,13 +125,6 @@ types:
     presence: required
     description: >
       The groups in the page.
-- name: color_id
-  label: Color Identifier
-  description: >
-    The unique identifier of a theme color.
-  group: Theme
-  type: primitive
-  base_type: string
 - name: page_format
   label: Page Format
   description: >
@@ -144,6 +137,11 @@ types:
     presence: optional
     description: >
       The page background color theme.
+  - name: padding
+    type: spacing
+    presence: optional
+    description: >
+      The page padding.
 - name: group
   label: Group
   description: >
@@ -169,11 +167,11 @@ types:
   group: Group
   type: product
   fields:
-  - name: background_color
-    type: color_id
+  - name: background_color_theme
+    type: color_theme
     presence: optional
     description: >
-      The group background color.
+      The group background theme.
   - name: margins
     type: spacing
     presence: optional
@@ -1082,7 +1080,7 @@ types:
     description: >
       The column alignment.
   - name: width
-    type: integer
+    type: number
     presence: optional
     description: >
       The column width.
@@ -1166,7 +1164,7 @@ types:
     description: >
       The column alignment.
   - name: width
-    type: integer
+    type: number
     presence: optional
     description: >
       The column width.
@@ -1230,7 +1228,7 @@ types:
     description: >
       The column alignment.
   - name: width
-    type: integer
+    type: number
     presence: optional
     description: >
       The column width.
@@ -1574,11 +1572,11 @@ types:
     presence: optional
     description: >
       Outside label margins.
-  - name: value_style
-    type: text_style
+  - name: value_format
+    type: text_format
     presence: optional
     description: >
-      Value style.
+      Value format.
   - name: value_height
     type: widget_height
     presence: optional
@@ -1602,7 +1600,7 @@ types:
     description: >
       The widget label.
   - name: width
-    type: integer
+    type: number
     presence: optional
     description: >
       The widget width.
@@ -1641,6 +1639,48 @@ types:
     presence: optional
     description: >
       The widget padding.
+- name: text_format
+  label: Text Format
+  description: >
+    Text format options.
+  group: Style
+  type: product
+  fields:
+  - name: style
+    type: text_style
+    presence: optional
+    description: >
+      The text style.
+  - name: position
+    type: position
+    presence: optional
+    description: >
+      The text position.
+  - name: height
+    type: height
+    presence: optional
+    description: >
+      The text height.
+  - name: padding
+    type: spacing
+    presence: optional
+    description: >
+      The text padding.
+  - name: margins
+    type: spacing
+    presence: optional
+    description: >
+      The text margins.
+  - name: alignment
+    type: alignment
+    presence: optional
+    description: >
+      The text horizontal alignment.
+  - name: vertical_alignment
+    type: vertical_alignment
+    presence: optional
+    description: >
+      The text vertical alignment.
 - name: text_style
   label: Text Style
   description: >
@@ -1648,21 +1688,21 @@ types:
   group: Style
   type: product
   fields:
-  - name: color
-    type: color_id
+  - name: color_theme
+    type: color_theme
     presence: optional
     description: >
-      The text color
+      The text color them.
   - name: size
-    type: number
+    type: text_size
     presence: optional
     description: >
-      The text size
+      The text size.
   - name: font
-    type: text_font
+    type: text_font_style
     presence: optional
     description: >
-      The text font
+      The text font style.
   - name: is_underlined
     type: boolean
     presence: optional
@@ -1673,11 +1713,11 @@ types:
     presence: optional
     description: >
       The text alignment
-  - name: background
-    type: color_id
+  - name: background_color_theme
+    type: color_them
     presence: optional
     description: >
-      The text background color.
+      The text background color theme.
 - name: spacing
   label: Spacing
   description: >
@@ -1686,22 +1726,22 @@ types:
   type: product
   fields:
   - name: left
-    type: integer
+    type: number
     presence: optional
     description:
       The space on the left.
   - name: top
-    type: integer
+    type: number
     presence: optional
     description:
       The space on the top.
   - name: right
-    type: integer
+    type: number
     presence: optional
     description:
       The space on the right.
   - name: bottom
-    type: integer
+    type: number
     presence: optional
     description:
       The space on the bottom.
@@ -1732,15 +1772,15 @@ types:
   base_type: string
   constraints:
   - vertical_alignment_set
-- name: text_font
-  label: Text Font
+- name: text_font_style
+  label: Text Font Style
   description: >
     Font.
   group: Style
   type: primitive
   base_type: string
   constraints:
-  - font_set
+  - font_style_set
 - name: widget_height
   label: Widget Height
   description: >
@@ -1750,15 +1790,15 @@ types:
   base_type: string
   constraints:
   - widget_height_set
-- name: widget_position
-  label: Widget Position
+- name: position
+  label: Position
   description: >
     The widget position options.
   group: Style
   type: primitive
   base_type: string
   constraints:
-  - widget_position_set
+  - position_set
 - name: button_icon_name
   label: Button Icon Name
   description: >
@@ -1768,6 +1808,13 @@ types:
   base_type: string
   constraints:
   - button_icon_name_set
+- name: text_size
+  label: Text Size
+  description: >
+    Text size.
+  group: Style
+  type: primitive
+  base_type: number
 - name: button_view_type
   label: Button View Type
   description: >
@@ -1825,7 +1872,7 @@ constraints:
     - top
     - middle
     - bottom
-- name: font_set
+- name: font_style_set
   type: string_one_of
   parameters:
     set:
@@ -1845,7 +1892,7 @@ constraints:
     - medium_large
     - large
     - very_large
-- name: widget_position_set
+- name: position_set
   type: string_one_of
   parameters:
     set:
@@ -1853,13 +1900,6 @@ constraints:
     - top
     - right
     - bottom
-- name: widget_position_set
-  type: string_one_of
-  parameters:
-    set:
-    - left
-    - top
-    - right
 - name: button_view_type_set
   type: string_one_of
   parameters:

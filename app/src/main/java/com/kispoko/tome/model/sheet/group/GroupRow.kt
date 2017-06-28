@@ -257,8 +257,8 @@ data class GroupRowFormat(override val id : UUID,
 
         private val defaultAlignment            = Alignment.Center
         private val defaultBackgroundColorTheme = ColorTheme.transparent
-        private val defaultMargins              = Spacing.default
-        private val defaultPadding              = Spacing.default
+        private val defaultMargins              = Spacing.default()
+        private val defaultPadding              = Spacing.default()
         private val defaultShowDivider          = ShowGroupRowDivider(false)
         private val defaultDividerColorTheme    = ColorTheme.black
 

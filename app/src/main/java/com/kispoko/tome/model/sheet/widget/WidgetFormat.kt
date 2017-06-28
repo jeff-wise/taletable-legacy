@@ -109,8 +109,8 @@ data class WidgetFormat(override val id : UUID,
                              Alignment.Center,
                              ColorTheme.transparent,
                              Corners.None,
-                             Spacing.default,
-                             Spacing.default)
+                             Spacing.default(),
+                             Spacing.default())
     }
 
 

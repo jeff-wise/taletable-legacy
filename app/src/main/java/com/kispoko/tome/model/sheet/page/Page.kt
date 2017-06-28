@@ -13,6 +13,7 @@ import com.kispoko.tome.lib.orm.sql.SQLText
 import com.kispoko.tome.lib.orm.sql.SQLValue
 import com.kispoko.tome.lib.ui.LinearLayoutBuilder
 import com.kispoko.tome.model.sheet.group.Group
+import com.kispoko.tome.model.sheet.style.Spacing
 import com.kispoko.tome.model.theme.ColorTheme
 import com.kispoko.tome.rts.sheet.SheetComponent
 import com.kispoko.tome.rts.sheet.SheetContext
@@ -158,6 +159,8 @@ data class Page(override val id : UUID,
         layout.backgroundColor  = SheetManager.color(sheetContext.sheetId,
                                                      this.format().backgroundColorTheme())
 
+        layout.paddingSpacing   = this.format().padding()
+
         return layout.linearLayout(sheetContext.context)
     }
 
@@ -226,7 +229,8 @@ data class PageIndex(val value : Int) : SQLSerializable, Serializable
  * Page Format
  */
 data class PageFormat(override val id : UUID,
-                      val backgroundColorTheme : Prim<ColorTheme>) : Model, Serializable
+                      val backgroundColorTheme : Prim<ColorTheme>,
+                      val padding : Comp<Spacing>) : Model, Serializable
 {
 
     // -----------------------------------------------------------------------------------------
@@ -235,7 +239,8 @@ data class PageFormat(override val id : UUID,
 
     init
     {
-        this.backgroundColorTheme.name = "background_color_theme"
+        this.backgroundColorTheme.name  = "background_color_theme"
+        this.padding.name               = "padding"
     }
 
 
@@ -243,26 +248,40 @@ data class PageFormat(override val id : UUID,
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------
 
-    constructor(colorTheme : ColorTheme) : this(UUID.randomUUID(), Prim(colorTheme))
+    constructor(colorTheme : ColorTheme,
+                padding : Spacing)
+        : this(UUID.randomUUID(),
+               Prim(colorTheme),
+               Comp(padding))
 
 
     companion object : Factory<PageFormat>
     {
 
+        private val defaultBackgroundColorTheme = ColorTheme.transparent
+        private val defaultPadding              = Spacing.default()
+
         override fun fromDocument(doc : SpecDoc) : ValueParser<PageFormat> = when (doc)
         {
-            is DocDict -> effApply(::PageFormat,
-                                   // Model Id
-                                    effValue(UUID.randomUUID()),
-                                   // Background Color
-                                   doc.at("background_color_theme") ap {
-                                       effApply(::Prim, ColorTheme.fromDocument(it))
-                                   })
+            is DocDict ->
+            {
+                effApply(::PageFormat,
+                         // Background Color
+                         split(doc.maybeAt("background_color_theme"),
+                               effValue(defaultBackgroundColorTheme),
+                               { ColorTheme.fromDocument(it) }),
+                         // Padding
+                         split(doc.maybeAt("padding"),
+                               effValue(defaultPadding),
+                               { Spacing.fromDocument(it) })
+                         )
+            }
             else       -> effError(UnexpectedType(DocType.DICT, docType(doc), doc.path))
         }
 
 
-        val default : PageFormat = PageFormat(ColorTheme.transparent)
+        val default : PageFormat = PageFormat(defaultBackgroundColorTheme,
+                                              defaultPadding)
 
     }
 
@@ -272,6 +291,8 @@ data class PageFormat(override val id : UUID,
     // -----------------------------------------------------------------------------------------
 
     fun backgroundColorTheme() : ColorTheme = this.backgroundColorTheme.value
+
+    fun padding() : Spacing = this.padding.value
 
 
     // -----------------------------------------------------------------------------------------
